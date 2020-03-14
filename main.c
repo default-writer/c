@@ -1,26 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
-
-
 typedef struct q_type* q_type_ptr;
-
 typedef struct queue* queue_ptr;
 typedef void* payload_ptr;
 
 typedef struct queue {
     q_type_ptr tail;
     q_type_ptr head;
-    uint length;
+    int length;
 }queue;
 
 typedef struct q_type {
     q_type_ptr next;
     q_type_ptr prev;
     payload_ptr payload;
-}q_type ;
-
+} q_type;
 
 q_type_ptr q_push(queue_ptr queue, payload_ptr payload) {
     q_type_ptr q_ptr = (q_type_ptr)calloc(1, sizeof(q_type));
