@@ -6,7 +6,7 @@
         {
             "label": "gcc build active file",
             "type": "shell",
-            "command": "gcc -g -Wint-to-pointer-cast main.c -o main"
+            "command": "gcc -g main.c -o main"
         }
     ]
 }
