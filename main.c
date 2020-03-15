@@ -37,7 +37,6 @@ queue_ptr create_queue() {
 }
 
 int main() {
-    __uint32_t i = 0xdeadbeef;
     payload_ptr payload = (payload_ptr)0xdeadbeef;
     queue_ptr queue = create_queue();
     q_type_ptr q_ptr;
