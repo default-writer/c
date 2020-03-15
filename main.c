@@ -18,16 +18,29 @@ typedef struct q_type {
 } q_type;
 
 q_type_ptr q_push(queue_ptr queue, payload_ptr payload) {
+    if (payload == -1) return -1;
     q_type_ptr q_ptr = (q_type_ptr)calloc(1, sizeof(q_type));
     q_ptr->payload = payload;
-    q_ptr->prev = queue->tail;
-    if (queue->length > 0) {
+    if (queue->length++ > 0) {
+        q_ptr->prev = queue->tail;
         queue->tail->next = q_ptr; 
         queue->tail = q_ptr;
     } else {
         queue->head = queue->tail = q_ptr;
     }
-    queue->length += 1;
+    return q_ptr;
+}
+
+q_type_ptr q_pop(queue_ptr queue) {
+    if (queue->length == 0) return -1;
+    q_type_ptr q_ptr = queue->tail;
+    if (--queue->length > 0) {
+        queue->tail = queue->tail->prev;
+        queue->tail->next = 0;
+        q_ptr->prev = 0;
+    } else {
+        queue->head = queue->tail = 0;
+    }
     return q_ptr;
 }
 
@@ -44,7 +57,8 @@ int main() {
     q_ptr = q_push(queue, payload++);
     q_ptr = q_push(queue, payload++);
     q_ptr = q_push(queue, payload++);
-    q_ptr = q_push(queue, payload++);
-    q_ptr = q_push(queue, payload++);
-    q_ptr = q_push(queue, payload++);
+    q_ptr = q_pop(queue);
+    q_ptr = q_pop(queue);
+    q_ptr = q_pop(queue);
+    q_ptr = q_pop(queue);
 }
