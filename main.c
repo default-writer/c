@@ -2,14 +2,7 @@
 #include <stdlib.h>
 
 typedef struct q_type* q_type_ptr;
-typedef struct queue* queue_ptr;
 typedef void* payload_ptr;
-
-typedef struct queue {
-    q_type_ptr tail;
-    q_type_ptr head;
-    int length;
-}queue;
 
 typedef struct q_type {
     q_type_ptr next;
@@ -17,48 +10,53 @@ typedef struct q_type {
     payload_ptr payload;
 } q_type;
 
-q_type_ptr q_push(queue_ptr queue, payload_ptr payload) {
+q_type_ptr q_push(q_type_ptr queue, payload_ptr payload) {
     if (payload == -1) return -1;
     q_type_ptr q_ptr = (q_type_ptr)calloc(1, sizeof(q_type));
     q_ptr->payload = payload;
-    if (queue->length++ > 0) {
-        q_ptr->prev = queue->tail;
-        queue->tail->next = q_ptr; 
-        queue->tail = q_ptr;
+    if (queue->payload++ > 0) {
+        q_ptr->prev = queue->next;
+        queue->next->next = q_ptr; 
+        queue->next = q_ptr;
     } else {
-        queue->head = queue->tail = q_ptr;
+        queue->prev = queue->next = q_ptr;
     }
     return q_ptr;
 }
 
-q_type_ptr q_pop(queue_ptr queue) {
-    if (queue->length == 0) return -1;
-    q_type_ptr q_ptr = queue->tail;
-    if (--queue->length > 0) {
-        queue->tail = queue->tail->prev;
-        queue->tail->next = 0;
+q_type_ptr q_pop(q_type_ptr queue) {
+    if (queue->payload == 0) return -1;
+    q_type_ptr q_ptr = queue->next;
+    if (--queue->payload > 0) {
+        queue->next = queue->next->prev;
+        queue->next->next = 0;
         q_ptr->prev = 0;
     } else {
-        queue->head = queue->tail = 0;
+        queue->prev = queue->next = 0;
     }
     return q_ptr;
 }
 
-queue_ptr create_queue() {
-    queue_ptr queue = (queue_ptr)calloc(1, sizeof(queue));
+q_type_ptr create_queue() {
+    q_type_ptr queue = (q_type_ptr)calloc(1, sizeof(queue));
     return queue;
 }
 
 int main() {
     payload_ptr payload = (payload_ptr)0xdeadbeef;
-    queue_ptr queue = create_queue();
-    q_type_ptr q_ptr;
-    q_ptr = q_push(queue, payload++);
-    q_ptr = q_push(queue, payload++);
-    q_ptr = q_push(queue, payload++);
-    q_ptr = q_push(queue, payload++);
-    q_ptr = q_pop(queue);
-    q_ptr = q_pop(queue);
-    q_ptr = q_pop(queue);
-    q_ptr = q_pop(queue);
+    q_type_ptr q_ptr = create_queue();
+    q_type_ptr q_ptr1, q_ptr2, q_ptr3, q_ptr4;
+    q_ptr1 = q_push(q_ptr, payload++);
+    q_ptr2 = q_push(q_ptr, payload++);
+    q_ptr3 = q_push(q_ptr, payload++);
+    q_ptr4 = q_push(q_ptr, payload++);
+    q_ptr1 = q_pop(q_ptr);
+    q_ptr2 = q_pop(q_ptr);
+    q_ptr3 = q_pop(q_ptr);
+    q_ptr4 = q_pop(q_ptr);
+    free(q_ptr1);
+    free(q_ptr2);
+    free(q_ptr3);
+    free(q_ptr4);
+    free(q_ptr);
 }
