@@ -18,8 +18,6 @@ q_type_ptr q_push(q_type_ptr queue, q_type_ptr q_ptr) {
 
 q_type_ptr create_node(payload_ptr payload) {
     q_type_ptr q_ptr = (q_type_ptr)calloc(1, sizeof(q_type));
-    q_ptr->next = 0;
-    q_ptr->prev = 0;
     q_ptr->payload = payload;
     return q_ptr;
 }
