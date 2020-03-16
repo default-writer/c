@@ -62,12 +62,11 @@ int main() {
     q_ptr3 = q_push(q_ptr0, create_node(payload++));
     q_ptr4 = q_push(q_ptr0, create_node(payload++));
 
-    q_ptr5 = q_push(q_ptr2, create_node(payload++));    
-    q_ptr6 = q_push(q_ptr2, create_node(payload++));
+    q_ptr5 = q_push(q_ptr2, create_node(payload++)); //technically, insert 2 more points from the point q_ptr2, into queue  
+    q_ptr6 = q_push(q_ptr2, create_node(payload++)); 
 
     print_tree(q_ptr0);
 
     q_free(q_ptr0);
-
     q_free_ptr(&q_ptr0);
 }
