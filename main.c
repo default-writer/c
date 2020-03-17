@@ -40,6 +40,7 @@ q_type_ptr q_pop(q_type_ptr q_ptr) {
 q_type_ptr create_node(payload_ptr payload) {
     q_type_ptr q_ptr = (q_type_ptr)calloc(1, sizeof(q_type));
     q_ptr->payload = payload;
+    printf("0x%llx 0x%llx\n", q_ptr, q_ptr->payload);
     return q_ptr;
 }
 
@@ -56,6 +57,7 @@ void print_tree(q_type_ptr q_ptr) {
 void q_free(q_type_ptr q_ptr) {
     while (q_ptr != 0) {
         q_type_ptr next = q_ptr->tail;
+        q_ptr->tail = q_ptr->next = 0;
         free(q_ptr);
         printf("0x%llx freed\n", q_ptr);
         q_ptr = next;
@@ -79,14 +81,14 @@ int main() {
     // q_ptr5 = q_push(q_ptr2, create_node(payload++)); //technically, insert 2 more points at the point q_ptr2, into queue  
     // q_ptr6 = q_push(q_ptr2, create_node(payload++)); 
 
-    print_tree(q_ptr0);
+    // print_tree(q_ptr0);
 
-    q_pop0 = q_pop(q_ptr0); 
+    // q_pop0 = q_pop(q_ptr0); 
     // q_pop1 = q_pop(q_ptr0);
     // q_pop2 = q_pop(q_ptr0);
     // q_pop3 = q_pop(q_ptr0);
     // q_pop4 = q_pop(q_ptr0);
 
     q_free(q_ptr0);
-    q_free(q_pop0);
+    // q_free(q_pop0);
 }
