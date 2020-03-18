@@ -57,9 +57,10 @@ void print_tree(q_type_ptr q_ptr) {
 void q_free(q_type_ptr q_ptr) {
     while (q_ptr != 0) {
         q_type_ptr next = q_ptr->tail;
-        q_ptr->tail = q_ptr->next = 0;
         free(q_ptr);
-        printf("0x%llx freed\n", q_ptr);
+        printf("0x%llx 0x%llx\n", q_ptr, q_ptr->payload);
+        q_ptr->tail = q_ptr->next = 0;
+        q_ptr->payload = 0;
         q_ptr = next;
     }
     printf("\n");
