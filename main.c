@@ -23,7 +23,7 @@ typedef struct q_type {
 } q_type;
 
 
-void q_push(q_type_ptr* const head, q_type_ptr* const next) {
+void q_push(q_type_ptr * const head, q_type_ptr* const next) {
     head->ptr->next.ptr = next->ptr;
     next->ptr->prev.ptr = head->ptr;
     head->ptr = next->ptr;
@@ -48,7 +48,7 @@ void list_alloc(q_type_ptr * const head, payload_ptr payload) {
     q_push(head, &tmp);
 }
 
-void list_print(q_type_ptr* const q_ptr) {
+void list_print(const q_type_ptr const * const q_ptr) {
     int i = 0;
     q_type_ptr tmp;
     tmp.ptr = q_ptr->ptr;
@@ -59,7 +59,7 @@ void list_print(q_type_ptr* const q_ptr) {
     printf("\n");
 }
 
-void list_free(q_type_ptr const *q_ptr) {
+void list_free(const q_type_ptr const * const q_ptr) {
     q_type_ptr tmp;
     tmp.ptr = q_ptr->ptr;
     while (tmp.address != 0) {
