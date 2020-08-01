@@ -1,4 +1,8 @@
 {
+    "env": {
+        "myDefaultIncludePath": ["${workspaceFolder}", "${workspaceFolder}/include"],
+        "myCompilerPath": "/usr/bin/gcc"
+      },
     "configurations": [
         {
             "name": "Linux",

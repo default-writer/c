@@ -4,9 +4,9 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "gcc build active file",
+            "label": "gcc-build",
             "type": "shell",
-            "command": "gcc -g main.c -o main"
+            "command": "gcc -g ${fileDirname}/${fileBasename} -o ${fileDirname}/${fileBasenameNoExtension}"
         }
     ]
 }
