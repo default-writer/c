@@ -2,14 +2,14 @@
 #include <stdlib.h>
 #define DEBUG
 
-typedef long long unsigned int LPADDR;
+typedef long long unsigned int ADDR;
 
 typedef void* payload_ptr;
 
 typedef struct {
     union {
         struct q_type* ptr;
-        LPADDR address;
+        ADDR address;
     };
 } q_type_ptr;
 
@@ -18,7 +18,7 @@ typedef struct q_type {
     q_type_ptr next;
     union {
         struct { payload_ptr payload; };
-        struct { LPADDR address; };
+        struct { ADDR address; };
     };
 } q_type;
 
