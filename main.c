@@ -4,7 +4,7 @@
 
 typedef long long unsigned int ADDR;
 
-typedef void* payload_ptr;
+typedef void* abstract_ptr;
 
 typedef struct {
     union {
@@ -17,7 +17,7 @@ typedef struct q_type {
     q_type_ptr prev;
     q_type_ptr next;
     union {
-        struct { payload_ptr payload; };
+        struct { abstract_ptr payload; };
         struct { ADDR address; };
     };
 } q_type;
@@ -40,7 +40,7 @@ q_type_ptr q_pop(q_type_ptr * const head) {
     return tmp;
 }
 
-void list_alloc(q_type_ptr * const head, payload_ptr payload) {
+void list_alloc(q_type_ptr * const head, abstract_ptr payload) {
     q_type_ptr tmp;
     tmp.ptr = (q_type*)malloc(sizeof(q_type));
     tmp.ptr->payload = payload;
@@ -74,7 +74,7 @@ void list_free(const q_type_ptr const * const q_ptr) {
 int main() {
     q_type_ptr head;
     head.ptr = (q_type*)malloc(sizeof(q_type));
-    payload_ptr payload = (payload_ptr)0xdeadbeef;
+    abstract_ptr payload = (abstract_ptr)0xdeadbeef;
     list_alloc(&head, payload);
     list_alloc(&head, ++payload);
     list_alloc(&head, ++payload);
