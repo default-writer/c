@@ -32,7 +32,7 @@ q_type_ptr q_pop() {
 void list_alloc(payload_ptr payload) {
     q_type_ptr tmp = (q_type_ptr)malloc(sizeof(q_type));
     tmp->payload = payload;
-    printf("alloc: 0x%llx 0x%llx\n", tmp, tmp->payload);
+    printf("alloc: 0x%08x 0x%08x\n", &(*tmp), &(*(tmp->payload)));
     q_push(tmp);
 }
 
@@ -41,7 +41,7 @@ void list_print(q_type_ptr q_ptr) {
     while (q_ptr->prev != 0) {
         q_type_ptr tmp = q_ptr;
         q_ptr = q_ptr->prev;
-        printf("%d: 0x%llx 0x%llx\n", ++i, tmp, tmp->payload);
+        printf("%d: 0x%08x 0x%08x\n", ++i, &(*tmp), &(*(tmp->payload)));
     }
     printf("\n");
 }
@@ -50,7 +50,7 @@ void list_free(q_type_ptr q_ptr) {
     while (q_ptr != 0) {
         q_type_ptr tmp = q_ptr;
         q_ptr = q_ptr->next;
-        printf("free: 0x%llx 0x%llx\n", tmp, tmp->payload);
+        printf("free: 0x%08x 0x%08x\n", &(*tmp), &(*(tmp->payload)));
         free(tmp);
     }
     printf("\n");
