@@ -18,39 +18,40 @@ void q_push(q_type_ptr next) {
     next->prev = head;
     head = next;
 }
+
 q_type_ptr q_pop() {
+    if (head->prev == 0) {
+        return 0;
+    }
     q_type_ptr tmp = head;
-    q_type_ptr next = head->prev;
-    head = next;
+    head = head->prev;
     head->next = 0;
-    tmp->prev = 0;
     return tmp;
 }
 
-void list_create(payload_ptr payload) {
-    q_type_ptr q_ptr = (q_type_ptr)malloc(sizeof(q_type));
-    q_ptr->payload = payload;
-    q_push(q_ptr);
+void list_alloc(payload_ptr payload) {
+    q_type_ptr tmp = (q_type_ptr)malloc(sizeof(q_type));
+    tmp->payload = payload;
+    printf("alloc: 0x%llx 0x%llx\n", tmp, tmp->payload);
+    q_push(tmp);
 }
 
 void list_print(q_type_ptr q_ptr) {
-    if (q_ptr != 0) {
-        q_type_ptr head = q_ptr;
-        while (q_ptr->prev != 0) {
-            printf("0x%llx 0x%llx\n", q_ptr, q_ptr->payload);
-            q_ptr = q_ptr->prev;
-        } 
+    int i = 0;
+    while (q_ptr->prev != 0) {
+        q_type_ptr tmp = q_ptr;
+        q_ptr = q_ptr->prev;
+        printf("%d: 0x%llx 0x%llx\n", ++i, tmp, tmp->payload);
     }
     printf("\n");
 }
 
 void list_free(q_type_ptr q_ptr) {
     while (q_ptr != 0) {
-        q_type_ptr prev = q_ptr->next;
-        free(q_ptr);
-        q_ptr->next = 0;
-        q_ptr->payload = 0;
-        q_ptr = prev;
+        q_type_ptr tmp = q_ptr;
+        q_ptr = q_ptr->next;
+        printf("free: 0x%llx 0x%llx\n", tmp, tmp->payload);
+        free(tmp);
     }
     printf("\n");
 }
@@ -58,11 +59,12 @@ void list_free(q_type_ptr q_ptr) {
 int main() {
     head = (q_type_ptr)malloc(sizeof(q_type));
     payload_ptr payload = (payload_ptr)0xdeadbeef;
-    list_create(payload);
-    list_create(payload++);
-    list_create(payload++);
-    list_create(payload++);
-    list_create(payload++);
+    list_alloc(payload);
+    list_alloc(++payload);
+    list_alloc(++payload);
+    list_alloc(++payload);
+    list_alloc(++payload);
+    printf("\n");
 #ifdef DEBUG
     list_print(head);
 #endif
@@ -77,27 +79,19 @@ int main() {
     list_print(head);
 #endif
     q_type_ptr q_pop2 = q_pop(); 
-    list_print(head);
+    list_free(q_pop2);
 #ifdef DEBUG
-    list_print(q_pop2);
+    list_print(head);
 #endif
     q_type_ptr q_pop3 = q_pop(); 
+    q_push(q_pop3);
+    q_pop3 = q_pop(); 
     list_free(q_pop3);
 #ifdef DEBUG
     list_print(head);
 #endif
     q_type_ptr q_pop4 = q_pop(); 
     list_free(q_pop4);
-#ifdef DEBUG
-    list_print(head);
-#endif
-    q_type_ptr q_pop5 = q_pop(); 
-    list_free(q_pop5);
-#ifdef DEBUG
-    list_print(head);
-#endif    
-    q_type_ptr q_pop6 = q_pop(); 
-    list_free(q_pop6);
 #ifdef DEBUG
     list_print(head);
 #endif
