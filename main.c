@@ -37,7 +37,9 @@ void list_alloc(q_type_ptr * const head, abstract_ptr payload) {
     q_type_ptr tmp;
     tmp.ptr = (q_type*)malloc(sizeof(q_type));
     tmp.ptr->payload = payload;
+#ifdef DEBUG
     printf("alloc: 0x%llx 0x%llx\n", (ADDR)tmp.ptr, (ADDR)tmp.ptr->payload);
+#endif
     q_push(head, &tmp);
 }
 
@@ -46,22 +48,30 @@ void list_print(const q_type_ptr const * const q_ptr) {
     q_type_ptr tmp;
     tmp.ptr = q_ptr->ptr;
     while (tmp.ptr->prev.ptr != 0) {
+#ifdef DEBUG
         printf("%d: 0x%llx 0x%llx\n", ++i, (ADDR)tmp.ptr, (ADDR)tmp.ptr->payload);
+#endif
         tmp.ptr = tmp.ptr->prev.ptr;
     }
+#ifdef DEBUG
     printf("\n");
+#endif
 }
 
 void list_free(const q_type_ptr const * const q_ptr) {
     q_type_ptr tmp;
     tmp.ptr = q_ptr->ptr;
     while (tmp.ptr != 0) {
+#ifdef DEBUG
         printf("free: 0x%llx 0x%llx\n", (ADDR)tmp.ptr, (ADDR)tmp.ptr->payload);
+#endif
         q_type* ptr = tmp.ptr;
         tmp.ptr = tmp.ptr->next.ptr;
         free(ptr);
     }
+#ifdef DEBUG
     printf("\n");
+#endif
 }
 
 int main() {
@@ -73,7 +83,9 @@ int main() {
     list_alloc(&head, ++payload);
     list_alloc(&head, ++payload);
     list_alloc(&head, ++payload);
+#ifdef DEBUG
     printf("\n");
+#endif
 #ifdef DEBUG
     list_print(&head);
 #endif
