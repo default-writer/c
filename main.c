@@ -5,23 +5,16 @@
 typedef long long unsigned int ADDR;
 
 typedef void* abstract_ptr;
-
-typedef struct {
-    union {
-        struct q_type* ptr;
-        ADDR address;
-    };
+typedef struct { 
+    struct q_type* ptr; 
 } q_type_ptr;
 
 typedef struct q_type {
     q_type_ptr prev;
     q_type_ptr next;
-    union {
-        struct { abstract_ptr payload; };
-        struct { ADDR address; };
-    };
+    abstract_ptr payload;
 } q_type;
-
+ 
 
 void q_push(q_type_ptr * const head, q_type_ptr* const next) {
     head->ptr->next.ptr = next->ptr;
@@ -31,7 +24,7 @@ void q_push(q_type_ptr * const head, q_type_ptr* const next) {
 
 q_type_ptr q_pop(q_type_ptr * const head) {
     q_type_ptr tmp;
-    if (head->ptr->prev.address == 0) {
+    if (head->ptr->prev.ptr == 0) {
         return tmp;
     }
     tmp.ptr = head->ptr;
@@ -44,7 +37,7 @@ void list_alloc(q_type_ptr * const head, abstract_ptr payload) {
     q_type_ptr tmp;
     tmp.ptr = (q_type*)malloc(sizeof(q_type));
     tmp.ptr->payload = payload;
-    printf("alloc: 0x%llx 0x%llx\n", tmp.address, tmp.ptr->address);
+    printf("alloc: 0x%llx 0x%llx\n", (ADDR)tmp.ptr, (ADDR)tmp.ptr->payload);
     q_push(head, &tmp);
 }
 
@@ -52,8 +45,8 @@ void list_print(const q_type_ptr const * const q_ptr) {
     int i = 0;
     q_type_ptr tmp;
     tmp.ptr = q_ptr->ptr;
-    while (tmp.ptr->prev.address != 0) {
-        printf("%d: 0x%llx 0x%llx\n", ++i, tmp.address, tmp.ptr->address);
+    while (tmp.ptr->prev.ptr != 0) {
+        printf("%d: 0x%llx 0x%llx\n", ++i, (ADDR)tmp.ptr, (ADDR)tmp.ptr->payload);
         tmp.ptr = tmp.ptr->prev.ptr;
     }
     printf("\n");
@@ -62,8 +55,8 @@ void list_print(const q_type_ptr const * const q_ptr) {
 void list_free(const q_type_ptr const * const q_ptr) {
     q_type_ptr tmp;
     tmp.ptr = q_ptr->ptr;
-    while (tmp.address != 0) {
-        printf("free: 0x%llx 0x%llx\n", tmp.address, tmp.ptr->address);
+    while (tmp.ptr != 0) {
+        printf("free: 0x%llx 0x%llx\n", (ADDR)tmp.ptr, (ADDR)tmp.ptr->payload);
         q_type* ptr = tmp.ptr;
         tmp.ptr = tmp.ptr->next.ptr;
         free(ptr);
