@@ -3,9 +3,9 @@
 #define DEBUG
 
 typedef long long unsigned int ADDR;
-
 typedef void* abstract_ptr;
-typedef struct { 
+
+typedef struct q_type_ptr { 
     struct q_type* ptr; 
 } q_type_ptr;
 
@@ -25,7 +25,7 @@ void q_push(q_type_ptr * const head, q_type_ptr* const next) {
 q_type_ptr q_pop(q_type_ptr * const head) {
     q_type_ptr tmp;
     if (head->ptr->prev.ptr == 0) {
-        return tmp;
+        return head->ptr->prev;
     }
     tmp.ptr = head->ptr;
     head->ptr = head->ptr->prev.ptr;
@@ -101,6 +101,11 @@ int main() {
 #endif
     q_type_ptr q_pop4 = q_pop(&head); 
     list_free(&q_pop4);
+#ifdef DEBUG
+    list_print(&head);
+#endif
+    q_type_ptr q_pop5 = q_pop(&head); 
+    list_free(&q_pop5);
 #ifdef DEBUG
     list_print(&head);
 #endif
