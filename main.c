@@ -15,7 +15,7 @@ typedef struct q_type {
     abstract_ptr payload;
 } q_type;
  
-static const q_type_ptr const q_type_ptr_null;
+const static const q_type_ptr const q_type_ptr_null;
 
 void q_push(q_type_ptr * const head, q_type_ptr* const next) {
     head->ptr->next.ptr = next->ptr;
