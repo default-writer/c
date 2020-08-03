@@ -67,14 +67,14 @@ void q_type_free(q_type_context * const list, q_type_ptr * const item) {
     q_type_ptr* head = &(list->head);
     q_type_ptr tmp;
     tmp.ptr = item->ptr;
-    while (tmp.ptr != 0) {
+    while (list->count > 0 && tmp.ptr != 0) {
 #ifdef DEBUG
         printf("free: 0x%llx 0x%llx\n", (ADDR)tmp.ptr, (ADDR)tmp.ptr->payload);
 #endif
         q_type* ptr = tmp.ptr;
         tmp.ptr = tmp.ptr->next.ptr;
-        list->count--;
         free(ptr);
+        list->count--;
     }
 #ifdef DEBUG
     printf("\n");
@@ -90,7 +90,7 @@ void q_type_alloc(q_type_context * const list, abstract_ptr payload) {
     printf("alloc: 0x%llx 0x%llx\n", (ADDR)tmp.ptr, (ADDR)tmp.ptr->payload);
 #endif
     q_type_push(list, &tmp);
-    list->count--;
+    list->count++;
 }
 
 q_type_ptr q_type_init() {
@@ -132,11 +132,6 @@ void list_q_type_alloc(list_ptr * const list, abstract_ptr payload) {
     list->ptr->alloc(&(list->ptr->context), payload);
 }
 
-void list_free(list_ptr * const list) {
-    list->ptr->free(&(list->ptr->context), &(list->ptr->context.head));
-    free(list->ptr);
-}
-
 list_ptr list_init() {
     list_ptr tmp;
     tmp.ptr = (list*)malloc(sizeof(list));
@@ -150,12 +145,9 @@ list_ptr list_init() {
     return tmp;
 }
 
-void using_list_ptr(list_ptr * const head);
-
-void using_list() {
-    list_ptr head = list_init();
-    using_list_ptr(&head);
-    list_free(&head);
+void list_free(list_ptr * const list) {
+    free(list->ptr->context.head.ptr);
+    free(list->ptr);
 }
 
 void using_list_ptr(list_ptr * const head) {
@@ -203,6 +195,12 @@ void using_list_ptr(list_ptr * const head) {
 #ifdef DEBUG
     list_q_type_print(head);
 #endif
+}
+
+void using_list() {
+    list_ptr head = list_init();
+    using_list_ptr(&head);
+    list_free(&head);
 }
 
 int main() {
