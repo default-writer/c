@@ -22,11 +22,11 @@ typedef struct q_type_context {
     int count;
 } q_type_context;
 
-void q_type_push(q_type_context * const ctx, q_type_ptr* const next) {
+void q_type_push(q_type_context * const ctx, q_type_ptr* const item) {
     q_type_ptr* head = &(ctx->head);
-    head->ptr->next.ptr = next->ptr;
-    next->ptr->prev.ptr = head->ptr;
-    head->ptr = next->ptr;
+    head->ptr->next.ptr = item->ptr;
+    item->ptr->prev.ptr = head->ptr;
+    head->ptr = item->ptr;
 }
 
 q_type_ptr q_type_pop(q_type_context * const ctx) {
@@ -116,15 +116,15 @@ typedef struct list_ptr {
 
 typedef struct list {
     q_type_context context;
-    void (*push)(q_type_context * const ctx, q_type_ptr * const next);
+    void (*push)(q_type_context * const ctx, q_type_ptr * const item);
     q_type_ptr (*pop)(q_type_context * const ctx);
     void (*print)(q_type_context * const ctx);
     void (*free)(q_type_context * const ctx, q_type_ptr * const item);
     void (*alloc)(q_type_context * const ctx, abstract_ptr payload);
 } list;
 
-void list_q_type_push(list_ptr * const head, q_type_ptr* const next) {
-    head->ptr->push(&(head->ptr->context), next);
+void list_q_type_push(list_ptr * const head, q_type_ptr* const item) {
+    head->ptr->push(&(head->ptr->context), item);
 }
 
 q_type_ptr list_q_type_pop(list_ptr * const head) {
