@@ -1,6 +1,8 @@
 {
     "files.associations": {
         "optional": "c",
-        "random": "c"
+        "random": "c",
+        "bitset": "c",
+        "chrono": "c"
     }
 }
