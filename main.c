@@ -101,8 +101,8 @@ typedef struct list_ptr {
 typedef struct list {
     void (*push)(q_type_ptr * const list, q_type_ptr* const next);
     q_type_ptr (*pop)(q_type_ptr * const list);
-    void (*print)(const q_type_ptr const * const self);
-    void (*free)(const q_type_ptr const * const self);
+    void (*print)(q_type_ptr * const list);
+    void (*free)(q_type_ptr * const list);
     void (*alloc)(q_type_ptr * const q, abstract_ptr payload);
 } list;
 
