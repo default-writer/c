@@ -105,7 +105,7 @@ typedef struct list_ptr {
 
 typedef struct list {
     q_type_context context;
-    void (*push)(q_type_context * const list, q_type_ptr* const next);
+    void (*push)(q_type_context * const list, q_type_ptr * const next);
     q_type_ptr (*pop)(q_type_context * const list);
     void (*print)(q_type_context * const list);
     void (*free)(q_type_context * const list, q_type_ptr * const item);
