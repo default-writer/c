@@ -3,6 +3,7 @@
         "optional": "c",
         "random": "c",
         "bitset": "c",
-        "chrono": "c"
+        "chrono": "c",
+        "string_view": "c"
     }
 }
