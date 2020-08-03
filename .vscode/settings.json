@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "optional": "c"
+        "optional": "c",
+        "random": "c"
     }
 }
