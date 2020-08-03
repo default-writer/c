@@ -9,10 +9,7 @@ typedef struct q_type_ptr {
     struct q_type* ptr; 
 } q_type_ptr;
 
-typedef struct q_type_context { 
-    q_type_ptr head;
-    int count;
-} q_type_context;
+const static const q_type_ptr const q_type_ptr_null;
 
 typedef struct q_type {
     q_type_ptr prev;
@@ -20,23 +17,20 @@ typedef struct q_type {
     abstract_ptr payload;
 } q_type;
 
-void q_type_push(q_type_context * const list, q_type_ptr * const next);
-q_type_ptr q_type_pop(q_type_context * const list);
-void q_type_print(q_type_context * const list);
-void q_type_free(q_type_context * const list, q_type_ptr * const item);
-void q_type_alloc(q_type_context * const list, abstract_ptr payload);
+typedef struct q_type_context { 
+    q_type_ptr head;
+    int count;
+} q_type_context;
 
-const static const q_type_ptr const q_type_ptr_null;
-
-void q_type_push(q_type_context * const list, q_type_ptr* const next) {
-    q_type_ptr* head = &(list->head);
+void q_type_push(q_type_context * const ctx, q_type_ptr* const next) {
+    q_type_ptr* head = &(ctx->head);
     head->ptr->next.ptr = next->ptr;
     next->ptr->prev.ptr = head->ptr;
     head->ptr = next->ptr;
 }
 
-q_type_ptr q_type_pop(q_type_context * const list) {
-    q_type_ptr* head = &(list->head);
+q_type_ptr q_type_pop(q_type_context * const ctx) {
+    q_type_ptr* head = &(ctx->head);
     q_type_ptr tmp;
     if (head->ptr->prev.ptr == 0) {
         return q_type_ptr_null;
@@ -47,8 +41,8 @@ q_type_ptr q_type_pop(q_type_context * const list) {
     return tmp;
 }
 
-void q_type_print(q_type_context * const list) {
-    q_type_ptr* head = &(list->head);
+void q_type_print(q_type_context * const ctx) {
+    q_type_ptr* head = &(ctx->head);
     int i = 0;
     q_type_ptr tmp;
     tmp.ptr = head->ptr;
@@ -63,40 +57,57 @@ void q_type_print(q_type_context * const list) {
 #endif
 }
 
-void q_type_free(q_type_context * const list, q_type_ptr * const item) {
-    q_type_ptr* head = &(list->head);
+void q_type_free(q_type_context * const ctx, q_type_ptr * const item) {
+    q_type_ptr* head = &(ctx->head);
     q_type_ptr tmp;
     tmp.ptr = item->ptr;
-    while (list->count > 0 && tmp.ptr != 0) {
+    while (ctx->count > 0 && tmp.ptr != 0) {
 #ifdef DEBUG
         printf("free: 0x%llx 0x%llx\n", (ADDR)tmp.ptr, (ADDR)tmp.ptr->payload);
 #endif
         q_type* ptr = tmp.ptr;
         tmp.ptr = tmp.ptr->next.ptr;
         free(ptr);
-        list->count--;
+        ctx->count--;
     }
 #ifdef DEBUG
     printf("\n");
 #endif
 }
 
-void q_type_alloc(q_type_context * const list, abstract_ptr payload) {
-    q_type_ptr* head = &(list->head);
+void q_type_alloc(q_type_context * const ctx, abstract_ptr payload) {
+    q_type_ptr* head = &(ctx->head);
     q_type_ptr tmp;
     tmp.ptr = (q_type*)malloc(sizeof(q_type));
     tmp.ptr->payload = payload;
 #ifdef DEBUG
     printf("alloc: 0x%llx 0x%llx\n", (ADDR)tmp.ptr, (ADDR)tmp.ptr->payload);
 #endif
-    q_type_push(list, &tmp);
-    list->count++;
+    q_type_push(ctx, &tmp);
+    ctx->count++;
 }
 
-q_type_ptr q_type_init() {
+void q_type_init(q_type_context * const ctx) {
+    ctx->head.ptr = (q_type*)malloc(sizeof(q_type));
+    ctx->count = 0;
+}
+
+void q_type_destroy(q_type_context * const ctx) {
+    q_type_ptr* head = &(ctx->head);
     q_type_ptr tmp;
-    tmp.ptr = (q_type*)malloc(sizeof(q_type));
-    return tmp;
+    tmp.ptr = head->ptr;
+    while (ctx->count > 0 && tmp.ptr != 0) {
+#ifdef DEBUG
+        printf("free: 0x%llx 0x%llx\n", (ADDR)tmp.ptr, (ADDR)tmp.ptr->payload);
+#endif
+        q_type* ptr = tmp.ptr;
+        tmp.ptr = tmp.ptr->prev.ptr;
+        free(ptr);
+        ctx->count--;
+    }
+#ifdef DEBUG
+    printf("\n");
+#endif
 }
 
 typedef struct list_ptr {
@@ -105,52 +116,49 @@ typedef struct list_ptr {
 
 typedef struct list {
     q_type_context context;
-    void (*push)(q_type_context * const list, q_type_ptr * const next);
-    q_type_ptr (*pop)(q_type_context * const list);
-    void (*print)(q_type_context * const list);
-    void (*free)(q_type_context * const list, q_type_ptr * const item);
-    void (*alloc)(q_type_context * const q, abstract_ptr payload);
+    void (*push)(q_type_context * const ctx, q_type_ptr * const next);
+    q_type_ptr (*pop)(q_type_context * const ctx);
+    void (*print)(q_type_context * const ctx);
+    void (*free)(q_type_context * const ctx, q_type_ptr * const item);
+    void (*alloc)(q_type_context * const ctx, abstract_ptr payload);
 } list;
 
-void list_q_type_push(list_ptr * const list, q_type_ptr* const next) {
-    list->ptr->push(&(list->ptr->context), next);
+void list_q_type_push(list_ptr * const head, q_type_ptr* const next) {
+    head->ptr->push(&(head->ptr->context), next);
 }
 
-q_type_ptr list_q_type_pop(list_ptr * const list) {
-    return list->ptr->pop(&(list->ptr->context));
+q_type_ptr list_q_type_pop(list_ptr * const head) {
+    return head->ptr->pop(&(head->ptr->context));
 }
 
-void list_q_type_print(list_ptr * const list) {
-    list->ptr->print(&(list->ptr->context));
+void list_q_type_print(list_ptr * const head) {
+    head->ptr->print(&(head->ptr->context));
 }
 
-void list_q_type_free(list_ptr * const list, q_type_ptr * const item) {
-    list->ptr->free(&(list->ptr->context), item);
+void list_q_type_free(list_ptr * const head, q_type_ptr * const item) {
+    head->ptr->free(&(head->ptr->context), item);
 }
 
-void list_q_type_alloc(list_ptr * const list, abstract_ptr payload) {
-    list->ptr->alloc(&(list->ptr->context), payload);
+void list_q_type_alloc(list_ptr * const head, abstract_ptr payload) {
+    head->ptr->alloc(&(head->ptr->context), payload);
 }
 
-list_ptr list_init() {
-    list_ptr tmp;
-    tmp.ptr = (list*)malloc(sizeof(list));
-    tmp.ptr->alloc = q_type_alloc;
-    tmp.ptr->push = q_type_push;
-    tmp.ptr->pop = q_type_pop;
-    tmp.ptr->print = q_type_print;
-    tmp.ptr->free = q_type_free;
-    tmp.ptr->context.head = q_type_init();
-    tmp.ptr->context.count = 0;
-    return tmp;
+void list_init(list_ptr* const head) {
+    head->ptr = (list*)malloc(sizeof(list));
+    head->ptr->alloc = q_type_alloc;
+    head->ptr->push = q_type_push;
+    head->ptr->pop = q_type_pop;
+    head->ptr->print = q_type_print;
+    head->ptr->free = q_type_free;
+    q_type_init(&(head->ptr->context));
 }
 
-void list_free(list_ptr * const list) {
-    free(list->ptr->context.head.ptr);
-    free(list->ptr);
+void list_destroy(list_ptr * const head) {
+    q_type_destroy(&(head->ptr->context));
+    free(head->ptr);
 }
 
-void using_list_ptr(list_ptr * const head) {
+void list_using(list_ptr * const head) {
     abstract_ptr payload = (abstract_ptr)0xdeadbeef;
     list_q_type_alloc(head, payload);
     list_q_type_alloc(head, ++payload);
@@ -198,9 +206,10 @@ void using_list_ptr(list_ptr * const head) {
 }
 
 void using_list() {
-    list_ptr head = list_init();
-    using_list_ptr(&head);
-    list_free(&head);
+    list_ptr head;
+    list_init(&head);
+    list_using(&head);
+    list_destroy(&head);
 }
 
 int main() {
