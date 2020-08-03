@@ -1,26 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "list.h"
 #define DEBUG
 
-typedef long long unsigned int ADDR;
-typedef void* abstract_ptr;
-
-typedef struct q_type_ptr { 
-    struct q_type* ptr; 
-} q_type_ptr;
-
 const static const q_type_ptr const q_type_ptr_null;
-
-typedef struct q_type {
-    q_type_ptr prev;
-    q_type_ptr next;
-    abstract_ptr payload;
-} q_type;
-
-typedef struct q_type_context { 
-    q_type_ptr head;
-    int count;
-} q_type_context;
 
 void q_type_push(q_type_context * const ctx, q_type_ptr* const item) {
     q_type_ptr* head = &(ctx->head);

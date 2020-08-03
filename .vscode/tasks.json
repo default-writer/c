@@ -6,7 +6,7 @@
         {
             "label": "gcc-build",
             "type": "shell",
-            "command": "gcc -g ${fileDirname}/${fileBasename} -o ${fileDirname}/${fileBasenameNoExtension}",
+            "command": "gcc -g ${fileDirname}/${fileBasename} -I${workspaceFolder} -I${workspaceFolder}/include -o ${fileDirname}/${fileBasenameNoExtension}",
             "problemMatcher": [],
             "group": "test",
             "presentation": {

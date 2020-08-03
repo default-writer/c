@@ -1,18 +1,23 @@
 {
     "env": {
-        "myDefaultIncludePath": ["${workspaceFolder}", "${workspaceFolder}/include"],
+        "myDefaultIncludePath": [
+            "${workspaceFolder}",
+            "${workspaceFolder}/include"
+        ],
         "myCompilerPath": "/usr/bin/gcc"
-      },
+    },
     "configurations": [
         {
-            "name": "Linux",
+            "name": "Dev Container: Ubuntu",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/include"
             ],
             "defines": [],
+            "compilerPath": "/usr/bin/gcc",
             "cStandard": "c11",
-            "cppStandard": "c++17",
-            "intelliSenseMode": "gcc-x64"
+            "cppStandard": "gnu++14",
+            "intelliSenseMode": "clang-x64"
         }
     ],
     "version": 4
