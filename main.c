@@ -2,58 +2,107 @@
 #include <stdlib.h>
 #include "list.h"
 #define DEBUG
+// address type (for debugging printf function)
+typedef long long unsigned int ADDR;
 
+// static default implementation of null value for queue/struct
 const static const q_type_ptr const q_type_ptr_null;
 
+// push new item to existing context
+// at current context, new item will be added as next element
+// for the new item, add current head (points to top of the stack/queue/list) as previous element
+// as a result, head will advances to new position, represented as new item
 void q_type_push(q_type_context * const ctx, q_type_ptr* const item) {
+    // get current context's head
     q_type_ptr* head = &(ctx->head);
+    // assign item pointer to head's next pointer value
     head->ptr->next.ptr = item->ptr;
+    // assign item's prev pointer to head pointer
     item->ptr->prev.ptr = head->ptr;
+    // advances position of head pointer to the new head
     head->ptr = item->ptr;
 }
 
+// pop existing element at the top of the stack/queue/list
+// at current context, existing head (points to top of the stack/queue/list) will be removed out of stack
+// for the new stach header, correcponding values will be fixed
+// as a result, header will be rewinded to previous position, represented as head's reference to previos head
 q_type_ptr q_type_pop(q_type_context * const ctx) {
+    // get current context's head
     q_type_ptr* head = &(ctx->head);
+    // gets pre-allocated (compiler-generated) stack value as temporary
     q_type_ptr tmp;
+    // if we call method on empty stack, do not return root element, return null element by convention
     if (head->ptr->prev.ptr == 0) {
+        // returns default element as null element
         return q_type_ptr_null;
     }
+    // otherwize, assign current stack head pointer to temporary
     tmp.ptr = head->ptr;
-    head->ptr = head->ptr->prev.ptr;
+    // rewinds head pointer to previous pointer value
+    head->ptr = tmp.ptr->prev.ptr;
+    // clears not valid forward link to element to be removed
     head->ptr->next.ptr = 0;
+    // returns removed element
     return tmp;
 }
 
+// print all stack trace to output
+// in a single loop, print out all ements except root element (which does not have a payload)
+// as a result, all stack will be printed in last-to-first order (reverse)
 void q_type_print(q_type_context * const ctx) {
+    // get current context's head
     q_type_ptr* head = &(ctx->head);
+    // sets the counter
     int i = 0;
+    // gets pre-allocated (compiler-generated) stack value as temporary
     q_type_ptr tmp;
+    // assigns current's head pointer to the temporary
     tmp.ptr = head->ptr;
+    // until we found root element (element with no previous element reference)
     while (tmp.ptr->prev.ptr != 0) {
 #ifdef DEBUG
+        // debug output of memory dump
         printf("%d: 0x%llx 0x%llx\n", ++i, (ADDR)tmp.ptr, (ADDR)tmp.ptr->payload);
 #endif
+        // remember temprary's prior pointer value to temporary
         tmp.ptr = tmp.ptr->prev.ptr;
     }
+    // stop on root element
 #ifdef DEBUG
+    // visualise loop break 
     printf("\n");
 #endif
 }
 
+// frees up memory assigned for allocation of items at current position
+// at current context, all data needed to be claimed, will be freed
+// as a result, all items, starting from specified item, will be deleted
 void q_type_free(q_type_context * const ctx, q_type_ptr * const item) {
+    // get current context's head
     q_type_ptr* head = &(ctx->head);
+    // gets pre-allocated (compiler-generated) stack value as temporary
     q_type_ptr tmp;
+    // otherwize, assign currently selected item pointer to temporary
     tmp.ptr = item->ptr;
+    // until we run out of stack or stop at root element
     while (ctx->count > 0 && tmp.ptr != 0) {
 #ifdef DEBUG
+        // debug output of memory dump
         printf("free: 0x%llx 0x%llx\n", (ADDR)tmp.ptr, (ADDR)tmp.ptr->payload);
 #endif
+        // gets temporary pointer value
         q_type* ptr = tmp.ptr;
+        // advances tamporary poinnter value to the next to current item
         tmp.ptr = tmp.ptr->next.ptr;
+        // free temporary pointer value
         free(ptr);
+        // updates current context counter
         ctx->count--;
     }
+    // all stack items are processed
 #ifdef DEBUG
+    // visualise loop break 
     printf("\n");
 #endif
 }
