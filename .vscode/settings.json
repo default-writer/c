@@ -4,6 +4,16 @@
         "random": "c",
         "bitset": "c",
         "chrono": "c",
-        "string_view": "c"
+        "string_view": "c",
+        "bit": "c",
+        "*.tcc": "c",
+        "condition_variable": "c",
+        "algorithm": "c",
+        "istream": "c",
+        "limits": "c",
+        "mutex": "c",
+        "shared_mutex": "c",
+        "streambuf": "c",
+        "thread": "c"
     }
 }
