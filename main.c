@@ -146,58 +146,58 @@ list_ptr list_init() {
     return tmp;
 }
 
-void using_list_ptr(list_ptr head);
+void using_list_ptr(list_ptr * const head);
 
 void using_list() {
     list_ptr head = list_init();
-    using_list_ptr(head);
+    using_list_ptr(&head);
     list_free(&head);
 }
 
-void using_list_ptr(list_ptr head) {
+void using_list_ptr(list_ptr * const head) {
     abstract_ptr payload = (abstract_ptr)0xdeadbeef;
-    list_q_type_alloc(&head, payload);
-    list_q_type_alloc(&head, ++payload);
-    list_q_type_alloc(&head, ++payload);
-    list_q_type_alloc(&head, ++payload);
-    list_q_type_alloc(&head, ++payload);
+    list_q_type_alloc(head, payload);
+    list_q_type_alloc(head, ++payload);
+    list_q_type_alloc(head, ++payload);
+    list_q_type_alloc(head, ++payload);
+    list_q_type_alloc(head, ++payload);
 #ifdef DEBUG
     printf("\n");
 #endif
 #ifdef DEBUG
-    list_q_type_print(&head);
+    list_q_type_print(head);
 #endif
-    q_type_ptr q_pop0 = list_q_type_pop(&head); 
-    list_q_type_free(&head, &q_pop0);
+    q_type_ptr q_pop0 = list_q_type_pop(head); 
+    list_q_type_free(head, &q_pop0);
 #ifdef DEBUG
-    list_q_type_print(&head);
+    list_q_type_print(head);
 #endif
-    q_type_ptr q_pop1 = list_q_type_pop(&head); 
-    list_q_type_free(&head, &q_pop1);
+    q_type_ptr q_pop1 = list_q_type_pop(head); 
+    list_q_type_free(head, &q_pop1);
 #ifdef DEBUG
-    list_q_type_print(&head);
+    list_q_type_print(head);
 #endif
-    q_type_ptr q_pop2 = list_q_type_pop(&head); 
-    list_q_type_free(&head, &q_pop2);
+    q_type_ptr q_pop2 = list_q_type_pop(head); 
+    list_q_type_free(head, &q_pop2);
 #ifdef DEBUG
-    list_q_type_print(&head);
+    list_q_type_print(head);
 #endif
-    q_type_ptr q_pop3 = list_q_type_pop(&head); 
-    list_q_type_push(&head, &q_pop3);
-    q_pop3 = list_q_type_pop(&head); 
-    list_q_type_free(&head, &q_pop3);
+    q_type_ptr q_pop3 = list_q_type_pop(head); 
+    list_q_type_push(head, &q_pop3);
+    q_pop3 = list_q_type_pop(head); 
+    list_q_type_free(head, &q_pop3);
 #ifdef DEBUG
-    list_q_type_print(&head);
+    list_q_type_print(head);
 #endif
-    q_type_ptr q_pop4 = list_q_type_pop(&head); 
-    list_q_type_free(&head, &q_pop4);
+    q_type_ptr q_pop4 = list_q_type_pop(head); 
+    list_q_type_free(head, &q_pop4);
 #ifdef DEBUG
-    list_q_type_print(&head);
+    list_q_type_print(head);
 #endif
-    q_type_ptr q_pop5 = list_q_type_pop(&head); 
-    list_q_type_free(&head, &q_pop5);
+    q_type_ptr q_pop5 = list_q_type_pop(head); 
+    list_q_type_free(head, &q_pop5);
 #ifdef DEBUG
-    list_q_type_print(&head);
+    list_q_type_print(head);
 #endif
 }
 
