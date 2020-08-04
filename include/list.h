@@ -25,3 +25,25 @@ typedef struct q_type_context {
     int count;
 } q_type_context;
 
+
+// pointer abstraction on queue/list type with context
+typedef struct list_ptr {
+    // pointer to queue/list with context
+    struct list *ptr;
+} list_ptr;
+
+// queue/list: current context structure, and methods to operate on it
+typedef struct list {
+    // current context (stack)
+    q_type_context context;
+    // push item on current context (stack)
+    void (*push)(q_type_context * const ctx, q_type_ptr * const item);
+    // poph item on current context (stack)
+    q_type_ptr (*pop)(q_type_context * const ctx);
+    // print item on current context (stack)
+    void (*print)(q_type_context * const ctx);
+    // free item on current context (stack)
+    void (*free)(q_type_context * const ctx, q_type_ptr * const item);
+    // alloc item on current context (stack)
+    void (*alloc)(q_type_context * const ctx, abstract_ptr payload);
+} list;

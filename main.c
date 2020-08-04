@@ -171,19 +171,6 @@ void q_type_destroy(q_type_context * const ctx) {
 #endif
 }
 
-typedef struct list_ptr {
-    struct list *ptr;
-} list_ptr;
-
-typedef struct list {
-    q_type_context context;
-    void (*push)(q_type_context * const ctx, q_type_ptr * const item);
-    q_type_ptr (*pop)(q_type_context * const ctx);
-    void (*print)(q_type_context * const ctx);
-    void (*free)(q_type_context * const ctx, q_type_ptr * const item);
-    void (*alloc)(q_type_context * const ctx, abstract_ptr payload);
-} list;
-
 void list_q_type_push(list_ptr * const head, q_type_ptr* const item) {
     head->ptr->push(&(head->ptr->context), item);
 }
