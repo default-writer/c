@@ -189,6 +189,7 @@ void list_q_type_alloc(list_ptr * const head, abstract_ptr payload) {
     head->ptr->alloc(&(head->ptr->context), payload);
 }
 
+// create list
 void list_init(list_ptr* const head) {
     head->ptr = (list*)malloc(sizeof(list));
     head->ptr->alloc = q_type_alloc;
@@ -199,11 +200,13 @@ void list_init(list_ptr* const head) {
     q_type_init(&(head->ptr->context));
 }
 
+// destroy list
 void list_destroy(list_ptr * const head) {
     q_type_destroy(&(head->ptr->context));
     free(head->ptr);
 }
 
+// use list
 void list_using(list_ptr * const head) {
     abstract_ptr payload = (abstract_ptr)0xdeadbeef;
     list_q_type_alloc(head, payload);
