@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <stdlib.h>
 // abstract pointer type
 typedef void* abstract_ptr;
 
@@ -47,3 +49,7 @@ typedef struct list {
     // alloc item on current context (stack)
     void (*alloc)(q_type_context * const ctx, abstract_ptr payload);
 } list;
+
+void list_init(list_ptr* const head);
+void list_using(list_ptr * const head);
+void list_destroy(list_ptr * const head);
