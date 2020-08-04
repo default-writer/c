@@ -4,7 +4,7 @@
 typedef long long unsigned int ADDR;
 
 // static default implementation of null value for queue/struct
-const static const q_type_ptr const q_type_ptr_null;
+const static const q_type_ptr q_type_ptr_null;
 
 // push new item to existing context
 // at current context, new item will be added as next element
