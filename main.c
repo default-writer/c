@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include "list.h"
 
+#define DEBUG
+
 void using_list() {
     list_ptr head;
     list_init(&head);

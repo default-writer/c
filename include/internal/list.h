@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define DEBUG
+
 // abstract pointer type
 typedef void* abstract_ptr;
 
@@ -27,19 +29,3 @@ typedef struct q_type_context {
     // elements counter
     int count;
 } q_type_context;
-
-// queue/list: current context structure, and methods to operate on it
-typedef struct list {
-    // current context (stack)
-    q_type_context context;
-    // push item on current context (stack)
-    void (*push)(q_type_context * const ctx, q_type_ptr * const item);
-    // poph item on current context (stack)
-    q_type_ptr (*pop)(q_type_context * const ctx);
-    // print item on current context (stack)
-    void (*print)(q_type_context * const ctx);
-    // free item on current context (stack)
-    void (*free)(q_type_context * const ctx, q_type_ptr * const item);
-    // alloc item on current context (stack)
-    void (*alloc)(q_type_context * const ctx, abstract_ptr payload);
-} list;

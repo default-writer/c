@@ -1,6 +1,5 @@
 #include "list.h"
 
-#define DEBUG
 // address type (for debugging printf function)
 typedef long long unsigned int ADDR;
 
