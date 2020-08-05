@@ -20,13 +20,15 @@
 	// },
 
 	// Add the IDs of extensions you want installed when the container is created.
-	"extensions": [] //, uncomment this to valdate JSON file correctly 
+	"extensions": [
+		"ms-vscode.cpptools"
+	], //uncomment this to valdate JSON file correctly 
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "sh -c echo OK" //,
+	"postCreateCommand": "sh -c echo OK",
 
 	// Uncomment to use the Docker CLI from inside the container. See https://aka.ms/vscode-remote/samples/docker-from-docker.
 	// "mounts": [ "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind" ],
