@@ -139,7 +139,7 @@ void q_type_destroy(q_type_context * const ctx) {
 }
 
 // create list
-void list_init(q_type_context* const ctx) {
+void list_create(q_type_context* const ctx) {
     list* l_ptr = (list*)malloc(sizeof(list));
     l_ptr->alloc = q_type_alloc;
     l_ptr->push = q_type_push;

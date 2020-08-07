@@ -13,7 +13,7 @@ typedef struct list {
 } list;
 
 // default list constructor
-void list_init(q_type_context* const ctx);
+void list_create(q_type_context* const ctx);
 // default list destructor
 void list_destroy(q_type_context* const ctx);
 

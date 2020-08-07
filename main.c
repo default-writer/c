@@ -13,8 +13,8 @@ typedef long long unsigned int ADDR;
 void using_list(void (*list_using)(q_type_context * const)) {
     // initialize current context (stack)
     q_type_context context;
-    // initialize list
-    list_init(&context);
+    // create list
+    list_create(&context);
     // call user method
     list_using(&context);
     // destroy list
