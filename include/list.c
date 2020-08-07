@@ -5,7 +5,7 @@ const static const q_type_ptr q_type_ptr_null;
 
 // push new item to existing context
 // at current context, new item will be added as next element
-// for the new item, add current head (points to top of the stack/queue/list) as previous element
+// for the new item, add current head as previous element
 // as a result, head will advances to new position, represented as new item
 void q_type_push(q_type_context * const ctx, q_type_ptr* const item) {
     // get current context's head
@@ -19,13 +19,13 @@ void q_type_push(q_type_context * const ctx, q_type_ptr* const item) {
 }
 
 // pop existing element at the top of the stack/queue/list
-// at current context, existing head (points to top of the stack/queue/list) will be removed out of stack
+// at current context, existing head will be removed out of stack
 // for the new stach header, correcponding values will be fixed
 // as a result, header will be rewinded to previous position, represented as head's reference to previos head
 q_type_ptr q_type_pop(q_type_context * const ctx) {
     // get current context's head
     q_type_ptr* head = &(ctx->head);
-    // gets pre-allocated (compiler-generated) stack value as temporary
+    // gets pre-allocated stack value as temporary
     q_type_ptr tmp;
     // if we call method on empty stack, do not return root element, return null element by convention
     if (head->ptr->prev.ptr == 0) {
@@ -42,22 +42,36 @@ q_type_ptr q_type_pop(q_type_context * const ctx) {
     return tmp;
 }
 
+// peek existing element at the top of the stack/queue/list
+// at current context, existing head
+q_type_ptr q_type_peek(q_type_context * const ctx) {
+    // get current context's head
+    q_type_ptr* head = &(ctx->head);
+    // gets pre-allocated stack value as temporary
+    q_type_ptr tmp;
+    // if we call method on empty stack, do not return root element, return null element by convention
+    if (head->ptr->prev.ptr == 0) {
+        // returns default element as null element
+        return q_type_ptr_null;
+    }
+    // otherwize, assign current stack head pointer to temporary
+    tmp.ptr = head->ptr;
+    // returns head element
+    return tmp;
+}
+
 // frees up memory assigned for allocation of items at current position
 // at current context, all data needed to be claimed, will be freed
 // as a result, all items, starting from specified item, will be deleted
 void q_type_free(q_type_context * const ctx, q_type_ptr * const item) {
     // get current context's head
     q_type_ptr* head = &(ctx->head);
-    // gets pre-allocated (compiler-generated) stack value as temporary
+    // gets pre-allocated stack value as temporary
     q_type_ptr tmp;
     // assign currently selected item pointer to temporary
     tmp.ptr = item->ptr;
     // until we run out of stack or stop at root element
     while (ctx->count > 0 && tmp.ptr != 0) {
-#ifdef DEBUG
-        // debug output of memory dump
-        printf("free: 0x%llx 0x%llx\n", (ADDR)tmp.ptr, (ADDR)tmp.ptr->payload);
-#endif
         // gets temporary pointer value
         q_type* ptr = tmp.ptr;
         // advances temporary pointer value to the next item
@@ -68,10 +82,6 @@ void q_type_free(q_type_context * const ctx, q_type_ptr * const item) {
         ctx->count--;
     }
     // all stack items are processed
-#ifdef DEBUG
-    // visualise loop break 
-    printf("\n");
-#endif
 }
 
 // allocates a memory for provided payload 
@@ -80,16 +90,12 @@ void q_type_free(q_type_context * const ctx, q_type_ptr * const item) {
 void q_type_alloc(q_type_context * const ctx, abstract_ptr payload) {
     // get current context's head
     q_type_ptr* head = &(ctx->head);
-    // gets pre-allocated (compiler-generated) stack value as temporary
+    // gets pre-allocated stack value as temporary
     q_type_ptr tmp;
     // stores into pre-allocated value newly allocated memory buffer pointer
     tmp.ptr = (q_type*)malloc(sizeof(q_type));
     // sets the new data into allocated memory buffer
     tmp.ptr->payload = payload;
-#ifdef DEBUG
-    // visualise loop break
-    printf("alloc: 0x%llx 0x%llx\n", (ADDR)tmp.ptr, (ADDR)tmp.ptr->payload);
-#endif
     // pushes new item on top of the stack in current context
     q_type_push(ctx, &tmp);
     // increment current context's counter by one
@@ -112,16 +118,12 @@ void q_type_init(q_type_context * const ctx) {
 void q_type_destroy(q_type_context * const ctx) {
     // get current context's head
     q_type_ptr* head = &(ctx->head);
-    // gets pre-allocated (compiler-generated) stack value as temporary
+    // gets pre-allocated stack value as temporary
     q_type_ptr tmp;
     // assign currently selected item pointer to temporary
     tmp.ptr = head->ptr;
     // until we run out of stack or stop at root element
     while (ctx->count > 0 && tmp.ptr != 0) {
-#ifdef DEBUG
-        // debug output of memory dump
-        printf("free: 0x%llx 0x%llx\n", (ADDR)tmp.ptr, (ADDR)tmp.ptr->payload);
-#endif
         // gets temporary pointer value
         q_type* ptr = tmp.ptr;
         // advances temporary pointer value to the previous value
@@ -132,10 +134,6 @@ void q_type_destroy(q_type_context * const ctx) {
         ctx->count--;
     }
     // all stack items are processed
-#ifdef DEBUG
-    // visualise loop break 
-    printf("\n");
-#endif
 }
 
 // create list
@@ -144,6 +142,7 @@ void list_create(q_type_context* const ctx) {
     l_ptr->alloc = q_type_alloc;
     l_ptr->push = q_type_push;
     l_ptr->pop = q_type_pop;
+    l_ptr->peek = q_type_peek;
     l_ptr->free = q_type_free;
     ctx->f.ptr = l_ptr;
     q_type_init(ctx);

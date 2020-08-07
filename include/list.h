@@ -6,6 +6,8 @@ typedef struct list {
     void (*push)(q_type_context * const ctx, q_type_ptr * const item);
     // pop item on current context (stack)
     q_type_ptr (*pop)(q_type_context * const ctx);
+    // peek item on current context (stack)
+    q_type_ptr (*peek)(q_type_context * const ctx);
     // free item on current context (stack)
     void (*free)(q_type_context * const ctx, q_type_ptr * const item);
     // alloc item on current context (stack)

@@ -25,7 +25,7 @@ void using_list(void (*list_using)(q_type_context * const)) {
 void print_item(q_type_context * const ctx) {
     // get current context's head
     q_type_ptr* head = &(ctx->head);
-    // gets pre-allocated (compiler-generated) stack value as temporary
+    // gets pre-allocated stack value as temporary
     q_type_ptr tmp;
     // assigns current's head pointer to the temporary
     tmp.ptr = head->ptr;  
@@ -43,7 +43,7 @@ void list_print(q_type_context * const ctx) {
     q_type_ptr* head = &(ctx->head);
     // sets the counter
     int i = 0;
-    // gets pre-allocated (compiler-generated) stack value as temporary
+    // gets pre-allocated stack value as temporary
     q_type_ptr tmp;
     // assigns current's head pointer to the temporary
     tmp.ptr = head->ptr;
@@ -111,7 +111,7 @@ void list_using(q_type_context* const ctx) {
 #ifdef DEBUG
     list_print(ctx);
 #endif
-    q_type_ptr q_pop5 = list->pop(ctx); 
+    q_type_ptr q_pop5 = list->peek(ctx); 
     list->free(ctx, &q_pop5);
 #ifdef DEBUG
     list_print(ctx);
