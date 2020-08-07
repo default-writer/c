@@ -1,8 +1,5 @@
 #include "list.h"
 
-// address type (for debugging printf function)
-typedef long long unsigned int ADDR;
-
 // static default implementation of null value for queue/struct
 const static const q_type_ptr q_type_ptr_null;
 
@@ -43,34 +40,6 @@ q_type_ptr q_type_pop(q_type_context * const ctx) {
     head->ptr->next.ptr = 0;
     // returns removed element
     return tmp;
-}
-
-// print all stack trace to output
-// in a single loop, print out all ements except root element (which does not have a payload)
-// as a result, all stack will be printed in last-to-first order (reverse)
-void q_type_print(q_type_context * const ctx) {
-    // get current context's head
-    q_type_ptr* head = &(ctx->head);
-    // sets the counter
-    int i = 0;
-    // gets pre-allocated (compiler-generated) stack value as temporary
-    q_type_ptr tmp;
-    // assigns current's head pointer to the temporary
-    tmp.ptr = head->ptr;
-    // until we found root element (element with no previous element reference)
-    while (tmp.ptr->prev.ptr != 0) {
-#ifdef DEBUG
-        // debug output of memory dump
-        printf("%d: 0x%llx 0x%llx\n", ++i, (ADDR)tmp.ptr, (ADDR)tmp.ptr->payload);
-#endif
-        // remember temprary's prior pointer value to temporary
-        tmp.ptr = tmp.ptr->prev.ptr;
-    }
-    // stop on root element
-#ifdef DEBUG
-    // visualise loop break 
-    printf("\n");
-#endif
 }
 
 // frees up memory assigned for allocation of items at current position
@@ -177,10 +146,6 @@ q_type_ptr list_pop(q_type_context* const ctx) {
     return ctx->f.ptr->pop(ctx);
 }
 
-void list_print(q_type_context* const ctx) {
-    ctx->f.ptr->print(ctx);
-}
-
 void list_free(q_type_context* const ctx, q_type_ptr * const item) {
     ctx->f.ptr->free(ctx, item);
 }
@@ -195,7 +160,6 @@ void list_init(q_type_context* const ctx) {
     l_ptr->alloc = q_type_alloc;
     l_ptr->push = q_type_push;
     l_ptr->pop = q_type_pop;
-    l_ptr->print = q_type_print;
     l_ptr->free = q_type_free;
     ctx->f.ptr = l_ptr;
     q_type_init(ctx);
