@@ -27,6 +27,8 @@ void print_item(q_type_context * const ctx) {
     q_type_ptr* head = &(ctx->head);
     // gets pre-allocated (compiler-generated) stack value as temporary
     q_type_ptr tmp;
+    // assigns current's head pointer to the temporary
+    tmp.ptr = head->ptr;  
 #ifdef DEBUG
     // visualise item
     printf("alloc: 0x%llx 0x%llx\n", (ADDR)tmp.ptr, (ADDR)tmp.ptr->payload);
