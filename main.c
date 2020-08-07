@@ -82,35 +82,35 @@ void list_using(q_type_context* const ctx) {
 #ifdef DEBUG
     list_print(ctx);
 #endif
-    q_type_ptr q_pop0 = list_pop(ctx); 
-    list_free(ctx, &q_pop0);
+    q_type_ptr q_pop0 = list->pop(ctx); 
+    list->free(ctx, &q_pop0);
 #ifdef DEBUG
     list_print(ctx);
 #endif
-    q_type_ptr q_pop1 = list_pop(ctx); 
-    list_free(ctx, &q_pop1);
+    q_type_ptr q_pop1 = list->pop(ctx); 
+    list->free(ctx, &q_pop1);
 #ifdef DEBUG
     list_print(ctx);
 #endif
-    q_type_ptr q_pop2 = list_pop(ctx); 
-    list_free(ctx, &q_pop2);
+    q_type_ptr q_pop2 = list->pop(ctx); 
+    list->free(ctx, &q_pop2);
 #ifdef DEBUG
     list_print(ctx);
 #endif
-    q_type_ptr q_pop3 = list_pop(ctx); 
-    list_push(ctx, &q_pop3);
-    q_pop3 = list_pop(ctx); 
-    list_free(ctx, &q_pop3);
+    q_type_ptr q_pop3 = list->pop(ctx); 
+    list->push(ctx, &q_pop3);
+    q_pop3 = list->pop(ctx); 
+    list->free(ctx, &q_pop3);
 #ifdef DEBUG
     list_print(ctx);
 #endif
-    q_type_ptr q_pop4 = list_pop(ctx); 
-    list_free(ctx, &q_pop4);
+    q_type_ptr q_pop4 = list->pop(ctx); 
+    list->free(ctx, &q_pop4);
 #ifdef DEBUG
     list_print(ctx);
 #endif
-    q_type_ptr q_pop5 = list_pop(ctx); 
-    list_free(ctx, &q_pop5);
+    q_type_ptr q_pop5 = list->pop(ctx); 
+    list->free(ctx, &q_pop5);
 #ifdef DEBUG
     list_print(ctx);
 #endif

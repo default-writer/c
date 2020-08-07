@@ -138,22 +138,6 @@ void q_type_destroy(q_type_context * const ctx) {
 #endif
 }
 
-void list_push(q_type_context* const ctx, q_type_ptr* const item) {
-    ctx->f.ptr->push(ctx, item);
-}
-
-q_type_ptr list_pop(q_type_context* const ctx) {
-    return ctx->f.ptr->pop(ctx);
-}
-
-void list_free(q_type_context* const ctx, q_type_ptr * const item) {
-    ctx->f.ptr->free(ctx, item);
-}
-
-void list_alloc(q_type_context* const ctx, abstract_ptr payload) {
-    ctx->f.ptr->alloc(ctx, payload);
-}
-
 // create list
 void list_init(q_type_context* const ctx) {
     list* l_ptr = (list*)malloc(sizeof(list));
