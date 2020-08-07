@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define DEBUG
-
 // abstract pointer type
 typedef void* abstract_ptr;
 
