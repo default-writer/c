@@ -22,10 +22,18 @@ typedef struct q_type {
     abstract_ptr payload;
 } q_type;
 
+// pointer abstraction on queue/list type
+typedef struct list_ptr { 
+    // pointer to queue/list
+    struct list* ptr; 
+} list_ptr;
+
 // queue/list context: root of the list, and element counter
 typedef struct q_type_context { 
     // root element
     q_type_ptr head;
     // elements counter
     int count;
+    // function pointer
+    list_ptr f;
 } q_type_context;

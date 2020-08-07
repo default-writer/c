@@ -14,6 +14,12 @@
         "mutex": "c",
         "shared_mutex": "c",
         "streambuf": "c",
-        "thread": "c"
+        "thread": "c",
+        "list": "cpp",
+        "initializer_list": "cpp",
+        "memory_resource": "cpp",
+        "regex": "cpp",
+        "type_traits": "cpp",
+        "*.inc": "cpp"
     }
 }

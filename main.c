@@ -1,16 +1,66 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "list.h"
-
+#include "internal/list.h"
 #define DEBUG
 
-void using_list() {
-    list_ptr head;
-    list_init(&head);
-    list_using(&head);
-    list_destroy(&head);
+void using_list(void (*list_using)(q_type_context * const)) {
+    // current context (stack)
+    q_type_context context;
+    list_init(&context);
+    list_using(&context);
+    list_destroy(&context);
+}
+
+// use list
+void list_using(q_type_context* const ctx) {
+    list* list_methods = ctx->f.ptr;
+    abstract_ptr payload = (abstract_ptr)0xdeadbeef;
+    list_q_type_alloc(ctx, payload);
+    list_q_type_alloc(ctx, ++payload);
+    list_q_type_alloc(ctx, ++payload);
+    list_q_type_alloc(ctx, ++payload);
+    list_q_type_alloc(ctx, ++payload);
+#ifdef DEBUG
+    printf("\n");
+#endif
+#ifdef DEBUG
+    list_q_type_print(ctx);
+#endif
+    q_type_ptr q_pop0 = list_q_type_pop(ctx); 
+    list_q_type_free(ctx, &q_pop0);
+#ifdef DEBUG
+    list_q_type_print(ctx);
+#endif
+    q_type_ptr q_pop1 = list_q_type_pop(ctx); 
+    list_q_type_free(ctx, &q_pop1);
+#ifdef DEBUG
+    list_q_type_print(ctx);
+#endif
+    q_type_ptr q_pop2 = list_q_type_pop(ctx); 
+    list_q_type_free(ctx, &q_pop2);
+#ifdef DEBUG
+    list_q_type_print(ctx);
+#endif
+    q_type_ptr q_pop3 = list_q_type_pop(ctx); 
+    list_q_type_push(ctx, &q_pop3);
+    q_pop3 = list_q_type_pop(ctx); 
+    list_q_type_free(ctx, &q_pop3);
+#ifdef DEBUG
+    list_q_type_print(ctx);
+#endif
+    q_type_ptr q_pop4 = list_q_type_pop(ctx); 
+    list_q_type_free(ctx, &q_pop4);
+#ifdef DEBUG
+    list_q_type_print(ctx);
+#endif
+    q_type_ptr q_pop5 = list_q_type_pop(ctx); 
+    list_q_type_free(ctx, &q_pop5);
+#ifdef DEBUG
+    list_q_type_print(ctx);
+#endif
 }
 
 int main() {
-    using_list();
+    using_list(list_using);
 }
