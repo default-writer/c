@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "list.h"
-#include "internal/list.h"
+
 #define DEBUG
 
 void using_list(void (*list_using)(q_type_context * const)) {
