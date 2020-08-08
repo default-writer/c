@@ -1,0 +1,25 @@
+{
+  "name": "c",
+  "version": "1.0.0",
+  "description": "C templating engine",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hack2root/c.git"
+  },
+  "keywords": [
+    "c"
+  ],
+  "author": "Artur Mustafin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hack2root/c/issues"
+  },
+  "homepage": "https://github.com/hack2root/c#readme",
+  "dependencies": {
+    "mustache": "^4.0.1"
+  }
+}

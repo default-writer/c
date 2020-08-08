@@ -34,3 +34,4 @@ main
 vcpkg
 *.
 chud.log
+node_modules
