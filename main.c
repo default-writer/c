@@ -2,9 +2,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "list.h"
-
 #include <rexo.h>
+
+#include "list.h"
 
 #ifdef DEBUG
 // address type (for debugging printf function)

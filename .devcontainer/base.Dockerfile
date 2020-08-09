@@ -36,4 +36,3 @@ RUN curl -sL https://deb.nodesource.com/setup_14.x -o /tmp/nodesource_setup.sh &
     && apt install nodejs
 
 RUN wget -qO- "https://cmake.org/files/v3.18/cmake-3.18.1-Linux-x86_64.tar.gz" | tar --strip-components=1 -xz -C /usr/local
-
