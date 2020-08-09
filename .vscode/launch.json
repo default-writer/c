@@ -9,6 +9,7 @@
             "type": "lldb",
             "request": "launch",
             "program": "${workspaceFolder}/main",
+            "preLaunchTask": "gcc-build",
             "initCommands":["settings set target.disable-aslr false"]
         },
         {
