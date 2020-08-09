@@ -18,12 +18,13 @@ typedef struct list_vtable {
     void (*destroy)(list_context * const ctx);
 } list_vtable;
 
+void list_init(list_context * const ctx);
 void list_alloc(list_context * const ctx, abstract_ptr payload);
 void list_push(list_context * const ctx, list_ptr* const item);
 list_ptr list_pop(list_context * const ctx);
 list_ptr list_peek(list_context * const ctx);
 void list_free(list_context * const ctx, list_ptr * const item);
-void list_init(list_context * const ctx);
+
 void list_destroy(list_context * const ctx);
 
 // list vtable

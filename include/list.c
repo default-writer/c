@@ -3,6 +3,24 @@
 // static default implementation of null value for queue/struct
 const static const list_ptr list_ptr_null;
 
+// allocates a memory for provided payload 
+// at current context, data payload stored at allocated memory buffer
+// as a result, items counter will increase
+void list_alloc(list_context * const ctx, abstract_ptr payload) {
+    // get current context's head
+    list_ptr* head = &(ctx->head);
+    // gets pre-allocated stack value as temporary
+    list_ptr tmp;
+    // stores into pre-allocated value newly allocated memory buffer pointer
+    tmp.ptr = (list*)malloc(sizeof(list));
+    // sets the new data into allocated memory buffer
+    tmp.ptr->payload = payload;
+    // pushes new item on top of the stack in current context
+    list_push(ctx, &tmp);
+    // increment current context's counter by one
+    ctx->count++;
+}
+
 // push new item to existing context
 // at current context, new item will be added as next element
 // for the new item, add current head as previous element
@@ -82,24 +100,6 @@ void list_free(list_context * const ctx, list_ptr * const item) {
         ctx->count--;
     }
     // all stack items are processed
-}
-
-// allocates a memory for provided payload 
-// at current context, data payload stored at allocated memory buffer
-// as a result, items counter will increase
-void list_alloc(list_context * const ctx, abstract_ptr payload) {
-    // get current context's head
-    list_ptr* head = &(ctx->head);
-    // gets pre-allocated stack value as temporary
-    list_ptr tmp;
-    // stores into pre-allocated value newly allocated memory buffer pointer
-    tmp.ptr = (list*)malloc(sizeof(list));
-    // sets the new data into allocated memory buffer
-    tmp.ptr->payload = payload;
-    // pushes new item on top of the stack in current context
-    list_push(ctx, &tmp);
-    // increment current context's counter by one
-    ctx->count++;
 }
 
 // initializes the new context's root element
