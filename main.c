@@ -12,23 +12,25 @@ typedef long long unsigned int ADDR;
 #endif
 
 // default list usage scenario
-void using_list(void (*list_using)(q_type_context * const)) {
+void using_list(void (*list_using)(list_context * const)) {
     // initialize current context (stack)
-    q_type_context context;
+    list_context context;
     // create list
-    list_create(&context);
+    list_vtable* list = &list_vt;
+    // initilize list
+    list->init(&context);
     // call user method
     list_using(&context);
     // destroy list
-    list_destroy(&context);
+    list->destroy(&context);
 }
 
 // print item on current context (stack)
-void print_item(q_type_context * const ctx) {
+void print_item(list_context * const ctx) {
     // get current context's head
-    q_type_ptr* head = &(ctx->head);
+    list_ptr* head = &(ctx->head);
     // gets pre-allocated stack value as temporary
-    q_type_ptr tmp;
+    list_ptr tmp;
     // assigns current's head pointer to the temporary
     tmp.ptr = head->ptr;  
 #ifdef DEBUG
@@ -40,13 +42,13 @@ void print_item(q_type_context * const ctx) {
 // print all stack trace to output
 // in a single loop, print out all ements except root element (which does not have a payload)
 // as a result, all stack will be printed in last-to-first order (reverse)
-void list_print(q_type_context * const ctx) {
+void list_print(list_context * const ctx) {
     // get current context's head
-    q_type_ptr* head = &(ctx->head);
+    list_ptr* head = &(ctx->head);
     // sets the counter
     int i = 0;
     // gets pre-allocated stack value as temporary
-    q_type_ptr tmp;
+    list_ptr tmp;
     // assigns current's head pointer to the temporary
     tmp.ptr = head->ptr;
     // until we found root element (element with no previous element reference)
@@ -66,9 +68,9 @@ void list_print(q_type_context * const ctx) {
 }
 
 // use list
-void list_using(q_type_context* const ctx) {
+void list_using(list_context* const ctx) {
     // access context's functions pointer
-    list* list = ctx->f.ptr;
+    list_vtable* list = &list_vt;
     abstract_ptr payload = (abstract_ptr)0xdeadbeef;
     list->alloc(ctx, payload);
     print_item(ctx);
@@ -86,34 +88,34 @@ void list_using(q_type_context* const ctx) {
 #ifdef DEBUG
     list_print(ctx);
 #endif
-    q_type_ptr q_pop0 = list->pop(ctx); 
+    list_ptr q_pop0 = list->pop(ctx); 
     list->free(ctx, &q_pop0);
 #ifdef DEBUG
     list_print(ctx);
 #endif
-    q_type_ptr q_pop1 = list->pop(ctx); 
+    list_ptr q_pop1 = list->pop(ctx); 
     list->free(ctx, &q_pop1);
 #ifdef DEBUG
     list_print(ctx);
 #endif
-    q_type_ptr q_pop2 = list->pop(ctx); 
+    list_ptr q_pop2 = list->pop(ctx); 
     list->free(ctx, &q_pop2);
 #ifdef DEBUG
     list_print(ctx);
 #endif
-    q_type_ptr q_pop3 = list->pop(ctx); 
+    list_ptr q_pop3 = list->pop(ctx); 
     list->push(ctx, &q_pop3);
     q_pop3 = list->pop(ctx); 
     list->free(ctx, &q_pop3);
 #ifdef DEBUG
     list_print(ctx);
 #endif
-    q_type_ptr q_pop4 = list->pop(ctx); 
+    list_ptr q_pop4 = list->pop(ctx); 
     list->free(ctx, &q_pop4);
 #ifdef DEBUG
     list_print(ctx);
 #endif
-    q_type_ptr q_pop5 = list->peek(ctx); 
+    list_ptr q_pop5 = list->peek(ctx); 
     list->free(ctx, &q_pop5);
 #ifdef DEBUG
     list_print(ctx);
