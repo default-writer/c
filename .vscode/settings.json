@@ -21,5 +21,8 @@
         "regex": "cpp",
         "type_traits": "cpp",
         "*.inc": "cpp"
-    }
+    },
+    "lldb.displayFormat": "auto",
+    "lldb.showDisassembly": "auto",
+    "lldb.dereferencePointers": true
 }
