@@ -3,6 +3,18 @@
 // static default implementation of null value for queue/struct
 const static const list_ptr list_ptr_null;
 
+// initializes the new context's root element
+// as a result, new memory block will be allocated
+// current context pointer set to zero
+void list_init(list_context * const ctx) {
+    // stores into pre-allocated value newly allocated memory buffer pointer
+    ctx->head.ptr = (list*)malloc(sizeof(list));
+    // sets current context's counter to zero
+    ctx->count = 0;
+    // sets the root element 
+    ctx->root.ptr = ctx->head.ptr;
+}
+
 // allocates a memory for provided payload 
 // at current context, data payload stored at allocated memory buffer
 // as a result, items counter will increase
@@ -100,18 +112,6 @@ void list_free(list_context * const ctx, list_ptr * const item) {
         ctx->count--;
     }
     // all stack items are processed
-}
-
-// initializes the new context's root element
-// as a result, new memory block will be allocated
-// current context pointer set to zero
-void list_init(list_context * const ctx) {
-    // stores into pre-allocated value newly allocated memory buffer pointer
-    ctx->head.ptr = (list*)malloc(sizeof(list));
-    // sets current context's counter to zero
-    ctx->count = 0;
-    // sets the root element 
-    ctx->root.ptr = ctx->head.ptr;
 }
 
 // destroys the memory stack
