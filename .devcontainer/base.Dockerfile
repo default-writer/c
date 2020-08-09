@@ -26,6 +26,3 @@ RUN apt-get update \
     && apt-get autoremove -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/* /tmp/common-setup.sh
-RUN curl -sL https://deb.nodesource.com/setup_14.x -o /tmp/nodesource_setup.sh && chmod +x /tmp/nodesource_setup.sh \ 
-    && /tmp/nodesource_setup.sh && rm /tmp/nodesource_setup.sh \ 
-    && apt install nodejs
