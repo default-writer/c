@@ -1,0 +1,6 @@
+[submodule "rexo"]
+	path = rexo
+	url = https://github.com/christophercrouzet/rexo.git
+[submodule "vcpkg"]
+	path = vcpkg
+	url = https://github.com/microsoft/vcpkg.git
