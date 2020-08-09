@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include "list.h"
 
+#include <rexo.h>
+
 #ifdef DEBUG
 // address type (for debugging printf function)
 typedef long long unsigned int ADDR;
