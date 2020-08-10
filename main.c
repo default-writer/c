@@ -324,7 +324,7 @@ RX_TEST_CASE(myTestSuite, test_list_root_is_zero, .fixture = test_fixture)
 int main(int argc, const char *argv)
 {
 #ifdef DEBUG
-    printf("---- test code\n");
+    printf("---- acceptance test code\n");
     printf("\n");
 #endif
     // some messy code
@@ -333,7 +333,7 @@ int main(int argc, const char *argv)
     printf("\n");
 #endif
 #ifdef DEBUG
-    printf("---- rexo test code\n");
+    printf("---- rexo unit test code\n");
     printf("\n");
 #endif
     /* Execute the main function that runs the test cases found. */
