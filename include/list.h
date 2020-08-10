@@ -1,67 +1,64 @@
+#include <stdio.h>
+#include <stdlib.h>
+
 // abstract pointer type
 typedef void* abstract_ptr;
 
-// pointer abstraction on queue/list type
-typedef struct list_ptr { 
-    // pointer to queue/list
-    struct list* ptr; 
-} list_ptr;
-
 // queue/list: pointer to prev, pointer to next, payload
-typedef struct list {
+struct list {
     // points to previous (closer to root) node
-    list_ptr prev;
+    struct list* prev;
     // points to next (farther from roon) node
-    list_ptr next;
+    struct list* next;
     // abstract payload
     abstract_ptr payload;
-} list;
+};
 
 // queue/list context: root of the list, and element counter
-typedef struct list_context { 
+struct list_context { 
     // head element
-    list_ptr head;
+    struct list* head;
     // root element
-    list_ptr root;
+    struct list* root;
     // elements counter
     int count;
-} list_context;
+};
 
 // default list methods
-typedef struct list_vtable {
+struct list_vtable {
     // push item on current context (stack)
-    void (*push)(list_context * const ctx, list_ptr item);
+    struct list* (*push)(struct list_context* const ctx, struct list* item);
     // pop item on current context (stack)
-    list_ptr (*pop)(list_context * const ctx);
+    struct list* (*pop)(struct list_context* const ctx);
     // peek item on current context (stack)
-    list_ptr (*peek)(list_context * const ctx);
+    struct list* (*peek)(struct list_context* const ctx);
     // root item on current context (stack)
-    list_ptr (*root)(list_context * const ctx);
+    struct list* (*root)(struct list_context* const ctx);
     // free item on current context (stack)
-    void (*free)(list_context * const ctx, list_ptr item);
+    void (*free)(struct list_context* const ctx, struct list* item);
     // alloc item on current context (stack)
-    void (*alloc)(list_context * const ctx, abstract_ptr payload);
+    void (*alloc)(struct list_context* const ctx, abstract_ptr payload);
     // initialize context
-    void (*init)(list_context * const ctx);
+    void (*init)(struct list_context* const ctx);
     // destroy context
-    void (*destroy)(list_context * const ctx);
-} list_vtable;
+    void (*destroy)(struct list_context* const ctx);
+};
 
-// static default implementation of null value for queue/struct
-const static const list_ptr list_ptr_null;
+// const default implementation of null value for queue/struct
+static struct list* list_ptr_null;
 
 // default list methods
-void list_init(list_context * const ctx);
-void list_alloc(list_context * const ctx, abstract_ptr payload);
-void list_push(list_context * const ctx, list_ptr item);
-list_ptr list_pop(list_context * const ctx);
-list_ptr list_peek(list_context * const ctx);
-list_ptr list_root(list_context * const ctx);
-void list_free(list_context * const ctx, list_ptr item);
-void list_destroy(list_context * const ctx);
+void list_init(struct list_context* const ctx);
+void list_alloc(struct list_context* const ctx, abstract_ptr payload);
+struct list* list_push(struct list_context* const ctx, struct list* item);
+struct list* list_pop(struct list_context* const ctx);
+struct list* list_peek(struct list_context* const ctx);
+struct list* list_root(struct list_context* const ctx);
+void list_free(struct list_context* const ctx, struct list* item);
+void list_destroy(struct list_context* const ctx);
 
 // list vtable
-static list_vtable list_vt = {
+static struct list_vtable list_vt = {
     .alloc = list_alloc,
     .push = list_push,
     .pop = list_pop,

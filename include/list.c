@@ -6,27 +6,23 @@
 // initializes the new context's root element
 // as a result, new memory block will be allocated
 // current context pointer set to zero
-void list_init(list_context * const ctx) {
-    // stores into pre-allocated value newly allocated memory buffer pointer
-    ctx->head.ptr = (list*)malloc(sizeof(list));
+void list_init(struct list_context* const ctx) {
+    // sets current context's root element
+    ctx->root = ctx->head = (struct list*)calloc(1, sizeof(struct list));
     // sets current context's counter to zero
     ctx->count = 0;
-    // sets the root element 
-    ctx->root.ptr = ctx->head.ptr;
 }
 
 // allocates a memory for provided payload 
 // at current context, data payload stored at allocated memory buffer
 // as a result, items counter will increase
-void list_alloc(list_context * const ctx, abstract_ptr payload) {
+void list_alloc(struct list_context* const ctx, abstract_ptr payload) {
     // get current context's head
-    list_ptr* head = &(ctx->head);
-    // gets pre-allocated stack value as temporary
-    list_ptr tmp;
+    struct list* head = ctx->head;
     // stores into pre-allocated value newly allocated memory buffer pointer
-    tmp.ptr = (list*)malloc(sizeof(list));
+    struct list* tmp = (struct list*)calloc(1,sizeof(struct list));
     // sets the new data into allocated memory buffer
-    tmp.ptr->payload = payload;
+    tmp->payload = payload;
     // pushes new item on top of the stack in current context
     list_push(ctx, tmp);
     // increment current context's counter by one
@@ -37,96 +33,102 @@ void list_alloc(list_context * const ctx, abstract_ptr payload) {
 // at current context, new item will be added as next element
 // for the new item, add current head as previous element
 // as a result, head will advances to new position, represented as new item
-void list_push(list_context * const ctx, list_ptr item) {
+struct list* list_push(struct list_context* const ctx, struct list* item) {
+    if (item == 0) {
+        return list_ptr_null;
+    }
     // get current context's head
-    list_ptr* head = &(ctx->head);
+    struct list* head = ctx->head;
     // assign item pointer to head's next pointer value
-    head->ptr->next.ptr = item.ptr;
+    head->next = item;
     // assign item's prev pointer to head pointer
-    item.ptr->prev.ptr = head->ptr;
+    item->prev = ctx->head;
     // advances position of head pointer to the new head
-    head->ptr = item.ptr;
+    ctx->head = item;
+    // return previous context's head
+    return head;
 }
 
 // pop existing element at the top of the stack/queue/list
 // at current context, existing head will be removed out of stack
 // for the new stach header, correcponding values will be fixed
 // as a result, header will be rewinded to previous position, represented as head's reference to previos head
-list_ptr list_pop(list_context * const ctx) {
+struct list* list_pop(struct list_context* const ctx) {
     // get current context's head
-    list_ptr* head = &(ctx->head);
-    // gets pre-allocated stack value as temporary
-    list_ptr tmp;
+    struct list* head = ctx->head;
     // if we call method on empty stack, do not return root element, return null element by convention
-    if (head->ptr->prev.ptr == 0) {
+    if (head == 0 || head->prev == 0) {
         // returns default element as null element
         return list_ptr_null;
     }
+    // gets previos pointer
+    struct list* prev = head->prev;
+    prev->next = list_ptr_null;
     // otherwize, assign current stack head pointer to temporary
-    tmp.ptr = head->ptr;
+    // gets temporary pointer value
+    struct list* ptr = head;
+    // detouches the pointer from the list
+    ptr->prev = list_ptr_null;
+    ptr->next = list_ptr_null;
     // rewinds head pointer to previous pointer value
-    head->ptr = tmp.ptr->prev.ptr;
-    // clears not valid forward link to element to be removed
-    head->ptr->next.ptr = 0;
+    ctx->head = prev;
     // returns removed element
-    return tmp;
+    return ptr;
 }
 
 // peek existing element at the top of the stack/queue/list
 // at current context, existing head
-list_ptr list_peek(list_context * const ctx) {
+struct list* list_peek(struct list_context* const ctx) {
     // get current context's head
-    list_ptr* head = &(ctx->head);
-    // gets pre-allocated stack value as temporary
-    list_ptr tmp;
+    struct list* head = ctx->head;
+    struct list* tmp = head;
     // if we call method on empty stack, do not return root element, return null element by convention
-    if (head->ptr->prev.ptr == 0) {
+    if (head == 0 || head->prev == 0) {
         // returns default element as null element
         return list_ptr_null;
     }
     // otherwize, assign current stack head pointer to temporary
-    tmp.ptr = head->ptr;
+    tmp = head;
     // returns head element
     return tmp;
 }
 
 // get root element
 // at current context, existing tail
-list_ptr list_root(list_context * const ctx) {
+struct list* list_root(struct list_context* const ctx) {
     // get current context's tail
-    list_ptr* root = &(ctx->root);
-    // gets pre-allocated stack value as temporary
-    list_ptr tmp;
+    struct list* root = ctx->root;
     // if we call method on empty stack, do not return root element, return null element by convention
-    if (root->ptr->next.ptr == 0) {
+    if (root == 0 || root->next == 0) {
         // returns default element as null element
         return list_ptr_null;
     }
     // otherwize, assign current stack head pointer to temporary
-    tmp.ptr = root->ptr->next.ptr;
+    struct list* tmp = root->next;
     // returns head element
     return tmp;
 }
 // frees up memory assigned for allocation of items at current position
 // at current context, all data needed to be claimed, will be freed
 // as a result, all items, starting from specified item, will be deleted
-void list_free(list_context * const ctx, list_ptr item) {
-    // get current context's head
-    list_ptr* head = &(ctx->head);
-    // gets pre-allocated stack value as temporary
-    list_ptr tmp;
+void list_free(struct list_context* const ctx, struct list* item) {
     // assign currently selected item pointer to temporary
-    tmp.ptr = item.ptr;
+    struct list* tmp = item;
     // until we run out of stack or stop at root element
-    while (ctx->count > 0 && tmp.ptr != 0) {
+    while (tmp != 0 && ctx->count > 0) {
         // gets temporary pointer value
-        list* ptr = tmp.ptr;
-        // advances temporary pointer value to the next item
-        tmp.ptr = tmp.ptr->next.ptr;
+        struct list* ptr = tmp;
+        struct list* next = tmp->next;
+        // zero all pointers
+        ptr->prev = list_ptr_null;
+        ptr->next = list_ptr_null;
+        ptr->payload = 0;
         // free temporary pointer value
         free(ptr);
         // decrement current context counter
         ctx->count--;
+        // advances temporary pointer value to the next item
+        tmp = next;
     }
     // all stack items are processed
 }
@@ -134,24 +136,34 @@ void list_free(list_context * const ctx, list_ptr item) {
 // destroys the memory stack
 // frees all memory elements
 // as a result, memory will be freed
-void list_destroy(list_context * const ctx) {
+void list_destroy(struct list_context* const ctx) {
     // get current context's head
-    list_ptr* head = &(ctx->head);
-    // gets pre-allocated stack value as temporary
-    list_ptr tmp;
+    struct list* head = ctx->head;
     // assign currently selected item pointer to temporary
-    tmp.ptr = head->ptr;
+    struct list* tmp = head;
     // until we run out of stack or stop at root element
-    while (ctx->count > 0 && tmp.ptr != 0) {
+    while (tmp != 0 && ctx->count > 0) {
         // gets temporary pointer value
-        list* ptr = tmp.ptr;
+        struct list* ptr = tmp;
         // advances temporary pointer value to the previous value
-        tmp.ptr = tmp.ptr->prev.ptr;
+        tmp = ptr->prev;
+        // zero all pointers
+        ptr->prev = list_ptr_null;
+        ptr->next = list_ptr_null;
+        ptr->payload = 0;
         // free temporary pointer value
         free(ptr);
         // decrements current context's counter
         ctx->count--;
     }
     // all stack items are processed
+    if (ctx->root != 0) {
+        struct list* ptr = ctx->root;
+        // zero all pointers
+        ptr->prev = list_ptr_null;
+        ptr->next = list_ptr_null;
+        ptr->payload = 0;
+        // free temporary pointer value
+        free(ptr);
+    }
 }
-
