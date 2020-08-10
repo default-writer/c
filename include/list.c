@@ -1,7 +1,7 @@
-#include "list.h"
+#include <stdio.h>
+#include <stdlib.h>
 
-// static default implementation of null value for queue/struct
-const static const list_ptr list_ptr_null;
+#include "list.h"
 
 // initializes the new context's root element
 // as a result, new memory block will be allocated
@@ -28,7 +28,7 @@ void list_alloc(list_context * const ctx, abstract_ptr payload) {
     // sets the new data into allocated memory buffer
     tmp.ptr->payload = payload;
     // pushes new item on top of the stack in current context
-    list_push(ctx, &tmp);
+    list_push(ctx, tmp);
     // increment current context's counter by one
     ctx->count++;
 }
@@ -37,15 +37,15 @@ void list_alloc(list_context * const ctx, abstract_ptr payload) {
 // at current context, new item will be added as next element
 // for the new item, add current head as previous element
 // as a result, head will advances to new position, represented as new item
-void list_push(list_context * const ctx, list_ptr* const item) {
+void list_push(list_context * const ctx, list_ptr item) {
     // get current context's head
     list_ptr* head = &(ctx->head);
     // assign item pointer to head's next pointer value
-    head->ptr->next.ptr = item->ptr;
+    head->ptr->next.ptr = item.ptr;
     // assign item's prev pointer to head pointer
-    item->ptr->prev.ptr = head->ptr;
+    item.ptr->prev.ptr = head->ptr;
     // advances position of head pointer to the new head
-    head->ptr = item->ptr;
+    head->ptr = item.ptr;
 }
 
 // pop existing element at the top of the stack/queue/list
@@ -90,16 +90,33 @@ list_ptr list_peek(list_context * const ctx) {
     return tmp;
 }
 
+// get root element
+// at current context, existing tail
+list_ptr list_root(list_context * const ctx) {
+    // get current context's tail
+    list_ptr* root = &(ctx->root);
+    // gets pre-allocated stack value as temporary
+    list_ptr tmp;
+    // if we call method on empty stack, do not return root element, return null element by convention
+    if (root->ptr->next.ptr == 0) {
+        // returns default element as null element
+        return list_ptr_null;
+    }
+    // otherwize, assign current stack head pointer to temporary
+    tmp.ptr = root->ptr->next.ptr;
+    // returns head element
+    return tmp;
+}
 // frees up memory assigned for allocation of items at current position
 // at current context, all data needed to be claimed, will be freed
 // as a result, all items, starting from specified item, will be deleted
-void list_free(list_context * const ctx, list_ptr * const item) {
+void list_free(list_context * const ctx, list_ptr item) {
     // get current context's head
     list_ptr* head = &(ctx->head);
     // gets pre-allocated stack value as temporary
     list_ptr tmp;
     // assign currently selected item pointer to temporary
-    tmp.ptr = item->ptr;
+    tmp.ptr = item.ptr;
     // until we run out of stack or stop at root element
     while (ctx->count > 0 && tmp.ptr != 0) {
         // gets temporary pointer value
@@ -137,3 +154,4 @@ void list_destroy(list_context * const ctx) {
     }
     // all stack items are processed
 }
+

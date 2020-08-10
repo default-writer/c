@@ -25,8 +25,8 @@ void using_list(void (*list_using)(list_context * const)) {
     list->destroy(&context);
 }
 
-// print item on current context (stack)
-void print_item(list_context * const ctx) {
+// print head on current context (stack)
+void print_head(list_context * const ctx) {
     // get current context's head
     list_ptr* head = &(ctx->head);
     // gets pre-allocated stack value as temporary
@@ -36,6 +36,18 @@ void print_item(list_context * const ctx) {
 #ifdef DEBUG
     // visualise item
     printf("alloc: 0x%llx 0x%llx\n", (ADDR)tmp.ptr, (ADDR)tmp.ptr->payload);
+#endif
+}
+
+// print item
+void print_item(list_ptr* item) {
+    // gets pre-allocated stack value as temporary
+    list_ptr tmp;
+    // assigns current's head pointer to the temporary
+    tmp.ptr = item->ptr;  
+#ifdef DEBUG
+    // visualise item
+    printf("item: 0x%llx 0x%llx\n", (ADDR)tmp.ptr, (ADDR)tmp.ptr->payload);
 #endif
 }
 
@@ -72,16 +84,36 @@ void list_using(list_context* const ctx) {
     // access context's functions pointer
     list_vtable* list = &list_vt;
     abstract_ptr payload = (abstract_ptr)0xdeadbeef;
+    list_ptr is_null[] = {
+        list->peek(ctx),
+        list->pop(ctx),
+        list->root(ctx)
+    };
+    if (list_ptr_null.ptr != is_null[0].ptr) {
+        return;
+    }
+    if (list_ptr_null.ptr != is_null[1].ptr) {
+        return;
+    }
+    if (list_ptr_null.ptr != is_null[2].ptr) {
+        return;
+    }
     list->alloc(ctx, payload);
-    print_item(ctx);
+
+    print_head(ctx);
     list->alloc(ctx, ++payload);
-    print_item(ctx);
+    print_head(ctx);
     list->alloc(ctx, ++payload);
-    print_item(ctx);
+    print_head(ctx);
     list->alloc(ctx, ++payload);
-    print_item(ctx);
+    print_head(ctx);
     list->alloc(ctx, ++payload);
-    print_item(ctx);
+    print_head(ctx);
+#ifdef DEBUG
+    printf("\n");
+#endif
+    list_ptr root = list->root(ctx);
+    print_item(&root);
 #ifdef DEBUG
     printf("\n");
 #endif
@@ -89,34 +121,34 @@ void list_using(list_context* const ctx) {
     list_print(ctx);
 #endif
     list_ptr q_pop0 = list->pop(ctx); 
-    list->free(ctx, &q_pop0);
+    list->free(ctx, q_pop0);
 #ifdef DEBUG
     list_print(ctx);
 #endif
     list_ptr q_pop1 = list->pop(ctx); 
-    list->free(ctx, &q_pop1);
+    list->free(ctx, q_pop1);
 #ifdef DEBUG
     list_print(ctx);
 #endif
     list_ptr q_pop2 = list->pop(ctx); 
-    list->free(ctx, &q_pop2);
+    list->free(ctx, q_pop2);
 #ifdef DEBUG
     list_print(ctx);
 #endif
     list_ptr q_pop3 = list->pop(ctx); 
-    list->push(ctx, &q_pop3);
+    list->push(ctx, q_pop3);
     q_pop3 = list->pop(ctx); 
-    list->free(ctx, &q_pop3);
+    list->free(ctx, q_pop3);
 #ifdef DEBUG
     list_print(ctx);
 #endif
     list_ptr q_pop4 = list->pop(ctx); 
-    list->free(ctx, &q_pop4);
+    list->free(ctx, q_pop4);
 #ifdef DEBUG
     list_print(ctx);
 #endif
     list_ptr q_pop5 = list->peek(ctx); 
-    list->free(ctx, &q_pop5);
+    list->free(ctx, q_pop5);
 #ifdef DEBUG
     list_print(ctx);
 #endif
