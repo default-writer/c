@@ -205,6 +205,22 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_count_eq_1, .fixture = test_fixture)
     RX_INT_REQUIRE_EQUAL(ctx->count, 1);
 }
 
+RX_TEST_CASE(myTestSuite, test_list_alloc_payload, .fixture = test_fixture)
+{
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct list_context* ctx = &rx->ctx;
+
+    // create list
+    struct list_vtable* list = &list_vt;
+    abstract_ptr payload = (abstract_ptr)0xdeadbeef;
+
+    list->alloc(ctx, payload);
+    struct list* head = list->peek(ctx);
+
+    // ensure that data being added to list
+    RX_REQUIRE(head->payload == payload);
+}
+
 // test peek
 RX_TEST_CASE(myTestSuite, test_list_peek_is_zero, .fixture = test_fixture)
 {
