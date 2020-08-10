@@ -51,7 +51,7 @@ struct list* list_push(struct list_context* const ctx, struct list* item) {
 
 // pop existing element at the top of the stack/queue/list
 // at current context, existing head will be removed out of stack
-// for the new stach header, correcponding values will be fixed
+// for the new stack header, correcponding values will be fixed
 // as a result, header will be rewinded to previous position, represented as head's reference to previos head
 struct list* list_pop(struct list_context* const ctx) {
     // get current context's head
@@ -72,6 +72,8 @@ struct list* list_pop(struct list_context* const ctx) {
     ptr->next = list_ptr_null;
     // rewinds head pointer to previous pointer value
     ctx->head = prev;
+    // decrement current context counter
+    ctx->count--;
     // returns removed element
     return ptr;
 }
