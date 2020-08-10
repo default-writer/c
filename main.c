@@ -154,6 +154,89 @@ void list_using(list_context* const ctx) {
 #endif
 }
 
-int main() {
+/* Data structure to use at the core of our fixture. */
+struct test_data {
+    list_context context;
+};
+
+/* Initialize the data structure. Its allocation is handled by Rexo. */
+RX_SET_UP(test_set_up)
+{
+    /*
+       The macro `RX_DATA` references our data as a pointer to `void` that
+       needs to be cast to the correct type before being used.
+    */
+    list_context* data = (list_context *)RX_DATA;
+
+    /* Initialize it! */
+    // access context's functions pointer
+    list_vtable* list = &list_vt;
+    // initilize list
+    list->init(data);
+
+    /* Let Rexo know that everything went well. */
+    return RX_SUCCESS;
+}
+
+RX_TEAR_DOWN(test_tear_down)
+{
+    list_context* data = (list_context *)RX_DATA;
+    // access context's functions pointer
+    list_vtable* list = &list_vt;
+    // destroy list
+    list->destroy(data);
+}
+
+/* Define the fixture. */
+RX_FIXTURE(test_fixture, struct test_data, .set_up = test_set_up, .tear_down = test_tear_down);
+
+// test init
+RX_TEST_CASE(myTestSuite, test_empty_list_count_equals_0, .fixture = test_fixture)
+{
+    struct test_data *data;
+    data = (struct test_data *)RX_DATA;
+
+    // emshure that counter is initilized to 0
+    RX_INT_REQUIRE_EQUAL(data->context.count, 0);
+}
+
+// test alloc
+RX_TEST_CASE(myTestSuite, test_list_push_count_eq_1, .fixture = test_fixture)
+{
+    struct test_data *data;
+    data = (struct test_data *)RX_DATA;
+
+    // create list
+    list_vtable* list = &list_vt;
+    abstract_ptr payload = (abstract_ptr)0xdeadbeef;
+
+    list->alloc(&data->context, payload);
+
+    // ensure that data being added to list
+    RX_INT_REQUIRE_EQUAL(data->context.count, 1);
+}
+
+// test push
+RX_TEST_CASE(myTestSuite, test_list_push_count_eq_1, .fixture = test_fixture)
+{
+    struct test_data *data;
+    data = (struct test_data *)RX_DATA;
+
+    // create list
+    list_vtable* list = &list_vt;
+    abstract_ptr payload = (abstract_ptr)0xdeadbeef;
+
+    list->alloc(&data->context, payload);
+
+    //list->push()
+
+    // ensure that data being added to list
+    RX_INT_REQUIRE_EQUAL(data->context.count, 1);
+}
+
+int main(int argc, const char **argv)
+{
     using_list(list_using);
+    /* Execute the main function that runs the test cases found. */
+    return rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
 }
