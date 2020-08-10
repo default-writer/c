@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-
 // abstract pointer type
 typedef void* abstract_ptr;
 
@@ -27,7 +24,7 @@ struct list_context {
 // default list methods
 struct list_vtable {
     // push item on current context (stack)
-    struct list* (*push)(struct list_context* const ctx, struct list* item);
+    struct list* (*push)(struct list_context* const ctx, struct list** const item);
     // pop item on current context (stack)
     struct list* (*pop)(struct list_context* const ctx);
     // peek item on current context (stack)
@@ -35,7 +32,7 @@ struct list_vtable {
     // root item on current context (stack)
     struct list* (*root)(struct list_context* const ctx);
     // free item on current context (stack)
-    void (*free)(struct list_context* const ctx, struct list* item);
+    void (*free)(struct list_context* const ctx, struct list** const item);
     // alloc item on current context (stack)
     void (*alloc)(struct list_context* const ctx, abstract_ptr payload);
     // initialize context
@@ -50,11 +47,11 @@ static struct list* list_ptr_null;
 // default list methods
 void list_init(struct list_context* const ctx);
 void list_alloc(struct list_context* const ctx, abstract_ptr payload);
-struct list* list_push(struct list_context* const ctx, struct list* item);
+struct list* list_push(struct list_context* const ctx, struct list** const item);
 struct list* list_pop(struct list_context* const ctx);
 struct list* list_peek(struct list_context* const ctx);
 struct list* list_root(struct list_context* const ctx);
-void list_free(struct list_context* const ctx, struct list* item);
+void list_free(struct list_context* const ctx, struct list** const item);
 void list_destroy(struct list_context* const ctx);
 
 // list vtable

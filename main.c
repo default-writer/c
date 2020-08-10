@@ -1,8 +1,8 @@
 #define DEBUG
 
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <rexo.h>
 
 #include "list.h"
 
@@ -10,6 +10,11 @@
 // address type (for debugging printf function)
 typedef long long unsigned int ADDR;
 #endif
+
+/* Force Rexo's compatibility with C89. */
+#define RX_ENABLE_C89_COMPAT
+
+#include <rexo.h>
 
 // default list usage scenario
 void using_list(void (*list_using)(struct list_context* const)) {
@@ -57,7 +62,7 @@ void list_print(struct list_context* const ctx) {
     // assigns current's head pointer to the temporary
     struct list* tmp = head;
     // until we found root element (element with no previous element reference)
-    while (tmp != 0 && tmp->prev != 0) {
+    while (tmp != 0) {
 #ifdef DEBUG
         // debug output of memory dump
         printf("%d: 0x%llx 0x%llx\n", ++i, (ADDR)tmp, (ADDR)tmp->payload);
@@ -113,35 +118,35 @@ void list_using(struct list_context* const ctx) {
     list_print(ctx);
 #endif
     struct list* q_pop0 = list->pop(ctx); 
-    list->free(ctx, q_pop0);
+    list->free(ctx, &q_pop0);
 #ifdef DEBUG
     list_print(ctx);
 #endif
     struct list* q_pop1 = list->pop(ctx); 
-    list->free(ctx, q_pop1);
+    list->free(ctx, &q_pop1);
 #ifdef DEBUG
     list_print(ctx);
 #endif
     struct list* q_pop2 = list->pop(ctx); 
-    list->free(ctx, q_pop2);
+    list->free(ctx, &q_pop2);
 #ifdef DEBUG
     list_print(ctx);
 #endif
     struct list* q_pop3 = list->pop(ctx); 
-    list->push(ctx, q_pop3);
+    list->push(ctx, &q_pop3);
     q_pop3 = list->pop(ctx); 
-    list->free(ctx, q_pop3);
+    list->free(ctx, &q_pop3);
 #ifdef DEBUG
     list_print(ctx);
 #endif
     struct list* q_pop4 = list->pop(ctx); 
-    list->free(ctx, q_pop4);
+    list->free(ctx, &q_pop4);
 #ifdef DEBUG
     list_print(ctx);
 #endif
     struct list* q_pop5 = list->peek(ctx); 
-    list->free(ctx, q_pop5);
-    list->push(ctx, q_pop0);
+    list->free(ctx, &q_pop5);
+    list->push(ctx, &q_pop0);
     struct list* root0 = list->root(ctx);
 #ifdef DEBUG
     list_print(ctx);
@@ -318,8 +323,19 @@ RX_TEST_CASE(myTestSuite, test_list_root_is_zero, .fixture = test_fixture)
 
 int main(int argc, const char *argv)
 {
+#ifdef DEBUG
+    printf("---- test code\n");
+    printf("\n");
+#endif
     // some messy code
     using_list(list_using);
+#ifdef DEBUG
+    printf("\n");
+#endif
+#ifdef DEBUG
+    printf("---- rexo test code\n");
+    printf("\n");
+#endif
     /* Execute the main function that runs the test cases found. */
     return rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
 }
