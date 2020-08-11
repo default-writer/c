@@ -7,7 +7,9 @@
 #include "list.h"
 
 #ifdef DEBUG
-// address type (for debugging printf function)
+
+
+
 typedef long long unsigned int ADDR;
 #endif
 
@@ -21,7 +23,7 @@ void using_list(void (*list_using)(struct list_context* const)) {
     // initialize current context (stack)
     struct list_context* ctx = (struct list_context*)calloc(1, sizeof(struct list_context));
     // create list
-    struct list_vtable* list = &list_vt;
+    const struct list_vtable* list = &list_vt;
     // initilize list
     list->init(ctx);
     // call user method
@@ -80,7 +82,7 @@ void list_print(struct list_context* const ctx) {
 // use list
 void list_using(struct list_context* const ctx) {
     // access context's functions pointer
-    struct list_vtable* list = &list_vt;
+    const struct list_vtable* list = &list_vt;
     abstract_ptr payload = (abstract_ptr)0xdeadbeef;
     struct list* is_null[] = {
         list->peek(ctx),
@@ -164,7 +166,7 @@ RX_SET_UP(test_set_up)
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_context* ctx = &rx->ctx;
     // access context's functions pointer
-    struct list_vtable* list = &list_vt;
+    const struct list_vtable* list = &list_vt;
     // initilize list
     list->init(ctx);
 
@@ -176,7 +178,7 @@ RX_TEAR_DOWN(test_tear_down)
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_context* ctx = &rx->ctx;
     // access context's functions pointer
-    struct list_vtable* list = &list_vt;
+    const struct list_vtable* list = &list_vt;
     // destroy list
     list->destroy(ctx);
 }
@@ -188,7 +190,7 @@ RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tea
 RX_TEST_CASE(myTestSuite, test_empty_list_count_equals_0, .fixture = test_fixture)
 {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct list_context* ctx = &rx->ctx;
+    const struct list_context* ctx = &rx->ctx;
 
     // enshure that counter is initialized to 0
     RX_INT_REQUIRE_EQUAL(ctx->count, 0);
@@ -201,7 +203,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_count_eq_1, .fixture = test_fixture)
     struct list_context* ctx = &rx->ctx;
 
     // create list
-    struct list_vtable* list = &list_vt;
+    const struct list_vtable* list = &list_vt;
     abstract_ptr payload = (abstract_ptr)0xdeadbeef;
 
     list->alloc(ctx, payload);
@@ -216,7 +218,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_payload, .fixture = test_fixture)
     struct list_context* ctx = &rx->ctx;
 
     // create list
-    struct list_vtable* list = &list_vt;
+    const struct list_vtable* list = &list_vt;
     abstract_ptr payload = (abstract_ptr)0xdeadbeef;
 
     list->alloc(ctx, payload);
@@ -232,7 +234,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture)
     struct list_context* ctx = &rx->ctx;
 
     // create list
-    struct list_vtable* list = &list_vt;
+    const struct list_vtable* list = &list_vt;
     abstract_ptr payload = (abstract_ptr)0xdeadbeef;
 
     list->alloc(ctx, payload);
@@ -248,7 +250,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture)
     //     // push item on current context (stack)
     //     struct list* (*push)(struct list_context* const ctx, abstract_ptr payload);
     //     // pop item on current context (stack)
-    //     abstract_ptr (*pop)(struct list_context* const ctx);
+    //     abstract_ptr* (*pop)(struct list_context* const ctx);
     //     // peek item on current context (stack)
     //     abstract_ptr* (*peek)(struct list_context* const ctx);
     //     // initialize context
@@ -267,7 +269,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture)
     struct list_context* ctx = &rx->ctx;
 
     // create list
-    struct list_vtable* list = &list_vt;
+    const struct list_vtable* list = &list_vt;
     abstract_ptr payload = (abstract_ptr)0xdeadbeef;
 
     list->alloc(ctx, payload);
@@ -286,7 +288,7 @@ RX_TEST_CASE(myTestSuite, test_list_peek_is_zero, .fixture = test_fixture)
     struct list_context* ctx = &rx->ctx;
 
     // create list
-    struct list_vtable* list = &list_vt;
+    const struct list_vtable* list = &list_vt;
 
     struct list* head = list->peek(ctx);
 
@@ -301,7 +303,7 @@ RX_TEST_CASE(myTestSuite, test_list_pop_is_zero, .fixture = test_fixture)
     struct list_context* ctx = &rx->ctx;
 
     // create list
-    struct list_vtable* list = &list_vt;
+    const struct list_vtable* list = &list_vt;
 
     struct list* head = list->pop(ctx);
 
@@ -316,7 +318,7 @@ RX_TEST_CASE(myTestSuite, test_list_root_is_zero, .fixture = test_fixture)
     struct list_context* ctx = &rx->ctx;
 
     // create list
-    struct list_vtable* list = &list_vt;
+    const struct list_vtable* list = &list_vt;
 
     struct list* head = list->root(ctx);
 

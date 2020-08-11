@@ -48,6 +48,28 @@ void my_free(void* ptr)
 
 #include "list.h"
 
+// default list methods
+void list_init(struct list_context* const ctx);
+void list_alloc(struct list_context* const ctx, abstract_ptr payload);
+struct list* list_push(struct list_context* const ctx, struct list** const item);
+struct list* list_pop(struct list_context* const ctx);
+struct list* list_peek(struct list_context* const ctx);
+struct list* list_root(struct list_context* const ctx);
+void list_free(struct list_context* const ctx, struct list** const item);
+void list_destroy(struct list_context* const ctx);
+
+// list vtable
+const struct list_vtable list_vt = {
+    .alloc = list_alloc,
+    .push = list_push,
+    .pop = list_pop,
+    .peek = list_peek,
+    .root = list_root,
+    .free = list_free,
+    .init = list_init,
+    .destroy = list_destroy
+};
+
 // initializes the new context's root element
 // as a result, new memory block will be allocated
 // current context pointer set to zero
@@ -62,8 +84,6 @@ void list_init(struct list_context* const ctx) {
 // at current context, data payload stored at allocated memory buffer
 // as a result, items counter will increase
 void list_alloc(struct list_context* const ctx, abstract_ptr payload) {
-    // get current context's head
-    struct list* head = ctx->head;
     // stores into pre-allocated value newly allocated memory buffer pointer
     struct list* tmp = ALLOC(1, struct list);
     // sets the new data into allocated memory buffer
