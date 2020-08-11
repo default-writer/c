@@ -32,7 +32,10 @@
 		"ms-vscode.cmake-tools",
 		"ms-vsliveshare.vsliveshare",
 		"ms-vsliveshare.vsliveshare-audio",
-		"ms-vsliveshare.vsliveshare-pack"
+		"ms-vsliveshare.vsliveshare-pack",
+		"lostintangent.vsls-whiteboard",
+		"lostintangent.vsls-pomodoro",
+		"vsls-contrib.spaces"
 	],
 	
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
