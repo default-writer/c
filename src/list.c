@@ -103,9 +103,9 @@ struct list* list_push(struct list_context* const ctx, struct list** const item)
     }
     // get current context's head
     struct list* head = ctx->head;
-    // assign item pointer to head's next pointer value
+    // assigns item pointer to head's next pointer value
     head->next = *item;
-    // assign item's prev pointer to head pointer
+    // assigns item's prev pointer to head pointer
     (*item)->prev = ctx->head;
     // advances position of head pointer to the new head
     ctx->head = *item;
@@ -129,8 +129,9 @@ struct list* list_pop(struct list_context* const ctx) {
     }
     // gets previos pointer
     struct list* prev = head->prev;
+    // detouches prev pointer to next to it
     prev->next = list_ptr_null;
-    // otherwize, assign current stack head pointer to temporary
+    // assigns current stack head pointer to temporary
     // gets temporary pointer value
     struct list* ptr = head;
     // detouches the pointer from the list
@@ -155,7 +156,7 @@ struct list* list_peek(struct list_context* const ctx) {
         // returns default element as null element
         return list_ptr_null;
     }
-    // otherwize, assign current stack head pointer to temporary
+    // assigns current stack head pointer to temporary
     tmp = head;
     // returns head element
     return tmp;
@@ -171,7 +172,7 @@ struct list* list_root(struct list_context* const ctx) {
         // returns default element as null element
         return list_ptr_null;
     }
-    // otherwize, assign current stack head pointer to temporary
+    // assigns current stack head pointer to temporary
     struct list* tmp = root->next;
     // returns head element
     return tmp;
@@ -180,7 +181,7 @@ struct list* list_root(struct list_context* const ctx) {
 // at current context, all data needed to be claimed, will be freed
 // as a result, all items, starting from specified item, will be deleted
 void list_free(struct list_context* const ctx, struct list** const item) {
-    // assign currently selected item pointer to temporary
+    // assigns currently selected item pointer to temporary
     struct list* tmp = *item;
     // until we run out of stack or stop at root element
     while (tmp != 0) {
