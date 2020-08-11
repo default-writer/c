@@ -29,7 +29,10 @@
 		"davidschuldenfrei.gtest-adapter",
 		"hbenl.vscode-test-explorer",
 		"bazelbuild.vscode-bazel",
-		"ms-vscode.cmake-tools"
+		"ms-vscode.cmake-tools",
+		"ms-vsliveshare.vsliveshare",
+		"ms-vsliveshare.vsliveshare-audio",
+		"ms-vsliveshare.vsliveshare-pack"
 	],
 	
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
