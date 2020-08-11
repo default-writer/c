@@ -1,0 +1,5 @@
+project(list)
+cmake_minimum_required(VERSION 3.18)
+add_executable(main tests/main.c)
+set(SOURCE src/list.c tests/main.c)
+set(HEADER src/list.h)
