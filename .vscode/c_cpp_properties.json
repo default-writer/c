@@ -2,8 +2,8 @@
     "env": {
         "myDefaultIncludePath": [
             "${workspaceFolder}",
-            "${workspaceFolder}/include",
-            "${workspaceFolder}/rexo/include"
+            "${workspaceFolder}/src",
+            "${workspaceFolder}/deps/rexo/include"
         ],
         "myCompilerPath": "/usr/bin/gcc"
     },
@@ -12,8 +12,8 @@
             "name": "Dev Container: Ubuntu",
             "includePath": [
                 "${workspaceFolder}/*",
-                "${workspaceFolder}/include",
-                "${workspaceFolder}/rexo/include"
+                "${workspaceFolder}/src",
+                "${workspaceFolder}/deps/rexo/include"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
