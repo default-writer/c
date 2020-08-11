@@ -238,6 +238,25 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture)
     list->alloc(ctx, payload);
     struct list* head = list->pop(ctx);
 
+    // this version of list does not handle automatic reference pointer counting 
+    // or automatic memory management, so its up to you to call free function if needed
+    list->free(ctx, &head);
+
+    // alternative list will be list with no exposed list* member pointers:
+    // - in this version malloc/free will be called every time you call push/pop
+    // struct list_vtable {
+    //     // push item on current context (stack)
+    //     struct list* (*push)(struct list_context* const ctx, abstract_ptr payload);
+    //     // pop item on current context (stack)
+    //     abstract_ptr (*pop)(struct list_context* const ctx);
+    //     // peek item on current context (stack)
+    //     abstract_ptr* (*peek)(struct list_context* const ctx);
+    //     // initialize context
+    //     void (*init)(struct list_context* const ctx);
+    //     // destroy context
+    //     void (*destroy)(struct list_context* const ctx);
+    // }
+
     // ensure that data being added to list
     RX_INT_REQUIRE_EQUAL(ctx->count, 0);
 }
@@ -253,9 +272,11 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture)
 
     list->alloc(ctx, payload);
     struct list* head = list->pop(ctx);
+    abstract_ptr head_payload = head->payload;
+    list->free(ctx, &head);
 
     // ensure that data being added to list
-    RX_REQUIRE(head->payload == payload);
+    RX_REQUIRE(head_payload == payload);
 }
 
 // test peek
