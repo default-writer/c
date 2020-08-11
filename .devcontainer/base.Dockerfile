@@ -26,13 +26,30 @@ RUN apt-get update \
     && apt-get autoremove -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/* /tmp/common-setup.sh
-
+###
+### General devlopment
+###
 RUN apt-get update \
     && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends build-essential tar curl zip unzip
+    && apt-get -y install --no-install-recommends build-essential tar curl zip unzip g++
 
+###
+### Node.js
+###
 RUN curl -sL https://deb.nodesource.com/setup_14.x -o /tmp/nodesource_setup.sh && chmod +x /tmp/nodesource_setup.sh \ 
     && /tmp/nodesource_setup.sh && rm /tmp/nodesource_setup.sh \ 
     && apt install nodejs
 
+###
+### CMake
+###
 RUN wget -qO- "https://cmake.org/files/v3.18/cmake-3.18.1-Linux-x86_64.tar.gz" | tar --strip-components=1 -xz -C /usr/local
+
+###
+### Bazel
+###
+RUN apt install curl gnupg \
+    && curl https://bazel.build/bazel-release.pub.gpg | apt-key add -; \
+    echo "deb [arch=amd64] https://storage.googleapis.com/bazel-apt stable jdk1.8" | tee /etc/apt/sources.list.d/bazel.list \
+    && apt-get update \
+    && apt-get -y install bazel

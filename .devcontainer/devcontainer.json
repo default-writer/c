@@ -21,10 +21,14 @@
 
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
+		"ms-vscode.cpptools",
+		"matepek.vscode-catch2-test-adapter",
+		"vadimcn.vscode-lldb",
 		"mhutchie.git-graph",
 		"eamodio.gitlens",
-		"ms-vscode.cpptools",
-		"vadimcn.vscode-lldb"
+		"davidschuldenfrei.gtest-adapter",
+		"hbenl.vscode-test-explorer",
+		"bazelbuild.vscode-bazel"
 	],
 	
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
