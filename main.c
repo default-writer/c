@@ -324,24 +324,6 @@ RX_TEST_CASE(myTestSuite, test_list_root_is_zero, .fixture = test_fixture)
     RX_REQUIRE(head == list_ptr_null);
 }
 
-// // test peek
-// RX_TEST_CASE(myTestSuite, test_list_peek_not_zero, .fixture = test_fixture)
-// {
-//     struct test_data *data;
-//     data = (struct test_data *)RX_DATA;
-
-//     // create list
-//     list_vtable* list = &list_vt;
-//     abstract_ptr payload = (abstract_ptr)0xdeadbeef;
-
-//     list->alloc(&data->context, payload);
-
-//     list* head = list->peek(&data->context);
-
-//     // ensure that data being added to list
-//     RX_REQUIRE(head != list_ptr_null); // AHA moment
-// }
-
 int main(int argc, const char *argv)
 {
 #ifdef DEBUG
