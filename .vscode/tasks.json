@@ -6,7 +6,7 @@
         {
             "label": "gcc-build",
             "type": "shell",
-            "command": "gcc -g ${workspaceFolder}/main.c ${workspaceFolder}/include/list.c -I${workspaceFolder}/include -I${workspaceFolder}/rexo/include -o ${workspaceFolder}/main",
+            "command": "gcc -g ${workspaceFolder}/tests/main.c ${workspaceFolder}/src/list.c -I${workspaceFolder}/src -I${workspaceFolder}/deps/rexo/include -o ${workspaceFolder}/tests/main",
             "problemMatcher": [],
             "group": "test",
             "presentation": {
