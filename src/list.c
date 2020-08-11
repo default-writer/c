@@ -50,7 +50,7 @@ void my_free(void* ptr)
 
 // default list methods
 void list_init(struct list_context* const ctx);
-void list_alloc(struct list_context* const ctx, abstract_ptr payload);
+void list_alloc(struct list_context* const ctx, void* payload);
 struct list* list_push(struct list_context* const ctx, struct list** const item);
 struct list* list_pop(struct list_context* const ctx);
 struct list* list_peek(struct list_context* const ctx);
@@ -83,7 +83,7 @@ void list_init(struct list_context* const ctx) {
 // allocates a memory for provided payload 
 // at current context, data payload stored at allocated memory buffer
 // as a result, items counter will increase
-void list_alloc(struct list_context* const ctx, abstract_ptr payload) {
+void list_alloc(struct list_context* const ctx, void* payload) {
     // stores into pre-allocated value newly allocated memory buffer pointer
     struct list* tmp = ALLOC(1, struct list);
     // sets the new data into allocated memory buffer

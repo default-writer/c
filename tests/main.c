@@ -83,7 +83,7 @@ void list_print(struct list_context* const ctx) {
 void list_using(struct list_context* const ctx) {
     // access context's functions pointer
     const struct list_vtable* list = &list_vt;
-    abstract_ptr payload = (abstract_ptr)0xdeadbeef;
+    void* payload = (void*)0xdeadbeef;
     struct list* is_null[] = {
         list->peek(ctx),
         list->pop(ctx),
@@ -204,7 +204,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_count_eq_1, .fixture = test_fixture)
 
     // create list
     const struct list_vtable* list = &list_vt;
-    abstract_ptr payload = (abstract_ptr)0xdeadbeef;
+    void* payload = (void*)0xdeadbeef;
 
     list->alloc(ctx, payload);
 
@@ -219,7 +219,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_payload, .fixture = test_fixture)
 
     // create list
     const struct list_vtable* list = &list_vt;
-    abstract_ptr payload = (abstract_ptr)0xdeadbeef;
+    void* payload = (void*)0xdeadbeef;
 
     list->alloc(ctx, payload);
     struct list* head = list->peek(ctx);
@@ -235,7 +235,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture)
 
     // create list
     const struct list_vtable* list = &list_vt;
-    abstract_ptr payload = (abstract_ptr)0xdeadbeef;
+    void* payload = (void*)0xdeadbeef;
 
     list->alloc(ctx, payload);
     struct list* head = list->pop(ctx);
@@ -248,11 +248,11 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture)
     // - in this version malloc/free will be called every time you call push/pop
     // struct list_vtable {
     //     // push item on current context (stack)
-    //     struct list* (*push)(struct list_context* const ctx, abstract_ptr payload);
+    //     struct list* (*push)(struct list_context* const ctx, void* payload);
     //     // pop item on current context (stack)
-    //     abstract_ptr* (*pop)(struct list_context* const ctx);
+    //     void** (*pop)(struct list_context* const ctx);
     //     // peek item on current context (stack)
-    //     abstract_ptr* (*peek)(struct list_context* const ctx);
+    //     void** (*peek)(struct list_context* const ctx);
     //     // initialize context
     //     void (*init)(struct list_context* const ctx);
     //     // destroy context
@@ -270,11 +270,11 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture)
 
     // create list
     const struct list_vtable* list = &list_vt;
-    abstract_ptr payload = (abstract_ptr)0xdeadbeef;
+    void* payload = (void*)0xdeadbeef;
 
     list->alloc(ctx, payload);
     struct list* head = list->pop(ctx);
-    abstract_ptr head_payload = head->payload;
+    void* head_payload = head->payload;
     list->free(ctx, &head);
 
     // ensure that data being added to list
