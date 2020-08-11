@@ -1,0 +1,2 @@
+add_subdirectory(deps/rexo)
+target_link_libraries(foo PRIVATE rexo)
