@@ -36,5 +36,6 @@ chud.log
 
 # Directories
 node_modules
+deps
 vcpkg
 rexo
