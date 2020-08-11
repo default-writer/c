@@ -28,7 +28,8 @@
 		"eamodio.gitlens",
 		"davidschuldenfrei.gtest-adapter",
 		"hbenl.vscode-test-explorer",
-		"bazelbuild.vscode-bazel"
+		"bazelbuild.vscode-bazel",
+		"ms-vscode.cmake-tools"
 	],
 	
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
