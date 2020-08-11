@@ -39,4 +39,4 @@ node_modules
 deps
 vcpkg
 rexo
-bazel
+bazel*
