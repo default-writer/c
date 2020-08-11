@@ -47,9 +47,6 @@
             }
         ]
     },
-    "gtest-adapter.debugConfig": [
-        "(lldb) Launch",
-        "(gdb) Launch"
-    ],
+    "gtest-adapter.debugConfig": "(gdb) Launch",
     "gtest-adapter.supportLocation": false
 }
