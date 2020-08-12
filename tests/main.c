@@ -250,9 +250,9 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture)
     //     // push item on current context (stack)
     //     struct list* (*push)(struct list_context* const ctx, void* payload);
     //     // pop item on current context (stack)
-    //     void** (*pop)(struct list_context* const ctx);
+    //     void* (*pop)(struct list_context* const ctx);
     //     // peek item on current context (stack)
-    //     void** (*peek)(struct list_context* const ctx);
+    //     void* (*peek)(struct list_context* const ctx);
     //     // initialize context
     //     void (*init)(struct list_context* const ctx);
     //     // destroy context
