@@ -30,7 +30,8 @@
 		"davidschuldenfrei.gtest-adapter",
 		"bazelbuild.vscode-bazel",
 		"ms-vscode.cmake-tools",
-		"ms-vsliveshare.vsliveshare-pack"
+		"ms-vsliveshare.vsliveshare-pack",
+		"gruntfuggly.todo-tree"
 	],
 	
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.

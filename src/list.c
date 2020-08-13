@@ -46,7 +46,7 @@ void my_free(void* ptr)
 #define ALLOC(size, type) (type*)_LIST_CALLOC(1, sizeof(type))
 #define FREE(ptr) _LIST_FREE(ptr)
 
-#include "list.h"
+#include "list-api.h"
 
 // default list methods
 void list_init(struct list_context* const ctx);
