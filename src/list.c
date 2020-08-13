@@ -181,24 +181,6 @@ struct list* list_root(struct list_context* const ctx) {
 // at current context, all data needed to be claimed, will be freed
 // as a result, all items, starting from specified item, will be deleted
 void list_free(struct list_context* const ctx, struct list** const item) {
-    // assigns currently selected item pointer to temporary
-    struct list* tmp = *item;
-    // until we run out of stack or stop at root element
-    while (tmp != 0) {
-        // gets temporary pointer value
-        struct list* ptr = tmp;
-        struct list* next = tmp->next;
-        // zero all pointers
-        ptr->prev = list_ptr_null;
-        ptr->next = list_ptr_null;
-        ptr->payload = 0;
-        // free temporary pointer value
-        FREE(ptr);
-        // advances temporary pointer value to the next item
-        tmp = next;
-    }
-    // all stack items are processed
-    *item = list_ptr_null;
 }
 
 // destroys the memory stack

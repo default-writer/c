@@ -13,6 +13,17 @@
                 "reveal": "always",
                 "panel": "shared"
             }
+        },
+        {
+            "label": "gcc-build-light",
+            "type": "shell",
+            "command": "gcc -g ${workspaceFolder}/tests/main-light.c ${workspaceFolder}/src/list-light.c -I${workspaceFolder}/src -I${workspaceFolder}/deps/rexo/include -o ${workspaceFolder}/tests/main-light",
+            "problemMatcher": [],
+            "group": "test",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
         }
     ]
 }
