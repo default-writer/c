@@ -4,11 +4,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "list.h"
+#include "list-api.h"
 
 #ifdef DEBUG
-
-
 
 typedef long long unsigned int ADDR;
 #endif
