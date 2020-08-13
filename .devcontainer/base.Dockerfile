@@ -60,5 +60,5 @@ RUN apt install curl gnupg \
     && apt-get update \
     && apt-get -y install bazel \
     && wget -q "https://github.com/bazelbuild/buildtools/releases/download/3.4.0/buildifier" -P /usr/local/bin &&  chmod +x /usr/local/bin/buildifier \
-    && wget -q "https://github.com/bazelbuild/buildtools/releases/download/3.4.0/buildozer" -P /usr/local/bin && chmod +x /usr/local/bin/buildozer
+    && wget -q "https://github.com/bazelbuild/buildtools/releases/download/3.4.0/buildozer" -P /usr/local/bin && chmod +x /usr/local/bin/buildozer \
     && wget -q "https://github.com/bazelbuild/buildtools/releases/download/3.4.0/unused_deps" -P /usr/local/bin && chmod +x /usr/local/bin/unused_deps
