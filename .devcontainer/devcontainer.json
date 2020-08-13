@@ -29,13 +29,15 @@
 		"davidschuldenfrei.gtest-adapter",
 		"hbenl.vscode-test-explorer",
 		"bazelbuild.vscode-bazel",
+		"stackbuild.bazel-stack-vscode"
 		"ms-vscode.cmake-tools",
 		"ms-vsliveshare.vsliveshare",
 		"ms-vsliveshare.vsliveshare-audio",
 		"ms-vsliveshare.vsliveshare-pack",
 		"lostintangent.vsls-whiteboard",
 		"lostintangent.vsls-pomodoro",
-		"vsls-contrib.spaces"
+		"vsls-contrib.spaces",
+		"natqe.reload",
 	],
 	
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
