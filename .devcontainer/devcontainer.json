@@ -21,23 +21,16 @@
 
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
+		"stackbuild.bazel-stack-vscode",
 		"ms-vscode.cpptools",
 		"matepek.vscode-catch2-test-adapter",
 		"vadimcn.vscode-lldb",
 		"mhutchie.git-graph",
 		"eamodio.gitlens",
 		"davidschuldenfrei.gtest-adapter",
-		"hbenl.vscode-test-explorer",
 		"bazelbuild.vscode-bazel",
-		"stackbuild.bazel-stack-vscode"
 		"ms-vscode.cmake-tools",
-		"ms-vsliveshare.vsliveshare",
-		"ms-vsliveshare.vsliveshare-audio",
-		"ms-vsliveshare.vsliveshare-pack",
-		"lostintangent.vsls-whiteboard",
-		"lostintangent.vsls-pomodoro",
-		"vsls-contrib.spaces",
-		"natqe.reload",
+		"ms-vsliveshare.vsliveshare-pack"
 	],
 	
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.

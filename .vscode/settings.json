@@ -47,6 +47,5 @@
             }
         ]
     },
-    "gtest-adapter.debugConfig": "(gdb) Launch",
-    "gtest-adapter.supportLocation": false
+    "gtest-adapter.debugConfig": "(gdb) Launch"
 }
