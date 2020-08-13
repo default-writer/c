@@ -2,7 +2,7 @@
 ARG VARIANT="focal"
 FROM buildpack-deps:${VARIANT}-curl
 
-# This Dockerfile adds a non-root user with sudo access. Update the “remoteUser” property in
+# This Dockerfile adds a non-root user with sudo access. Update the "remoteUser" property in
 # devcontainer.json to use it. More info: https://aka.ms/vscode-remote/containers/non-root-user.
 ARG USERNAME=vscode
 ARG USER_UID=1000
@@ -47,10 +47,18 @@ RUN curl -sL https://deb.nodesource.com/setup_14.x -o /tmp/nodesource_setup.sh &
 RUN wget -qO- "https://cmake.org/files/v3.18/cmake-3.18.1-Linux-x86_64.tar.gz" | tar --strip-components=1 -xz -C /usr/local
 
 ###
+### Go
+###
+RUN wget -qO- "https://golang.org/dl/go1.15.linux-amd64.tar.gz" | tar --strip-components=1 -xz -C /usr/local
+
+###
 ### Bazel
 ###
 RUN apt install curl gnupg \
     && curl https://bazel.build/bazel-release.pub.gpg | apt-key add -; \
     echo "deb [arch=amd64] https://storage.googleapis.com/bazel-apt stable jdk1.8" | tee /etc/apt/sources.list.d/bazel.list \
     && apt-get update \
-    && apt-get -y install bazel
+    && apt-get -y install bazel \
+    && wget -q "https://github.com/bazelbuild/buildtools/releases/download/3.4.0/buildifier" -P /usr/local/bin &&  chmod +x /usr/local/bin/buildifier \
+    && wget -q "https://github.com/bazelbuild/buildtools/releases/download/3.4.0/buildozer" -P /usr/local/bin && chmod +x /usr/local/bin/buildozer
+    && wget -q "https://github.com/bazelbuild/buildtools/releases/download/3.4.0/unused_deps" -P /usr/local/bin && chmod +x /usr/local/bin/unused_deps
