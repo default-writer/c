@@ -56,12 +56,14 @@ void print_item(void* payload) {
 void list_print(struct list_context* const ctx) {
     // get current context's head
     struct list* head = ctx->head;
+    // get root element
+    struct list *root = ctx->root;
     // sets the counter
     int i = 0; 
     // assigns current's head pointer to the temporary
     struct list* tmp = head;
     // until we found root element (element with no previous element reference)
-    while (tmp != 0) {
+    while (tmp != root) {
 #ifdef DEBUG
         // debug output of memory dump
         printf("%d: 0x%llx 0x%llx\n", ++i, (ADDR)tmp, (ADDR)tmp->payload);
@@ -70,10 +72,6 @@ void list_print(struct list_context* const ctx) {
         tmp = tmp->prev;
     }
     // stop on root element
-#ifdef DEBUG
-    // visualise loop break 
-    printf("\n");
-#endif
 }
 
 // use list
@@ -85,10 +83,10 @@ void list_using(struct list_context* const ctx) {
         list->peek(ctx),
         list->pop(ctx)
     };
-    if (list_ptr_null != is_null[0]) {
+    if (0 != is_null[0]) {
         return;
     }
-    if (list_ptr_null != is_null[1]) {
+    if (0 != is_null[1]) {
         return;
     }
     list->push(ctx, payload);
@@ -131,6 +129,10 @@ void list_using(struct list_context* const ctx) {
 #endif
     void* q_pop5 = list->peek(ctx); 
     list->push(ctx, &q_pop0);
+#ifdef DEBUG
+    list_print(ctx);
+#endif
+    void* q_pop6 = list->pop(ctx); 
 #ifdef DEBUG
     list_print(ctx);
 #endif
@@ -253,7 +255,7 @@ RX_TEST_CASE(myTestSuite, test_list_peek_is_zero, .fixture = test_fixture)
     void* head = list->peek(ctx);
 
     // ensure that data being added to list
-    RX_REQUIRE(head == list_ptr_null);
+    RX_REQUIRE(head == 0);
 }
 
 // test pop
@@ -268,7 +270,7 @@ RX_TEST_CASE(myTestSuite, test_list_pop_is_zero, .fixture = test_fixture)
     void* head = list->pop(ctx);
 
     // ensure that data being added to list
-    RX_REQUIRE(head == list_ptr_null);
+    RX_REQUIRE(head == 0);
 }
 
 int main(int argc, const char *argv)

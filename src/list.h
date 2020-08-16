@@ -17,7 +17,3 @@ struct list_context {
     // elements counter
     int count;
 };
-
-// static default implementation of null value for queue/struct
- static struct list* list_ptr_null;
- 

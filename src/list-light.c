@@ -12,7 +12,9 @@ typedef long long unsigned int ADDR;
 void* my_calloc(size_t nmemb, size_t size)
 {
     void* ptr = calloc(nmemb, size);
+#ifdef DEBUG
     printf("!alloc: 0x%llx :%ld\n", (ADDR)ptr, size);
+#endif
     return ptr;
 }
 
@@ -20,7 +22,9 @@ void* my_calloc(size_t nmemb, size_t size)
 void my_free(void* ptr)
 {
     if (ptr != 0) {
+#ifdef DEBUG
         printf("!free: 0x%llx\n", (ADDR)ptr);
+#endif
     }
     free(ptr);
 }
@@ -105,12 +109,12 @@ void* list_pop(struct list_context* const ctx) {
     // if we call method on empty stack, do not return root element, return null element by convention
     if (head == 0 || head->prev == 0) {
         // returns default element as null element
-        return list_ptr_null;
+        return 0;
     }
     // gets previos pointer
     struct list* prev = head->prev;
     // detouches prev pointer to next to it
-    prev->next = list_ptr_null;
+    prev->next = 0;
     // rewinds head pointer to previous pointer value
     ctx->head = prev;
     // assigns current stack head pointer to temporary
@@ -118,8 +122,8 @@ void* list_pop(struct list_context* const ctx) {
     // gets temporary pointer value
     void* payload = ptr->payload;
     // detouches the pointer from the list
-    ptr->prev = list_ptr_null;
-    ptr->next = list_ptr_null;
+    ptr->prev = 0;
+    ptr->next = 0;
     ptr->payload = 0;
     // decrement current context counter
     ctx->count--;
@@ -138,7 +142,7 @@ void* list_peek(struct list_context* const ctx) {
     // if we call method on empty stack, do not return root element, return null element by convention
     if (head == 0 || head->prev == 0) {
         // returns default element as null element
-        return list_ptr_null;
+        return 0;
     }
     // assigns current stack head pointer to temporary
     tmp = head;
@@ -158,10 +162,11 @@ void list_destroy(struct list_context* const ctx) {
     while (tmp != 0) {
         // gets temporary pointer value
         struct list* ptr = tmp;
+        // gets next pointer value
         struct list* next = tmp->next;
         // zero all pointers
-        ptr->prev = list_ptr_null;
-        ptr->next = list_ptr_null;
+        ptr->prev = 0;
+        ptr->next = 0;
         ptr->payload = 0;
         // free temporary pointer value
         FREE(ptr);
@@ -169,5 +174,5 @@ void list_destroy(struct list_context* const ctx) {
         tmp = next;
     }
     // all stack items are processed
-    *item = list_ptr_null;
+    *item = 0;
 }
