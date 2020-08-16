@@ -118,7 +118,7 @@ void list_using(struct list_context* const ctx) {
     list_print(ctx);
 #endif
     void* q_pop3 = list->pop(ctx); 
-    list->push(ctx, &q_pop3);
+    list->push(ctx, q_pop3);
     q_pop3 = list->pop(ctx); 
 #ifdef DEBUG
     list_print(ctx);
@@ -128,7 +128,7 @@ void list_using(struct list_context* const ctx) {
     list_print(ctx);
 #endif
     void* q_pop5 = list->peek(ctx); 
-    list->push(ctx, &q_pop0);
+    list->push(ctx, q_pop0);
 #ifdef DEBUG
     list_print(ctx);
 #endif
