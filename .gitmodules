@@ -1,5 +1,3 @@
 [submodule "rexo"]
 	path = deps/rexo
 	url = https://github.com/christophercrouzet/rexo.git
-
-
