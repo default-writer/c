@@ -42,14 +42,6 @@ void print_head(struct list_context* const ctx) {
 #endif
 }
 
-// print item
-void print_item(void* payload) {
-#ifdef DEBUG
-    // visualise item
-    printf("item: 0x%llx\n", (ADDR)payload);
-#endif
-}
-
 // print all stack trace to output
 // in a single loop, print out all ements except root element (which does not have a payload)
 // as a result, all stack will be printed in last-to-first order (reverse)
