@@ -30,8 +30,8 @@
 *.exe
 *.out
 *.app
-**/main
-**/main-light
+tests/main
+tests/main-light
 main
 main-light
  *.
@@ -46,3 +46,4 @@ bazel*
 build
 **/*.gcda
 **/*.gcno
+**/*.
