@@ -31,7 +31,8 @@
 *.out
 *.app
 main
-*.
+main-light
+ *.
 chud.log
 
 # Directories
@@ -41,3 +42,5 @@ vcpkg
 rexo
 bazel*
 build
+**/*.gcda
+**/*.gcno
