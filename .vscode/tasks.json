@@ -6,7 +6,7 @@
         {
             "label": "gcc-build",
             "type": "shell",
-            "command": "gcc -g ${workspaceFolder}/tests/main.c ${workspaceFolder}/src/list.c -I${workspaceFolder}/src -I${workspaceFolder}/deps/rexo/include -o ${workspaceFolder}/tests/main",
+            "command": "gcc --coverage -g ${workspaceFolder}/tests/main.c ${workspaceFolder}/src/list.c -I${workspaceFolder}/src -I${workspaceFolder}/deps/rexo/include -o ${workspaceFolder}/tests/main",
             "problemMatcher": [],
             "group": "test",
             "presentation": {
@@ -17,7 +17,7 @@
         {
             "label": "gcc-build-light",
             "type": "shell",
-            "command": "gcc -g ${workspaceFolder}/tests/main-light.c ${workspaceFolder}/src/list-light.c -I${workspaceFolder}/src -I${workspaceFolder}/deps/rexo/include -o ${workspaceFolder}/tests/main-light",
+            "command": "gcc --coverage -g ${workspaceFolder}/tests/main-light.c ${workspaceFolder}/src/list-light.c -I${workspaceFolder}/src -I${workspaceFolder}/deps/rexo/include -o ${workspaceFolder}/tests/main-light",
             "problemMatcher": [],
             "group": "test",
             "presentation": {

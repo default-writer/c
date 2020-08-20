@@ -5,14 +5,6 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(lldb) list",
-            "type": "lldb",
-            "request": "launch",
-            "program": "${workspaceFolder}/tests/main",
-            "preLaunchTask": "gcc-build",
-            "initCommands":["settings set target.disable-aslr false"]
-        },
-        {
             "name": "(gdb) list",
             "type": "cppdbg",
             "request": "launch",
@@ -32,14 +24,6 @@
             ],
             "preLaunchTask": "gcc-build",
             "miDebuggerPath": "/usr/bin/gdb"
-        },
-        {
-            "name": "(lldb) list-light",
-            "type": "lldb",
-            "request": "launch",
-            "program": "${workspaceFolder}/tests/main-light",
-            "preLaunchTask": "gcc-build-light",
-            "initCommands":["settings set target.disable-aslr false"]
         },
         {
             "name": "(gdb) list-light",

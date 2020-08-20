@@ -47,5 +47,8 @@
             }
         ]
     },
-    "gtest-adapter.debugConfig": "(gdb) Launch"
+    "gtest-adapter.debugConfig": "(gdb) Launch",
+    "gcovViewer.buildDirectories": [
+        "/workspaces/c"
+    ]
 }

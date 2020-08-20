@@ -30,8 +30,8 @@
 *.exe
 *.out
 *.app
-main
-main-light
+**/main
+**/main-light
  *.
 chud.log
 
