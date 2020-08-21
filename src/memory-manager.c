@@ -166,8 +166,9 @@ const struct memory_manager_vtable memory_manager_vt = {
 // as a result, new memory block will be allocated
 // current context pointer set to zero
 void memory_manager_init(struct memory_manager_context* const ctx) {
-    ctx->alloc = ALLOC(1024, struct list);
-    ctx->free = ALLOC(1024, struct list);
+    ctx->alloc = ALLOC(1, struct list);
+    ctx->free = ALLOC(1, struct list);
+    ctx->free = 1024;
 }
 
 
