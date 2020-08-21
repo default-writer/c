@@ -30,11 +30,6 @@
 *.exe
 *.out
 *.app
-tests/main
-tests/main-light
-main
-main-light
- *.
 chud.log
 
 # Directories
@@ -47,3 +42,5 @@ build
 **/*.gcda
 **/*.gcno
 **/*.
+tests/main-light
+tests/main

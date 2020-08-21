@@ -1,6 +1,3 @@
-#include <stdlib.h>
-#include "list.h"
-
 /*
 Memoty manager: Type 1
 1) Should "alloc" virtually, and return list items, not pointers to arbitrary memory
@@ -90,15 +87,42 @@ deallocation (freeing):
 2) Should be able to "free" memory pointer accordingly
 */
 
-// thanks for watching!
+#define DEBUG
 
-// queue/list: vtable definition
-struct mm_vtable {
-    // returns next memory pointer
-    struct list* (*alloc)(struct context* const ctx, size_t nmemb, size_t size);
-    // releases memory pointer
-    void* (*free)(struct context* const ctx, struct list* const pointer);
-};
+#define MEMORY_MANAGER
 
-// queue/list: vtable
-const struct mm_vtable mm_vt;
+#define DIRTY
+
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#ifdef DEBUG
+// address type (for debugging printf function)
+typedef long long unsigned int ADDR;
+#endif
+
+#ifdef MEMORY_MANAGER
+
+/* Define a custom `malloc` function. */
+void* my_calloc(size_t nmemb, size_t size)
+{
+    void* ptr = calloc(nmemb, size);
+#ifdef DEBUG
+    printf("!alloc: 0x%llx :%ld\n", (ADDR)ptr, size);
+#endif
+    return ptr;
+}
+
+/* Define a custom `malloc` function. */
+void my_free(void* ptr)
+{
+    if (ptr != 0) {
+#ifdef DEBUG
+        printf("!free: 0x%llx\n", (ADDR)ptr);
+#endif
+    }
+    free(ptr);
+}
+
+#endif //MEMORY_MANAGER

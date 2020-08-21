@@ -25,6 +25,7 @@
 		"bazelbuild.vscode-bazel",
 		// "davidschuldenfrei.gtest-adapter",
 		"eamodio.gitlens",
+		"jacqueslucke.gcov-viewer",
 		// "matepek.vscode-catch2-test-adapter",
 		"mhutchie.git-graph",
 		"ms-vscode.cpptools",

@@ -1,10 +1,13 @@
 #define DEBUG
+#define LIST_LIGHT
+
+#define DIRTY
 
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef DEBUG
+#ifdef LIST_LIGHT
 // address type (for debugging printf function)
 typedef long long unsigned int ADDR;
 
@@ -122,9 +125,11 @@ void* list_pop(struct list_context* const ctx) {
     // gets temporary pointer value
     void* payload = ptr->payload;
     // detouches the pointer from the list
+#ifndef DIRTY
     ptr->prev = 0;
     ptr->next = 0;
     ptr->payload = 0;
+#endif
     // decrement current context counter
     ctx->count--;
     // free temporary pointer value
@@ -165,9 +170,11 @@ void list_destroy(struct list_context* const ctx) {
         // gets next pointer value
         struct list* next = tmp->next;
         // zero all pointers
+#ifndef DIRTY
         ptr->prev = 0;
         ptr->next = 0;
         ptr->payload = 0;
+#endif
         // free temporary pointer value
         FREE(ptr);
         // advances temporary pointer value to the next item

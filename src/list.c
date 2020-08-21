@@ -1,5 +1,7 @@
 #define DEBUG
 
+#define DIRTY
+
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -135,8 +137,10 @@ struct list* list_pop(struct list_context* const ctx) {
     // gets temporary pointer value
     struct list* ptr = head;
     // detouches the pointer from the list
+#ifndef DIRTY
     ptr->prev = 0;
     ptr->next = 0;
+#endif
     // rewinds head pointer to previous pointer value
     ctx->head = prev;
     // decrement current context counter
@@ -189,10 +193,12 @@ void list_free(struct list_context* const ctx, struct list** const item) {
         struct list* ptr = tmp;
         // gets next pointer value
         struct list* next = tmp->next;
+#ifndef DIRTY
         // zero all pointers
         ptr->prev = 0;
         ptr->next = 0;
         ptr->payload = 0;
+#endif
         // free temporary pointer value
         FREE(ptr);
         // advances temporary pointer value to the next item
