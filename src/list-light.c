@@ -38,7 +38,7 @@ void my_free(void* ptr)
 /* Override the default `free` function used by Rexo with ours. */
 #define _LIST_FREE my_free
 
-#endif
+#endif //LIST_LIGHT
 
 #ifndef _LIST_CALLOC
     #include <stdlib.h>

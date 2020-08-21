@@ -125,4 +125,64 @@ void my_free(void* ptr)
     free(ptr);
 }
 
+/* Override the default `malloc` function used by Rexo with ours. */
+#define _MEMORY_MANAGER_CALLOC my_calloc
+
+/* Override the default `free` function used by Rexo with ours. */
+#define _MEMORY_MANAGER_FREE my_free
+
 #endif //MEMORY_MANAGER
+
+#ifndef _MEMORY_MANAGER_CALLOC
+    #include <stdlib.h>
+    #define _MEMORY_MANAGER_CALLOC calloc
+#endif
+
+#ifndef _MEMORY_MANAGER_FREE
+    #include <stdlib.h>
+    #define _MEMORY_MANAGER_FREE free
+#endif
+
+#define ALLOC(size, type) (type*)_MEMORY_MANAGER_CALLOC(1, sizeof(type))
+#define FREE(ptr) _MEMORY_MANAGER_FREE(ptr)
+
+#include "memory-manager.h"
+
+// default memory manager methods
+void memory_manager_init(struct memory_manager_context* const ctx);
+struct list* memory_manager_alloc(struct memory_manager_context* const ctx, size_t nmemb, size_t size);
+void memory_manager_free(struct memory_manager_context* const ctx, struct list** const pointer);
+void memory_manager_destroy(struct memory_manager_context* const ctx);
+
+// list vtable
+const struct memory_manager_vtable memory_manager_vt = {
+    .alloc = memory_manager_alloc,
+    .free = memory_manager_free,
+    .init = memory_manager_init,
+    .destroy = memory_manager_destroy
+};
+
+// initializes the new context's root element
+// as a result, new memory block will be allocated
+// current context pointer set to zero
+void memory_manager_init(struct memory_manager_context* const ctx) {
+    ctx->alloc = ALLOC(1024, struct list);
+    ctx->free = ALLOC(1024, struct list);
+}
+
+
+// returns next memory pointer
+struct list* memory_manager_alloc(struct memory_manager_context* const ctx, size_t nmemb, size_t size) {
+    // TODO: implement memory manager alloc
+    return (struct list*)0;
+}
+
+// releases memory pointer
+void memory_manager_free(struct memory_manager_context* const ctx, struct list** const pointer) {
+    // TODO: implement memory manager free
+}
+
+void memory_manager_destroy(struct memory_manager_context* const ctx) {
+    FREE(ctx->alloc);
+    FREE(ctx->free);
+}

@@ -1,4 +1,5 @@
 #define DEBUG
+#define LIST
 
 #define DIRTY
 
@@ -6,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef DEBUG
+#ifdef LIST
 // address type (for debugging printf function)
 typedef long long unsigned int ADDR;
 

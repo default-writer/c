@@ -2,6 +2,10 @@
 
 // queue/list: vtable definition
 struct list_vtable {
+    // initialize context
+    void (*init)(struct list_context* const ctx);
+    // alloc item on current context (stack)
+    void (*alloc)(struct list_context* const ctx, void* payload);
     // push item on current context (stack)
     struct list* (*push)(struct list_context* const ctx, struct list** const item);
     // pop item on current context (stack)
@@ -12,10 +16,6 @@ struct list_vtable {
     struct list* (*root)(struct list_context* const ctx);
     // free item on current context (stack)
     void (*free)(struct list_context* const ctx, struct list** const item);
-    // alloc item on current context (stack)
-    void (*alloc)(struct list_context* const ctx, void* payload);
-    // initialize context
-    void (*init)(struct list_context* const ctx);
     // destroy context
     void (*destroy)(struct list_context* const ctx);
 };
