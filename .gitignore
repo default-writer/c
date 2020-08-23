@@ -44,3 +44,4 @@ build
 **/*.
 tests/main-light
 tests/main
+dump.txt
