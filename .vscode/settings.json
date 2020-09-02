@@ -82,5 +82,6 @@
     "gtest-adapter.debugConfig": "(gdb) Launch",
     "gcovViewer.buildDirectories": [
         "/workspaces/c"
-    ]
+    ],
+    "cmake.configureOnOpen": false
 }
