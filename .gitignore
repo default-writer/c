@@ -42,6 +42,5 @@ build
 **/*.gcda
 **/*.gcno
 **/*.
-tests/main-light
-tests/main
+*/main*
 dump.txt

@@ -15,7 +15,9 @@ typedef long long unsigned int ADDR;
 void* my_calloc(size_t nmemb, size_t size)
 {
     void* ptr = calloc(nmemb, size);
+#ifdef DEBUG
     printf("!alloc: 0x%llx :%ld\n", (ADDR)ptr, size);
+#endif
     return ptr;
 }
 
@@ -23,7 +25,9 @@ void* my_calloc(size_t nmemb, size_t size)
 void my_free(void* ptr)
 {
     if (ptr != 0) {
+#ifdef DEBUG
         printf("!free: 0x%llx\n", (ADDR)ptr);
+#endif
     }
     free(ptr);
 }
