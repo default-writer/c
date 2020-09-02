@@ -105,7 +105,7 @@ typedef long long unsigned int ADDR;
 #ifdef MEMORY_MANAGER
 
 /* Define a custom `malloc` function. */
-void* my_calloc(size_t nmemb, size_t size)
+void* _calloc(size_t nmemb, size_t size)
 {
     void* ptr = calloc(nmemb, size);
 #ifdef DEBUG
@@ -115,7 +115,7 @@ void* my_calloc(size_t nmemb, size_t size)
 }
 
 /* Define a custom `malloc` function. */
-void my_free(void* ptr)
+void _free(void* ptr)
 {
     if (ptr != 0) {
 #ifdef DEBUG
@@ -126,10 +126,10 @@ void my_free(void* ptr)
 }
 
 /* Override the default `malloc` function used by Rexo with ours. */
-#define _MEMORY_MANAGER_CALLOC my_calloc
+#define _MEMORY_MANAGER_CALLOC _calloc
 
 /* Override the default `free` function used by Rexo with ours. */
-#define _MEMORY_MANAGER_FREE my_free
+#define _MEMORY_MANAGER_FREE _free
 
 #endif //MEMORY_MANAGER
 

@@ -12,7 +12,7 @@
 typedef long long unsigned int ADDR;
 
 /* Define a custom `malloc` function. */
-void* my_calloc(size_t nmemb, size_t size)
+void* _calloc(size_t nmemb, size_t size)
 {
     void* ptr = calloc(nmemb, size);
 #ifdef DEBUG
@@ -22,7 +22,7 @@ void* my_calloc(size_t nmemb, size_t size)
 }
 
 /* Define a custom `malloc` function. */
-void my_free(void* ptr)
+void _free(void* ptr)
 {
     if (ptr != 0) {
 #ifdef DEBUG
@@ -33,16 +33,16 @@ void my_free(void* ptr)
 }
 
 /* Override the default `malloc` function used by Rexo with ours. */
-#define _LIST_CALLOC my_calloc
+#define _LIST_ALLOC _calloc
 
 /* Override the default `free` function used by Rexo with ours. */
-#define _LIST_FREE my_free
+#define _LIST_FREE _free
 
 #endif
 
-#ifndef _LIST_CALLOC
+#ifndef _LIST_ALLOC
     #include <stdlib.h>
-    #define _LIST_CALLOC calloc
+    #define _LIST_ALLOC malloc
 #endif
 
 #ifndef _LIST_FREE
@@ -50,7 +50,7 @@ void my_free(void* ptr)
     #define _LIST_FREE free
 #endif
 
-#define ALLOC(size, type) (type*)_LIST_CALLOC(1, sizeof(type))
+#define ALLOC(size, type) (type*)_LIST_ALLOC(1, sizeof(type))
 #define FREE(ptr) _LIST_FREE(ptr)
 
 #include "list-api.h"
