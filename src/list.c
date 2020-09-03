@@ -175,10 +175,6 @@ void list_free(struct list** const current, struct list** const item) {
     struct list* tmp = *item;
     // until we run out of stack or stop at head element
     if (tmp != 0) {
-        // gets temporary pointer value
-        // struct list* ptr = tmp;
-        // gets next pointer value
-        // struct list* next = tmp->next;
 #ifndef DIRTY
         // zero all pointers
         ptr->prev = 0;
