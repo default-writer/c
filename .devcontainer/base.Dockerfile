@@ -66,4 +66,3 @@ RUN apt install curl gnupg \
 ###
 ### LLDB
 ###
-RUN apt install lldb
