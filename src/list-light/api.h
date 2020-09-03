@@ -15,4 +15,4 @@ struct list_vtable {
 };
 
 // queue/list: vtable
-const struct list_vtable list_light_vt;
+const struct list_vtable list_vt;

@@ -26,4 +26,4 @@ struct memory_manager_vtable {
 };
 
 // queue/list: vtable
-const struct memory_manager_vtable list_light_vt;
+const struct memory_manager_vtable list_vt;

@@ -63,7 +63,7 @@ void* list_peek(struct list** const current);
 void list_destroy(struct list** const current);
 
 // list vtable
-const struct list_vtable list_light_vt = {
+const struct list_vtable list_vt = {
     .push = list_push,
     .pop = list_pop,
     .peek = list_peek,
