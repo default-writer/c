@@ -23,15 +23,15 @@ struct list_context {
 };
 
 // default list usage scenario
-void using_list(void (*list_using)(struct list_context* const)) {
+void using_list(void (*list_using)(struct list** const)) {
     // initialize current context (stack)
     struct list_context* ctx = (struct list_context*)calloc(1, sizeof(struct list_context));
     // create list
-    const struct list_light_vtable* list = &list_light_vt;
+    const struct list_vtable* list = &list_light_vt;
     // initilize list
     list->init(&ctx->head);
     // call user method
-    list_using(ctx);
+    list_using(&ctx->head);
     // destroy list
     list->destroy(&ctx->head);
     // free curent context (stack)
@@ -76,13 +76,13 @@ void list_print(struct list** const current) {
 }
 
 // use list
-void list_using(struct list_context* const ctx) {
+void list_using(struct list** const current) {
     // access context's functions pointer
-    const struct list_light_vtable* list = &list_light_vt;
+    const struct list_vtable* list = &list_light_vt;
     void* payload = (void*)0xdeadbeef;
     void* is_null[] = {
-        list->peek(&ctx->head),
-        list->pop(&ctx->head)
+        list->peek(current),
+        list->pop(current)
     };
     if (0 != is_null[0]) {
         return;
@@ -90,52 +90,52 @@ void list_using(struct list_context* const ctx) {
     if (0 != is_null[1]) {
         return;
     }
-    list->push(&ctx->head, payload);
-    print_head(&ctx->head);
-    list->push(&ctx->head, ++payload);
-    print_head(&ctx->head);
-    list->push(&ctx->head, ++payload);
-    print_head(&ctx->head);
-    list->push(&ctx->head, ++payload);
-    print_head(&ctx->head);
-    list->push(&ctx->head, ++payload);
-    print_head(&ctx->head);
+    list->push(current, payload);
+    print_head(current);
+    list->push(current, ++payload);
+    print_head(current);
+    list->push(current, ++payload);
+    print_head(current);
+    list->push(current, ++payload);
+    print_head(current);
+    list->push(current, ++payload);
+    print_head(current);
 #ifdef DEBUG
     printf("\n");
 #endif
 #ifdef DEBUG
-    list_print(&ctx->head);
+    list_print(current);
 #endif
-    void* q_pop0 = list->pop(&ctx->head); 
+    void* q_pop0 = list->pop(current); 
 #ifdef DEBUG
-    list_print(&ctx->head);
+    list_print(current);
 #endif
-    void* q_pop1 = list->pop(&ctx->head); 
+    void* q_pop1 = list->pop(current); 
 #ifdef DEBUG
-    list_print(&ctx->head);
+    list_print(current);
 #endif
-    void* q_pop2 = list->pop(&ctx->head); 
+    void* q_pop2 = list->pop(current); 
 #ifdef DEBUG
-    list_print(&ctx->head);
+    list_print(current);
 #endif
-    void* q_pop3 = list->pop(&ctx->head); 
-    list->push(&ctx->head, q_pop3);
-    q_pop3 = list->pop(&ctx->head); 
+    void* q_pop3 = list->pop(current); 
+    list->push(current, q_pop3);
+    q_pop3 = list->pop(current); 
 #ifdef DEBUG
-    list_print(&ctx->head);
+    list_print(current);
 #endif
-    void* q_pop4 = list->pop(&ctx->head); 
+    void* q_pop4 = list->pop(current); 
 #ifdef DEBUG
-    list_print(&ctx->head);
+    list_print(current);
 #endif
-    void* q_pop5 = list->peek(&ctx->head); 
-    list->push(&ctx->head, q_pop0);
+    void* q_pop5 = list->peek(current); 
+    list->push(current, q_pop0);
 #ifdef DEBUG
-    list_print(&ctx->head);
+    list_print(current);
 #endif
-    void* q_pop6 = list->pop(&ctx->head); 
+    void* q_pop6 = list->pop(current); 
 #ifdef DEBUG
-    list_print(&ctx->head);
+    list_print(current);
 #endif
 }
 
@@ -150,7 +150,7 @@ RX_SET_UP(test_set_up)
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_context* ctx = &rx->ctx;
     // access context's functions pointer
-    const struct list_light_vtable* list = &list_light_vt;
+    const struct list_vtable* list = &list_light_vt;
     // initilize list
     list->init(&ctx->head);
 
@@ -162,7 +162,7 @@ RX_TEAR_DOWN(test_tear_down)
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_context* ctx = &rx->ctx;
     // access context's functions pointer
-    const struct list_light_vtable* list = &list_light_vt;
+    const struct list_vtable* list = &list_light_vt;
     // destroy list
     list->destroy(&ctx->head);
 }
@@ -187,7 +187,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_count_eq_1, .fixture = test_fixture)
     struct list_context* ctx = &rx->ctx;
 
     // create list
-    const struct list_light_vtable* list = &list_light_vt;
+    const struct list_vtable* list = &list_light_vt;
     void* payload = (void*)0xdeadbeef;
 
     list->push(&ctx->head, payload);
@@ -202,7 +202,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_payload, .fixture = test_fixture)
     struct list_context* ctx = &rx->ctx;
 
     // create list
-    const struct list_light_vtable* list = &list_light_vt;
+    const struct list_vtable* list = &list_light_vt;
     void* payload = (void*)0xdeadbeef;
 
     list->push(&ctx->head, payload);
@@ -218,7 +218,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture)
     struct list_context* ctx = &rx->ctx;
 
     // create list
-    const struct list_light_vtable* list = &list_light_vt;
+    const struct list_vtable* list = &list_light_vt;
     void* payload = (void*)0xdeadbeef;
 
     list->push(&ctx->head, payload);
@@ -234,7 +234,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture)
     struct list_context* ctx = &rx->ctx;
 
     // create list
-    const struct list_light_vtable* list = &list_light_vt;
+    const struct list_vtable* list = &list_light_vt;
     void* payload = (void*)0xdeadbeef;
 
     list->push(&ctx->head, payload);
@@ -251,7 +251,7 @@ RX_TEST_CASE(myTestSuite, test_list_peek_is_zero, .fixture = test_fixture)
     struct list_context* ctx = &rx->ctx;
 
     // create list
-    const struct list_light_vtable* list = &list_light_vt;
+    const struct list_vtable* list = &list_light_vt;
 
     void* head = list->peek(&ctx->head);
 
@@ -266,7 +266,7 @@ RX_TEST_CASE(myTestSuite, test_list_pop_is_zero, .fixture = test_fixture)
     struct list_context* ctx = &rx->ctx;
 
     // create list
-    const struct list_light_vtable* list = &list_light_vt;
+    const struct list_vtable* list = &list_light_vt;
 
     void* head = list->pop(&ctx->head);
 

@@ -1,7 +1,7 @@
 #include "data.h"
 
 // queue/list: vtable definition
-struct list_light_vtable {
+struct list_vtable {
     // initialize context
     void (*init)(struct list** const current);
     // push item on current context (stack)
@@ -15,4 +15,4 @@ struct list_light_vtable {
 };
 
 // queue/list: vtable
-const struct list_light_vtable list_light_vt;
+const struct list_vtable list_light_vt;
