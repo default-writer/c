@@ -122,7 +122,6 @@ void* list_pop(struct list** const current) {
     // detouches the pointer from the list
 #ifndef DIRTY
     ptr->prev = 0;
-    ptr->next = 0;
     ptr->payload = 0;
 #endif
     // decrement current context counter
@@ -168,7 +167,6 @@ void list_destroy(struct list** const current) {
     #ifndef DIRTY
             // zero all pointers
             ptr->prev = 0;
-            ptr->next = 0;
             ptr->payload = 0;
     #endif
             // free temporary pointer value
