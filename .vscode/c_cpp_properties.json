@@ -19,7 +19,18 @@
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "c11",
             "cppStandard": "gnu++14",
-            "intelliSenseMode": "clang-x64"
+            "intelliSenseMode": "clang-x64",
+            "compilerArgs": [
+                "--coverage"
+            ],
+            "browse": {
+                "path": [
+                    "${workspaceFolder}/*",
+                    "${workspaceFolder}/src",
+                    "${workspaceFolder}/deps/rexo/include"
+                ],
+                "limitSymbolsToIncludedHeaders": true
+            }
         }
     ],
     "version": 4
