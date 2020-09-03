@@ -15,5 +15,5 @@ struct list_context {
     // head element
     struct list* head;
     // elements counter
-    int count;
+    //int count;
 };

@@ -78,7 +78,7 @@ void list_init(struct list_context* const ctx) {
     // sets current context's root element
     ctx->root = ctx->head = ALLOC(1, struct list);
     // sets current context's counter to zero
-    ctx->count = 0;
+    // ctx->count = 0;
 }
 
 // allocates a memory for provided payload 
@@ -99,7 +99,7 @@ void list_push(struct list_context* const ctx, void* payload) {
     // advances position of head pointer to the new head
     ctx->head = item;
     // increment current context's counter by one
-    ctx->count++;    
+    // ctx->count++;
 }
 
 // pop existing element at the top of the stack/queue/list
@@ -131,7 +131,7 @@ void* list_pop(struct list_context* const ctx) {
     ptr->payload = 0;
 #endif
     // decrement current context counter
-    ctx->count--;
+    // ctx->count--;
     // free temporary pointer value
     FREE(ptr);
     // returns removed element
