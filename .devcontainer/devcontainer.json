@@ -31,7 +31,9 @@
 		"ms-vscode.cpptools",
 		"ms-vscode.cmake-tools",
 		"ms-vscode.hexeditor",
-		"stackbuild.bazel-stack-vscode"
+		"stackbuild.bazel-stack-vscode",
+		"tyriar.windows-terminal",
+		"vadimcn.vscode-lldb"
 	],
 	
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
