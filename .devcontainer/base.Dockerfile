@@ -66,3 +66,4 @@ RUN apt install curl gnupg \
 ###
 ### LLDB
 ###
+RUN apt-get install gnupg lldb g++ valgrind -y 
