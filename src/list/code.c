@@ -112,8 +112,6 @@ struct list* list_push(struct list** const current, struct list** const item) {
     (*item)->prev = *current;
     // advances position of head pointer to the new head
     *current = *item;
-    // increment current context's counter by one
-    // ctx->count++;
     // return previous context's head
     return head;
 }
@@ -144,8 +142,6 @@ struct list* list_pop(struct list** const current) {
 #endif
     // rewinds head pointer to previous pointer value
     *current = prev;
-    // decrement current context counter
-    // ctx->count--;
     // returns removed element
     return ptr;
 }
