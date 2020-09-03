@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "list-light-api.h"
+#include "list-light/api.h"
 
 #ifdef DEBUG
 
