@@ -1,5 +1,34 @@
+```c++
+
+#include <stdlib.h>
+#include "list/api.h"
+
+// queue/list context
+struct memory_manager_context { 
+    // alloc buffer list
+    struct list* alloc;
+    // free buffer list
+    struct list* free;
+    // available
+    size_t available;
+    // free
+    size_t used;
+};
+
+// queue/list: vtable definition0
+struct memory_manager_vtable {
+    // initialize context
+    void (*init)(struct memory_manager_context* const ctx);
+    // returns next memory pointer
+    struct list* (*alloc)(struct memory_manager_context* const ctx, size_t nmemb, size_t size);
+    // releases memory pointer
+    void (*free)(struct memory_manager_context* const ctx, struct list** const pointer);
+    // destroy context
+    void (*destroy)(struct memory_manager_context* const ctx);
+};
+
 /*
-Memoty manager: Type 1
+Memory manager: Type 1
 1) Should "alloc" virtually, and return list items, not pointers to arbitrary memory
 
 Method name: alloc
@@ -10,7 +39,7 @@ Structure: alloc_ptr
 _____________
 | ptr       | - pointer to allocated buffer
 |-----------|
-| allocated | - number o"f allcated bytes
+| allocated | - number of allcated bytes
 |___________|
 
 why do we need "allocated on the client", is because we will merge with buffer to the right 
@@ -187,3 +216,4 @@ void memory_manager_destroy(struct memory_manager_context* const ctx) {
     FREE(ctx->alloc);
     FREE(ctx->free);
 }
+```
