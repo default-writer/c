@@ -16,6 +16,12 @@ typedef long long unsigned int ADDR;
 
 #include <rexo.h>
 
+// queue/list context: head
+struct list_context { 
+    // head element
+    struct list* head;
+};
+
 // default list usage scenario
 void using_list(void (*list_using)(struct list_context* const)) {
     // initialize current context (stack)

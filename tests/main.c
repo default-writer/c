@@ -48,15 +48,6 @@ void print_head(struct list** const current) {
 #endif
 }
 
-// print item
-// void print_item(struct list* item) {
-//     struct list* tmp = item;
-// #ifdef DEBUG
-//     // visualise item
-//     printf("item: 0x%llx 0x%llx\n", (ADDR)tmp, (ADDR)tmp->payload);
-// #endif
-// }
-
 // print all stack trace to output
 // in a single loop, print out all elements (which does not have a payload)
 // as a result, all stack will be printed in last-to-first order (reverse)
