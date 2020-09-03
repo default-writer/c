@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include "list.h"
 
-// queue/list context: root, head, element counter
+// queue/list context
 struct memory_manager_context { 
     // alloc buffer list
     struct list* alloc;

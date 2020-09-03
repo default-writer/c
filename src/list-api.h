@@ -12,8 +12,6 @@ struct list_vtable {
     struct list* (*pop)(struct list** const current);
     // peek item on current context (stack)
     struct list* (*peek)(struct list** const current);
-    // root item on current context (stack)
-    // struct list* (*root)(struct list_context* const ctx);
     // free item on current context (stack)
     void (*free)(struct list** const current, struct list** const item);
     // destroy context

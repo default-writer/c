@@ -28,17 +28,16 @@ There 2 strategies, *easy* and *lazy*:
 RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture)
 {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct list_context* ctx = &rx->ctx;
+    struct list** ctx = &rx->ctx.head;
 
     // create list
     const struct list_vtable* list = &list_vt;
     void* payload = (void*)0xdeadbeef;
 
-    list->alloc(&ctx->head, payload);
+    list->alloc(ctx, payload);
     struct list* head = list->pop(ctx);
     void* head_payload = head->payload;
-    // This line of code is potentially a memory leak, if omitted after a popping out element out from stack. The problem is, that our stack is not smart enogth to keep track of all pointers it pops out of the stack. So itself it will not be able to track situation when free method whould probably never be called. We can  create a new stack with proper init/free cycles (figers crossed) which will track of all popped elements from another stack. 
-    list->free(&ctx->head, &head);
+    list->free(ctx, &head);
 
     // ensure that data being added to list
     RX_REQUIRE(head_payload == payload);

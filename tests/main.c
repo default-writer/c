@@ -16,6 +16,12 @@ typedef long long unsigned int ADDR;
 
 #include <rexo.h>
 
+// queue/list context: head
+struct list_context { 
+    // head element
+    struct list* head;
+};
+
 // default list usage scenario
 void using_list(void (*list_using)(struct list** const)) {
     // initialize current context (stack)
@@ -52,19 +58,17 @@ void print_head(struct list** const current) {
 // }
 
 // print all stack trace to output
-// in a single loop, print out all ements except root element (which does not have a payload)
+// in a single loop, print out all elements (which does not have a payload)
 // as a result, all stack will be printed in last-to-first order (reverse)
 void list_print(struct list** const current) {
     // get current context's head
     struct list* head = *current;
-    // get root element
-    // struct list *root = ctx->root;
     // sets the counter
     int i = 0;
     // assigns current's head pointer to the temporary
     struct list* tmp = head;
     if (tmp != 0) {
-        // until we found root element (element with no previous element reference)
+        // until we found element with no parent (previous) node
         do {
 #ifdef DEBUG
             // debug output of memory dump
@@ -72,9 +76,8 @@ void list_print(struct list** const current) {
 #endif
             // remember temprary's prior pointer value to temporary
             tmp = tmp->prev;
-        } while (tmp != 0/*root*/);
+        } while (tmp != 0);
     }
-    // stop on root element
 }
 
 // use list
@@ -84,7 +87,7 @@ void list_using(struct list** const current) {
     void* payload = (void*)0xdeadbeef;
     struct list* is_null[] = {
         list->peek(current),
-        list->pop(current) //, list->root(ctx)
+        list->pop(current)
     };
     if (0 != is_null[0]) {
         return;
@@ -92,9 +95,6 @@ void list_using(struct list** const current) {
     if (0 != is_null[1]) {
         return;
     }
-    // if (0 != is_null[2]) {
-    //     return;
-    // }
     list->alloc(current, payload);
     print_head(current);
     list->alloc(current, ++payload);
@@ -105,14 +105,6 @@ void list_using(struct list** const current) {
     print_head(current);
     list->alloc(current, ++payload);
     print_head(current);
-#ifdef DEBUG
-    printf("\n");
-#endif
-    // struct list* root = list->root(ctx);
-    // print_item(root);
-#ifdef DEBUG
-    printf("\n");
-#endif
 #ifdef DEBUG
     list_print(current);
 #endif
@@ -146,7 +138,6 @@ void list_using(struct list** const current) {
     struct list* q_pop5 = list->peek(current); 
     list->free(current, &q_pop5);
     list->push(current, &q_pop0);
-    // struct list* root0 = list->root(ctx);
 #ifdef DEBUG
     list_print(current);
 #endif
@@ -241,27 +232,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture)
     list->alloc(&ctx->head, payload);
     struct list* head = list->pop(&ctx->head);
 
-    // this version of list does not handle automatic reference pointer counting 
-    // or automatic memory management, so its up to you to call free function if needed
     list->free(&ctx->head, &head);
-
-    // alternative list will be list with no exposed list* member pointers:
-    // - in this version malloc/free will be called every time you call push/pop
-    // struct list_vtable {
-    //     // push item on current context (stack)
-    //     struct list* (*push)(struct list_context* const ctx, void* payload);
-    //     // pop item on current context (stack)
-    //     void* (*pop)(struct list_context* const ctx);
-    //     // peek item on current context (stack)
-    //     void* (*peek)(struct list_context* const ctx);
-    //     // initialize context
-    //     void (*init)(struct list_context* const ctx);
-    //     // destroy context
-    //     void (*destroy)(struct list_context* const ctx);
-    // }
-
-    // ensure that data being added to list
-    // RX_INT_REQUIRE_EQUAL(ctx->count, 0);
 }
 
 RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture)
@@ -311,21 +282,6 @@ RX_TEST_CASE(myTestSuite, test_list_pop_is_zero, .fixture = test_fixture)
     // ensure that data being added to list
     RX_REQUIRE(head == 0);
 }
-
-// test root
-// RX_TEST_CASE(myTestSuite, test_list_root_is_zero, .fixture = test_fixture)
-// {
-//     TEST_DATA rx = (TEST_DATA)RX_DATA;
-//     struct list_context* ctx = &rx->ctx;
-
-//     // create list
-//     const struct list_vtable* list = &list_vt;
-
-//     struct list* head = list->root(ctx);
-
-//     // ensure that data being added to list
-//     RX_REQUIRE(head == 0);
-// }
 
 int main(int argc, const char *argv)
 {

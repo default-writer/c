@@ -61,7 +61,6 @@ void list_alloc(struct list** const current, void* payload);
 struct list* list_push(struct list** const current, struct list** const item);
 struct list* list_pop(struct list** const current);
 struct list* list_peek(struct list** const current);
-// struct list* list_root(struct list_context* const ctx);
 void list_free(struct list** const current, struct list** const item);
 void list_destroy(struct list** const current);
 
@@ -71,21 +70,18 @@ const struct list_vtable list_vt = {
     .push = list_push,
     .pop = list_pop,
     .peek = list_peek,
-    // .root = list_root,
     .free = list_free,
     .init = list_init,
     .destroy = list_destroy
 };
 
-// initializes the new context's root element
+// initializes the new context's head element
 // as a result, new memory block will be allocated
 // current context pointer set to zero
 void list_init(struct list** const current) {
-    // sets current context's root element
-    // ctx->root = ctx->head = ALLOC(1, struct list);
+    // sets current context's head element
     *current = ALLOC(1, struct list);
     // sets current context's counter to zero
-    // ctx->count = 0;
 }
 
 // allocates a memory for provided payload 
@@ -129,7 +125,7 @@ struct list* list_push(struct list** const current, struct list** const item) {
 struct list* list_pop(struct list** const current) {
     // get current context's head
     struct list* head = *current;
-    // if we call method on empty stack, do not return root element, return null element by convention
+    // if we call method on empty stack, do not return head element, return null element by convention
     if (head == 0 || head->prev == 0) {
         // returns default element as null element
         return 0;
@@ -160,7 +156,7 @@ struct list* list_peek(struct list** const current) {
     // get current context's head
     struct list* head = *current;
     struct list* tmp = head;
-    // if we call method on empty stack, do not return root element, return null element by convention
+    // if we call method on empty stack, do not return head element, return null element by convention
     if (head == 0 || head->prev == 0) {
         // returns default element as null element
         return 0;
@@ -171,28 +167,13 @@ struct list* list_peek(struct list** const current) {
     return tmp;
 }
 
-// get root element
-// at current context, existing tail
-// struct list* list_root(struct list_context* const ctx) {
-//     // get current context's tail
-//     struct list* root = ctx->root;
-//     // if we call method on empty stack, do not return root element, return null element by convention
-//     if (root == 0 || root->next == 0) {
-//         // returns default element as null element
-//         return 0;
-//     }
-//     // assigns current stack head pointer to temporary
-//     struct list* tmp = root->next;
-//     // returns head element
-//     return tmp;
-// }
 // frees up memory assigned for allocation of items at current position
 // at current context, all data needed to be claimed, will be freed
 // as a result, all items, starting from specified item, will be deleted
 void list_free(struct list** const current, struct list** const item) {
     // assigns currently selected item pointer to temporary
     struct list* tmp = *item;
-    // until we run out of stack or stop at root element
+    // until we run out of stack or stop at head element
     if (tmp != 0) {
         // gets temporary pointer value
         // struct list* ptr = tmp;
@@ -220,7 +201,7 @@ void list_destroy(struct list** const current) {
     struct list* tmp = *current;
     // if not already freed
     if (tmp != 0) {
-        // until we run out of stack or stop at root element
+        // until we found element with no parent (previous) node
         do {
             // gets temporary pointer value
             struct list* ptr = tmp;
