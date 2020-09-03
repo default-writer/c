@@ -3,15 +3,15 @@
 // queue/list: vtable definition
 struct list_light_vtable {
     // initialize context
-    void (*init)(struct list_context* const ctx);
+    void (*init)(struct list** const current);
     // push item on current context (stack)
-    void (*push)(struct list_context* const ctx, void* item);
+    void (*push)(struct list** const current, void* item);
     // pop item on current context (stack)
-    void* (*pop)(struct list_context* const ctx);
+    void* (*pop)(struct list** const current);
     // peek item on current context (stack)
-    void* (*peek)(struct list_context* const ctx);
+    void* (*peek)(struct list** const current);
     // destroy context
-    void (*destroy)(struct list_context* const ctx);
+    void (*destroy)(struct list** const current);
 };
 
 // queue/list: vtable

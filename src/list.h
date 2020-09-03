@@ -11,7 +11,7 @@ struct list {
 // queue/list context: root, head, element counter
 struct list_context { 
     // root element
-    struct list* root;
+    // struct list* root;
     // head element
     struct list* head;
     // elements counter

@@ -17,25 +17,25 @@ typedef long long unsigned int ADDR;
 #include <rexo.h>
 
 // default list usage scenario
-void using_list(void (*list_using)(struct list_context* const)) {
+void using_list(void (*list_using)(struct list** const)) {
     // initialize current context (stack)
     struct list_context* ctx = (struct list_context*)calloc(1, sizeof(struct list_context));
     // create list
     const struct list_vtable* list = &list_vt;
     // initilize list
-    list->init(ctx);
+    list->init(&ctx->head);
     // call user method
-    list_using(ctx);
+    list_using(&ctx->head);
     // destroy list
-    list->destroy(ctx);
+    list->destroy(&ctx->head);
     // free curent context (stack)
     free(ctx);
 }
 
 // print head on current context (stack)
-void print_head(struct list_context* const ctx) {
+void print_head(struct list** const current) {
     // get current context's head
-    struct list* tmp = ctx->head;
+    struct list* tmp = *current;
 #ifdef DEBUG
     // visualise item
     printf("alloc: 0x%llx 0x%llx\n", (ADDR)tmp, (ADDR)tmp->payload);
@@ -43,47 +43,48 @@ void print_head(struct list_context* const ctx) {
 }
 
 // print item
-void print_item(struct list* item) {
-    struct list* tmp = item;
-#ifdef DEBUG
-    // visualise item
-    printf("item: 0x%llx 0x%llx\n", (ADDR)tmp, (ADDR)tmp->payload);
-#endif
-}
+// void print_item(struct list* item) {
+//     struct list* tmp = item;
+// #ifdef DEBUG
+//     // visualise item
+//     printf("item: 0x%llx 0x%llx\n", (ADDR)tmp, (ADDR)tmp->payload);
+// #endif
+// }
 
 // print all stack trace to output
 // in a single loop, print out all ements except root element (which does not have a payload)
 // as a result, all stack will be printed in last-to-first order (reverse)
-void list_print(struct list_context* const ctx) {
+void list_print(struct list** const current) {
     // get current context's head
-    struct list* head = ctx->head;
+    struct list* head = *current;
     // get root element
-    struct list *root = ctx->root;
+    // struct list *root = ctx->root;
     // sets the counter
-    int i = 0; 
+    int i = 0;
     // assigns current's head pointer to the temporary
     struct list* tmp = head;
-    // until we found root element (element with no previous element reference)
-    while (tmp != root) {
+    if (tmp != 0) {
+        // until we found root element (element with no previous element reference)
+        do {
 #ifdef DEBUG
-        // debug output of memory dump
-        printf("%d: 0x%llx 0x%llx\n", ++i, (ADDR)tmp, (ADDR)tmp->payload);
+            // debug output of memory dump
+            printf("%d: 0x%llx 0x%llx\n", ++i, (ADDR)tmp, (ADDR)tmp->payload);
 #endif
-        // remember temprary's prior pointer value to temporary
-        tmp = tmp->prev;
+            // remember temprary's prior pointer value to temporary
+            tmp = tmp->prev;
+        } while (tmp != 0/*root*/);
     }
     // stop on root element
 }
 
 // use list
-void list_using(struct list_context* const ctx) {
+void list_using(struct list** const current) {
     // access context's functions pointer
     const struct list_vtable* list = &list_vt;
     void* payload = (void*)0xdeadbeef;
     struct list* is_null[] = {
-        list->peek(ctx),
-        list->pop(ctx),
-        list->root(ctx)
+        list->peek(current),
+        list->pop(current) //, list->root(ctx)
     };
     if (0 != is_null[0]) {
         return;
@@ -91,67 +92,67 @@ void list_using(struct list_context* const ctx) {
     if (0 != is_null[1]) {
         return;
     }
-    if (0 != is_null[2]) {
-        return;
-    }
-    list->alloc(ctx, payload);
-    print_head(ctx);
-    list->alloc(ctx, ++payload);
-    print_head(ctx);
-    list->alloc(ctx, ++payload);
-    print_head(ctx);
-    list->alloc(ctx, ++payload);
-    print_head(ctx);
-    list->alloc(ctx, ++payload);
-    print_head(ctx);
+    // if (0 != is_null[2]) {
+    //     return;
+    // }
+    list->alloc(current, payload);
+    print_head(current);
+    list->alloc(current, ++payload);
+    print_head(current);
+    list->alloc(current, ++payload);
+    print_head(current);
+    list->alloc(current, ++payload);
+    print_head(current);
+    list->alloc(current, ++payload);
+    print_head(current);
 #ifdef DEBUG
     printf("\n");
 #endif
-    struct list* root = list->root(ctx);
-    print_item(root);
+    // struct list* root = list->root(ctx);
+    // print_item(root);
 #ifdef DEBUG
     printf("\n");
 #endif
 #ifdef DEBUG
-    list_print(ctx);
+    list_print(current);
 #endif
-    struct list* q_pop0 = list->pop(ctx); 
-    list->free(ctx, &q_pop0);
+    struct list* q_pop0 = list->pop(current); 
+    list->free(current, &q_pop0);
 #ifdef DEBUG
-    list_print(ctx);
+    list_print(current);
 #endif
-    struct list* q_pop1 = list->pop(ctx); 
-    list->free(ctx, &q_pop1);
+    struct list* q_pop1 = list->pop(current); 
+    list->free(current, &q_pop1);
 #ifdef DEBUG
-    list_print(ctx);
+    list_print(current);
 #endif
-    struct list* q_pop2 = list->pop(ctx); 
-    list->free(ctx, &q_pop2);
+    struct list* q_pop2 = list->pop(current); 
+    list->free(current, &q_pop2);
 #ifdef DEBUG
-    list_print(ctx);
+    list_print(current);
 #endif
-    struct list* q_pop3 = list->pop(ctx); 
-    list->push(ctx, &q_pop3);
-    q_pop3 = list->pop(ctx); 
-    list->free(ctx, &q_pop3);
+    struct list* q_pop3 = list->pop(current); 
+    list->push(current, &q_pop3);
+    q_pop3 = list->pop(current); 
+    list->free(current, &q_pop3);
 #ifdef DEBUG
-    list_print(ctx);
+    list_print(current);
 #endif
-    struct list* q_pop4 = list->pop(ctx); 
-    list->free(ctx, &q_pop4);
+    struct list* q_pop4 = list->pop(current); 
+    list->free(current, &q_pop4);
 #ifdef DEBUG
-    list_print(ctx);
+    list_print(current);
 #endif
-    struct list* q_pop5 = list->peek(ctx); 
-    list->free(ctx, &q_pop5);
-    list->push(ctx, &q_pop0);
-    struct list* root0 = list->root(ctx);
+    struct list* q_pop5 = list->peek(current); 
+    list->free(current, &q_pop5);
+    list->push(current, &q_pop0);
+    // struct list* root0 = list->root(ctx);
 #ifdef DEBUG
-    list_print(ctx);
+    list_print(current);
 #endif
-    list->free(ctx, &q_pop0);
+    list->free(current, &q_pop0);
 #ifdef DEBUG
-    list_print(ctx);
+    list_print(current);
 #endif
 }
 
@@ -168,7 +169,7 @@ RX_SET_UP(test_set_up)
     // access context's functions pointer
     const struct list_vtable* list = &list_vt;
     // initilize list
-    list->init(ctx);
+    list->init(&ctx->head);
 
     return RX_SUCCESS;
 }
@@ -180,7 +181,7 @@ RX_TEAR_DOWN(test_tear_down)
     // access context's functions pointer
     const struct list_vtable* list = &list_vt;
     // destroy list
-    list->destroy(ctx);
+    list->destroy(&ctx->head);
 }
 
 /* Define the fixture. */
@@ -206,7 +207,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_count_eq_1, .fixture = test_fixture)
     const struct list_vtable* list = &list_vt;
     void* payload = (void*)0xdeadbeef;
 
-    list->alloc(ctx, payload);
+    list->alloc(&ctx->head, payload);
 
     // ensure that data being added to list
     // RX_INT_REQUIRE_EQUAL(ctx->count, 1);
@@ -221,8 +222,8 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_payload, .fixture = test_fixture)
     const struct list_vtable* list = &list_vt;
     void* payload = (void*)0xdeadbeef;
 
-    list->alloc(ctx, payload);
-    struct list* head = list->peek(ctx);
+    list->alloc(&ctx->head, payload);
+    struct list* head = list->peek(&ctx->head);
 
     // ensure that data being added to list
     RX_REQUIRE(head->payload == payload);
@@ -237,12 +238,12 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture)
     const struct list_vtable* list = &list_vt;
     void* payload = (void*)0xdeadbeef;
 
-    list->alloc(ctx, payload);
-    struct list* head = list->pop(ctx);
+    list->alloc(&ctx->head, payload);
+    struct list* head = list->pop(&ctx->head);
 
     // this version of list does not handle automatic reference pointer counting 
     // or automatic memory management, so its up to you to call free function if needed
-    list->free(ctx, &head);
+    list->free(&ctx->head, &head);
 
     // alternative list will be list with no exposed list* member pointers:
     // - in this version malloc/free will be called every time you call push/pop
@@ -266,7 +267,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture)
 RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture)
 {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct list_context* ctx = &rx->ctx;
+    struct list** ctx = &rx->ctx.head;
 
     // create list
     const struct list_vtable* list = &list_vt;
@@ -290,7 +291,7 @@ RX_TEST_CASE(myTestSuite, test_list_peek_is_zero, .fixture = test_fixture)
     // create list
     const struct list_vtable* list = &list_vt;
 
-    struct list* head = list->peek(ctx);
+    struct list* head = list->peek(&ctx->head);
 
     // ensure that data being added to list
     RX_REQUIRE(head == 0);
@@ -305,26 +306,26 @@ RX_TEST_CASE(myTestSuite, test_list_pop_is_zero, .fixture = test_fixture)
     // create list
     const struct list_vtable* list = &list_vt;
 
-    struct list* head = list->pop(ctx);
+    struct list* head = list->pop(&ctx->head);
 
     // ensure that data being added to list
     RX_REQUIRE(head == 0);
 }
 
 // test root
-RX_TEST_CASE(myTestSuite, test_list_root_is_zero, .fixture = test_fixture)
-{
-    TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct list_context* ctx = &rx->ctx;
+// RX_TEST_CASE(myTestSuite, test_list_root_is_zero, .fixture = test_fixture)
+// {
+//     TEST_DATA rx = (TEST_DATA)RX_DATA;
+//     struct list_context* ctx = &rx->ctx;
 
-    // create list
-    const struct list_vtable* list = &list_vt;
+//     // create list
+//     const struct list_vtable* list = &list_vt;
 
-    struct list* head = list->root(ctx);
+//     struct list* head = list->root(ctx);
 
-    // ensure that data being added to list
-    RX_REQUIRE(head == 0);
-}
+//     // ensure that data being added to list
+//     RX_REQUIRE(head == 0);
+// }
 
 int main(int argc, const char *argv)
 {

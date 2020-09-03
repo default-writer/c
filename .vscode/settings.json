@@ -83,5 +83,7 @@
     "cmake.configureOnOpen": false,
     "gcovViewer.buildDirectories": [
         "/workspaces/c/"
-    ]
+    ],
+    "debug.node.autoAttach": "on",
+    "C_Cpp.dimInactiveRegions": true
 }
