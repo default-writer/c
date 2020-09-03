@@ -5,17 +5,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-<<<<<<< HEAD
             "name": "(lldb) list",
             "type": "lldb",
             "request": "launch",
             "program": "${workspaceFolder}/build/main",
-=======
-            "name": "(lldb) Launch",
-            "type": "lldb",
-            "request": "launch",
-            "program": "${workspaceFolder}/main",
->>>>>>> 8c775666433be9ca9eb45dc6d9b7edac04d45229
             "initCommands":["settings set target.disable-aslr false"]
         },
         {
