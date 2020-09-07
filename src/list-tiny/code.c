@@ -95,8 +95,6 @@ void list_push(struct list** const current, void* payload) {
     item->prev = *current;
     // advances position of head pointer to the new head
     *current = item;
-    // increment current context's counter by one
-    // ctx->count++;
 }
 
 // pop existing element at the top of the stack/queue/list
@@ -124,8 +122,6 @@ void* list_pop(struct list** const current) {
     ptr->prev = 0;
     ptr->payload = 0;
 #endif
-    // decrement current context counter
-    // ctx->count--;
     // free temporary pointer value
     FREE(ptr);
     // returns removed element

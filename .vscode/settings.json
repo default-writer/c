@@ -79,7 +79,6 @@
             }
         ]
     },
-    "gtest-adapter.debugConfig": "(gdb) Launch",
     "cmake.configureOnOpen": false,
     "gcovViewer.buildDirectories": [
         "/workspaces/c/"
