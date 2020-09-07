@@ -1,3 +1,3 @@
 [submodule "deps/rexo"]
 	path = deps/rexo
-	url = https://github.com/funcelot/rexo.git
+	url = https://github.com/christophercrouzet/rexo.git
