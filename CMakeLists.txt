@@ -30,5 +30,3 @@ add_executable(main ${MAIN_SOURCE})
 target_link_libraries(main PRIVATE rexo list-lib)
 target_link_libraries(main-light PRIVATE rexo list-light-lib)
 target_link_libraries(main-tiny PRIVATE rexo list-tiny-lib)
-
-
