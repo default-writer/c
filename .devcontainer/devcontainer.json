@@ -36,6 +36,7 @@
 		"stackbuild.bazel-stack-vscode",
 		"tomoki1207.pdf",
 		"tyriar.windows-terminal",
+		"DavidAnson.vscode-markdownlint",
 		"vadimcn.vscode-lldb"
 	],
 	
