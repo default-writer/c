@@ -22,6 +22,7 @@
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
 		"bazelbuild.vscode-bazel",
+		"BlitZZ.twitch-chat",
 		"eamodio.gitlens",
 		"gruntfuggly.todo-tree",
 		"jacqueslucke.gcov-viewer",
@@ -32,6 +33,7 @@
 		"ms-vscode.cmake-tools",
 		"ms-vscode.hexeditor",
 		"stackbuild.bazel-stack-vscode",
+		"tomoki1207.pdf",
 		"tyriar.windows-terminal",
 		"vadimcn.vscode-lldb"
 	],
