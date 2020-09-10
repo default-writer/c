@@ -160,11 +160,11 @@ void list_destroy(struct list** const current) {
             struct list* ptr = tmp;
             // gets prev pointer value
             struct list* prev = tmp->prev;
-    #ifndef DIRTY
+#ifndef DIRTY
             // zero all pointers
             ptr->prev = 0;
             ptr->payload = 0;
-    #endif
+#endif
             // free temporary pointer value
             FREE(ptr);
             // advances temporary pointer value to the next item
