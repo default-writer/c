@@ -14,10 +14,9 @@
 		"terminal.integrated.shell.linux": "/bin/bash"
 	},
 
-	// "remoteEnv": {
-	// 	//"SONARCLOUDTOKEN": "${localEnv:SONARCLOUDTOKEN}",
-	// 	"PATH": "${containerEnv:PATH}"
-	// },
+	"remoteEnv": {
+	 	"TWITCHAUTH": "${localEnv:TWITCHAUTH}",
+	 },
 
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
@@ -37,7 +36,8 @@
 		"tomoki1207.pdf",
 		"tyriar.windows-terminal",
 		"DavidAnson.vscode-markdownlint",
-		"vadimcn.vscode-lldb"
+		"vadimcn.vscode-lldb",
+		"blitzz.twitch-chat"
 	],
 	
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
