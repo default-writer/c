@@ -87,5 +87,5 @@
     "C_Cpp.dimInactiveRegions": true,
     "twitch.channel": "funcelot",
     "twitch.username": "funcelot",
-    "twitch.oauth": "oauth:ceuhhk9xmh94sr4snqdptcx1jbkd8j"
+    "twitch.oauth": "${env:TWITCHAUTH}"
 }
