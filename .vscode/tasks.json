@@ -35,6 +35,17 @@
                 "reveal": "always",
                 "panel": "shared"
             }
-        }
+        },
+        {
+            "label": "gcc-build-micro",
+            "type": "shell",
+            "command": "gcc --coverage -g ${workspaceFolder}/tests/main-micro.c ${workspaceFolder}/src/list-micro/code.c -I${workspaceFolder}/src -I${workspaceFolder}/deps/rexo/include -o ${workspaceFolder}/build/main-micro",
+            "problemMatcher": [],
+            "group": "test",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        }        
     ]
 }

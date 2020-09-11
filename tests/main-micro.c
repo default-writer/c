@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "list-light/api.h"
+#include "list-micro/api.h"
 
 #ifdef DEBUG
 
@@ -81,13 +81,9 @@ void list_using(struct list** const current) {
     const struct list_vtable* list = &list_vt;
     void* payload = (void*)0xdeadbeef;
     void* is_null[] = {
-        list->peek(current),
         list->pop(current)
     };
     if (0 != is_null[0]) {
-        return;
-    }
-    if (0 != is_null[1]) {
         return;
     }
     list->push(current, payload);
@@ -125,15 +121,6 @@ void list_using(struct list** const current) {
     list_print(current);
 #endif
     void* q_pop4 = list->pop(current); 
-#ifdef DEBUG
-    list_print(current);
-#endif
-    void* q_pop5 = list->peek(current); 
-    list->push(current, q_pop0);
-#ifdef DEBUG
-    list_print(current);
-#endif
-    void* q_pop6 = list->pop(current); 
 #ifdef DEBUG
     list_print(current);
 #endif
@@ -196,22 +183,6 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_count_eq_1, .fixture = test_fixture)
     RX_REQUIRE(ctx->head != 0);
 }
 
-RX_TEST_CASE(myTestSuite, test_list_alloc_payload, .fixture = test_fixture)
-{
-    TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct list_context* ctx = &rx->ctx;
-
-    // create list
-    const struct list_vtable* list = &list_vt;
-    void* payload = (void*)0xdeadbeef;
-
-    list->push(&ctx->head, payload);
-    void* head = list->peek(&ctx->head);
-
-    // ensure that data being added to list
-    RX_REQUIRE(head == payload);
-}
-
 RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture)
 {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
@@ -241,21 +212,6 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture)
 
     // ensure that data being added to list
     RX_REQUIRE(head == payload);
-}
-
-// test peek
-RX_TEST_CASE(myTestSuite, test_list_peek_is_zero, .fixture = test_fixture)
-{
-    TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct list_context* ctx = &rx->ctx;
-
-    // create list
-    const struct list_vtable* list = &list_vt;
-
-    void* head = list->peek(&ctx->head);
-
-    // ensure that data being added to list
-    RX_REQUIRE(head == 0);
 }
 
 // test pop
