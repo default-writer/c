@@ -119,7 +119,7 @@ struct list* list_push(struct list** const current, struct list** const item) {
 // pop existing element at the top of the stack/queue/list
 // at current context, existing head will be removed out of stack
 // for the new stack header, correcponding values will be fixed
-// as a result, header will be rewinded to previous position, represented as head's reference to previos head
+// as a result, header will be set to previous position, represented as head's reference to previos head
 struct list* list_pop(struct list** const current) {
     // get current context's head
     struct list* head = *current;
