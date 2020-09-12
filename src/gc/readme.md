@@ -1,3 +1,5 @@
+# readme
+
 ```c++
 
 #include <stdlib.h>
@@ -143,7 +145,7 @@ void* _calloc(size_t nmemb, size_t size)
     return ptr;
 }
 
-/* Define a custom `malloc` function. */
+/* Define a custom `free` function. */
 void _free(void* ptr)
 {
     if (ptr != 0) {
