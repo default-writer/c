@@ -28,7 +28,7 @@ void using_list(void (*list_using)(struct list** const)) {
     struct list_context* ctx = (struct list_context*)calloc(1, sizeof(struct list_context));
     // create list
     const struct list_vtable* list = &list_vt;
-    // initilize list
+    // initializer list
     list->init(&ctx->head);
     // call user method
     list_using(&ctx->head);
@@ -151,7 +151,7 @@ RX_SET_UP(test_set_up)
     struct list_context* ctx = &rx->ctx;
     // access context's functions pointer
     const struct list_vtable* list = &list_vt;
-    // initilize list
+    // initializer list
     list->init(&ctx->head);
 
     return RX_SUCCESS;
