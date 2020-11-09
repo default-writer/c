@@ -14,9 +14,6 @@ set(RX_ENABLE_C89_COMPAT C89)
 
 add_compile_options(-Wno-parentheses -Wno-unused-variable -Wno-unused-parameter -Wno-long-long)
 
-include_directories("${CMAKE_SOURCE_DIR}/include")
-include_directories("${CMAKE_SOURCE_DIR}/src")
-
 set(MAIN_MICRO_SOURCE tests/main-micro.c)
 set(MAIN_TINY_SOURCE tests/main-tiny.c)
 set(MAIN_LIGHT_SOURCE tests/main-light.c)
