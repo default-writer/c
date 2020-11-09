@@ -37,8 +37,9 @@ RUN apt-get update \
 ###
 ### Node.js
 ###
-RUN curl -sL https://deb.nodesource.com/setup_14.x -o /tmp/nodesource_setup.sh && chmod +x /tmp/nodesource_setup.sh \ 
-    && /tmp/nodesource_setup.sh && rm /tmp/nodesource_setup.sh \ 
+RUN curl -sL https://deb.nodesource.com/setup_14.x -o /tmp/nodesource_setup.sh \
+    && chmod +x /tmp/nodesource_setup.sh \
+    && /tmp/nodesource_setup.sh && rm /tmp/nodesource_setup.sh \
     && apt install nodejs
 
 ###
