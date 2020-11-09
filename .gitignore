@@ -44,3 +44,9 @@ build
 **/*.
 */main*
 dump.txt
+[cC][mM]ake*
+Makefile
+rexo/**
+main*
+**/*tests*
+deps/rexo
