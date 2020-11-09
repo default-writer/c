@@ -9,6 +9,8 @@ set(MAIN_TINY_SOURCE ../tests/main-tiny.c)
 set(MAIN_LIGHT_SOURCE ../tests/main-light.c)
 set(MAIN_SOURCE ../tests/main.c)
 
+add_subdirectory(./rexo)
+
 set(LIST_MICRO_SOURCE ../src/list-micro/code.c)
 set(LIST_TINY_SOURCE ../src/list-tiny/code.c)
 set(LIST_LIGHT_SOURCE ../src/list-light/code.c)

@@ -34,7 +34,6 @@ chud.log
 
 # Directories
 node_modules
-deps
 vcpkg
 rexo
 bazel*
@@ -50,3 +49,4 @@ rexo/**
 main*
 **/*tests*
 deps/rexo
+deps/**
