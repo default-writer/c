@@ -5,27 +5,27 @@
 #include <stdlib.h>
 #include "list/api.h"
 
-// queue/list context
+/* queue/list context */
 struct memory_manager_context { 
-    // alloc buffer list
+    /* alloc buffer list */
     struct list* alloc;
-    // free buffer list
+    /* free buffer list */
     struct list* free;
-    // available
+    /* available */
     size_t available;
-    // free
+    /* free */
     size_t used;
 };
 
-// queue/list: vtable definition0
+/* queue/list: vtable definition0 */
 struct memory_manager_vtable {
-    // initialize context
+    /* initialize context */
     void (*init)(struct memory_manager_context* const ctx);
-    // returns next memory pointer
+    /* returns next memory pointer */
     struct list* (*alloc)(struct memory_manager_context* const ctx, size_t nmemb, size_t size);
-    // releases memory pointer
+    /* releases memory pointer */
     void (*free)(struct memory_manager_context* const ctx, struct list** const pointer);
-    // destroy context
+    /* destroy context */
     void (*destroy)(struct memory_manager_context* const ctx);
 };
 
@@ -41,7 +41,7 @@ Structure: alloc_ptr
 _____________
 | ptr       | - pointer to allocated buffer
 |-----------|
-| allocated | - number of allcated bytes
+| allocated | - number of allocated bytes
 |___________|
 
 why do we need "allocated on the client", is because we will merge with buffer to the right 
@@ -56,7 +56,7 @@ into two items,
 before: [ list item 1 | 10000 ]
 after: [ list item 1 | 9990 ]->[ list item 2 | 10 ]
 
-so *(list1 + 10000) - is the next byte to the last allcated byte
+so *(list1 + 10000) - is the next byte to the last allocated byte
 and *(list2 + 10) == * (list1 + 10000), so allocated value of first element in a list
 starts to decrease.
 
@@ -64,7 +64,7 @@ Easy to prove that we can easily track of list available chunks,
 we will do not make any memory movements (relocations) at all, to sort optimize, cause
 we know that this is a very very very bad idea, i.e. one thread to GC, another to MM!
 
-this is crasy and will not work in single-threaded environment well.
+this is crazy and will not work in single-threaded environment well.
 
 Instead, we will try to place blocks sorted from right to left from smallest to 
 biggest
@@ -103,16 +103,16 @@ free ptr4
 c)should we compact or relocate memory? Nope if we got 4 Terabytes, and yes 
 if we got calculator for 4K bytes of free memory
 
-allocation (using doble stack):
+allocation (using double stack):
 
-1.1) moving from the head of list of free blocks towards the root, find one with enougth space
-1.2) decrease allocated counter for that block (we do not need allcated counter, cause it is a ptr - ptr.prev.ptr), link it to newly created block 
-1.3) add newly created allcation block to the list of allocated blocks record 
+1.1) moving from the head of list of free blocks towards the root, find one with enough space
+1.2) decrease allocated counter for that block (we do not need allocated counter, cause it is a ptr - ptr.prev.ptr), link it to newly created block 
+1.3) add newly created allocation block to the list of allocated blocks record 
 
-deallocation (freeing):
+destroying (freeing):
 
-1.1) moving from the head of list allcated blocks torwards the root, find one matches the pointer
-1.2) insert allcation block back to the list of free blocks or it there is a free block to the left,
+1.1) moving from the head of list allocated blocks towards the root, find one matches the pointer
+1.2) insert allocation block back to the list of free blocks or it there is a free block to the left,
 1.3) increase counter of free block to the left (we do not need counter cause it is ptr - ptr.pre.ptr), delete block from the list of allocated blocks
 
 2) Should be able to "free" memory pointer accordingly
@@ -122,14 +122,14 @@ deallocation (freeing):
 
 #define MEMORY_MANAGER
 
-#define DIRTY
+/* #define DIRTY */
 
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #ifdef DEBUG
-// address type (for debugging printf function)
+/* address type (for debugging printf function) */
 typedef long long unsigned int ADDR;
 #endif
 
@@ -179,13 +179,13 @@ void _free(void* ptr)
 
 #include "memory-manager.h"
 
-// default memory manager methods
+/* default memory manager methods */
 void memory_manager_init(struct memory_manager_context* const ctx);
 struct list* memory_manager_alloc(struct memory_manager_context* const ctx, size_t nmemb, size_t size);
 void memory_manager_free(struct memory_manager_context* const ctx, struct list** const pointer);
 void memory_manager_destroy(struct memory_manager_context* const ctx);
 
-// list vtable
+/* list vtable */
 const struct memory_manager_vtable memory_manager_vt = {
     .alloc = memory_manager_alloc,
     .free = memory_manager_free,
@@ -193,9 +193,9 @@ const struct memory_manager_vtable memory_manager_vt = {
     .destroy = memory_manager_destroy
 };
 
-// initializes the new context's root element
-// as a result, new memory block will be allocated
-// current context pointer set to zero
+/* initializes the new context's root element */
+/* as a result, new memory block will be allocated */
+/* current context pointer set to zero */
 void memory_manager_init(struct memory_manager_context* const ctx) {
     ctx->alloc = ALLOC(1, struct list);
     ctx->free = ALLOC(1, struct list);
@@ -203,15 +203,15 @@ void memory_manager_init(struct memory_manager_context* const ctx) {
 }
 
 
-// returns next memory pointer
+/* returns next memory pointer */
 struct list* memory_manager_alloc(struct memory_manager_context* const ctx, size_t nmemb, size_t size) {
-    // TODO: implement memory manager alloc
+    /* TODO: implement memory manager alloc */
     return (struct list*)0;
 }
 
-// releases memory pointer
+/* releases memory pointer */
 void memory_manager_free(struct memory_manager_context* const ctx, struct list** const pointer) {
-    // TODO: implement memory manager free
+    /* TODO: implement memory manager free */
 }
 
 void memory_manager_destroy(struct memory_manager_context* const ctx) {
