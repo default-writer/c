@@ -1,57 +1,28 @@
-// For format details, see https://aka.ms/vscode-remote/devcontainer.json or this file's README at:
-// https://github.com/microsoft/vscode-dev-containers/tree/v0.128.0/containers/docker-existing-dockerfile
 {
-	"name": "Ubuntu",
+	"name": "C++",
 	"build": {
-		"dockerfile": "base.Dockerfile",
-		// Update 'VARIANT' to pick an Ubuntu version. Rebuild the container if it already
-		// exists to update. Available variants: focal (or ubuntu-20.04), bionic (or ubuntu-18.04)
-		"args": { "VARIANT": "focal" }
+		"dockerfile": "Dockerfile",
+		// Update 'VARIANT' to pick an Debian / Ubuntu OS version: debian-10, debian-9, ubuntu-20.04, ubuntu-18.04
+		"args": { "VARIANT": "ubuntu-20.04" }
 	},
+	"runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined"],
 
 	// Set *default* container specific settings.json values on container create.
 	"settings": { 
 		"terminal.integrated.shell.linux": "/bin/bash"
 	},
 
-	"remoteEnv": {
-	 	"TWITCHAUTH": "${localEnv:TWITCHAUTH}",
-	 },
-
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
-		"bazelbuild.vscode-bazel",
-		"BlitZZ.twitch-chat",
-		"eamodio.gitlens",
-		"gruntfuggly.todo-tree",
-		"jacqueslucke.gcov-viewer",
-		"jabacchetta.vscode-essentials",
-		"lanza.lldb-vscode",
-		"mhutchie.git-graph",
-		"ms-azuretools.vscode-docker",
-		"ms-vscode.cpptools",
-		"ms-vscode.cmake-tools",
-		"ms-vscode.hexeditor",
-		"stackbuild.bazel-stack-vscode",
-		"tomoki1207.pdf",
-		"tyriar.windows-terminal",
-		"DavidAnson.vscode-markdownlint",
-		"vadimcn.vscode-lldb",
-		"blitzz.twitch-chat"
+		"ms-vscode.cpptools"
 	],
-	
+
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "sh -c echo OK",
+	// "postCreateCommand": "gcc -v",
 
-	// Uncomment to use the Docker CLI from inside the container. See https://aka.ms/vscode-remote/samples/docker-from-docker.
-	// "mounts": [ "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind" ],
-
-	// Uncomment when using a ptrace-based debugger like C++, Go, and Rust
-	"runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ]
-
-	// Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
+	// Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
 	// "remoteUser": "vscode"
 }
