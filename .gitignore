@@ -1,3 +1,7 @@
+# Dependencies
+deps/**/*
+rexo
+
 # Prerequisites
 *.d
 
