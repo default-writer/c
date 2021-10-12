@@ -30,7 +30,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture)
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list** ctx = &rx->ctx.head;
 
-    // create list
+    /* create list */
     const struct list_vtable* list = &list_vt;
     void* payload = (void*)0xdeadbeef;
 
@@ -39,7 +39,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture)
     void* head_payload = head->payload;
     list->free(ctx, &head);
 
-    // ensure that data being added to list
+    /* ensure that data being added to list */
     RX_REQUIRE(head_payload == payload);
 }
 ```

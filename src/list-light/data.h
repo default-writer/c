@@ -1,9 +1,9 @@
-// queue/list: prev, next, payload
+/* queue/list: prev, next, payload */
 struct list {
-    // points to previous node
+    /* points to previous node */
     struct list* prev;
-    // points to next node
+    /* points to next node */
     struct list* next;
-    // payload
+    /* payload */
     void*  payload;
 };

@@ -1,3 +1,6 @@
+# Dependencies
+deps/**/*
+
 # Prerequisites
 *.d
 
@@ -34,7 +37,6 @@ chud.log
 
 # Directories
 node_modules
-deps
 vcpkg
 rexo
 bazel*
@@ -44,3 +46,11 @@ build
 **/*.
 */main*
 dump.txt
+[cC][mM]ake*
+Makefile
+rexo/**
+main*
+**/*tests*
+deps/rexo
+deps/**
+.*
