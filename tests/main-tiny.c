@@ -137,6 +137,14 @@ void list_using(struct list** const current) {
 #ifdef DEBUG
     list_print(current);
 #endif
+    void* q_pop7 = list->pop(current); 
+#ifdef DEBUG
+    list_print(current);
+#endif
+    void* q_pop8 = list->pop(current); 
+#ifdef DEBUG
+    list_print(current);
+#endif
 }
 
 /* Data structure to use at the core of our fixture. */
