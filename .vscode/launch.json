@@ -12,6 +12,27 @@
             "initCommands":["settings set target.disable-aslr false"]
         },
         {
+            "name": "(lldb) list-light",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/main-light",
+            "initCommands":["settings set target.disable-aslr false"]
+        },
+        {
+            "name": "(lldb) list-tiny",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/main-tiny",
+            "initCommands":["settings set target.disable-aslr false"]
+        },
+        {
+            "name": "(lldb) list-micro",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/main-micro",
+            "initCommands":["settings set target.disable-aslr false"]
+        },
+        {
             "name": "(lldb) garbage",
             "type": "lldb",
             "request": "launch",
