@@ -52,7 +52,10 @@
         "ostream": "cpp",
         "sstream": "cpp",
         "stdexcept": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "api.h": "c",
+        "data.h": "c",
+        "alloc.h": "c"
     },
     "lldb.displayFormat": "auto",
     "lldb.showDisassembly": "always",

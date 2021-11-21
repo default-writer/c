@@ -1,15 +1,10 @@
-#define DEBUG
+//#define DEBUG
 
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "list-micro/api.h"
-
-#ifdef DEBUG
-
-typedef long long unsigned int ADDR;
-#endif
 
 /* Force Rexo's compatibility with C89. */
 #define RX_ENABLE_C89_COMPAT
@@ -25,7 +20,7 @@ struct list_context {
 // default list usage scenario
 void using_list(void (*list_using)(struct list** const)) {
     // initialize current context (stack)
-    struct list_context* ctx = (struct list_context*)calloc(1, sizeof(struct list_context));
+    struct list_context* ctx = ALLOC(1, struct list_context);
     // create list
     const struct list_vtable* list = &list_vt;
     // initialize list
@@ -40,9 +35,9 @@ void using_list(void (*list_using)(struct list** const)) {
 
 // print head on current context (stack)
 void print_head(struct list** const current) {
+#ifdef DEBUG
     // get current context's head
     struct list* tmp = *current;
-#ifdef DEBUG
     // visualise item
     printf("alloc: 0x%llx 0x%llx\n", (ADDR)tmp, (ADDR)tmp->payload);
 #endif
@@ -52,6 +47,7 @@ void print_head(struct list** const current) {
 // in a single loop, print out all elements except root element (which does not have a payload)
 // as a result, all stack will be printed in last-to-first order (reverse)
 void list_print(struct list** const current) {
+#ifdef DEBUG
     // get current context's head
     struct list* head = *current;
     // get root element
@@ -64,15 +60,14 @@ void list_print(struct list** const current) {
     {
         // until we found root element (element with no previous element reference)
         do {
-#ifdef DEBUG
             // debug output of memory dump
             printf("%d: 0x%llx 0x%llx\n", ++i, (ADDR)tmp, (ADDR)tmp->payload);
-#endif
             // remember temprary's prior pointer value to temporary
             tmp = tmp->prev;
         } while (tmp != 0/*root*/);
     }
     // stop on root element
+#endif
 }
 
 // use list
@@ -96,42 +91,24 @@ void list_using(struct list** const current) {
     print_head(current);
     list->push(current, ++payload);
     print_head(current);
-#ifdef DEBUG
     printf("\n");
-#endif
-#ifdef DEBUG
     list_print(current);
-#endif
     void* q_pop0 = list->pop(current); 
-#ifdef DEBUG
     list_print(current);
-#endif
     void* q_pop1 = list->pop(current); 
-#ifdef DEBUG
     list_print(current);
-#endif
     void* q_pop2 = list->pop(current); 
-#ifdef DEBUG
     list_print(current);
-#endif
     void* q_pop3 = list->pop(current); 
     list->push(current, q_pop3);
     q_pop3 = list->pop(current); 
-#ifdef DEBUG
     list_print(current);
-#endif
     void* q_pop4 = list->pop(current); 
-#ifdef DEBUG
     list_print(current);
-#endif
     void* q_pop5 = list->pop(current); 
-#ifdef DEBUG
     list_print(current);
-#endif
     void* q_pop6 = list->pop(current); 
-#ifdef DEBUG
     list_print(current);
-#endif
 }
 
 /* Data structure to use at the core of our fixture. */
