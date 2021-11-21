@@ -44,15 +44,13 @@ build
 **/*.gcda
 **/*.gcno
 **/*.
-**/main*
-![**/main*.c]
+**/main-*.
 dump.txt
 [cC][mM]ake*
 Makefile
 rexo/**
 main*
-**/*tests*
-![**/tests/main*.c]
+**/*tests/*.
 deps/rexo
 deps/**
 .*

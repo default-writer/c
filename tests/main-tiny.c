@@ -281,7 +281,7 @@ RX_TEST_CASE(myTestSuite, test_list_pop_is_zero, .fixture = test_fixture)
     RX_REQUIRE(head == 0);
 }
 
-int main(int argc, const char *argv)
+int main(int argc, char **argv)
 {
 #ifdef DEBUG
     printf("---- acceptance test code\n");
