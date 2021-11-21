@@ -54,3 +54,4 @@ deps/rexo
 deps/**
 lcov.info
 report
+*.info
