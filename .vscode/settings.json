@@ -102,5 +102,8 @@
         "main-light.info",
         "main-micro.info",
         "main-tiny.info"
+    ],
+    "files.watcherInclude": [
+        "."
     ]
 }
