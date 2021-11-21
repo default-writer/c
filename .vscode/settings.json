@@ -88,14 +88,10 @@
           "path": "/bin/bash"
         }
     },
-    "cmake.configureOnOpen": false,
+    "cmake.configureOnOpen": true,
     "gcovViewer.buildDirectories": [
         "/workspaces/c/"
     ],
-    "debug.node.autoAttach": "on",
     "C_Cpp.dimInactiveRegions": true,
-    "twitch.channel": "funcelot",
-    "twitch.username": "funcelot",
-    "twitch.oauth": "${env:TWITCHAUTH}",
     "C_Cpp.errorSquiggles": "Disabled"
 }
