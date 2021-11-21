@@ -6,7 +6,7 @@
         {
             "label": "gcc-build",
             "type": "shell",
-            "command": "gcc --coverage -g ${workspaceFolder}/tests/main.c ${workspaceFolder}/src/list/code.c -I${workspaceFolder}/src -I${workspaceFolder}/deps/rexo/include -o ${workspaceFolder}/build/main",
+            "command": "gcc --coverage -g ${workspaceFolder}/tests/main.c ${workspaceFolder}/src/list/code.c -I${workspaceFolder}/src -I${workspaceFolder}/deps/rexo/include -o ${workspaceFolder}/build/main && lcov --capture --directory ${workspaceFolder} --output-file main.info",
             "problemMatcher": [],
             "group": "test",
             "presentation": {
@@ -18,7 +18,7 @@
         {
             "label": "gcc-build-light",
             "type": "shell",
-            "command": "gcc --coverage -g ${workspaceFolder}/tests/main-light.c ${workspaceFolder}/src/list-light/code.c -I${workspaceFolder}/src -I${workspaceFolder}/deps/rexo/include -o ${workspaceFolder}/build/main-light",
+            "command": "gcc --coverage -g ${workspaceFolder}/tests/main-light.c ${workspaceFolder}/src/list-light/code.c -I${workspaceFolder}/src -I${workspaceFolder}/deps/rexo/include -o ${workspaceFolder}/build/main-light && lcov --capture --directory ${workspaceFolder} --output-file main-light.info",
             "problemMatcher": [],
             "group": "test",
             "presentation": {
@@ -30,7 +30,7 @@
         {
             "label": "gcc-build-tiny",
             "type": "shell",
-            "command": "gcc --coverage -g ${workspaceFolder}/tests/main-tiny.c ${workspaceFolder}/src/list-tiny/code.c -I${workspaceFolder}/src -I${workspaceFolder}/deps/rexo/include -o ${workspaceFolder}/build/main-tiny",
+            "command": "gcc --coverage -g ${workspaceFolder}/tests/main-tiny.c ${workspaceFolder}/src/list-tiny/code.c -I${workspaceFolder}/src -I${workspaceFolder}/deps/rexo/include -o ${workspaceFolder}/build/main-tiny && lcov --capture --directory ${workspaceFolder} --output-file main-tiny.info",
             "problemMatcher": [],
             "group": "test",
             "presentation": {
