@@ -1,57 +1,8 @@
-#define DEBUG
-#define LIST
-
-/* #define DIRTY */
+//#define DIRTY
 
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#ifdef LIST
-/* address type (for debugging printf function) */
-typedef long long unsigned int ADDR;
-
-/* Define a custom `malloc` function. */
-void* _calloc(size_t nmemb, size_t size)
-{
-    void* ptr = calloc(nmemb, size);
-#ifdef DEBUG
-    printf("!alloc: 0x%llx :%ld\n", (ADDR)ptr, size);
-#endif
-    return ptr;
-}
-
-/* Define a custom `free` function. */
-void _free(void* ptr)
-{
-    if (ptr != 0) {
-#ifdef DEBUG
-        printf("!free: 0x%llx\n", (ADDR)ptr);
-#endif
-    }
-    free(ptr);
-}
-
-/* Override the default `malloc` function used by Rexo with ours. */
-#define _LIST_ALLOC _calloc
-
-/* Override the default `free` function used by Rexo with ours. */
-#define _LIST_FREE _free
-
-#endif
-
-#ifndef _LIST_ALLOC
-    #include <stdlib.h>
-    #define _LIST_ALLOC malloc
-#endif
-
-#ifndef _LIST_FREE
-    #include <stdlib.h>
-    #define _LIST_FREE free
-#endif
-
-#define ALLOC(size, type) (type*)_LIST_ALLOC(1, sizeof(type))
-#define FREE(ptr) _LIST_FREE(ptr)
 
 #include "api.h"
 

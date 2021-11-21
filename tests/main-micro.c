@@ -1,10 +1,8 @@
-//#define DEBUG
+#define DEBUG
 
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#define DEBUG
 
 #include "list-micro/api.h"
 

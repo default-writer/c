@@ -1,3 +1,4 @@
+#include "alloc.h"
 #include "data.h"
 
 /* queue/list: vtable definition */

@@ -1,3 +1,6 @@
+#ifndef _ALLOC_H_
+#define _ALLOC_H_
+
 #ifdef DEBUG
 
 /* address type (for debugging printf function) */
@@ -35,3 +38,5 @@ void _free(void* ptr)
 
 #define ALLOC(size, type) (type*)_LIST_ALLOC(1, sizeof(type))
 #define FREE(ptr) _LIST_FREE(ptr)
+
+#endif

@@ -6,11 +6,6 @@
 
 #include "list-tiny/api.h"
 
-#ifdef DEBUG
-
-typedef long long unsigned int ADDR;
-#endif
-
 /* Force Rexo's compatibility with C89. */
 #define RX_ENABLE_C89_COMPAT
 
@@ -40,9 +35,9 @@ void using_list(void (*list_using)(struct list** const)) {
 
 // print head on current context (stack)
 void print_head(struct list** const current) {
+#ifdef DEBUG
     // get current context's head
     struct list* tmp = *current;
-#ifdef DEBUG
     // visualise item
     printf("alloc: 0x%llx 0x%llx\n", (ADDR)tmp, (ADDR)tmp->payload);
 #endif
@@ -52,6 +47,7 @@ void print_head(struct list** const current) {
 // in a single loop, print out all ements except root element (which does not have a payload)
 // as a result, all stack will be printed in last-to-first order (reverse)
 void list_print(struct list** const current) {
+#ifdef DEBUG
     // get current context's head
     struct list* head = *current;
     // get root element
@@ -64,15 +60,14 @@ void list_print(struct list** const current) {
     {
         // until we found root element (element with no previous element reference)
         do {
-#ifdef DEBUG
             // debug output of memory dump
             printf("%d: 0x%llx 0x%llx\n", ++i, (ADDR)tmp, (ADDR)tmp->payload);
-#endif
             // remember temprary's prior pointer value to temporary
             tmp = tmp->prev;
         } while (tmp != 0/*root*/);
     }
     // stop on root element
+#endif
 }
 
 // use list
@@ -100,51 +95,36 @@ void list_using(struct list** const current) {
     print_head(current);
     list->push(current, ++payload);
     print_head(current);
-#ifdef DEBUG
     printf("\n");
-#endif
-#ifdef DEBUG
     list_print(current);
-#endif
+    void* q_peek0 = list->peek(current); 
     void* q_pop0 = list->pop(current); 
-#ifdef DEBUG
     list_print(current);
-#endif
     void* q_pop1 = list->pop(current); 
-#ifdef DEBUG
     list_print(current);
-#endif
     void* q_pop2 = list->pop(current); 
-#ifdef DEBUG
     list_print(current);
-#endif
+    void* q_peek1 = list->peek(current); 
     void* q_pop3 = list->pop(current); 
+    void* q_peek2 = list->peek(current); 
     list->push(current, q_pop3);
-    q_pop3 = list->pop(current); 
-#ifdef DEBUG
-    list_print(current);
-#endif
+    void* q_peek3 = list->peek(current);
+    RX_ASSERT(q_peek1 != q_peek2);
+    RX_ASSERT(q_peek2 != q_peek3);
+    RX_ASSERT(q_peek1 == q_peek3);
     void* q_pop4 = list->pop(current); 
-#ifdef DEBUG
     list_print(current);
-#endif
-    void* q_pop5 = list->peek(current); 
+    void* q_pop5 = list->pop(current); 
+    list_print(current);
+    void* q_peek4 = list->peek(current); 
     list->push(current, q_pop0);
-#ifdef DEBUG
     list_print(current);
-#endif
     void* q_pop6 = list->pop(current); 
-#ifdef DEBUG
     list_print(current);
-#endif
     void* q_pop7 = list->pop(current); 
-#ifdef DEBUG
     list_print(current);
-#endif
-    void* q_pop8 = list->pop(current); 
-#ifdef DEBUG
+    void* q_peek5 = list->peek(current); 
     list_print(current);
-#endif
 }
 
 /* Data structure to use at the core of our fixture. */
