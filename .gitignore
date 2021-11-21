@@ -46,13 +46,13 @@ build
 **/*.
 **/main*
 ![**/main*.c]
-![**/tests/main*.c]
 dump.txt
 [cC][mM]ake*
 Makefile
 rexo/**
 main*
 **/*tests*
+![**/tests/main*.c]
 deps/rexo
 deps/**
 .*
