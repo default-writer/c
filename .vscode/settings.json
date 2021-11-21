@@ -58,7 +58,7 @@
         "alloc.h": "c"
     },
     "lldb.displayFormat": "auto",
-    "lldb.showDisassembly": "always",
+    "lldb.showDisassembly": "auto",
     "lldb.dereferencePointers": true,
     "editor.tokenColorCustomizations": {
         "textMateRules": [
