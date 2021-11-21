@@ -46,6 +46,7 @@ build
 **/*.
 **/main*
 ![**/main*.c]
+![**/tests/main*.c]
 dump.txt
 [cC][mM]ake*
 Makefile
