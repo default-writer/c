@@ -51,7 +51,8 @@
                 }
             ],
             "preLaunchTask": "gcc-build",
-            "miDebuggerPath": "/usr/bin/gdb"
+            "miDebuggerPath": "/usr/bin/gdb",
+            "postDebugTask": "gcc-postbuild"
         },
         {
             "name": "(gdb) list-light",
@@ -72,7 +73,8 @@
                 }
             ],
             "preLaunchTask": "gcc-build-light",
-            "miDebuggerPath": "/usr/bin/gdb"
+            "miDebuggerPath": "/usr/bin/gdb",
+            "postDebugTask": "gcc-light-postbuild"
         },
         {
             "name": "(gdb) list-tiny",
@@ -93,7 +95,8 @@
                 }
             ],
             "preLaunchTask": "gcc-build-tiny",
-            "miDebuggerPath": "/usr/bin/gdb"
+            "miDebuggerPath": "/usr/bin/gdb",
+            "postDebugTask": "gcc-tiny-postbuild"
         },
         {
             "name": "(gdb) list-micro",
@@ -114,7 +117,8 @@
                 }
             ],
             "preLaunchTask": "gcc-build-micro",
-            "miDebuggerPath": "/usr/bin/gdb"
+            "miDebuggerPath": "/usr/bin/gdb",
+            "postDebugTask": "gcc-micro-postbuild"
         }
     ]
 }

@@ -92,8 +92,15 @@
     "gcovViewer.buildDirectories": [
         "/workspaces/c/"
     ],
-    "coverage-gutters.coverageBaseDir": "/workspaces/c/",
-    "coverage-gutters.lcovname": "lcov.info",
     "C_Cpp.dimInactiveRegions": true,
-    "C_Cpp.errorSquiggles": "Disabled"
+    "C_Cpp.errorSquiggles": "Disabled",
+    "coverage-gutters.showLineCoverage": true,
+    "coverage-gutters.showRulerCoverage": true,
+    "coverage-gutters.coverageBaseDir": ".",
+    "coverage-gutters.coverageFileNames": [
+        "main.info",
+        "main-light.info",
+        "main-micro.info",
+        "main-tiny.info"
+    ]
 }
