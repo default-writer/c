@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define DEBUG
+
 #include "list-micro/api.h"
 
 /* Force Rexo's compatibility with C89. */
@@ -123,9 +125,9 @@ RX_SET_UP(test_set_up)
     struct list_context* ctx = &rx->ctx;
     // access context's functions pointer
     const struct list_vtable* list = &list_vt;
+    
     // initialize list
     list->init(&ctx->head);
-
     return RX_SUCCESS;
 }
 
@@ -135,6 +137,7 @@ RX_TEAR_DOWN(test_tear_down)
     struct list_context* ctx = &rx->ctx;
     // access context's functions pointer
     const struct list_vtable* list = &list_vt;
+    
     // destroy list
     list->destroy(&ctx->head);
 }
