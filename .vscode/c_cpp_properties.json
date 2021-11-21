@@ -9,7 +9,7 @@
     },
     "configurations": [
         {
-            "name": "Dev Container: Ubuntu",
+            "name": "Dev Container: C++",
             "includePath": [
                 "${workspaceFolder}/*",
                 "${workspaceFolder}/src",
@@ -17,7 +17,7 @@
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
-            "cStandard": "c11",
+            "cStandard": "c89",
             "cppStandard": "gnu++14",
             "intelliSenseMode": "clang-x64",
             "compilerArgs": [
