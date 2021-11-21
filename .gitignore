@@ -53,3 +53,4 @@ main*
 deps/rexo
 deps/**
 lcov.info
+report

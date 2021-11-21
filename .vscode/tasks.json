@@ -6,7 +6,7 @@
         {
             "label": "gcc-build",
             "type": "shell",
-            "command": "gcc --coverage -g ${workspaceFolder}/tests/main.c ${workspaceFolder}/src/list.c -I${workspaceFolder}/src -I${workspaceFolder}/deps/rexo/include -o ${workspaceFolder}/build/main",
+            "command": "gcc --coverage -g ${workspaceFolder}/tests/main.c ${workspaceFolder}/src/list/code.c -I${workspaceFolder}/src -I${workspaceFolder}/deps/rexo/include -o ${workspaceFolder}/build/main",
             "problemMatcher": [],
             "group": "test",
             "presentation": {
@@ -18,7 +18,7 @@
         {
             "label": "gcc-build-light",
             "type": "shell",
-            "command": "gcc --coverage -g ${workspaceFolder}/tests/main-light.c ${workspaceFolder}/src/list-light.c -I${workspaceFolder}/src -I${workspaceFolder}/deps/rexo/include -o ${workspaceFolder}/build/main-light",
+            "command": "gcc --coverage -g ${workspaceFolder}/tests/main-light.c ${workspaceFolder}/src/list-light/code.c -I${workspaceFolder}/src -I${workspaceFolder}/deps/rexo/include -o ${workspaceFolder}/build/main-light",
             "problemMatcher": [],
             "group": "test",
             "presentation": {
@@ -42,7 +42,7 @@
         {
             "label": "gcc-build-micro",
             "type": "shell",
-            "command": "gcc --coverage -g ${workspaceFolder}/tests/main-micro.c ${workspaceFolder}/src/list-micro/code.c -I${workspaceFolder}/src -I${workspaceFolder}/deps/rexo/include -o ${workspaceFolder}/build/main-micro && lcov -t ${workspaceFolder}/build/main-micro -o ${workspaceFolder}/lcov.info -c -d . ",
+            "command": "gcc --coverage -g ${workspaceFolder}/tests/main-micro.c ${workspaceFolder}/src/list-micro/code.c -I${workspaceFolder}/src -I${workspaceFolder}/deps/rexo/include -o ${workspaceFolder}/build/main-micro",
             "problemMatcher": [],
             "group": "test",
             "presentation": {
