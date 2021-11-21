@@ -14,6 +14,8 @@
         "vadimcn.vscode-lldb",
         "JacquesLucke.gcov-viewer",
         "ryanluker.vscode-coverage-gutters",
+        "codezombiech.gitignore",
+        "michelemelluso.gitignore",
         "webfreak.debug"
 	],
 

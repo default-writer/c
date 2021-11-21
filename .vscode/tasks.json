@@ -42,13 +42,13 @@
         {
             "label": "gcc-build-micro",
             "type": "shell",
-            "command": "gcc --coverage -g ${workspaceFolder}/tests/main-micro.c ${workspaceFolder}/src/list-micro/code.c -I${workspaceFolder}/src -I${workspaceFolder}/deps/rexo/include -o ${workspaceFolder}/build/main-micro",
+            "command": "gcc --coverage -g ${workspaceFolder}/tests/main-micro.c ${workspaceFolder}/src/list-micro/code.c -I${workspaceFolder}/src -I${workspaceFolder}/deps/rexo/include -o ${workspaceFolder}/build/main-micro && lcov -t ${workspaceFolder}/build/main-micro -o ${workspaceFolder}/lcov.info -c -d . ",
             "problemMatcher": [],
             "group": "test",
             "presentation": {
                 "reveal": "silent",
                 "panel": "shared",
-                "close": true
+                "close": false
             }
         }        
     ]

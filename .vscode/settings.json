@@ -92,6 +92,8 @@
     "gcovViewer.buildDirectories": [
         "/workspaces/c/"
     ],
+    "coverage-gutters.coverageBaseDir": "/workspaces/c/",
+    "coverage-gutters.lcovname": "lcov.info",
     "C_Cpp.dimInactiveRegions": true,
     "C_Cpp.errorSquiggles": "Disabled"
 }

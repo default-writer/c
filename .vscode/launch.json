@@ -33,34 +33,6 @@
             "initCommands":["settings set target.disable-aslr false"]
         },
         {
-            "name": "(lldb) garbage",
-            "type": "lldb",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/main-garbage",
-            "initCommands":["settings set target.disable-aslr false"]
-        },
-        {
-            "name": "(gdb) garbage",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/main-garbage",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "gcc-build",
-            "miDebuggerPath": "/usr/bin/gdb"
-        },
-        {
             "name": "(gdb) list",
             "type": "cppdbg",
             "request": "launch",
