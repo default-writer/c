@@ -12,6 +12,7 @@
 		"ms-vscode.cpptools",
         "ms-vscode.cmake-tools",
         "JacquesLucke.gcov-viewer",
+        "ryanluker.vscode-coverage-gutters",
         "webfreak.debug"
 	],
 
