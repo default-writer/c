@@ -102,14 +102,13 @@ struct list* list_pop(struct list** const current) {
 struct list* list_peek(struct list** const current) {
     /* get current context's head */
     struct list* head = *current;
-    struct list* tmp = head;
     /* if we call method on empty stack, do not return head element, return null element by convention */
     if (head == 0 || head->prev == 0) {
         /* returns default element as null element */
         return 0;
     }
     /* assigns current stack head pointer to temporary */
-    tmp = head;
+    struct list* tmp = head;
     /* returns head element */
     return tmp;
 }
