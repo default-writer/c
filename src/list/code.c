@@ -1,4 +1,4 @@
-//#define DIRTY
+#define DIRTY
 
 #include <stddef.h>
 #include <stdio.h>
