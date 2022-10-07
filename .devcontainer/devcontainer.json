@@ -19,7 +19,10 @@
 		"IgorSbitnev.error-gutters",
 		"webfreak.debug",
 		"quanthouse.code-debug",
-		"lanza.lldb-vscode"
+		"lanza.lldb-vscode",
+		"hbenl.vscode-test-explorer",
+		"derivitec-ltd.cmake-test-adapter",
+		"ms-vscode.test-adapter-converter"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
