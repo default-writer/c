@@ -10,14 +10,16 @@
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
 		"ms-vscode.cpptools",
-        "ms-vscode.cmake-tools",
-        "vadimcn.vscode-lldb",
-        "JacquesLucke.gcov-viewer",
-        "ryanluker.vscode-coverage-gutters",
-        "codezombiech.gitignore",
-        "michelemelluso.gitignore",
-        "IgorSbitnev.error-gutters",
-        "webfreak.debug"
+		"ms-vscode.cmake-tools",
+		"vadimcn.vscode-lldb",
+		"JacquesLucke.gcov-viewer",
+		"ryanluker.vscode-coverage-gutters",
+		"codezombiech.gitignore",
+		"michelemelluso.gitignore",
+		"IgorSbitnev.error-gutters",
+		"webfreak.debug",
+		"quanthouse.code-debug",
+		"lanza.lldb-vscode"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
