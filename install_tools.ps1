@@ -1,1 +1,1 @@
-choco install ninja lcov --force -y --execution-timeout 3600 
+& choco install ninja lcov --force -y --execution-timeout 3600 
