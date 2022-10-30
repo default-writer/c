@@ -6,7 +6,7 @@
         {
             "label": "gcc-build",
             "type": "shell",
-            "command": "gcc --coverage -g ${workspaceFolder}/tests/main.c ${workspaceFolder}/src/list/code.c -I${workspaceFolder}/src -I${workspaceFolder}/deps/rexo/include -o ${workspaceFolder}/build/main && lcov --capture --directory ${workspaceFolder} --output-file main.info",
+            "command": "gcc --coverage -g ${workspaceFolder}/tests/main.c ${workspaceFolder}/src/list/code.c -I${workspaceFolder}/src -I${workspaceFolder}/deps/rexo/include -o ${workspaceFolder}/build/main && gcov --capture --directory ${workspaceFolder} --output-file main.info",
             "problemMatcher": [],
             "group": "test",
             "presentation": {
@@ -18,7 +18,7 @@
         {
             "label": "gcc-build-light",
             "type": "shell",
-            "command": "gcc --coverage -g ${workspaceFolder}/tests/main-light.c ${workspaceFolder}/src/list-light/light-code.c -I${workspaceFolder}/src -I${workspaceFolder}/deps/rexo/include -o ${workspaceFolder}/build/main-light && lcov --capture --directory ${workspaceFolder} --output-file main-light.info",
+            "command": "gcc --coverage -g ${workspaceFolder}/tests/main-light.c ${workspaceFolder}/src/list-light/light-code.c -I${workspaceFolder}/src -I${workspaceFolder}/deps/rexo/include -o ${workspaceFolder}/build/main-light && gcov --capture --directory ${workspaceFolder} --output-file main-light.info",
             "problemMatcher": [],
             "group": "test",
             "presentation": {
@@ -30,7 +30,7 @@
         {
             "label": "gcc-build-tiny",
             "type": "shell",
-            "command": "gcc --coverage -g ${workspaceFolder}/tests/main-tiny.c ${workspaceFolder}/src/list-tiny/tiny-code.c -I${workspaceFolder}/src -I${workspaceFolder}/deps/rexo/include -o ${workspaceFolder}/build/main-tiny && lcov --capture --directory ${workspaceFolder} --output-file main-tiny.info",
+            "command": "gcc --coverage -g ${workspaceFolder}/tests/main-tiny.c ${workspaceFolder}/src/list-tiny/tiny-code.c -I${workspaceFolder}/src -I${workspaceFolder}/deps/rexo/include -o ${workspaceFolder}/build/main-tiny && gcov --capture --directory ${workspaceFolder} --output-file main-tiny.info",
             "problemMatcher": [],
             "group": "test",
             "presentation": {
@@ -42,7 +42,7 @@
         {
             "label": "gcc-build-micro",
             "type": "shell",
-            "command": "gcc --coverage -g ${workspaceFolder}/tests/main-micro.c ${workspaceFolder}/src/list-micro/micro-code.c -I${workspaceFolder}/src -I${workspaceFolder}/deps/rexo/include -o ${workspaceFolder}/build/main-micro && lcov --capture --directory ${workspaceFolder} --output-file main-micro.info",
+            "command": "gcc --coverage -g ${workspaceFolder}/tests/main-micro.c ${workspaceFolder}/src/list-micro/micro-code.c -I${workspaceFolder}/src -I${workspaceFolder}/deps/rexo/include -o ${workspaceFolder}/build/main-micro && gcov --capture --directory ${workspaceFolder} --output-file main-micro.info",
             "problemMatcher": [],
             "group": "test",
             "presentation": {
@@ -54,7 +54,7 @@
         {
             "label": "gcc-postbuild",
             "type": "shell",
-            "command": "lcov --capture --directory ${workspaceFolder} --output-file main.info",
+            "command": "gcov --capture --directory ${workspaceFolder} --output-file main.info",
             "problemMatcher": [],
             "group": "test",
             "presentation": {
@@ -66,7 +66,7 @@
         {
             "label": "gcc-light-postbuild",
             "type": "shell",
-            "command": "lcov --capture --directory ${workspaceFolder} --output-file main-light.info",
+            "command": "gcov --capture --directory ${workspaceFolder} --output-file main-light.info",
             "problemMatcher": [],
             "group": "test",
             "presentation": {
@@ -78,7 +78,7 @@
         {
             "label": "gcc-micro-postbuild",
             "type": "shell",
-            "command": "lcov --capture --directory ${workspaceFolder} --output-file main-micro.info",
+            "command": "gcov --capture --directory ${workspaceFolder} --output-file main-micro.info",
             "problemMatcher": [],
             "group": "test",
             "presentation": {
@@ -90,7 +90,7 @@
         {
             "label": "gcc-tiny-postbuild",
             "type": "shell",
-            "command": "lcov --capture --directory ${workspaceFolder} --output-file main-tiny.info",
+            "command": "gcov --capture --directory ${workspaceFolder} --output-file main-tiny.info",
             "problemMatcher": [],
             "group": "test",
             "presentation": {
