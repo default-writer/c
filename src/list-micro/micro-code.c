@@ -15,9 +15,9 @@ void list_destroy(struct list** const current);
 /* list vtable */
 const struct list_vtable list_vt = {
     .init = list_init,
+    .destroy = list_destroy,
     .push = list_push,
-    .pop = list_pop,
-    .destroy = list_destroy
+    .pop = list_pop
 };
 
 /* initializes the new context's head element */

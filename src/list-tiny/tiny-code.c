@@ -10,16 +10,16 @@
 void list_init(struct list** const current);
 void list_push(struct list** const current, void* payload);
 void* list_pop(struct list** const current);
-void* list_peek(struct list** const current);
 void list_destroy(struct list** const current);
+void* list_peek(struct list** const current);
 
 /* list vtable */
 const struct list_vtable list_vt = {
-    .push = list_push,
-    .pop = list_pop,
-    .peek = list_peek,
     .init = list_init,
-    .destroy = list_destroy
+    .destroy = list_destroy,
+    .push = list_push,
+    .peek = list_peek,
+    .pop = list_pop
 };
 
 /* initializes the new context's head element */
