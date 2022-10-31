@@ -1,6 +1,7 @@
 # Dependencies
 deps/**/*
 deps/*
+deps/
 
 # Prerequisites
 *.d
@@ -39,7 +40,6 @@ chud.log
 # Directories
 node_modules
 vcpkg
-rexo
 bazel*
 build
 **/*.gcda
@@ -49,10 +49,8 @@ build
 dump.txt
 [cC][mM]ake*
 Makefile
-rexo/**
 main*
-deps/rexo
-deps/**
 lcov.info
 report
 *.info
+!/.vscode

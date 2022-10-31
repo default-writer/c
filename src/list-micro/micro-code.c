@@ -29,6 +29,36 @@ void list_init(struct list** const current) {
     /* sets current context's counter to zero */
 }
 
+/* destroys the memory stack */
+/* frees all memory elements */
+/* as a result, memory will be freed */
+void list_destroy(struct list** const current) {
+    /* get current context's head */
+    /* assigns currently selected item pointer to temporary */
+    struct list* tmp = *current;
+    /* if not already freed */
+    if (tmp != 0) {
+        /* until we found element with no parent (previous) node */
+        do {
+            /* gets temporary pointer value */
+            struct list* ptr = tmp;
+            /* gets prev pointer value */
+            struct list* prev = tmp->prev;
+#ifndef DIRTY
+            /* zero all pointers */
+            ptr->prev = 0;
+            ptr->payload = 0;
+#endif
+            /* free temporary pointer value */
+            FREE(ptr);
+            /* advances temporary pointer value to the next item */
+            tmp = prev;
+        } while (tmp != 0);
+        /* all stack items are processed */
+        *current = 0;
+    }
+}
+
 /* allocates a memory for provided payload  */
 /* at current context, data payload stored at allocated memory buffer */
 /* as a result, items counter will increase */
@@ -38,8 +68,6 @@ void list_push(struct list** const current, void* payload) {
     /* sets the new data into allocated memory buffer */
     item->payload = payload;
     /* pushes new item on top of the stack in current context */
-    /* get current context's head */
-    struct list* head = *current;
     /* assigns item's prev pointer to head pointer */
     item->prev = *current;
     /* advances position of head pointer to the new head */
@@ -75,34 +103,4 @@ void* list_pop(struct list** const current) {
     FREE(ptr);
     /* returns removed element */
     return payload;
-}
-
-/* destroys the memory stack */
-/* frees all memory elements */
-/* as a result, memory will be freed */
-void list_destroy(struct list** const current) {
-    /* get current context's head */
-    /* assigns currently selected item pointer to temporary */
-    struct list* tmp = *current;
-    /* if not already freed */
-    if (tmp != 0) {
-        /* until we found element with no parent (previous) node */
-        do {
-            /* gets temporary pointer value */
-            struct list* ptr = tmp;
-            /* gets prev pointer value */
-            struct list* prev = tmp->prev;
-#ifndef DIRTY
-            /* zero all pointers */
-            ptr->prev = 0;
-            ptr->payload = 0;
-#endif
-            /* free temporary pointer value */
-            FREE(ptr);
-            /* advances temporary pointer value to the next item */
-            tmp = prev;
-        } while (tmp != 0);
-        /* all stack items are processed */
-        *current = 0;
-    }
 }

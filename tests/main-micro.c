@@ -6,6 +6,8 @@
 
 #include "list-micro/api.h"
 
+#define __no_sanitize_address __attribute__((no_sanitize("address")))
+
 /* Force Rexo's compatibility with C89. */
 #define RX_ENABLE_C89_COMPAT
 
