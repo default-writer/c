@@ -21,9 +21,9 @@ set(MAIN_SOURCE tests/main.c)
 
 add_subdirectory(deps/rexo)
 
-set(LIST_MICRO_SOURCE src/list-micro/micro-code.c)
-set(LIST_TINY_SOURCE src/list-tiny/tiny-code.c)
-set(LIST_LIGHT_SOURCE src/list-light/light-code.c)
+set(LIST_MICRO_SOURCE src/list-micro/code.c)
+set(LIST_TINY_SOURCE src/list-tiny/code.c)
+set(LIST_LIGHT_SOURCE src/list-light/code.c)
 set(LIST_SOURCE src/list/code.c)
 
 include_directories(src)

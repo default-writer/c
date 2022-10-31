@@ -1,3 +1,4 @@
+#include "globals.h"
 #include "alloc.h"
 #include "data.h"
 
