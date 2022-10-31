@@ -46,3 +46,27 @@ target_link_libraries(main PRIVATE rexo list-lib)
 target_link_libraries(main-light PRIVATE rexo list-light-lib)
 target_link_libraries(main-tiny PRIVATE rexo list-tiny-lib)
 target_link_libraries(main-micro PRIVATE rexo list-micro-lib)
+
+set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_C_EXTENSIONS OFF)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+if(MSVC)
+    add_compile_options(/W4)
+else()
+    add_compile_options(
+        -Wpedantic -Wall -Wextra -Waggregate-return -Wcast-align -Wcast-qual
+        -Wconversion -Wfloat-equal -Wpointer-arith -Wshadow -Wstrict-overflow=5
+        -Wswitch -Wswitch-default -Wundef -Wunreachable-code -Wwrite-strings
+        -Wformat-nonliteral -fsanitize=undefined,address)
+    add_link_options(
+        -fsanitize=undefined,address
+    )
+endif()
+
+if(UNIX)
+    add_definitions(-D_POSIX_C_SOURCE=199309L)
+endif()

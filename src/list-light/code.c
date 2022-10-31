@@ -8,10 +8,12 @@
 
 /* default list methods */
 void list_init(struct list** const current);
+void list_destroy(struct list** const current);
+
+/* default implementation */
 void list_push(struct list** const current, void* payload);
 void* list_pop(struct list** const current);
 void* list_peek(struct list** const current);
-void list_destroy(struct list** const current);
 
 /* list vtable */
 const struct list_vtable list_vt = {
