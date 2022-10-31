@@ -15,7 +15,7 @@ void list_alloc(struct list** const current, void* payload);
 struct list* list_push(struct list** const current, struct list** const item);
 struct list* list_pop(struct list** const current);
 struct list* list_peek(struct list** const current);
-void list_free(struct list** const item);
+void list_free(struct list** const current, struct list** const item);
 
 /* list vtable */
 const struct list_vtable list_vt = {
