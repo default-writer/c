@@ -1,4 +1,4 @@
-//#define DEBUG
+#define DEBUG
 
 #include <stddef.h>
 #include <stdio.h>
@@ -52,8 +52,6 @@ void list_print(struct list** const current) {
 #ifdef DEBUG
     // get current context's head
     struct list* head = *current;
-    // get root element
-    // struct list *root = ctx->root;
     // sets the counter
     int i = 0; 
     // assigns current's head pointer to the temporary
@@ -149,7 +147,7 @@ RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tea
 RX_TEST_CASE(myTestSuite, test_empty_list_count_equals_0, .fixture = test_fixture)
 {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    const struct list_context* ctx = &rx->ctx;
+     const struct list_context* ctx = &rx->ctx;
 
     // enshure that counter is initialized to 0
     RX_REQUIRE(ctx->head != 0);

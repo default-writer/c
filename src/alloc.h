@@ -10,7 +10,7 @@ typedef long long unsigned int ADDR;
 void* _alloc(size_t nmemb, size_t size)
 {
     void* ptr = calloc(nmemb, size);
-    printf("!alloc: 0x%llx :%ld\n", (ADDR)ptr, size);
+    printf("!alloc: 0x%llx :%uld\n", (ADDR)ptr, size);
     return ptr;
 }
 

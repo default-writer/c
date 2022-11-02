@@ -1,3 +1,4 @@
 [submodule "deps/rexo"]
 	path = deps/rexo
-	url = https://github.com/christophercrouzet/rexo.git
+	url = https://github.com/default-writer/rexo.git
+	branch = no_sanitize_address
