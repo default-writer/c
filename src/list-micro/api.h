@@ -19,6 +19,7 @@ struct list_vtable
     void (*init)(struct list** const current);
     /* destroy context */
     void (*destroy)(struct list** const current);
+    /* link to self-contained methods structure */
     struct list_class* self;
 };
 
