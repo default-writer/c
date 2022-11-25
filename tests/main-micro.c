@@ -15,63 +15,56 @@
 #include <rexo.h>
 
 // queue/list context: head
-struct list_context {
+struct list_context_class {
     // head element
     struct list* head;
-    const struct list_vtable* list;
+    const struct list_class* list;
+    /* push item on current context (stack) */
+    void (*init)(struct list_context_class* self);
+    /* pop item on current context (stack) */
+    void (*destroy)(struct list_context_class* self);
+    /* link to self-cotained methods structure */
     const struct list_context_class* self;
 };
 
-struct list_context_class {
-    /* push item on current context (stack) */
-    void (*init)(struct list_context* self);
-    /* pop item on current context (stack) */
-    void (*destroy)(struct list_context* self);
-};
+extern const struct list_class list_class_definition;
 
-void list_context_init(struct list_context* self)
+void list_context_init(struct list_context_class* self)
 {
+    self->list = &list_class_definition;
     self->list->init(&self->head);
 }
 
-void list_context_destroy(struct list_context* self)
+void list_context_destroy(struct list_context_class* self)
 {
     self->list->destroy(&self->head);
+    self->list = 0;
 }
-
-//extern struct list_vtable list_vt;
-//extern struct list_class list_class_definition;
 
 const struct list_context_class list_context_class_definition =
 {
     .init = list_context_init, // mutable function
-    .destroy = list_context_destroy // mutable function
+    .destroy = list_context_destroy, // mutable function
+    .self = &list_context_class_definition
 };
-
-const struct list_context list_ctx = {
-    .self = &list_context_class_definition // immutable definition
-};
-
-extern const struct list_vtable list_vt;
 
 // default list usage scenario
 void using_list(void (*list_using)(struct list** const)) {
     // initialize current context (stack)
-    struct list_context* ctx = ALLOC(1, struct list_context);
+    struct list_context_class* ctx = ALLOC(1, struct list_context_class);
+
     // setting context
-    ctx->self = list_ctx.self;
+    ctx->self = &list_context_class_definition;
+
     // create list
-    ctx->list = &list_vt;
-
-    // unless you need to change some behaviours, do not import extern vtable list_class_definition
-    //ctx->list->self->push = list_class_definition.push;
-
-    // initialize list
     ctx->self->init(ctx);
+
     // call user method
     list_using(&ctx->head);
+
     // destroy list
     ctx->self->destroy(ctx);
+
     // free curent context (stack)
     FREE(ctx);
 }
@@ -114,7 +107,7 @@ void list_print(struct list** const current) {
 // use list
 void list_using(struct list** const current) {
     // access context's functions pointer
-    const struct list_vtable* list = &list_vt;
+    const struct list_class* list = &list_class_definition;
     ADDR* payload = (ADDR*)0xdeadbeef;
     void* is_null[] = {
         list->self->pop(current)
@@ -161,16 +154,16 @@ void list_using(struct list** const current) {
 
 /* Data structure to use at the core of our fixture. */
 typedef struct test_data {
-    struct list_context ctx;
+    struct list_context_class ctx;
 } *TEST_DATA;
 
 /* Initialize the data structure. Its allocation is handled by Rexo. */
 RX_SET_UP(test_set_up)
 {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct list_context* ctx = &rx->ctx;
+    struct list_context_class* ctx = &rx->ctx;
     // access context's functions pointer
-    const struct list_vtable* list = &list_vt;
+    const struct list_class* list = &list_class_definition;
     
     // initialize list
     list->init(&ctx->head);
@@ -180,9 +173,9 @@ RX_SET_UP(test_set_up)
 RX_TEAR_DOWN(test_tear_down)
 {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct list_context* ctx = &rx->ctx;
+    struct list_context_class* ctx = &rx->ctx;
     // access context's functions pointer
-    const struct list_vtable* list = &list_vt;
+    const struct list_class* list = &list_class_definition;
     
     // destroy list
     list->destroy(&ctx->head);
@@ -195,7 +188,7 @@ RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tea
 RX_TEST_CASE(myTestSuite, test_empty_list_count_equals_0, .fixture = test_fixture)
 {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-     const struct list_context* ctx = &rx->ctx;
+     const struct list_context_class* ctx = &rx->ctx;
 
     // enshure that counter is initialized to 0
     RX_REQUIRE(ctx->head != 0);
@@ -205,10 +198,10 @@ RX_TEST_CASE(myTestSuite, test_empty_list_count_equals_0, .fixture = test_fixtur
 RX_TEST_CASE(myTestSuite, test_list_alloc_count_eq_1, .fixture = test_fixture)
 {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct list_context* ctx = &rx->ctx;
+    struct list_context_class* ctx = &rx->ctx;
 
     // create list
-    const struct list_vtable* list = &list_vt;
+    const struct list_class* list = &list_class_definition;
     void* payload = (void*)0xdeadbeef;
 
     list->self->push(&ctx->head, payload);
@@ -220,10 +213,10 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_count_eq_1, .fixture = test_fixture)
 RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture)
 {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct list_context* ctx = &rx->ctx;
+    struct list_context_class* ctx = &rx->ctx;
 
     // create list
-    const struct list_vtable* list = &list_vt;
+    const struct list_class* list = &list_class_definition;
     void* payload = (void*)0xdeadbeef;
 
     list->self->push(&ctx->head, payload);
@@ -235,10 +228,10 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture)
 RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture)
 {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct list_context* ctx = &rx->ctx;
+    struct list_context_class* ctx = &rx->ctx;
 
     // create list
-    const struct list_vtable* list = &list_vt;
+    const struct list_class* list = &list_class_definition;
     void* payload = (void*)0xdeadbeef;
 
     list->self->push(&ctx->head, payload);
@@ -252,10 +245,10 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture)
 RX_TEST_CASE(myTestSuite, test_list_pop_is_zero, .fixture = test_fixture)
 {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct list_context* ctx = &rx->ctx;
+    struct list_context_class* ctx = &rx->ctx;
 
     // create list
-    const struct list_vtable* list = &list_vt;
+    const struct list_class* list = &list_class_definition;
 
     void* head = list->self->pop(&ctx->head);
 

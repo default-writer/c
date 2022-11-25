@@ -3,7 +3,7 @@
 #include "data.h"
 
 /* queue/list: vtable definition */
-struct list_vtable {
+struct list_class_definition {
     /* initialize context */
     void (*init)(struct list** const current);
     /* destroy context */
@@ -21,4 +21,4 @@ struct list_vtable {
 };
 
 /* queue/list: vtable */
-const struct list_vtable list_vt;
+const struct list_class_definition list_class;

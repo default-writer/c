@@ -11,10 +11,6 @@ struct list_class {
     void (*push)(struct list** const current, void* item);
     /* pop item on current context (stack) */
     void* (*pop)(struct list** const current);
-};
-
-struct list_vtable
-{
     /* initialize context */
     void (*init)(struct list** const current);
     /* destroy context */

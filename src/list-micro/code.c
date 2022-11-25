@@ -91,23 +91,11 @@ void* list_pop(struct list** const current) {
     return payload;
 }
 
-// const struct list_vtable means that you cannot replace self:
-//
-// list->self = list_class_definition;
-// list->init = 0;
-//
-// but you can replace some functions:
-//
-// list->self->push = list_class_definition.push;
-
+/* queue/list: vtable */
 const struct list_class list_class_definition =
 {
     .push = list_push, // mutable function
-    .pop = list_pop // mutable function
-};
-
-/* queue/list: vtable */
-const struct list_vtable list_vt = {
+    .pop = list_pop, // mutable function
     .init = list_init, // immutable function
     .destroy = list_destroy, // immutable function
     .self = &list_class_definition // immutable definition
