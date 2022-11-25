@@ -6,7 +6,8 @@
 
 #include "list-micro/api.h"
 
-#define __no_sanitize_address __attribute__((no_sanitize("address")))
+// we do not need sanitize address
+//#define __no_sanitize_address __attribute__((no_sanitize("address")))
 
 /* Force Rexo's compatibility with C89. */
 #define RX_ENABLE_C89_COMPAT
@@ -20,16 +21,17 @@ struct list_context {
 };
 
 extern struct list_vtable list_vt;
-extern struct list_class list_class_definition;
+//extern struct list_class list_class_definition;
 
 // default list usage scenario
 void using_list(void (*list_using)(struct list** const)) {
     // initialize current context (stack)
     struct list_context* ctx = ALLOC(1, struct list_context);
     // create list
-    struct list_vtable* list = &list_vt;
+    const struct list_vtable* list = &list_vt;
 
-    list->self->push = list_class_definition.push;
+    // unless you need to change some behaviours, do not import extern vtable list_class_definition
+    //list->self->push = list_class_definition.push;
 
     // initialize list
     list->init(&ctx->head);
@@ -38,7 +40,7 @@ void using_list(void (*list_using)(struct list** const)) {
     // destroy list
     list->destroy(&ctx->head);
     // free curent context (stack)
-    free(ctx);
+    FREE(ctx);
 }
 
 // print head on current context (stack)
