@@ -6,22 +6,6 @@
 
 #include "api.h"
 
-/* default list methods */
-void list_init(struct list** const current);
-void list_destroy(struct list** const current);
-
-/* default implementation */
-void list_push(struct list** const current, void* payload);
-void* list_pop(struct list** const current);
-
-/* list vtable */
-const struct list_vtable list_vt = {
-    .init = list_init,
-    .destroy = list_destroy,
-    .push = list_push,
-    .pop = list_pop
-};
-
 /* initializes the new context's head element */
 /* as a result, new memory block will be allocated */
 /* current context pointer set to zero */
@@ -106,3 +90,25 @@ void* list_pop(struct list** const current) {
     /* returns removed element */
     return payload;
 }
+
+// const struct list_vtable means that you cannot replace self:
+//
+// list->self = list_class_definition;
+// list->init = 0;
+//
+// but you can replace some functions:
+//
+// list->self->push = list_class_definition.push;
+
+struct list_class list_class_definition =
+{
+    .push = list_push, // mutable function
+    .pop = list_pop // mutable function
+};
+
+/* queue/list: vtable */
+const struct list_vtable list_vt = {
+    .init = list_init, // immutable function
+    .destroy = list_destroy, // immutable function
+    .self = &list_class_definition // immutable definition
+};

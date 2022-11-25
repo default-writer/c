@@ -55,7 +55,8 @@
         "typeinfo": "cpp",
         "api.h": "c",
         "data.h": "c",
-        "alloc.h": "c"
+        "alloc.h": "c",
+        "globals.h": "c"
     },
     "lldb.displayFormat": "auto",
     "lldb.showDisassembly": "auto",

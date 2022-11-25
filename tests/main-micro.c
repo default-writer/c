@@ -19,12 +19,18 @@ struct list_context {
     struct list* head;
 };
 
+extern struct list_vtable list_vt;
+extern struct list_class list_class_definition;
+
 // default list usage scenario
 void using_list(void (*list_using)(struct list** const)) {
     // initialize current context (stack)
     struct list_context* ctx = ALLOC(1, struct list_context);
     // create list
-    const struct list_vtable* list = &list_vt;
+    struct list_vtable* list = &list_vt;
+
+    list->self->push = list_class_definition.push;
+
     // initialize list
     list->init(&ctx->head);
     // call user method
@@ -74,40 +80,47 @@ void list_print(struct list** const current) {
 void list_using(struct list** const current) {
     // access context's functions pointer
     const struct list_vtable* list = &list_vt;
-    void* payload = (void*)0xdeadbeef;
+    ADDR* payload = (ADDR*)0xdeadbeef;
     void* is_null[] = {
-        list->pop(current)
+        list->self->pop(current)
     };
     if (0 != is_null[0]) {
         return;
     }
-    list->push(current, payload);
+    list->self->push(current, payload);
     print_head(current);
-    list->push(current, ++payload);
+    list->self->push(current, ++payload);
     print_head(current);
-    list->push(current, ++payload);
+    list->self->push(current, ++payload);
     print_head(current);
-    list->push(current, ++payload);
+    list->self->push(current, ++payload);
     print_head(current);
-    list->push(current, ++payload);
+    list->self->push(current, ++payload);
     print_head(current);
     printf("\n");
     list_print(current);
-    void* q_pop0 = list->pop(current); 
+    void* q_pop0 = list->self->pop(current);
+    q_pop0 = q_pop0;
     list_print(current);
-    void* q_pop1 = list->pop(current); 
+    void* q_pop1 = list->self->pop(current); 
+    q_pop1 = q_pop1;
     list_print(current);
-    void* q_pop2 = list->pop(current); 
+    void* q_pop2 = list->self->pop(current); 
+    q_pop2 = q_pop2;
     list_print(current);
-    void* q_pop3 = list->pop(current); 
-    list->push(current, q_pop3);
-    q_pop3 = list->pop(current); 
+    void* q_pop3 = list->self->pop(current); 
+    list->self->push(current, q_pop3);
+    q_pop3 = list->self->pop(current); 
     list_print(current);
-    void* q_pop4 = list->pop(current); 
+    void* q_pop4 = list->self->pop(current);
+    q_pop4 = q_pop4;
     list_print(current);
-    void* q_pop5 = list->pop(current); 
+    void* q_pop5 = list->self->pop(current); 
+    q_pop5 = q_pop5;
     list_print(current);
-    void* q_pop6 = list->pop(current); 
+    void* q_pop6 = list->self->pop(current); 
+    q_pop6 = q_pop6;
+
     list_print(current);
 }
 
@@ -163,7 +176,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_count_eq_1, .fixture = test_fixture)
     const struct list_vtable* list = &list_vt;
     void* payload = (void*)0xdeadbeef;
 
-    list->push(&ctx->head, payload);
+    list->self->push(&ctx->head, payload);
 
     // ensure that data being added to list
     RX_REQUIRE(ctx->head != 0);
@@ -178,8 +191,8 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture)
     const struct list_vtable* list = &list_vt;
     void* payload = (void*)0xdeadbeef;
 
-    list->push(&ctx->head, payload);
-    void* head = list->pop(&ctx->head);
+    list->self->push(&ctx->head, payload);
+    void* head = list->self->pop(&ctx->head);
 
     RX_REQUIRE(head != 0);
 }
@@ -193,8 +206,8 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture)
     const struct list_vtable* list = &list_vt;
     void* payload = (void*)0xdeadbeef;
 
-    list->push(&ctx->head, payload);
-    void* head = list->pop(&ctx->head);
+    list->self->push(&ctx->head, payload);
+    void* head = list->self->pop(&ctx->head);
 
     // ensure that data being added to list
     RX_REQUIRE(head == payload);
@@ -209,13 +222,13 @@ RX_TEST_CASE(myTestSuite, test_list_pop_is_zero, .fixture = test_fixture)
     // create list
     const struct list_vtable* list = &list_vt;
 
-    void* head = list->pop(&ctx->head);
+    void* head = list->self->pop(&ctx->head);
 
     // ensure that data being added to list
     RX_REQUIRE(head == 0);
 }
 
-int main(int argc, char **argv)
+int main()
 {
 #ifdef DEBUG
     printf("---- acceptance test code\n");
