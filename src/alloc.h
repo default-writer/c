@@ -36,7 +36,9 @@ void _free(void* ptr)
 
 #endif
 
-#define ALLOC(size, type) (type*)_LIST_ALLOC(1, sizeof(type))
+#define ALLOC_N(n, type, size) (struct type*)_LIST_ALLOC(n, size)
+#define ALLOC(type, size) (struct type*)_LIST_ALLOC(1, size)
+#define NEW(size) _LIST_ALLOC(1, size)
 #define FREE(ptr) _LIST_FREE(ptr)
 
 #endif

@@ -29,7 +29,7 @@ const struct list_vtable list_vt = {
 /* current context pointer set to zero */
 void list_init(struct list** const current) {
     /* sets current context's head element */
-    *current = ALLOC(1, struct list);
+    *current = NEW(sizeof(struct list));
     /* sets current context's counter to zero */
 }
 
@@ -68,7 +68,7 @@ void list_destroy(struct list** const current) {
 /* as a result, items counter will increase */
 void list_push(struct list** const current, void* payload) {
     /* stores into pre-allocated value newly allocated memory buffer pointer */
-    struct list* item = ALLOC(1, struct list);
+    struct list* item = NEW(sizeof(struct list));
     /* sets the new data into allocated memory buffer */
     item->payload = payload;
     /* pushes new item on top of the stack in current context */

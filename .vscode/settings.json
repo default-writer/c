@@ -56,7 +56,8 @@
         "api.h": "c",
         "data.h": "c",
         "alloc.h": "c",
-        "globals.h": "c"
+        "globals.h": "c",
+        "compare": "c"
     },
     "lldb.displayFormat": "auto",
     "lldb.showDisassembly": "auto",

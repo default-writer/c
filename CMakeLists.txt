@@ -40,7 +40,7 @@ set(MAIN_SOURCE tests/main.c)
 
 add_subdirectory(deps/rexo)
 
-set(LIST_MICRO_SOURCE src/list-micro/code.c)
+set(LIST_MICRO_SOURCE src/list-micro/code.c src/object/code.c)
 set(LIST_TINY_SOURCE src/list-tiny/code.c)
 set(LIST_LIGHT_SOURCE src/list-light/code.c)
 set(LIST_SOURCE src/list/code.c)
@@ -50,6 +50,7 @@ include_directories(src/list)
 include_directories(src/list-light)
 include_directories(src/list-tiny)
 include_directories(src/list-micro)
+include_directories(src/object)
 
 add_library(list-micro-lib STATIC ${LIST_MICRO_SOURCE})
 add_library(list-tiny-lib STATIC ${LIST_TINY_SOURCE})

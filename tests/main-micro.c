@@ -51,7 +51,7 @@ const struct list_context_class list_context_class_definition =
 // default list usage scenario
 void using_list(void (*list_using)(struct list** const)) {
     // initialize current context (stack)
-    struct list_context_class* ctx = ALLOC(1, struct list_context_class);
+    struct list_context_class* ctx = NEW(sizeof(struct list_context_class));
 
     // setting context
     ctx->self = &list_context_class_definition;
