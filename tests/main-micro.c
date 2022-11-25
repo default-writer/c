@@ -15,30 +15,63 @@
 #include <rexo.h>
 
 // queue/list context: head
-struct list_context { 
+struct list_context {
     // head element
     struct list* head;
+    const struct list_vtable* list;
+    const struct list_context_class* self;
 };
 
-extern struct list_vtable list_vt;
+struct list_context_class {
+    /* push item on current context (stack) */
+    void (*init)(struct list_context* self);
+    /* pop item on current context (stack) */
+    void (*destroy)(struct list_context* self);
+};
+
+void list_context_init(struct list_context* self)
+{
+    self->list->init(&self->head);
+}
+
+void list_context_destroy(struct list_context* self)
+{
+    self->list->destroy(&self->head);
+}
+
+//extern struct list_vtable list_vt;
 //extern struct list_class list_class_definition;
+
+const struct list_context_class list_context_class_definition =
+{
+    .init = list_context_init, // mutable function
+    .destroy = list_context_destroy // mutable function
+};
+
+const struct list_context list_ctx = {
+    .self = &list_context_class_definition // immutable definition
+};
+
+extern const struct list_vtable list_vt;
 
 // default list usage scenario
 void using_list(void (*list_using)(struct list** const)) {
     // initialize current context (stack)
     struct list_context* ctx = ALLOC(1, struct list_context);
+    // setting context
+    ctx->self = list_ctx.self;
     // create list
-    const struct list_vtable* list = &list_vt;
+    ctx->list = &list_vt;
 
     // unless you need to change some behaviours, do not import extern vtable list_class_definition
-    //list->self->push = list_class_definition.push;
+    //ctx->list->self->push = list_class_definition.push;
 
     // initialize list
-    list->init(&ctx->head);
+    ctx->self->init(ctx);
     // call user method
     list_using(&ctx->head);
     // destroy list
-    list->destroy(&ctx->head);
+    ctx->self->destroy(ctx);
     // free curent context (stack)
     FREE(ctx);
 }

@@ -100,7 +100,7 @@ void* list_pop(struct list** const current) {
 //
 // list->self->push = list_class_definition.push;
 
-struct list_class list_class_definition =
+const struct list_class list_class_definition =
 {
     .push = list_push, // mutable function
     .pop = list_pop // mutable function

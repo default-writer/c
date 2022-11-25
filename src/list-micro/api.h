@@ -20,7 +20,7 @@ struct list_vtable
     /* destroy context */
     void (*destroy)(struct list** const current);
     /* link to self-contained methods structure */
-    struct list_class* self;
+    const struct list_class* self;
 };
 
 #endif // _LIST_MICRO_API_H_
