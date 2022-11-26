@@ -4,9 +4,6 @@
 
 #include "list-micro/api.h"
 
-/* Force Rexo's compatibility with C89. */
-#define RX_ENABLE_C89_COMPAT
-
 #include <rexo.h>
 
 // queue/list context: head
