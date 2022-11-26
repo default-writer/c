@@ -17,8 +17,6 @@ struct list {
     void (*init)(struct list_data** const current);
     /* destroy context */
     void (*destroy)(struct list_data** const current);
-    /* link to self-contained methods structure */
-    const struct list* self;
 };
 
 struct list_class {
