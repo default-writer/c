@@ -1,19 +1,35 @@
 cmake_minimum_required(VERSION 3.16.3)
 
-project(list
-    VERSION 0.0.1
-    LANGUAGES C CXX)
+project(list VERSION 0.0.1 LANGUAGES C CXX)
+
+option(DEBUG_ALLOC "Enables debug information for memory allocation" ON)
+option(DIRTY_ALLOC "Enables dirty allocation (no cleanup after use)" ON)
+
+# ------------------------------------------------------------------------------
+
+if(DEBUG_ALLOC)
+    message(STATUS "Configure with debug information for memory allocation")
+    add_definitions(-DDEBUG_ALLOC)
+endif()
+
+if(DIRTY_ALLOC)
+    message(STATUS "Configure with dirty allocation (no cleanup after use)")
+    add_definitions(-DDIRTY_ALLOC)
+endif()
 
 set(CMAKE_C_STANDARD 99)
-set(CMAKE_C_STANDARD_REQUIRED OFF)
+set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+add_compile_options(-fsanitize=undefined,address)
+add_link_options(-fsanitize=undefined,address)
+
 add_compile_options(-Wno-parentheses -Wno-unused-variable -Wno-unused-parameter -Wno-long-long)
 
-set(MAIN_MICRO_SOURCE tests/main-micro.c)
+set(MAIN_MICRO_SOURCE tests/main-micro.c src/alloc.c)
 set(MAIN_TINY_SOURCE tests/main-tiny.c)
 set(MAIN_LIGHT_SOURCE tests/main-light.c)
 set(MAIN_SOURCE tests/main.c)
@@ -45,10 +61,3 @@ target_link_libraries(main-micro PRIVATE rexo list-micro-lib)
 target_link_libraries(main-tiny PRIVATE rexo list-tiny-lib)
 target_link_libraries(main-light PRIVATE rexo list-light-lib)
 target_link_libraries(main PRIVATE rexo list-lib)
-
-set(CMAKE_C_STANDARD 99)
-set(CMAKE_C_STANDARD_REQUIRED ON)
-set(CMAKE_C_EXTENSIONS OFF)
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
