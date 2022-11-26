@@ -18,55 +18,47 @@
 struct list_context_class {
     // head element
     struct list* head;
-    const struct list_class* list;
-    /* push item on current context (stack) */
-    void (*init)(struct list_context_class* self);
-    /* pop item on current context (stack) */
-    void (*destroy)(struct list_context_class* self);
-    /* link to self-cotained methods structure */
-    const struct list_context_class* self;
 };
 
-extern const struct list_class list_class_definition;
-
-void list_context_init(struct list_context_class* self)
+struct list* new_list()
 {
-    self->list = &list_class_definition;
-    self->list->init(&self->head);
+    const struct list* list = &list_definition;
+    struct list* ctx;
+    // init list
+    list->self->init(&ctx);
+    // returns created object
+    return ctx;
+} 
+
+void delete_list(struct list* ctx)
+{
+    const struct list* list = &list_definition;
+    // destroy list
+    list->self->destroy(&ctx);
 }
-
-void list_context_destroy(struct list_context_class* self)
-{
-    self->list->destroy(&self->head);
-    self->list = 0;
-}
-
-const struct list_context_class list_context_class_definition =
-{
-    .init = list_context_init, // mutable function
-    .destroy = list_context_destroy, // mutable function
-    .self = &list_context_class_definition
-};
 
 // default list usage scenario
 void using_list(void (*list_using)(struct list** const)) {
     // initialize current context (stack)
-    struct list_context_class* ctx = NEW(sizeof(struct list_context_class));
-
-    // setting context
-    ctx->self = &list_context_class_definition;
-
-    // create list
-    ctx->self->init(ctx);
+    struct list* ctx = new_list();
 
     // call user method
-    list_using(&ctx->head);
+    list_using(&ctx);
 
-    // destroy list
-    ctx->self->destroy(ctx);
+    // finalize class
+    delete_list(ctx);
+}
 
-    // free curent context (stack)
-    FREE(ctx);
+// default list usage scenario
+void using_list2(void (*list_using)(struct list** const)) {
+    // initialize current context (stack)
+    struct list* ctx = new_list();
+
+    // call user method
+    list_using(&ctx);
+
+    // finalize class
+    delete_list(ctx);
 }
 
 // print head on current context (stack)
@@ -107,7 +99,7 @@ void list_print(struct list** const current) {
 // use list
 void list_using(struct list** const current) {
     // access context's functions pointer
-    const struct list_class* list = &list_class_definition;
+    const struct list* list = &list_definition;
     ADDR* payload = (ADDR*)0xdeadbeef;
     void* is_null[] = {
         list->self->pop(current)
@@ -163,10 +155,10 @@ RX_SET_UP(test_set_up)
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_context_class* ctx = &rx->ctx;
     // access context's functions pointer
-    const struct list_class* list = &list_class_definition;
+    const struct list* list = &list_definition;
     
     // initialize list
-    list->init(&ctx->head);
+    list->self->init(&ctx->head);
     return RX_SUCCESS;
 }
 
@@ -175,10 +167,10 @@ RX_TEAR_DOWN(test_tear_down)
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_context_class* ctx = &rx->ctx;
     // access context's functions pointer
-    const struct list_class* list = &list_class_definition;
+    const struct list* list = &list_definition;
     
     // destroy list
-    list->destroy(&ctx->head);
+    list->self->destroy(&ctx->head);
 }
 
 /* Define the fixture. */
@@ -201,7 +193,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_count_eq_1, .fixture = test_fixture)
     struct list_context_class* ctx = &rx->ctx;
 
     // create list
-    const struct list_class* list = &list_class_definition;
+    const struct list* list = &list_definition;
     void* payload = (void*)0xdeadbeef;
 
     list->self->push(&ctx->head, payload);
@@ -216,7 +208,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture)
     struct list_context_class* ctx = &rx->ctx;
 
     // create list
-    const struct list_class* list = &list_class_definition;
+    const struct list* list = &list_definition;
     void* payload = (void*)0xdeadbeef;
 
     list->self->push(&ctx->head, payload);
@@ -231,7 +223,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture)
     struct list_context_class* ctx = &rx->ctx;
 
     // create list
-    const struct list_class* list = &list_class_definition;
+    const struct list* list = &list_definition;
     void* payload = (void*)0xdeadbeef;
 
     list->self->push(&ctx->head, payload);
@@ -248,7 +240,7 @@ RX_TEST_CASE(myTestSuite, test_list_pop_is_zero, .fixture = test_fixture)
     struct list_context_class* ctx = &rx->ctx;
 
     // create list
-    const struct list_class* list = &list_class_definition;
+    const struct list* list = &list_definition;
 
     void* head = list->self->pop(&ctx->head);
 
@@ -264,6 +256,7 @@ int main()
 #endif
     // some messy code
     using_list(list_using);
+    using_list2(list_using);
 #ifdef DEBUG
     printf("\n");
 #endif

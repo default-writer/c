@@ -91,12 +91,11 @@ void* list_pop(struct list** const current) {
     return payload;
 }
 
-/* queue/list: vtable */
-const struct list_class list_class_definition =
+const struct list list_definition =
 {
-    .push = list_push, // mutable function
-    .pop = list_pop, // mutable function
+    .push = list_push, // immutable function
+    .pop = list_pop, // immutable function
     .init = list_init, // immutable function
     .destroy = list_destroy, // immutable function
-    .self = &list_class_definition // immutable definition
+    .self = &list_definition // immutable definition
 };

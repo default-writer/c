@@ -41,4 +41,4 @@ void _free(void* ptr)
 #define NEW(size) _LIST_ALLOC(1, size)
 #define FREE(ptr) _LIST_FREE(ptr)
 
-#endif
+#endif // _ALLOC_H_
