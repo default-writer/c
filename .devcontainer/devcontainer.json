@@ -10,7 +10,10 @@
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
 		"ms-vscode.cpptools-extension-pack",
+		"ms-vscode.makefile-tools",
+		"llvm-vs-code-extensions.vscode-clangd",
 		"mhutchie.git-graph",
+		"donjayamanne.githistory",
 		"vadimcn.vscode-lldb"
 	]//,
 

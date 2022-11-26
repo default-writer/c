@@ -73,7 +73,7 @@ void* list_pop(struct list** const current) {
     /* gets temporary pointer value */
     void* payload = ptr->payload;
     /* detouches the pointer from the list */
-#ifndef DIRTY_ALLOC
+#ifdef USE_MEMORY_CLEANUP
     ptr->prev = 0;
     ptr->next = 0;
     ptr->payload = 0;
@@ -115,7 +115,7 @@ void list_destroy(struct list** const current) {
             struct list* ptr = tmp;
             /* gets prev pointer value */
             struct list* prev = tmp->prev;
-#ifndef DIRTY_ALLOC
+#ifdef USE_MEMORY_CLEANUP
             /* zero all pointers */
             ptr->prev = 0;
             ptr->next = 0;

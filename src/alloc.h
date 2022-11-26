@@ -1,7 +1,11 @@
 #ifndef _ALLOC_H_
 #define _ALLOC_H_
 
-#ifdef DEBUG_ALLOC
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#ifdef USE_MEMORY_DEBUG_INFO
 
 /* Define a custom `malloc` function. */
 void* _list_alloc(size_t nmemb, size_t size);

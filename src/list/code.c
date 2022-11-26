@@ -50,7 +50,7 @@ void list_destroy(struct list** const current) {
             struct list* ptr = tmp;
             /* gets prev pointer value */
             struct list* prev = tmp->prev;
-#ifndef DIRTY_ALLOC
+#ifdef USE_MEMORY_CLEANUP
             /* zero all pointers */
             ptr->prev = 0;
             ptr->next = 0;
@@ -118,7 +118,7 @@ struct list* list_pop(struct list** const current) {
     /* gets temporary pointer value */
     struct list* ptr = head;
     /* detouches the pointer from the list */
-#ifndef DIRTY_ALLOC
+#ifdef USE_MEMORY_CLEANUP
     ptr->prev = 0;
     ptr->next = 0;
 #endif
@@ -152,7 +152,7 @@ void list_free(struct list** const current, struct list** const item) {
     struct list* tmp = *item;
     /* until we run out of stack or stop at head element */
     if (tmp != 0) {
-#ifndef DIRTY_ALLOC
+#ifdef USE_MEMORY_CLEANUP
         /* zero all pointers */
         tmp->prev = 0;
         tmp->next = 0;

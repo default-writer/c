@@ -36,7 +36,7 @@ void list_destroy(struct list_data** const current) {
             struct list_data* ptr = tmp;
             /* gets prev pointer value */
             struct list_data* prev = tmp->prev;
-#ifndef DIRTY_ALLOC
+#ifdef USE_MEMORY_CLEANUP
             /* zero all pointers */
             ptr->prev = 0;
             ptr->payload = 0;
@@ -87,7 +87,7 @@ void* list_pop(struct list_data** const current) {
     /* gets temporary pointer value */
     void* payload = ptr->payload;
     /* detouches the pointer from the list */
-#ifndef DIRTY_ALLOC
+#ifdef USE_MEMORY_CLEANUP
     ptr->prev = 0;
     ptr->payload = 0;
 #endif

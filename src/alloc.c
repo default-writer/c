@@ -1,9 +1,8 @@
-#include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>
-
-#include "alloc.h"
+#include "globals.h"
 #include "typedefs.h"
+#include "alloc.h"
+
+#ifdef USE_MEMORY_DEBUG_INFO
 
 void* _list_alloc(size_t nmemb, size_t size)
 {
@@ -19,3 +18,5 @@ void _list_free(void* ptr)
     }
     free(ptr);
 }
+
+#endif

@@ -28,7 +28,7 @@ void object_destroy(struct list** const current) {
             struct list* ptr = tmp;
             /* gets prev pointer value */
             struct list* prev = tmp->prev;
-#ifndef DIRTY_ALLOC
+#ifdef USE_MEMORY_CLEANUP
             /* zero all pointers */
             ptr->prev = 0;
             ptr->payload = 0;

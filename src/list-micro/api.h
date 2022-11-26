@@ -24,7 +24,7 @@ struct list_class {
     const struct list* self;
 };
 
-#ifdef DEBUG_ALLOC
+#ifdef USE_MEMORY_DEBUG_INFO
 void list_print_head(struct list_data** const current);
 void list_print(struct list_data** const current);
 #endif

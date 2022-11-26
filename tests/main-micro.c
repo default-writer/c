@@ -2,9 +2,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <rexo.h>
+
 #include "list-micro/api.h"
 
-#include <rexo.h>
+#ifndef USE_MEMORY_LEAKS
+const char* __asan_default_options() { return "detect_leaks=0"; }
+#endif
 
 struct list_data* new_list()
 {
@@ -14,7 +18,7 @@ struct list_data* new_list()
     list->self->init(&ctx);
     // returns created object
     return ctx;
-} 
+}
 
 void delete_list(struct list_data* ctx)
 {
@@ -59,63 +63,63 @@ void list_using(struct list_data** const current) {
         return;
     }
     list->self->push(current, payload);
-    #ifdef DEBUG_ALLOC
+    #ifdef USE_MEMORY_DEBUG_INFO
     list_print_head(current);
     #endif
     list->self->push(current, ++payload);
-    #ifdef DEBUG_ALLOC
+    #ifdef USE_MEMORY_DEBUG_INFO
     list_print_head(current);
     #endif
     list->self->push(current, ++payload);
-    #ifdef DEBUG_ALLOC
+    #ifdef USE_MEMORY_DEBUG_INFO
     list_print_head(current);
     #endif
     list->self->push(current, ++payload);
-    #ifdef DEBUG_ALLOC
+    #ifdef USE_MEMORY_DEBUG_INFO
     list_print_head(current);
     #endif
     list->self->push(current, ++payload);
-    #ifdef DEBUG_ALLOC
+    #ifdef USE_MEMORY_DEBUG_INFO
     list_print_head(current);
     #endif
     printf("\n");
-    #ifdef DEBUG_ALLOC
+    #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
     #endif
     void* q_pop0 = list->self->pop(current);
     q_pop0 = q_pop0;
-    #ifdef DEBUG_ALLOC
+    #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
     #endif
     void* q_pop1 = list->self->pop(current); 
     q_pop1 = q_pop1;
-    #ifdef DEBUG_ALLOC
+    #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
     #endif
     void* q_pop2 = list->self->pop(current); 
     q_pop2 = q_pop2;
-    #ifdef DEBUG_ALLOC
+    #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
     #endif
     void* q_pop3 = list->self->pop(current); 
     list->self->push(current, q_pop3);
     q_pop3 = list->self->pop(current); 
-    #ifdef DEBUG_ALLOC
+    #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
     #endif
     void* q_pop4 = list->self->pop(current);
     q_pop4 = q_pop4;
-    #ifdef DEBUG_ALLOC
+    #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
     #endif
     void* q_pop5 = list->self->pop(current); 
     q_pop5 = q_pop5;
-    #ifdef DEBUG_ALLOC
+    #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
     #endif
     void* q_pop6 = list->self->pop(current); 
     q_pop6 = q_pop6;
-    #ifdef DEBUG_ALLOC
+    #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
     #endif
 }

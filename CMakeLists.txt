@@ -1,21 +1,6 @@
-cmake_minimum_required(VERSION 3.16.3)
+cmake_minimum_required(VERSION 3.22.1)
 
 project(list VERSION 0.0.1 LANGUAGES C CXX)
-
-option(DEBUG_ALLOC "Enables debug information for memory allocation" ON)
-option(DIRTY_ALLOC "Enables dirty allocation (no cleanup after use)" ON)
-
-# ------------------------------------------------------------------------------
-
-if(DEBUG_ALLOC)
-    message(STATUS "Configure with debug information for memory allocation")
-    add_definitions(-DDEBUG_ALLOC)
-endif()
-
-if(DIRTY_ALLOC)
-    message(STATUS "Configure with dirty allocation (no cleanup after use)")
-    add_definitions(-DDIRTY_ALLOC)
-endif()
 
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -24,28 +9,63 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_compile_options(-fsanitize=undefined,address)
-add_link_options(-fsanitize=undefined,address)
-
-add_compile_options(-Wno-parentheses -Wno-unused-variable -Wno-unused-parameter -Wno-long-long)
+set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_C_EXTENSIONS OFF)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(MAIN_MICRO_SOURCE tests/main-micro.c src/alloc.c)
 set(MAIN_TINY_SOURCE tests/main-tiny.c)
 set(MAIN_LIGHT_SOURCE tests/main-light.c)
 set(MAIN_SOURCE tests/main.c)
 
-add_subdirectory(deps/rexo)
-
 set(LIST_MICRO_SOURCE src/list-micro/code.c)
 set(LIST_TINY_SOURCE src/list-tiny/code.c)
 set(LIST_LIGHT_SOURCE src/list-light/code.c)
 set(LIST_SOURCE src/list/code.c)
+
+option(MEMORY_DEBUG_INFO "Disables memory allocation debug information")
+option(MEMORY_CLEANUP "Disables memory cleanup")
+option(MEMORY_LEAKS "Disables memory leaks detection")
+
+set(MEMORY_DEBUG_INFO ON CACHE BOOL "Disable memory allocation debug information?")
+set(MEMORY_CLEANUP ON CACHE BOOL "Disable memory cleanup?")
+set(MEMORY_LEAKS ON CACHE BOOL "Disable memory leaks detection?")
+
+set(MEMORY_DEBUG_INFO OFF)
+set(MEMORY_CLEANUP OFF)
+set(MEMORY_LEAKS OFF)
+
+if(MEMORY_DEBUG_INFO)
+    message(STATUS "Configure without memory allocation debug information")
+    add_compile_definitions(MEMORY_DEBUG_INFO)
+    add_definitions(-DMEMORY_DEBUG_INFO)
+endif()
+
+if(MEMORY_CLEANUP)
+    message(STATUS "Configure without memory cleanup")
+    add_compile_definitions(MEMORY_CLEANUP)
+    add_definitions(-DMEMORY_CLEANUP)
+endif()
+
+if(MEMORY_LEAKS)
+    message(STATUS "Configure without memory leaks detection")
+    add_compile_definitions(MEMORY_LEAKS)
+    add_definitions(-DMEMORY_LEAKS)
+endif()
 
 include_directories(src/list-micro)
 include_directories(src/list-tiny)
 include_directories(src/list-light)
 include_directories(src/list)
 include_directories(src)
+
+add_subdirectory(deps/rexo)
+
+add_compile_options(-Wno-parentheses -Wno-unused-variable -Wno-unused-parameter -Wno-long-long -fsanitize=undefined,address)
+add_link_options(-fsanitize=undefined,address)
 
 add_library(list-micro-lib STATIC ${LIST_MICRO_SOURCE})
 add_library(list-tiny-lib STATIC ${LIST_TINY_SOURCE})
