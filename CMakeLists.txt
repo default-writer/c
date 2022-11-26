@@ -10,7 +10,6 @@ set(CMAKE_C_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-set(RX_ENABLE_C89_COMPAT C89)
 
 add_compile_options(-Wno-parentheses -Wno-unused-variable -Wno-unused-parameter -Wno-long-long)
 
