@@ -6,12 +6,6 @@
 
 #include <rexo.h>
 
-// queue/list context: head
-struct list_context_class {
-    // head element
-    struct list_data* head;
-};
-
 struct list_data* new_list()
 {
     const struct list_class* list = &list_definition;
@@ -128,31 +122,31 @@ void list_using(struct list_data** const current) {
 
 /* Data structure to use at the core of our fixture. */
 typedef struct test_data {
-    struct list_context_class ctx;
+    struct list_data* ctx;
 } *TEST_DATA;
 
 /* Initialize the data structure. Its allocation is handled by Rexo. */
 RX_SET_UP(test_set_up)
 {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct list_context_class* ctx = &rx->ctx;
+    struct list_data** ctx = &rx->ctx;
     // access context's functions pointer
     const struct list_class* list = &list_definition;
     
     // initialize list
-    list->self->init(&ctx->head);
+    list->self->init(ctx);
     return RX_SUCCESS;
 }
 
 RX_TEAR_DOWN(test_tear_down)
 {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct list_context_class* ctx = &rx->ctx;
+    struct list_data** ctx = &rx->ctx;
     // access context's functions pointer
     const struct list_class* list = &list_definition;
     
     // destroy list
-    list->self->destroy(&ctx->head);
+    list->self->destroy(ctx);
 }
 
 /* Define the fixture. */
@@ -162,39 +156,39 @@ RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tea
 RX_TEST_CASE(myTestSuite, test_empty_list_count_equals_0, .fixture = test_fixture)
 {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    const struct list_context_class* ctx = &rx->ctx;
+    struct list_data** ctx = &rx->ctx;
 
     // enshure that counter is initialized to 0
-    RX_REQUIRE(ctx->head != 0);
+    RX_REQUIRE(*ctx != 0);
 }
 
 // test alloc
 RX_TEST_CASE(myTestSuite, test_list_alloc_count_eq_1, .fixture = test_fixture)
 {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct list_context_class* ctx = &rx->ctx;
+    struct list_data** ctx = &rx->ctx;
 
     // create list
     const struct list_class* list = &list_definition;
     void* payload = (void*)0xdeadbeef;
 
-    list->self->push(&ctx->head, payload);
+    list->self->push(ctx, payload);
 
     // ensure that data being added to list
-    RX_REQUIRE(ctx->head != 0);
+    RX_REQUIRE(*ctx != 0);
 }
 
 RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture)
 {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct list_context_class* ctx = &rx->ctx;
+    struct list_data** ctx = &rx->ctx;
 
     // create list
     const struct list_class* list = &list_definition;
     void* payload = (void*)0xdeadbeef;
 
-    list->self->push(&ctx->head, payload);
-    void* head = list->self->pop(&ctx->head);
+    list->self->push(ctx, payload);
+    void* head = list->self->pop(ctx);
 
     RX_REQUIRE(head != 0);
 }
@@ -202,14 +196,14 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture)
 RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture)
 {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct list_context_class* ctx = &rx->ctx;
+    struct list_data** ctx = &rx->ctx;
 
     // create list
     const struct list_class* list = &list_definition;
     void* payload = (void*)0xdeadbeef;
 
-    list->self->push(&ctx->head, payload);
-    void* head = list->self->pop(&ctx->head);
+    list->self->push(ctx, payload);
+    void* head = list->self->pop(ctx);
 
     // ensure that data being added to list
     RX_REQUIRE(head == payload);
@@ -219,12 +213,12 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture)
 RX_TEST_CASE(myTestSuite, test_list_pop_is_zero, .fixture = test_fixture)
 {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct list_context_class* ctx = &rx->ctx;
+    struct list_data** ctx = &rx->ctx;
 
     // create list
     const struct list_class* list = &list_definition;
 
-    void* head = list->self->pop(&ctx->head);
+    void* head = list->self->pop(ctx);
 
     // ensure that data being added to list
     RX_REQUIRE(head == 0);
