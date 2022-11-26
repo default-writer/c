@@ -1,5 +1,3 @@
-#define DIRTY
-
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -30,7 +28,7 @@ void object_destroy(struct list** const current) {
             struct list* ptr = tmp;
             /* gets prev pointer value */
             struct list* prev = tmp->prev;
-#ifndef DIRTY
+#ifndef DIRTY_ALLOC
             /* zero all pointers */
             ptr->prev = 0;
             ptr->payload = 0;

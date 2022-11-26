@@ -57,7 +57,9 @@
         "data.h": "c",
         "alloc.h": "c",
         "globals.h": "c",
-        "compare": "c"
+        "compare": "c",
+        "typedefs.h": "c",
+        "rexo.h": "c"
     },
     "lldb.displayFormat": "auto",
     "lldb.showDisassembly": "auto",
