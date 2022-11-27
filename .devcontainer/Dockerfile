@@ -6,6 +6,8 @@ RUN apt-get update && \
     apt-get -y upgrade && \ 
     apt-get -y install --no-install-recommends build-essential lldb lcov cmake clangd g++ gcc
 
+RUN apt-get -y install git
+
 RUN apt-get autoclean -y && \
     apt-get autoremove -y && \
     rm -rf /var/lib/{cache,log}/ && \
