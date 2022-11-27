@@ -163,7 +163,7 @@ RX_TEST_CASE(myTestSuite, test_empty_list_count_equals_0, .fixture = test_fixtur
     struct list_data** ctx = &rx->ctx;
 
     // enshure that counter is initialized to 0
-    RX_REQUIRE(*ctx != 0);
+    RX_ASSERT(*ctx != 0);
 }
 
 // test alloc
@@ -179,7 +179,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_count_eq_1, .fixture = test_fixture)
     list->self->push(ctx, payload);
 
     // ensure that data being added to list
-    RX_REQUIRE(*ctx != 0);
+    RX_ASSERT(*ctx != 0);
 }
 
 RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture)
@@ -194,7 +194,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture)
     list->self->push(ctx, payload);
     void* head = list->self->pop(ctx);
 
-    RX_REQUIRE(head != 0);
+    RX_ASSERT(head != 0);
 }
 
 RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture)
@@ -210,7 +210,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture)
     void* head = list->self->pop(ctx);
 
     // ensure that data being added to list
-    RX_REQUIRE(head == payload);
+    RX_ASSERT(head == payload);
 }
 
 // test pop
@@ -225,7 +225,7 @@ RX_TEST_CASE(myTestSuite, test_list_pop_is_zero, .fixture = test_fixture)
     void* head = list->self->pop(ctx);
 
     // ensure that data being added to list
-    RX_REQUIRE(head == 0);
+    RX_ASSERT(head == 0);
 }
 
 int main()
