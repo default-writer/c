@@ -3,7 +3,7 @@
         "myDefaultIncludePath": [
             "${workspaceFolder}",
             "${workspaceFolder}/src",
-            "${workspaceFolder}/deps/rexo/include"
+            "${workspaceFolder}/rexo/include"
         ],
         "myCompilerPath": "/usr/bin/gcc"
     },
@@ -13,7 +13,7 @@
             "includePath": [
                 "${workspaceFolder}/*",
                 "${workspaceFolder}/src",
-                "${workspaceFolder}/deps/rexo/include"
+                "${workspaceFolder}/rexo/include"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
@@ -27,7 +27,7 @@
                 "path": [
                     "${workspaceFolder}/*",
                     "${workspaceFolder}/src",
-                    "${workspaceFolder}/deps/rexo/include"
+                    "${workspaceFolder}/rexo/include"
                 ],
                 "limitSymbolsToIncludedHeaders": true
             },
