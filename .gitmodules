@@ -1,4 +1,0 @@
-[submodule "deps/rexo"]
-	path = deps/rexo
-	url = https://github.com/default-writer/rexo.git
-	branch = master
