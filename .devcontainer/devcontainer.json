@@ -1,5 +1,5 @@
 {
-	"name": "C++",
+	"name": "Ubuntu 22.04",
 
 	// Update the 'dockerComposeFile' list if you have more compose files or use different names.
 	"dockerComposeFile": "docker-compose.yml",
@@ -24,14 +24,5 @@
 		"mhutchie.git-graph",
 		"donjayamanne.githistory",
 		"vadimcn.vscode-lldb"
-	],
-
-	// Uncomment the next line if you want to keep your containers running after VS Code shuts down.
-	// "shutdownAction": "none",
-
-	// Uncomment the next line to use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "sudo sh -c /workspaces/c/bin/chown.sh",
-
-	// Comment out to connect as root instead. To add a non-root user, see: https://aka.ms/vscode-remote/containers/non-root.
-	"remoteUser": "vscode"s
+	]
 }

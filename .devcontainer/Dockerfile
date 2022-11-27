@@ -1,11 +1,15 @@
-# See here for image contents: https://github.com/microsoft/vscode-dev-containers/tree/v0.148.1/containers/cpp/.devcontainer/base.Dockerfile
+FROM ubuntu:22.04 as base
 
-# [Choice] Debian / Ubuntu version: debian-10, debian-9, ubuntu-20.04, ubuntu-18.04
-ARG VARIANT="buster"
-FROM mcr.microsoft.com/vscode/devcontainers/cpp:0-${VARIANT}
+RUN apt-get update && \
+    export DEBIAN_FRONTEND=noninteractive && \
+    apt-get update && \ 
+    apt-get -y upgrade && \ 
+    apt-get -y install --no-install-recommends build-essential lldb lcov cmake clangd g++ gcc
 
-# [Optional] Uncomment this section to install additional packages.
-RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-     && apt-get update && apt-get -y upgrade && apt-get -y install --no-install-recommends build-essential lldb lcov clangd g++ gcc
-
-USER vscode
+RUN apt-get autoclean -y && \
+    apt-get autoremove -y && \
+    rm -rf /var/lib/{cache,log}/ && \
+    rm -rf /var/lib/apt/lists/*.lz4 && \
+    rm -rf /tmp/* /var/tmp/* && \
+    rm -rf /usr/share/doc/ && \
+    rm -rf /usr/share/man/
