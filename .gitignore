@@ -1,8 +1,3 @@
-# Dependencies
-deps/**/*
-deps/*
-deps/
-
 # Prerequisites
 *.d
 
