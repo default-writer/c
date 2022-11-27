@@ -62,7 +62,7 @@ include_directories(src/list-light)
 include_directories(src/list)
 include_directories(src)
 
-add_subdirectory(deps/rexo)
+add_subdirectory(rexo)
 
 add_compile_options(-Wno-parentheses -Wno-unused-variable -Wno-unused-parameter -Wno-long-long -fsanitize=undefined,address)
 add_link_options(-fsanitize=undefined,address)
