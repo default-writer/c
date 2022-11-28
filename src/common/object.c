@@ -5,6 +5,7 @@
 
 #include "api.h"
 #include "data.h"
+#include "common/alloc.h"
 
 /* initializes the new context's head element */
 /* as a result, new memory block will be allocated */

@@ -5,6 +5,7 @@
 
 #include "api.h"
 #include "data.h"
+#include "common/alloc.h"
 #include "common/object.h"
 #include "common/print.h"
 

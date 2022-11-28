@@ -61,7 +61,8 @@
         "typedefs.h": "c",
         "rexo.h": "c",
         "print.h": "c",
-        "object.h": "c"
+        "object.h": "c",
+        "stdlib.h": "c"
     },
     "lldb.displayFormat": "auto",
     "lldb.showDisassembly": "auto",

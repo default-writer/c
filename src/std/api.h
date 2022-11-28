@@ -1,5 +1,5 @@
-#ifndef _GLOBALS_H_
-#define _GLOBALS_H_
+#ifndef _API_H_
+#define _API_H_
 
 #if MEMORY_DEBUG_INFO==1
 #define USE_MEMORY_DEBUG_INFO
@@ -13,4 +13,6 @@
 #define USE_MEMORY_LEAKS
 #endif
 
-#endif // _GLOBALS_H_
+typedef long long unsigned int ADDR;
+
+#endif // _API_H_

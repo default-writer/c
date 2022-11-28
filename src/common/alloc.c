@@ -1,6 +1,10 @@
-#include "globals.h"
-#include "typedefs.h"
-#include "alloc.h"
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "api.h"
+#include "common/alloc.h"
 
 #ifdef USE_MEMORY_DEBUG_INFO
 

@@ -4,8 +4,8 @@
 
 #include "rexo/include/rexo.h"
 
-#include "list-micro/api.h"
-#include "list-micro/data.h"
+#include "api.h"
+#include "data.h"
 #include "common/object.h"
 #include "common/print.h"
 
