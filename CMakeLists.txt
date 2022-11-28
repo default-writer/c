@@ -16,15 +16,15 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-set(MAIN_MICRO_SOURCE tests/main-micro.c src/alloc.c)
-set(MAIN_TINY_SOURCE tests/main-tiny.c)
-set(MAIN_LIGHT_SOURCE tests/main-light.c)
-set(MAIN_SOURCE tests/main.c)
+set(MAIN_MICRO_SOURCE tests/main-micro.c src/alloc.c src/common/print.c src/common/object.c)
+set(MAIN_TINY_SOURCE tests/main-tiny.c src/alloc.c src/common/print.c src/common/object.c)
+set(MAIN_LIGHT_SOURCE tests/main-light.c src/alloc.c src/common/print.c src/common/object.c)
+set(MAIN_SOURCE tests/main.c src/alloc.c src/common/print.c src/common/object.c)
 
-set(LIST_MICRO_SOURCE src/list-micro/code.c)
-set(LIST_TINY_SOURCE src/list-tiny/code.c)
-set(LIST_LIGHT_SOURCE src/list-light/code.c)
-set(LIST_SOURCE src/list/code.c)
+set(LIST_MICRO_SOURCE src/list-micro/code.c src/alloc.c src/common/print.c src/common/object.c)
+set(LIST_TINY_SOURCE src/list-tiny/code.c src/alloc.c src/common/print.c src/common/object.c)
+set(LIST_LIGHT_SOURCE src/list-light/code.c src/alloc.c src/common/print.c src/common/object.c)
+set(LIST_SOURCE src/list/code.c src/alloc.c src/common/print.c src/common/object.c)
 
 option(MEMORY_DEBUG_INFO "Disables memory allocation debug information")
 option(MEMORY_CLEANUP "Disables memory cleanup")
@@ -34,8 +34,8 @@ set(MEMORY_DEBUG_INFO ON CACHE BOOL "Disable memory allocation debug information
 set(MEMORY_CLEANUP ON CACHE BOOL "Disable memory cleanup?")
 set(MEMORY_LEAKS ON CACHE BOOL "Disable memory leaks detection?")
 
-set(MEMORY_DEBUG_INFO OFF)
-set(MEMORY_CLEANUP OFF)
+set(MEMORY_DEBUG_INFO ON)
+set(MEMORY_CLEANUP ON)
 set(MEMORY_LEAKS OFF)
 
 if(MEMORY_DEBUG_INFO)
@@ -62,7 +62,7 @@ include_directories(src/list-light)
 include_directories(src/list)
 include_directories(src)
 
-add_subdirectory(rexo)
+add_subdirectory(src/rexo)
 
 add_compile_options(-Wno-parentheses -Wno-unused-variable -Wno-unused-parameter -Wno-long-long -fsanitize=undefined,address)
 add_link_options(-fsanitize=undefined,address)

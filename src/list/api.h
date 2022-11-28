@@ -1,24 +1,8 @@
+#ifndef _LIST_API_H_
+#define _LIST_API_H_
+
 #include "globals.h"
+#include "typedefs.h"
 #include "alloc.h"
-#include "data.h"
 
-/* queue/list: vtable definition */
-struct list_class_definition {
-    /* initialize context */
-    void (*init)(struct list** const current);
-    /* destroy context */
-    void (*destroy)(struct list** const current);
-    /* alloc item on current context (stack) */
-    void (*alloc)(struct list** const current, void* payload);
-    /* push item on current context (stack) */
-    struct list* (*push)(struct list** const current, struct list** const item);
-    /* pop item on current context (stack) */
-    struct list* (*pop)(struct list** const current);
-    /* peek item on current context (stack) */
-    struct list* (*peek)(struct list** const current);
-    /* free item on current context (stack) */
-    void (*free)(struct list** const current, struct list** const item);
-};
-
-/* queue/list: vtable */
-const struct list_class_definition list_class;
+#endif // _LIST_API_H_

@@ -1,37 +1,38 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "api.h"
+#include "data.h"
 
 /* initializes the new context's head element */
 /* as a result, new memory block will be allocated */
 /* current context pointer set to zero */
-void object_init(struct list** const current) {
+void list_init(struct list_data** const current) {
     /* sets current context's head element */
-    *current = NEW(sizeof(struct list));
+    *current = NEW(sizeof(struct list_data));
     /* sets current context's counter to zero */
 }
 
 /* destroys the memory stack */
 /* frees all memory elements */
 /* as a result, memory will be freed */
-void object_destroy(struct list** const current) {
+void list_destroy(struct list_data** const current) {
     /* get current context's head */
     /* assigns currently selected item pointer to temporary */
-    struct list* tmp = *current;
+    struct list_data* tmp = *current;
     /* if not already freed */
     if (tmp != 0) {
         /* until we found element with no parent (previous) node */
         do {
             /* gets temporary pointer value */
-            struct list* ptr = tmp;
+            struct list_data* ptr = tmp;
             /* gets prev pointer value */
-            struct list* prev = tmp->prev;
+            struct list_data* prev = tmp->prev;
 #ifdef USE_MEMORY_CLEANUP
             /* zero all pointers */
-            ptr->prev = 0;
-            ptr->payload = 0;
+            memset(ptr, 0, sizeof(struct list_data));
 #endif
             /* free temporary pointer value */
             FREE(ptr);
@@ -42,11 +43,3 @@ void object_destroy(struct list** const current) {
         *current = 0;
     }
 }
-
-/* object: vtable */
-const struct object_class object_class_definition =
-{
-    .init = object_init, // immutable function
-    .destroy = object_destroy, // immutable function
-    .self = &object_class_definition // immutable definition
-};

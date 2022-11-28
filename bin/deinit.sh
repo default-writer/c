@@ -1,4 +1,4 @@
 #!/bin/bash -e
-git submodule deinit -f rexo
-rm -rf .git/modules/rexo
-git rm -f rexo
+git submodule deinit -f src/rexo
+rm -rf .git/modules/src/rexo
+git rm -f src/rexo

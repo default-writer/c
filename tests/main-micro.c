@@ -2,29 +2,34 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <rexo.h>
+#include "rexo/include/rexo.h"
 
 #include "list-micro/api.h"
+#include "list-micro/data.h"
+#include "common/object.h"
+#include "common/print.h"
 
 #ifndef USE_MEMORY_LEAKS
 const char* __asan_default_options() { return "detect_leaks=0"; }
 #endif
 
+extern const struct list_class list_class;
+
 struct list_data* new_list()
 {
-    const struct list_class* list = &list_definition;
+    const struct list_class* list = &list_class;
     struct list_data* ctx;
     // init list
-    list->self->init(&ctx);
+    list->methods->init(&ctx);
     // returns created object
     return ctx;
 }
 
 void delete_list(struct list_data* ctx)
 {
-    const struct list_class* list = &list_definition;
+    const struct list_class* list = &list_class;
     // destroy list
-    list->self->destroy(&ctx);
+    list->methods->destroy(&ctx);
 }
 
 // default list usage scenario
@@ -54,31 +59,31 @@ void using_list2(void (*list_using)(struct list_data** const)) {
 // use list
 void list_using(struct list_data** const current) {
     // access context's functions pointer
-    const struct list_class* list = &list_definition;
+    const struct list_class* list = &list_class;
     ADDR* payload = (ADDR*)0xdeadbeef;
     void* is_null[] = {
-        list->self->pop(current)
+        list->methods->pop(current)
     };
     if (0 != is_null[0]) {
         return;
     }
-    list->self->push(current, payload);
+    list->methods->push(current, payload);
     #ifdef USE_MEMORY_DEBUG_INFO
     list_print_head(current);
     #endif
-    list->self->push(current, ++payload);
+    list->methods->push(current, ++payload);
     #ifdef USE_MEMORY_DEBUG_INFO
     list_print_head(current);
     #endif
-    list->self->push(current, ++payload);
+    list->methods->push(current, ++payload);
     #ifdef USE_MEMORY_DEBUG_INFO
     list_print_head(current);
     #endif
-    list->self->push(current, ++payload);
+    list->methods->push(current, ++payload);
     #ifdef USE_MEMORY_DEBUG_INFO
     list_print_head(current);
     #endif
-    list->self->push(current, ++payload);
+    list->methods->push(current, ++payload);
     #ifdef USE_MEMORY_DEBUG_INFO
     list_print_head(current);
     #endif
@@ -86,38 +91,38 @@ void list_using(struct list_data** const current) {
     #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
     #endif
-    void* q_pop0 = list->self->pop(current);
+    void* q_pop0 = list->methods->pop(current);
     q_pop0 = q_pop0;
     #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
     #endif
-    void* q_pop1 = list->self->pop(current); 
+    void* q_pop1 = list->methods->pop(current); 
     q_pop1 = q_pop1;
     #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
     #endif
-    void* q_pop2 = list->self->pop(current); 
+    void* q_pop2 = list->methods->pop(current); 
     q_pop2 = q_pop2;
     #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
     #endif
-    void* q_pop3 = list->self->pop(current); 
-    list->self->push(current, q_pop3);
-    q_pop3 = list->self->pop(current); 
+    void* q_pop3 = list->methods->pop(current); 
+    list->methods->push(current, q_pop3);
+    q_pop3 = list->methods->pop(current); 
     #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
     #endif
-    void* q_pop4 = list->self->pop(current);
+    void* q_pop4 = list->methods->pop(current);
     q_pop4 = q_pop4;
     #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
     #endif
-    void* q_pop5 = list->self->pop(current); 
+    void* q_pop5 = list->methods->pop(current); 
     q_pop5 = q_pop5;
     #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
     #endif
-    void* q_pop6 = list->self->pop(current); 
+    void* q_pop6 = list->methods->pop(current); 
     q_pop6 = q_pop6;
     #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
@@ -135,10 +140,11 @@ RX_SET_UP(test_set_up)
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
     // access context's functions pointer
-    const struct list_class* list = &list_definition;
+    const struct list_class* list = &list_class;
     
     // initialize list
-    list->self->init(ctx);
+    list->methods->init(ctx);
+
     return RX_SUCCESS;
 }
 
@@ -147,10 +153,9 @@ RX_TEAR_DOWN(test_tear_down)
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
     // access context's functions pointer
-    const struct list_class* list = &list_definition;
-    
+    const struct list_class* list = &list_class;
     // destroy list
-    list->self->destroy(ctx);
+    list->methods->destroy(ctx);
 }
 
 /* Define the fixture. */
@@ -173,10 +178,10 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_count_eq_1, .fixture = test_fixture)
     struct list_data** ctx = &rx->ctx;
 
     // create list
-    const struct list_class* list = &list_definition;
+    const struct list_class* list = &list_class;
     void* payload = (void*)0xdeadbeef;
 
-    list->self->push(ctx, payload);
+    list->methods->push(ctx, payload);
 
     // ensure that data being added to list
     RX_ASSERT(*ctx != 0);
@@ -188,11 +193,11 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture)
     struct list_data** ctx = &rx->ctx;
 
     // create list
-    const struct list_class* list = &list_definition;
+    const struct list_class* list = &list_class;
     void* payload = (void*)0xdeadbeef;
 
-    list->self->push(ctx, payload);
-    void* head = list->self->pop(ctx);
+    list->methods->push(ctx, payload);
+    void* head = list->methods->pop(ctx);
 
     RX_ASSERT(head != 0);
 }
@@ -203,11 +208,11 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture)
     struct list_data** ctx = &rx->ctx;
 
     // create list
-    const struct list_class* list = &list_definition;
+    const struct list_class* list = &list_class;
     void* payload = (void*)0xdeadbeef;
 
-    list->self->push(ctx, payload);
-    void* head = list->self->pop(ctx);
+    list->methods->push(ctx, payload);
+    void* head = list->methods->pop(ctx);
 
     // ensure that data being added to list
     RX_ASSERT(head == payload);
@@ -220,9 +225,9 @@ RX_TEST_CASE(myTestSuite, test_list_pop_is_zero, .fixture = test_fixture)
     struct list_data** ctx = &rx->ctx;
 
     // create list
-    const struct list_class* list = &list_definition;
+    const struct list_class* list = &list_class;
 
-    void* head = list->self->pop(ctx);
+    void* head = list->methods->pop(ctx);
 
     // ensure that data being added to list
     RX_ASSERT(head == 0);
