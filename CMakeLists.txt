@@ -34,7 +34,7 @@ set(MEMORY_DEBUG_INFO ON CACHE BOOL "Disable memory allocation debug information
 set(MEMORY_CLEANUP ON CACHE BOOL "Disable memory cleanup?")
 set(MEMORY_LEAKS ON CACHE BOOL "Disable memory leaks detection?")
 
-set(MEMORY_DEBUG_INFO ON)
+set(MEMORY_DEBUG_INFO OFF)
 set(MEMORY_CLEANUP ON)
 set(MEMORY_LEAKS OFF)
 

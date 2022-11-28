@@ -68,65 +68,65 @@ void list_using(struct list_data** const current) {
         return;
     }
     list->methods->push(current, payload);
-    #ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print_head(current);
-    #endif
+#endif
     list->methods->push(current, ++payload);
-    #ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print_head(current);
-    #endif
+#endif
     list->methods->push(current, ++payload);
-    #ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print_head(current);
-    #endif
+#endif
     list->methods->push(current, ++payload);
-    #ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print_head(current);
-    #endif
+#endif
     list->methods->push(current, ++payload);
-    #ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print_head(current);
-    #endif
+#endif
     printf("\n");
-    #ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
-    #endif
+#endif
     void* q_pop0 = list->methods->pop(current);
     q_pop0 = q_pop0;
-    #ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
-    #endif
+#endif
     void* q_pop1 = list->methods->pop(current); 
     q_pop1 = q_pop1;
-    #ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
-    #endif
+#endif
     void* q_pop2 = list->methods->pop(current); 
     q_pop2 = q_pop2;
-    #ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
-    #endif
+#endif
     void* q_pop3 = list->methods->pop(current); 
     list->methods->push(current, q_pop3);
     q_pop3 = list->methods->pop(current); 
-    #ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
-    #endif
+#endif
     void* q_pop4 = list->methods->pop(current);
     q_pop4 = q_pop4;
-    #ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
-    #endif
+#endif
     void* q_pop5 = list->methods->pop(current); 
     q_pop5 = q_pop5;
-    #ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
-    #endif
+#endif
     void* q_pop6 = list->methods->pop(current); 
     q_pop6 = q_pop6;
-    #ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
-    #endif
+#endif
 }
 
 /* Data structure to use at the core of our fixture. */
@@ -235,17 +235,17 @@ RX_TEST_CASE(myTestSuite, test_list_pop_is_zero, .fixture = test_fixture)
 
 int main()
 {
-#ifdef DEBUG
+#ifdef USE_MEMORY_DEBUG_INFO
     printf("---- acceptance test code\n");
     printf("\n");
 #endif
     // some messy code
     using_list(list_using);
     using_list2(list_using);
-#ifdef DEBUG
+#ifdef USE_MEMORY_DEBUG_INFO
     printf("\n");
 #endif
-#ifdef DEBUG
+#ifdef USE_MEMORY_DEBUG_INFO
     printf("---- rexo unit test code\n");
     printf("\n");
 #endif

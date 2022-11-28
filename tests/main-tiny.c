@@ -76,42 +76,42 @@ void list_using(struct list_data** const current) {
         return;
     }
     list->push(current, payload);
-    #ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print_head(current);
-    #endif
+#endif
     list->push(current, ++payload);
-    #ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print_head(current);
-    #endif
+#endif
     list->push(current, ++payload);
-    #ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print_head(current);
-    #endif
+#endif
     list->push(current, ++payload);
-    #ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print_head(current);
-    #endif
+#endif
     list->push(current, ++payload);
-    #ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print_head(current);
-    #endif
+#endif
     printf("\n");
-    #ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
-    #endif
+#endif
     void* q_peek0 = list->peek(current); 
     void* q_pop0 = list->pop(current); 
-    #ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
-    #endif
+#endif
     void* q_pop1 = list->pop(current); 
-    #ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
-    #endif
+#endif
     void* q_pop2 = list->pop(current); 
-    #ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
-    #endif
+#endif
     void* q_peek1 = list->peek(current); 
     void* q_pop3 = list->pop(current); 
     void* q_peek2 = list->peek(current); 
@@ -121,30 +121,30 @@ void list_using(struct list_data** const current) {
     RX_ASSERT(q_peek2 != q_peek3);
     RX_ASSERT(q_peek1 == q_peek3);
     void* q_pop4 = list->pop(current); 
-    #ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
-    #endif
+#endif
     void* q_pop5 = list->pop(current); 
-    #ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
-    #endif
+#endif
     void* q_peek4 = list->peek(current); 
     list->push(current, q_pop0);
-    #ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
-    #endif
+#endif
     void* q_pop6 = list->pop(current); 
-    #ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
-    #endif
+#endif
     void* q_pop7 = list->pop(current); 
-    #ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
-    #endif
+#endif
     void* q_peek5 = list->peek(current); 
-    #ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
-    #endif
+#endif
 }
 
 /* Data structure to use at the core of our fixture. */
@@ -284,17 +284,17 @@ RX_TEST_CASE(myTestSuite, test_list_pop_is_zero, .fixture = test_fixture)
 
 int main(int argc, char **argv)
 {
-#ifdef DEBUG
+#ifdef USE_MEMORY_DEBUG_INFO
     printf("---- acceptance test code\n");
     printf("\n");
 #endif
     // some messy code
     using_list(list_using);
     using_list2(list_using);
-#ifdef DEBUG
+#ifdef USE_MEMORY_DEBUG_INFO
     printf("\n");
 #endif
-#ifdef DEBUG
+#ifdef USE_MEMORY_DEBUG_INFO
     printf("---- rexo unit test code\n");
     printf("\n");
 #endif

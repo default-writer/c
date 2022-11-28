@@ -62,53 +62,63 @@ void list_using(struct list_data** const current) {
         return;
     }
     list->alloc(current, payload);
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print_head(current);
+#endif
     list->alloc(current, ++payload);
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print_head(current);
+#endif
     list->alloc(current, ++payload);
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print_head(current);
+#endif
     list->alloc(current, ++payload);
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print_head(current);
+#endif
     list->alloc(current, ++payload);
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print_head(current);
-#ifdef DEBUG
+#endif
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
 #endif
     struct list_data* q_pop0 = list->pop(current); 
     list->free(current, &q_pop0);
-#ifdef DEBUG
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
 #endif
     struct list_data* q_pop1 = list->pop(current); 
     list->free(current, &q_pop1);
-#ifdef DEBUG
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
 #endif
     struct list_data* q_pop2 = list->pop(current); 
     list->free(current, &q_pop2);
-#ifdef DEBUG
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
 #endif
     struct list_data* q_pop3 = list->pop(current); 
     list->push(current, &q_pop3);
     q_pop3 = list->pop(current); 
     list->free(current, &q_pop3);
-#ifdef DEBUG
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
 #endif
     struct list_data* q_pop4 = list->pop(current); 
     list->free(current, &q_pop4);
-#ifdef DEBUG
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
 #endif
     struct list_data* q_pop5 = list->peek(current); 
     list->free(current, &q_pop5);
     list->push(current, &q_pop0);
-#ifdef DEBUG
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
 #endif
     list->free(current, &q_pop0);
-#ifdef DEBUG
+#ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
 #endif
 }
@@ -258,16 +268,16 @@ RX_TEST_CASE(myTestSuite, test_list_pop_is_zero, .fixture = test_fixture)
 
 int main(int argc, char **argv)
 {
-#ifdef DEBUG
+#ifdef USE_MEMORY_DEBUG_INFO
     printf("---- acceptance test code\n");
     printf("\n");
 #endif
     // some messy code
     using_list(list_using);
-#ifdef DEBUG
+#ifdef USE_MEMORY_DEBUG_INFO
     printf("\n");
 #endif
-#ifdef DEBUG
+#ifdef USE_MEMORY_DEBUG_INFO
     printf("---- rexo unit test code\n");
     printf("\n");
 #endif
