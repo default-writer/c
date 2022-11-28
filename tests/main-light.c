@@ -33,7 +33,7 @@ void delete_list(struct list_data* ctx)
 }
 
 // default list usage scenario
-void using_list(void (*list_using)(struct list_data** const)) {
+void list_using(void (*list_using)(struct list_data** const)) {
     // initialize current context (stack)
     struct list_data* ctx = new_list();
     // create list
@@ -47,7 +47,7 @@ void using_list(void (*list_using)(struct list_data** const)) {
 }
 
 // default list usage scenario
-void using_list2(void (*list_using)(struct list_data** const)) {
+void list_using2(void (*list_using)(struct list_data** const)) {
     // initialize current context (stack)
     struct list_data* ctx = new_list();
     // create list
@@ -272,8 +272,8 @@ int main(int argc, char **argv)
     printf("---- acceptance test code\n");
 #endif
     // some messy code
-    using_list(list_using);
-    using_list2(list_using);
+    list_using(list_using);
+    list_using2(list_using);
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- rexo unit test code\n");
 #endif
