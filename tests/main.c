@@ -184,7 +184,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_payload, .fixture = test_fixture)
     struct list_data* head = list->peek(ctx);
 
     // ensure that data being added to list
-    RX_ASSERT(head == payload);
+    RX_ASSERT(head->payload == payload);
 }
 
 RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture)
