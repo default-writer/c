@@ -61,8 +61,8 @@ struct list_data* list_pop(struct list_data** const current) {
     struct list_data* ptr = head;
     /* detouches the pointer from the list */
 #ifdef USE_MEMORY_CLEANUP
-    ptr->prev = 0;
-    ptr->next = 0;
+    /* zero all pointers */
+    memset(ptr, 0, sizeof(struct list_data));
 #endif
     /* rewinds head pointer to previous pointer value */
     *current = prev;
@@ -95,10 +95,8 @@ void list_free(struct list_data** const current, struct list_data** const item) 
     /* until we run out of stack or stop at head element */
     if (tmp != 0) {
 #ifdef USE_MEMORY_CLEANUP
-        /* zero all pointers */
-        tmp->prev = 0;
-        tmp->next = 0;
-        tmp->payload = 0;
+    /* zero all pointers */
+    memset(tmp, 0, sizeof(struct list_data));
 #endif
         /* free temporary pointer value */
         FREE(tmp);
