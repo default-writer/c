@@ -4,7 +4,7 @@
 
 #include "rexo/include/rexo.h"
 
-#include "list-light/api.h"
+#include "api.h"
 #include "list-light/data.h"
 #include "common/object.h"
 #include "common/print.h"
@@ -33,7 +33,7 @@ void delete_list(struct list_data* ctx)
 }
 
 // default list usage scenario
-void list_using(void (*list_using)(struct list_data** const)) {
+void using_list(void (*list_using)(struct list_data** const)) {
     // initialize current context (stack)
     struct list_data* ctx = new_list();
     // create list
@@ -47,7 +47,7 @@ void list_using(void (*list_using)(struct list_data** const)) {
 }
 
 // default list usage scenario
-void list_using2(void (*list_using)(struct list_data** const)) {
+void using_list2(void (*list_using)(struct list_data** const)) {
     // initialize current context (stack)
     struct list_data* ctx = new_list();
     // create list
@@ -272,8 +272,8 @@ int main(int argc, char **argv)
     printf("---- acceptance test code\n");
 #endif
     // some messy code
-    list_using(list_using);
-    list_using2(list_using);
+    using_list(list_using);
+    using_list2(list_using);
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- rexo unit test code\n");
 #endif

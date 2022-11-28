@@ -4,7 +4,7 @@
 
 #include "rexo/include/rexo.h"
 
-#include "list/api.h"
+#include "api.h"
 #include "list/data.h"
 #include "common/object.h"
 #include "common/print.h"
@@ -34,6 +34,20 @@ void delete_list(struct list_data* ctx)
 
 // default list usage scenario
 void using_list(void (*list_using)(struct list_data** const)) {
+    // initialize current context (stack)
+    struct list_data* ctx = new_list();
+    // create list
+    const struct list_methods* list = &list_methods;
+    // initilize list
+    list->init(&ctx);
+    // call user method
+    list_using(&ctx);
+    // destroy list
+    delete_list(ctx);
+}
+
+// default list usage scenario
+void using_list2(void (*list_using)(struct list_data** const)) {
     // initialize current context (stack)
     struct list_data* ctx = new_list();
     // create list
@@ -266,13 +280,14 @@ RX_TEST_CASE(myTestSuite, test_list_pop_is_zero, .fixture = test_fixture)
     RX_ASSERT(head == 0);
 }
 
-int main(int argc, char **argv)
+int main()
 {
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- acceptance test code\n");
 #endif
     // some messy code
     using_list(list_using);
+    using_list2(list_using);
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- rexo unit test code\n");
 #endif

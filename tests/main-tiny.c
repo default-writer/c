@@ -4,7 +4,7 @@
 
 #include "rexo/include/rexo.h"
 
-#include "list-tiny/api.h"
+#include "api.h"
 #include "list-tiny/data.h"
 #include "common/object.h"
 #include "common/print.h"
@@ -281,7 +281,7 @@ RX_TEST_CASE(myTestSuite, test_list_pop_is_zero, .fixture = test_fixture)
     RX_ASSERT(head == 0);
 }
 
-int main(int argc, char **argv)
+int main()
 {
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- acceptance test code\n");
