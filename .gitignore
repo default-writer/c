@@ -50,3 +50,6 @@ report
 *.info
 !/.vscode
 /.cache
+
+#clangd export
+compile_commands.json
