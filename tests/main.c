@@ -270,16 +270,11 @@ int main(int argc, char **argv)
 {
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- acceptance test code\n");
-    printf("\n");
 #endif
     // some messy code
     using_list(list_using);
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("\n");
-#endif
-#ifdef USE_MEMORY_DEBUG_INFO
     printf("---- rexo unit test code\n");
-    printf("\n");
 #endif
     /* Execute the main function that runs the test cases found. */
     return rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;

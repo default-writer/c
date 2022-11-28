@@ -87,7 +87,6 @@ void list_using(struct list_data** const current) {
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print_head(current);
 #endif
-    printf("\n");
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
 #endif
@@ -237,17 +236,12 @@ int main()
 {
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- acceptance test code\n");
-    printf("\n");
 #endif
     // some messy code
     using_list(list_using);
     using_list2(list_using);
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("\n");
-#endif
-#ifdef USE_MEMORY_DEBUG_INFO
     printf("---- rexo unit test code\n");
-    printf("\n");
 #endif
     /* Execute the main function that runs the test cases found. */
     return rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
