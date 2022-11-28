@@ -8,15 +8,6 @@
 #include "common/object.h"
 #include "common/print.h"
 
-// /* initializes the new context's head element */
-// /* as a result, new memory block will be allocated */
-// /* current context pointer set to zero */
-// void list_init(struct list_data** const current) {
-//     /* sets current context's head element */
-//     *current = NEW(sizeof(struct list_data));
-//     /* sets current context's counter to zero */
-// }
-
 /* allocates a memory for provided payload  */
 /* at current context, data payload stored at allocated memory buffer */
 /* as a result, items counter will increase */
