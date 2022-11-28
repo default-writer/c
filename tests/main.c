@@ -219,7 +219,11 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture)
     list->free(ctx, &head);
 
     // ensure that data being added to list
+#ifdef USE_MEMORY_CLEANUP
+    RX_ASSERT(head_payload == 0);
+#else
     RX_ASSERT(head_payload == payload);
+#endif
 }
 
 // test peek

@@ -59,7 +59,9 @@
         "globals.h": "c",
         "compare": "c",
         "typedefs.h": "c",
-        "rexo.h": "c"
+        "rexo.h": "c",
+        "print.h": "c",
+        "object.h": "c"
     },
     "lldb.displayFormat": "auto",
     "lldb.showDisassembly": "auto",
@@ -94,7 +96,7 @@
     },
     "cmake.configureOnOpen": true,
     "gcovViewer.buildDirectories": [
-        "/workspaces/c/"
+        "/workspace"
     ],
     "C_Cpp.dimInactiveRegions": true,
     "C_Cpp.errorSquiggles": "Disabled",
