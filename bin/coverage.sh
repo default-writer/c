@@ -5,25 +5,30 @@ cd "${0%/*}"
 ./clean.sh
 cd ${pwd}
 
-if [ ! -d "${pwd}/coverage/" ]
-then
-    mkdir ${pwd}/coverage/
-fi
+rm -rf ${pwd}/coverage
+mkdir ${pwd}/coverage
 
-rm -f ${pwd}/coverage/*.gcda
+## define an array ##
+array=( '' '-light' '-micro' '-tiny' )
 
-gcc --coverage -g \
-    ${pwd}/tests/main.c \
-    ${pwd}/src/list/code.c \
-    ${pwd}/src/common/alloc.c \
-    ${pwd}/src/common/print.c \
-    ${pwd}/src/common/object.c \
-    -I${pwd}/src/ \
-    -I${pwd}/src/std/ \
-    -I${pwd}/src/common/ \
-    -I${pwd}/src/list/ \
-    -I${pwd}/rexo/include/ \
-    -o ${pwd}/coverage/main \
-    && ${pwd}/coverage/main && lcov --capture --directory ${pwd}/coverage --output-file ${pwd}/coverage/main.info
+## get item count using ${array[@]} ##
+for m in "${array[@]}"
+do
+    gcc --coverage -g \
+        ${pwd}/tests/main${m}.c \
+        ${pwd}/src/list${m}/code.c \
+        ${pwd}/src/common/alloc.c \
+        ${pwd}/src/common/print.c \
+        ${pwd}/src/common/object.c \
+        -I${pwd}/src/ \
+        -I${pwd}/src/std/ \
+        -I${pwd}/src/common/ \
+        -I${pwd}/src/list${m}/ \
+        -I${pwd}/rexo/include/ \
+        -o ${pwd}/coverage/main${m} \
+        && ${pwd}/coverage/main${m} \
+        && lcov --capture --directory ${pwd}/coverage --output-file ${pwd}/coverage/main${m}.info
+done
+
 
 cd ${pwd}
