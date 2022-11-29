@@ -9,6 +9,8 @@
 #include "common/object.h"
 #include "common/print.h"
 
+#include "std/common.h"
+
 #ifndef USE_MEMORY_LEAKS
 const char* __asan_default_options() { return "detect_leaks=0"; }
 #endif
@@ -102,30 +104,36 @@ void list_using(struct list_data** const current) {
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
 #endif
-    void* q_pop1 = list->pop(current); 
+    const void* q_pop1 = list->pop(current);
+    ZEROPTR(q_pop1)
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
 #endif
-    void* q_pop2 = list->pop(current); 
+    const void* q_pop2 = list->pop(current);
+    ZEROPTR(q_pop2)
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
 #endif
-    void* q_pop3 = list->pop(current); 
+    void* q_pop3 = list->pop(current);
     list->push(current, q_pop3);
     q_pop3 = list->pop(current); 
+    ZEROPTR(q_pop3)
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
 #endif
-    void* q_pop4 = list->pop(current); 
+    const void* q_pop4 = list->pop(current);
+    ZEROPTR(q_pop4)
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
 #endif
-    void* q_pop5 = list->peek(current); 
+    const void* q_pop5 = list->peek(current);
     list->push(current, q_pop0);
+    ZEROPTR(q_pop5)
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
 #endif
-    void* q_pop6 = list->pop(current); 
+    const void* q_pop6 = list->pop(current);
+    ZEROPTR(q_pop6)
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
 #endif
@@ -199,7 +207,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_payload, .fixture = test_fixture)
     void* payload = (void*)0xdeadbeef;
 
     list->push(ctx, payload);
-    void* head = list->peek(ctx);
+    const void* head = list->peek(ctx);
 
     // ensure that data being added to list
     RX_ASSERT(head == payload);
@@ -215,7 +223,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture)
     void* payload = (void*)0xdeadbeef;
 
     list->push(ctx, payload);
-    void* head = list->pop(ctx);
+    const void* head = list->pop(ctx);
 
     RX_ASSERT(head != 0);
 }
@@ -230,7 +238,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture)
     void* payload = (void*)0xdeadbeef;
 
     list->push(ctx, payload);
-    void* head = list->pop(ctx);
+    const void* head = list->pop(ctx);
 
     // ensure that data being added to list
     RX_ASSERT(head == payload);
@@ -245,7 +253,7 @@ RX_TEST_CASE(myTestSuite, test_list_peek_is_zero, .fixture = test_fixture)
     // create list
     const struct list_methods_light* list = &list_methods_light;
 
-    void* head = list->peek(ctx);
+    const void* head = list->peek(ctx);
 
     // ensure that data being added to list
     RX_ASSERT(head == 0);
@@ -260,7 +268,7 @@ RX_TEST_CASE(myTestSuite, test_list_pop_is_zero, .fixture = test_fixture)
     // create list
     const struct list_methods_light* list = &list_methods_light;
 
-    void* head = list->pop(ctx);
+    const void* head = list->pop(ctx);
 
     // ensure that data being added to list
     RX_ASSERT(head == 0);

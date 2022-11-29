@@ -9,6 +9,8 @@
 #include "common/object.h"
 #include "common/print.h"
 
+#include "std/common.h"
+
 #ifndef USE_MEMORY_LEAKS
 const char* __asan_default_options() { return "detect_leaks=0"; }
 #endif
@@ -90,39 +92,40 @@ void list_using(struct list_data** const current) {
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
 #endif
-    void* q_pop0 = list->methods->pop(current);
-    q_pop0 = q_pop0;
+    const void* q_pop0 = list->methods->pop(current);
+    ZEROPTR(q_pop0)
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
 #endif
-    void* q_pop1 = list->methods->pop(current); 
-    q_pop1 = q_pop1;
+    const void* q_pop1 = list->methods->pop(current); 
+    ZEROPTR(q_pop1)
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
 #endif
-    void* q_pop2 = list->methods->pop(current); 
-    q_pop2 = q_pop2;
+    const void* q_pop2 = list->methods->pop(current); 
+    ZEROPTR(q_pop2)
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
 #endif
     void* q_pop3 = list->methods->pop(current); 
     list->methods->push(current, q_pop3);
     q_pop3 = list->methods->pop(current); 
+    ZEROPTR(q_pop3)
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
 #endif
-    void* q_pop4 = list->methods->pop(current);
-    q_pop4 = q_pop4;
+    const void* q_pop4 = list->methods->pop(current);
+    ZEROPTR(q_pop4)
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
 #endif
-    void* q_pop5 = list->methods->pop(current); 
-    q_pop5 = q_pop5;
+    const void* q_pop5 = list->methods->pop(current); 
+    ZEROPTR(q_pop5)
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
 #endif
-    void* q_pop6 = list->methods->pop(current); 
-    q_pop6 = q_pop6;
+    const void* q_pop6 = list->methods->pop(current); 
+    ZEROPTR(q_pop6)
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current);
 #endif
@@ -196,7 +199,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture)
     void* payload = (void*)0xdeadbeef;
 
     list->methods->push(ctx, payload);
-    void* head = list->methods->pop(ctx);
+    const void* head = list->methods->pop(ctx);
 
     RX_ASSERT(head != 0);
 }
@@ -211,7 +214,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture)
     void* payload = (void*)0xdeadbeef;
 
     list->methods->push(ctx, payload);
-    void* head = list->methods->pop(ctx);
+    const void* head = list->methods->pop(ctx);
 
     // ensure that data being added to list
     RX_ASSERT(head == payload);
@@ -226,7 +229,7 @@ RX_TEST_CASE(myTestSuite, test_list_pop_is_zero, .fixture = test_fixture)
     // create list
     const struct list_class_micro* list = &list_class_micro;
 
-    void* head = list->methods->pop(ctx);
+    const void* head = list->methods->pop(ctx);
 
     // ensure that data being added to list
     RX_ASSERT(head == 0);
