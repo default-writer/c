@@ -25,10 +25,12 @@ do
         -I${pwd}/src/common/ \
         -I${pwd}/src/list${m}/ \
         -I${pwd}/rexo/include/ \
+        -DMEMORY_DEBUG_INFO \
+        -DMEMORY_CLEANUP \
+        -DMEMORY_LEAKS \
         -o ${pwd}/coverage/main${m} \
         && ${pwd}/coverage/main${m} \
         && lcov --capture --directory ${pwd}/coverage --output-file ${pwd}/coverage/main${m}.info
 done
-
 
 cd ${pwd}
