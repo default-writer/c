@@ -1,9 +1,13 @@
 #ifndef _OBJECT_H_
 #define _OBJECT_H_
 
-struct list_data;
+#include <stdlib.h>
 
-void list_init(struct list_data** const current);
-void list_destroy(struct list_data** const current);
+struct list_data;
+struct list_data* next(struct list_data *ptr);
+struct list_data* new();
+
+void list_init(struct list_data** const current, struct list_data* (*new)());
+void list_destroy(struct list_data** const current, struct list_data* (*next)(struct list_data*));
 
 #endif // _OBJECT_H_

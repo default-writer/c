@@ -23,6 +23,7 @@
 		"mhutchie.git-graph",
 		"donjayamanne.githistory",
 		"vadimcn.vscode-lldb",
-		"SonarSource.sonarlint-vscode"
+		"SonarSource.sonarlint-vscode",
+		"ryanluker.vscode-coverage-gutters"
 	]
 }

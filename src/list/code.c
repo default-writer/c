@@ -9,6 +9,16 @@
 #include "common/object.h"
 #include "common/print.h"
 
+struct list_data* next(struct list_data *ptr)
+{
+    return ptr->prev;
+}
+
+struct list_data* new()
+{
+    return NEW(sizeof(struct list_data));
+}
+
 /* push new item to existing context */
 /* at current context, new item will be added as next element */
 /* for the new item, add current head as previous element */

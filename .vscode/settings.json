@@ -101,8 +101,9 @@
     ],
     "C_Cpp.dimInactiveRegions": true,
     "C_Cpp.errorSquiggles": "Disabled",
+    "C_Cpp.intelliSenseEngine": "Disabled",
     "coverage-gutters.showLineCoverage": true,
-    "coverage-gutters.showRulerCoverage": true,
+    "coverage-gutters.showRulerCoverage": false,
     "coverage-gutters.coverageBaseDir": ".",
     "coverage-gutters.coverageFileNames": [
         "main.info",
@@ -113,5 +114,6 @@
     "files.watcherInclude": [
         "."
     ],
-    "sonarlint.pathToCompileCommands": "${workspaceFolder}/build/compile_commands.json"
+    "sonarlint.pathToCompileCommands": "${workspaceFolder}/build/compile_commands.json",
+    "coverage-gutters.showGutterCoverage": false
 }

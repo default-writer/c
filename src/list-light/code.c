@@ -9,6 +9,16 @@
 #include "common/object.h"
 #include "common/print.h"
 
+struct list_data* next(struct list_data *ptr)
+{
+    return ptr->prev;
+}
+
+struct list_data* new()
+{
+    return NEW(sizeof(struct list_data));
+}
+
 /* allocates a memory for provided payload  */
 /* at current context, data payload stored at allocated memory buffer */
 /* as a result, items counter will increase */

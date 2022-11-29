@@ -12,7 +12,7 @@
 #include "std/common.h"
 
 #ifndef USE_MEMORY_LEAKS
-const char* __asan_default_options() { return "detect_leaks=0"; }
+//const char* __asan_default_options() { return "detect_leaks=0"; }
 #endif
 
 extern const struct list_class_micro list_class_micro;
@@ -22,7 +22,7 @@ struct list_data* new_list()
     const struct list_class_micro* list = &list_class_micro;
     struct list_data* ctx;
     // init list
-    list->methods->init(&ctx);
+    list->methods->init(&ctx, new);
     // returns created object
     return ctx;
 }
@@ -31,7 +31,7 @@ void delete_list(struct list_data* ctx)
 {
     const struct list_class_micro* list = &list_class_micro;
     // destroy list
-    list->methods->destroy(&ctx);
+    list->methods->destroy(&ctx, next);
 }
 
 // default list usage scenario
@@ -145,7 +145,7 @@ RX_SET_UP(test_set_up)
     const struct list_class_micro* list = &list_class_micro;
     
     // initialize list
-    list->methods->init(ctx);
+    list->methods->init(ctx, new);
 
     return RX_SUCCESS;
 }
@@ -157,7 +157,7 @@ RX_TEAR_DOWN(test_tear_down)
     // access context's functions pointer
     const struct list_class_micro* list = &list_class_micro;
     // destroy list
-    list->methods->destroy(ctx);
+    list->methods->destroy(ctx, next);
 }
 
 /* Define the fixture. */

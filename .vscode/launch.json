@@ -36,7 +36,7 @@
             "name": "(gdb) list",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/main",
+            "program": "${workspaceFolder}/coverage/main",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

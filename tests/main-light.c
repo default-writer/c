@@ -12,7 +12,7 @@
 #include "std/common.h"
 
 #ifndef USE_MEMORY_LEAKS
-const char* __asan_default_options() { return "detect_leaks=0"; }
+//const char* __asan_default_options() { return "detect_leaks=0"; }
 #endif
 
 extern const struct list_methods_light list_methods_light;
@@ -22,7 +22,7 @@ struct list_data* new_list()
     const struct list_methods_light* list = &list_methods_light;
     struct list_data* ctx;
     // init list
-    list->init(&ctx);
+    list->init(&ctx, new);
     // returns created object
     return ctx;
 }
@@ -31,19 +31,17 @@ void delete_list(struct list_data* ctx)
 {
     const struct list_methods_light* list = &list_methods_light;
     // destroy list
-    list->destroy(&ctx);
+    list->destroy(&ctx, next);
 }
 
 // default list usage scenario
 void using_list(void (*list_using)(struct list_data** const)) {
     // initialize current context (stack)
     struct list_data* ctx = new_list();
-    // create list
-    const struct list_methods_light* list = &list_methods_light;
-    // initialize list
-    list->init(&ctx);
+
     // call user method
     list_using(&ctx);
+
     // destroy list
     delete_list(ctx);
 }
@@ -52,12 +50,10 @@ void using_list(void (*list_using)(struct list_data** const)) {
 void using_list2(void (*list_using)(struct list_data** const)) {
     // initialize current context (stack)
     struct list_data* ctx = new_list();
-    // create list
-    const struct list_methods_light* list = &list_methods_light;
-    // initialize list
-    list->init(&ctx);
+
     // call user method
     list_using(&ctx);
+
     // destroy list
     delete_list(ctx);
 }
@@ -153,7 +149,7 @@ RX_SET_UP(test_set_up)
     const struct list_methods_light* list = &list_methods_light;
 
     // initialize list
-    list->init(ctx);
+    list->init(ctx, new);
 
     return RX_SUCCESS;
 }
@@ -165,7 +161,7 @@ RX_TEAR_DOWN(test_tear_down)
     // access context's functions pointer
     const struct list_methods_light* list = &list_methods_light;
     // destroy list
-    list->destroy(ctx);
+    list->destroy(ctx, next);
 }
 
 /* Define the fixture. */

@@ -1,7 +1,8 @@
-#ifndef _DATA_H_
-#define _DATA_H_
+#ifndef _LIST_TINY_DATA_H_
+#define _LIST_TINY_DATA_H_
 
-/* queue/list: prev, next, payload */
+#include <stdlib.h>
+
 struct list_data {
     /* points to previous node */
     struct list_data* prev;
@@ -9,12 +10,11 @@ struct list_data {
     void*  payload;
 };
 
-/* queue/list: vtable definition */
 struct list_methods_tiny {
     /* initialize context */
-    void (*init)(struct list_data** const current);
+    void (*init)(struct list_data** const current, struct list_data* (*new)());
     /* destroy context */
-    void (*destroy)(struct list_data** const current);
+    void (*destroy)(struct list_data** const current, struct list_data* (*next)(struct list_data*));
     /* push item on current context (stack) */
     void (*push)(struct list_data** const current, void* item);
     /* pop item on current context (stack) */
@@ -23,4 +23,4 @@ struct list_methods_tiny {
     void* (*peek)(struct list_data** const current);
 };
 
-#endif // _DATA_H_
+#endif // _LIST_TINY_DATA_H_

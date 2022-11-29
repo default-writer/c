@@ -6,13 +6,13 @@
         {
             "label": "gcc-build",
             "type": "shell",
-            "command": "gcc --coverage -g ${workspaceFolder}/tests/main.c ${workspaceFolder}/src/list/code.c -I${workspaceFolder}/src -I${workspaceFolder}/rexo/include -o ${workspaceFolder}/build/main && lcov --capture --directory ${workspaceFolder} --output-file main.info",
+            "command": "${workspaceFolder}/bin/coverage.sh",
             "problemMatcher": [],
             "group": "test",
             "presentation": {
-                "reveal": "silent",
-                "panel": "shared",
-                "close": true
+                "reveal": "always",
+                "panel": "dedicated",
+                "close": false
             }
         },
         {
