@@ -4,7 +4,7 @@
 #include <string.h>
 
 #include "api.h"
-#include "data.h"
+#include "list-micro/data.h"
 #include "common/alloc.h"
 #include "common/object.h"
 #include "common/print.h"
@@ -54,13 +54,13 @@ void* list_pop(struct list_data** const current) {
     return payload;
 }
 
-const struct list_methods list_methods_micro = {
+const struct list_methods_micro list_methods_micro = {
     .push = list_push, // immutable function
     .pop = list_pop, // immutable function
     .init = list_init, // immutable function
     .destroy = list_destroy, // immutable function
 };
 
-const struct list_class list_class_micro = {
+const struct list_class_micro list_class_micro = {
     .methods = &list_methods_micro // immutable definition
 };

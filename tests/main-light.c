@@ -13,11 +13,11 @@
 const char* __asan_default_options() { return "detect_leaks=0"; }
 #endif
 
-extern const struct list_methods list_methods_light;
+extern const struct list_methods_light list_methods_light;
 
 struct list_data* new_list()
 {
-    const struct list_methods* list = &list_methods_light;
+    const struct list_methods_light* list = &list_methods_light;
     struct list_data* ctx;
     // init list
     list->init(&ctx);
@@ -27,7 +27,7 @@ struct list_data* new_list()
 
 void delete_list(struct list_data* ctx)
 {
-    const struct list_methods* list = &list_methods_light;
+    const struct list_methods_light* list = &list_methods_light;
     // destroy list
     list->destroy(&ctx);
 }
@@ -37,7 +37,7 @@ void using_list(void (*list_using)(struct list_data** const)) {
     // initialize current context (stack)
     struct list_data* ctx = new_list();
     // create list
-    const struct list_methods* list = &list_methods_light;
+    const struct list_methods_light* list = &list_methods_light;
     // initialize list
     list->init(&ctx);
     // call user method
@@ -51,7 +51,7 @@ void using_list2(void (*list_using)(struct list_data** const)) {
     // initialize current context (stack)
     struct list_data* ctx = new_list();
     // create list
-    const struct list_methods* list = &list_methods_light;
+    const struct list_methods_light* list = &list_methods_light;
     // initialize list
     list->init(&ctx);
     // call user method
@@ -63,7 +63,7 @@ void using_list2(void (*list_using)(struct list_data** const)) {
 // use list
 void list_using(struct list_data** const current) {
     // access context's functions pointer
-    const struct list_methods* list = &list_methods_light;
+    const struct list_methods_light* list = &list_methods_light;
     void* payload = (void*)0xdeadbeef;
     void* is_null[] = {
         list->peek(current),
@@ -142,7 +142,7 @@ RX_SET_UP(test_set_up)
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
     // access context's functions pointer
-    const struct list_methods* list = &list_methods_light;
+    const struct list_methods_light* list = &list_methods_light;
 
     // initialize list
     list->init(ctx);
@@ -155,7 +155,7 @@ RX_TEAR_DOWN(test_tear_down)
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
     // access context's functions pointer
-    const struct list_methods* list = &list_methods_light;
+    const struct list_methods_light* list = &list_methods_light;
     // destroy list
     list->destroy(ctx);
 }
@@ -180,7 +180,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_count_eq_1, .fixture = test_fixture)
     struct list_data** ctx = &rx->ctx;
 
     // create list
-    const struct list_methods* list = &list_methods_light;
+    const struct list_methods_light* list = &list_methods_light;
     void* payload = (void*)0xdeadbeef;
 
     list->push(ctx, payload);
@@ -195,7 +195,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_payload, .fixture = test_fixture)
     struct list_data** ctx = &rx->ctx;
 
     // create list
-    const struct list_methods* list = &list_methods_light;
+    const struct list_methods_light* list = &list_methods_light;
     void* payload = (void*)0xdeadbeef;
 
     list->push(ctx, payload);
@@ -211,7 +211,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture)
     struct list_data** ctx = &rx->ctx;
 
     // create list
-    const struct list_methods* list = &list_methods_light;
+    const struct list_methods_light* list = &list_methods_light;
     void* payload = (void*)0xdeadbeef;
 
     list->push(ctx, payload);
@@ -226,7 +226,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture)
     struct list_data** ctx = &rx->ctx;
 
     // create list
-    const struct list_methods* list = &list_methods_light;
+    const struct list_methods_light* list = &list_methods_light;
     void* payload = (void*)0xdeadbeef;
 
     list->push(ctx, payload);
@@ -243,7 +243,7 @@ RX_TEST_CASE(myTestSuite, test_list_peek_is_zero, .fixture = test_fixture)
     struct list_data** ctx = &rx->ctx;
 
     // create list
-    const struct list_methods* list = &list_methods_light;
+    const struct list_methods_light* list = &list_methods_light;
 
     void* head = list->peek(ctx);
 
@@ -258,7 +258,7 @@ RX_TEST_CASE(myTestSuite, test_list_pop_is_zero, .fixture = test_fixture)
     struct list_data** ctx = &rx->ctx;
 
     // create list
-    const struct list_methods* list = &list_methods_light;
+    const struct list_methods_light* list = &list_methods_light;
 
     void* head = list->pop(ctx);
 

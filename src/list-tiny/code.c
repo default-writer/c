@@ -4,7 +4,7 @@
 #include <string.h>
 
 #include "api.h"
-#include "data.h"
+#include "list-tiny/data.h"
 #include "common/alloc.h"
 #include "common/object.h"
 #include "common/print.h"
@@ -70,7 +70,7 @@ void* list_peek(struct list_data** const current) {
     return tmp->payload;
 }
 
-const struct list_methods list_methods_tiny = {
+const struct list_methods_tiny list_methods_tiny = {
     .push = list_push,
     .peek = list_peek,
     .pop = list_pop,

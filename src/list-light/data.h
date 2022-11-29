@@ -13,7 +13,7 @@ struct list_data {
 
 
 /* queue/list: vtable definition */
-struct list_methods {
+struct list_methods_light {
     /* initialize context */
     void (*init)(struct list_data** const current);
     /* destroy context */

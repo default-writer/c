@@ -4,7 +4,7 @@
 #include <string.h>
 
 #include "api.h"
-#include "data.h"
+#include "list-light/data.h"
 #include "common/alloc.h"
 #include "common/object.h"
 #include "common/print.h"
@@ -76,7 +76,7 @@ void* list_peek(struct list_data** const current) {
     return tmp->payload;
 }
 
-const struct list_methods list_methods_light = {
+const struct list_methods_light list_methods_light = {
     .push = list_push,
     .pop = list_pop,
     .peek = list_peek,

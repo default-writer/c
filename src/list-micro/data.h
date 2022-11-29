@@ -9,7 +9,7 @@ struct list_data {
 };
 
 /* queue/list: vtable definition */
-struct list_methods {
+struct list_methods_micro {
     /* push item on current context (stack) */
     void (*push)(struct list_data** const current, void* item);
     /* pop item on current context (stack) */
@@ -20,9 +20,9 @@ struct list_methods {
     void (*destroy)(struct list_data** const current);
 };
 
-struct list_class {
+struct list_class_micro {
     /* link to self-contained methods structure */
-    const struct list_methods* methods;
+    const struct list_methods_micro* methods;
 };
 
 #endif // _DATA_H_
