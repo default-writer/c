@@ -1,10 +1,10 @@
 #!/bin/bash -e
-pwd=${PWD}
+pwd=$(PWD)
 
 cd "${0%/*}"
 ./clean.sh
-cd ..
+cd ${pwd}
 
 cmake . -DCMAKE_EXPORT_COMPILE_COMMANDS=1
 
-cd $(pwd)
+cd ${pwd}
