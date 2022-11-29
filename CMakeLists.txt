@@ -9,13 +9,6 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-set(CMAKE_C_STANDARD 99)
-set(CMAKE_C_STANDARD_REQUIRED ON)
-set(CMAKE_C_EXTENSIONS OFF)
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-
 set(MAIN_MICRO_SOURCE tests/main-micro.c src/common/alloc.c src/common/print.c src/common/object.c)
 set(MAIN_TINY_SOURCE tests/main-tiny.c src/common/alloc.c src/common/print.c src/common/object.c)
 set(MAIN_LIGHT_SOURCE tests/main-light.c src/common/alloc.c src/common/print.c src/common/object.c)
