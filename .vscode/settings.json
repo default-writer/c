@@ -97,8 +97,7 @@
     },
     "cmake.configureOnOpen": true,
     "gcovViewer.buildDirectories": [
-        "/workspace/coverage",
-        "${workspaceFolder}/coverage"
+        "/workspace/coverage"
     ],
     "C_Cpp.dimInactiveRegions": true,
     "C_Cpp.errorSquiggles": "Disabled",
@@ -106,7 +105,7 @@
     "cofc.commands": [
         {
             "cmd": "gcov-viewer.show",
-            "path": "${workspaceFolder}/build"
+            "path": "/workspace/build"
         }
     ],
     "files.watcherInclude": [

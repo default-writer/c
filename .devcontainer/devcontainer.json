@@ -26,6 +26,9 @@
 		"SonarSource.sonarlint-vscode",
 		"JacquesLucke.gcov-viewer",
 		"syler.vscode-run-command-on-file-change",
-		"Syler.vscode-run-command-on-file-change"
+		"Syler.vscode-run-command-on-file-change",
+		"ms-vscode.cpptools",
+		"ms-vscode.cpptools-extension-pack",
+		"codezombiech.gitignore"
 	]
 }
