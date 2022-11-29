@@ -68,7 +68,7 @@ struct list_data* list_push(struct list_data** const current, struct list_data**
 /* as a result, items counter will increase */
 void list_alloc(struct list_data** const current, void* payload) {
     /* stores into pre-allocated value newly allocated memory buffer pointer */
-    struct list_data* tmp = NEW(sizeof(struct list_data));
+    struct list_data* tmp = new();
     /* sets the new data into allocated memory buffer */
     tmp->payload = payload;
     /* pushes new item on top of the stack in current context */

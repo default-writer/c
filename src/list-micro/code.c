@@ -48,7 +48,7 @@ void delete(struct list_data* ptr)
 /* as a result, items counter will increase */
 void list_push(struct list_data** const current, void* payload) {
     /* stores into pre-allocated value newly allocated memory buffer pointer */
-    struct list_data* item = NEW(sizeof(struct list_data));
+    struct list_data* item = new();
     /* sets the new data into allocated memory buffer */
     item->payload = payload;
     /* pushes new item on top of the stack in current context */
