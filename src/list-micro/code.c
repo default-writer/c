@@ -54,13 +54,13 @@ void* list_pop(struct list_data** const current) {
     return payload;
 }
 
-const struct list_methods list_methods = {
+const struct list_methods list_methods_micro = {
     .push = list_push, // immutable function
     .pop = list_pop, // immutable function
     .init = list_init, // immutable function
     .destroy = list_destroy, // immutable function
 };
 
-const struct list_class list_class = {
-    .methods = &list_methods // immutable definition
+const struct list_class list_class_micro = {
+    .methods = &list_methods_micro // immutable definition
 };
