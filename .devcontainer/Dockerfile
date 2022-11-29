@@ -4,7 +4,7 @@ RUN apt-get update && \
     export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \ 
     apt-get -y upgrade && \ 
-    apt-get -y install --no-install-recommends build-essential lldb lcov cmake clangd g++ gcc gdb
+    apt-get -y install --no-install-recommends build-essential lldb lcov cmake clangd g++ gcc gdb lcov
 
 RUN apt-get -y install git
 
