@@ -1,21 +1,18 @@
 #!/bin/bash -e
+pwd=${PWD}
+
+cd "${0%/*}"
+./clean.sh
+cd ..
 
 git submodule init
 git submodule update --recursive --remote
 git pull --recurse-submodules
 
-cd "${0%/*}"
+rm -rf $(pwd)/build
 
-rm -rf $(pwd)/../build
+cd $(pwd)
 
-if [ ! -d "$(pwd)/../build" ]
-then
-    mkdir $(pwd)/../build
-    cp ../CMakeLists.txt $(pwd)/../build/
-fi
+cmake .
 
-cd $(pwd)/../build
-cmake ../
-
-cd $(pwd)/../build
 make
