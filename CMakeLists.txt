@@ -64,7 +64,7 @@ include_directories(src/list-tiny)
 include_directories(src/list-light)
 include_directories(src/list)
 
-add_compile_options(-Wno-format-extra-args -Wno-format -Wno-parentheses -Wno-unused-variable -Wno-unused-parameter -Wno-long-long -fsanitize=undefined,address)
+add_compile_options(-fsanitize=undefined,address)
 add_link_options(-fsanitize=undefined,address)
 
 add_library(list-micro-lib STATIC ${LIST_MICRO_SOURCE})
