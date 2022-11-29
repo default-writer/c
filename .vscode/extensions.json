@@ -8,6 +8,7 @@
         "llvm-vs-code-extensions.vscode-clangd",
         "vadimcn.vscode-lldb",
         "ms-vscode.live-server",
-        "sonarsource.sonarlint-vscode"
+        "sonarsource.sonarlint-vscode",
+        "syler.vscode-run-command-on-file-change"
     ]
 }

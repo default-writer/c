@@ -24,6 +24,8 @@
 		"donjayamanne.githistory",
 		"vadimcn.vscode-lldb",
 		"SonarSource.sonarlint-vscode",
-		"JacquesLucke.gcov-viewer"
+		"JacquesLucke.gcov-viewer",
+		"syler.vscode-run-command-on-file-change",
+		"Syler.vscode-run-command-on-file-change"
 	]
 }

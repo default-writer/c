@@ -103,6 +103,12 @@
     "C_Cpp.dimInactiveRegions": true,
     "C_Cpp.errorSquiggles": "Disabled",
     "C_Cpp.intelliSenseEngine": "Disabled",
+    "cofc.commands": [
+        {
+            "cmd": "gcov-viewer.show",
+            "path": "${workspaceFolder}/build"
+        }
+    ],
     "files.watcherInclude": [
         "."
     ],
