@@ -22,6 +22,7 @@
 		"llvm-vs-code-extensions.vscode-clangd",
 		"mhutchie.git-graph",
 		"donjayamanne.githistory",
-		"vadimcn.vscode-lldb"
+		"vadimcn.vscode-lldb",
+		"SonarSource.sonarlint-vscode"
 	]
 }
