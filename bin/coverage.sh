@@ -13,6 +13,6 @@ gcc --coverage -g \
     -I${pwd}/src/list/ \
     -I${pwd}/rexo/include/ \
     -o ${pwd}/build/main \
-    && lcov --capture --directory ${pwd}/ --output-file main.info
+    && lcov --capture --directory ${pwd}/ --output-file lcov.info
 
 cd ${pwd}
