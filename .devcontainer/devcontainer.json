@@ -17,18 +17,17 @@
 
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
-		"ms-azuretools.vscode-docker",
-		"ms-vscode.cmake-tools",
-		"llvm-vs-code-extensions.vscode-clangd",
-		"mhutchie.git-graph",
-		"donjayamanne.githistory",
-		"vadimcn.vscode-lldb",
-		"SonarSource.sonarlint-vscode",
-		"JacquesLucke.gcov-viewer",
-		"syler.vscode-run-command-on-file-change",
-		"Syler.vscode-run-command-on-file-change",
 		"ms-vscode.cpptools",
 		"ms-vscode.cpptools-extension-pack",
+		"ms-vscode.cmake-tools",
+		"ms-azuretools.vscode-docker",
+		"llvm-vs-code-extensions.vscode-clangd",
+		"vadimcn.vscode-lldb",
+		"mhutchie.git-graph",
+		"donjayamanne.githistory",
+		"SonarSource.sonarlint-vscode",
+		"syler.vscode-run-command-on-file-change",
+		"JacquesLucke.gcov-viewer",
 		"codezombiech.gitignore"
 	]
 }
