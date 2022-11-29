@@ -205,7 +205,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_payload, .fixture = test_fixture)
     void* payload = (void*)0xdeadbeef;
 
     list->alloc(ctx, payload);
-    struct list_data* head = list->peek(ctx);
+    const struct list_data* head = list->peek(ctx);
 
     // ensure that data being added to list
     RX_ASSERT(head->payload == payload);
@@ -239,7 +239,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture)
 
     list->alloc(ctx, payload);
     struct list_data* head = list->pop(ctx);
-    void* head_payload = head->payload;
+    const void* head_payload = head->payload;
     list->free(ctx, &head);
 
     // ensure that data being added to list
@@ -259,7 +259,7 @@ RX_TEST_CASE(myTestSuite, test_list_peek_is_zero, .fixture = test_fixture)
     // create list
     const struct list_methods* list = &list_methods;
 
-    struct list_data* head = list->peek(ctx);
+    const struct list_data* head = list->peek(ctx);
 
     // ensure that data being added to list
     RX_ASSERT(head == 0);
@@ -274,7 +274,7 @@ RX_TEST_CASE(myTestSuite, test_list_pop_is_zero, .fixture = test_fixture)
     // create list
     const struct list_methods* list = &list_methods;
 
-    struct list_data* head = list->pop(ctx);
+    const struct list_data* head = list->pop(ctx);
 
     // ensure that data being added to list
     RX_ASSERT(head == 0);
