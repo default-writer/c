@@ -97,21 +97,12 @@
     },
     "cmake.configureOnOpen": true,
     "gcovViewer.buildDirectories": [
-        "/workspace"
+        "/workspace/coverage",
+        "${workspaceFolder}/coverage"
     ],
     "C_Cpp.dimInactiveRegions": true,
     "C_Cpp.errorSquiggles": "Disabled",
     "C_Cpp.intelliSenseEngine": "Disabled",
-    "coverage-gutters.showLineCoverage": true,
-    "coverage-gutters.showRulerCoverage": false,
-    "coverage-gutters.showGutterCoverage": false,
-    "coverage-gutters.coverageBaseDir": ".",
-    "coverage-gutters.coverageFileNames": [
-        "main.info",
-        "main-light.info",
-        "main-micro.info",
-        "main-tiny.info"
-    ],
     "files.watcherInclude": [
         "."
     ],

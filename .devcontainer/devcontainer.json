@@ -24,6 +24,6 @@
 		"donjayamanne.githistory",
 		"vadimcn.vscode-lldb",
 		"SonarSource.sonarlint-vscode",
-		"ryanluker.vscode-coverage-gutters"
+		"JacquesLucke.gcov-viewer"
 	]
 }
