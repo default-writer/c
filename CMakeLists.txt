@@ -57,8 +57,6 @@ if(MEMORY_LEAKS)
 endif()
 
 include_directories(src)
-include_directories(src/std)
-include_directories(src/common)
 
 add_compile_options(-fsanitize=undefined,address)
 add_link_options(-fsanitize=undefined,address)
