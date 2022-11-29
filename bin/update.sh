@@ -1,6 +1,12 @@
 #!/bin/bash -e
-pwd=${PWD}
-cd src/rexo
+pwd=$(pwd)
+
+cd "${0%/*}"
+./clean.sh
+cd ${pwd}
+
+git submodule init
 git submodule update --recursive --remote
-git pull --recurse-submodules
+git pull --recurse-submodules .
+
 cd $pwd
