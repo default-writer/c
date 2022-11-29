@@ -16,7 +16,7 @@ struct list_methods {
     /* initialize context */
     void (*init)(struct list_data** const current, struct list_data* (*new)());
     /* destroy context */
-    void (*destroy)(struct list_data** const current, struct list_data* (*next)(struct list_data*));
+    void (*destroy)(struct list_data** const current, void (*delete)(struct list_data*), struct list_data* (*next)(struct list_data*));
     /* alloc item on current context (stack) */
     void (*alloc)(struct list_data** const current, void* payload);
     /* push item on current context (stack) */

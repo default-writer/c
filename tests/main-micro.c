@@ -11,8 +11,8 @@
 
 #include "std/common.h"
 
-#ifndef USE_MEMORY_LEAKS
-//const char* __asan_default_options() { return "detect_leaks=0"; }
+#ifdef SKIP_MEMORY_LEAKS_DETECTION
+const char* __asan_default_options() { return "detect_leaks=0"; }
 #endif
 
 extern const struct list_class_micro list_class_micro;
@@ -31,7 +31,7 @@ void delete_list(struct list_data* ctx)
 {
     const struct list_class_micro* list = &list_class_micro;
     // destroy list
-    list->methods->destroy(&ctx, next);
+    list->methods->destroy(&ctx, delete, next);
 }
 
 // default list usage scenario
@@ -71,63 +71,63 @@ void list_using(struct list_data** const current) {
     }
     list->methods->push(current, payload);
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print_head(current);
+    list_print_head(current, data);
 #endif
     list->methods->push(current, ++payload);
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print_head(current);
+    list_print_head(current, data);
 #endif
     list->methods->push(current, ++payload);
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print_head(current);
+    list_print_head(current, data);
 #endif
     list->methods->push(current, ++payload);
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print_head(current);
+    list_print_head(current, data);
 #endif
     list->methods->push(current, ++payload);
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print_head(current);
+    list_print_head(current, data);
 #endif
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current);
+    list_print(current, next);
 #endif
     const void* q_pop0 = list->methods->pop(current);
     ZEROPTR(q_pop0)
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current);
+    list_print(current, next);
 #endif
     const void* q_pop1 = list->methods->pop(current); 
     ZEROPTR(q_pop1)
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current);
+    list_print(current, next);
 #endif
     const void* q_pop2 = list->methods->pop(current); 
     ZEROPTR(q_pop2)
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current);
+    list_print(current, next);
 #endif
     void* q_pop3 = list->methods->pop(current); 
     list->methods->push(current, q_pop3);
     q_pop3 = list->methods->pop(current); 
     ZEROPTR(q_pop3)
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current);
+    list_print(current, next);
 #endif
     const void* q_pop4 = list->methods->pop(current);
     ZEROPTR(q_pop4)
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current);
+    list_print(current, next);
 #endif
     const void* q_pop5 = list->methods->pop(current); 
     ZEROPTR(q_pop5)
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current);
+    list_print(current, next);
 #endif
     const void* q_pop6 = list->methods->pop(current); 
     ZEROPTR(q_pop6)
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current);
+    list_print(current, next);
 #endif
 }
 
@@ -157,7 +157,7 @@ RX_TEAR_DOWN(test_tear_down)
     // access context's functions pointer
     const struct list_class_micro* list = &list_class_micro;
     // destroy list
-    list->methods->destroy(ctx, next);
+    list->methods->destroy(ctx, delete, next);
 }
 
 /* Define the fixture. */

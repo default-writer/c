@@ -9,14 +9,38 @@
 #include "common/object.h"
 #include "common/print.h"
 
-struct list_data* next(struct list_data *ptr)
-{
-    return ptr->prev;
-}
-
 struct list_data* new()
 {
     return NEW(sizeof(struct list_data));
+}
+
+struct list_data* next(struct list_data *ptr)
+{
+    if (ptr == 0)
+    {
+        return 0;
+    }
+    return ptr->prev;
+}
+
+void* data(struct list_data* ptr)
+{
+    if (ptr == 0)
+    {
+        return 0;
+    }
+    return ptr->payload;
+}
+
+void delete(struct list_data* ptr)
+{
+    if (ptr != 0)
+    {
+#ifdef USE_MEMORY_CLEANUP
+        memset(ptr, 0, sizeof(struct list_data));
+#endif
+        FREE(ptr);
+    }
 }
 
 /* allocates a memory for provided payload  */

@@ -10,7 +10,7 @@
 #endif
 
 #if MEMORY_LEAKS==1
-#define USE_MEMORY_LEAKS
+#define SKIP_MEMORY_LEAKS_DETECTION
 #endif
 
 typedef long long unsigned int ADDR;
