@@ -104,6 +104,7 @@
     "C_Cpp.intelliSenseEngine": "Disabled",
     "coverage-gutters.showLineCoverage": true,
     "coverage-gutters.showRulerCoverage": false,
+    "coverage-gutters.showGutterCoverage": false,
     "coverage-gutters.coverageBaseDir": ".",
     "coverage-gutters.coverageFileNames": [
         "main.info",
@@ -114,6 +115,5 @@
     "files.watcherInclude": [
         "."
     ],
-    "sonarlint.pathToCompileCommands": "${workspaceFolder}/build/compile_commands.json",
-    "coverage-gutters.showGutterCoverage": false
+    "sonarlint.pathToCompileCommands": "${workspaceFolder}/build/compile_commands.json"
 }
