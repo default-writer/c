@@ -50,3 +50,5 @@ report
 *.info
 !/.vscode
 /.cache
+
+coverage
