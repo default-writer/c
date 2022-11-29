@@ -11,7 +11,7 @@ void list_print_head(struct list_data** const current, void* (*data)(struct list
     // get current context's head
     struct list_data* tmp = *current;
     // visualise item
-    printf("alloc: 0x%llx 0x%llx\n", (ADDR)tmp, (ADDR)data(tmp));
+    printf("*: 0x%llx 0x%llx\n", (ADDR)tmp, (ADDR)data(tmp));
 }
 
 // print all stack trace to output

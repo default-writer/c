@@ -30,13 +30,13 @@ option(MEMORY_DEBUG_INFO "Disables memory allocation debug information")
 option(MEMORY_CLEANUP "Disables memory cleanup")
 option(MEMORY_LEAKS "Disables memory leaks detection")
 
-set(MEMORY_DEBUG_INFO OFF CACHE BOOL "Enable memory allocation debug information?")
+set(MEMORY_DEBUG_INFO ON CACHE BOOL "Enable memory allocation debug information?")
 set(MEMORY_CLEANUP ON CACHE BOOL "Enable memory cleanup?")
-set(MEMORY_LEAKS OFF CACHE BOOL "Enable memory leaks detection?")
+set(MEMORY_LEAKS ON CACHE BOOL "Enable memory leaks detection?")
 
-set(MEMORY_DEBUG_INFO OFF)
+set(MEMORY_DEBUG_INFO ON)
 set(MEMORY_CLEANUP ON)
-set(MEMORY_LEAKS OFF)
+set(MEMORY_LEAKS ON)
 
 if(MEMORY_DEBUG_INFO)
     message(STATUS "Configure with memory allocation debug information")
