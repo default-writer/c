@@ -96,8 +96,8 @@ void list_free(struct list_data** const current, struct list_data** const item) 
     /* until we run out of stack or stop at head element */
     if (tmp != 0) {
 #ifdef USE_MEMORY_CLEANUP
-    /* zero all pointers */
-    memset(tmp, 0, sizeof(struct list_data));
+        /* zero all pointers */
+        memset((void*)tmp, 0, sizeof(struct list_data));
 #endif
         /* free temporary pointer value */
         FREE(tmp);

@@ -8,7 +8,7 @@
 // print head on current context (stack)
 void list_print_head(struct list_data** const current) {
     // get current context's head
-    struct list_data* tmp = (struct list_data*)*current;
+    struct list_data* tmp = *current;
     // visualise item
     printf("alloc: 0x%llx 0x%llx\n", (ADDR)tmp, (ADDR)tmp->payload);
 }
