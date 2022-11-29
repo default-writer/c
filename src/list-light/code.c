@@ -37,7 +37,7 @@ void delete(struct list_data* ptr)
     if (ptr != 0)
     {
 #ifdef USE_MEMORY_CLEANUP
-        memset(ptr, 0, sizeof(struct list_data));
+        memset((void*)ptr, 0, sizeof(struct list_data));
 #endif
         FREE(ptr);
     }
@@ -86,7 +86,7 @@ void* list_pop(struct list_data** const current) {
     void* payload = ptr->payload;
     /* detouches the pointer from the list */
 #ifdef USE_MEMORY_CLEANUP
-    memset(ptr, 0, sizeof(struct list_data));
+    memset((void*)ptr, 0, sizeof(struct list_data));
 #endif
     /* free temporary pointer value */
     FREE(ptr);

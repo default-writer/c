@@ -37,7 +37,7 @@ void delete(struct list_data* ptr)
     if (ptr != 0)
     {
 #ifdef USE_MEMORY_CLEANUP
-        memset(ptr, 0, sizeof(struct list_data));
+        memset((void*)ptr, 0, sizeof(struct list_data));
 #endif
         FREE(ptr);
     }
@@ -96,7 +96,7 @@ struct list_data* list_pop(struct list_data** const current) {
     struct list_data* ptr = head;
     /* detouches the pointer from the list */
 #ifdef USE_MEMORY_CLEANUP
-    memset(ptr, 0, sizeof(struct list_data));
+    memset((void*)ptr, 0, sizeof(struct list_data));
 #endif
     /* rewinds head pointer to previous pointer value */
     *current = prev;
@@ -125,17 +125,14 @@ struct list_data* list_peek(struct list_data** const current) {
 /* as a result, all items, starting from specified item, will be deleted */
 void list_free(struct list_data** const current, struct list_data** const item) {
     /* assigns currently selected item pointer to temporary */
+    /* get current context's head */
+    const struct list_data* head = *current;
     struct list_data* tmp = *item;
-    /* until we run out of stack or stop at head element */
-    if (tmp != 0) {
-#ifdef USE_MEMORY_CLEANUP
-        memset((void*)tmp, 0, sizeof(struct list_data));
-#endif
-        /* free temporary pointer value */
-        FREE(tmp);
+    if (head != tmp)
+    {
+        delete(tmp);
+        *item = 0;
     }
-    /* all stack items are processed */
-    *item = 0;
 }
 
 const struct list_methods list_methods = {

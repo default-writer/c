@@ -10,7 +10,7 @@
 #include "common/object.h"
 #include "common/print.h"
 
-#ifdef SKIP_MEMORY_LEAKS_DETECTION
+#ifndef USE_MEMORY_LEAKS_DETECTION
 const char* __asan_default_options() { return "detect_leaks=0"; }
 #endif
 
