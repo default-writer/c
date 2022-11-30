@@ -240,11 +240,24 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture)
     list->free(ctx, &head);
 
     // ensure that data being added to list
-#ifdef USE_MEMORY_CLEANUP
-    RX_ASSERT(head_payload == 0);
-#else
     RX_ASSERT(head_payload == payload);
-#endif
+}
+
+RX_TEST_CASE(myTestSuite, test_list_free_head, .fixture = test_fixture)
+{
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct list_data** ctx = &rx->ctx;
+
+    // create list
+    const struct list_methods* list = &list_methods;
+    void* payload = (void*)0xdeadbeef;
+
+    list->alloc(ctx, payload);
+    struct list_data* head = list->pop(ctx);
+    list->free(ctx, &head);
+
+    // ensure that data pointer is zero
+    RX_ASSERT(head == 0);
 }
 
 // test peek

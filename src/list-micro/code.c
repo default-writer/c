@@ -77,7 +77,7 @@ void* list_pop(struct list_data** const current) {
     /* assigns current stack head pointer to temporary */
     struct list_data* ptr = head;
     /* gets temporary pointer value */
-    void* payload = ptr->payload;
+    void* payload = data(ptr);
     /* detouches the pointer from the list */
 #ifdef USE_MEMORY_CLEANUP
     memset((void*)ptr, 0, sizeof(struct list_data));
