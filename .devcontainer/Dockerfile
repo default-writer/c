@@ -34,7 +34,4 @@ RUN apt-get update && \
 USER ${USER_NAME}
 WORKDIR /workspace
 
-USER ${USER_NAME}
-WORKDIR /workspace
-
 COPY --chown=${USER_NAME}:${USER_GROUP} . .
