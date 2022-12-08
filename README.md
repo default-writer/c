@@ -1,5 +1,3 @@
 # Description
 
-- C List<T> implementation
-
-
+- C `List<T>` implementation
