@@ -12,6 +12,8 @@
         "syler.vscode-run-command-on-file-change",
         "ms-vscode.cpptools",
         "ms-vscode.cpptools-extension-pack",
-        "codezombiech.gitignore"
+        "codezombiech.gitignore",
+        "davidanson.vscode-markdownlint",
+        "yzhang.markdown-all-in-one"
     ]
 }
