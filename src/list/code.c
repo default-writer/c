@@ -12,7 +12,6 @@
 size_t size()
 {
     return sizeof(struct list_data);
-
 }
 
 struct list_data* new()
