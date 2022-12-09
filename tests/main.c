@@ -310,7 +310,7 @@ RX_TEST_CASE(myTestSuite, test_list_peek_is_zero, .fixture = test_fixture)
     const struct list_data* head = list->peek(ctx);
 
     // ensure that data being added to list
-    RX_ASSERT(head == *ctx);
+    RX_ASSERT(head == 0);
 }
 
 // test pop

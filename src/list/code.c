@@ -129,6 +129,13 @@ struct list_data* list_peek(struct list_data** const current) {
         /* returns default element as null element */
         return 0;
     }
+    /* gets previos pointer */
+    const struct list_data* prev = next(ptr);
+    /* if we call method on empty stack, do not return head element, return null element by convention */
+    if (prev == 0) {
+        /* returns default element as null element */
+        return 0;
+    }
     /* returns current pointer */
     return ptr;
 }
