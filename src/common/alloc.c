@@ -18,13 +18,11 @@ void* _list_alloc(size_t nmemb, size_t size)
 
 void _list_free(void* ptr)
 {
-    if (ptr != 0) {
 #ifdef USE_MEMORY_DEBUG_INFO
-        printf("-: 0x%llx\n", (ADDR)ptr);
+    printf("-: 0x%llx\n", (ADDR)ptr);
 #endif
 #ifdef USE_MEMORY_CLEANUP
-        memset((void*)(byte*)ptr, 0, size());
+    memset((void*)(byte*)ptr, 0, size());
 #endif
-    }
     free(ptr);    
 }

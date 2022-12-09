@@ -17,7 +17,7 @@ size_t size()
 
 struct list_data* new()
 {
-    return NEW(size());
+    return _list_alloc(1, size());
 }
 
 struct list_data* next(struct list_data *ptr)
@@ -42,7 +42,7 @@ void delete(struct list_data* ptr)
 {
     if (ptr != 0)
     {
-        FREE(ptr);
+        _list_free(ptr);
     }
 }
 
@@ -88,7 +88,7 @@ void* list_pop(struct list_data** const current) {
     /* gets temporary pointer value */
     void* payload = data(ptr);
     /* free temporary pointer value */
-    FREE(ptr);
+    delete(ptr);
     /* returns removed element */
     return payload;
 }
