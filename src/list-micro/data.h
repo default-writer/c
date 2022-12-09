@@ -21,9 +21,4 @@ struct list_methods {
     void* (*pop)(struct list_data** const current);
 };
 
-struct list_class_micro {
-    /* link to self-contained methods structure */
-    const struct list_methods* methods;
-};
-
 #endif // _LIST_MICRO_DATA_H_

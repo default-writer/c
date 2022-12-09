@@ -94,7 +94,3 @@ const struct list_methods list_methods_micro = {
     .push = list_push, // immutable function
     .pop = list_pop // immutable function
 };
-
-const struct list_class_micro list_class_micro = {
-    .methods = &list_methods_micro // immutable definition
-};
