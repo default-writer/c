@@ -53,7 +53,6 @@ void list_push(struct list_data** const current, void* payload) {
     struct list_data* item = new();
     /* sets the new data into allocated memory buffer */
     item->payload = payload;
-    /* pushes new item on top of the stack in current context */
     /* get current context's head */
     struct list_data* head = *current;
     /* assigns item pointer to head's next pointer value */
@@ -70,20 +69,23 @@ void list_push(struct list_data** const current, void* payload) {
 /* as a result, header will be set to previous position, represented as head's reference to previos head */
 void* list_pop(struct list_data** const current) {
     /* get current context's head */
-    struct list_data* head = *current;
+    struct list_data* ptr = *current;
     /* if we call method on empty stack, do not return head element, return null element by convention */
-    if (head == 0 || head->prev == 0) {
+    if (ptr == 0) {
         /* returns default element as null element */
         return 0;
     }
     /* gets previos pointer */
-    struct list_data* prev = head->prev;
+    struct list_data* prev = next(ptr);
+    /* if we call method on empty stack, do not return head element, return null element by convention */
+    if (prev == 0) {
+        /* returns default element as null element */
+        return 0;
+    }
     /* detouches prev pointer to next to it */
     prev->next = 0;
     /* rewinds head pointer to previous pointer value */
     *current = prev;
-    /* assigns current stack head pointer to temporary */
-    struct list_data* ptr = head;
     /* gets temporary pointer value */
     void* payload = data(ptr);
     /* free temporary pointer value */

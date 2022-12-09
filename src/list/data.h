@@ -22,7 +22,7 @@ struct list_methods {
     /* destroy context */
     void (*destroy)(struct list_data** const current, void (*delete)(struct list_data*), struct list_data* (*next)(struct list_data*));
     /* push item on current context (stack) */
-    struct list_data* (*push)(struct list_data** const current, struct list_data** const item);
+    struct list_data* (*push)(struct list_data** const current, struct list_data* const item);
     /* pop item on current context (stack) */
     struct list_data* (*pop)(struct list_data** const current);
     /* peek item on current context (stack) */

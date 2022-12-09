@@ -72,18 +72,18 @@ void list_free(struct list_data** const item) {
 /* at current context, new item will be added as next element */
 /* for the new item, add current head as previous element */
 /* as a result, head will advances to new position, represented as new item */
-struct list_data* list_push(struct list_data** const current, struct list_data** const item) {
-    if (item == 0 || *item == 0) {
+struct list_data* list_push(struct list_data** const current, struct list_data* const item) {
+    if (item == 0) {
         return 0;
     }
     /* get current context's head */
     struct list_data* head = *current;
     /* assigns item pointer to head's next pointer value */
-    head->next = *item;
+    head->next = item;
     /* assigns item's prev pointer to head pointer */
-    (*item)->prev = *current;
+    item->prev = *current;
     /* advances position of head pointer to the new head */
-    *current = *item;
+    *current = item;
     /* return previous context's head */
     return head;
 }
@@ -94,20 +94,21 @@ struct list_data* list_push(struct list_data** const current, struct list_data**
 /* as a result, header will be set to previous position, represented as head's reference to previos head */
 struct list_data* list_pop(struct list_data** const current) {
     /* get current context's head */
-    struct list_data* head = *current;
+    struct list_data* ptr = *current;
     /* if we call method on empty stack, do not return head element, return null element by convention */
-    if (head == 0 || head->prev == 0) {
+    if (ptr == 0) {
         /* returns default element as null element */
         return 0;
     }
     /* gets previos pointer */
-    struct list_data* prev = head->prev;
+    struct list_data* prev = next(ptr);
+    /* if we call method on empty stack, do not return head element, return null element by convention */
+    if (prev == 0) {
+        /* returns default element as null element */
+        return 0;
+    }
     /* detouches prev pointer to next to it */
     prev->next = 0;
-    /* assigns current stack head pointer to temporary */
-    /* gets temporary pointer value */
-    struct list_data* ptr = head;
-    /* detouches the pointer from the list */
     /* points to previous node */
     ptr->prev = 0;
     /* points to next node */
