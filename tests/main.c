@@ -72,23 +72,28 @@ void list_using(struct list_data** const current) {
     if (0 != is_null[1]) {
         return;
     }
-    list->alloc(current, payload);
+    struct list_data* tmp1 = list->alloc(payload);
+    list->push(current, &tmp1);
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print_head(current, data);
 #endif
-    list->alloc(current, ++payload);
+    struct list_data* tmp2 = list->alloc(++payload);
+    list->push(current, &tmp2);
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print_head(current, data);
 #endif
-    list->alloc(current, ++payload);
+    struct list_data* tmp3 = list->alloc(++payload);
+    list->push(current, &tmp3);
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print_head(current, data);
 #endif
-    list->alloc(current, ++payload);
+    struct list_data* tmp4 = list->alloc(++payload);
+    list->push(current, &tmp4);
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print_head(current, data);
 #endif
-    list->alloc(current, ++payload);
+    struct list_data* tmp5 = list->alloc(++payload);
+    list->push(current, &tmp5);
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print_head(current, data);
 #endif
@@ -96,39 +101,39 @@ void list_using(struct list_data** const current) {
     list_print(current, next);
 #endif
     struct list_data* q_pop0 = list->pop(current); 
-    list->free(current, &q_pop0);
+    list->free(&q_pop0);
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, next);
 #endif
     struct list_data* q_pop1 = list->pop(current); 
-    list->free(current, &q_pop1);
+    list->free(&q_pop1);
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, next);
 #endif
     struct list_data* q_pop2 = list->pop(current); 
-    list->free(current, &q_pop2);
+    list->free(&q_pop2);
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, next);
 #endif
     struct list_data* q_pop3 = list->pop(current); 
     list->push(current, &q_pop3);
     q_pop3 = list->pop(current); 
-    list->free(current, &q_pop3);
+    list->free(&q_pop3);
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, next);
 #endif
     struct list_data* q_pop4 = list->pop(current); 
-    list->free(current, &q_pop4);
+    list->free(&q_pop4);
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, next);
 #endif
     struct list_data* q_pop5 = list->peek(current); 
-    list->free(current, &q_pop5);
+    list->free(&q_pop5);
     list->push(current, &q_pop0);
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, next);
 #endif
-    list->free(current, &q_pop0);
+    list->free(&q_pop0);
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, next);
 #endif
@@ -186,7 +191,8 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_count_eq_1, .fixture = test_fixture)
     const struct list_methods* list = &list_methods;
     void* payload = (void*)0xdeadbeef;
 
-    list->alloc(ctx, payload);
+    struct list_data* tmp = list->alloc(payload);
+    list->push(ctx, &tmp);
 
     // ensure that data being added to list
     RX_ASSERT(*ctx != 0);
@@ -201,7 +207,9 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_payload, .fixture = test_fixture)
     const struct list_methods* list = &list_methods;
     void* payload = (void*)0xdeadbeef;
 
-    list->alloc(ctx, payload);
+    struct list_data* tmp = list->alloc(payload);
+    list->push(ctx, &tmp);
+
     const struct list_data* head = list->peek(ctx);
 
     // ensure that data being added to list
@@ -217,10 +225,12 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture)
     const struct list_methods* list = &list_methods;
     void* payload = (void*)0xdeadbeef;
 
-    list->alloc(ctx, payload);
+    struct list_data* tmp = list->alloc(payload);
+    list->push(ctx, &tmp);
+
     struct list_data* head = list->pop(ctx);
 
-    list->free(ctx, &head);
+    list->free(&head);
 
     RX_ASSERT(head == 0);
 }
@@ -234,13 +244,39 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture)
     const struct list_methods* list = &list_methods;
     void* payload = (void*)0xdeadbeef;
 
-    list->alloc(ctx, payload);
+    struct list_data* tmp = list->alloc(payload);
+    list->push(ctx, &tmp);
+
     struct list_data* head = list->pop(ctx);
     const void* head_payload = head->payload;
-    list->free(ctx, &head);
+    list->free(&head);
 
     // ensure that data being added to list
     RX_ASSERT(head_payload == payload);
+}
+
+RX_TEST_CASE(myTestSuite, test_list_alloc_and_prev_next_equals_0, .fixture = test_fixture)
+{
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct list_data** ctx = &rx->ctx;
+
+    // create list
+    const struct list_methods* list = &list_methods;
+    void* payload = (void*)0xdeadbeef;
+
+    struct list_data* tmp = list->alloc(payload);
+    list->push(ctx, &tmp);
+
+    struct list_data* head = list->pop(ctx);
+    const struct list_data* prev = head->prev;
+    const struct list_data* next = head->next;
+    const void* head_payload = head->payload;
+    list->free(&head);
+
+    // ensure that data being added to list
+    RX_ASSERT(head_payload == payload);
+    RX_ASSERT(prev == 0);
+    RX_ASSERT(next == 0);
 }
 
 RX_TEST_CASE(myTestSuite, test_list_free_head, .fixture = test_fixture)
@@ -252,9 +288,11 @@ RX_TEST_CASE(myTestSuite, test_list_free_head, .fixture = test_fixture)
     const struct list_methods* list = &list_methods;
     void* payload = (void*)0xdeadbeef;
 
-    list->alloc(ctx, payload);
+    struct list_data* tmp = list->alloc(payload);
+    list->push(ctx, &tmp);
+
     struct list_data* head = list->pop(ctx);
-    list->free(ctx, &head);
+    list->free(&head);
 
     // ensure that data pointer is zero
     RX_ASSERT(head == 0);

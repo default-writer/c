@@ -13,20 +13,20 @@ struct list_data {
 };
 
 struct list_methods {
+    /* allocate list item */
+    struct list_data* (*alloc)(void* payload);
+    /* free item */
+    void (*free)(struct list_data** const item);
     /* initialize context */
     void (*init)(struct list_data** const current, struct list_data* (*new)());
     /* destroy context */
     void (*destroy)(struct list_data** const current, void (*delete)(struct list_data*), struct list_data* (*next)(struct list_data*));
-    /* alloc item on current context (stack) */
-    void (*alloc)(struct list_data** const current, void* payload);
     /* push item on current context (stack) */
     struct list_data* (*push)(struct list_data** const current, struct list_data** const item);
     /* pop item on current context (stack) */
     struct list_data* (*pop)(struct list_data** const current);
     /* peek item on current context (stack) */
     struct list_data* (*peek)(struct list_data** const current);
-    /* free item on current context (stack) */
-    void (*free)(struct list_data** const current, struct list_data** const item);
 };
 
 #endif // _LIST_DATA_H_

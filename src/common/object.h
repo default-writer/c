@@ -3,8 +3,9 @@
 
 #include <stdlib.h>
 
-struct list_data;
+#include "std/api.h"
 
+size_t size();
 struct list_data* new();
 struct list_data* next(struct list_data *ptr);
 void* data(struct list_data *ptr);

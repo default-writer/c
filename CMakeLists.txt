@@ -9,15 +9,15 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-set(MAIN_MICRO_SOURCE tests/main-micro.c src/common/alloc.c src/common/print.c src/common/object.c)
-set(MAIN_TINY_SOURCE tests/main-tiny.c src/common/alloc.c src/common/print.c src/common/object.c)
-set(MAIN_LIGHT_SOURCE tests/main-light.c src/common/alloc.c src/common/print.c src/common/object.c)
-set(MAIN_SOURCE tests/main.c src/common/alloc.c src/common/print.c src/common/object.c)
-
 set(LIST_MICRO_SOURCE src/list-micro/code.c src/common/alloc.c src/common/print.c src/common/object.c)
 set(LIST_TINY_SOURCE src/list-tiny/code.c src/common/alloc.c src/common/print.c src/common/object.c)
 set(LIST_LIGHT_SOURCE src/list-light/code.c src/common/alloc.c src/common/print.c src/common/object.c)
 set(LIST_SOURCE src/list/code.c src/common/alloc.c src/common/print.c src/common/object.c)
+
+set(MAIN_MICRO_SOURCE tests/main-micro.c ${LIST_MICRO_SOURCE})
+set(MAIN_TINY_SOURCE tests/main-tiny.c ${LIST_TINY_SOURCE})
+set(MAIN_LIGHT_SOURCE tests/main-light.c ${LIST_LIGHT_SOURCE})
+set(MAIN_SOURCE tests/main.c ${LIST_SOURCE})
 
 option(MEMORY_DEBUG_INFO "Disables memory allocation debug information")
 option(MEMORY_CLEANUP "Disables memory cleanup")

@@ -13,6 +13,9 @@
 #define USE_MEMORY_LEAKS_DETECTION
 #endif
 
+struct list_data;
+
 typedef long long unsigned int ADDR;
+typedef unsigned char byte;
 
 #endif // _API_H_

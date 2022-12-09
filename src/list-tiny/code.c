@@ -9,9 +9,15 @@
 #include "common/object.h"
 #include "common/print.h"
 
+size_t size()
+{
+    return sizeof(struct list_data);
+
+}
+
 struct list_data* new()
 {
-    return NEW(sizeof(struct list_data));
+    return NEW(size());
 }
 
 struct list_data* next(struct list_data *ptr)
@@ -36,9 +42,6 @@ void delete(struct list_data* ptr)
 {
     if (ptr != 0)
     {
-#ifdef USE_MEMORY_CLEANUP
-        memset((void*)ptr, 0, sizeof(struct list_data));
-#endif
         FREE(ptr);
     }
 }
@@ -78,10 +81,6 @@ void* list_pop(struct list_data** const current) {
     struct list_data* ptr = head;
     /* gets temporary pointer value */
     void* payload = data(ptr);
-    /* detouches the pointer from the list */
-#ifdef USE_MEMORY_CLEANUP
-    memset((void*)ptr, 0, sizeof(struct list_data));
-#endif
     /* free temporary pointer value */
     FREE(ptr);
     /* returns removed element */

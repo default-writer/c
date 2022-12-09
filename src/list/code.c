@@ -9,9 +9,15 @@
 #include "common/object.h"
 #include "common/print.h"
 
+size_t size()
+{
+    return sizeof(struct list_data);
+
+}
+
 struct list_data* new()
 {
-    return NEW(sizeof(struct list_data));
+    return NEW(size());
 }
 
 struct list_data* next(struct list_data *ptr)
@@ -36,10 +42,33 @@ void delete(struct list_data* ptr)
 {
     if (ptr != 0)
     {
-#ifdef USE_MEMORY_CLEANUP
-        memset((void*)ptr, 0, sizeof(struct list_data));
-#endif
         FREE(ptr);
+    }
+}
+
+/* allocates a memory for provided payload  */
+/* at current context, data payload stored at allocated memory buffer */
+/* as a result, items counter will increase */
+struct list_data* list_alloc(void* payload) {
+    /* stores into pre-allocated value newly allocated memory buffer pointer */
+    struct list_data* tmp = new();
+    /* sets the new data into allocated memory buffer */
+    tmp->payload = payload;
+    /* returns created data structure */
+    return tmp;
+}
+
+/* frees up memory assigned for allocation of items at current position */
+/* at current context, all data needed to be claimed, will be freed */
+/* as a result, all items, starting from specified item, will be deleted */
+void list_free(struct list_data** const item) {
+    /* assigns currently selected item pointer to temporary */
+    /* get current context's head */
+    struct list_data* tmp = *item;
+    if (tmp != 0)
+    {
+        delete(tmp);
+        *item = 0;
     }
 }
 
@@ -63,18 +92,6 @@ struct list_data* list_push(struct list_data** const current, struct list_data**
     return head;
 }
 
-/* allocates a memory for provided payload  */
-/* at current context, data payload stored at allocated memory buffer */
-/* as a result, items counter will increase */
-void list_alloc(struct list_data** const current, void* payload) {
-    /* stores into pre-allocated value newly allocated memory buffer pointer */
-    struct list_data* tmp = new();
-    /* sets the new data into allocated memory buffer */
-    tmp->payload = payload;
-    /* pushes new item on top of the stack in current context */
-    list_push(current, &tmp);
-}
-
 /* pop existing element at the top of the stack/queue/list */
 /* at current context, existing head will be removed out of stack */
 /* for the new stack header, correcponding values will be fixed */
@@ -95,11 +112,10 @@ struct list_data* list_pop(struct list_data** const current) {
     /* gets temporary pointer value */
     struct list_data* ptr = head;
     /* detouches the pointer from the list */
-#ifdef USE_MEMORY_CLEANUP
-    void* payload = data(ptr);
-    memset((void*)ptr, 0, sizeof(struct list_data));
-    ptr->payload = payload;
-#endif
+    /* points to previous node */
+    ptr->prev = 0;
+    /* points to next node */
+    ptr->next = 0;
     /* rewinds head pointer to previous pointer value */
     *current = prev;
     /* returns removed element */
@@ -120,21 +136,6 @@ struct list_data* list_peek(struct list_data** const current) {
     struct list_data* tmp = head;
     /* returns head element */
     return tmp;
-}
-
-/* frees up memory assigned for allocation of items at current position */
-/* at current context, all data needed to be claimed, will be freed */
-/* as a result, all items, starting from specified item, will be deleted */
-void list_free(struct list_data** const current, struct list_data** const item) {
-    /* assigns currently selected item pointer to temporary */
-    /* get current context's head */
-    const struct list_data* head = *current;
-    struct list_data* tmp = *item;
-    if (head != tmp)
-    {
-        delete(tmp);
-        *item = 0;
-    }
 }
 
 const struct list_methods list_methods = {
