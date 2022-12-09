@@ -267,11 +267,11 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_and_prev_next_equals_0, .fixture = tes
     struct list_data* tmp = list->alloc(payload);
     list->push(ctx, &tmp);
 
-    struct list_data* head = list->pop(ctx);
-    const struct list_data* prev = head->prev;
-    const struct list_data* next = head->next;
-    const void* head_payload = head->payload;
-    list->free(&head);
+    struct list_data* current = list->pop(ctx);
+    const struct list_data* prev = current->prev;
+    const struct list_data* next = current->next;
+    const void* head_payload = current->payload;
+    list->free(&current);
 
     // ensure that data being added to list
     RX_ASSERT(head_payload == payload);
