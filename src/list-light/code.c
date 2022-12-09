@@ -109,9 +109,11 @@ void* list_peek(struct list_data** const current) {
 }
 
 const struct list_methods list_methods_light = {
+    // generic methods
+    .init = list_init,
+    .destroy = list_destroy,
+    // list methods
     .push = list_push,
     .pop = list_pop,
-    .peek = list_peek,
-    .init = list_init,
-    .destroy = list_destroy
+    .peek = list_peek
 };

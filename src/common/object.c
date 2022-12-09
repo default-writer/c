@@ -30,7 +30,7 @@ void list_destroy(struct list_data** const current, void (*delete)(struct list_d
             struct list_data* ptr = tmp;
             /* gets prev pointer value */
             struct list_data* prev = next(tmp);
-            /* */
+            /* frees up memory, should check for 0 before execution */
             delete(ptr);
             /* advances temporary pointer value to the next item */
             tmp = prev;

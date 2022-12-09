@@ -63,12 +63,9 @@ struct list_data* list_alloc(void* payload) {
 void list_free(struct list_data** const item) {
     /* assigns currently selected item pointer to temporary */
     /* get current context's head */
-    struct list_data* tmp = *item;
-    if (tmp != 0)
-    {
-        delete(tmp);
-        *item = 0;
-    }
+    struct list_data* ptr = *item;
+    delete(ptr);
+    *item = 0;
 }
 
 /* push new item to existing context */
@@ -138,11 +135,13 @@ struct list_data* list_peek(struct list_data** const current) {
 }
 
 const struct list_methods list_methods = {
+    // generic methods
+    .init = list_init,
+    .destroy = list_destroy,
+    // list methods
     .alloc = list_alloc,
+    .free = list_free,
     .push = list_push,
     .pop = list_pop,
     .peek = list_peek,
-    .free = list_free,
-    .init = list_init,
-    .destroy = list_destroy
 };

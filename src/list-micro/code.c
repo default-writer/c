@@ -87,10 +87,12 @@ void* list_pop(struct list_data** const current) {
 }
 
 const struct list_methods list_methods_micro = {
-    .push = list_push, // immutable function
-    .pop = list_pop, // immutable function
+    // generic methods
     .init = list_init, // immutable function
     .destroy = list_destroy, // immutable function
+    // list methods
+    .push = list_push, // immutable function
+    .pop = list_pop // immutable function
 };
 
 const struct list_class_micro list_class_micro = {

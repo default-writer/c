@@ -116,5 +116,6 @@
     "files.watcherInclude": [
         "."
     ],
-    "sonarlint.pathToCompileCommands": "${workspaceFolder}/build/compile_commands.json"
+    "sonarlint.pathToCompileCommands": "${workspaceFolder}/build/compile_commands.json",
+    "lldb.consoleMode": "commands"
 }
