@@ -10,7 +10,7 @@ struct list_data {
     void* payload;
 };
 
-struct list_methods_micro {
+struct list_methods {
     /* initialize context */
     void (*init)(struct list_data** const current, struct list_data* (*new)());
     /* destroy context */
@@ -23,7 +23,7 @@ struct list_methods_micro {
 
 struct list_class_micro {
     /* link to self-contained methods structure */
-    const struct list_methods_micro* methods;
+    const struct list_methods* methods;
 };
 
 #endif // _LIST_MICRO_DATA_H_

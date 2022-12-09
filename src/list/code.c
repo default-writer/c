@@ -146,4 +146,3 @@ const struct list_methods list_methods = {
     .init = list_init,
     .destroy = list_destroy
 };
-

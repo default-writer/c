@@ -102,7 +102,7 @@ void* list_peek(struct list_data** const current) {
     return data(tmp);
 }
 
-const struct list_methods_tiny list_methods_tiny = {
+const struct list_methods list_methods_tiny = {
     .push = list_push,
     .peek = list_peek,
     .pop = list_pop,
