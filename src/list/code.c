@@ -123,16 +123,14 @@ struct list_data* list_pop(struct list_data** const current) {
 /* at current context, existing head */
 struct list_data* list_peek(struct list_data** const current) {
     /* get current context's head */
-    struct list_data* head = *current;
+    struct list_data* ptr = *current;
     /* if we call method on empty stack, do not return head element, return null element by convention */
-    if (head == 0 || head->prev == 0) {
+    if (ptr == 0) {
         /* returns default element as null element */
         return 0;
     }
-    /* assigns current stack head pointer to temporary */
-    struct list_data* tmp = head;
-    /* returns head element */
-    return tmp;
+    /* returns current pointer */
+    return ptr;
 }
 
 const struct list_methods list_methods = {
