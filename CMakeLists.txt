@@ -10,12 +10,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(LIST_MICRO_SOURCE src/list-micro/code.c src/common/alloc.c src/common/print.c src/common/object.c)
-set(LIST_TINY_SOURCE src/list-tiny/code.c src/common/alloc.c src/common/print.c src/common/object.c)
 set(LIST_LIGHT_SOURCE src/list-light/code.c src/common/alloc.c src/common/print.c src/common/object.c)
 set(LIST_SOURCE src/list/code.c src/common/alloc.c src/common/print.c src/common/object.c)
 
 set(MAIN_MICRO_SOURCE tests/main-micro.c ${LIST_MICRO_SOURCE})
-set(MAIN_TINY_SOURCE tests/main-tiny.c ${LIST_TINY_SOURCE})
 set(MAIN_LIGHT_SOURCE tests/main-light.c ${LIST_LIGHT_SOURCE})
 set(MAIN_SOURCE tests/main.c ${LIST_SOURCE})
 
@@ -55,16 +53,13 @@ add_compile_options(-fsanitize=undefined,address)
 add_link_options(-fsanitize=undefined,address)
 
 add_library(list-micro-lib STATIC ${LIST_MICRO_SOURCE})
-add_library(list-tiny-lib STATIC ${LIST_TINY_SOURCE})
 add_library(list-light-lib STATIC ${LIST_LIGHT_SOURCE})
 add_library(list-lib STATIC ${LIST_SOURCE})
 
 add_executable(main-micro ${MAIN_MICRO_SOURCE})
-add_executable(main-tiny ${MAIN_TINY_SOURCE})
 add_executable(main-light ${MAIN_LIGHT_SOURCE})
 add_executable(main ${MAIN_SOURCE})
 
 target_link_libraries(main-micro PRIVATE list-micro-lib)
-target_link_libraries(main-tiny PRIVATE list-tiny-lib)
 target_link_libraries(main-light PRIVATE list-light-lib)
 target_link_libraries(main PRIVATE list-lib)

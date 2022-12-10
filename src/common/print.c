@@ -3,8 +3,9 @@
 #include <stdlib.h>
 
 #include "std/api.h"
-#include "list-tiny/data.h"
 #include "object.h"
+
+struct list_data;
 
 // print head on current context (stack)
 void list_print_head(struct list_data** const current, void* (*data)(struct list_data*)) {
@@ -29,7 +30,7 @@ void list_print(struct list_data** const current, struct list_data* (*next)(stru
         // until we found root element (element with no previous element reference)
         do {
             // debug output of memory dump
-            printf("%d: 0x%llx 0x%llx\n", ++i, (ADDR)tmp, (ADDR)tmp->payload);
+            printf("%d: 0x%llx 0x%llx\n", ++i, (ADDR)tmp, (ADDR)_data(tmp));
             // remember temprary's prior pointer value to temporary
             tmp = next(tmp);
         } while (tmp != 0/*root*/);

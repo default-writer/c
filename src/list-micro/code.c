@@ -88,11 +88,33 @@ void* list_pop(struct list_data** const current) {
     return payload;
 }
 
+/* peek existing element at the top of the stack/queue/list */
+/* at current context, existing head */
+void* list_peek(struct list_data** const current) {
+    /* get current context's head */
+    struct list_data* ptr = *current;
+    /* if we call method on empty stack, do not return head element, return null element by convention */
+    if (ptr == 0) {
+        /* returns default element as null element */
+        return 0;
+    }
+    /* gets next pointer */
+    const struct list_data* next = _next(ptr);
+    /* if we call method on empty stack, do not return head element, return null element by convention */
+    if (next == 0) {
+        /* returns default element as null element */
+        return 0;
+    }
+    /* returns actual data */
+    return _data(ptr);
+}
+
 const struct list_methods list_methods_micro = {
     // generic methods
-    .init = list_init, // immutable function
-    .destroy = list_destroy, // immutable function
+    .init = list_init,
+    .destroy = list_destroy,
     // list methods
-    .push = list_push, // immutable function
-    .pop = list_pop // immutable function
+    .push = list_push,
+    .pop = list_pop,
+    .peek = list_peek
 };

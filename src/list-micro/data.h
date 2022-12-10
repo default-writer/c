@@ -19,6 +19,8 @@ struct list_methods {
     void (*push)(struct list_data** const current, void* item);
     /* pop item on current context (stack) */
     void* (*pop)(struct list_data** const current);
+    /* peek item on current context (stack) */
+    void* (*peek)(struct list_data** const current);
 };
 
 #endif // _LIST_MICRO_DATA_H_
