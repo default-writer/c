@@ -21,7 +21,7 @@ struct list_data* new_list()
     const struct list_methods* list = &list_methods;
     struct list_data* ctx;
     // init list
-    list->init(&ctx, new);
+    list->init(&ctx, _new);
     // returns created object
     return ctx;
 }
@@ -30,7 +30,7 @@ void delete_list(struct list_data* ctx)
 {
     const struct list_methods* list = &list_methods;
     // destroy list
-    list->destroy(&ctx, delete, next);
+    list->destroy(&ctx, _delete, _next);
 }
 
 // default list usage scenario
@@ -75,67 +75,67 @@ void list_using(struct list_data** const current) {
     struct list_data* tmp1 = list->alloc(payload);
     list->push(current, tmp1);
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print_head(current, data);
+    list_print_head(current, _data);
 #endif
     struct list_data* tmp2 = list->alloc(++payload);
     list->push(current, tmp2);
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print_head(current, data);
+    list_print_head(current, _data);
 #endif
     struct list_data* tmp3 = list->alloc(++payload);
     list->push(current, tmp3);
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print_head(current, data);
+    list_print_head(current, _data);
 #endif
     struct list_data* tmp4 = list->alloc(++payload);
     list->push(current, tmp4);
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print_head(current, data);
+    list_print_head(current, _data);
 #endif
     struct list_data* tmp5 = list->alloc(++payload);
     list->push(current, tmp5);
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print_head(current, data);
+    list_print_head(current, _data);
 #endif
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current, next);
+    list_print(current, _next);
 #endif
     struct list_data* q_pop0 = list->pop(current); 
     list->free(&q_pop0);
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current, next);
+    list_print(current, _next);
 #endif
     struct list_data* q_pop1 = list->pop(current); 
     list->free(&q_pop1);
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current, next);
+    list_print(current, _next);
 #endif
     struct list_data* q_pop2 = list->pop(current); 
     list->free(&q_pop2);
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current, next);
+    list_print(current, _next);
 #endif
     struct list_data* q_pop3 = list->pop(current); 
     list->push(current, q_pop3);
     q_pop3 = list->pop(current); 
     list->free(&q_pop3);
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current, next);
+    list_print(current, _next);
 #endif
     struct list_data* q_pop4 = list->pop(current); 
     list->free(&q_pop4);
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current, next);
+    list_print(current, _next);
 #endif
     struct list_data* q_pop5 = list->peek(current); 
     list->free(&q_pop5);
     list->push(current, q_pop0);
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current, next);
+    list_print(current, _next);
 #endif
     list->free(&q_pop0);
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current, next);
+    list_print(current, _next);
 #endif
 }
 
@@ -153,7 +153,7 @@ RX_SET_UP(test_set_up)
     const struct list_methods* list = &list_methods;
 
     // initilize list
-    list->init(ctx, new);
+    list->init(ctx, _new);
 
     return RX_SUCCESS;
 }
@@ -165,7 +165,7 @@ RX_TEAR_DOWN(test_tear_down)
     // access context's functions pointer
     const struct list_methods* list = &list_methods;
     // destroy list
-    list->destroy(ctx, delete, next);
+    list->destroy(ctx, _delete, _next);
 }
 
 /* Define the fixture. */
@@ -268,8 +268,8 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_and_prev_next_equals_0, .fixture = tes
     list->push(ctx, tmp);
 
     struct list_data* current = list->pop(ctx);
-    const struct list_data* prev = current->prev;
-    const struct list_data* next = current->next;
+    const struct list_data* prev = current->next;
+    const struct list_data* next = current->prev;
     const void* head_payload = current->payload;
     list->free(&current);
 

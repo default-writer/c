@@ -5,7 +5,7 @@
 
 struct list_data {
     /* points to previous node */
-    struct list_data* prev;
+    struct list_data* next;
     /* payload */
     void* payload;
 };

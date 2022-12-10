@@ -22,7 +22,7 @@ struct list_data* new_list()
     const struct list_methods* list = &list_methods_tiny;
     struct list_data* ctx;
     // init list
-    list->init(&ctx, new);
+    list->init(&ctx, _new);
     // returns created object
     return ctx;
 }
@@ -31,7 +31,7 @@ void delete_list(struct list_data* ctx)
 {
     const struct list_methods* list = &list_methods_tiny;
     // destroy list
-    list->destroy(&ctx, delete, next);
+    list->destroy(&ctx, _delete, _next);
 }
 
 // default list usage scenario
@@ -75,42 +75,42 @@ void list_using(struct list_data** const current) {
     }
     list->push(current, payload);
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print_head(current, data);
+    list_print_head(current, _data);
 #endif
     list->push(current, ++payload);
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print_head(current, data);
+    list_print_head(current, _data);
 #endif
     list->push(current, ++payload);
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print_head(current, data);
+    list_print_head(current, _data);
 #endif
     list->push(current, ++payload);
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print_head(current, data);
+    list_print_head(current, _data);
 #endif
     list->push(current, ++payload);
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print_head(current, data);
+    list_print_head(current, _data);
 #endif
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current, next);
+    list_print(current, _next);
 #endif
     const void* q_peek0 = list->peek(current);
     ZEROPTR(q_peek0)
     void* q_pop0 = list->pop(current); 
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current, next);
+    list_print(current, _next);
 #endif
     const void* q_pop1 = list->pop(current);
     ZEROPTR(q_pop1)
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current, next);
+    list_print(current, _next);
 #endif
     const void* q_pop2 = list->pop(current);
     ZEROPTR(q_pop2)
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current, next);
+    list_print(current, _next);
 #endif
     const void* q_peek1 = list->peek(current);
     void* q_pop3 = list->pop(current);
@@ -123,33 +123,33 @@ void list_using(struct list_data** const current) {
     const void* q_pop4 = list->pop(current);
     ZEROPTR(q_pop4)
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current, next);
+    list_print(current, _next);
 #endif
     const void* q_pop5 = list->pop(current); 
     ZEROPTR(q_pop5)
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current, next);
+    list_print(current, _next);
 #endif
     const void* q_peek4 = list->peek(current);
     list->push(current, q_pop0);
     ZEROPTR(q_peek4)
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current, next);
+    list_print(current, _next);
 #endif
     const void* q_pop6 = list->pop(current);
     ZEROPTR(q_pop6)
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current, next);
+    list_print(current, _next);
 #endif
     const void* q_pop7 = list->pop(current);
     ZEROPTR(q_pop7)
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current, next);
+    list_print(current, _next);
 #endif
     const void* q_peek5 = list->peek(current);
     ZEROPTR(q_peek5)
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current, next);
+    list_print(current, _next);
 #endif
 }
 
@@ -167,7 +167,7 @@ RX_SET_UP(test_set_up)
     const struct list_methods* list = &list_methods_tiny;
     
     // initializer list
-    list->init(ctx, new);
+    list->init(ctx, _new);
 
     return RX_SUCCESS;
 }
@@ -179,7 +179,7 @@ RX_TEAR_DOWN(test_tear_down)
     // access context's functions pointer
     const struct list_methods* list = &list_methods_tiny;
     // destroy list
-    list->destroy(ctx, delete, next);
+    list->destroy(ctx, _delete, _next);
 }
 
 /* Define the fixture. */

@@ -14,21 +14,21 @@ size_t size()
     return sizeof(struct list_data);
 }
 
-struct list_data* new()
+struct list_data* _new()
 {
     return _list_alloc(1, size());
 }
 
-struct list_data* next(struct list_data *ptr)
+struct list_data* _next(struct list_data *ptr)
 {
     if (ptr == 0)
     {
         return 0;
     }
-    return ptr->prev;
+    return ptr->next;
 }
 
-void* data(struct list_data* ptr)
+void* _data(struct list_data* ptr)
 {
     if (ptr == 0)
     {
@@ -37,7 +37,7 @@ void* data(struct list_data* ptr)
     return ptr->payload;
 }
 
-void delete(struct list_data* ptr)
+void _delete(struct list_data* ptr)
 {
     if (ptr != 0)
     {
@@ -50,11 +50,11 @@ void delete(struct list_data* ptr)
 /* as a result, items counter will increase */
 void list_push(struct list_data** const current, void* payload) {
     /* stores into pre-allocated value newly allocated memory buffer pointer */
-    struct list_data* item = new();
+    struct list_data* item = _new();
     /* sets the new data into allocated memory buffer */
     item->payload = payload;
-    /* assigns item's prev pointer to head pointer */
-    item->prev = *current;
+    /* assigns item's next pointer to current pointer */
+    item->next = *current;
     /* advances position of head pointer to the new head */
     *current = item;
 }
@@ -62,7 +62,7 @@ void list_push(struct list_data** const current, void* payload) {
 /* pop existing element at the top of the stack/queue/list */
 /* at current context, existing head will be removed out of stack */
 /* for the new stack header, correcponding values will be fixed */
-/* as a result, header will be set to previous position, represented as head's reference to previos head */
+/* as a result, header will be set to previous position, represented as head's reference to next head */
 void* list_pop(struct list_data** const current) {
     /* get current context's head */
     struct list_data* ptr = *current;
@@ -71,19 +71,19 @@ void* list_pop(struct list_data** const current) {
         /* returns default element as null element */
         return 0;
     }
-    /* gets previos pointer */
-    struct list_data* prev = next(ptr);
+    /* gets next pointer */
+    struct list_data* next = _next(ptr);
     /* if we call method on empty stack, do not return head element, return null element by convention */
-    if (prev == 0) {
+    if (next == 0) {
         /* returns default element as null element */
         return 0;
     }
-    /* rewinds head pointer to previous pointer value */
-    *current = prev;
+    /* rewinds head pointer to next pointer value */
+    *current = next;
     /* gets temporary pointer value */
-    void* payload = data(ptr);
+    void* payload = _data(ptr);
     /* free temporary pointer value */
-    delete(ptr);
+    _delete(ptr);
     /* returns removed element */
     return payload;
 }
