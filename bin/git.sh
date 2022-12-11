@@ -9,4 +9,4 @@ git submodule init || (git submodule add https://github.com/christophercrouzet/r
 git submodule update --recursive --remote
 git pull --recurse-submodules .
 
-cd $pwd
+cd ${pwd}
