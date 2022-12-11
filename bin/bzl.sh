@@ -1,6 +1,4 @@
 #!/bin/bash -e
-pwd=$(pwd)
-
 uid=$(id -u)
 
 if [ "${uid}" -eq 0 ]; then
@@ -8,6 +6,10 @@ if [ "${uid}" -eq 0 ]; then
 	exit
 fi
 
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | bash
+pwd=$(pwd)
+
+curl -O https://get.bzl.io/linux_amd64/bzl && chmod +x ./bzl
+
+./bzl install
 
 cd "${pwd}"
