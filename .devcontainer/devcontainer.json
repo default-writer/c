@@ -28,6 +28,8 @@
 		"SonarSource.sonarlint-vscode",
 		"syler.vscode-run-command-on-file-change",
 		"JacquesLucke.gcov-viewer",
-		"codezombiech.gitignore"
+		"codezombiech.gitignore",
+		"StackBuild.bazel-stack-vscode-cc",
+		"StackBuild.bazel-stack-vscode"
 	]
 }
