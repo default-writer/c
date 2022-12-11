@@ -14,6 +14,8 @@
         "ms-vscode.cpptools-extension-pack",
         "codezombiech.gitignore",
         "davidanson.vscode-markdownlint",
-        "yzhang.markdown-all-in-one"
+        "yzhang.markdown-all-in-one",
+        "stackbuild.bazel-stack-vscode",
+        "stackbuild.bazel-stack-vscode-cc"
     ]
 }

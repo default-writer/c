@@ -20,6 +20,12 @@ then
   apt install -y build-essential curl git ca-certificates python3 python3-dev python3-pip python3-venv python3-behave
 fi
 
+if [ "${install}" == "bazel" ]
+then
+  apt-get update
+  apt install -y bazel-bootstrap
+fi
+
 if [ "${install}" == "cmake" ]
 then
   apt-get update

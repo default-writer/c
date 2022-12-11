@@ -101,8 +101,8 @@
         "/workspace/coverage"
     ],
     "C_Cpp.dimInactiveRegions": true,
-    "C_Cpp.errorSquiggles": "Disabled",
-    "C_Cpp.intelliSenseEngine": "Disabled",
+    "C_Cpp.errorSquiggles": "disabled",
+    "C_Cpp.intelliSenseEngine": "disabled",
     "cofc.commands": [
         {
             "cmd": "gcov-viewer.show",
@@ -117,5 +117,8 @@
         "."
     ],
     "sonarlint.pathToCompileCommands": "${workspaceFolder}/build/compile_commands.json",
-    "lldb.consoleMode": "commands"
+    "lldb.consoleMode": "commands",
+    "[bazel]": {
+        "editor.formatOnSave": true
+    }
 }
