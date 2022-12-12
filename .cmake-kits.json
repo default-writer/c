@@ -1,9 +1,9 @@
 [
-    {
-      "name": "GCC",
-      "compilers": {
-        "C": "gcc",
-        "CXX": "g++"
-      }
+  {
+    "name": "GCC",
+    "compilers": {
+      "C": "gcc",
+      "CXX": "g++"
     }
+  }
 ]

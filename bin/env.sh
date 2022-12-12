@@ -1,5 +1,6 @@
 #!/bin/bash -e
 uid=$(id -u)
+gid=$(id -gn)
 
 if [ "${uid}" -eq 0 ]
 then
@@ -10,7 +11,7 @@ fi
 pwd=$(pwd)
 
 export USER_NAME=$USER
-export USER_ID=$(id -u)
-export USER_GROUP=$(id -gn)
+export USER_ID="${uid}"
+export USER_GROUP="${gid}"
 
-cd ${pwd}
+cd "${pwd}"
