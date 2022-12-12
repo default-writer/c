@@ -30,7 +30,6 @@
 		"JacquesLucke.gcov-viewer",
 		"codezombiech.gitignore",
 		"StackBuild.bazel-stack-vscode-cc",
-		"StackBuild.bazel-stack-vscode",
-		"trunk.io"
+		"StackBuild.bazel-stack-vscode"
 	]
 }
