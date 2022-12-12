@@ -74,31 +74,37 @@
         "settings": {
           "foreground": "#f00"
         }
-    },
-    "cmake.configureOnOpen": true,
-    "gcovViewer.buildDirectories": [
-        "${workspaceFolder}/coverage",
-        "/workspace/coverage"
-    ],
-    "C_Cpp.dimInactiveRegions": true,
-    "C_Cpp.errorSquiggles": "disabled",
-    "C_Cpp.intelliSenseEngine": "disabled",
-    "cofc.commands": [
-        {
-            "cmd": "gcov-viewer.show",
-            "path": "${workspaceFolder}/coverage"
-        },
-        {
-            "cmd": "gcov-viewer.show",
-            "path": "/workspace/coverage"
-        }
-    ],
-    "files.watcherInclude": [
-        "."
-    ],
-    "sonarlint.pathToCompileCommands": "${workspaceFolder}/build/compile_commands.json",
-    "lldb.consoleMode": "commands",
-    "[bazel]": {
-        "editor.formatOnSave": true
+      }
+    ]
+  },
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "terminal.integrated.profiles.linux": {
+    "bash": {
+      "path": "/bin/bash"
     }
+  },
+  "cmake.configureOnOpen": true,
+  "gcovViewer.buildDirectories": [
+    "${workspaceFolder}/coverage",
+    "/workspace/coverage"
+  ],
+  "C_Cpp.dimInactiveRegions": true,
+  "C_Cpp.errorSquiggles": "disabled",
+  "C_Cpp.intelliSenseEngine": "disabled",
+  "cofc.commands": [
+    {
+      "cmd": "gcov-viewer.show",
+      "path": "${workspaceFolder}/coverage"
+    },
+    {
+      "cmd": "gcov-viewer.show",
+      "path": "/workspace/coverage"
+    }
+  ],
+  "files.watcherInclude": ["."],
+  "sonarlint.pathToCompileCommands": "${workspaceFolder}/build/compile_commands.json",
+  "lldb.consoleMode": "commands",
+  "[bazel]": {
+    "editor.formatOnSave": true
+  }
 }
