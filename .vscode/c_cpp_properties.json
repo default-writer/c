@@ -1,34 +1,26 @@
 {
-    "env": {
-        "myDefaultIncludePath": [
-            "${workspaceFolder}/src"
-        ],
-        "myCompilerPath": "/usr/bin/gcc"
-    },
-    "configurations": [
-        {
-            "name": "Dev Container: C++",
-            "includePath": [
-                "${workspaceFolder}/src"
-            ],
-            "defines": [],
-            "compilerPath": "/usr/bin/gcc",
-            "cStandard": "c89",
-            "cppStandard": "gnu++14",
-            "intelliSenseMode": "${default}",
-            "compilerArgs": [
-                "--coverage"
-            ],
-            "browse": {
-                "path": [
-                    "${workspaceFolder}/src"
-                ],
-                "limitSymbolsToIncludedHeaders": true
-            },
-            "configurationProvider": "ms-vscode.cmake-tools",
-            "forcedInclude": [],
-            "mergeConfigurations": true
-        }
-    ],
-    "version": 4
+  "env": {
+    "myDefaultIncludePath": ["${workspaceFolder}/src"],
+    "myCompilerPath": "/usr/bin/gcc"
+  },
+  "configurations": [
+    {
+      "name": "Dev Container: C++",
+      "includePath": ["${workspaceFolder}/src"],
+      "defines": [],
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "c89",
+      "cppStandard": "gnu++14",
+      "intelliSenseMode": "${default}",
+      "compilerArgs": ["--coverage"],
+      "browse": {
+        "path": ["${workspaceFolder}/src"],
+        "limitSymbolsToIncludedHeaders": true
+      },
+      "configurationProvider": "ms-vscode.cmake-tools",
+      "forcedInclude": [],
+      "mergeConfigurations": true
+    }
+  ],
+  "version": 4
 }
