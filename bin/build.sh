@@ -3,13 +3,13 @@ pwd=$(pwd)
 
 cd "${0%/*}"
 ./clean.sh
-cd ${pwd}
+cd "${pwd}"
 
 git submodule init
 git submodule update --recursive --remote
 git pull --recurse-submodules
 
-rm -rf ${pwd}/build
+rm -rf "${pwd}/build"
 
 if [ ! -d "${pwd}/build" ]
 then
@@ -19,11 +19,11 @@ then
         -DCMAKE_BUILD_TYPE:STRING=Debug \
         -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
         -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
-        -S${pwd} \
-        -B${pwd}/build \
+        -S"${pwd}" \
+        -B"${pwd}/build" \
         -G "Unix Makefiles"
 fi
 
 export MAKEFLAGS=-j8
 
-cmake --build ${pwd}/build --target all
+cmake --build "${pwd}/build" --target all
