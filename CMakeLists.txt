@@ -49,9 +49,6 @@ endif()
 
 include_directories(src)
 
-add_compile_options(-fsanitize=undefined,address)
-add_link_options(-fsanitize=undefined,address)
-
 add_library(list-micro-lib STATIC ${LIST_MICRO_SOURCE})
 add_library(list-light-lib STATIC ${LIST_LIGHT_SOURCE})
 add_library(list-lib STATIC ${LIST_SOURCE})
