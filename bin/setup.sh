@@ -1,4 +1,6 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+set -e
+
 uid=$(id -u)
 
 if [ ! "${uid}" -eq 0 ]; then
