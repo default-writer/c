@@ -19,13 +19,6 @@
             "initCommands":["settings set target.disable-aslr false"]
         },
         {
-            "name": "(lldb) list-tiny",
-            "type": "lldb",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/main-tiny",
-            "initCommands":["settings set target.disable-aslr false"]
-        },
-        {
             "name": "(lldb) list-micro",
             "type": "lldb",
             "request": "launch",
@@ -57,26 +50,6 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/main-light",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            "miDebuggerPath": "/usr/bin/gdb"
-        },
-        {
-            "name": "(gdb) list-tiny",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/main-tiny",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
