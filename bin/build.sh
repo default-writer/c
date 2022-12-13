@@ -28,3 +28,5 @@ fi
 export MAKEFLAGS=-j8
 
 cmake --build "${pwd}/build" --target all
+
+cd "${pwd}"
