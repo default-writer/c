@@ -14,7 +14,7 @@ mkdir "${pwd}/coverage"
 array=('' 'light' 'micro')
 
 ## get item count using ${array[@]} ##
-for m in "${array[@]}"; do
+for m in ${array[@]}; do
 	gcc --coverage -g \
 		"${pwd}/tests/main-${m}.c" \
 		"${pwd}/src/list-${m}/code.c" \
