@@ -103,8 +103,5 @@
   ],
   "files.watcherInclude": ["."],
   "sonarlint.pathToCompileCommands": "${workspaceFolder}/build/compile_commands.json",
-  "lldb.consoleMode": "commands",
-  "[bazel]": {
-    "editor.formatOnSave": true
-  }
+  "lldb.consoleMode": "commands"
 }

@@ -16,6 +16,7 @@
       "davidanson.vscode-markdownlint",
       "yzhang.markdown-all-in-one",
       "stackbuild.bazel-stack-vscode",
-      "stackbuild.bazel-stack-vscode-cc"
+      "stackbuild.bazel-stack-vscode-cc",
+      "gabrielgrinberg.auto-run-command"
     ]
 }
