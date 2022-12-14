@@ -9,31 +9,30 @@
 #include "common/object.h"
 #include "common/print.h"
 
+/* gets size of a memory block to allocate */
 size_t size()
 {
+    /* returns size of a memory block to allocate */
     return sizeof(struct list_data);
 }
 
 struct list_data* _new()
 {
+    /* external code allocates memory and resets memort block to zero  */
     return _list_alloc(1, size());
 }
 
+/* gets chunk's next item. external code enshures ptr is not 0 */
 struct list_data* _next(struct list_data *ptr)
 {
-    if (ptr == 0)
-    {
-        return 0;
-    }
+    /* external code enshures prt is not 0 */
     return ptr->next;
 }
 
+/* gets chunk's payload. external code enshures ptr is not 0 */
 void* _data(struct list_data* ptr)
 {
-    if (ptr == 0)
-    {
-        return 0;
-    }
+    /* external code enshures prt is not 0 */
     return ptr->payload;
 }
 
