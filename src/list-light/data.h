@@ -8,7 +8,7 @@ struct list_data {
     struct list_data* prev;
     /* points to next node */
     struct list_data* next;
-    /* payl\\oad */
+    /* payload */
     void* payload;
 };
 
