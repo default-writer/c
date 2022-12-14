@@ -31,6 +31,10 @@
 		"codezombiech.gitignore",
 		"StackBuild.bazel-stack-vscode-cc",
 		"StackBuild.bazel-stack-vscode",
-		"gabrielgrinberg.auto-run-command"
+		"gabrielgrinberg.auto-run-command",
+		"Sycl.markdown-command-runner",
+		"andifin.testonsave",
+		"tenninebt.vscode-koverage",
+		"ryanluker.vscode-coverage-gutters"
 	]
 }

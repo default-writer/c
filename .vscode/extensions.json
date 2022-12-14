@@ -17,6 +17,10 @@
       "yzhang.markdown-all-in-one",
       "stackbuild.bazel-stack-vscode",
       "stackbuild.bazel-stack-vscode-cc",
-      "gabrielgrinberg.auto-run-command"
+      "gabrielgrinberg.auto-run-command",
+      "sycl.markdown-command-runner",
+      "andifin.testonsave",
+      "tenninebt.vscode-koverage",
+      "ryanluker.vscode-coverage-gutters"
     ]
 }

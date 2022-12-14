@@ -7,15 +7,23 @@ cd "${0%/*}"
 ./clean.sh
 cd "${pwd}"
 
-rm -rf "${pwd}/coverage"
-mkdir "${pwd}/coverage"
+[ ! -d "${pwd}/coverage" ] && mkdir "${pwd}/coverage"
+
+rm -rf ${pwd}/coverage/*.gcda
+rm -rf ${pwd}/coverage/*.gcno
 
 ## define an array ##
-array=('' '-light' '-micro')
+array=("" "-light" "-micro")
 
-## get item count using ${array[@]} ##
-for m in ${array[@]}; do
+## compile with coverage metadata
+for m in "${array[@]}"; do
+	rm -f "${pwd}/coverage/coverage-main${m}.info"
+done
+
+## compile with coverage metadata
+for m in "${array[@]}"; do
 	gcc --coverage -g \
+	    -fsanitize=undefined,address \
 		"${pwd}/tests/main${m}.c" \
 		"${pwd}/src/list${m}/code.c" \
 		"${pwd}/src/common/alloc.c" \
@@ -25,13 +33,25 @@ for m in ${array[@]}; do
 		-I"${pwd}/src/std/" \
 		-I"${pwd}/src/common/" \
 		-I"${pwd}/src/list${m}/" \
-		-I"${pwd}/rexo/include/" \
 		-DMEMORY_DEBUG_INFO \
 		-DMEMORY_CLEANUP \
 		-DMEMORY_LEAKS \
-		-o "${pwd}/coverage/main${m}" &&
-		"${pwd}/coverage/main${m}" &&
-		lcov --capture --directory "${pwd}/coverage/" --output-file "${pwd}/coverage/main${m}.info"
+		-o "${pwd}/coverage/main${m}"
+done
+
+## execute comiled binary
+for m in "${array[@]}"; do
+	"${pwd}/coverage/main${m}"
+done
+
+## capture coverage information
+for m in "${array[@]}"; do
+	lcov --capture --directory "${pwd}/coverage/" --output-file "${pwd}/coverage/coverage-main${m}.info"
+done
+
+## copy info
+for m in "${array[@]}"; do
+	mv "${pwd}/coverage/coverage-main${m}.info" "${pwd}/coverage/main${m}.info"
 done
 
 cd "${pwd}"
