@@ -67,12 +67,8 @@ void list_using(struct list_data** const current) {
         list->peek(current),
         list->pop(current)
     };
-    if (0 != is_null[0]) {
-        return;
-    }
-    if (0 != is_null[1]) {
-        return;
-    }
+    RX_ASSERT(0 == is_null[0]);
+    RX_ASSERT(0 == is_null[1]);
     list->push(current, payload);
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print_head(current, _data);
