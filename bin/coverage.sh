@@ -49,9 +49,14 @@ for m in "${array[@]}"; do
 	lcov --capture --directory "${pwd}/coverage/" --output-file "${pwd}/coverage/coverage-main${m}.info"
 done
 
-## copy info
+## remove extra coverage information
 for m in "${array[@]}"; do
-	mv "${pwd}/coverage/coverage-main${m}.info" "${pwd}/coverage/main${m}.info"
+	lcov --remove "${pwd}/coverage/coverage-main${m}.info" "${pwd}/src/rexo/*" -o "${pwd}/coverage/main${m}.info"
+done
+
+## cleanup
+for m in "${array[@]}"; do
+	rm "${pwd}/coverage/coverage-main${m}.info"
 done
 
 cd "${pwd}"
