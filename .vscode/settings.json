@@ -96,10 +96,13 @@
   "lldb.consoleMode": "commands",
   "testOnSave.enabled": true,
   "testOnSave.testCommand": "./bin/coverage.sh",
-  "koverage.coverageFileNames": [
+  "koverage.coverageFileNames": [  
     "main.info",
     "main-light.info",
     "main-micro.info"
+  ],
+  "koverage.excludedCoverageFilePaths": [
+    "src/rexo"
   ],
   "coverage-gutters.coverageFileNames": [
     "main.info",
@@ -108,5 +111,6 @@
   ],
   "coverage-gutters.coverageBaseDir": "coverage",
   "coverage-gutters.showLineCoverage": true,
-  "coverage-gutters.showGutterCoverage": false
+  "coverage-gutters.showGutterCoverage": false,
+  "koverage.ignoredPathGlobs": "rexo"
 }
