@@ -38,10 +38,7 @@ void* _data(struct list_data* ptr)
 
 void _delete(struct list_data* ptr)
 {
-    if (ptr != 0)
-    {
-        _list_free(ptr);
-    }
+    _list_free(ptr);
 }
 
 /* allocates a memory for provided payload  */

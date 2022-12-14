@@ -38,10 +38,7 @@ void* _data(struct list_data* ptr)
 
 void _delete(struct list_data* ptr)
 {
-    if (ptr != 0)
-    {
-        _list_free(ptr);
-    }
+    _list_free(ptr);
 }
 
 /* allocates a memory for provided payload  */
@@ -63,6 +60,11 @@ void list_free(struct list_data** const item) {
     /* assigns currently selected item pointer to temporary */
     /* get current context's head */
     struct list_data* ptr = *item;
+    /* root elements returns null, i.e. 0 by convention */
+    if (ptr == 0) {
+        /* returns default element as null element */
+        return;
+    }
     _delete(ptr);
     *item = 0;
 }

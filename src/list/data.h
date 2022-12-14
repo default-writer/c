@@ -9,7 +9,7 @@ struct list_data {
     /* points to next node */
     struct list_data* next;
     /* payload */
-    void*  payload;
+    void* payload;
 };
 
 struct list_methods {
