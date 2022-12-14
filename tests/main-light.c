@@ -177,6 +177,35 @@ RX_TEST_CASE(myTestSuite, test_empty_list_count_equals_0, .fixture = test_fixtur
     RX_ASSERT(*ctx != 0);
 }
 
+/* test pop from 0 pointer */
+RX_TEST_CASE(myTestSuite, test_empty_list_pop_equals_0, .fixture = test_fixture)
+{
+    struct list_data* ctx = 0;
+
+    // create list
+    const struct list_methods* list = &list_methods_light;
+
+    const struct list_data* head = list->pop(&ctx);
+ 
+    // enshure that counter is initialized to 0
+    RX_ASSERT(head == 0);
+}
+
+
+/* test pop from 0 pointer */
+RX_TEST_CASE(myTestSuite, test_empty_list_peek_equals_0, .fixture = test_fixture)
+{
+    struct list_data* ctx = 0;
+
+    // create list
+    const struct list_methods* list = &list_methods_light;
+
+    const struct list_data* head = list->peek(&ctx);
+ 
+    // enshure that counter is initialized to 0
+    RX_ASSERT(head == 0);
+}
+
 // test alloc
 RX_TEST_CASE(myTestSuite, test_list_alloc_count_eq_1, .fixture = test_fixture)
 {
