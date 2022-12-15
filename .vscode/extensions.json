@@ -21,6 +21,8 @@
       "sycl.markdown-command-runner",
       "andifin.testonsave",
       "tenninebt.vscode-koverage",
-      "ryanluker.vscode-coverage-gutters"
+      "ryanluker.vscode-coverage-gutters",
+      "tomoki1207.pdf",
+      "yzane.markdown-pdf"
     ]
 }
