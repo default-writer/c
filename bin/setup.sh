@@ -25,7 +25,7 @@ if [ "${install}" == "python" ]; then
 	git config --global pull.rebase false
 
 	apt-get update -y
-	apt install -y build-essential curl git ca-certificates python3 python3-dev python3-pip python3-venv python3-behave
+	apt install -y build-essential curl git ca-certificates python3 python3-dev python3-pip python3-venv python3-behave python3-virtualenv
 fi
 
 if [ "${install}" == "cmake" ]; then
