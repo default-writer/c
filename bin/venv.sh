@@ -22,7 +22,7 @@ fi
 
 if [ "${install}" == "pyenv" ]; then
 	pyenv install -f 3.11.1
-	pyenv virtualenv 3.11.1 .venv
+	pyenv virtualenv -f 3.11.1 .venv
 	pyenv activate .venv
 fi
 
