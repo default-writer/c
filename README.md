@@ -5,9 +5,9 @@
 
 # shell
 
-## initialize
+## install
 
-initializes repo:
+installs:
 
 - [git](https://git-scm.com)
 - [rexo](https://github.com/christophercrouzet/rexo)
@@ -40,7 +40,7 @@ installs pyenv
 
 ## uninstall
 
-uninstalls repo:
+uninstalls:
 
 - [git](https://git-scm.com)
 - [rexo](https://github.com/christophercrouzet/rexo)
