@@ -17,7 +17,7 @@ if [ "${install}" == "pyenv" ]; then
 	git config --global pull.rebase false
 
 	apt-get update -y
-	apt-get install -y build-essential zlib1g-dev libffi-dev libssl-dev libbz2-dev libreadline-dev libsqlite3-dev liblzma-dev
+	apt-get install -y build-essential zlib1g-dev libffi-dev libssl-dev libbz2-dev libreadline-dev libsqlite3-dev liblzma-dev python3-tk tk-dev
 fi
 
 if [ "${install}" == "python" ]; then
