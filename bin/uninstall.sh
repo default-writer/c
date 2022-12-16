@@ -27,4 +27,8 @@ if [ "${install}" == "hooks" ]; then
     rm -rf .git/hooks/prepare-commit-msg
 fi
 
+if [ "${install}" == "pyenv" ]; then
+	rm -rf $HOME/.pyenv
+fi
+
 cd "${pwd}"

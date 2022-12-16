@@ -27,4 +27,8 @@ if [ "${install}" == "hooks" ]; then
     cp .hooks/pre-commit .git/hooks/prepare-commit-msg
 fi
 
+if [ "${install}" == "pyenv" ]; then
+	curl https://pyenv.run | bash
+fi
+
 cd "${pwd}"

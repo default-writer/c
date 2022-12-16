@@ -5,21 +5,22 @@
 
 # shell
 
-## init
+## initialize
 
 initializes repo:
 
-- intializes [git](https://git-scm.com) **global** environment variables
-- installs [rexo](https://github.com/christophercrouzet/rexo) as **git submodule**
-- install git [hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)
+- [git](https://git-scm.com)
+- [rexo](https://github.com/christophercrouzet/rexo)
+- [hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)
+- [pyenv](https://github.com/pyenv/pyenv#automatic-installer)
 
-initializes git
+installs git
 
 ```sh
 ./bin/init.sh git
 ```
 
-initializes git submodule
+installs git submodule
 
 ```sh
 ./bin/init.sh submodule
@@ -31,29 +32,41 @@ installs git hooks
 ./bin/init.sh hooks
 ```
 
-## deinit
+installs pyenv
 
-deinitializes repo:
+```sh
+./bin/pyenv.sh pyenv
+```
 
-- deintializes [git](https://git-scm.com) **global** environment variables
-- deintializes [rexo](https://github.com/christophercrouzet/rexo) as **git submodule**
+## uninstall
 
-deinitializes git
+uninstalls repo:
+
+- [git](https://git-scm.com)
+- [rexo](https://github.com/christophercrouzet/rexo)
+
+uninstalls git
 
 ```sh
 ./bin/deinit.sh git
 ```
 
-deinitializes git submodule
+uninstalls git submodule
 
 ```sh
 ./bin/deinit.sh submodule
 ```
 
-deinstalls git hooks
+uninstalls git hooks
 
 ```sh
 ./bin/deinit.sh hooks
+```
+
+uninstalls pyenv
+
+```sh
+./bin/pyenv.sh pyenv
 ```
 
 ## cleanup
