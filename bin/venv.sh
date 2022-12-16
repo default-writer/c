@@ -26,6 +26,4 @@ if [ "${install}" == "pyenv" ]; then
 	pyenv activate .venv
 fi
 
-
-
 cd "${pwd}"
