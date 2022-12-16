@@ -9,7 +9,6 @@ rm -rf ${pwd}/coverage/*.gcda
 rm -rf ${pwd}/coverage/*.gcno
 
 cmake \
-	--no-warn-unused-cli \
 	-DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
 	-DCMAKE_BUILD_TYPE:STRING=Debug \
 	-DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
