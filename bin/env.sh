@@ -8,13 +8,11 @@ if [ "${uid}" -eq 0 ]; then
 	exit
 fi
 
-# gets the current working directory
 pwd=$(pwd)
 
 install="$1"
 
 if [ "${install}" == "pyenv" ]; then
-	# adding pyenv section
 	grep -qxF '# pyenv' $HOME/.bashrc || (tail -1 $HOME/.bashrc | grep -qxF '' || echo '' >> $HOME/.bashrc && echo '# pyenv' >> $HOME/.bashrc)
 	grep -qxF 'export PYENV_ROOT="$HOME/.pyenv"' $HOME/.bashrc || echo 'export PYENV_ROOT="$HOME/.pyenv"' >> $HOME/.bashrc
 	grep -qxF 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' $HOME/.bashrc || echo 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' >> $HOME/.bashrc
@@ -23,7 +21,6 @@ if [ "${install}" == "pyenv" ]; then
 fi
 
 if [ "${install}" == "user" ]; then
-	# adding user section
 	grep -qxF '# user' $HOME/.bashrc || (tail -1 $HOME/.bashrc | grep -qxF '' || echo '' >> $HOME/.bashrc && echo '# user' >> $HOME/.bashrc)
 	grep -qxF 'export USER_NAME=$USER' $HOME/.bashrc || echo 'export USER_NAME=$USER' >> $HOME/.bashrc
 	grep -qxF 'export USER_ID=$(id -u)' $HOME/.bashrc || echo 'export USER_ID=$(id -u)' >> $HOME/.bashrc
@@ -31,7 +28,6 @@ if [ "${install}" == "user" ]; then
 fi
 
 if [ "${install}" == "nvm" ]; then
-	# adding nvm section
 	grep -qxF '# nvm' $HOME/.bashrc || (tail -1 $HOME/.bashrc | grep -qxF '' || echo '' >> $HOME/.bashrc && echo '# nvm' >> $HOME/.bashrc)
 	grep -qxF 'export NVM_DIR="$HOME/.nvm"' $HOME/.bashrc || echo 'export NVM_DIR="$HOME/.nvm"' >> $HOME/.bashrc
 	grep -qxF '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' $HOME/.bashrc || echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> $HOME/.bashrc
@@ -40,5 +36,4 @@ fi
 
 . $HOME/.bashrc
 
-# returns to current working directory
 cd "${pwd}"
