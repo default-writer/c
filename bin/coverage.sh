@@ -3,10 +3,6 @@ set -e
 
 pwd=$(pwd)
 
-cd "${0%/*}"
-./clean.sh
-cd "${pwd}"
-
 [ ! -d "${pwd}/coverage" ] && mkdir "${pwd}/coverage"
 
 rm -rf ${pwd}/coverage/*.gcda
