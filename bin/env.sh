@@ -2,9 +2,7 @@
 set -e
 
 uid=$(id -u)
-gid=$(id -gn)
 
-# setup a non-root script
 if [ "${uid}" -eq 0 ]; then
 	echo "Please run as user"
 	exit

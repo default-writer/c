@@ -14,10 +14,13 @@ install="$1"
 
 # you can use command `apt install --only-upgrade`` for packages wouldn't upgrade since they are marked as manual installed packages
 
-if [ "${install}" == "pyenv" ]; then
-	git config --global --add safe.directory "${pwd}"
-	git config --global pull.rebase false
+if [ "${install}" == "git" ]; then
+	apt update -y
+	apt install -y git
+	apt upgrade -y
+fi
 
+if [ "${install}" == "pyenv" ]; then
 	apt update -y
 	apt install -y build-essential zlib1g-dev libffi-dev libssl-dev libbz2-dev libreadline-dev libsqlite3-dev liblzma-dev python3-tk tk-dev
 	apt install -y --only-upgrade apport apport-gtk python3-apport python3-problem-report
@@ -25,9 +28,6 @@ if [ "${install}" == "pyenv" ]; then
 fi
 
 if [ "${install}" == "python" ]; then
-	git config --global --add safe.directory "${pwd}"
-	git config --global pull.rebase false
-
 	apt update -y
 	apt install -y build-essential curl git ca-certificates python3 python3-dev python3-pip python3-venv python3-behave python3-virtualenv
 	apt install -y --only-upgrade apport apport-gtk python3-apport python3-problem-report

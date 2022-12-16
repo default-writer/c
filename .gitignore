@@ -54,5 +54,5 @@ report
 coverage
 
 .trunk
-bzl
+.hooks
 venv
