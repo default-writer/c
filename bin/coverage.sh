@@ -16,7 +16,7 @@ rm -rf ${pwd}/coverage/*.gcda
 rm -rf ${pwd}/coverage/*.gcno
 
 ## define an array ##
-array=("" "-light" "-micro")
+array=("" "-light" "-micro" "-experimental")
 
 ## compile with coverage metadata
 for m in "${array[@]}"; do
