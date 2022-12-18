@@ -1,0 +1,16 @@
+#ifndef _STD_COMPILE_H_
+#define _STD_COMPILE_H_
+
+#if MEMORY_DEBUG_INFO==1
+#define USE_MEMORY_DEBUG_INFO
+#endif
+
+#if MEMORY_CLEANUP==1
+#define USE_MEMORY_CLEANUP
+#endif
+
+#if MEMORY_LEAKS==1
+#define USE_MEMORY_LEAKS_DETECTION
+#endif
+
+#endif // _STD_COMPILE_H_

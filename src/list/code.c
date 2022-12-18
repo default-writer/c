@@ -1,44 +1,34 @@
-#include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "std/api.h"
 #include "list/data.h"
 #include "common/alloc.h"
 #include "common/object.h"
 #include "common/print.h"
 
-/* gets size of a memory block to allocate */
-size_t size()
-{
-    /* returns size of a memory block to allocate */
-    return sizeof(struct list_data);
-}
-
-struct list_data* _new()
-{
+struct list_data* _new() {
     /* external code allocates memory and resets memort block to zero  */
     return _list_alloc(1, size());
 }
 
+void _delete(struct list_data* ptr) {
+    _list_free(ptr);
+}
+
+/* gets size of a memory block to allocate */
+size_t size() {
+    /* returns size of a memory block to allocate */
+    return sizeof(struct list_data);
+}
+
 /* gets chunk's next item. external code enshures ptr is not 0 */
-struct list_data* _next(struct list_data *ptr)
-{
+struct list_data* list_next(struct list_data *ptr) {
     /* external code enshures prt is not 0 */
     return ptr->next;
 }
 
 /* gets chunk's payload. external code enshures ptr is not 0 */
-void* _data(struct list_data* ptr)
-{
+void* list_data(struct list_data* ptr) {
     /* external code enshures prt is not 0 */
     return ptr->payload;
-}
-
-void _delete(struct list_data* ptr)
-{
-    _list_free(ptr);
 }
 
 /* allocates a memory for provided payload  */
@@ -104,7 +94,7 @@ struct list_data* list_pop(struct list_data** const current) {
         return 0;
     }
     /* gets next pointer */
-    struct list_data* next = _next(ptr);
+    struct list_data* next = list_next(ptr);
     /* if we call method on empty stack, element itself is 0 */
     /* if next to element is 0 so it has no parent, called non-list element (root element) */
     /* root elements returns null, i.e. 0 by convention */
@@ -137,7 +127,7 @@ struct list_data* list_peek(struct list_data** const current) {
         return 0;
     }
     /* gets next pointer */
-    const struct list_data* next = _next(ptr);
+    const struct list_data* next = list_next(ptr);
     /* if we call method on empty stack, element itself is 0 */
     /* if next to element is 0 so it has no parent, called non-list element (root element) */
     /* root elements returns null, i.e. 0 by convention */

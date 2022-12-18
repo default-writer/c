@@ -10,10 +10,24 @@ fi
 
 pwd=$(pwd)
 
+install="$1"
+
 [ ! -d "${pwd}/build" ] && mkdir "${pwd}/build"
 
 rm -rf ${pwd}/coverage/*.gcda
 rm -rf ${pwd}/coverage/*.gcno
+
+if [ "${install}" == "" ]; then
+	array=("" "-light" "-micro")
+fi
+
+if [ "${install}" == "experimental" ]; then
+	array=("-experimental")
+fi
+
+if [ "${install}" == "all" ]; then
+	array=("" "-light" "-micro" "-experimental")
+fi
 
 cmake \
 	-DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
@@ -26,6 +40,8 @@ cmake \
 
 export MAKEFLAGS=-j8
 
-cmake --build "${pwd}/build" --target all
+for m in "${array[@]}"; do
+	cmake --build "${pwd}/build" --target "main${m}"
+done
 
 cd "${pwd}"

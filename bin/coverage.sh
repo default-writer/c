@@ -10,13 +10,24 @@ fi
 
 pwd=$(pwd)
 
+install="$1"
+
 [ ! -d "${pwd}/coverage" ] && mkdir "${pwd}/coverage"
 
 rm -rf ${pwd}/coverage/*.gcda
 rm -rf ${pwd}/coverage/*.gcno
 
-## define an array ##
-array=("" "-light" "-micro" "-experimental")
+if [ "${install}" == "" ]; then
+	array=("" "-light" "-micro")
+fi
+
+if [ "${install}" == "experimental" ]; then
+	array=("-experimental")
+fi
+
+if [ "${install}" == "all" ]; then
+	array=("" "-light" "-micro" "-experimental")
+fi
 
 ## compile with coverage metadata
 for m in "${array[@]}"; do
@@ -26,7 +37,7 @@ done
 ## compile with coverage metadata
 for m in "${array[@]}"; do
 	gcc --coverage -g \
-	    -fsanitize=undefined,address \
+		-fsanitize=undefined,address \
 		"${pwd}/tests/main${m}.c" \
 		"${pwd}/src/list${m}/code.c" \
 		"${pwd}/src/common/alloc.c" \

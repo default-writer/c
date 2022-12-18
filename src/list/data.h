@@ -1,7 +1,7 @@
-#ifndef _LIST_DATA_H_
-#define _LIST_DATA_H_
+#ifndef list_data_H_
+#define list_data_H_
 
-#include <stdlib.h>
+#include "std/headers.h"
 
 struct list_data {
     /* points to previous node */
@@ -29,4 +29,4 @@ struct list_methods {
     struct list_data* (*peek)(struct list_data** const current);
 };
 
-#endif // _LIST_DATA_H_
+#endif // list_data_H_

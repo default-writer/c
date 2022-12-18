@@ -1,24 +1,19 @@
-#include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include "std/api.h"
-#include "object.h"
+#include "std/common.h"
 #include "common/alloc.h"
+#include "common/object.h"
 
 /* initializes the new context's head element */
 /* as a result, new memory block will be allocated */
 /* current context pointer set to zero */
-void list_init(struct list_data** const current, struct list_data* (*_new)()) {
+void list_init(struct list_data** const current, struct list_data* (*list_new)()) {
     /* sets current context's head element */
-    *current = _new();
+    *current = list_new();
 }
 
 /* destroys the memory stack */
 /* frees all memory elements */
 /* as a result, memory will be freed */
-void list_destroy(struct list_data** const current, void (*_delete)(struct list_data*), struct list_data* (*_next)(struct list_data*)) {
+void list_destroy(struct list_data** const current, void (*list_delete)(struct list_data*), struct list_data* (*list_next)(struct list_data*)) {
     /* get current context's head */
     /* assigns currently selected item pointer to temporary */
     struct list_data* tmp = *current;
@@ -29,9 +24,9 @@ void list_destroy(struct list_data** const current, void (*_delete)(struct list_
             /* gets temporary pointer value */
             struct list_data* ptr = tmp;
             /* gets prev pointer value */
-            struct list_data* next = _next(ptr);
+            struct list_data* next = list_next(ptr);
             /* frees up memory, should check for 0 before execution */
-            _delete(ptr);
+            list_delete(ptr);
             /* advances temporary pointer value to the next item */
             tmp = next;
         } while (tmp != 0);
