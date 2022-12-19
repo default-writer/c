@@ -5,12 +5,12 @@
 struct list_data* _new() {
     /* external code allocates memory and resets memort block to zero  */
     struct list_data* ptr = _list_alloc(1, size());
-    ptr->data = _list_alloc(1, 10*sizeof(void*));
+    ptr->data = _list_alloc(1, 100*sizeof(void*));
     return ptr;
 }
 
 void _delete(struct list_data* ptr) {
-    _list_free(ptr->data, 10*sizeof(void*));
+    _list_free(ptr->data, 100*sizeof(void*));
     _list_free(ptr, size());
 }
 
