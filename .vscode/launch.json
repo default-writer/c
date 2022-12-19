@@ -26,6 +26,13 @@
             "initCommands":["settings set target.disable-aslr false"]
         },
         {
+            "name": "(lldb) list-experimental",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/main-experimental",
+            "initCommands":["settings set target.disable-aslr false"]
+        },
+        {
             "name": "(gdb) list",
             "type": "cppdbg",
             "request": "launch",
