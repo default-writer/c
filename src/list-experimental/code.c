@@ -4,11 +4,14 @@
 
 struct list_data* _new() {
     /* external code allocates memory and resets memort block to zero  */
-    return _list_alloc(1, size());
+    struct list_data* ptr = _list_alloc(1, size());
+    ptr->data = _list_alloc(1, 10*sizeof(void*));
+    return ptr;
 }
 
 void _delete(struct list_data* ptr) {
-    _list_free(ptr);
+    _list_free(ptr->data, 10*sizeof(void*));
+    _list_free(ptr, size());
 }
 
 /* gets size of a memory block to allocate */
@@ -34,7 +37,7 @@ void* list_pop(struct list_data** const current) {
     /* get current context's head */
     struct list_data* ptr = *current;
     /* if we call method on empty stack, do not return head element, return null element by convention */
-    if (ptr && ptr->data[0] != ptr) {
+    if (ptr && ptr->data[0] != ptr->data) {
         /* gets temporary pointer value */
         /* returns actual data */
         ADDR offset = (ptr->data[0] - (void*)ptr->data);
@@ -59,7 +62,7 @@ void* list_peek(struct list_data** const current) {
     /* get current context's head */
     struct list_data* ptr = *current;
     /* if we call method on empty stack, do not return head element, return null element by convention */
-    if (ptr && ptr->data[0] != ptr) {
+    if (ptr && ptr->data[0] != ptr->data) {
         /* returns actual data */
         ADDR offset = (ptr->data[0] - (void*)ptr->data);
         // gets data pointer

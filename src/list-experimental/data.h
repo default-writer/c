@@ -5,7 +5,7 @@
 
 struct list_data {
     /* payload */
-    void* data[0x10];
+    void** data;
 };
 
 struct list_methods {

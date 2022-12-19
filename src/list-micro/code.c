@@ -10,7 +10,7 @@ struct list_data* _new() {
 }
 
 void _delete(struct list_data* ptr) {
-    _list_free(ptr);
+    _list_free(ptr, size());
 }
 
 /* gets size of a memory block to allocate */
