@@ -56,7 +56,7 @@ void using_list2(void (*list_using)(struct list_data** const)) {
 void list_using(struct list_data** const current) {
     // access context's functions pointer
     const struct list_methods* list = &list_methods_micro;
-    ADDR* payload = (ADDR*)0xdeadbeef;
+    LPTR* payload = (LPTR*)0xdeadbeef;
     void* is_null[] = {
         list->peek(current),
         list->pop(current)

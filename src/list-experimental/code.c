@@ -5,12 +5,13 @@
 struct list_data* _new() {
     /* external code allocates memory and resets memort block to zero  */
     struct list_data* ptr = _list_alloc(1, size());
-    ptr->data = _list_alloc(1, 100*sizeof(void*));
+    ptr->data = _list_alloc(1, 8*sizeof(void*));
+    ptr->size = 8*sizeof(void*);
     return ptr;
 }
 
 void _delete(struct list_data* ptr) {
-    _list_free(ptr->data, 100*sizeof(void*));
+    _list_free(ptr->data, ptr->size);
     _list_free(ptr, size());
 }
 
@@ -27,7 +28,12 @@ void list_push(struct list_data** const current, void* payload) {
     struct list_data* ptr = *current;
     /* increase starting address */
     ptr->data[0] += sizeof(void*);
-    ADDR offset = (ptr->data[0] - (void*)(ptr->data));
+    LPTR offset = (ptr->data[0] - (void*)(ptr->data));
+    if (offset >= ptr->size) {
+        ptr->size += 8*sizeof(void*);
+        ptr->data = _list_realloc(ptr->data, ptr->size);
+        ptr->data[0] = (void*)(ptr->data) + offset;
+    }
     const void **data = (void*)(ptr->data) + offset;
     *data = payload;
 }
@@ -40,7 +46,7 @@ void* list_pop(struct list_data** const current) {
     if (ptr && ptr->data[0] != ptr->data) {
         /* gets temporary pointer value */
         /* returns actual data */
-        ADDR offset = (ptr->data[0] - (void*)ptr->data);
+        LPTR offset = (ptr->data[0] - (void*)ptr->data);
         // gets data pointer
         void **data = (void*)(ptr->data) + offset;
         void *payload = *data;
@@ -64,7 +70,7 @@ void* list_peek(struct list_data** const current) {
     /* if we call method on empty stack, do not return head element, return null element by convention */
     if (ptr && ptr->data[0] != ptr->data) {
         /* returns actual data */
-        ADDR offset = (ptr->data[0] - (void*)ptr->data);
+        LPTR offset = (ptr->data[0] - (void*)ptr->data);
         // gets data pointer
         void **data = (void*)(ptr->data) + offset;
         void *payload = *data;

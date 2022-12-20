@@ -2,7 +2,8 @@
 #define _STD_TYPES_H_
 
 struct list_data;
-typedef long long unsigned int ADDR;
-typedef unsigned char byte;
+typedef unsigned long long LPTR;
+typedef unsigned long SIZE;
+typedef unsigned char BYTE;
 
 #endif // _STD_TYPES_H_

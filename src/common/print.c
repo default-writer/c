@@ -1,14 +1,13 @@
 #include "std/api.h"
+#include "std/types.h"
 #include "common/print.h"
-
-struct list_data;
 
 // print head on current context (stack)
 void list_print_head(struct list_data** const current, void* (*_data)(struct list_data*)) {
     // get current context's head
     struct list_data* tmp = *current;
     // visualise item
-    printf("*: 0x%llx 0x%llx\n", (ADDR)tmp, (ADDR)_data(tmp));
+    printf("*: 0x%llx 0x%llx\n", (LPTR)tmp, (LPTR)_data(tmp));
 }
 
 // print all stack trace to output
@@ -26,7 +25,7 @@ void list_print(struct list_data** const current, struct list_data* (*list_next)
         // until we found root element (element with no previous element reference)
         do {
             // debug output of memory dump
-            printf("%d: 0x%llx 0x%llx\n", ++i, (ADDR)tmp, (ADDR)list_data(tmp));
+            printf("%d: 0x%llx 0x%llx\n", ++i, (LPTR)tmp, (LPTR)list_data(tmp));
             // remember temprary's prior pointer value to temporary
             tmp = list_next(tmp);
         } while (tmp != 0/*root*/);

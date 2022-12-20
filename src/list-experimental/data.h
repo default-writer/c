@@ -1,11 +1,12 @@
-#ifndef _EXPERIMENTAL_DATA_H_
-#define _EXPERIMENTAL_DATA_H_
+#ifndef _LIST_EXPERIMENTAL_DATA_H_
+#define _LIST_EXPERIMENTAL_DATA_H_
 
 #include "std/types.h"
 
 struct list_data {
     /* payload */
     void** data;
+    SIZE size;
 };
 
 struct list_methods {
@@ -17,4 +18,4 @@ struct list_methods {
     void* (*peek)(struct list_data** const current);
 };
 
-#endif // _EXPERIMENTAL_DATA_H_
+#endif // _LIST_EXPERIMENTAL_DATA_H_
