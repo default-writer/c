@@ -41,7 +41,6 @@ void array_print_head(struct list_data** const current) {
     printf("*: 0x%llx 0x%llx\n", (LPTR)ptr->data[0], (LPTR)*data);
 }
 
-
 // print all stack trace to output
 // in a single loop, print out all elements except root element (which does not have a payload)
 // as a result, all stack will be printed in last-to-first order (reverse)
