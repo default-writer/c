@@ -44,7 +44,6 @@ build
 dump.txt
 [cC][mM]ake*
 Makefile
-main*
 lcov.info
 report
 *.info
