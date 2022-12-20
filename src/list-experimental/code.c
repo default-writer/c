@@ -49,7 +49,7 @@ const void* list_pop(struct list_data** const current) {
         LPTR offset = (ptr->data[0] - (void*)ptr->data);
         // gets data pointer
         void **data = (void*)(ptr->data) + offset;
-        const void *payload = *data;
+        const void* payload = *data;
 #ifdef USE_MEMORY_CLEANUP
         // cleaups memory
         *data = 0;
@@ -73,7 +73,7 @@ const void* list_peek(struct list_data** const current) {
         LPTR offset = (ptr->data[0] - (void*)ptr->data);
         // gets data pointer
         void **data = (void*)(ptr->data) + offset;
-        const void *payload = *data;
+        const void* payload = *data;
         return payload;
     }
     /* returns default element as null element */
