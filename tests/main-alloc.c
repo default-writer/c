@@ -32,7 +32,7 @@ void delete_list(struct list_data** ctx) {
 // print head on current context (stack)
 void array_print_head(struct list_data** const current) {
     // get current context's head
-    struct list_data* ptr = *current;
+    const struct list_data* ptr = *current;
     // gets offset
     LPTR offset = (ptr->data[0] - (void*)(ptr->data));
     // gets data pointer
@@ -46,7 +46,7 @@ void array_print_head(struct list_data** const current) {
 // as a result, all stack will be printed in last-to-first order (reverse)
 void array_print(struct list_data** const current) {
     // get current context's head
-    struct list_data* ptr = *current;
+    const struct list_data* ptr = *current;
     // sets the counter
     int i = 0;
     // assigns current's head pointer to the temporary

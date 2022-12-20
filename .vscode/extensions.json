@@ -24,6 +24,8 @@
       "ryanluker.vscode-coverage-gutters",
       "tomoki1207.pdf",
       "yzane.markdown-pdf",
-      "nateageek.memory-viewer"
+      "nateageek.memory-viewer",
+      "bpruitt-goddard.mermaid-markdown-syntax-highlighting",
+      "bierner.markdown-mermaid"
     ]
 }

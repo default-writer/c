@@ -95,7 +95,7 @@
   "sonarlint.pathToCompileCommands": "${workspaceFolder}/build/compile_commands.json",
   "lldb.consoleMode": "commands",
   "testOnSave.enabled": true,
-  "testOnSave.testCommand": "./bin/coverage.sh all",
+  "testOnSave.testCommand": "./bin/coverage.sh --all",
   "koverage.coverageFileNames": [  
     "*.info"
   ],

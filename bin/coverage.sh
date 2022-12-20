@@ -17,16 +17,26 @@ install="$1"
 rm -rf ${pwd}/coverage/*.gcda
 rm -rf ${pwd}/coverage/*.gcno
 
-if [ "${install}" == "" ]; then
-	array=("" "-light" "-micro")
+array=()
+
+if [ "${install}" == "--alloc" ]; then
+	array=("-alloc")
 fi
 
-if [ "${install}" == "experimental" ]; then
+if [ "${install}" == "--experimental" ]; then
 	array=("-experimental")
 fi
 
-if [ "${install}" == "all" ]; then
-	array=("" "-light" "-micro" "-experimental")
+if [ "${install}" == "--micro" ]; then
+	array=("-micro")
+fi
+
+if [ "${install}" == "--light" ]; then
+	array=("-light")
+fi
+
+if [ "${install}" == "--all" ]; then
+	array=("" "-light" "-micro" "-experimental" "-alloc")
 fi
 
 ## compile with coverage metadata
