@@ -17,19 +17,19 @@ installs:
 installs git
 
 ```sh
-./bin/init.sh git
+./bin/install.sh git
 ```
 
 installs git submodule
 
 ```sh
-./bin/init.sh submodule
+./bin/install.sh submodule
 ```
 
 installs git hooks
 
 ```sh
-./bin/init.sh hooks
+./bin/install.sh hooks
 ```
 
 installs pyenv
@@ -44,23 +44,25 @@ uninstalls:
 
 - [git](https://git-scm.com)
 - [rexo](https://github.com/christophercrouzet/rexo)
+- [hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)
+- [pyenv](https://github.com/pyenv/pyenv#automatic-installer)
 
 uninstalls git
 
 ```sh
-./bin/deinit.sh git
+./bin/uninstall.sh git
 ```
 
 uninstalls git submodule
 
 ```sh
-./bin/deinit.sh submodule
+./bin/uninstall.sh submodule
 ```
 
 uninstalls git hooks
 
 ```sh
-./bin/deinit.sh hooks
+./bin/uninstall.sh hooks
 ```
 
 uninstalls pyenv
@@ -108,11 +110,18 @@ installs packages and requirements
 - [python](https://www.python.org)
 - [cmake](https://cmake.org)
 - [docker](https://docker.com)
+- [cli](https://github.com/cli/cli/blob/trunk/docs/install_linux.md)
 
 setup git
 
 ```sh
 ./bin/setup.sh git
+```
+
+setup gh
+
+```sh
+./bin/setup.sh gh
 ```
 
 setup pyenv
