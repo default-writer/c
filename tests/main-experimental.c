@@ -35,8 +35,6 @@ void delete_list(struct list_data** ctx) {
 void array_print_head(struct list_data** const current) {
     // get current context's head
     struct list_data* ptr = *current;
-    // visualise item
-    const void* payload = ptr->data[0];
     // gets offset
     LPTR offset = (ptr->data[0] - (void*)(ptr->data));
     // gets data pointer
