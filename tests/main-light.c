@@ -22,10 +22,12 @@ struct list_data* new_list() {
     return ctx;
 }
 
-void delete_list(struct list_data* ctx) {
+void delete_list(struct list_data** ctx) {
     const struct list_methods* list = &list_methods_light;
-    // destroy list
-    list->destroy(&ctx, _delete, list_next);
+    // destroys list
+    list->destroy(ctx, _delete, list_next);
+    // cleans up
+    *ctx = 0;
 }
 
 // default list usage scenario
@@ -37,7 +39,7 @@ void using_list(void (*list_using)(struct list_data** const)) {
     list_using(&ctx);
 
     // destroy list
-    delete_list(ctx);
+    delete_list(&ctx);
 }
 
 // default list usage scenario
@@ -49,7 +51,7 @@ void using_list2(void (*list_using)(struct list_data** const)) {
     list_using(&ctx);
 
     // destroy list
-    delete_list(ctx);
+    delete_list(&ctx);
 }
 
 // use list
