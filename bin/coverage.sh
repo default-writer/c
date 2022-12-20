@@ -46,6 +46,8 @@ done
 
 ## compile with coverage metadata
 for m in "${array[@]}"; do
+	rm -rf "${pwd}/coverage/main${m}.gcda"
+	rm -rf "${pwd}/coverage/main${m}.gcno"
 	gcc --coverage -g \
 		-fsanitize=undefined,address \
 		"${pwd}/tests/main${m}.c" \
@@ -61,25 +63,10 @@ for m in "${array[@]}"; do
 		-DMEMORY_CLEANUP \
 		-DMEMORY_LEAKS \
 		-o "${pwd}/coverage/main${m}"
-done
 
-## execute comiled binary
-for m in "${array[@]}"; do
 	"${pwd}/coverage/main${m}"
-done
-
-## capture coverage information
-for m in "${array[@]}"; do
 	lcov --capture --directory "${pwd}/coverage/" --output-file "${pwd}/coverage/coverage-main${m}.info"
-done
-
-## remove extra coverage information
-for m in "${array[@]}"; do
 	lcov --remove "${pwd}/coverage/coverage-main${m}.info" "${pwd}/src/rexo/*" -o "${pwd}/coverage/main${m}.info"
-done
-
-## cleanup
-for m in "${array[@]}"; do
 	rm "${pwd}/coverage/coverage-main${m}.info"
 done
 

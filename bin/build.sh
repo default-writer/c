@@ -14,9 +14,6 @@ install="$1"
 
 [ ! -d "${pwd}/build" ] && mkdir "${pwd}/build"
 
-rm -rf ${pwd}/coverage/*.gcda
-rm -rf ${pwd}/coverage/*.gcno
-
 array=()
 
 if [ "${install}" == "--alloc" ]; then
