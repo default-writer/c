@@ -26,7 +26,7 @@ struct list_data* list_next(struct list_data *ptr) {
 }
 
 /* gets chunk's payload. external code enshures ptr is not 0 */
-void* list_data(struct list_data* ptr) {
+const void* list_data(const struct list_data* ptr) {
     /* external code enshures prt is not 0 */
     return ptr->payload;
 }
@@ -34,7 +34,7 @@ void* list_data(struct list_data* ptr) {
 /* allocates a memory for provided payload  */
 /* at current context, data payload stored at allocated memory buffer */
 /* as a result, items counter will increase */
-struct list_data* list_alloc(void* payload) {
+struct list_data* list_alloc(const void* payload) {
     /* stores into pre-allocated value newly allocated memory buffer pointer */
     struct list_data* tmp = _new();
     /* sets the new data into allocated memory buffer */

@@ -3,7 +3,7 @@
 #include "common/print.h"
 
 // print head on current context (stack)
-void list_print_head(struct list_data** const current, void* (*_data)(struct list_data*)) {
+void list_print_head(struct list_data** const current, const void* (*_data)(const struct list_data*)) {
     // get current context's head
     struct list_data* tmp = *current;
     // visualise item
@@ -13,7 +13,7 @@ void list_print_head(struct list_data** const current, void* (*_data)(struct lis
 // print all stack trace to output
 // in a single loop, print out all elements except root element (which does not have a payload)
 // as a result, all stack will be printed in last-to-first order (reverse)
-void list_print(struct list_data** const current, struct list_data* (*list_next)(struct list_data*), void* (*list_data)(struct list_data*)) {
+void list_print(struct list_data** const current, struct list_data* (*list_next)(struct list_data*), const void* (*list_data)(const struct list_data*)) {
     // get current context's head
     struct list_data* head = *current;
     // sets the counter

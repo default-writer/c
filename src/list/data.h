@@ -9,12 +9,12 @@ struct list_data {
     /* points to next node */
     struct list_data* next;
     /* payload */
-    void* payload;
+    const void* payload;
 };
 
 struct list_methods {
     /* allocate list item */
-    struct list_data* (*alloc)(void* payload);
+    struct list_data* (*alloc)(const void* payload);
     /* free item */
     void (*free)(struct list_data** const item);
     /* initialize context */

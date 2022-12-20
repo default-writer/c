@@ -11,11 +11,11 @@ struct list_data {
 
 struct list_methods {
     /* push item on current context (stack) */
-    void (*push)(struct list_data** const current, void* item);
+    void (*push)(struct list_data** const current, const void* item);
     /* pop item on current context (stack) */
-    void* (*pop)(struct list_data** const current);
+    const void* (*pop)(struct list_data** const current);
     /* peek item on current context (stack) */
-    void* (*peek)(struct list_data** const current);
+    const void* (*peek)(struct list_data** const current);
 };
 
 #endif // _LIST_EXPERIMENTAL_DATA_H_

@@ -24,7 +24,7 @@ size_t size() {
 /* allocates a memory for provided payload  */
 /* at current context, data payload stored at allocated memory buffer */
 /* as a result, items counter will increase */
-void list_push(struct list_data** const current, void* payload) {
+void list_push(struct list_data** const current, const void* payload) {
     struct list_data* ptr = *current;
     /* increase starting address */
     ptr->data[0] += sizeof(void*);
@@ -39,7 +39,7 @@ void list_push(struct list_data** const current, void* payload) {
 }
 
 /* pop existing element at the top of the stack/queue/list */
-void* list_pop(struct list_data** const current) {
+const void* list_pop(struct list_data** const current) {
     /* get current context's head */
     struct list_data* ptr = *current;
     /* if we call method on empty stack, do not return head element, return null element by convention */
@@ -49,7 +49,7 @@ void* list_pop(struct list_data** const current) {
         LPTR offset = (ptr->data[0] - (void*)ptr->data);
         // gets data pointer
         void **data = (void*)(ptr->data) + offset;
-        void *payload = *data;
+        const void *payload = *data;
 #ifdef USE_MEMORY_CLEANUP
         // cleaups memory
         *data = 0;
@@ -64,7 +64,7 @@ void* list_pop(struct list_data** const current) {
 
 /* peek existing element at the top of the stack/queue/list */
 /* at current context, existing head */
-void* list_peek(struct list_data** const current) {
+const void* list_peek(struct list_data** const current) {
     /* get current context's head */
     struct list_data* ptr = *current;
     /* if we call method on empty stack, do not return head element, return null element by convention */
@@ -73,7 +73,7 @@ void* list_peek(struct list_data** const current) {
         LPTR offset = (ptr->data[0] - (void*)ptr->data);
         // gets data pointer
         void **data = (void*)(ptr->data) + offset;
-        void *payload = *data;
+        const void *payload = *data;
         return payload;
     }
     /* returns default element as null element */

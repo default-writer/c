@@ -7,7 +7,7 @@ struct list_data {
     /* points to previous node */
     struct list_data* next;
     /* payload */
-    void* payload;
+    const void* payload;
 };
 
 struct list_methods {
@@ -16,11 +16,11 @@ struct list_methods {
     /* destroy context */
     void (*destroy)(struct list_data** const current, void (*delete)(struct list_data*), struct list_data* (*next)(struct list_data*));
     /* push item on current context (stack) */
-    void (*push)(struct list_data** const current, void* item);
+    void (*push)(struct list_data** const current, const void* item);
     /* pop item on current context (stack) */
-    void* (*pop)(struct list_data** const current);
+    const void* (*pop)(struct list_data** const current);
     /* peek item on current context (stack) */
-    void* (*peek)(struct list_data** const current);
+    const void* (*peek)(struct list_data** const current);
 };
 
 #endif // _LIST_MICRO_DATA_H_
