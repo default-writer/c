@@ -5,6 +5,12 @@
 
 # shell
 
+To bootstrap build environment, run
+
+```sh
+./bin/runme.sh
+```
+
 ## install
 
 installs:

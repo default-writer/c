@@ -20,7 +20,7 @@ fi
 if [ "${install}" == "submodule" ]; then
     git submodule init || (git submodule add https://github.com/christophercrouzet/rexo.git src/rexo && git submodule init)
     git submodule update --recursive --remote
-    git pull --recurse-submodules .
+    git pull --recurse-submodules . --quiet
 fi
 
 if [ "${install}" == "hooks" ]; then
@@ -29,7 +29,7 @@ if [ "${install}" == "hooks" ]; then
 fi
 
 if [ "${install}" == "pyenv" ]; then
-	curl https://pyenv.run | bash
+	curl --silent https://pyenv.run | bash
 fi
 
 cd "${pwd}"
