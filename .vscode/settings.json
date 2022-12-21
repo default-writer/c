@@ -92,7 +92,7 @@
   "C_Cpp.errorSquiggles": "disabled",
   "C_Cpp.intelliSenseEngine": "disabled",
   "files.watcherInclude": ["."],
-  "sonarlint.pathToCompileCommands": "${workspaceFolder}/build/compile_commands.json",
+  "sonarlint.pathToCompileCommands": "${workspaceFolder}/cmake/compile_commands.json",
   "lldb.consoleMode": "commands",
   "testOnSave.enabled": true,
   "testOnSave.languageId": "c",
