@@ -8,28 +8,28 @@
             "name": "(lldb) list",
             "type": "lldb",
             "request": "launch",
-            "program": "${workspaceFolder}/build/main",
+            "program": "${workspaceFolder}/cmake/main",
             "initCommands":["settings set target.disable-aslr false"]
         },
         {
             "name": "(lldb) list-light",
             "type": "lldb",
             "request": "launch",
-            "program": "${workspaceFolder}/build/main-light",
+            "program": "${workspaceFolder}/cmake/main-light",
             "initCommands":["settings set target.disable-aslr false"]
         },
         {
             "name": "(lldb) list-micro",
             "type": "lldb",
             "request": "launch",
-            "program": "${workspaceFolder}/build/main-micro",
+            "program": "${workspaceFolder}/cmake/main-micro",
             "initCommands":["settings set target.disable-aslr false"]
         },
         {
             "name": "(lldb) list-experimental",
             "type": "lldb",
             "request": "launch",
-            "program": "${workspaceFolder}/build/main-experimental",
+            "program": "${workspaceFolder}/cmake/main-experimental",
             "initCommands":["settings set target.disable-aslr false"]
         },
         {
@@ -56,7 +56,7 @@
             "name": "(gdb) list-light",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/main-light",
+            "program": "${workspaceFolder}/cmake/main-light",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -76,7 +76,7 @@
             "name": "(gdb) list-micro",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/main-micro",
+            "program": "${workspaceFolder}/cmake/main-micro",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
