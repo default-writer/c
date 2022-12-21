@@ -13,7 +13,7 @@ pwd=$(pwd)
 install="$1"
 
 # you can use command `apt install --only-upgrade`` for packages wouldn't upgrade since they are marked as manual installed packages
-if [ "${install}" == "qemu-kvm" ]; then
+if [ "${install}" == "kvm" ]; then
 	apt update -y
 	apt-get install -y qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils
 	apt upgrade -y
