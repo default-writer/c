@@ -14,18 +14,20 @@
     "sycl.markdown-command-runner",
     "andifin.testonsave",
     "tenninebt.vscode-koverage",
-    "ryanluker.vscode-coverage-gutters",
     "tomoki1207.pdf",
     "yzane.markdown-pdf",
     "nateageek.memory-viewer",
     "bpruitt-goddard.mermaid-markdown-syntax-highlighting",
     "bierner.markdown-mermaid",
-    "go2sh.cmake-integration-vscode",
-    "llvm-vs-code-extensions.vscode-clangd",
     "ms-vscode.cmake-tools",
     "ms-vscode.live-server",
     "visualstudioexptteam.vscodeintellicode",
     "donjayamanne.python-environment-manager",
-    "gruntfuggly.todo-tree"
+    "gruntfuggly.todo-tree",
+    "llvm-vs-code-extensions.vscode-clangd",
+    "twxs.cmake",
+    "go2sh.cmake-integration-vscode",
+    "ryanluker.vscode-coverage-gutters",
+    "ms-vscode-remote.remote-containers"
   ]
 }
