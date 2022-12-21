@@ -16,6 +16,8 @@ install="$1"
 if [ "${install}" == "kvm" ]; then
 	apt update -y
 	apt-get install -y qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils
+	adduser `id -un` libvirt --quiet
+	adduser `id -un` kvm --quiet
 	apt upgrade -y
 fi
 
