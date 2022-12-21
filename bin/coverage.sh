@@ -10,43 +10,50 @@ fi
 
 pwd=$(pwd)
 
-install="$1"
-
 [ ! -d "${pwd}/coverage" ] && mkdir "${pwd}/coverage"
 
 array="undefined"
+clean="undefined"
 
-if [ "${install}" == "--alloc" ]; then
+if [ "$1" == "--alloc" ]; then
 	array=("-alloc")
 fi
 
-if [ "${install}" == "--experimental" ]; then
+if [ "$1" == "--experimental" ]; then
 	array=("-experimental")
 fi
 
-if [ "${install}" == "--micro" ]; then
+if [ "$1" == "--micro" ]; then
 	array=("-micro")
 fi
 
-if [ "${install}" == "--light" ]; then
+if [ "$1" == "--light" ]; then
 	array=("-light")
 fi
 
-if [ "${install}" == "--all" ]; then
+if [ "$1" == "--all" ]; then
 	array=("" "-light" "-micro" "-experimental" "-alloc")
 fi
 
-if [ "${install}" == "--default" ]; then
+if [ "$1" == "--default" ]; then
 	array=("")
 fi
 
-if [ "${install}" == "--help" ] || [ "${install}" == "--?" ] || [ "${array}" == "undefined" ]; then
+if [ "$2" == "" ]; then
+	clean=""
+fi
+
+if [ "$2" == "--clean" ]; then
+	clean="--clean"
+fi
+
+if [ "$1" == "--help" ] || [ "$1" == "--?" ] || [ "${array}" == "undefined" ] || [ "${clean}" == "undfined" ]; then
 	script="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
 	help=$(\
 cat << EOF
 ${script}
 Generates coverage info file lcov.info into coverage folder
-Usage:
+Usage: ${script} <option> [--clean]
     --all:
         builds and runs all (-default, -light, -micro -experimental -alloc) targets
     --default:
@@ -59,16 +66,20 @@ Usage:
         builds and runs -expermental target
     --light:
         builds and runs -light target
+    --clean:
+        cleans up cached directories before/after build
 EOF
 )
 	echo "${help}"
 	exit
 fi
 
-## compile with coverage metadata
-for m in "${array[@]}"; do
-	rm -f "${pwd}/coverage/coverage-main${m}.info"
-done
+if [ "${clean}" == "--clean" ]; then
+	## compile with coverage metadata
+	for m in "${array[@]}"; do
+		rm -f "${pwd}/coverage/coverage-main${m}.info"
+	done
+fi
 
 ## compile with coverage metadata
 for m in "${array[@]}"; do
@@ -94,9 +105,11 @@ for m in "${array[@]}"; do
 	rm -rf "${pwd}/coverage/main${m}"
 done
 
-find "${pwd}/coverage" -name "*.gcda" -delete
-find "${pwd}/coverage" -name "*.gcno" -delete
-find "${pwd}/coverage" -name "*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
-find "${pwd}/coverage" -name "*.lcov" -delete
+if [ "${clean}" == "--clean" ]; then
+	find "${pwd}/coverage" -name "*.gcda" -delete
+	find "${pwd}/coverage" -name "*.gcno" -delete
+	find "${pwd}/coverage" -name "*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
+	find "${pwd}/coverage" -name "*.lcov" -delete
+fi
 
 cd "${pwd}"

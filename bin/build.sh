@@ -11,42 +11,43 @@ fi
 pwd=$(pwd)
 
 install="$1"
+clean="$2"
 
 [ ! -d "${pwd}/build" ] && mkdir "${pwd}/build"
 
 array=("undefined")
 
-if [ "${install}" == "--alloc" ]; then
+if [ "$1 == "--alloc" ]; then
 	array=("-alloc")
 fi
 
-if [ "${install}" == "--experimental" ]; then
+if [ "$1 == "--experimental" ]; then
 	array=("-experimental")
 fi
 
-if [ "${install}" == "--micro" ]; then
+if [ "$1 == "--micro" ]; then
 	array=("-micro")
 fi
 
-if [ "${install}" == "--light" ]; then
+if [ "$1 == "--light" ]; then
 	array=("-light")
 fi
 
-if [ "${install}" == "--all" ]; then
+if [ "$1 == "--all" ]; then
 	array=("" "-light" "-micro" "-experimental" "-alloc")
 fi
 
-if [ "${install}" == "--default" ]; then
+if [ "$1 == "--default" ]; then
 	array=("")
 fi
 
-if [ "${install}" == "--help" ] || [ "${install}" == "--?" ] || [ "${array}" == "undefined" ]; then
+if [ "$1 == "--help" ] || [ "$1 == "--?" ] || [ "${array}" == "undefined" ]; then
 	script="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
 	help=$(\
 cat << EOF
 ${script}
 Builds main test executables into build folder
-Usage:
+Usage: ${script} <option> [--clean]
     --all:
         builds and runs all (-default, -light, -micro -experimental -alloc) targets
     --default:
@@ -59,13 +60,18 @@ Usage:
         builds and runs -expermental target
     --light:
         builds and runs -light target
+    --clean:
+        cleans up cached directories before/after build
 EOF
 )
 	echo "${help}"
 	exit
 fi
 
-rm -rf "${pwd}/build/"
+if [ "${clean}" == "--clean" ]; then
+	rm -rf "${pwd}/build"
+	mkdir "${pwd}/build"
+fi
 
 cmake \
 	-DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
@@ -73,13 +79,21 @@ cmake \
 	-DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
 	-DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
 	-S"${pwd}" \
-	-B"${pwd}/build" \
+	-B"${pwd}/cmake" \
 	-G "Unix Makefiles"
 
 export MAKEFLAGS=-j8
 
 for m in "${array[@]}"; do
-	cmake --build "${pwd}/build" --target "main${m}"
+	cmake --build "${pwd}/cmake" --target "main${m}"
 done
+
+for m in "${array[@]}"; do
+	cp "${pwd}/cmake/main${m}" "${pwd}/build/main${m}"
+done
+
+if [ "${clean}" == "--clean" ]; then
+	rm -rf "${pwd}/cmake"
+fi
 
 cd "${pwd}"
