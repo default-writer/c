@@ -36,7 +36,7 @@ if [ "${install}" == "--all" ]; then
 	array=("" "-light" "-micro" "-experimental" "-alloc")
 fi
 
-if [ "${array}" == "" ]; then
+if [ "${install}" == "" ]; then
 	exit
 fi
 
