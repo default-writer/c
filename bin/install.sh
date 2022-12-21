@@ -24,8 +24,8 @@ if [ "${install}" == "submodule" ]; then
 fi
 
 if [ "${install}" == "hooks" ]; then
-	cp .hooks/pre-commit .git/hooks/prepare-commit-msg
-	chmod u+x .git/hooks/prepare-commit-msg
+	cp "${pwd}/.hooks/prepare-commit-msg" "${pwd}/.git/hooks/prepare-commit-msg"
+	chmod u+x "${pwd}/.git/hooks/prepare-commit-msg"
 fi
 
 if [ "${install}" == "pyenv" ]; then
