@@ -24,7 +24,7 @@ if [ "${install}" == "submodule" ]; then
 fi
 
 if [ "${install}" == "hooks" ]; then
-    cp .hooks/pre-commit .git/hooks/prepare-commit-msg
+	cp .hooks/pre-commit .git/hooks/prepare-commit-msg
 	chmod u+x .git/hooks/prepare-commit-msg
 fi
 
