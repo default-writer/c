@@ -14,12 +14,10 @@
     // use either llvm-vs-code-extensions.vscode-clangd or ms-vscode.cpptools-extension-pack
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
-		"ms-azuretools.vscode-docker",
 		"vadimcn.vscode-lldb",
 		"mhutchie.git-graph",
 		"donjayamanne.githistory",
 		"SonarSource.sonarlint-vscode",
-		"syler.vscode-run-command-on-file-change",
 		"JacquesLucke.gcov-viewer",
 		"codezombiech.gitignore",
 		"StackBuild.bazel-stack-vscode-cc",

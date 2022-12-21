@@ -4,12 +4,10 @@
   ],
   "recommendations": [
     "jacqueslucke.gcov-viewer",
-    "ms-azuretools.vscode-docker",
     "mhutchie.git-graph",
     "donjayamanne.githistory",
     "vadimcn.vscode-lldb",
     "sonarsource.sonarlint-vscode",
-    "syler.vscode-run-command-on-file-change",
     "codezombiech.gitignore",
     "davidanson.vscode-markdownlint",
     "yzhang.markdown-all-in-one",
