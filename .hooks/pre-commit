@@ -5,7 +5,7 @@ echo preparing commit message;
 CommitMessageFile=$1;
 Message=$(<$CommitMessageFile);
 BranchName=$(git rev-parse --abbrev-ref HEAD);
-if [[ $Message =~ ^\*.* ]] # special tweak for skipping branch name
+if [ $Message =~ ^\*.* ] # special tweak for skipping branch name
 then
     echo branch name suppressed;
 	Message=${Message#?};
