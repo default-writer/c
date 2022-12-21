@@ -1,0 +1,118 @@
+{
+	"folders": [
+		{
+			"path": "docs"
+		},
+		{
+			"name": "books.zip",
+			"uri": "zip:/home/user/code/c/docs/books.zip"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"optional": "c",
+			"random": "c",
+			"bitset": "c",
+			"chrono": "c",
+			"string_view": "c",
+			"bit": "c",
+			"*.tcc": "c",
+			"condition_variable": "c",
+			"algorithm": "c",
+			"istream": "c",
+			"limits": "c",
+			"mutex": "c",
+			"shared_mutex": "c",
+			"streambuf": "c",
+			"thread": "c",
+			"list": "cpp",
+			"initializer_list": "cpp",
+			"memory_resource": "cpp",
+			"regex": "cpp",
+			"type_traits": "cpp",
+			"*.inc": "cpp",
+			"array": "cpp",
+			"atomic": "cpp",
+			"cctype": "cpp",
+			"clocale": "cpp",
+			"cmath": "cpp",
+			"cstdarg": "cpp",
+			"cstddef": "cpp",
+			"cstdint": "cpp",
+			"cstdio": "cpp",
+			"cstdlib": "cpp",
+			"cwchar": "cpp",
+			"cwctype": "cpp",
+			"deque": "cpp",
+			"unordered_map": "cpp",
+			"vector": "cpp",
+			"exception": "cpp",
+			"functional": "cpp",
+			"iterator": "cpp",
+			"memory": "cpp",
+			"numeric": "cpp",
+			"string": "cpp",
+			"system_error": "cpp",
+			"tuple": "cpp",
+			"utility": "cpp",
+			"fstream": "cpp",
+			"iosfwd": "cpp",
+			"iostream": "cpp",
+			"new": "cpp",
+			"ostream": "cpp",
+			"sstream": "cpp",
+			"stdexcept": "cpp",
+			"typeinfo": "cpp",
+			"api.h": "c",
+			"data.h": "c",
+			"alloc.h": "c",
+			"globals.h": "c",
+			"compare": "c",
+			"typedefs.h": "c",
+			"rexo.h": "c",
+			"print.h": "c",
+			"object.h": "c",
+			"stdlib.h": "c"
+		},
+		"editor.tokenColorCustomizations": {
+			"textMateRules": [
+				{
+					"scope": "googletest.failed",
+					"settings": {
+						"foreground": "#f00"
+					}
+				}
+			]
+		},
+		"terminal.integrated.defaultProfile.linux": "bash",
+		"terminal.integrated.profiles.linux": {
+			"bash": {
+				"path": "/bin/bash"
+			}
+		},
+		"testOnSave.enabled": true,
+		"testOnSave.languageId": "c",
+		"testOnSave.testCommand": "./bin/coverage.sh --all",
+		"koverage.coverageFileNames": [
+			"lcov.info"
+		],
+		"coverage-gutters.coverageFileNames": [
+			"lcov.info"
+		],
+		"coverage-gutters.coverageBaseDir": "coverage",
+		"coverage-gutters.showLineCoverage": true,
+		"coverage-gutters.showGutterCoverage": false,
+		"files.autoSave": "off",
+		"workbench.editor.enablePreview": false,
+		"clangd.onConfigChanged": "restart",
+		"clangd.checkUpdates": true,
+		"clangd.restartAfterCrash": true,
+		"cmake.autoSelectActiveFolder": false,
+		"cmake.buildDirectory": "${workspaceFolder}/c/cmake",
+		"cmake.configureOnOpen": true,
+		"cmake.sourceDirectory": "${workspaceFolder}/c"
+	}
+}
