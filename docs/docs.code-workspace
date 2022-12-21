@@ -1,0 +1,20 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"name": "docs.zip",
+			"uri": "zip:/home/user/code/c/docs/docs.zip"
+		}
+	],
+	"extensions": {
+		"recommendations": [
+			"arcanis.vscode-zipfs"
+		]
+	},
+	"settings": {
+		"files.autoSave": "off",
+		"workbench.editor.enablePreview": true
+	}
+}

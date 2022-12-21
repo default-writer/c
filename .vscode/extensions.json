@@ -26,7 +26,6 @@
     "ms-vscode.live-server",
     "visualstudioexptteam.vscodeintellicode",
     "donjayamanne.python-environment-manager",
-    "gruntfuggly.todo-tree",
-    "arcanis.vscode-zipfs"
+    "gruntfuggly.todo-tree"
   ]
 }
