@@ -28,6 +28,8 @@
     "go2sh.cmake-integration-vscode",
     "llvm-vs-code-extensions.vscode-clangd",
     "ms-vscode.cmake-tools",
-    "ms-vscode.live-server"
+    "ms-vscode.live-server",
+    "visualstudioexptteam.vscodeintellicode",
+    "donjayamanne.python-environment-manager"
   ]
 }
