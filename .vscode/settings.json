@@ -110,8 +110,9 @@
   "files.exclude": {
     "**/.cache": true,
     "**/.trunk": true,
+    "**/.hooks": true,
     "**/cmake": true,
-    "**/coverage": true,
+    "**/coverage": true
   },
   "workbench.editor.enablePreview": false,
   "pdf-preview.default.scale": "page-width",
