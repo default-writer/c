@@ -1,7 +1,7 @@
 #ifndef list_data_H_
 #define list_data_H_
 
-#include "std/types.h"
+#include "std/common.h"
 
 struct list_data {
     /* points to previous node */
@@ -31,5 +31,6 @@ struct list_methods {
 
 struct list_data* _new();
 void _delete(struct list_data* ptr);
+size_t size();
 
 #endif // list_data_H_

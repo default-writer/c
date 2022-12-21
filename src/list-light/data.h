@@ -1,7 +1,7 @@
 #ifndef _LIST_LIGHT_H_
 #define _LIST_LIGHT_H_
 
-#include "std/types.h"
+#include "std/common.h"
 
 struct list_data {
     /* points to previous node */
@@ -27,5 +27,6 @@ struct list_methods {
 
 struct list_data* _new();
 void _delete(struct list_data* ptr);
+size_t size();
 
 #endif // _LIST_LIGHT_H_

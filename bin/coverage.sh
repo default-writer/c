@@ -14,9 +14,6 @@ install="$1"
 
 [ ! -d "${pwd}/coverage" ] && mkdir "${pwd}/coverage"
 
-rm -rf ${pwd}/coverage/*.gcda
-rm -rf ${pwd}/coverage/*.gcno
-
 array=()
 
 if [ "${install}" == "--alloc" ]; then
@@ -46,8 +43,6 @@ done
 
 ## compile with coverage metadata
 for m in "${array[@]}"; do
-	rm -rf "${pwd}/coverage/main${m}.gcda"
-	rm -rf "${pwd}/coverage/main${m}.gcno"
 	gcc --coverage -g \
 		-fsanitize=undefined,address \
 		"${pwd}/tests/main${m}.c" \
@@ -65,9 +60,13 @@ for m in "${array[@]}"; do
 		-o "${pwd}/coverage/main${m}"
 
 	"${pwd}/coverage/main${m}"
-	lcov --capture --directory "${pwd}/coverage/" --output-file "${pwd}/coverage/coverage-main${m}.info"
-	lcov --remove "${pwd}/coverage/coverage-main${m}.info" "${pwd}/src/rexo/*" -o "${pwd}/coverage/main${m}.info"
-	rm "${pwd}/coverage/coverage-main${m}.info"
+	lcov --capture --directory "${pwd}/coverage/" --output-file "${pwd}/coverage/main${m}.lcov"
+	lcov --remove "${pwd}/coverage/main${m}.lcov" "${pwd}/src/rexo/*" -o "${pwd}/coverage/main${m}.lcov"
 done
+
+find "${pwd}/coverage" -name "*.gcda" -delete
+find "${pwd}/coverage" -name "*.gcno" -delete
+find "${pwd}/coverage" -name "*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
+find "${pwd}/coverage" -name "*.lcov" -delete
 
 cd "${pwd}"
