@@ -39,6 +39,7 @@
 		"VisualStudioExptTeam.vscodeintellicode",
 		"donjayamanne.python-environment-manager",
 		"Gruntfuggly.todo-tree",
-		"arcanis.vscode-zipfs"
+		"arcanis.vscode-zipfs",
+		"GitHub.codespaces"
 	]
 }

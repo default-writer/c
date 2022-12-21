@@ -106,6 +106,7 @@
     "**/.cache": true,
     "**/.trunk": true,
     "**/.hooks": true,
+    "**/.history": true,
     "**/cmake": true,
     "**/coverage": true,
     "**/docs": true

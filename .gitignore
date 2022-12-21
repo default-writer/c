@@ -47,7 +47,7 @@ Makefile
 lcov.info
 report
 .cache
-
+.history
 cmake
 coverage
 
