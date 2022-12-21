@@ -25,6 +25,7 @@ fi
 
 if [ "${install}" == "hooks" ]; then
     cp .hooks/pre-commit .git/hooks/prepare-commit-msg
+	chmod u+x .git/hooks/prepare-commit-msg
 fi
 
 if [ "${install}" == "pyenv" ]; then
