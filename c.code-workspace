@@ -119,7 +119,7 @@
 		"clangd.restartAfterCrash": true,
 		"cmake.configureOnStart": true,
 		"cmake.autoSelectActiveFolder": false,
-		"cmake.showConsoleAutomatically": false,
+		"cmake.showConsoleAutomatically": true,
 		"cmake.sourceDirectory": "${workspaceFolder}/c",
 		"cmake.buildDirectory": "${workspaceFolder}/c/cmake",
 		"cmake.ignoreCMakeListsMissing": true,

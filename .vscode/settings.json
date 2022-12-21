@@ -119,7 +119,7 @@
   "clangd.onConfigChanged": "restart",
   "clangd.checkUpdates": true,
   "clangd.restartAfterCrash": true,
-  "cmake.showConsoleAutomatically": false,
+  "cmake.showConsoleAutomatically": true,
   "cmake.configureOnStart": true,
   "cmake.sourceDirectory": "${workspaceFolder}/.",
   "cmake.buildDirectory": "${workspaceFolder}/cmake",
