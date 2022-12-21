@@ -36,6 +36,10 @@ if [ "${install}" == "--all" ]; then
 	array=("" "-light" "-micro" "-experimental" "-alloc")
 fi
 
+if [ "${array}" == "" ]; then
+	exit
+fi
+
 cmake \
 	-DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
 	-DCMAKE_BUILD_TYPE:STRING=Debug \

@@ -36,6 +36,10 @@ if [ "${install}" == "--all" ]; then
 	array=("" "-light" "-micro" "-experimental" "-alloc")
 fi
 
+if [ "${array}" == "" ]; then
+	exit
+fi
+
 ## compile with coverage metadata
 for m in "${array[@]}"; do
 	rm -f "${pwd}/coverage/coverage-main${m}.info"
