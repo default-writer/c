@@ -74,6 +74,14 @@
 			"object.h": "c",
 			"stdlib.h": "c"
 		},
+		"files.watcherInclude": ["."],
+		"files.autoSave": "off",
+		"files.exclude": {
+		  "**/.cache": true,
+		  "**/.trunk": true,
+		  "**/cmake": true,
+		  "**/coverage": true,
+		},
 		"editor.tokenColorCustomizations": {
 			"textMateRules": [
 				{
@@ -90,6 +98,7 @@
 				"path": "/bin/bash"
 			}
 		},
+		"workbench.editor.enablePreview": false,
 		"testOnSave.enabled": true,
 		"testOnSave.languageId": "c",
 		"testOnSave.testCommand": "./bin/coverage.sh --all",
@@ -102,21 +111,19 @@
 		"coverage-gutters.coverageBaseDir": "coverage",
 		"coverage-gutters.showLineCoverage": true,
 		"coverage-gutters.showGutterCoverage": false,
-		"files.autoSave": "off",
-		"cmake.autoSelectActiveFolder": false,
-		"workbench.editor.enablePreview": false,
+		"pdf-preview.default.scale": "page-width",
 		"clangd.onConfigChanged": "restart",
 		"clangd.checkUpdates": true,
 		"clangd.restartAfterCrash": true,
-		"pdf-preview.default.scale": "page-width",
-		"cmake.showConsoleAutomatically": false,
 		"cmake.configureOnStart": true,
-		"window.zoomLevel": 0,
+		"cmake.autoSelectActiveFolder": false,
+		"cmake.showConsoleAutomatically": false,
 		"cmake.sourceDirectory": "${workspaceFolder}/c",
 		"cmake.buildDirectory": "${workspaceFolder}/c/cmake",
 		"cmake.ignoreCMakeListsMissing": true,
 		"cmake.configureOnOpen": true,
 		"cmake.configureOnEdit": true,
+		"window.zoomLevel": 0
 	},
 	"extensions": {
 		"unwantedRecommendations": [
