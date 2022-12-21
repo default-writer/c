@@ -46,10 +46,9 @@ dump.txt
 Makefile
 lcov.info
 report
-*.info
-!/.vscode
-/.cache
+.cache
 
+cmake
 coverage
 
 .trunk

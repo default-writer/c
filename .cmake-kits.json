@@ -2,8 +2,8 @@
   {
     "name": "GCC",
     "compilers": {
-      "C": "gcc",
-      "CXX": "g++"
+      "C": "/usr/bin/gcc",
+      "CXX": "/usr/bin/g++"
     }
   }
 ]
