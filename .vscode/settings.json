@@ -112,5 +112,6 @@
     "**/.cache": true,
     "**/.trunk": true
   },
-  "workbench.editor.enablePreview": false
+  "workbench.editor.enablePreview": false,
+  "cmake.buildDirectory": "${workspaceFolder}/cmake"
 }
