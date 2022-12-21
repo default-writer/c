@@ -41,17 +41,13 @@ if [ "$2" == "" ]; then
 	clean=""
 fi
 
-if [ "$2" == "--clean" ]; then
-	clean="--clean"
-fi
-
 if [ "$1" == "--help" ] || [ "$1" == "--?" ] || [ "${array}" == "undefined" ] || [ "${clean}" == "undfined" ]; then
 	script="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
 	help=$(\
 cat << EOF
 ${script}
 Generates coverage info file lcov.info into coverage folder
-Usage: ${script} <option> [--clean]
+Usage: ${script} <option>
     --all:
         builds and runs all (-default, -light, -micro -experimental -alloc) targets
     --default:
@@ -64,8 +60,6 @@ Usage: ${script} <option> [--clean]
         builds and runs -expermental target
     --light:
         builds and runs -light target
-    --clean:
-        cleans up cached directories before/after build
 EOF
 )
 	echo "${help}"
@@ -74,17 +68,15 @@ fi
 
 [ ! -d "${pwd}/coverage" ] && mkdir "${pwd}/coverage"
 	
-if [ "${clean}" == "--clean" ]; then
-	## compile with coverage metadata
-	for m in "${array[@]}"; do
-		rm -f "${pwd}/coverage/coverage-main${m}.info"
-	done
-fi
+for m in "${array[@]}"; do
+	rm -f "${pwd}/coverage/main${m}.lcov"
+done
+
+find "${pwd}/coverage" -name "main*.gcda" -delete
+find "${pwd}/coverage" -name "main*.gcno" -delete
 
 ## compile with coverage metadata
 for m in "${array[@]}"; do
-	find "${pwd}/coverage" -name "main*.gcda" -delete
-	find "${pwd}/coverage" -name "main*.gcno" -delete
 	gcc --coverage -g \
 		-fsanitize=undefined,address \
 		"${pwd}/tests/main${m}.c" \
@@ -107,11 +99,9 @@ for m in "${array[@]}"; do
 	rm -rf "${pwd}/coverage/main${m}"
 done
 
-if [ "${clean}" == "--clean" ]; then
-	find "${pwd}/coverage" -name "main*.gcda" -delete
-	find "${pwd}/coverage" -name "main*.gcno" -delete
-	find "${pwd}/coverage" -name "main*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
-	find "${pwd}/coverage" -name "main*.lcov" -delete
-fi
+find "${pwd}/coverage" -name "main*.gcda" -delete
+find "${pwd}/coverage" -name "main*.gcno" -delete
+find "${pwd}/coverage" -name "main*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
+find "${pwd}/coverage" -name "main*.lcov" -delete
 
 cd "${pwd}"
