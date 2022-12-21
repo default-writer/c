@@ -25,6 +25,9 @@
     "ms-vscode.cmake-tools",
     "ms-vscode.live-server",
     "visualstudioexptteam.vscodeintellicode",
-    "donjayamanne.python-environment-manager"
+    "donjayamanne.python-environment-manager",
+    "gruntfuggly.todo-tree",
+    "adamraichu.zip-viewer",
+    "arcanis.vscode-zipfs"
   ]
 }
