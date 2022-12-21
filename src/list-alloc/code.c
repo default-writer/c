@@ -7,6 +7,7 @@ struct list_alloc_data* _new() {
     struct list_alloc_data* ptr = _list_alloc(1, size());
     ptr->data = _list_alloc(1, 8*sizeof(void*));
     ptr->size = 8*sizeof(void*);
+    /* TODO: think about it */
     return ptr;
 }
 
