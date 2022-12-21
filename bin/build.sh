@@ -10,38 +10,34 @@ fi
 
 pwd=$(pwd)
 
-install="$1"
-clean="$2"
+array="undefined"
+clean="undefined"
 
-[ ! -d "${pwd}/build" ] && mkdir "${pwd}/build"
-
-array=("undefined")
-
-if [ "$1 == "--alloc" ]; then
+if [ "$1" == "--alloc" ]; then
 	array=("-alloc")
 fi
 
-if [ "$1 == "--experimental" ]; then
+if [ "$1" == "--experimental" ]; then
 	array=("-experimental")
 fi
 
-if [ "$1 == "--micro" ]; then
+if [ "$1" == "--micro" ]; then
 	array=("-micro")
 fi
 
-if [ "$1 == "--light" ]; then
+if [ "$1" == "--light" ]; then
 	array=("-light")
 fi
 
-if [ "$1 == "--all" ]; then
+if [ "$1" == "--all" ]; then
 	array=("" "-light" "-micro" "-experimental" "-alloc")
 fi
 
-if [ "$1 == "--default" ]; then
+if [ "$1" == "--default" ]; then
 	array=("")
 fi
 
-if [ "$1 == "--help" ] || [ "$1 == "--?" ] || [ "${array}" == "undefined" ]; then
+if [ "$1" == "--help" ] || [ "$1" == "--?" ] || [ "${array}" == "undefined" ]; then
 	script="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
 	help=$(\
 cat << EOF
@@ -67,6 +63,8 @@ EOF
 	echo "${help}"
 	exit
 fi
+
+[ ! -d "${pwd}/build" ] && mkdir "${pwd}/build"
 
 if [ "${clean}" == "--clean" ]; then
 	rm -rf "${pwd}/build"

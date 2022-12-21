@@ -10,8 +10,6 @@ fi
 
 pwd=$(pwd)
 
-[ ! -d "${pwd}/coverage" ] && mkdir "${pwd}/coverage"
-
 array="undefined"
 clean="undefined"
 
@@ -73,6 +71,8 @@ EOF
 	echo "${help}"
 	exit
 fi
+
+[ ! -d "${pwd}/coverage" ] && mkdir "${pwd}/coverage"
 
 if [ "${clean}" == "--clean" ]; then
 	## compile with coverage metadata
