@@ -29,4 +29,7 @@ struct list_methods {
     struct list_data* (*peek)(struct list_data** const current);
 };
 
+struct list_data* _new();
+void _delete(struct list_data* ptr);
+
 #endif // list_data_H_

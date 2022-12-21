@@ -25,4 +25,7 @@ struct list_methods {
     const void* (*peek)(struct list_data** const current);
 };
 
+struct list_data* _new();
+void _delete(struct list_data* ptr);
+
 #endif // _LIST_LIGHT_H_
