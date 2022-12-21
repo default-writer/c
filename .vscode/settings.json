@@ -83,7 +83,6 @@
       "path": "/bin/bash"
     }
   },
-  "cmake.configureOnOpen": true,
   "gcovViewer.buildDirectories": [
     "${workspaceFolder}/coverage",
     "/workspace/coverage"
@@ -113,6 +112,7 @@
     "**/.trunk": true
   },
   "workbench.editor.enablePreview": false,
+  "cmake.configureOnOpen": true,
   "cmake.sourceDirectory": "${workspaceFolder}/.",
   "cmake.buildDirectory": "${workspaceFolder}/cmake",
   "clangd.onConfigChanged": "restart",
