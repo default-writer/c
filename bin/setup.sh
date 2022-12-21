@@ -45,7 +45,7 @@ fi
 
 if [ "${install}" == "cmake" ]; then
 	apt update -y
-	apt install -y --no-install-recommends curl ca-certificates git build-essential lldb lcov cmake clangd g++ gcc gdb lcov
+	apt install -y --no-install-recommends curl ca-certificates git build-essential lldb lcov cmake clangd g++ gcc gdb lcov ninja-build
 	apt upgrade -y
 fi
 

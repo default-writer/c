@@ -1,9 +1,6 @@
 {
 	"folders": [
 		{
-			"path": ".."
-		},
-		{
 			"name": "docs.zip",
 			"uri": "zip:/home/user/code/c/docs/docs.zip"
 		}
