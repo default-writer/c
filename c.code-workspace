@@ -111,7 +111,8 @@
 		"cmake.buildDirectory": "${workspaceFolder}/c/cmake",
 		"cmake.configureOnOpen": true,
 		"cmake.sourceDirectory": "${workspaceFolder}/c",
-		"cmake.ignoreCMakeListsMissing": true
+		"cmake.ignoreCMakeListsMissing": true,
+		"window.zoomLevel": 0
 	},
 	"extensions": {
 		"unwantedRecommendations": [
