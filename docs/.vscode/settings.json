@@ -1,5 +1,6 @@
 {
     "cmake.configureOnEdit": false,
     "cmake.buildDirectory": "${workspaceFolder}/docs/build",
-    "cmake.sourceDirectory": "${workspaceFolder}/docs"
+    "cmake.sourceDirectory": "${workspaceFolder}/docs",
+    "cmake.ignoreCMakeListsMissing": true
 }

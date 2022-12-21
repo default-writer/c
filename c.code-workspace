@@ -4,11 +4,11 @@
 			"path": "docs"
 		},
 		{
-			"name": "books.zip",
-			"uri": "zip:/home/user/code/c/docs/books.zip"
+			"path": "."
 		},
 		{
-			"path": "."
+			"name": "docs.zip",
+			"uri": "zip:/home/user/code/c/docs/docs.zip"
 		}
 	],
 	"settings": {
@@ -113,6 +113,7 @@
 		"cmake.autoSelectActiveFolder": false,
 		"cmake.buildDirectory": "${workspaceFolder}/c/cmake",
 		"cmake.configureOnOpen": true,
-		"cmake.sourceDirectory": "${workspaceFolder}/c"
+		"cmake.sourceDirectory": "${workspaceFolder}/c",
+		"cmake.ignoreCMakeListsMissing": true
 	}
 }
