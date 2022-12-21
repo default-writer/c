@@ -83,10 +83,6 @@
       "path": "/bin/bash"
     }
   },
-  "gcovViewer.buildDirectories": [
-    "${workspaceFolder}/coverage",
-    "/workspace/coverage"
-  ],
   "C_Cpp.dimInactiveRegions": true,
   "C_Cpp.errorSquiggles": "disabled",
   "C_Cpp.intelliSenseEngine": "disabled",
