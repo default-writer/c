@@ -98,10 +98,10 @@
   "testOnSave.languageId": "c",
   "testOnSave.testCommand": "./bin/coverage.sh --all",
   "koverage.coverageFileNames": [  
-    "*.info"
+    "lcov.info"
   ],
   "coverage-gutters.coverageFileNames": [
-    "*.info"
+    "lcov.info"
   ],
   "coverage-gutters.coverageBaseDir": "coverage",
   "coverage-gutters.showLineCoverage": true,
