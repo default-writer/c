@@ -113,5 +113,6 @@
     "**/.trunk": true
   },
   "workbench.editor.enablePreview": false,
-  "cmake.buildDirectory": "${workspaceFolder}/cmake"
+  "cmake.buildDirectory": "${workspaceFolder}/cmake",
+  "cmake.sourceDirectory": "${workspaceFolder}/."
 }
