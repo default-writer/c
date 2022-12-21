@@ -73,7 +73,7 @@ EOF
 fi
 
 [ ! -d "${pwd}/coverage" ] && mkdir "${pwd}/coverage"
-
+	
 if [ "${clean}" == "--clean" ]; then
 	## compile with coverage metadata
 	for m in "${array[@]}"; do
@@ -83,6 +83,8 @@ fi
 
 ## compile with coverage metadata
 for m in "${array[@]}"; do
+	find "${pwd}/coverage" -name "main*.gcda" -delete
+	find "${pwd}/coverage" -name "main*.gcno" -delete
 	gcc --coverage -g \
 		-fsanitize=undefined,address \
 		"${pwd}/tests/main${m}.c" \
@@ -106,10 +108,10 @@ for m in "${array[@]}"; do
 done
 
 if [ "${clean}" == "--clean" ]; then
-	find "${pwd}/coverage" -name "*.gcda" -delete
-	find "${pwd}/coverage" -name "*.gcno" -delete
-	find "${pwd}/coverage" -name "*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
-	find "${pwd}/coverage" -name "*.lcov" -delete
+	find "${pwd}/coverage" -name "main*.gcda" -delete
+	find "${pwd}/coverage" -name "main*.gcno" -delete
+	find "${pwd}/coverage" -name "main*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
+	find "${pwd}/coverage" -name "main*.lcov" -delete
 fi
 
 cd "${pwd}"
