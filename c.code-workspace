@@ -4,7 +4,7 @@
 			"path": "."
 		},
 		{
-			"name": "docs.zip",
+			"name": "lib",
 			"uri": "zip:/home/user/code/c/docs/docs.zip"
 		}
 	],
@@ -82,6 +82,7 @@
 		  "**/.hooks": true,
 		  "**/cmake": true,
 		  "**/coverage": true,
+		  "**/docs": true
 		},
 		"editor.tokenColorCustomizations": {
 			"textMateRules": [
