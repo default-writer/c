@@ -114,5 +114,8 @@
   },
   "workbench.editor.enablePreview": false,
   "cmake.sourceDirectory": "${workspaceFolder}/.",
-  "cmake.buildDirectory": "${workspaceFolder}/cmake"
+  "cmake.buildDirectory": "${workspaceFolder}/cmake",
+  "clangd.onConfigChanged": "restart",
+  "clangd.checkUpdates": true,
+  "clangd.restartAfterCrash": true
 }

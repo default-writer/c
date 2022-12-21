@@ -1,27 +1,20 @@
 {
 	"name": "C++",
-
 	// Update the 'dockerComposeFile' list if you have more compose files or use different names.
 	"dockerComposeFile": "docker-compose.yml",
-	
 	// The 'service' property is the name of the service for the container that VS Code should
 	// use. Update this value and .devcontainer/docker-compose.yml to the real service name.
 	"service": "app",
-
 	// The 'workspaceFolder' property is the path VS Code should open by default when
 	// connected. Corresponds to a volume mount in .devcontainer/docker-compose.yml
 	"workspaceFolder": "/workspace",
-
 	// Set *default* container specific settings.json values on container create.
 	"settings": {},
-
+	// C++ select language server:
+    // use either llvm-vs-code-extensions.vscode-clangd or ms-vscode.cpptools-extension-pack
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
-		"ms-vscode.cpptools",
-		"ms-vscode.cpptools-extension-pack",
-		"ms-vscode.cmake-tools",
 		"ms-azuretools.vscode-docker",
-		"llvm-vs-code-extensions.vscode-clangd",
 		"vadimcn.vscode-lldb",
 		"mhutchie.git-graph",
 		"donjayamanne.githistory",
@@ -40,6 +33,10 @@
 		"yzane.markdown-pdf",
 		"NateAGeek.memory-viewer",
 		"bpruitt-goddard.mermaid-markdown-syntax-highlighting",
-		"bierner.markdown-mermaid"
+		"bierner.markdown-mermaid",
+		"go2sh.cmake-integration-vscode",
+		"llvm-vs-code-extensions.vscode-clangd",
+		"ms-vscode.cmake-tools",
+		"ms-vscode.live-server"
 	]
 }

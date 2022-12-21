@@ -1,0 +1,6 @@
+-Isrc
+-Isrc/std
+-Isrc/common
+-DMEMORY_DEBUG_INFO
+-DMEMORY_CLEANUP
+-DMEMORY_LEAKS
