@@ -41,7 +41,11 @@ if [ "$2" == "" ]; then
 	clean=""
 fi
 
-if [ "$1" == "--help" ] || [ "$1" == "--?" ] || [ "${array}" == "undefined" ] || [ "${clean}" == "undfined" ]; then
+if [ "$2" == "--clean" ]; then
+	clean="--clean"
+fi
+
+if [ "$1" == "--help" ] || [ "$1" == "--?" ] || [ "${array}" == "undefined" ] || [ "${clean}" == "undefined" ]; then
 	script="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
 	help=$(\
 cat << EOF
@@ -60,6 +64,8 @@ Usage: ${script} <option>
         builds and runs -expermental target
     --light:
         builds and runs -light target
+    --clean:
+        cleans up cached directories before/after build
 EOF
 )
 	echo "${help}"
@@ -67,7 +73,12 @@ EOF
 fi
 
 [ ! -d "${pwd}/coverage" ] && mkdir "${pwd}/coverage"
-	
+
+if [ "${clean}" == "--clean" ]; then
+	rm -rf "${pwd}/coverage"
+	mkdir "${pwd}/coverage"
+fi
+
 for m in "${array[@]}"; do
 	rm -f "${pwd}/coverage/main${m}.lcov"
 done

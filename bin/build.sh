@@ -37,7 +37,15 @@ if [ "$1" == "--default" ]; then
 	array=("")
 fi
 
-if [ "$1" == "--help" ] || [ "$1" == "--?" ] || [ "${array}" == "undefined" ]; then
+if [ "$2" == "" ]; then
+	clean=""
+fi
+
+if [ "$2" == "--clean" ]; then
+	clean="--clean"
+fi
+
+if [ "$1" == "--help" ] || [ "$1" == "--?" ] || [ "${array}" == "undefined" ] || [ "${clean}" == "undefined" ]; then
 	script="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
 	help=$(\
 cat << EOF
@@ -64,11 +72,11 @@ EOF
 	exit
 fi
 
-[ ! -d "${pwd}/build" ] && mkdir "${pwd}/build"
+[ ! -d "${pwd}/cmake" ] && mkdir "${pwd}/cmake"
 
 if [ "${clean}" == "--clean" ]; then
-	rm -rf "${pwd}/build"
-	mkdir "${pwd}/build"
+	rm -rf "${pwd}/cmake"
+	mkdir "${pwd}/cmake"
 fi
 
 cmake \
@@ -84,10 +92,6 @@ export MAKEFLAGS=-j8
 
 for m in "${array[@]}"; do
 	cmake --build "${pwd}/cmake" --target "main${m}"
-done
-
-for m in "${array[@]}"; do
-	cp "${pwd}/cmake/main${m}" "${pwd}/build/main${m}"
 done
 
 if [ "${clean}" == "--clean" ]; then
