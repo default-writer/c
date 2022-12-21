@@ -14,7 +14,7 @@ install="$1"
 
 [ ! -d "${pwd}/build" ] && mkdir "${pwd}/build"
 
-array=()
+array=("undefined")
 
 if [ "${install}" == "--alloc" ]; then
 	array=("-alloc")
@@ -36,9 +36,36 @@ if [ "${install}" == "--all" ]; then
 	array=("" "-light" "-micro" "-experimental" "-alloc")
 fi
 
-if [ "${install}" == "" ]; then
+if [ "${install}" == "--default" ]; then
+	array=("")
+fi
+
+if [ "${install}" == "--help" ] || [ "${install}" == "--?" ] || [ "${array}" == "undefined" ]; then
+	script="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
+	help=$(\
+cat << EOF
+${script}
+Builds main test executables into build folder
+Usage:
+    --all:
+        builds and runs all (-default, -light, -micro -experimental -alloc) targets
+    --default:
+        builds and runs -default target
+    --light:
+        builds and runs -light target
+    --micro:
+        builds and runs -micro target
+    --expermental:
+        builds and runs -expermental target
+    --light:
+        builds and runs -light target
+EOF
+)
+	echo "${help}"
 	exit
 fi
+
+rm -rf "${pwd}/build/"
 
 cmake \
 	-DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \

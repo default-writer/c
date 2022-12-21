@@ -14,7 +14,7 @@ install="$1"
 
 [ ! -d "${pwd}/coverage" ] && mkdir "${pwd}/coverage"
 
-array=()
+array="undefined"
 
 if [ "${install}" == "--alloc" ]; then
 	array=("-alloc")
@@ -36,7 +36,32 @@ if [ "${install}" == "--all" ]; then
 	array=("" "-light" "-micro" "-experimental" "-alloc")
 fi
 
-if [ "${install}" == "" ]; then
+if [ "${install}" == "--default" ]; then
+	array=("")
+fi
+
+if [ "${install}" == "--help" ] || [ "${install}" == "--?" ] || [ "${array}" == "undefined" ]; then
+	script="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
+	help=$(\
+cat << EOF
+${script}
+Generates coverage info file lcov.info into coverage folder
+Usage:
+    --all:
+        builds and runs all (-default, -light, -micro -experimental -alloc) targets
+    --default:
+        builds and runs -default target
+    --light:
+        builds and runs -light target
+    --micro:
+        builds and runs -micro target
+    --expermental:
+        builds and runs -expermental target
+    --light:
+        builds and runs -light target
+EOF
+)
+	echo "${help}"
 	exit
 fi
 
@@ -66,6 +91,7 @@ for m in "${array[@]}"; do
 	"${pwd}/coverage/main${m}"
 	lcov --capture --directory "${pwd}/coverage/" --output-file "${pwd}/coverage/main${m}.lcov"
 	lcov --remove "${pwd}/coverage/main${m}.lcov" "${pwd}/src/rexo/*" -o "${pwd}/coverage/main${m}.lcov"
+	rm -rf "${pwd}/coverage/main${m}"
 done
 
 find "${pwd}/coverage" -name "*.gcda" -delete
