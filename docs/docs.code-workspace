@@ -12,6 +12,8 @@
 	},
 	"settings": {
 		"files.autoSave": "off",
-		"workbench.editor.enablePreview": true
+		"workbench.editor.enablePreview": true,
+		"pdf-preview.default.scale": "page-width",
+		"window.zoomLevel": 0
 	}
 }

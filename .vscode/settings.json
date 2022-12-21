@@ -117,5 +117,7 @@
   "cmake.buildDirectory": "${workspaceFolder}/cmake",
   "clangd.onConfigChanged": "restart",
   "clangd.checkUpdates": true,
-  "clangd.restartAfterCrash": true
+  "clangd.restartAfterCrash": true,
+  "pdf-preview.default.scale": "page-width",
+  "window.zoomLevel": 0
 }
