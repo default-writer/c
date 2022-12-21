@@ -107,7 +107,8 @@
     "**/.trunk": true,
     "**/.hooks": true,
     "**/cmake": true,
-    "**/coverage": true
+    "**/coverage": true,
+    "**/docs": true
   },
   "workbench.editor.enablePreview": false,
   "pdf-preview.default.scale": "page-width",
