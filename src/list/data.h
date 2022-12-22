@@ -1,5 +1,5 @@
-#ifndef list_data_H_
-#define list_data_H_
+#ifndef _LIST_DATA_H_
+#define _LIST_DATA_H_
 
 #include "std/common.h"
 
@@ -33,4 +33,4 @@ struct list_data* _new();
 void _delete(struct list_data* ptr);
 size_t size();
 
-#endif // list_data_H_
+#endif // _LIST_DATA_H_
