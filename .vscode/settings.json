@@ -124,5 +124,13 @@
   "cmake.configureOnOpen": true,
   "cmake.configureOnEdit": true,
   "window.zoomLevel": 0,
+  "auto-run-command.rules": [
+    {
+      "condition": "always",
+      "command": "sudo ./bin/setup.sh cmake",
+      "message": "Auto install cmake",
+      "shellCommand": "true"
+    }
+  ],
   "DockerRun.DisableAutoGenerateConfig": true
 }
