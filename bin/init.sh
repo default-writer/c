@@ -16,7 +16,7 @@ pwd=$(pwd)
 "${pwd}/bin/env.sh" nvm
 "${pwd}/bin/nvm.sh"
 
-. "${HOME}/.bashrc"
+. "${pwd}/bin/nvm.sh"
 
 nvm --version
 nvm install node
