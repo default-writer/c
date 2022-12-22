@@ -13,8 +13,10 @@ pwd=$(pwd)
 "${pwd}/bin/install.sh" git
 "${pwd}/bin/install.sh" submodule
 "${pwd}/bin/install.sh" hooks
-"${pwd}/bin/nvm.sh"
 "${pwd}/bin/env.sh" nvm
+"${pwd}/bin/nvm.sh"
+
+. "${HOME}/.bashrc"
 
 nvm --version
 nvm install node
