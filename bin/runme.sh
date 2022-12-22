@@ -10,9 +10,6 @@ fi
 
 pwd=$(pwd)
 
-./bin/install.sh git
-./bin/install.sh submodule
-./bin/install.sh hooks
 ./bin/clean.sh && ./bin/build.sh --all && ./bin/coverage.sh --all
 
 cd "${pwd}"
