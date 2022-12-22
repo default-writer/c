@@ -29,6 +29,8 @@
     "go2sh.cmake-integration-vscode",
     "ryanluker.vscode-coverage-gutters",
     "ms-vscode-remote.remote-containers",
-    "github.codespaces"
+    "github.codespaces",
+    "beardedbear.beardedicons",
+    "ms-vscode.cpptools-themes"
   ]
 }

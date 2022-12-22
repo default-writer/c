@@ -40,6 +40,8 @@
 		"donjayamanne.python-environment-manager",
 		"Gruntfuggly.todo-tree",
 		"arcanis.vscode-zipfs",
-		"GitHub.codespaces"
+		"GitHub.codespaces",
+		"ms-vscode.cpptools-themes",
+		"BeardedBear.beardedicons"
 	]
 }

@@ -9,6 +9,7 @@ arcanis.vscode-zipfs
 aslamanver.vsc-export
 azemoh.one-monokai
 be5invis.vscode-icontheme-nomo-dark
+BeardedBear.beardedicons
 benruijl0774.vscode-form
 bierner.markdown-mermaid
 BlitZz.twitch-chat
@@ -17,8 +18,6 @@ brandonfowler.exe-runner
 christian-kohler.path-intellisense
 CodeSandbox-io.codesandbox-projects
 codezombiech.gitignore
-connorshea.vscode-test-explorer-status-bar
-craigthomas.supersharp
 CucumberOpen.cucumber-official
 danielroedl.meld-diff
 david-rickard.git-diff-and-merge-tool
@@ -28,7 +27,6 @@ debugjunkie.cobalt-blue
 deltaxml.xslt-xpath
 docsmsft.docs-markdown
 donjayamanne.githistory
-donjayamanne.python-environment-manager
 dracula-theme.theme-dracula
 drkryz.drkryz-theme
 dseight.disasexpl
@@ -57,10 +55,9 @@ go2sh.cmake-integration-vscode
 goessner.mdmath
 golang.go
 Gruntfuggly.todo-tree
-hbenl.vscode-test-explorer
+helgardrichard.helium-icon-theme
 henriiik.vscode-sort
 howardzuo.vscode-git-tags
-huizhou.githd
 IgorSbitnev.error-gutters
 Ionide.Ionide-FAKE
 Ionide.Ionide-Paket
@@ -68,8 +65,8 @@ IronGeek.vscode-env
 JacquesLucke.gcov-viewer
 jamesmaj.easy-icons
 johnpapa.winteriscoming
+jtlowe.vscode-icon-theme
 kenhowardpdx.vscode-gist
-KevinRose.vsc-python-indent
 letmaik.git-tree-compare
 liviuschera.noctis
 llvm-vs-code-extensions.vscode-clangd
@@ -96,22 +93,20 @@ ms-vscode-remote.remote-ssh
 ms-vscode-remote.remote-ssh-edit
 ms-vscode-remote.vscode-remote-extensionpack
 ms-vscode.cmake-tools
+ms-vscode.cpptools-themes
 ms-vscode.hexeditor
 ms-vscode.live-server
-ms-vscode.test-adapter-converter
 ms-vscode.Theme-MarkdownKit
 ms-vscode.vs-keybindings
-ms-vscode.vscode-typescript-tslint-plugin
 ms-vsliveshare.vsliveshare
 ms-vsliveshare.vsliveshare-audio
 ms-vsliveshare.vsliveshare-pack
 NateAGeek.memory-viewer
 naumovs.theme-oceanicnext
-njpwerner.autodocstring
+Nimda.deepdark-material
 paragdiwan.gitpatch
 patcx.vscode-nuget-gallery
 PeterSchmalfeldt.explorer-exclude
-pflannery.vscode-versionlens
 PKief.material-icon-theme
 PKief.material-product-icons
 pomber.git-file-history
@@ -126,7 +121,6 @@ ryanluker.vscode-coverage-gutters
 saber2pr.file-git-history
 SandAngel.jsfiddle-pro
 sdras.night-owl
-serkonda7.vscode-vba
 SolarLiner.linux-themes
 SonarSource.sonarlint-vscode
 spmeesseman.vscode-taskexplorer
@@ -135,7 +129,6 @@ stevejpurves.cucumber
 Sujan.code-blue
 svelte.svelte-vscode
 Sycl.markdown-command-runner
-TabNine.tabnine-vscode
 teabyii.ayu
 tenninebt.vscode-koverage
 thenikso.github-plus-theme
