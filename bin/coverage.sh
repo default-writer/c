@@ -13,39 +13,42 @@ pwd=$(pwd)
 array="undefined"
 clean="undefined"
 
-if [ "$1" == "--alloc" ]; then
+install="$1"
+remove="$2"
+
+if [ "${install}" == "--alloc" ]; then
 	array=("-alloc")
 fi
 
-if [ "$1" == "--experimental" ]; then
+if [ "${install}" == "--experimental" ]; then
 	array=("-experimental")
 fi
 
-if [ "$1" == "--micro" ]; then
+if [ "${install}" == "--micro" ]; then
 	array=("-micro")
 fi
 
-if [ "$1" == "--light" ]; then
+if [ "${install}" == "--light" ]; then
 	array=("-light")
 fi
 
-if [ "$1" == "--all" ]; then
+if [ "${install}" == "--all" ]; then
 	array=("" "-light" "-micro" "-experimental" "-alloc")
 fi
 
-if [ "$1" == "--default" ]; then
+if [ "${install}" == "--default" ]; then
 	array=("")
 fi
 
-if [ "$2" == "" ]; then
+if [ "${remove}" == "" ]; then
 	clean=""
 fi
 
-if [ "$2" == "--clean" ]; then
+if [ "${remove}" == "--clean" ]; then
 	clean="--clean"
 fi
 
-if [ "$1" == "--help" ] || [ "$1" == "--?" ] || [ "${array}" == "undefined" ] || [ "${clean}" == "undefined" ]; then
+if [ "${install}" == "--help" ] || [ "${install}" == "--?" ] || [ "${array}" == "undefined" ] || [ "${clean}" == "undefined" ]; then
 	script="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
 	help=$(\
 cat << EOF
