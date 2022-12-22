@@ -45,9 +45,6 @@ fabiospampinato.vscode-debug-launcher
 felipe-mendes.slack-theme
 file-icons.file-icons
 firefox-devtools.vscode-firefox-debug
-formulahendry.docker-explorer
-formulahendry.docker-extension-pack
-george3447.docker-run
 GitHub.codespaces
 GitHub.github-vscode-theme
 GitHub.vscode-pull-request-github
