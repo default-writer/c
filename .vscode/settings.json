@@ -127,7 +127,7 @@
   "auto-run-command.rules": [
     {
       "condition": "always",
-      "command": "./bin/runme.sh",
+      "command": "[ -d /workspaces/c ] && /workspaces/c/bin/runme.sh",
       "message": "Auto install cmake",
       "shellCommand": "true"
     }
