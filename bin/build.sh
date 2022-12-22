@@ -97,8 +97,4 @@ for m in "${array[@]}"; do
 	cmake --build "${pwd}/cmake" --target "main${m}"
 done
 
-if [ "${clean}" == "--clean" ]; then
-	rm -rf "${pwd}/cmake"
-fi
-
 cd "${pwd}"
