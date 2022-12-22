@@ -22,6 +22,6 @@ nvm --version
 nvm install node
 node --version
 
-./bin/runme.sh
+"${pwd}/bin/runme.sh"
 
 cd "${pwd}"
