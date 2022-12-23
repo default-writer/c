@@ -33,6 +33,13 @@
             "initCommands":["settings set target.disable-aslr false"]
         },
         {
+            "name": "(lldb) playground",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/cmake/main-playground",
+            "initCommands":["settings set target.disable-aslr false"]
+        },
+        {
             "name": "(gdb) list",
             "type": "cppdbg",
             "request": "launch",

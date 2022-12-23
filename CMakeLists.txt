@@ -14,12 +14,14 @@ set(LIST_LIGHT_SOURCE src/list-light/code.c src/common/alloc.c src/common/print.
 set(LIST_SOURCE src/list/code.c src/common/alloc.c src/common/print.c src/common/object.c)
 set(LIB_EXPERIMENTAL_SOURCE src/list-experimental/code.c src/common/alloc.c)
 set(LIB_ALLOC_SOURCE src/list-alloc/code.c src/common/alloc.c)
+set(LIB_PLAYGROUND_SOURCE src/list-alloc/code.c src/common/alloc.c)
 
 set(MAIN_MICRO_SOURCE tests/main-micro.c ${LIST_MICRO_SOURCE})
 set(MAIN_LIGHT_SOURCE tests/main-light.c ${LIST_LIGHT_SOURCE})
 set(MAIN_SOURCE tests/main.c ${LIST_SOURCE})
 set(MAIN_EXPERIMENTAL_SOURCE tests/main-experimental.c ${LIB_EXPERIMENTAL_SOURCE})
 set(MAIN_ALLOC_SOURCE tests/main-alloc.c ${LIB_ALLOC_SOURCE})
+set(MAIN_PLAYGROUND_SOURCE playground/structs.c ${LIB_PLAYGROUND_SOURCE})
 
 option(MEMORY_DEBUG_INFO "Disables memory allocation debug information")
 option(MEMORY_CLEANUP "Disables memory cleanup")
@@ -53,8 +55,8 @@ endif()
 
 include_directories(src)
 
-add_compile_options(-fsanitize=undefined,address)
-add_link_options(-fsanitize=undefined,address)
+add_compile_options(-fsanitize=address)
+add_link_options(-fsanitize=address)
 
 add_library(liblist-micro STATIC ${LIST_MICRO_SOURCE})
 add_library(liblist-light STATIC ${LIST_LIGHT_SOURCE})
@@ -67,6 +69,7 @@ add_executable(main-light ${MAIN_LIGHT_SOURCE})
 add_executable(main ${MAIN_SOURCE})
 add_executable(main-experimental ${MAIN_EXPERIMENTAL_SOURCE})
 add_executable(main-alloc ${MAIN_ALLOC_SOURCE})
+add_executable(main-playground ${MAIN_PLAYGROUND_SOURCE})
 
 target_link_libraries(main-micro PRIVATE liblist-micro)
 target_link_libraries(main-light PRIVATE liblist-light)
