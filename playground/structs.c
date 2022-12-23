@@ -93,7 +93,7 @@ int main() {
     const struct some_class* class = &some_class_type;
     if (i->base->get_type() == (LPTR)class)
     {
-        printf("i is of type class\n");
+        printf("i is of type class at %llx\n", (LPTR)class);
     }
     return 0;
 }
