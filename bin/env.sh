@@ -19,8 +19,8 @@ fi
 
 if [ "${install}" == "asan" ]; then
 	grep -qxF '# asan' $HOME/.bashrc || (tail -1 $HOME/.bashrc | grep -qxF '' || echo '' >> $HOME/.bashrc && echo '# asan' >> $HOME/.bashrc)
-	grep -qxF 'export LSAN_OPTIONS=disable_coredump=0:handle_segv=0:verbosity=1:log_threads=1:log_pointers=1' $HOME/.bashrc || echo 'export LSAN_OPTIONS=disable_coredump=0:handle_segv=0:verbosity=1:log_threads=1:log_pointers=1' >> $HOME/.bashrc
-	grep -qxF 'export ASAN_OPTIONS=abort_on_error=1:report_objects=1:sleep_before_dying=10:verbosity=1:fast_unwind_on_malloc=0:detect_leaks=0' $HOME/.bashrc || echo 'export ASAN_OPTIONS=abort_on_error=1:report_objects=1:sleep_before_dying=10:verbosity=1:fast_unwind_on_malloc=0:detect_leaks=0' >> $HOME/.bashrc
+	grep -qxF 'export LSAN_OPTIONS=disable_coredump=1:handle_segv=0:verbosity=0:log_threads=0:log_pointers=1' $HOME/.bashrc || echo 'export LSAN_OPTIONS=disable_coredump=1:handle_segv=0:verbosity=0:log_threads=0:log_pointers=1' >> $HOME/.bashrc
+	grep -qxF 'export ASAN_OPTIONS=abort_on_error=1:report_objects=0:sleep_before_dying=0:verbosity=0:fast_unwind_on_malloc=0:detect_leaks=0' $HOME/.bashrc || echo 'export ASAN_OPTIONS=abort_on_error=1:report_objects=0:sleep_before_dying=0:verbosity=0:fast_unwind_on_malloc=0:detect_leaks=0' >> $HOME/.bashrc
 fi
 
 if [ "${install}" == "pyenv" ]; then
