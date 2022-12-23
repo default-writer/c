@@ -4,8 +4,8 @@ set -e
 uid=$(id -u)
 
 if [ "${uid}" -eq 0 ]; then
-	echo "Please run as user"
-	exit
+    echo "Please run as user"
+    exit
 fi
 
 pwd=$(pwd)
@@ -17,40 +17,40 @@ install="$1"
 remove="$2"
 
 if [ "${install}" == "--alloc" ]; then
-	array=("-alloc")
+    array=("-alloc")
 fi
 
 if [ "${install}" == "--experimental" ]; then
-	array=("-experimental")
+    array=("-experimental")
 fi
 
 if [ "${install}" == "--micro" ]; then
-	array=("-micro")
+    array=("-micro")
 fi
 
 if [ "${install}" == "--light" ]; then
-	array=("-light")
+    array=("-light")
 fi
 
 if [ "${install}" == "--all" ]; then
-	array=("" "-light" "-micro" "-experimental" "-alloc")
+    array=("" "-light" "-micro" "-experimental" "-alloc")
 fi
 
 if [ "${install}" == "--default" ]; then
-	array=("")
+    array=("")
 fi
 
 if [ "${remove}" == "" ]; then
-	clean=""
+    clean=""
 fi
 
 if [ "${remove}" == "--clean" ]; then
-	clean="--clean"
+    clean="--clean"
 fi
 
 if [ "${install}" == "--help" ] || [ "${install}" == "--?" ] || [ "${array}" == "undefined" ] || [ "${clean}" == "undefined" ]; then
-	script="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
-	help=$(\
+    script="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
+    help=$(\
 cat << EOF
 ${script}
 Builds main test executables into build folder
@@ -71,30 +71,30 @@ Usage: ${script} <option> [--clean]
         cleans up cached directories before/after build
 EOF
 )
-	echo "${help}"
-	exit
+    echo "${help}"
+    exit
 fi
 
 [ ! -d "${pwd}/cmake" ] && mkdir "${pwd}/cmake"
 
 if [ "${clean}" == "--clean" ]; then
-	rm -rf "${pwd}/cmake"
-	mkdir "${pwd}/cmake"
+    rm -rf "${pwd}/cmake"
+    mkdir "${pwd}/cmake"
 fi
 
 cmake \
-	-DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
-	-DCMAKE_BUILD_TYPE:STRING=Debug \
-	-DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
-	-DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
-	-S"${pwd}" \
-	-B"${pwd}/cmake" \
-	-G "Unix Makefiles"
+    -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
+    -DCMAKE_BUILD_TYPE:STRING=Debug \
+    -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
+    -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
+    -S"${pwd}" \
+    -B"${pwd}/cmake" \
+    -G "Unix Makefiles"
 
 export MAKEFLAGS=-j8
 
 for m in "${array[@]}"; do
-	cmake --build "${pwd}/cmake" --target "main${m}"
+    cmake --build "${pwd}/cmake" --target "main${m}"
 done
 
 cd "${pwd}"

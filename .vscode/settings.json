@@ -123,5 +123,8 @@
   "cmake.ignoreCMakeListsMissing": true,
   "cmake.configureOnOpen": true,
   "cmake.configureOnEdit": true,
-  "window.zoomLevel": 0
+  "window.zoomLevel": 0,
+  "terminal.integrated.smoothScrolling": true,
+  "terminal.integrated.cursorBlinking": true,
+  "terminal.integrated.enableFileLinks": true
 }

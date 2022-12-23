@@ -2,10 +2,6 @@
 	"folders": [
 		{
 			"path": "."
-		},
-		{
-			"name": "lib",
-			"uri": "zip:/home/user/code/c/docs/docs.zip"
 		}
 	],
 	"settings": {
