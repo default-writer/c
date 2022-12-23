@@ -51,49 +51,38 @@ union some_class_interface
 
 struct some_base_class
 {
-    int (*of_type)(const void* ptr);
+    LPTR (*get_type)();
 };
 
 struct some_class
 {
-    int (*of_type)(const void* ptr);
     LPTR (*get_type)();
 };
 
-int of_base_type(const void* ptr);
-int of_class_type(const void* ptr);
-LPTR get_type();
+LPTR get_base_type();
+LPTR get_class_type();
 
 const struct some_base_class some_base_class_type =
 {
-    .of_type = of_base_type
+    .get_type = get_base_type
 };
 
 const struct some_class some_class_type =
 {
-    .of_type = of_class_type,
-    .get_type = get_type
+    .get_type = get_class_type
 };
 
 const union some_class_interface some_class_interface_type = {
     .class = &some_class_type
 };
 
-int of_base_type(const void* ptr)
+LPTR get_base_type()
 {
-    const struct some_class* type = &some_class_type;
-    const struct some_base_class* class = (const struct some_base_class*)ptr;
-    return class->of_type == type->of_type;
+    const struct some_base_class* type = &some_base_class_type;
+    return (LPTR)type;
 }
 
-int of_class_type(const void* ptr)
-{
-    const struct some_class* type = &some_class_type;
-    const struct some_class* class = (const struct some_class*)ptr;
-    return class->of_type == type->of_type;
-}
-
-LPTR get_type()
+LPTR get_class_type()
 {
     const struct some_class* type = &some_class_type;
     return (LPTR)type;
@@ -101,9 +90,8 @@ LPTR get_type()
 
 int main() {
     const union some_class_interface* i = &some_class_interface_type;
-    //const struct some_base_class* base = &some_base_class_type;
     const struct some_class* class = &some_class_type;
-    if (i->base->of_type(class))
+    if (i->base->get_type() == (LPTR)class)
     {
         printf("i is of type class\n");
     }

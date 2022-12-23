@@ -41,7 +41,8 @@
 		"Gruntfuggly.todo-tree",
 		"arcanis.vscode-zipfs",
 		"GitHub.codespaces",
+		"BeardedBear.beardedicons",
 		"ms-vscode.cpptools-themes",
-		"BeardedBear.beardedicons"
+		"ms-vscode.cpptools"
 	]
 }
