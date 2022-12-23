@@ -11,9 +11,16 @@ fi
 pwd=$(pwd)
 
 install="$1"
+option="$2"
 
 if [ "${install}" == "zsh" ]; then
 	curl --silent -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | bash
+fi
+
+if [ "${install}" == "asan" ]; then
+	grep -qxF '# asan' $HOME/.bashrc || (tail -1 $HOME/.bashrc | grep -qxF '' || echo '' >> $HOME/.bashrc && echo '# asan' >> $HOME/.bashrc)
+	grep -qxF 'export LSAN_OPTIONS=disable_coredump=0:handle_segv=0:verbosity=1:log_threads=1:log_pointers=1' $HOME/.bashrc || echo 'export LSAN_OPTIONS=disable_coredump=0:handle_segv=0:verbosity=1:log_threads=1:log_pointers=1' >> $HOME/.bashrc
+	grep -qxF 'export ASAN_OPTIONS=abort_on_error=1:report_objects=1:sleep_before_dying=10:verbosity=1:fast_unwind_on_malloc=0:detect_leaks=0' $HOME/.bashrc || echo 'export ASAN_OPTIONS=abort_on_error=1:report_objects=1:sleep_before_dying=10:verbosity=1:fast_unwind_on_malloc=0:detect_leaks=0' >> $HOME/.bashrc
 fi
 
 if [ "${install}" == "pyenv" ]; then
@@ -27,9 +34,9 @@ fi
 
 if [ "${install}" == "user" ]; then
 	grep -qxF '# user' $HOME/.bashrc || (tail -1 $HOME/.bashrc | grep -qxF '' || echo '' >> $HOME/.bashrc && echo '# user' >> $HOME/.bashrc)
-	grep -qxF 'export USER_NAME=$USER' $HOME/.bashrc || echo 'export USER_NAME=$USER' >> $HOME/.bashrc
-	grep -qxF 'export USER_ID=$(id -u)' $HOME/.bashrc || echo 'export USER_ID=$(id -u)' >> $HOME/.bashrc
+	grep -qxF 'export USER_NAME=$(id -un)' $HOME/.bashrc || echo 'export USER_NAME=$(id -un)' >> $HOME/.bashrc
 	grep -qxF 'export USER_GROUP=$(id -gn)' $HOME/.bashrc || echo 'export USER_GROUP=$(id -gn)' >> $HOME/.bashrc
+	grep -qxF 'export USER_ID=$(id -u)' $HOME/.bashrc || echo 'export USER_ID=$(id -u)' >> $HOME/.bashrc
 fi
 
 if [ "${install}" == "nvm" ]; then

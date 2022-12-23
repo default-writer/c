@@ -15,14 +15,21 @@ install="$1"
 case "${install}" in
     "env") # installs env variables (use `. ./install.sh env` syntax)
         user=$(id -un)
-        group=$(id -gn)
         id=$(id -u)
+        group=$(id -gn)
         USER_NAME=${USER_NAME:-$user}
         USER_GROUP=${USER_GROUP:-$group}
         USER_ID=${USER_ID:-$id}
         export USER_NAME=${USER_NAME}
         export USER_GROUP=${USER_GROUP}
         export USER_ID=${USER_ID}
+        ;;
+
+    "asan") # installs asan env variables (use `. ./install.sh asan` syntax)
+        LSAN_OPTIONS=disable_coredump=0:handle_segv=0:verbosity=1:log_threads=1:log_pointers=1
+        ASAN_OPTIONS=abort_on_error=1:report_objects=1:sleep_before_dying=10:verbosity=1:fast_unwind_on_malloc=0:detect_leaks=0
+        export LSAN_OPTIONS=${LSAN_OPTIONS}
+        export ASAN_OPTIONS=${ASAN_OPTIONS}
         ;;
 
     "git") # installs git variables
