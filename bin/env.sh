@@ -11,7 +11,6 @@ fi
 pwd=$(pwd)
 
 install="$1"
-option="$2"
 
 if [ "${install}" == "zsh" ]; then
 	curl --silent -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | bash
