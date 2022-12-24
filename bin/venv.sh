@@ -12,14 +12,31 @@ pwd=$(pwd)
 
 install="$1"
 
-if [ "${install}" == "venv" ]; then
-	rm -rf venv
-	python3 -m venv venv
-fi
+case "${install}" in
+	"--venv") # installs python3 venv virtual environment into .venv folder
+		rm -rf .venv
+		python3 -m venv .venv
+		;;
 
-if [ "${install}" == "pyenv" ]; then
-	pyenv install -f 3.11.1
-	pyenv virtualenv -f 3.11.1 .venv
-fi
+	"--pyenv") # installs pyenv virtual environment for 3.11.1 into .venv folder
+		pyenv install -f 3.11.1
+		pyenv virtualenv -f 3.11.1 .venv
+		;;
+
+    *)
+        commands=$(cat $0 | sed -e 's/^[ \t]*//;' | sed -e '/^[ \t]*$/d' | sed -n -e 's/^"\(.*\)".*#/    \1:/p' | sed -n -e 's/: /:\n        /p')
+        script="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
+        help=$(\
+cat << EOF
+Uninstalls optional dependencies
+Usage: ${script} <option>
+${commands}
+EOF
+)
+        echo "${help}"
+        exit
+        ;;
+
+esac
 
 cd "${pwd}"
