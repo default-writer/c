@@ -97,26 +97,24 @@ done
 find "${pwd}/coverage" -name "main*.gcda" -delete
 find "${pwd}/coverage" -name "main*.gcno" -delete
 
+cmake \
+    -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
+    -DCMAKE_BUILD_TYPE:STRING=Debug \
+    -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
+    -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
+    -DCODE_COVERAGE:BOOL=TRUE \
+    -DLCOV_PATH=$(which lcov) \
+    -DGENHTML_PATH==$(which genhtml) \
+    -S"${pwd}" \
+    -B"${pwd}/cmake" \
+    -G "Unix Makefiles"
+
 ## compile with coverage metadata
 for m in "${array[@]}"; do
-    gcc --coverage -g \
-        -fsanitize=undefined,address \
-        "${pwd}/tests/main${m}.c" \
-        "${pwd}/src/list${m}/code.c" \
-        "${pwd}/src/common/alloc.c" \
-        "${pwd}/src/common/print.c" \
-        "${pwd}/src/common/object.c" \
-        -I"${pwd}/src/" \
-        -I"${pwd}/src/std/" \
-        -I"${pwd}/src/common/" \
-        -I"${pwd}/src/list${m}/" \
-        -DMEMORY_DEBUG_INFO \
-        -DMEMORY_CLEANUP \
-        -DMEMORY_LEAKS \
-        -o "${pwd}/coverage/main${m}"
+    cmake --build "${pwd}/cmake" --target "main${m}"
 
-    "${pwd}/coverage/main${m}"
-    lcov --capture --directory "${pwd}/coverage/" --output-file "${pwd}/coverage/main${m}.lcov"
+    "${pwd}/cmake/main${m}"
+    lcov --capture --directory "${pwd}/cmake/" --output-file "${pwd}/coverage/main${m}.lcov"
     lcov --remove "${pwd}/coverage/main${m}.lcov" "${pwd}/src/rexo/*" -o "${pwd}/coverage/main${m}.lcov"
     rm -rf "${pwd}/coverage/main${m}"
 done
