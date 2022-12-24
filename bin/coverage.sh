@@ -16,64 +16,72 @@ clean="undefined"
 install="$1"
 remove="$2"
 
-if [ "${install}" == "--alloc" ]; then
-    array=("-alloc")
-fi
+case "${remove}" in
 
-if [ "${install}" == "--experimental" ]; then
-    array=("-experimental")
-fi
+    "")
+        ;;
 
-if [ "${install}" == "--micro" ]; then
-    array=("-micro")
-fi
+    "--clean") # cleans up directories before build
+        clean="--clean"
+        ;;
 
-if [ "${install}" == "--light" ]; then
-    array=("-light")
-fi
-
-if [ "${install}" == "--all" ]; then
-    array=("" "-light" "-micro" "-experimental" "-alloc")
-fi
-
-if [ "${install}" == "--default" ]; then
-    array=("")
-fi
-
-if [ "${remove}" == "" ]; then
-    clean=""
-fi
-
-if [ "${remove}" == "--clean" ]; then
-    clean="--clean"
-fi
-
-if [ "${install}" == "--help" ] || [ "${install}" == "--?" ] || [ "${array}" == "undefined" ] || [ "${clean}" == "undefined" ]; then
-    script="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
-    help=$(\
+    *)
+        commands=$(cat $0 | sed -e 's/^[ \t]*//;' | sed -e '/^[ \t]*$/d' | sed -n -e 's/^"\(.*\)".*#/    \1:/p' | sed -n -e 's/: /:\n        /p')
+        script="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
+        help=$(\
 cat << EOF
-${script}
-Generates coverage info file lcov.info into coverage folder
-Usage: ${script} <option>
-    --all:
-        builds and runs all (-default, -light, -micro -experimental -alloc) targets
-    --default:
-        builds and runs -default target
-    --light:
-        builds and runs -light target
-    --micro:
-        builds and runs -micro target
-    --expermental:
-        builds and runs -expermental target
-    --light:
-        builds and runs -light target
-    --clean:
-        cleans up cached directories before/after build
+Builds main test executables into build folder
+Usage: ${script} <option> [--clean]
+${commands}
 EOF
 )
-    echo "${help}"
-    exit
-fi
+        echo "${help}"
+        exit
+        ;;
+
+esac
+
+case "${install}" in
+
+    "--playground") # builds and runs '-playground' target
+        array=("-playground")
+        ;;
+
+    "--alloc") # builds and runs '-alloc' target
+        array=("-alloc")
+        ;;
+
+    "--experimental") # builds and runs '-experimental' target
+        array=("-experimental")
+        ;;
+
+    "--micro") # builds and runs '-micro' target
+        array=("-micro")
+        ;;
+
+    "--light") # builds and runs '-light' target
+        array=("-light")
+        ;;
+
+    "--all") # builds and runs all targets
+        array=("" "-light" "-micro" "-experimental" "-alloc" "-playground")
+        ;;
+
+    *)
+        commands=$(cat $0 | sed -e 's/^[ \t]*//;' | sed -e '/^[ \t]*$/d' | sed -n -e 's/^"\(.*\)".*#/    \1:/p' | sed -n -e 's/: /:\n        /p')
+        script="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
+        help=$(\
+cat << EOF
+Builds binaries with code converage information ('lcov.info')
+Usage: ${script} <option> [--clean]
+${commands}
+EOF
+)
+        echo "${help}"
+        exit
+        ;;
+
+esac
 
 [ ! -d "${pwd}/coverage" ] && mkdir "${pwd}/coverage"
 

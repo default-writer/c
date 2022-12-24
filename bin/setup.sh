@@ -13,14 +13,15 @@ pwd=$(pwd)
 install="$1"
 
 case "${install}" in
-    "zsh") # installs zsh
+
+    "--zsh") # installs zsh
         apt update -y
         apt-get install -y zsh
         apt upgrade -y
         chsh -s $(which bash)
         ;;
 
-    "gh") # installs gh
+    "--gh") # installs gh
         apt update -y
         type -p curl >/dev/null || apt install curl -y
         curl --silent -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/shar\(e/keyrings/githubcli-archive-keyring.gpg \
@@ -31,33 +32,33 @@ case "${install}" in
         apt upgrade -y
         ;;
 
-    "git") # install git
+    "--git") # install git
         apt update -y
         apt install -y git
         apt upgrade -y
         ;;
 
-    "pyenv") # installs pyenv
+    "--pyenv") # installs pyenv
         apt update -y
         apt install -y build-essential zlib1g-dev libffi-dev libssl-dev libbz2-dev libreadline-dev libsqlite3-dev liblzma-dev python3-tk tk-dev
         apt install -y --only-upgrade apport apport-gtk python3-apport python3-problem-report
         apt upgrade -y
         ;;
 
-    "python") # installs python
+    "--python") # installs python
         apt update -y
         apt install -y build-essential curl git ca-certificates python3 python3-dev python3-pip python3-venv python3-behave python3-virtualenv
         apt install -y --only-upgrade apport apport-gtk python3-apport python3-problem-report
         apt upgrade -y
         ;;
 
-    "cmake") # installs cmake
+    "--cmake") # installs cmake
         apt update -y
         apt install -y --no-install-recommends curl ca-certificates git build-essential lldb lcov cmake clangd g++ gcc gdb lcov ninja-build
         apt upgrade -y
         ;;
 
-    "docker") # installs docker
+    "--docker") # installs docker
         apt update -y
         apt install -y \
             ca-certificates \
@@ -75,18 +76,17 @@ case "${install}" in
         ;;
 
     *)
-        commands=$(cat $0 | sed -e 's/^[ \t]*//;' | sed -e '/^[ \t]*$/d' | sed -n -e 's/^"\(.*\)".*#/    \1:/p')
+        commands=$(cat $0 | sed -e 's/^[ \t]*//;' | sed -e '/^[ \t]*$/d' | sed -n -e 's/^"\(.*\)".*#/    \1:/p' | sed -n -e 's/: /:\n        /p')
         script="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
         help=$(\
 cat << EOF
-${script}
 Installs optional dependencies
 Usage: ${script} <option>
-Options:
 ${commands}
 EOF
 )
         echo "${help}"
+        exit
         ;;
 
 esac

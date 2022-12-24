@@ -1,11 +1,11 @@
 # c project description
 
+- code coverage
 - `List<T>` implementation
-- **live** test/code coverage & updates ([vscode](https://code.visualstudio.com/) only)
 
 # shell
 
-To bootstrap build environment, run
+bootstraps build
 
 ```sh
 ./bin/runme.sh
@@ -13,77 +13,26 @@ To bootstrap build environment, run
 
 ## install
 
-installs:
-
-- [git](https://git-scm.com)
-- [rexo](https://github.com/christophercrouzet/rexo)
-- [hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)
-- [pyenv](https://github.com/pyenv/pyenv#automatic-installer)
-
-installs git
+installs optional components:
 
 ```sh
-./bin/install.sh git
-```
-
-installs git submodule
-
-```sh
-./bin/install.sh submodule
-```
-
-installs git hooks
-
-```sh
-./bin/install.sh hooks
-```
-
-installs pyenv
-
-```sh
-./bin/pyenv.sh pyenv
+./bin/install.sh
 ```
 
 ## uninstall
 
-uninstalls:
-
-- [git](https://git-scm.com)
-- [rexo](https://github.com/christophercrouzet/rexo)
-- [hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)
-- [pyenv](https://github.com/pyenv/pyenv#automatic-installer)
-
-uninstalls git
+uninstalls optional components:
 
 ```sh
-./bin/uninstall.sh git
-```
-
-uninstalls git submodule
-
-```sh
-./bin/uninstall.sh submodule
-```
-
-uninstalls git hooks
-
-```sh
-./bin/uninstall.sh hooks
-```
-
-uninstalls pyenv
-
-```sh
-./bin/pyenv.sh pyenv
+./bin/uninstall.sh
 ```
 
 ## cleanup
 
 cleans up the root directory
 
-forsefully removes any generated folders
-
-breaks sonarlint and other directory based stuff (sonarlint searchs for **build** directory)
+- forsefully removes any generated folders
+- breaks sonarlint and other directory based stuff (sonarlint searchs for **build** directory)
 
 ```sh
 ./bin/cleanup.sh
@@ -91,7 +40,7 @@ breaks sonarlint and other directory based stuff (sonarlint searchs for **build*
 
 ## coverage
 
-runs code coverage init
+builds sources with code coverage
  
 ```sh
 ./bin/coverage.sh
@@ -99,9 +48,7 @@ runs code coverage init
 
 ## build
 
-runs buildig sources
-
-restores sonarlint and other stuff (sonarlint searches for **build** directory)
+builds sources
 
 ```sh
 ./bin/build.sh
@@ -111,47 +58,28 @@ restores sonarlint and other stuff (sonarlint searches for **build** directory)
 
 installs packages and requirements
 
+```sh
+./bin/setup.sh
+```
+
+## env
+
+setup environment variables
+
+```sh
+./bin/env.sh
+```
+
+optional:
+
 - [git](https://git-scm.com)
 - [pyenv](https://github.com/pyenv/pyenv)
 - [python](https://www.python.org)
 - [cmake](https://cmake.org)
 - [docker](https://docker.com)
 - [cli](https://github.com/cli/cli/blob/trunk/docs/install_linux.md)
+- [hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)
 
-setup git
+requirements:
 
-```sh
-./bin/setup.sh git
-```
-
-setup gh
-
-```sh
-./bin/setup.sh gh
-```
-
-setup pyenv
-
-```sh
-./bin/setup.sh pyenv
-```
-
-setup python
-
-```sh
-./bin/setup.sh python
-```
-
-setup cmake
-
-```sh
-./bin/setup.sh cmake
-```
-
-setup docker
-
-```sh
-./bin/setup.sh docker
-```
-
-## env
+- [rexo](https://github.com/christophercrouzet/rexo)

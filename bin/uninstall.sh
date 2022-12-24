@@ -12,23 +12,41 @@ pwd=$(pwd)
 
 install="$1"
 
-if [ "${install}" == "git" ]; then
-    git config --global --unset safe.directory
-    git config --global --unset pull.rebase
-fi
+case "${install}" in
 
-if [ "${install}" == "submodule" ]; then
-    git submodule deinit -f src/rexo
-    rm -rf .git/modules/src/rexo
-    git rm -f src/rexo
-fi
+    "--git") # unsets git config global environment variables
+        git config --global --unset safe.directory
+        git config --global --unset pull.rebase
+        ;;
 
-if [ "${install}" == "hooks" ]; then
-    rm -rf .git/hooks/prepare-commit-msg
-fi
+    "--submodule") # deinits git submodule rexo and cleans up rexo directories
+        git submodule deinit -f src/rexo
+        rm -rf .git/modules/src/rexo
+        git rm -f src/rexo
+        ;;
 
-if [ "${install}" == "pyenv" ]; then
-	rm -rf $HOME/.pyenv
-fi
+    "--hooks") # removes prepare-commit-msg hook from .git
+        rm -rf .git/hooks/prepare-commit-msg
+        ;;
+
+    "--pyenv") # removes .pyenv folder
+    	rm -rf $HOME/.pyenv
+        ;;
+
+    *)
+        commands=$(cat $0 | sed -e 's/^[ \t]*//;' | sed -e '/^[ \t]*$/d' | sed -n -e 's/^"\(.*\)".*#/    \1:/p' | sed -n -e 's/: /:\n        /p')
+        script="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
+        help=$(\
+cat << EOF
+Uninstalls optional dependencies
+Usage: ${script} <option>
+${commands}
+EOF
+)
+        echo "${help}"
+        exit
+        ;;
+
+esac
 
 cd "${pwd}"

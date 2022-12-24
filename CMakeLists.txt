@@ -55,8 +55,8 @@ endif()
 
 include_directories(src)
 
-add_compile_options(-fsanitize=address)
-add_link_options(-fsanitize=address)
+add_compile_options(-fsanitize=undefined,address -fsanitize-undefined-trap-on-error -fno-sanitize-recover=all)
+add_link_options(-fsanitize=undefined,address -fsanitize-undefined-trap-on-error -fno-sanitize-recover=all)
 
 add_library(liblist-micro STATIC ${LIST_MICRO_SOURCE})
 add_library(liblist-light STATIC ${LIST_LIGHT_SOURCE})
