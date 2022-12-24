@@ -14,9 +14,15 @@ install="$1"
 
 case "${install}" in
 
+    "--llvm") # installs llvm and llvm-cov
+        apt update -y
+        apt install -y llvm
+        apt upgrade -y
+        ;;
+
     "--zsh") # installs zsh
         apt update -y
-        apt-get install -y zsh
+        apt install -y zsh
         apt upgrade -y
         chsh -s $(which bash)
         ;;
