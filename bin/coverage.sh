@@ -94,8 +94,8 @@ for m in "${array[@]}"; do
     rm -f "${pwd}/coverage/main${m}.lcov"
 done
 
-find "${pwd}/coverage" -name "main*.gcda" -delete
-find "${pwd}/coverage" -name "main*.gcno" -delete
+find "${pwd}/coverage" -name "*.gcda" -delete
+find "${pwd}/coverage" -name "*.gcno" -delete
 
 cmake \
     -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
