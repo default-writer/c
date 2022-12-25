@@ -1,161 +1,159 @@
 {
-	"folders": [
-		{
-			"path": "."
-		}
-	],
-	"settings": {
-		"files.associations": {
-			"optional": "c",
-			"random": "c",
-			"bitset": "c",
-			"chrono": "c",
-			"string_view": "c",
-			"bit": "c",
-			"*.tcc": "c",
-			"condition_variable": "c",
-			"algorithm": "c",
-			"istream": "c",
-			"limits": "c",
-			"mutex": "c",
-			"shared_mutex": "c",
-			"streambuf": "c",
-			"thread": "c",
-			"list": "cpp",
-			"initializer_list": "cpp",
-			"memory_resource": "cpp",
-			"regex": "cpp",
-			"type_traits": "cpp",
-			"*.inc": "cpp",
-			"array": "cpp",
-			"atomic": "cpp",
-			"cctype": "cpp",
-			"clocale": "cpp",
-			"cmath": "cpp",
-			"cstdarg": "cpp",
-			"cstddef": "cpp",
-			"cstdint": "cpp",
-			"cstdio": "cpp",
-			"cstdlib": "cpp",
-			"cwchar": "cpp",
-			"cwctype": "cpp",
-			"deque": "cpp",
-			"unordered_map": "cpp",
-			"vector": "cpp",
-			"exception": "cpp",
-			"functional": "cpp",
-			"iterator": "cpp",
-			"memory": "cpp",
-			"numeric": "cpp",
-			"string": "cpp",
-			"system_error": "cpp",
-			"tuple": "cpp",
-			"utility": "cpp",
-			"fstream": "cpp",
-			"iosfwd": "cpp",
-			"iostream": "cpp",
-			"new": "cpp",
-			"ostream": "cpp",
-			"sstream": "cpp",
-			"stdexcept": "cpp",
-			"typeinfo": "cpp",
-			"api.h": "c",
-			"data.h": "c",
-			"alloc.h": "c",
-			"globals.h": "c",
-			"compare": "c",
-			"typedefs.h": "c",
-			"rexo.h": "c",
-			"print.h": "c",
-			"object.h": "c",
-			"stdlib.h": "c"
-		},
-		"files.watcherInclude": ["."],
-		"files.autoSave": "off",
-		"files.exclude": {
-		  "**/.cache": true,
-		  "**/.trunk": true,
-		  "**/.hooks": true,
-		  "**/.history": true,
-		  "**/cmake": true,
-		  "**/coverage": true,
-		  "**/docs": true
-		},
-		"editor.tokenColorCustomizations": {
-			"textMateRules": [
-				{
-					"scope": "googletest.failed",
-					"settings": {
-						"foreground": "#f00"
-					}
-				}
-			]
-		},
-		"terminal.integrated.defaultProfile.linux": "bash",
-		"terminal.integrated.profiles.linux": {
-			"bash": {
-				"path": "/bin/bash"
-			}
-		},
-		"workbench.editor.enablePreview": false,
-		"testOnSave.enabled": true,
-		"testOnSave.languageId": "c",
-		"testOnSave.testCommand": "./bin/coverage.sh --all",
-		"koverage.coverageFileNames": [
-			"lcov.info"
-		],
-		"coverage-gutters.coverageFileNames": [
-			"lcov.info"
-		],
-		"coverage-gutters.coverageBaseDir": "coverage",
-		"coverage-gutters.showLineCoverage": true,
-		"coverage-gutters.showGutterCoverage": false,
-		"pdf-preview.default.scale": "page-width",
-		"clangd.onConfigChanged": "restart",
-		"clangd.checkUpdates": true,
-		"clangd.restartAfterCrash": true,
-		"cmake.configureOnStart": true,
-		"cmake.autoSelectActiveFolder": false,
-		"cmake.showConsoleAutomatically": true,
-		"cmake.sourceDirectory": "${workspaceFolder}/c",
-		"cmake.buildDirectory": "${workspaceFolder}/c/cmake",
-		"cmake.ignoreCMakeListsMissing": true,
-		"cmake.configureOnOpen": true,
-		"cmake.configureOnEdit": true,
-		"window.zoomLevel": 0
-	},
-	"extensions": {
-		"unwantedRecommendations": [
-			"ms-vscode.cpptools-extension-pack"
-		  ],
-		  "recommendations": [
-			"mhutchie.git-graph",
-			"donjayamanne.githistory",
-			"vadimcn.vscode-lldb",
-			"sonarsource.sonarlint-vscode",
-			"codezombiech.gitignore",
-			"davidanson.vscode-markdownlint",
-			"yzhang.markdown-all-in-one",
-			"sycl.markdown-command-runner",
-			"andifin.testonsave",
-			"tenninebt.vscode-koverage",
-			"tomoki1207.pdf",
-			"yzane.markdown-pdf",
-			"nateageek.memory-viewer",
-			"bpruitt-goddard.mermaid-markdown-syntax-highlighting",
-			"bierner.markdown-mermaid",
-			"ms-vscode.cmake-tools",
-			"ms-vscode.live-server",
-			"visualstudioexptteam.vscodeintellicode",
-			"donjayamanne.python-environment-manager",
-			"gruntfuggly.todo-tree",
-			"llvm-vs-code-extensions.vscode-clangd",
-			"twxs.cmake",
-			"go2sh.cmake-integration-vscode",
-			"ryanluker.vscode-coverage-gutters",
-			"ms-vscode-remote.remote-containers",
-			"beardedBear.beardedicons",
-			"ms-vscode.cpptools-themes"
-		  ]
-	}
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "files.associations": {
+            "optional": "c",
+            "random": "c",
+            "bitset": "c",
+            "chrono": "c",
+            "string_view": "c",
+            "bit": "c",
+            "*.tcc": "c",
+            "condition_variable": "c",
+            "algorithm": "c",
+            "istream": "c",
+            "limits": "c",
+            "mutex": "c",
+            "shared_mutex": "c",
+            "streambuf": "c",
+            "thread": "c",
+            "list": "cpp",
+            "initializer_list": "cpp",
+            "memory_resource": "cpp",
+            "regex": "cpp",
+            "type_traits": "cpp",
+            "*.inc": "cpp",
+            "array": "cpp",
+            "atomic": "cpp",
+            "cctype": "cpp",
+            "clocale": "cpp",
+            "cmath": "cpp",
+            "cstdarg": "cpp",
+            "cstddef": "cpp",
+            "cstdint": "cpp",
+            "cstdio": "cpp",
+            "cstdlib": "cpp",
+            "cwchar": "cpp",
+            "cwctype": "cpp",
+            "deque": "cpp",
+            "unordered_map": "cpp",
+            "vector": "cpp",
+            "exception": "cpp",
+            "functional": "cpp",
+            "iterator": "cpp",
+            "memory": "cpp",
+            "numeric": "cpp",
+            "string": "cpp",
+            "system_error": "cpp",
+            "tuple": "cpp",
+            "utility": "cpp",
+            "fstream": "cpp",
+            "iosfwd": "cpp",
+            "iostream": "cpp",
+            "new": "cpp",
+            "ostream": "cpp",
+            "sstream": "cpp",
+            "stdexcept": "cpp",
+            "typeinfo": "cpp",
+            "api.h": "c",
+            "data.h": "c",
+            "alloc.h": "c",
+            "globals.h": "c",
+            "compare": "c",
+            "typedefs.h": "c",
+            "rexo.h": "c",
+            "print.h": "c",
+            "object.h": "c",
+            "stdlib.h": "c"
+        },
+        "files.watcherInclude": ["."],
+        "files.autoSave": "off",
+        "files.exclude": {
+          "**/.cache": true,
+          "**/.trunk": true,
+          "**/.hooks": true,
+          "**/.history": true,
+          "**/cmake": true,
+          "**/coverage": true,
+          "**/docs": true
+        },
+        "editor.tokenColorCustomizations": {
+            "textMateRules": [
+                {
+                    "scope": "googletest.failed",
+                    "settings": {
+                        "foreground": "#f00"
+                    }
+                }
+            ]
+        },
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "terminal.integrated.profiles.linux": {
+            "bash": {
+                "path": "/bin/bash"
+            }
+        },
+        "workbench.editor.enablePreview": false,
+        "testOnSave.enabled": true,
+        "testOnSave.languageId": "c",
+        "testOnSave.testCommand": "./bin/coverage.sh --all",
+        "koverage.coverageFileNames": [
+            "lcov.info"
+        ],
+        "coverage-gutters.coverageFileNames": [
+            "lcov.info"
+        ],
+        "coverage-gutters.coverageBaseDir": "coverage",
+        "coverage-gutters.showLineCoverage": true,
+        "coverage-gutters.showGutterCoverage": false,
+        "pdf-preview.default.scale": "page-width",
+        "clangd.onConfigChanged": "restart",
+        "clangd.checkUpdates": true,
+        "clangd.restartAfterCrash": true,
+        "cmake.configureOnStart": true,
+        "cmake.autoSelectActiveFolder": false,
+        "cmake.showConsoleAutomatically": true,
+        "cmake.sourceDirectory": "${workspaceFolder}/c",
+        "cmake.buildDirectory": "${workspaceFolder}/c/cmake",
+        "cmake.ignoreCMakeListsMissing": true,
+        "cmake.configureOnOpen": true,
+        "cmake.configureOnEdit": true,
+        "window.zoomLevel": 0
+    },
+    "extensions": {
+        "recommendations": [
+        "9crusher.tabinator",
+        "mhutchie.git-graph",
+        "donjayamanne.githistory",
+        "vadimcn.vscode-lldb",
+        "sonarsource.sonarlint-vscode",
+        "codezombiech.gitignore",
+        "davidanson.vscode-markdownlint",
+        "yzhang.markdown-all-in-one",
+        "sycl.markdown-command-runner",
+        "andifin.testonsave",
+        "tenninebt.vscode-koverage",
+        "tomoki1207.pdf",
+        "yzane.markdown-pdf",
+        "nateageek.memory-viewer",
+        "bpruitt-goddard.mermaid-markdown-syntax-highlighting",
+        "bierner.markdown-mermaid",
+        "ms-vscode.cmake-tools",
+        "ms-vscode.live-server",
+        "visualstudioexptteam.vscodeintellicode",
+        "donjayamanne.python-environment-manager",
+        "gruntfuggly.todo-tree",
+        "llvm-vs-code-extensions.vscode-clangd",
+        "twxs.cmake",
+        "go2sh.cmake-integration-vscode",
+        "ryanluker.vscode-coverage-gutters",
+        "ms-vscode-remote.remote-containers",
+        "beardedBear.beardedicons",
+        "ms-vscode.cpptools-themes"
+        ]
+    }
 }

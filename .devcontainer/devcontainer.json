@@ -1,48 +1,49 @@
 {
-	"name": "C++",
-	// Update the 'dockerComposeFile' list if you have more compose files or use different names.
-	"dockerComposeFile": "docker-compose.yml",
-	// The 'service' property is the name of the service for the container that VS Code should
-	// use. Update this value and .devcontainer/docker-compose.yml to the real service name.
-	"service": "app",
-	// The 'workspaceFolder' property is the path VS Code should open by default when
-	// connected. Corresponds to a volume mount in .devcontainer/docker-compose.yml
-	"workspaceFolder": "/workspace",
-	// Set *default* container specific settings.json values on container create.
-	"settings": {},
-	// C++ select language server:
+    "name": "C++",
+    // Update the 'dockerComposeFile' list if you have more compose files or use different names.
+    "dockerComposeFile": "docker-compose.yml",
+    // The 'service' property is the name of the service for the container that VS Code should
+    // use. Update this value and .devcontainer/docker-compose.yml to the real service name.
+    "service": "app",
+    // The 'workspaceFolder' property is the path VS Code should open by default when
+    // connected. Corresponds to a volume mount in .devcontainer/docker-compose.yml
+    "workspaceFolder": "/workspace",
+    // Set *default* container specific settings.json values on container create.
+    "settings": {},
+    // C++ select language server:
     // use either llvm-vs-code-extensions.vscode-clangd or ms-vscode.cpptools-extension-pack
-	// Add the IDs of extensions you want installed when the container is created.
-	"extensions": [
-		"vadimcn.vscode-lldb",
-		"mhutchie.git-graph",
-		"donjayamanne.githistory",
-		"SonarSource.sonarlint-vscode",
-		"JacquesLucke.gcov-viewer",
-		"codezombiech.gitignore",
-		"StackBuild.bazel-stack-vscode-cc",
-		"StackBuild.bazel-stack-vscode",
-		"gabrielgrinberg.auto-run-command",
-		"Sycl.markdown-command-runner",
-		"andifin.testonsave",
-		"tenninebt.vscode-koverage",
-		"ryanluker.vscode-coverage-gutters",
-		"tomoki1207.pdf",
-		"yzane.markdown-pdf",
-		"NateAGeek.memory-viewer",
-		"bpruitt-goddard.mermaid-markdown-syntax-highlighting",
-		"bierner.markdown-mermaid",
-		"go2sh.cmake-integration-vscode",
-		"llvm-vs-code-extensions.vscode-clangd",
-		"ms-vscode.cmake-tools",
-		"ms-vscode.live-server",
-		"VisualStudioExptTeam.vscodeintellicode",
-		"donjayamanne.python-environment-manager",
-		"Gruntfuggly.todo-tree",
-		"arcanis.vscode-zipfs",
-		"GitHub.codespaces",
-		"BeardedBear.beardedicons",
-		"ms-vscode.cpptools-themes",
-		"ms-vscode.cpptools"
-	]
+    // Add the IDs of extensions you want installed when the container is created.
+    "extensions": [
+        "9crusher.tabinator",
+        "vadimcn.vscode-lldb",
+        "mhutchie.git-graph",
+        "donjayamanne.githistory",
+        "SonarSource.sonarlint-vscode",
+        "JacquesLucke.gcov-viewer",
+        "codezombiech.gitignore",
+        "StackBuild.bazel-stack-vscode-cc",
+        "StackBuild.bazel-stack-vscode",
+        "gabrielgrinberg.auto-run-command",
+        "Sycl.markdown-command-runner",
+        "andifin.testonsave",
+        "tenninebt.vscode-koverage",
+        "ryanluker.vscode-coverage-gutters",
+        "tomoki1207.pdf",
+        "yzane.markdown-pdf",
+        "NateAGeek.memory-viewer",
+        "bpruitt-goddard.mermaid-markdown-syntax-highlighting",
+        "bierner.markdown-mermaid",
+        "go2sh.cmake-integration-vscode",
+        "llvm-vs-code-extensions.vscode-clangd",
+        "ms-vscode.cmake-tools",
+        "ms-vscode.live-server",
+        "VisualStudioExptTeam.vscodeintellicode",
+        "donjayamanne.python-environment-manager",
+        "Gruntfuggly.todo-tree",
+        "arcanis.vscode-zipfs",
+        "GitHub.codespaces",
+        "BeardedBear.beardedicons",
+        "ms-vscode.cpptools-themes",
+        "ms-vscode.cpptools"
+    ]
 }

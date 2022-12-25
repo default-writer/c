@@ -4,8 +4,8 @@ set -e
 uid=$(id -u)
 
 if [ "${uid}" -eq 0 ]; then
-	echo "Please run as user"
-	exit
+    echo "Please run as user"
+    exit
 fi
 
 pwd=$(pwd)
@@ -30,7 +30,7 @@ case "${install}" in
         ;;
 
     "--pyenv") # removes .pyenv folder
-    	rm -rf $HOME/.pyenv
+        rm -rf $HOME/.pyenv
         ;;
 
     *)
