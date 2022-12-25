@@ -97,7 +97,7 @@ cmake \
     -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
     -S"${pwd}" \
     -B"${pwd}/cmake" \
-    -G "Unix Makefiles"
+    -G "Ninja"
 
 export MAKEFLAGS=-j8
 

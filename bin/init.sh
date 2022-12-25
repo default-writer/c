@@ -10,10 +10,10 @@ fi
 
 pwd=$(pwd)
 
-"${pwd}/bin/install.sh" git
-"${pwd}/bin/install.sh" submodule
-"${pwd}/bin/install.sh" hooks
-"${pwd}/bin/env.sh" nvm
+"${pwd}/bin/install.sh" --git
+"${pwd}/bin/install.sh" --submodule
+"${pwd}/bin/install.sh" --hooks
+"${pwd}/bin/env.sh" --nvm
 "${pwd}/bin/nvm.sh"
 
 . "${pwd}/bin/nvm.sh"

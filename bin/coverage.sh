@@ -94,8 +94,8 @@ for m in "${array[@]}"; do
     rm -f "${pwd}/coverage/main${m}.lcov"
 done
 
-find "${pwd}/coverage" -name "main*.gcda" -delete
-find "${pwd}/coverage" -name "main*.gcno" -delete
+find "${pwd}/coverage" -name "*.gcda" -delete
+find "${pwd}/coverage" -name "*.gcno" -delete
 
 cmake \
     -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
@@ -107,7 +107,7 @@ cmake \
     -DGENHTML_PATH==$(which genhtml) \
     -S"${pwd}" \
     -B"${pwd}/cmake" \
-    -G "Unix Makefiles"
+    -G "Ninja"
 
 ## compile with coverage metadata
 for m in "${array[@]}"; do
@@ -119,8 +119,6 @@ for m in "${array[@]}"; do
     rm -rf "${pwd}/coverage/main${m}"
 done
 
-find "${pwd}/coverage" -name "main*.gcda" -delete
-find "${pwd}/coverage" -name "main*.gcno" -delete
 find "${pwd}/coverage" -name "main*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
 find "${pwd}/coverage" -name "main*.lcov" -delete
 
