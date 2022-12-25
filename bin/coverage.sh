@@ -119,8 +119,6 @@ for m in "${array[@]}"; do
     rm -rf "${pwd}/coverage/main${m}"
 done
 
-find "${pwd}/coverage" -name "main*.gcda" -delete
-find "${pwd}/coverage" -name "main*.gcno" -delete
 find "${pwd}/coverage" -name "main*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
 find "${pwd}/coverage" -name "main*.lcov" -delete
 
