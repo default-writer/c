@@ -107,7 +107,7 @@ cmake \
     -DGENHTML_PATH==$(which genhtml) \
     -S"${pwd}" \
     -B"${pwd}/cmake" \
-    -G "Unix Makefiles"
+    -G "Ninja"
 
 ## compile with coverage metadata
 for m in "${array[@]}"; do
