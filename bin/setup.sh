@@ -12,6 +12,11 @@ pwd=$(pwd)
 
 install="$1"
 
+apt install -y --fix-broken
+apt update -y --fix-missing
+apt upgrade -y
+apt autoremove -y
+
 case "${install}" in
 
     "--llvm") # installs llvm and llvm-cov
