@@ -58,7 +58,7 @@ case "${install}" in
         code --install-extension ms-vscode-remote.remote-containers
         ;;
 
-    "--docker-extension") # installs vs code docker extensions
+    "--docker-extensions") # installs vs code docker extensions
         code --install-extension ms-azuretools.vscode-docker
         ;;
 
