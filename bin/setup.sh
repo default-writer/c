@@ -80,6 +80,15 @@ case "${install}" in
         apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
         apt upgrade -y
         ;;
+    
+    "--docker-compose") # installs docker-compose
+        apt update -y
+        apt install -y --fix-broken qemu-kvm libvirt-clients libvirt-daemon-system bridge-utils virtinst libvirt-daemon
+        systemctl enable --now libvirtd
+        curl -L https://desktop.docker.com/linux/main/amd64/docker-desktop-4.15.0-amd64.deb -o /tmp/docker-desktop-4.15.0-amd64.deb
+        dpkg -i /tmp/docker-desktop-4.15.0-amd64.deb
+        apt upgrade -y
+        ;;
 
     *)
         commands=$(cat $0 | sed -e 's/^[ \t]*//;' | sed -e '/^[ \t]*$/d' | sed -n -e 's/^"\(.*\)".*#/    \1:/p' | sed -n -e 's/: /:\n        /p')
