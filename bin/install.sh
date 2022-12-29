@@ -54,6 +54,14 @@ case "${install}" in
         curl --silent https://pyenv.run | bash
         ;;
 
+    "--devcontainers-extensions") # installs vs code .devcontainers extensions
+        code --install-extension ms-vscode-remote.remote-containers
+        ;;
+
+    "--docker-extension") # installs vs code docker extensions
+        code --install-extension ms-azuretools.vscode-docker
+        ;;
+
     *)
         commands=$(cat $0 | sed -e 's/^[ \t]*//;' | sed -e '/^[ \t]*$/d' | sed -n -e 's/^"\(.*\)".*#/    \1:/p' | sed -n -e 's/: /:\n        /p')
         script="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
