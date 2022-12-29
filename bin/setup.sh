@@ -88,6 +88,7 @@ case "${install}" in
         update
         chmod a+r /etc/apt/keyrings/docker.gpg
         apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+        usermod -aG docker $USER
         upgrade
         ;;
     
