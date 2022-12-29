@@ -54,7 +54,7 @@ case "${install}" in
         curl --silent https://pyenv.run | bash
         ;;
 
-    "--devcontainers-extensions") # installs vs code .devcontainers extensions
+    "--devcontainer-extensions") # installs vs code .devcontainers extensions
         code --install-extension ms-vscode-remote.remote-containers
         ;;
 
