@@ -43,16 +43,6 @@ struct type
     void* ptr;
 };
 
-struct class;
-struct derived_class;
-
-struct derived_class
-{
-    const struct class* class;
-    const struct derived_class* derived;
-    LPTR (*get_type)();
-};
-
 /* Data structure to use at the core of our fixture. */
 typedef struct test_data {
     struct class* ctx;
