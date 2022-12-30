@@ -48,10 +48,8 @@ void class_destroy(struct class** const current) {
     struct class* tmp = *current;
     /* if not already freed */
     if (tmp != 0) {
-        /* gets temporary pointer value */
-        struct class* ptr = tmp;
         /* gets prev pointer value */
-        _delete(ptr);
+        _delete(tmp);
         /* all stack items are processed */
         *current = 0;
     }
