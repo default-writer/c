@@ -3,13 +3,17 @@
 
 #include "std/common.h"
 
+struct data;
+
 struct class {
-    /* initialize context */
-    void (*init)(struct class** const current);
-    /* destroy context */
-    void (*destroy)(struct class** const current);
+    /* private data definition */
+    struct data* data;
+    /* reads data */
+    void* (*get_data)(const struct class *class);
+    /* writes data */
+    void* (*set_data)(const struct class *class, void* data);
     /* returns current class type id */
-    LPTR (*get_type)();
+    LPTR (*get_type)(const struct class *class);
 };
 
 struct class* _new();
