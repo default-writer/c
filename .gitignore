@@ -52,4 +52,5 @@ cmake
 coverage
 
 .trunk
-venv
+.venv
+src/rexo/**

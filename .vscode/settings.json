@@ -90,7 +90,7 @@
   "lldb.consoleMode": "commands",
   "testOnSave.enabled": true,
   "testOnSave.languageId": "c",
-  "testOnSave.testCommand": "./bin/coverage.sh --all",
+  "testOnSave.testCommand": "./bin/coverage.sh --playground",
   "koverage.coverageFileNames": [  
     "lcov.info"
   ],
@@ -126,5 +126,6 @@
   "window.zoomLevel": 0,
   "terminal.integrated.smoothScrolling": true,
   "terminal.integrated.cursorBlinking": true,
-  "terminal.integrated.enableFileLinks": true
+  "terminal.integrated.enableFileLinks": true,
+  "sonarlint.testFilePattern": "**/test/**,**/*test*,**/*Test*,**/rexo/**"
 }
