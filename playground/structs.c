@@ -58,32 +58,6 @@ typedef struct test_data {
     struct class* ctx;
 } *TEST_DATA;
 
-/* initializes the new context's head element */
-/* as a result, new memory block will be allocated */
-/* current context pointer set to zero */
-void class_init(struct class** const current) {
-    /* sets current context's head element */
-    *current = _new();
-}
-
-/* destroys the memory stack */
-/* frees all memory elements */
-/* as a result, memory will be freed */
-void class_destroy(struct class** const current) {
-    /* get current context's head */
-    /* assigns currently selected item pointer to temporary */
-    struct class* tmp = *current;
-    /* if not already freed */
-    if (tmp != 0) {
-        /* gets temporary pointer value */
-        struct class* ptr = tmp;
-        /* gets prev pointer value */
-        _delete(ptr);
-        /* all stack items are processed */
-        *current = 0;
-    }
-}
-
 /* Initialize the data structure. Its allocation is handled by Rexo. */
 RX_SET_UP(test_set_up) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
@@ -121,7 +95,7 @@ RX_TEST_CASE(myTestSuite, test_class_unintialized_is_zero, .fixture = test_fixtu
     const struct class* class = *ctx;
     printf("i is of type class at %llx\n", (LPTR)class);
     // ensure that data being added to list
-    RX_ASSERT(class->data != 0);
+    RX_ASSERT(class->data != NULL);
 }
 
 // test class get_type

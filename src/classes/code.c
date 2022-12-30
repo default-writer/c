@@ -31,6 +31,32 @@ size_t size() {
     return sizeof(struct class);
 }
 
+/* initializes the new context's head element */
+/* as a result, new memory block will be allocated */
+/* current context pointer set to zero */
+void class_init(struct class** const current) {
+    /* sets current context's head element */
+    *current = _new();
+}
+
+/* destroys the memory stack */
+/* frees all memory elements */
+/* as a result, memory will be freed */
+void class_destroy(struct class** const current) {
+    /* get current context's head */
+    /* assigns currently selected item pointer to temporary */
+    struct class* tmp = *current;
+    /* if not already freed */
+    if (tmp != 0) {
+        /* gets temporary pointer value */
+        struct class* ptr = tmp;
+        /* gets prev pointer value */
+        _delete(ptr);
+        /* all stack items are processed */
+        *current = 0;
+    }
+}
+
 const struct class class_definition;
 
 LPTR class_get_type(const struct class *class)

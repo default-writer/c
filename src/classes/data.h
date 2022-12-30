@@ -20,4 +20,7 @@ struct class* _new();
 void _delete(struct class* ptr);
 size_t size();
 
+void class_init(struct class** const current);
+void class_destroy(struct class** const current);
+
 #endif // _LIST_DATA_H_
