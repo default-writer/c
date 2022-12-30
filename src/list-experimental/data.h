@@ -9,7 +9,7 @@ struct list_experimental_data {
     SIZE size;
 };
 
-struct list_methods {
+struct list {
     /* push item on current context (stack) */
     void (*push)(struct list_experimental_data** const current, const void* item);
     /* pop item on current context (stack) */

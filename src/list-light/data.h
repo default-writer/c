@@ -12,7 +12,7 @@ struct list_data {
     const void* payload;
 };
 
-struct list_methods {
+struct list {
     /* initialize context */
     void (*init)(struct list_data** const current, struct list_data* (*new)());
     /* destroy context */

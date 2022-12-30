@@ -80,7 +80,7 @@ const void* list_peek(struct list_experimental_data** const current) {
     return 0;
 }
 
-const struct list_methods list_methods_experimental = {
+const struct list list_experimental_definition = {
     .push = list_push,
     .pop = list_pop,
     .peek = list_peek

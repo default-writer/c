@@ -12,7 +12,7 @@ struct list_data {
     const void* payload;
 };
 
-struct list_methods {
+struct list {
     /* allocate list item */
     struct list_data* (*alloc)(const void* payload);
     /* free item */

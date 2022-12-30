@@ -11,10 +11,10 @@
 const char* __asan_default_options() { return "detect_leaks=0"; }
 #endif
 
-extern const struct list_methods list_methods;
+extern const struct list list_definition;
 
 struct list_data* new_list() {
-    const struct list_methods* list = &list_methods;
+    const struct list* list = &list_definition;
     struct list_data* ctx;
     // init list
     list->init(&ctx, _new);
@@ -23,7 +23,7 @@ struct list_data* new_list() {
 }
 
 void delete_list(struct list_data** ctx) {
-    const struct list_methods* list = &list_methods;
+    const struct list* list = &list_definition;
     // destroys list
     list->destroy(ctx, _delete, list_next);
     // cleans up
@@ -57,7 +57,7 @@ void using_list2(void (*list_using)(struct list_data** const)) {
 // use list
 void list_using(struct list_data** const current) {
     // access context's functions pointer
-    const struct list_methods* list = &list_methods;
+    const struct list* list = &list_definition;
     const void* payload = (void*)0xdeadbeef;
     const struct list_data* is_null[] = {
         list->peek(current),
@@ -142,7 +142,7 @@ RX_SET_UP(test_set_up) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
     // access context's functions pointer
-    const struct list_methods* list = &list_methods;
+    const struct list* list = &list_definition;
 
     // initilize list
     list->init(ctx, _new);
@@ -154,7 +154,7 @@ RX_TEAR_DOWN(test_tear_down) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
     // access context's functions pointer
-    const struct list_methods* list = &list_methods;
+    const struct list* list = &list_definition;
     // destroy list
     list->destroy(ctx, _delete, list_next);
 }
@@ -176,7 +176,7 @@ RX_TEST_CASE(myTestSuite, test_empty_list_pop_equals_0, .fixture = test_fixture)
     struct list_data* ctx = 0;
 
     // create list
-    const struct list_methods* list = &list_methods;
+    const struct list* list = &list_definition;
 
     const struct list_data* head = list->pop(&ctx);
  
@@ -190,7 +190,7 @@ RX_TEST_CASE(myTestSuite, test_empty_list_peek_equals_0, .fixture = test_fixture
     struct list_data* ctx = 0;
 
     // create list
-    const struct list_methods* list = &list_methods;
+    const struct list* list = &list_definition;
 
     const struct list_data* head = list->peek(&ctx);
  
@@ -204,7 +204,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_count_eq_1, .fixture = test_fixture) {
     struct list_data** ctx = &rx->ctx;
 
     // create list
-    const struct list_methods* list = &list_methods;
+    const struct list* list = &list_definition;
     const void* payload = (void*)0xdeadbeef;
 
     struct list_data* tmp = list->alloc(payload);
@@ -219,7 +219,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_payload, .fixture = test_fixture) {
     struct list_data** ctx = &rx->ctx;
 
     // create list
-    const struct list_methods* list = &list_methods;
+    const struct list* list = &list_definition;
     const void* payload = (void*)0xdeadbeef;
 
     struct list_data* tmp = list->alloc(payload);
@@ -236,7 +236,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture) 
     struct list_data** ctx = &rx->ctx;
 
     // create list
-    const struct list_methods* list = &list_methods;
+    const struct list* list = &list_definition;
     const void* payload = (void*)0xdeadbeef;
 
     struct list_data* tmp = list->alloc(payload);
@@ -254,7 +254,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture) 
     struct list_data** ctx = &rx->ctx;
 
     // create list
-    const struct list_methods* list = &list_methods;
+    const struct list* list = &list_definition;
     const void* payload = (void*)0xdeadbeef;
 
     struct list_data* tmp = list->alloc(payload);
@@ -273,7 +273,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_and_prev_next_equals_0, .fixture = tes
     struct list_data** ctx = &rx->ctx;
 
     // create list
-    const struct list_methods* list = &list_methods;
+    const struct list* list = &list_definition;
     const void* payload = (void*)0xdeadbeef;
 
     struct list_data* tmp = list->alloc(payload);
@@ -296,7 +296,7 @@ RX_TEST_CASE(myTestSuite, test_list_free_head, .fixture = test_fixture) {
     struct list_data** ctx = &rx->ctx;
 
     // create list
-    const struct list_methods* list = &list_methods;
+    const struct list* list = &list_definition;
     const void* payload = (void*)0xdeadbeef;
 
     struct list_data* tmp = list->alloc(payload);
@@ -315,7 +315,7 @@ RX_TEST_CASE(myTestSuite, test_list_peek_is_zero, .fixture = test_fixture) {
     struct list_data** ctx = &rx->ctx;
 
     // create list
-    const struct list_methods* list = &list_methods;
+    const struct list* list = &list_definition;
 
     const struct list_data* head = list->peek(ctx);
 
@@ -329,7 +329,7 @@ RX_TEST_CASE(myTestSuite, test_list_pop_is_zero, .fixture = test_fixture) {
     struct list_data** ctx = &rx->ctx;
 
     // create list
-    const struct list_methods* list = &list_methods;
+    const struct list* list = &list_definition;
 
     const struct list_data* head = list->pop(ctx);
 

@@ -139,7 +139,7 @@ struct list_data* list_peek(struct list_data** const current) {
     return ptr;
 }
 
-const struct list_methods list_methods = {
+const struct list list_definition = {
     // generic methods
     .init = list_init,
     .destroy = list_destroy,
