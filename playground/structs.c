@@ -1,4 +1,6 @@
+#include "rexo/include/rexo.h"
 #include "std/common.h"
+#include "classes/data.h"
 
 /*
 
@@ -33,6 +35,8 @@ const struct some_data_methods some_data_methods_type =
 
 */
 
+extern const struct class_methods class_definition;
+
 struct type
 {
     // type ptr
@@ -40,12 +44,12 @@ struct type
 };
 
 struct some_base_class;
-struct some_class;
+struct class_methods;
 
-union some_class_interface
+union class_methods_interface
 {
     const struct some_base_class* base;
-    const struct some_class* class;
+    const struct class_methods* class;
     void* ptr;
 };
 
@@ -54,46 +58,51 @@ struct some_base_class
     LPTR (*get_type)();
 };
 
-struct some_class
-{
-    LPTR (*get_type)();
+const union class_methods_interface class_methods_interface_type = {
+    .class = &class_definition
 };
 
-LPTR get_base_type();
-LPTR get_class_type();
+/* Data structure to use at the core of our fixture. */
+typedef struct test_data {
+    struct class_methods* ctx;
+} *TEST_DATA;
 
-const struct some_base_class some_base_class_type =
-{
-    .get_type = get_base_type
-};
 
-const struct some_class some_class_type =
-{
-    .get_type = get_class_type
-};
-
-const union some_class_interface some_class_interface_type = {
-    .class = &some_class_type
-};
-
-LPTR get_base_type()
-{
-    const struct some_base_class* type = &some_base_class_type;
-    return (LPTR)type;
+/* Initialize the data structure. Its allocation is handled by Rexo. */
+RX_SET_UP(test_set_up) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct class_methods** ctx = &rx->ctx;
+    // access context's functions pointer
+    const struct class_methods* class = &class_definition;
+    // initilize list
+    class->init(ctx);
+    // success
+    return RX_SUCCESS;
 }
 
-LPTR get_class_type()
-{
-    const struct some_class* type = &some_class_type;
-    return (LPTR)type;
+RX_TEAR_DOWN(test_tear_down) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct class_methods** ctx = &rx->ctx;
+    // access context's functions pointer
+    const struct class_methods* class = &class_definition;
+    // destroy list
+    class->destroy(ctx);
+}
+
+/* Define the fixture. */
+RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tear_down);
+
+// test pop
+RX_TEST_CASE(myTestSuite, test_get_type, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct class_methods** ctx = &rx->ctx;
+    const struct class_methods* class = *ctx;
+    printf("i is of type class at %llx\n", (LPTR)class);
+    // ensure that data being added to list
+    RX_ASSERT(class->get_type() == (LPTR)&class_definition);
 }
 
 int main() {
-    const union some_class_interface* i = &some_class_interface_type;
-    const struct some_class* class = &some_class_type;
-    if (i->base->get_type() == (LPTR)class)
-    {
-        printf("i is of type class at %llx\n", (LPTR)class);
-    }
-    return 0;
+    /* Execute the main function that runs the test cases found. */
+    return rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
 }
