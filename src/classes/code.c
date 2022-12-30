@@ -8,7 +8,7 @@ struct data {
 
 LPTR class_get_type(const struct class *class);
 void* class_get_data(const struct class *class);
-void* class_set_data(const struct class *class, void* data);
+void class_set_data(const struct class *class, void* data);
 
 struct class* _new() {
     /* external code allocates memory and resets memort block to zero  */
@@ -70,7 +70,7 @@ void* class_get_data(const struct class *class)
     return class->data->ptr;
 }
 
-void* class_set_data(const struct class *class, void* data)
+void class_set_data(const struct class *class, void* data)
 {
     class->data->ptr = data;
 }

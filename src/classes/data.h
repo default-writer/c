@@ -11,7 +11,7 @@ struct class {
     /* reads data */
     void* (*get_data)(const struct class *class);
     /* writes data */
-    void* (*set_data)(const struct class *class, void* data);
+    void (*set_data)(const struct class *class, void* data);
     /* returns current class type id */
     LPTR (*get_type)(const struct class *class);
 };
