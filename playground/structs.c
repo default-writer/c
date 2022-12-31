@@ -80,6 +80,14 @@ RX_TEST_CASE(myTestSuite, test_init, .fixture = test_fixture) {
 }
 
 // test class get_type
+RX_TEST_CASE(myTestSuite, test_destroy, .fixture = test_fixture) {
+    struct class* ptr = 0;
+    struct class** ctx = &ptr;
+    class_destroy(ctx);
+    RX_ASSERT(*ctx == 0);
+}
+
+// test class get_type
 RX_TEST_CASE(myTestSuite, test_get_type, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct class** ctx = &rx->ctx;
