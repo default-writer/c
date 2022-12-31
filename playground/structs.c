@@ -71,6 +71,15 @@ RX_TEAR_DOWN(test_tear_down) {
 RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tear_down);
 
 // test class get_type
+RX_TEST_CASE(myTestSuite, test_init, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct class** ctx = &rx->ctx;
+    const struct class* class = *ctx;
+    class_init(ctx);
+    RX_ASSERT(*ctx == class);
+}
+
+// test class get_type
 RX_TEST_CASE(myTestSuite, test_get_type, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct class** ctx = &rx->ctx;
