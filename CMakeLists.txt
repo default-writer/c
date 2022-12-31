@@ -14,7 +14,7 @@ set(LIB_LIGHT_SOURCE src/list-light/code.c src/common/alloc.c src/common/print.c
 set(LIB_SOURCE src/list/code.c src/common/alloc.c src/common/print.c src/common/object.c)
 set(LIB_EXPERIMENTAL_SOURCE src/list-experimental/code.c src/common/alloc.c)
 set(LIB_ALLOC_SOURCE src/list-alloc/code.c src/common/alloc.c)
-set(LIB_PLAYGROUND_SOURCE src/classes/code.c src/common/alloc.c)
+set(LIB_PLAYGROUND_SOURCE src/class/code.c src/common/alloc.c)
 
 set(MAIN_MICRO_SOURCE tests/main-micro.c ${LIB_MICRO_SOURCE})
 set(MAIN_LIGHT_SOURCE tests/main-light.c ${LIB_LIGHT_SOURCE})

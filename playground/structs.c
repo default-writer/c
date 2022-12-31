@@ -1,6 +1,6 @@
 #include "rexo/include/rexo.h"
 #include "std/common.h"
-#include "classes/data.h"
+#include "class/data.h"
 
 /*
 
