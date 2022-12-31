@@ -57,10 +57,10 @@ const void* list_pop(struct list_alloc_data** const current) {
             // gets data pointer
             void **data = (void*)(ptr->data) + offset;
             const void* payload = *data;
-        #ifdef USE_MEMORY_CLEANUP
+#ifdef USE_MEMORY_CLEANUP
             // cleaups memory
             *data = 0;
-        #endif
+#endif
             /* free temporary pointer value */        
             ptr->data[0] -= sizeof(void*);
             /* returns removed element */
