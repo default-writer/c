@@ -90,7 +90,7 @@
   "lldb.consoleMode": "commands",
   "testOnSave.enabled": true,
   "testOnSave.languageId": "c",
-  "testOnSave.testCommand": "./bin/coverage.sh --playground",
+  "testOnSave.testCommand": "./bin/coverage.sh --all",
   "koverage.coverageFileNames": [  
     "lcov.info"
   ],

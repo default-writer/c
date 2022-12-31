@@ -35,8 +35,13 @@ size_t size() {
 /* as a result, new memory block will be allocated */
 /* current context pointer set to zero */
 void class_init(struct class** const current) {
+    /* get current context's head */
+    /* assigns currently selected item pointer to temporary */
+    const struct class* tmp = *current;
     /* sets current context's head element */
-    *current = _new();
+    if (tmp == 0) {
+        *current = _new();
+    }
 }
 
 /* destroys the memory stack */

@@ -15,7 +15,7 @@ extern const struct list list_light_definition;
 
 struct list_data* new_list() {
     const struct list* list = &list_light_definition;
-    struct list_data* ctx;
+    struct list_data* ctx = 0;
     // init list
     list->init(&ctx, _new);
     // returns created object
@@ -138,10 +138,9 @@ RX_SET_UP(test_set_up) {
     struct list_data** ctx = &rx->ctx;
     // access context's functions pointer
     const struct list* list = &list_light_definition;
-
+    *ctx = 0;
     // initialize list
     list->init(ctx, _new);
-
     return RX_SUCCESS;
 }
 
@@ -152,6 +151,7 @@ RX_TEAR_DOWN(test_tear_down) {
     const struct list* list = &list_light_definition;
     // destroy list
     list->destroy(ctx, _delete, list_next);
+    *ctx = 0;
 }
 
 /* Define the fixture. */

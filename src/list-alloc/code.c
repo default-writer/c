@@ -25,58 +25,68 @@ size_t size() {
 /* at current context, data payload stored at allocated memory buffer */
 /* as a result, items counter will increase */
 void list_push(struct list_alloc_data** const current, const void* payload) {
-    struct list_alloc_data* ptr = *current;
-    /* increase starting address */
-    ptr->data[0] += sizeof(void*);
-    LPTR offset = (ptr->data[0] - (void*)(ptr->data));
-    if (offset >= ptr->size) {
-        ptr->size += 8*sizeof(void*);
-        ptr->data = _list_realloc(ptr->data, ptr->size);
-        ptr->data[0] = (void*)(ptr->data) + offset;
+    const struct list_alloc_data * tmp = *current;
+    if (tmp != 0) {
+        struct list_alloc_data* ptr = *current;
+        /* increase starting address */
+        ptr->data[0] += sizeof(void*);
+        LPTR offset = (ptr->data[0] - (void*)(ptr->data));
+        if (offset >= ptr->size) {
+            ptr->size += 8*sizeof(void*);
+            ptr->data = _list_realloc(ptr->data, ptr->size);
+            ptr->data[0] = (void*)(ptr->data) + offset;
+        }
+        const void **data = (void*)(ptr->data) + offset;
+        *data = payload;
     }
-    const void **data = (void*)(ptr->data) + offset;
-    *data = payload;
 }
 
 /* pop existing element at the top of the stack/queue/list */
 const void* list_pop(struct list_alloc_data** const current) {
-    /* get current context's head */
-    struct list_alloc_data* ptr = *current;
-    /* if we call method on empty stack, do not return head element, return null element by convention */
-    if (ptr && ptr->data[0] != ptr->data) {
-        /* gets temporary pointer value */
-        /* returns actual data */
-        LPTR offset = (ptr->data[0] - (void*)ptr->data);
-        // gets data pointer
-        void **data = (void*)(ptr->data) + offset;
-        const void* payload = *data;
-#ifdef USE_MEMORY_CLEANUP
-        // cleaups memory
-        *data = 0;
-#endif
-        /* free temporary pointer value */        
-        ptr->data[0] -= sizeof(void*);
-        /* returns removed element */
-        return payload;
+    const struct list_alloc_data* tmp = *current;
+    if (tmp != 0) {    
+        /* get current context's head */
+        struct list_alloc_data* ptr = *current;
+        /* if we call method on empty stack, do not return head element, return null element by convention */
+        if (ptr && ptr->data[0] != ptr->data) {
+            /* gets temporary pointer value */
+            /* returns actual data */
+            LPTR offset = (ptr->data[0] - (void*)ptr->data);
+            // gets data pointer
+            void **data = (void*)(ptr->data) + offset;
+            const void* payload = *data;
+        #ifdef USE_MEMORY_CLEANUP
+            // cleaups memory
+            *data = 0;
+        #endif
+            /* free temporary pointer value */        
+            ptr->data[0] -= sizeof(void*);
+            /* returns removed element */
+            return payload;
+        }
     }
+    /* if we call method on empty stack, do not return head element, return null element by convention */
     return 0;
 }
 
 /* peek existing element at the top of the stack/queue/list */
 /* at current context, existing head */
 const void* list_peek(struct list_alloc_data** const current) {
-    /* get current context's head */
-    struct list_alloc_data* ptr = *current;
-    /* if we call method on empty stack, do not return head element, return null element by convention */
-    if (ptr && ptr->data[0] != ptr->data) {
-        /* returns actual data */
-        LPTR offset = (ptr->data[0] - (void*)ptr->data);
-        // gets data pointer
-        void **data = (void*)(ptr->data) + offset;
-        const void* payload = *data;
-        return payload;
+    const struct list_alloc_data* tmp = *current;
+    if (tmp != 0) {    
+        /* get current context's head */
+        struct list_alloc_data* ptr = *current;
+        /* if we call method on empty stack, do not return head element, return null element by convention */
+        if (ptr && ptr->data[0] != ptr->data) {
+            /* returns actual data */
+            LPTR offset = (ptr->data[0] - (void*)ptr->data);
+            // gets data pointer
+            void **data = (void*)(ptr->data) + offset;
+            const void* payload = *data;
+            return payload;
+        }
     }
-    /* returns default element as null element */
+    /* if we call method on empty stack, do not return head element, return null element by convention */
     return 0;
 }
 

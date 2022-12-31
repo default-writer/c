@@ -35,14 +35,17 @@ const void* list_data(const struct list_data* ptr) {
 /* at current context, data payload stored at allocated memory buffer */
 /* as a result, items counter will increase */
 void list_push(struct list_data** const current, const void* payload) {
-    /* stores into pre-allocated value newly allocated memory buffer pointer */
-    struct list_data* item = _new();
-    /* sets the new data into allocated memory buffer */
-    item->payload = payload;
-    /* assigns item's next pointer to current pointer */
-    item->next = *current;
-    /* advances position of head pointer to the new head */
-    *current = item;
+    const struct list_data* tmp = *current;
+    if (tmp != 0) {
+        /* stores into pre-allocated value newly allocated memory buffer pointer */
+        struct list_data* item = _new();
+        /* sets the new data into allocated memory buffer */
+        item->payload = payload;
+        /* assigns item's next pointer to current pointer */
+        item->next = *current;
+        /* advances position of head pointer to the new head */
+        *current = item;
+    }
 }
 
 /* pop existing element at the top of the stack/queue/list */
@@ -50,49 +53,51 @@ void list_push(struct list_data** const current, const void* payload) {
 /* for the new stack header, correcponding values will be fixed */
 /* as a result, header will be set to previous position, represented as head's reference to next head */
 const void* list_pop(struct list_data** const current) {
-    /* get current context's head */
-    struct list_data* ptr = *current;
-    /* if we call method on empty stack, do not return head element, return null element by convention */
-    if (ptr == 0) {
-        /* returns default element as null element */
-        return 0;
+    const struct list_data* tmp = *current;
+    if (tmp != 0) {
+        /* get current context's head */
+        struct list_data* ptr = *current;
+        /* if we call method on empty stack, do not return head element, return null element by convention */
+        /* gets next pointer */
+        struct list_data* next = list_next(ptr);
+        /* if we call method on empty stack, do not return head element, return null element by convention */
+        if (next == 0) {
+            /* returns default element as null element */
+            return 0;
+        }
+        /* rewinds head pointer to next pointer value */
+        *current = next;
+        /* gets temporary pointer value */
+        const void* payload = list_data(ptr);
+        /* free temporary pointer value */
+        _delete(ptr);
+        /* returns removed element */
+        return payload;
     }
-    /* gets next pointer */
-    struct list_data* next = list_next(ptr);
     /* if we call method on empty stack, do not return head element, return null element by convention */
-    if (next == 0) {
-        /* returns default element as null element */
-        return 0;
-    }
-    /* rewinds head pointer to next pointer value */
-    *current = next;
-    /* gets temporary pointer value */
-    const void* payload = list_data(ptr);
-    /* free temporary pointer value */
-    _delete(ptr);
-    /* returns removed element */
-    return payload;
+    return 0;
 }
 
 /* peek existing element at the top of the stack/queue/list */
 /* at current context, existing head */
 const void* list_peek(struct list_data** const current) {
-    /* get current context's head */
-    struct list_data* ptr = *current;
-    /* if we call method on empty stack, do not return head element, return null element by convention */
-    if (ptr == 0) {
-        /* returns default element as null element */
-        return 0;
+    const struct list_data* tmp = *current;
+    if (tmp != 0) {
+        /* get current context's head */
+        struct list_data* ptr = *current;
+
+        /* gets next pointer */
+        const struct list_data* next = list_next(ptr);
+        /* if we call method on empty stack, do not return head element, return null element by convention */
+        if (next == 0) {
+            /* returns default element as null element */
+            return 0;
+        }
+        /* returns actual data */
+        return list_data(ptr);
     }
-    /* gets next pointer */
-    const struct list_data* next = list_next(ptr);
     /* if we call method on empty stack, do not return head element, return null element by convention */
-    if (next == 0) {
-        /* returns default element as null element */
-        return 0;
-    }
-    /* returns actual data */
-    return list_data(ptr);
+    return 0;
 }
 
 const struct list list_micro_definition = {
