@@ -2,11 +2,13 @@
 #include "list-alloc/data.h"
 #include "common/alloc.h"
 
+const int _allocation_size = 8*sizeof(void*);
+
 struct list_alloc_data* _new() {
     /* external code allocates memory and resets memort block to zero  */
     struct list_alloc_data* ptr = _list_alloc(1, size());
-    ptr->data = _list_alloc(1, 8*sizeof(void*));
-    ptr->size = 8*sizeof(void*);
+    ptr->data = _list_alloc(1, _allocation_size);
+    ptr->size = _allocation_size;
     return ptr;
 }
 
@@ -32,7 +34,7 @@ void list_push(struct list_alloc_data** const current, const void* payload) {
         ptr->data[0] += sizeof(void*);
         LPTR offset = (ptr->data[0] - (void*)(ptr->data));
         if (offset >= ptr->size) {
-            ptr->size += 8*sizeof(void*);
+            ptr->size += _allocation_size;
             ptr->data = _list_realloc(ptr->data, ptr->size);
             ptr->data[0] = (void*)(ptr->data) + offset;
         }
