@@ -60,8 +60,8 @@ case "${install}" in
         apt install -y apt-transport-https
         wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | gpg --dearmor | tee /etc/apt/trusted.gpg.d/sublimehq-archive.gpg > /dev/null
         echo "deb https://download.sublimetext.com/ apt/stable/" | tee /etc/apt/sources.list.d/sublime-text.list
-        apt-get update -y
-        apt-get install sublime-merge
+        apt update -y
+        apt install -y sublime-merge
         upgrade
         ;;
 
