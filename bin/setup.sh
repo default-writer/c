@@ -55,6 +55,18 @@ case "${install}" in
         upgrade
         ;;
 
+    "--colordiff") # installs colordiff
+        update
+        apt install -y git
+        upgrade
+        ;;
+
+    "--meld") # installs meld
+        update
+        apt install -y meld
+        upgrade
+        ;;
+
     "--sublime-merge") # installs sublime-merge
         update
         apt install -y apt-transport-https
