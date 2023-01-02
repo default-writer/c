@@ -21,7 +21,7 @@ set(MAIN_LIGHT_SOURCE tests/main-light.c ${LIB_LIGHT_SOURCE})
 set(MAIN_SOURCE tests/main.c ${LIB_SOURCE})
 set(MAIN_EXPERIMENTAL_SOURCE tests/main-experimental.c ${LIB_EXPERIMENTAL_SOURCE})
 set(MAIN_ALLOC_SOURCE tests/main-alloc.c ${LIB_ALLOC_SOURCE})
-set(MAIN_PLAYGROUND_SOURCE playground/structs.c ${LIB_PLAYGROUND_SOURCE})
+set(MAIN_PLAYGROUND_SOURCE src/playground/structs.c ${LIB_PLAYGROUND_SOURCE})
 
 option(MEMORY_DEBUG_INFO "Disables memory allocation debug information")
 option(MEMORY_CLEANUP "Disables memory cleanup")
