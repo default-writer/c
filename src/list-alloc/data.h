@@ -3,8 +3,7 @@
 
 #include "std/common.h"
 
-struct list_data
-{
+struct list_data {
     /* payload size */
     SIZE size;
     /* data */
