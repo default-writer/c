@@ -96,7 +96,7 @@ const void* list_peek(struct list_data** const current) {
     const struct list_data* tmp = *current;
     if (tmp != 0) {
         /* get current context's head */
-        struct list_data* ptr = *current;
+        const struct list_data* ptr = *current;
         /* if we call method on empty stack, do not return head element, return null element by convention */
         if (ptr && ptr->data[0] != ptr->data) {
             /* returns actual data */
