@@ -1,5 +1,5 @@
-#ifndef _LIST_EXPERIMENTAL_DATA_H_
-#define _LIST_EXPERIMENTAL_DATA_H_
+#ifndef _LIST_ALLOC_DATA_H_
+#define _LIST_ALLOC_DATA_H_
 
 #include "std/common.h"
 
@@ -25,4 +25,4 @@ struct list_data* _new();
 void _delete(struct list_data* ptr);
 size_t size();
 
-#endif // _LIST_EXPERIMENTAL_DATA_H_
+#endif // _LIST_ALLOC_DATA_H_
