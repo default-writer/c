@@ -9,20 +9,6 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-set(LIB_MICRO_SOURCE src/list-micro/code.c src/common/alloc.c)
-set(LIB_LIGHT_SOURCE src/list-light/code.c src/common/alloc.c)
-set(LIB_SOURCE src/list/code.c src/common/alloc.c)
-set(LIB_EXPERIMENTAL_SOURCE src/list-experimental/code.c src/common/alloc.c)
-set(LIB_ALLOC_SOURCE src/list-alloc/code.c src/common/alloc.c)
-set(LIB_PLAYGROUND_SOURCE src/class/code.c src/common/alloc.c)
-
-set(MAIN_MICRO_SOURCE tests/main-micro.c ${LIB_MICRO_SOURCE})
-set(MAIN_LIGHT_SOURCE tests/main-light.c ${LIB_LIGHT_SOURCE})
-set(MAIN_SOURCE tests/main.c ${LIB_SOURCE})
-set(MAIN_EXPERIMENTAL_SOURCE tests/main-experimental.c ${LIB_EXPERIMENTAL_SOURCE})
-set(MAIN_ALLOC_SOURCE tests/main-alloc.c ${LIB_ALLOC_SOURCE})
-set(MAIN_PLAYGROUND_SOURCE src/playground/structs.c ${LIB_PLAYGROUND_SOURCE})
-
 option(MEMORY_DEBUG_INFO "Disables memory allocation debug information")
 option(MEMORY_CLEANUP "Disables memory cleanup")
 option(MEMORY_LEAKS "Disables memory leaks detection")
@@ -55,8 +41,27 @@ endif()
 
 include_directories(src)
 
+# common algorithm goes to thier  own static library
+set(LIB_COMMON_SOURCE src/common/alloc.c)
+
+set(LIB_MICRO_SOURCE src/list-micro/code.c)
+set(LIB_LIGHT_SOURCE src/list-light/code.c)
+set(LIB_SOURCE src/list/code.c)
+set(LIB_EXPERIMENTAL_SOURCE src/list-experimental/code.c)
+set(LIB_ALLOC_SOURCE src/list-alloc/code.c)
+set(LIB_PLAYGROUND_SOURCE src/class/code.c)
+
+set(MAIN_MICRO_SOURCE tests/main-micro.c ${LIB_MICRO_SOURCE})
+set(MAIN_LIGHT_SOURCE tests/main-light.c ${LIB_LIGHT_SOURCE})
+set(MAIN_SOURCE tests/main.c ${LIB_SOURCE})
+set(MAIN_EXPERIMENTAL_SOURCE tests/main-experimental.c ${LIB_EXPERIMENTAL_SOURCE})
+set(MAIN_ALLOC_SOURCE tests/main-alloc.c ${LIB_ALLOC_SOURCE})
+set(MAIN_PLAYGROUND_SOURCE src/playground/structs.c ${LIB_PLAYGROUND_SOURCE})
+
 add_compile_options(-fsanitize=undefined,address -fsanitize-undefined-trap-on-error -fno-sanitize-recover=all)
 add_link_options(-fsanitize=undefined,address -fsanitize-undefined-trap-on-error -fno-sanitize-recover=all)
+
+add_library(liblist-common STATIC ${LIB_COMMON_SOURCE})
 
 add_library(liblist-micro STATIC ${LIB_MICRO_SOURCE})
 add_library(liblist-light STATIC ${LIB_LIGHT_SOURCE})
@@ -72,12 +77,12 @@ add_executable(main-experimental ${MAIN_EXPERIMENTAL_SOURCE})
 add_executable(main-alloc ${MAIN_ALLOC_SOURCE})
 add_executable(main-playground ${MAIN_PLAYGROUND_SOURCE})
 
-target_link_libraries(main-micro PRIVATE liblist-micro)
-target_link_libraries(main-light PRIVATE liblist-light)
-target_link_libraries(main PRIVATE liblist)
-target_link_libraries(main-experimental PRIVATE liblist-experimental)
-target_link_libraries(main-alloc PRIVATE liblist-alloc)
-target_link_libraries(main-playground PRIVATE liblist-playground)
+target_link_libraries(main-micro PRIVATE liblist-micro liblist-common)
+target_link_libraries(main-light PRIVATE liblist-light liblist-common)
+target_link_libraries(main PRIVATE liblist liblist-common)
+target_link_libraries(main-experimental PRIVATE liblist-experimental liblist-common)
+target_link_libraries(main-alloc PRIVATE liblist-alloc liblist-common)
+target_link_libraries(main-playground PRIVATE liblist-playground liblist-common)
 
 if(CMAKE_BUILD_TYPE STREQUAL "coverage" OR CODE_COVERAGE)
     if("${CMAKE_C_COMPILER_ID}" MATCHES "(Apple)?[Cc]lang" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "(Apple)?[Cc]lang")
