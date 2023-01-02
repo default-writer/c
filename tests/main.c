@@ -257,7 +257,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_payload, .fixture = test_fixture) {
     const struct list_data* head = list->peek(ctx);
 
     // ensure that data being added to list
-    RX_ASSERT(head->payload == payload);
+    RX_ASSERT(head->data == payload);
 }
 
 RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture) {
@@ -290,7 +290,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture) 
     list->push(ctx, tmp);
 
     struct list_data* head = list->pop(ctx);
-    const void* head_payload = head->payload;
+    const void* head_payload = head->data;
     list->free(&head);
 
     // ensure that data being added to list
@@ -311,7 +311,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_and_prev_next_equals_0, .fixture = tes
     struct list_data* current = list->pop(ctx);
     const struct list_data* prev = current->next;
     const struct list_data* next = current->prev;
-    const void* head_payload = current->payload;
+    const void* head_payload = current->data;
     list->free(&current);
 
     // ensure that data being added to list

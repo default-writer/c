@@ -8,8 +8,8 @@ struct list_data {
     struct list_data* prev;
     /* points to next node */
     struct list_data* next;
-    /* payload */
-    const void* payload;
+    /* data */
+    const void* data;
 };
 
 struct list {
