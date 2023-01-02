@@ -29,8 +29,4 @@ struct list {
     struct list_data* (*peek)(struct list_data** const current);
 };
 
-struct list_data* _new();
-void _delete(struct list_data* ptr);
-size_t size();
-
 #endif // _LIST_DATA_H_

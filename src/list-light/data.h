@@ -25,8 +25,4 @@ struct list {
     const void* (*peek)(struct list_data** const current);
 };
 
-struct list_data* _new();
-void _delete(struct list_data* ptr);
-size_t size();
-
 #endif // _LIST_LIGHT_H_
