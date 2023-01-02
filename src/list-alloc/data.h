@@ -5,10 +5,12 @@
 
 struct list_data
 {
-    /* payload */
-    void** data;
+    /* payload size */
     SIZE size;
-    struct list_data* next;
+    /* data */
+    void** data;
+    /* next element */
+    struct list_data *next;
 };
 
 struct list {
