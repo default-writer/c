@@ -6,7 +6,7 @@
 struct list_data {
     /* payload size */
     SIZE size;
-    /* payload */
+    /* data */
     void** data;
     /* next element */
     struct list_data *next;
