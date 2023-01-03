@@ -144,7 +144,6 @@ struct list_data* list_peek(struct list_data** const current) {
 /* as a result, new memory block will be allocated */
 /* current context pointer set to zero */
 void list_init(struct list_data** const current, struct list_data* (*list_new)()) {
-
     const struct list_data* tmp = *current;
     if (tmp == 0) {
         /* sets current context's head element */
