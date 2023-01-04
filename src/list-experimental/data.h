@@ -4,8 +4,6 @@
 #include "std/common.h"
 
 struct list_data {
-    /* payload size */
-    SIZE size;
     /* data */
     void** data;
     /* next element */

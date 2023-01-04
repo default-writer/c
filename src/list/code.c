@@ -34,25 +34,25 @@ const void* list_data(const struct list_data* ptr) {
 /* as a result, items counter will increase */
 struct list_data* list_alloc(const void* payload) {
     /* stores into pre-allocated value newly allocated memory buffer pointer */
-    struct list_data* tmp = _new();
+    struct list_data* ptr = _new();
     /* sets the new data into allocated memory buffer */
-    tmp->data = payload;
+    ptr->data = payload;
     /* returns created data structure */
-    return tmp;
+    return ptr;
 }
 
 /* frees up memory assigned for allocation of items at current position */
 /* at current context, all data needed to be claimed, will be freed */
 /* as a result, all items, starting from specified item, will be deleted */
-void list_free(struct list_data** const item) {
+void list_free(struct list_data** const current) {
     /* assigns currently selected item pointer to temporary */
     /* get current context's head */
-    struct list_data* tmp = *item;
+    struct list_data* tmp = *current;
     /* root elements returns null, i.e. 0 by convention */
     if (tmp != 0) {
         /* returns default element as null element */
         _delete(tmp);
-        *item = 0;
+        *current = 0;
     }
 }
 

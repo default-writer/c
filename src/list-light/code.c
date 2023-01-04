@@ -36,17 +36,17 @@ void list_push(struct list_data** const current, const void* payload) {
     const struct list_data* tmp = *current;
     if (tmp != 0) {
         /* stores into pre-allocated value newly allocated memory buffer pointer */
-        struct list_data* item = _new();
+        struct list_data* ptr = _new();
         /* sets the new data into allocated memory buffer */
-        item->data = payload;
+        ptr->data = payload;
         /* get current context's head */
         struct list_data* head = *current;
         /* assigns item pointer to head's prev pointer value */
-        head->prev = item;
+        head->prev = ptr;
         /* assigns item's next pointer to current pointer */
-        item->next = *current;
+        ptr->next = *current;
         /* advances position of head pointer to the new head */
-        *current = item;
+        *current = ptr;
     }
 }
 
@@ -56,7 +56,7 @@ void list_push(struct list_data** const current, const void* payload) {
 /* as a result, header will be set to previous position, represented as head's reference to next head */
 const void* list_pop(struct list_data** const current) {
     const struct list_data* tmp = *current;
-    if (tmp != 0) {    
+    if (tmp != 0) {
         /* get current context's head */
         struct list_data* ptr = *current;
         /* gets next pointer */

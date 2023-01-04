@@ -55,21 +55,19 @@ void using_list2(void (*list_using)(struct list_data** const)) {
 // print head on current context (stack)
 void list_print_head(struct list_data** const current, const void* (*_data)(const struct list_data*)) {
     // get current context's head
-    struct list_data* tmp = *current;
+    struct list_data* ptr = *current;
     // visualise item
-    printf("*: 0x%llx 0x%llx\n", (LPTR)tmp, (LPTR)_data(tmp));
+    printf("*: 0x%llx 0x%llx\n", (LPTR)ptr, (LPTR)_data(ptr));
 }
 
 // print all stack trace to output
 // in a single loop, print out all elements except root element (which does not have a payload)
 // as a result, all stack will be printed in last-to-first order (reverse)
 void list_print(struct list_data** const current, struct list_data* (*list_next)(struct list_data*), const void* (*list_data)(const struct list_data*)) {
-    // get current context's head
-    struct list_data* head = *current;
     // sets the counter
-    int i = 0; 
+    int i = 0;
     // assigns current's head pointer to the temporary
-    struct list_data* tmp = head;
+    struct list_data* tmp = *current;
     if (tmp != 0)
     {
         // until we found root element (element with no previous element reference)
@@ -209,7 +207,7 @@ RX_TEST_CASE(myTestSuite, test_empty_list_count_equals_0, .fixture = test_fixtur
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
 
-    // enshure that counter is initialized to 0
+    // ensures counter is initialized to 0
     RX_ASSERT(*ctx != 0);
 }
 
@@ -217,26 +215,23 @@ RX_TEST_CASE(myTestSuite, test_empty_list_count_equals_0, .fixture = test_fixtur
 RX_TEST_CASE(myTestSuite, test_empty_list_pop_equals_0, .fixture = test_fixture) {
     struct list_data* ctx = 0;
 
-    // create list
+    // creates the list
     const struct list* list = &list_micro_definition;
 
     const struct list_data* head = list->pop(&ctx);
  
-    // enshure that counter is initialized to 0
+    // ensures counter is initialized to 0
     RX_ASSERT(head == 0);
 }
-
 
 /* test pop from 0 pointer */
 RX_TEST_CASE(myTestSuite, test_empty_list_peek_equals_0, .fixture = test_fixture) {
     struct list_data* ctx = 0;
-
-    // create list
+    // creates the list
     const struct list* list = &list_micro_definition;
-
+    // peeks from the list
     const struct list_data* head = list->peek(&ctx);
- 
-    // enshure that counter is initialized to 0
+    // ensures no data added to the list
     RX_ASSERT(head == 0);
 }
 
@@ -244,14 +239,13 @@ RX_TEST_CASE(myTestSuite, test_empty_list_peek_equals_0, .fixture = test_fixture
 RX_TEST_CASE(myTestSuite, test_list_alloc_count_eq_1, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-
-    // create list
+    // creates the list
     const struct list* list = &list_micro_definition;
     const void* payload = (void*)0xdeadbeef;
 
     list->push(ctx, payload);
 
-    // ensure that data being added to list
+    // ensures data is added to the list
     RX_ASSERT(*ctx != 0);
 }
 
@@ -259,43 +253,44 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_payload, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
 
-    // create list
+    // creates the list
     const struct list* list = &list_micro_definition;
     const void* payload = (void*)0xdeadbeef;
 
     list->push(ctx, payload);
     const void* head = list->peek(ctx);
 
-    // ensure that data being added to list
+    // ensures data is added to the list
     RX_ASSERT(head == payload);
 }
 
 RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-
-    // create list
+    // creates the list
     const struct list* list = &list_micro_definition;
+    // prepares the payload
     const void* payload = (void*)0xdeadbeef;
-
+    // pushes to the list
     list->push(ctx, payload);
+    // pops from the list 
     const void* head = list->pop(ctx);
-
+    // ensures data is added to the list
     RX_ASSERT(head != 0);
 }
 
 RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-
-    // create list
+    // creates the list
     const struct list* list = &list_micro_definition;
+    // 
     const void* payload = (void*)0xdeadbeef;
-
+    // pushes to the list
     list->push(ctx, payload);
+    // pops from the list
     const void* head = list->pop(ctx);
-
-    // ensure that data being added to list
+    // ensures data is added to the list
     RX_ASSERT(head == payload);
 }
 
@@ -303,13 +298,11 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture) 
 RX_TEST_CASE(myTestSuite, test_list_peek_is_zero, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-
-    // create list
+    // creates the list
     const struct list* list = &list_micro_definition;
-
+    // peeks from the list
     const void* head = list->peek(ctx);
-
-    // ensure that data being added to list
+    // ensures data is added to the list
     RX_ASSERT(head == 0);
 }
 
@@ -317,13 +310,11 @@ RX_TEST_CASE(myTestSuite, test_list_peek_is_zero, .fixture = test_fixture) {
 RX_TEST_CASE(myTestSuite, test_list_pop_is_zero, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-
-    // create list
+    // creates the list
     const struct list* list = &list_micro_definition;
-
+    // pops from the list
     const void* head = list->pop(ctx);
-
-    // ensure that data being added to list
+    // ensures data is added to the list
     RX_ASSERT(head == 0);
 }
 

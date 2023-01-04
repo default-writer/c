@@ -2,19 +2,21 @@
 #include "list-experimental/data.h"
 #include "common/alloc.h"
 
-const int _allocation_size = 8*sizeof(void*);
+/* item size */
+const int _item_size = sizeof(void*);
+/* buffer size in bytes = size of 8 items */
+const int _allocation_size = 8*_item_size;
 
 struct list_data* _new() {
     /* external code allocates memory and resets memort block to zero  */
     struct list_data* ptr = _list_alloc(1, size());
-    ptr->size = _allocation_size;
     ptr->data = _list_alloc(1, _allocation_size);
     ptr->data[0] = (void*)(ptr->data);
     return ptr;
 }
 
 void _delete(struct list_data* ptr) {
-    _list_free(ptr->data, ptr->size);
+    _list_free(ptr->data, _allocation_size);
     _list_free(ptr, size());
 }
 
@@ -38,14 +40,15 @@ void list_push(struct list_data** const current, const void* payload) {
     if (tmp != 0) {
         struct list_data* ptr = *current;
         /* increase starting address */
-        ptr->data[0] += sizeof(void*);
-        LPTR offset = (ptr->data[0] - (void*)(ptr->data));
-        if (offset >= ptr->size) {
-            ptr->size += _allocation_size;
-            ptr->data = _list_realloc(ptr->data, ptr->size);
-            ptr->data[0] = (void*)(ptr->data) + offset;
+        LPTR offset = ptr->data[0] + _item_size - (void*)(ptr->data);
+        if (offset == _allocation_size) {
+            struct list_data* item = _new();
+            item->next = ptr;
+            *current = item;
+            ptr = *current;
         }
-        const void **data = (void*)(ptr->data) + offset;
+        ptr->data[0] += _item_size;
+        const void **data = ptr->data[0];
         *data = payload;
     }
 }
@@ -53,7 +56,7 @@ void list_push(struct list_data** const current, const void* payload) {
 /* pop existing element at the top of the stack/queue/list */
 const void* list_pop(struct list_data** const current) {
     const struct list_data* tmp = *current;
-    if (tmp != 0) {    
+    if (tmp != 0) {
         /* get current context's head */
         struct list_data* ptr = *current;
         /* if we call method on empty stack, do not return head element, return null element by convention */
@@ -69,7 +72,31 @@ const void* list_pop(struct list_data** const current) {
             *data = 0;
 #endif
             /* free temporary pointer value */        
-            ptr->data[0] -= sizeof(void*);
+            ptr->data[0] -= _item_size;
+            /* returns removed element */
+            return payload;
+        }
+        if (ptr && ptr->data[0] == ptr->data && ptr->next != 0) {
+            /* get current context's head */
+            ptr = *current;
+            /* if we call method on empty stack, do not return head element, return null element by convention */
+            /* gets next pointer */
+            struct list_data* next = list_next(ptr);
+            /* if we call method on empty stack, do not return head element, return null element by convention */
+            if (next == 0) {
+                /* returns default element as null element */
+                return 0;
+            }
+            /* rewinds head pointer to next pointer value */
+            *current = next;
+            /* returns actual data */
+            _delete(ptr);
+            ptr = next;
+            LPTR offset = (ptr->data[0] - (void*)ptr->data);
+            // gets data pointer
+            void **data = (void*)(ptr->data) + offset;
+            const void* payload = *data;
+            /* free temporary pointer value */
             /* returns removed element */
             return payload;
         }

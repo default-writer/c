@@ -127,5 +127,6 @@
   "terminal.integrated.smoothScrolling": true,
   "terminal.integrated.cursorBlinking": true,
   "terminal.integrated.enableFileLinks": true,
-  "sonarlint.testFilePattern": "**/test/**,**/*test*,**/*Test*,**/rexo/**"
+  "sonarlint.testFilePattern": "**/test/**,**/*test*,**/*Test*,**/rexo/**",
+  "cmake.statusbar.visibility": "icon"
 }

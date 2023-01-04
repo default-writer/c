@@ -36,13 +36,13 @@ void list_push(struct list_data** const current, const void* payload) {
     const struct list_data* tmp = *current;
     if (tmp != 0) {
         /* stores into pre-allocated value newly allocated memory buffer pointer */
-        struct list_data* item = _new();
+        struct list_data* ptr = _new();
         /* sets the new data into allocated memory buffer */
-        item->data = payload;
+        ptr->data = payload;
         /* assigns item's next pointer to current pointer */
-        item->next = *current;
+        ptr->next = *current;
         /* advances position of head pointer to the new head */
-        *current = item;
+        *current = ptr;
     }
 }
 

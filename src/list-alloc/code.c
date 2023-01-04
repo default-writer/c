@@ -2,12 +2,16 @@
 #include "list-alloc/data.h"
 #include "common/alloc.h"
 
-const int _allocation_size = 8*sizeof(void*);
+/* item size */
+const int _item_size = sizeof(void*);
+/* buffer size in bytes = size of 8 items */
+const int _allocation_size = 8*_item_size;
 
 struct list_data* _new() {
     /* external code allocates memory and resets memort block to zero  */
     struct list_data* ptr = _list_alloc(1, size());
     ptr->data = _list_alloc(1, _allocation_size);
+    ptr->data[0] = (void*)(ptr->data);    
     ptr->size = _allocation_size;
     return ptr;
 }
@@ -31,14 +35,14 @@ void list_push(struct list_data** const current, const void* payload) {
     if (tmp != 0) {
         struct list_data* ptr = *current;
         /* increase starting address */
-        ptr->data[0] += sizeof(void*);
-        LPTR offset = (ptr->data[0] - (void*)(ptr->data));
+        LPTR offset = ptr->data[0] + _item_size - (void*)(ptr->data);
         if (offset >= ptr->size) {
+            ptr->data = _list_realloc(ptr->data, ptr->size + _allocation_size);
+            ptr->data[0] = (void*)(ptr->data);
             ptr->size += _allocation_size;
-            ptr->data = _list_realloc(ptr->data, ptr->size);
-            ptr->data[0] = (void*)(ptr->data) + offset;
         }
-        const void **data = (void*)(ptr->data) + offset;
+        ptr->data[0] += _item_size;
+        const void **data = ptr->data[0];
         *data = payload;
     }
 }
@@ -62,7 +66,7 @@ const void* list_pop(struct list_data** const current) {
             *data = 0;
 #endif
             /* free temporary pointer value */        
-            ptr->data[0] -= sizeof(void*);
+            ptr->data[0] -= _item_size;
             /* returns removed element */
             return payload;
         }
