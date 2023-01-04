@@ -46,7 +46,7 @@ void list_push(struct list_data** const current, const void* payload) {
 /* pop existing element at the top of the stack/queue/list */
 const void* list_pop(struct list_data** const current) {
     const struct list_data* tmp = *current;
-    if (tmp != 0) {    
+    if (tmp != 0) {
         /* get current context's head */
         struct list_data* ptr = *current;
         /* if we call method on empty stack, do not return head element, return null element by convention */
@@ -75,7 +75,7 @@ const void* list_pop(struct list_data** const current) {
 /* at current context, existing head */
 const void* list_peek(struct list_data** const current) {
     const struct list_data* tmp = *current;
-    if (tmp != 0) {    
+    if (tmp != 0) {
         /* get current context's head */
         struct list_data* ptr = *current;
         /* if we call method on empty stack, do not return head element, return null element by convention */
