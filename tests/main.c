@@ -326,7 +326,7 @@ RX_TEST_CASE(myTestSuite, test_list_free_head, .fixture = test_fixture) {
     struct list_data* head = list->pop(ctx);
     // frees memory allocated for the data
     list->free(&head);
-    // ensures no data is added to the list
+    // ensures no data added to the list
     RX_ASSERT(head == 0);
 }
 

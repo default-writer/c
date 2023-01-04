@@ -65,10 +65,8 @@ void array_print(struct list_data** const current) {
 void using_list(void (*list_using)(struct list_data** const)) {
     // initialize current context (stack)
     struct list_data* ctx = new_list();
-
     // call user method
     list_using(&ctx);
-
     // destroy list
     delete_list(&ctx);
 }
@@ -77,10 +75,8 @@ void using_list(void (*list_using)(struct list_data** const)) {
 void using_list2(void (*list_using)(struct list_data** const)) {
     // initialize current context (stack)
     struct list_data* ctx = new_list();
-
     // call user method
     list_using(&ctx);
-
     // destroy list
     delete_list(&ctx);
 }
@@ -206,7 +202,6 @@ RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tea
 RX_TEST_CASE(myTestSuite, test_empty_list_count_equals_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-
     // ensures counter is initialized to 0
     RX_ASSERT(*ctx != 0);
 }
@@ -214,11 +209,10 @@ RX_TEST_CASE(myTestSuite, test_empty_list_count_equals_0, .fixture = test_fixtur
 /* test pop from 0 pointer */
 RX_TEST_CASE(myTestSuite, test_empty_list_pop_equals_0, .fixture = test_fixture) {
     struct list_data* ctx = 0;
-
     // creates the list
     const struct list* list = &list_experimental_definition;
-    const struct list_data* head = list->pop(&ctx);
- 
+    // pops from the list
+    const struct list_data* head = list->pop(&ctx); 
     // ensures counter is initialized to 0
     RX_ASSERT(head == 0);
 }
@@ -226,11 +220,10 @@ RX_TEST_CASE(myTestSuite, test_empty_list_pop_equals_0, .fixture = test_fixture)
 /* test pop from 0 pointer */
 RX_TEST_CASE(myTestSuite, test_empty_list_peek_equals_0, .fixture = test_fixture) {
     struct list_data* ctx = 0;
-
     // creates the list
     const struct list* list = &list_experimental_definition;
+    // peeks from the list
     const struct list_data* head = list->peek(&ctx);
- 
     // ensures counter is initialized to 0
     RX_ASSERT(head == 0);
 }
@@ -298,7 +291,6 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture) 
 RX_TEST_CASE(myTestSuite, test_list_peek_is_zero, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-
     // creates the list
     const struct list* list = &list_experimental_definition;
     // pops from the list
@@ -311,11 +303,10 @@ RX_TEST_CASE(myTestSuite, test_list_peek_is_zero, .fixture = test_fixture) {
 RX_TEST_CASE(myTestSuite, test_list_pop_is_zero, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-
     // creates the list
     const struct list* list = &list_experimental_definition;
+    // pops from the list
     const void* head = list->pop(ctx);
-
     // ensures data is added to the list
     RX_ASSERT(head == 0);
 }
@@ -323,11 +314,11 @@ RX_TEST_CASE(myTestSuite, test_list_pop_is_zero, .fixture = test_fixture) {
 RX_TEST_CASE(myTestSuite, test_list_realloc, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-
     // creates the list
     const struct list* list = &list_experimental_definition;
+    // prepares the payload
     const void* payload = (void*)0xdeadbeef;
-
+    // pushes to the list multiple times
     list->push(ctx, payload);
     list->push(ctx, payload);
     list->push(ctx, payload);
@@ -336,8 +327,8 @@ RX_TEST_CASE(myTestSuite, test_list_realloc, .fixture = test_fixture) {
     list->push(ctx, payload);
     list->push(ctx, payload);
     list->push(ctx, payload);
+    // peeks from the list
     const void* head = list->peek(ctx);
-
     // ensures data is added to the list
     RX_ASSERT(head == payload);
 }
@@ -345,11 +336,11 @@ RX_TEST_CASE(myTestSuite, test_list_realloc, .fixture = test_fixture) {
 RX_TEST_CASE(myTestSuite, test_list_push_pop, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-
     // creates the list
     const struct list* list = &list_experimental_definition;
+    // prepares the payload
     const void* payload = (void*)0xdeadbeef;
-
+    // pushes to the list multiple times
     list->push(ctx, payload);
     list->push(ctx, payload);
     list->push(ctx, payload);
@@ -399,7 +390,6 @@ RX_TEST_CASE(myTestSuite, test_list_push_pop, .fixture = test_fixture) {
     list->pop(ctx);
     list->pop(ctx);
     list->pop(ctx);
-
     // ensures data is added to the list
     RX_ASSERT(head == payload);
 }
