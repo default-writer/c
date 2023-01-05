@@ -333,6 +333,13 @@ RX_TEST_CASE(myTestSuite, test_list_realloc, .fixture = test_fixture) {
     RX_ASSERT(head == payload);
 }
 
+int lcg_state = 0xdeadbeef;
+
+int lcg_parkmiller() {
+	lcg_state = (LPTR)lcg_state* 48271 % 0x7fffffff;
+    return lcg_state;
+}
+
 RX_TEST_CASE(myTestSuite, test_list_push_pop, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
@@ -340,62 +347,23 @@ RX_TEST_CASE(myTestSuite, test_list_push_pop, .fixture = test_fixture) {
     const struct list* list = &list_experimental_definition;
     // prepares the payload
     const void* payload = (void*)0xdeadbeef;
+    // record buffer has 9 items
+    const void* _recorded[8+1] = { };
+    // pushes all pseudo-random values
     // pushes to the list multiple times
+    int i=0;
+    do {
+        const void* _payload = (void*)(LPTR)lcg_parkmiller();
+        _recorded[i] = _payload;
+        list->push(ctx, _payload);
+    } while (++i < 8);
+    // pushes to the list
     list->push(ctx, payload);
-    list->push(ctx, payload);
-    list->push(ctx, payload);
-    list->push(ctx, payload);
-    list->push(ctx, payload);
-    list->push(ctx, payload);
-    list->push(ctx, payload);
-    list->push(ctx, payload);
-    list->push(ctx, payload);
-    list->push(ctx, payload);
-    list->push(ctx, payload);
-    list->push(ctx, payload);
-    list->push(ctx, payload);
-    list->push(ctx, payload);
-    list->push(ctx, payload);
-    list->push(ctx, payload);
-    list->push(ctx, payload);
-    list->push(ctx, payload);
-    list->push(ctx, payload);
-    list->push(ctx, payload);
-    list->push(ctx, payload);
-    list->push(ctx, payload);
-    list->push(ctx, payload);
-    list->push(ctx, payload);
-    const void* head = list->peek(ctx);
-    list->pop(ctx);
-    list->pop(ctx);
-    list->pop(ctx);
-    list->pop(ctx);
-    list->pop(ctx);
-    list->pop(ctx);
-    list->pop(ctx);
-    list->pop(ctx);
-    list->pop(ctx);
-    list->pop(ctx);
-    list->pop(ctx);
-    list->pop(ctx);
-    list->pop(ctx);
-    list->pop(ctx);
-    list->pop(ctx);
-    list->pop(ctx);
-    list->pop(ctx);
-    list->pop(ctx);
-    list->pop(ctx);
-    list->pop(ctx);
-    list->pop(ctx);
-    list->pop(ctx);
-    list->pop(ctx);
-    list->pop(ctx);
-    list->pop(ctx);
-    list->pop(ctx);
-    list->pop(ctx);
-    list->pop(ctx);
+    _recorded[i] = payload;
     // ensures data is added to the list
-    RX_ASSERT(head == payload);
+    do {
+        RX_ASSERT(list->pop(ctx) == _recorded[i]);
+    } while (--i >= 0);
 }
 
 int main() {

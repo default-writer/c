@@ -40,8 +40,8 @@ void list_push(struct list_data** const current, const void* payload) {
     if (tmp != 0) {
         struct list_data* ptr = *current;
         /* increase starting address */
-        LPTR offset = ptr->data[0] + _item_size - (void*)(ptr->data);
-        if (offset == _allocation_size) {
+        LPTR offset = ptr->data[0] - (void*)(ptr->data);
+        if (offset == _allocation_size - _item_size) {
             struct list_data* item = _new();
             item->next = ptr;
             *current = item;
@@ -60,22 +60,6 @@ const void* list_pop(struct list_data** const current) {
         /* get current context's head */
         struct list_data* ptr = *current;
         /* if we call method on empty stack, do not return head element, return null element by convention */
-        if (ptr && ptr->data[0] != ptr->data) {
-            /* gets temporary pointer value */
-            /* returns actual data */
-            LPTR offset = (ptr->data[0] - (void*)ptr->data);
-            // gets data pointer
-            void **data = (void*)(ptr->data) + offset;
-            const void* payload = *data;
-#ifdef USE_MEMORY_CLEANUP
-            // cleaups memory
-            *data = 0;
-#endif
-            /* free temporary pointer value */        
-            ptr->data[0] -= _item_size;
-            /* returns removed element */
-            return payload;
-        }
         if (ptr && ptr->data[0] == ptr->data) {
             /* get current context's head */
             /* if we call method on empty stack, do not return head element, return null element by convention */
@@ -91,11 +75,20 @@ const void* list_pop(struct list_data** const current) {
             /* returns actual data */
             _delete(ptr);
             ptr = next;
+        }
+        if (ptr && ptr->data[0] != ptr->data) {
+            /* gets temporary pointer value */
+            /* returns actual data */
             LPTR offset = (ptr->data[0] - (void*)ptr->data);
             // gets data pointer
             void **data = (void*)(ptr->data) + offset;
             const void* payload = *data;
-            /* free temporary pointer value */
+#ifdef USE_MEMORY_CLEANUP
+            // cleaups memory
+            *data = 0;
+#endif
+            /* free temporary pointer value */        
+            ptr->data[0] -= _item_size;
             /* returns removed element */
             return payload;
         }

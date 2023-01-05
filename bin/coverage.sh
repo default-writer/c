@@ -113,7 +113,7 @@ cmake \
 for m in "${array[@]}"; do
     cmake --build "${pwd}/cmake" --target "main${m}"
 
-    "${pwd}/cmake/main${m}"
+    timeout --foreground 5 "${pwd}/cmake/main${m}"
     lcov --capture --directory "${pwd}/cmake/" --output-file "${pwd}/coverage/main${m}.lcov"
     lcov --remove "${pwd}/coverage/main${m}.lcov" "${pwd}/src/rexo/*" -o "${pwd}/coverage/main${m}.lcov"
     rm -rf "${pwd}/coverage/main${m}"
