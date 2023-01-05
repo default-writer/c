@@ -76,9 +76,8 @@ const void* list_pop(struct list_data** const current) {
             /* returns removed element */
             return payload;
         }
-        if (ptr && ptr->data[0] == ptr->data && ptr->next != 0) {
+        if (ptr && ptr->data[0] == ptr->data) {
             /* get current context's head */
-            ptr = *current;
             /* if we call method on empty stack, do not return head element, return null element by convention */
             /* gets next pointer */
             struct list_data* next = list_next(ptr);
@@ -100,18 +99,6 @@ const void* list_pop(struct list_data** const current) {
             /* returns removed element */
             return payload;
         }
-        /* get current context's head */
-        ptr = *current;
-        /* if we call method on empty stack, do not return head element, return null element by convention */
-        /* gets next pointer */
-        struct list_data* next = list_next(ptr);
-        /* if we call method on empty stack, do not return head element, return null element by convention */
-        if (next == 0) {
-            /* returns default element as null element */
-            return 0;
-        }
-        /* rewinds head pointer to next pointer value */
-        *current = next;
     }
     /* if we call method on empty stack, do not return head element, return null element by convention */
     return 0;

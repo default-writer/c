@@ -390,6 +390,10 @@ RX_TEST_CASE(myTestSuite, test_list_push_pop, .fixture = test_fixture) {
     list->pop(ctx);
     list->pop(ctx);
     list->pop(ctx);
+    list->pop(ctx);
+    list->pop(ctx);
+    list->pop(ctx);
+    list->pop(ctx);
     // ensures data is added to the list
     RX_ASSERT(head == payload);
 }
