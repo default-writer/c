@@ -30,7 +30,7 @@ void array_print_head(struct list_data** const current) {
     // get current context's head
     const struct list_data* ptr = *current;
     // gets offset
-    LPTR offset = (ptr->data[0] - (void*)(ptr->data));
+    LPTR offset = ptr->data[0] - (void*)(ptr->data);
     // gets data pointer
     const void **data = (void*)(ptr->data) + offset;
     // prints data value
