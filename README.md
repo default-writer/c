@@ -1,11 +1,29 @@
 # c project description
 
+- `List<T>` implementations
 - code coverage
-- `List<T>` implementation
+- coverage hot-reload
 
-# shell
+# timeline
 
-bootstraps build
+## 2023
+
+- added implementation without realloc with random access inside a block
+
+## 2022
+
+- playing around with visibility in class declarations
+
+
+# lab
+
+- working with containers requires some in-place installations and batch scripting both in host and inside the running development container
+- when created container for the first time it is strongly recommended to use scripts to cleanup and install dependencies
+
+
+#  shell
+
+### bootstraps build
 
 ```sh
 ./bin/runme.sh
@@ -13,7 +31,7 @@ bootstraps build
 
 ## install
 
-installs optional components:
+### installs optional components:
 
 ```sh
 ./bin/install.sh
@@ -21,7 +39,7 @@ installs optional components:
 
 ## uninstall
 
-uninstalls optional components:
+### uninstalls optional components:
 
 ```sh
 ./bin/uninstall.sh
@@ -29,7 +47,7 @@ uninstalls optional components:
 
 ## cleanup
 
-cleans up the root directory
+### cleans up the root directory
 
 - forsefully removes any generated folders
 - breaks sonarlint and other directory based stuff (sonarlint searchs for **build** directory)
@@ -40,7 +58,7 @@ cleans up the root directory
 
 ## coverage
 
-builds sources with code coverage
+### builds sources with code coverage
  
 ```sh
 ./bin/coverage.sh
@@ -48,7 +66,7 @@ builds sources with code coverage
 
 ## build
 
-builds sources
+### builds sources
 
 ```sh
 ./bin/build.sh
@@ -56,7 +74,7 @@ builds sources
 
 ## setup
 
-installs packages and requirements
+### installs packages and requirements
 
 ```sh
 ./bin/setup.sh
@@ -64,7 +82,7 @@ installs packages and requirements
 
 ## env
 
-setup environment variables
+### sets up environment variables
 
 ```sh
 ./bin/env.sh
