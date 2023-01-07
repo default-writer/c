@@ -47,7 +47,7 @@ void array_print(struct list_data** const current) {
     int i = 0;
     // assigns current's head pointer to the temporary
     const void* end = ptr->data[0];
-    if (end != ptr->data + i)
+    if (end != ptr->data)
     {
         // until we found root element (element with no previous element reference)
         do {
