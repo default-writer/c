@@ -11,7 +11,7 @@
             "displayName": "Default Config",
             "description": "Default build using Ninja generator",
             "generator": "Ninja",
-            "binaryDir": "${sourceDir}/.cmake",
+            "binaryDir": "${sourceDir}/cmake",
             "cacheVariables": {
                 "MEMORY_DEBUG_INFO": {
                     "type": "BOOL",
