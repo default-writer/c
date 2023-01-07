@@ -8,7 +8,7 @@
     "configurePresets": [
         {
             "name": "default",
-            "displayName": "Default Config",
+            "displayName": "C++",
             "description": "Default build using Ninja generator",
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/cmake",
