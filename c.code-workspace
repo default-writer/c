@@ -73,13 +73,6 @@
         "files.watcherInclude": ["."],
         "files.autoSave": "off",
         "files.exclude": {
-          "**/.cache": true,
-          "**/.trunk": true,
-          "**/.hooks": true,
-          "**/.history": true,
-          "**/cmake": true,
-          "**/coverage": true,
-          "**/docs": true
         },
         "editor.tokenColorCustomizations": {
             "textMateRules": [

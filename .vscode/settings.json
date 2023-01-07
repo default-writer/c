@@ -90,7 +90,7 @@
   "lldb.consoleMode": "commands",
   "testOnSave.enabled": true,
   "testOnSave.languageId": "c",
-  "testOnSave.testCommand": "./bin/coverage.sh --all",
+  "testOnSave.testCommand": "./bin/coverage.sh --all --clean",
   "koverage.coverageFileNames": [  
     "lcov.info"
   ],
@@ -103,13 +103,6 @@
   "files.autoSave": "off",
   "files.watcherInclude": ["."],
   "files.exclude": {
-    "**/.cache": true,
-    "**/.trunk": true,
-    "**/.hooks": true,
-    "**/.history": true,
-    "**/cmake": true,
-    "**/coverage": true,
-    "**/docs": true
   },
   "workbench.editor.enablePreview": false,
   "pdf-preview.default.scale": "page-width",
