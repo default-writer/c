@@ -8,8 +8,8 @@ struct list_data {
     struct list_data* prev;
     /* points to next node */
     struct list_data* next;
-    /* payload */
-    const void* payload;
+    /* data */
+    const void* data;
 };
 
 struct list {
@@ -24,9 +24,5 @@ struct list {
     /* peek item on current context (stack) */
     const void* (*peek)(struct list_data** const current);
 };
-
-struct list_data* _new();
-void _delete(struct list_data* ptr);
-size_t size();
 
 #endif // _LIST_LIGHT_H_

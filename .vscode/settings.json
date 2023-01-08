@@ -90,8 +90,8 @@
   "lldb.consoleMode": "commands",
   "testOnSave.enabled": true,
   "testOnSave.languageId": "c",
-  "testOnSave.testCommand": "./bin/coverage.sh --all",
-  "koverage.coverageFileNames": [  
+  "testOnSave.testCommand": "./bin/coverage.sh --all --clean",
+  "koverage.coverageFileNames": [
     "lcov.info"
   ],
   "coverage-gutters.coverageFileNames": [
@@ -103,15 +103,8 @@
   "files.autoSave": "off",
   "files.watcherInclude": ["."],
   "files.exclude": {
-    "**/.cache": true,
-    "**/.trunk": true,
-    "**/.hooks": true,
-    "**/.history": true,
-    "**/cmake": true,
-    "**/coverage": true,
-    "**/docs": true
   },
-  "workbench.editor.enablePreview": false,
+  "workbench.editor.enablePreview": true,
   "pdf-preview.default.scale": "page-width",
   "clangd.onConfigChanged": "restart",
   "clangd.checkUpdates": true,
@@ -127,5 +120,7 @@
   "terminal.integrated.smoothScrolling": true,
   "terminal.integrated.cursorBlinking": true,
   "terminal.integrated.enableFileLinks": true,
-  "sonarlint.testFilePattern": "**/test/**,**/*test*,**/*Test*,**/rexo/**"
+  "sonarlint.testFilePattern": "**/test/**,**/*test*,**/*Test*,**/rexo/**",
+  "cmake.statusbar.visibility": "icon",
+  "cmake.reconfigureOnChange": true
 }

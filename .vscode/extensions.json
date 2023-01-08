@@ -31,6 +31,8 @@
     "github.codespaces",
     "beardedbear.beardedicons",
     "ms-vscode.cpptools-themes",
-    "ms-vscode.cpptools"
+    "ms-vscode.cpptools",
+    "urosvujosevic.explorer-manager",
+    "alefragnani.bookmarks"
   ]
 }

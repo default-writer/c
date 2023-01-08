@@ -64,7 +64,7 @@ RX_TEAR_DOWN(test_tear_down) {
     struct class** ctx = &rx->ctx;
     // destroy list
     class_destroy(ctx);
-    *ctx = 0;    
+    *ctx = 0;
 }
 
 /* Define the fixture. */
@@ -93,7 +93,7 @@ RX_TEST_CASE(myTestSuite, test_get_type, .fixture = test_fixture) {
     struct class** ctx = &rx->ctx;
     const struct class* class = *ctx;
     printf("i is of type class at %llx\n", (LPTR)class);
-    // ensure that data being added to list
+    // ensures data is added to the list
     RX_ASSERT(class->get_type(class) == (LPTR)&class_definition);
 }
 
@@ -103,7 +103,7 @@ RX_TEST_CASE(myTestSuite, test_class_unintialized_is_zero, .fixture = test_fixtu
     struct class** ctx = &rx->ctx;
     const struct class* class = *ctx;
     printf("i is of type class at %llx\n", (LPTR)class);
-    // ensure that data being added to list
+    // ensures data is added to the list
     RX_ASSERT(class->data != NULL);
 }
 
@@ -114,7 +114,7 @@ RX_TEST_CASE(myTestSuite, test_class_data, .fixture = test_fixture) {
     const struct class* class = *ctx;
     class->set_data(class, (void*)*ctx);
     printf("i is of type class at %llx\n", (LPTR)class);
-    // ensure that data being added to list
+    // ensures data is added to the list
     RX_ASSERT(class->get_data(class) == (void*)*ctx);
 }
 

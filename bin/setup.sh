@@ -55,6 +55,18 @@ case "${install}" in
         upgrade
         ;;
 
+    "--colordiff") # installs colordiff
+        update
+        apt install -y git
+        upgrade
+        ;;
+
+    "--meld") # installs meld
+        update
+        apt install -y meld
+        upgrade
+        ;;
+
     "--sublime-merge") # installs sublime-merge
         update
         apt install -y apt-transport-https
@@ -95,19 +107,19 @@ case "${install}" in
         mkdir -p /etc/apt/keyrings
         curl --silent -fsSL --use-ascii --retry 5 --retry-all-errors https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
         echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list >/dev/null
-        apt-get update -y
+        apt update -y
         chmod a+r /etc/apt/keyrings/docker.gpg
         apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
         usermod -aG docker $USER
         upgrade
         ;;
-    
+
     "--docker-compose") # installs docker-compose
         update
         apt install -y --fix-broken qemu-kvm libvirt-clients libvirt-daemon-system bridge-utils virtinst libvirt-daemon pass uidmap
         systemctl enable --now libvirtd
         curl -L https://desktop.docker.com/linux/main/amd64/docker-desktop-4.15.0-amd64.deb -o /tmp/docker-desktop-4.15.0-amd64.deb
-        apt-get update -y
+        apt update -y
         dpkg -i /tmp/docker-desktop-4.15.0-amd64.deb
         upgrade
         ;;
