@@ -29,10 +29,8 @@ void delete_list(struct list_data** ctx) {
 void array_print_head(struct list_data** const current) {
     // get current context's head
     const struct list_data* ptr = *current;
-    // gets offset
-    LPTR offset = ptr->data[0] - (void*)(ptr->data);
     // gets data pointer
-    const void **data = (void*)(ptr->data) + offset;
+    const void **data = ptr->data[0];
     // prints data value
     printf("*: 0x%llx 0x%llx\n", (LPTR)ptr->data[0], (LPTR)*data);
 }

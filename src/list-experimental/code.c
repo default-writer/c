@@ -109,10 +109,8 @@ const void* list_peek(struct list_data** const current) {
         const struct list_data* ptr = *current;
         /* if we call method on empty stack, do not return head element, return null element by convention */
         if (ptr && ptr->data[0] != ptr->data) {
-            /* returns actual data */
-            LPTR offset = (ptr->data[0] - (void*)ptr->data);
             // gets data pointer
-            void **data = (void*)(ptr->data) + offset;
+            const void **data = ptr->data[0];
             // gets the payload
             const void* payload = *data;
             // returns payload

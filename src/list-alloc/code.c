@@ -36,8 +36,8 @@ void list_push(struct list_data** const current, const void* payload) {
     if (tmp != 0) {
         struct list_data* ptr = *current;
         /* increase starting address */
-        LPTR offset = ptr->data[0] + _item_size - (void*)(ptr->data);
-        if (offset >= ptr->size) {
+        LPTR offset = ptr->data[0] - (void*)(ptr->data);
+        if (offset == ptr->size - _item_size) {
             ptr->data = _list_realloc(ptr->data, ptr->size + _allocation_size);
             ptr->data[0] = (void*)(ptr->data);
             ptr->size += _allocation_size;
@@ -60,9 +60,8 @@ const void* list_pop(struct list_data** const current) {
         if (ptr && ptr->data[0] != ptr->data) {
             /* gets temporary pointer value */
             /* returns actual data */
-            LPTR offset = (ptr->data[0] - (void*)ptr->data);
             // gets data pointer
-            void **data = (void*)(ptr->data) + offset;
+            const void **data = ptr->data[0];
             // gets the payload
             const void* payload = *data;
 #ifdef USE_MEMORY_CLEANUP
@@ -86,13 +85,11 @@ const void* list_peek(struct list_data** const current) {
     /* checks if pointer is not null */
     if (tmp != 0) {
         /* gets the current memory pointer */
-        struct list_data* ptr = *current;
+        const struct list_data* ptr = *current;
         /* if we call method on empty stack, do not return head element, return null element by convention */
         if (ptr && ptr->data[0] != ptr->data) {
-            /* returns actual data */
-            LPTR offset = (ptr->data[0] - (void*)ptr->data);
             // gets data pointer
-            void **data = (void*)(ptr->data) + offset;
+            const void **data = ptr->data[0];
             // gets the payload
             const void* payload = *data;
             // returns payload
