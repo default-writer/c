@@ -11,7 +11,7 @@ struct list_data* _new() {
     /* external code allocates memory and resets memory block to zero  */
     struct list_data* ptr = _list_alloc(1, size());
     ptr->data = _list_alloc(1, _allocation_size);
-    ptr->data[0] = (void*)(ptr->data);
+    ptr->data[0] = ptr->data;
     return ptr;
 }
 
@@ -43,24 +43,25 @@ void list_push(struct list_data** const current, const void* payload) {
         struct list_data* ptr = *current;
         // gets data pointer
         const void** data = ptr->data[0];
-        /* increase starting address */
-        LPTR offset = (void*)data - (void*)(ptr->data);
-        if (offset + _item_size == _allocation_size) {
+        /* gets the current data offset for new data allocation */
+        LPTR offset = (void*)(data + 1) - (void*)(ptr->data);
+        /* checks if current data pointer allocated all data */
+        if (offset == _allocation_size) {
             /* creates empty data chunk */
             struct list_data* item = _new();
             /* assigns item's next pointer to current pointer */
             item->next = *current;
             /* advances position of head pointer to the new head */
             *current = item;
+            /* updates current pointer */
             ptr = *current;
+            /* updates current data pointer */
             data = item->data[0];
         }
-        // advances the current data pointer
-        ++data;
-        // writes downd the current data pointer
+        // advances the current data pointer, writes data into allocated memory buffer */
+        *++data = payload;
+        // writes down the current data pointer
         ptr->data[0] = data;
-        /* writes data into allocated memory buffer */        
-        *data = payload;
     }
 }
 
