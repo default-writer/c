@@ -34,11 +34,11 @@ const void* list_data(const struct list_data* ptr) {
 /* as a result, items counter will increase */
 struct list_data* list_alloc(const void* payload) {
     /* creates emty data chunk */
-    struct list_data* ptr = _new();
+    struct list_data* item = _new();
     /* writes data into allocated memory buffer */
-    ptr->data = payload;
+    item->data = payload;
     /* returns created data structure */
-    return ptr;
+    return item;
 }
 
 /* frees up memory assigned for allocation of items at current position */

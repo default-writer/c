@@ -35,16 +35,21 @@ void list_push(struct list_data** const current, const void* payload) {
     /* checks if pointer is not null */
     if (tmp != 0) {
         struct list_data* ptr = *current;
+        // gets data pointer
+        const void** data = ptr->data[0];
         /* increase starting address */
         LPTR offset = ptr->data[0] - (void*)(ptr->data);
-        if (offset == ptr->size - _item_size) {
+        if (offset + _item_size == ptr->size) {
             ptr->data = _list_realloc(ptr->data, ptr->size + _allocation_size);
             ptr->data[0] = (void*)(ptr->data);
             ptr->size += _allocation_size;
+            data = ptr->data[0];
         }
-        ptr->data[0] += _item_size;
-        // gets data pointer
-        const void** data = ptr->data[0];
+        // advances the current data pointer
+        ++data;
+        // writes downd the current data pointer
+        ptr->data[0] = data;
+        /* writes data into allocated memory buffer */
         *data = payload;
     }
 }

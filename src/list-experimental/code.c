@@ -41,20 +41,25 @@ void list_push(struct list_data** const current, const void* payload) {
     if (tmp != 0) {
         /* gets the current memory pointer */
         struct list_data* ptr = *current;
-        /* increase starting address */
-        LPTR offset = ptr->data[0] - (void*)(ptr->data);
-        const void** data_bounds = ptr->data + _allocation_size;
-        const void** data_current = ptr->data[0];
-        if (offset == _allocation_size - _item_size) {
-            /* creates empty data chunk */
-            struct list_data* item = _new();
-            item->next = ptr;
-            *current = item;
-            ptr = *current;
-        }
-        ptr->data[0] += _item_size;
         // gets data pointer
         const void** data = ptr->data[0];
+        /* increase starting address */
+        LPTR offset = (void*)data - (void*)(ptr->data);
+        if (offset + _item_size == _allocation_size) {
+            /* creates empty data chunk */
+            struct list_data* item = _new();
+            /* assigns item's next pointer to current pointer */
+            item->next = *current;
+            /* advances position of head pointer to the new head */
+            *current = item;
+            ptr = *current;
+            data = item->data[0];
+        }
+        // advances the current data pointer
+        ++data;
+        // writes downd the current data pointer
+        ptr->data[0] = data;
+        /* writes data into allocated memory buffer */        
         *data = payload;
     }
 }

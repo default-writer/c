@@ -37,13 +37,13 @@ void list_push(struct list_data** const current, const void* payload) {
     /* checks if pointer is not null */
     if (tmp != 0) {
         /* creates empty data chunk */
-        struct list_data* ptr = _new();
+        struct list_data* item = _new();
         /* writes data into allocated memory buffer */
-        ptr->data = payload;
+        item->data = payload;
         /* assigns item's next pointer to current pointer */
-        ptr->next = *current;
+        item->next = *current;
         /* advances position of head pointer to the new head */
-        *current = ptr;
+        *current = item;
     }
 }
 
