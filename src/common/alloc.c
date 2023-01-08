@@ -1,7 +1,7 @@
 #include "std/common.h"
 #include "common/alloc.h"
 
-void* _list_alloc(size_t nmemb, size_t size) {
+inline void* _list_alloc(size_t nmemb, size_t size) {
     void* ptr = calloc(nmemb, size);
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("+: 0x%llx :%llx\n", (LPTR)ptr, (LPTR)size);
@@ -9,7 +9,7 @@ void* _list_alloc(size_t nmemb, size_t size) {
     return ptr;
 }
 
-void _list_free(void* ptr, size_t size) {
+inline void _list_free(void* ptr, size_t size) {
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("-: 0x%llx\n", (LPTR)ptr);
 #endif
@@ -19,7 +19,7 @@ void _list_free(void* ptr, size_t size) {
     free(ptr);
 }
 
-void* _list_realloc(void *ptr, size_t size) {
+inline void* _list_realloc(void *ptr, size_t size) {
     void* current = realloc(ptr, size);
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("&: 0x%llx\n", (LPTR)current);

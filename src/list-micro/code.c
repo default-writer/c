@@ -2,29 +2,29 @@
 #include "list-micro/data.h"
 #include "common/alloc.h"
 
-struct list_data* _new() {
+inline struct list_data* _new() {
     /* external code allocates memory and resets memory block to zero  */
     return _list_alloc(1, size());
 }
 
-void _delete(struct list_data* ptr) {
+inline void _delete(struct list_data* ptr) {
     _list_free(ptr, size());
 }
 
 /* gets size of a memory block to allocate */
-size_t size() {
+inline size_t size() {
     /* returns size of a memory block to allocate */
     return sizeof(struct list_data);
 }
 
 /* gets chunk's next item. external code enshures ptr is not 0 */
-struct list_data* list_next(struct list_data *ptr) {
+inline struct list_data* list_next(struct list_data *ptr) {
     /* external code enshures prt is not 0 */
     return ptr->next;
 }
 
 /* gets chunk's payload. external code enshures ptr is not 0 */
-const void* list_data(const struct list_data* ptr) {
+inline const void* list_data(const struct list_data* ptr) {
     /* external code enshures prt is not 0 */
     return ptr->data;
 }

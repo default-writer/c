@@ -10,7 +10,7 @@ LPTR class_get_type(const struct class *class);
 void* class_get_data(const struct class *class);
 void class_set_data(const struct class *class, void* data);
 
-struct class* _new() {
+inline struct class* _new() {
     /* external code allocates memory and resets memory block to zero  */
     struct class *class = _list_alloc(1, size());
     class->data = _list_alloc(1, sizeof(struct data));
@@ -20,13 +20,13 @@ struct class* _new() {
     return class;
 }
 
-void _delete(struct class* ptr) {
+inline void _delete(struct class* ptr) {
     _list_free(ptr->data, sizeof(struct data));
     _list_free(ptr, size());
 }
 
 /* gets size of a memory block to allocate */
-size_t size() {
+inline size_t size() {
     /* returns size of a memory block to allocate */
     return sizeof(struct class);
 }
