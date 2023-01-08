@@ -8,7 +8,7 @@ const int _item_size = sizeof(void*);
 const int _allocation_size = 8*_item_size;
 
 struct list_data* _new() {
-    /* external code allocates memory and resets memort block to zero  */
+    /* external code allocates memory and resets memory block to zero  */
     struct list_data* ptr = _list_alloc(1, size());
     ptr->data = _list_alloc(1, _allocation_size);
     ptr->data[0] = (void*)(ptr->data);
@@ -37,17 +37,21 @@ struct list_data* list_next(struct list_data *ptr) {
 /* as a result, items counter will increase */
 void list_push(struct list_data** const current, const void* payload) {
     const struct list_data * tmp = *current;
+    /* checks if pointer is not null */
     if (tmp != 0) {
+        /* gets the current memory pointer */
         struct list_data* ptr = *current;
         /* increase starting address */
         LPTR offset = ptr->data[0] - (void*)(ptr->data);
         if (offset == _allocation_size - _item_size) {
+            /* creates empty data chunk */
             struct list_data* item = _new();
             item->next = ptr;
             *current = item;
             ptr = *current;
         }
         ptr->data[0] += _item_size;
+        // gets data pointer
         const void **data = ptr->data[0];
         *data = payload;
     }
@@ -56,13 +60,12 @@ void list_push(struct list_data** const current, const void* payload) {
 /* pop existing element at the top of the stack/queue/list */
 const void* list_pop(struct list_data** const current) {
     const struct list_data* tmp = *current;
+    /* checks if pointer is not null */
     if (tmp != 0) {
-        /* get current context's head */
+        /* gets the current memory pointer */
         struct list_data* ptr = *current;
         /* if we call method on empty stack, do not return head element, return null element by convention */
         if (ptr && ptr->data[0] == ptr->data) {
-            /* get current context's head */
-            /* if we call method on empty stack, do not return head element, return null element by convention */
             /* gets next pointer */
             struct list_data* next = list_next(ptr);
             /* if we call method on empty stack, do not return head element, return null element by convention */
@@ -74,17 +77,16 @@ const void* list_pop(struct list_data** const current) {
             *current = next;
             /* returns actual data */
             _delete(ptr);
+            /* updates pointer to the next pointer value */
             ptr = next;
         }
         if (ptr && ptr->data[0] != ptr->data) {
-            /* gets temporary pointer value */
-            /* returns actual data */
-            LPTR offset = (ptr->data[0] - (void*)ptr->data);
             // gets data pointer
-            void **data = (void*)(ptr->data) + offset;
+            void **data = ptr->data[0];
+            // gets the payload
             const void* payload = *data;
 #ifdef USE_MEMORY_CLEANUP
-            // cleaups memory
+            // resets the memory pointer
             *data = 0;
 #endif
             /* free temporary pointer value */        
@@ -101,8 +103,9 @@ const void* list_pop(struct list_data** const current) {
 /* at current context, existing head */
 const void* list_peek(struct list_data** const current) {
     const struct list_data* tmp = *current;
+    /* checks if pointer is not null */
     if (tmp != 0) {
-        /* get current context's head */
+        /* gets the current memory pointer */
         const struct list_data* ptr = *current;
         /* if we call method on empty stack, do not return head element, return null element by convention */
         if (ptr && ptr->data[0] != ptr->data) {
@@ -110,7 +113,9 @@ const void* list_peek(struct list_data** const current) {
             LPTR offset = (ptr->data[0] - (void*)ptr->data);
             // gets data pointer
             void **data = (void*)(ptr->data) + offset;
+            // gets the payload
             const void* payload = *data;
+            // returns payload
             return payload;
         }
     }

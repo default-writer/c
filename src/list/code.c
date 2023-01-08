@@ -3,7 +3,7 @@
 #include "common/alloc.h"
 
 struct list_data* _new() {
-    /* external code allocates memory and resets memort block to zero  */
+    /* external code allocates memory and resets memory block to zero  */
     return _list_alloc(1, size());
 }
 
@@ -33,9 +33,9 @@ const void* list_data(const struct list_data* ptr) {
 /* at current context, data payload stored at allocated memory buffer */
 /* as a result, items counter will increase */
 struct list_data* list_alloc(const void* payload) {
-    /* stores into pre-allocated value newly allocated memory buffer pointer */
+    /* creates emty data chunk */
     struct list_data* ptr = _new();
-    /* sets the new data into allocated memory buffer */
+    /* writes data into allocated memory buffer */
     ptr->data = payload;
     /* returns created data structure */
     return ptr;
@@ -45,13 +45,13 @@ struct list_data* list_alloc(const void* payload) {
 /* at current context, all data needed to be claimed, will be freed */
 /* as a result, all items, starting from specified item, will be deleted */
 void list_free(struct list_data** const current) {
-    /* assigns currently selected item pointer to temporary */
-    /* get current context's head */
+    /* gets the current memory pointer */
     struct list_data* tmp = *current;
-    /* root elements returns null, i.e. 0 by convention */
+    /* checks if pointer is not null */
     if (tmp != 0) {
-        /* returns default element as null element */
+        /* frees up the memory */
         _delete(tmp);
+        /* resets current pointer to 0 */
         *current = 0;
     }
 }
@@ -62,8 +62,9 @@ void list_free(struct list_data** const current) {
 /* as a result, head will advances to new position, represented as new item */
 struct list_data* list_push(struct list_data** const current, struct list_data* const item) {
     const struct list_data * tmp = *current;
+    /* checks if pointer is not null */
     if (tmp != 0 && item != 0) {
-        /* get current context's head */
+        /* gets the current memory pointer */
         struct list_data* head = *current;
         /* assigns item pointer to head's prev pointer value */
         head->prev = item;
@@ -84,16 +85,12 @@ struct list_data* list_push(struct list_data** const current, struct list_data* 
 /* as a result, header will be set to previous position, represented as head's reference to next head */
 struct list_data* list_pop(struct list_data** const current) {
     const struct list_data * tmp = *current;
+    /* checks if pointer is not null */
     if (tmp != 0) {
-        /* get current context's head */
+        /* gets the current memory pointer */
         struct list_data* ptr = *current;
-        /* if we call method on empty stack, element itself is 0 */
-        /* if next to element is 0 so it has no parent, called non-list element (root element) */
-        /* root elements returns null, i.e. 0 by convention */
         /* gets next pointer */
         struct list_data* next = list_next(ptr);
-        /* if we call method on empty stack, element itself is 0 */
-        /* if next to element is 0 so it has no parent, called non-list element (root element) */
         /* root elements returns null, i.e. 0 by convention */
         if (next == 0) {
             /* returns default element as null element */
@@ -118,16 +115,12 @@ struct list_data* list_pop(struct list_data** const current) {
 /* at current context, existing head */
 struct list_data* list_peek(struct list_data** const current) {
     const struct list_data * tmp = *current;
+    /* checks if pointer is not null */
     if (tmp != 0) {
-        /* get current context's head */
+        /* gets the current memory pointer */
         struct list_data* ptr = *current;
-        /* if we call method on empty stack, element itself is 0 */
-        /* if next to element is 0 so it has no parent, called non-list element (root element) */
-        /* root elements returns null, i.e. 0 by convention */
         /* gets next pointer */
         const struct list_data* next = list_next(ptr);
-        /* if we call method on empty stack, element itself is 0 */
-        /* if next to element is 0 so it has no parent, called non-list element (root element) */
         /* root elements returns null, i.e. 0 by convention */
         if (next == 0) {
             /* returns default element as null element */
@@ -145,8 +138,9 @@ struct list_data* list_peek(struct list_data** const current) {
 /* current context pointer set to zero */
 void list_init(struct list_data** const current, struct list_data* (*list_new)()) {
     const struct list_data* tmp = *current;
+    /* checks if pointer is not null */
     if (tmp == 0) {
-        /* sets current context's head element */
+        /* sets the current memory pointer */
         *current = list_new();
     }
 }
@@ -155,10 +149,9 @@ void list_init(struct list_data** const current, struct list_data* (*list_new)()
 /* frees all memory elements */
 /* as a result, memory will be freed */
 void list_destroy(struct list_data** const current, void (*list_delete)(struct list_data*), struct list_data* (*list_next)(struct list_data*)) {
-    /* get current context's head */
-    /* assigns currently selected item pointer to temporary */
+    /* gets the current memory pointer */
     struct list_data* tmp = *current;
-    /* if not already freed */
+    /* checks if pointer is not null */
     if (tmp != 0) {
         /* until we found element with no next node (not a list element) */
         do {
@@ -171,7 +164,7 @@ void list_destroy(struct list_data** const current, void (*list_delete)(struct l
             /* advances temporary pointer value to the next item */
             tmp = next;
         } while (tmp != 0);
-        /* all stack items are processed */
+        /* resets current pointer to 0 */
         *current = 0;
     }
 }

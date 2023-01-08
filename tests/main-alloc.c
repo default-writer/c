@@ -189,7 +189,7 @@ RX_SET_UP(test_set_up) {
 RX_TEAR_DOWN(test_tear_down) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-    /* get current context's head */
+    /* gets the current memory pointer */
     struct list_data* ptr = *ctx;
     /* cleans up */
     delete_list(&ptr);

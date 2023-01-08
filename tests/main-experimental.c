@@ -29,10 +29,8 @@ void delete_list(struct list_data** ctx) {
 void array_print_head(struct list_data** const current) {
     // get current context's head
     const struct list_data* ptr = *current;
-    // gets offset
-    LPTR offset = ptr->data[0] - (void*)(ptr->data);
     // gets data pointer
-    const void **data = (void*)(ptr->data) + offset;
+    const void **data = ptr->data[0];
     // prints data value
     printf("*: 0x%llx 0x%llx\n", (LPTR)ptr->data[0], (LPTR)*data);
 }
@@ -46,17 +44,16 @@ void array_print(struct list_data** const current) {
     // sets the counter
     int i = 0;
     // assigns current's head pointer to the temporary
-    void* end = ptr->data[0];
+    const void* end = ptr->data[0];
     if (end != ptr->data)
     {
+        // gets data pointer
+        void **data = ptr->data[0];
         // until we found root element (element with no previous element reference)
         do {
-            ++i;
             // debug output of memory dump
-            printf("%d: 0x%llx 0x%llx\n", i, (LPTR)end, (LPTR)ptr->data[i]);
-            // remember temprary's prior pointer value to temporary
-            end = ptr->data + i;
-        } while (ptr->data[0] != end/*root*/);
+            printf("%d: 0x%llx 0x%llx\n", ++i, (LPTR)data, (LPTR)*data);
+        } while (ptr->data != --data/*root*/);
     }
     // stop on root element
 }
@@ -189,7 +186,7 @@ RX_SET_UP(test_set_up) {
 RX_TEAR_DOWN(test_tear_down) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-    /* get current context's head */
+    /* gets the current memory pointer */
     struct list_data* ptr = *ctx;
     /* cleans up */
     delete_list(&ptr);
@@ -359,6 +356,7 @@ RX_TEST_CASE(myTestSuite, test_list_push_pop, .fixture = test_fixture) {
     } while (++i < 8);
     // pushes to the list
     list->push(ctx, payload);
+    array_print(ctx);
     _recorded[i] = payload;
     // ensures data is added to the list
     do {
