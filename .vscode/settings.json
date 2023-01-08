@@ -91,7 +91,7 @@
   "testOnSave.enabled": true,
   "testOnSave.languageId": "c",
   "testOnSave.testCommand": "./bin/coverage.sh --all --clean",
-  "koverage.coverageFileNames": [  
+  "koverage.coverageFileNames": [
     "lcov.info"
   ],
   "coverage-gutters.coverageFileNames": [

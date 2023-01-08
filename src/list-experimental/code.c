@@ -43,6 +43,8 @@ void list_push(struct list_data** const current, const void* payload) {
         struct list_data* ptr = *current;
         /* increase starting address */
         LPTR offset = ptr->data[0] - (void*)(ptr->data);
+        const void** data_bounds = ptr->data + _allocation_size;
+        const void** data_current = ptr->data[0];
         if (offset == _allocation_size - _item_size) {
             /* creates empty data chunk */
             struct list_data* item = _new();
@@ -52,7 +54,7 @@ void list_push(struct list_data** const current, const void* payload) {
         }
         ptr->data[0] += _item_size;
         // gets data pointer
-        const void **data = ptr->data[0];
+        const void** data = ptr->data[0];
         *data = payload;
     }
 }
@@ -82,14 +84,14 @@ const void* list_pop(struct list_data** const current) {
         }
         if (ptr && ptr->data[0] != ptr->data) {
             // gets data pointer
-            void **data = ptr->data[0];
+            void** data = ptr->data[0];
             // gets the payload
             const void* payload = *data;
 #ifdef USE_MEMORY_CLEANUP
             // resets the memory pointer
             *data = 0;
 #endif
-            /* free temporary pointer value */        
+            /* free temporary pointer value */
             ptr->data[0] -= _item_size;
             /* returns removed element */
             return payload;
@@ -110,7 +112,7 @@ const void* list_peek(struct list_data** const current) {
         /* if we call method on empty stack, do not return head element, return null element by convention */
         if (ptr && ptr->data[0] != ptr->data) {
             // gets data pointer
-            const void **data = ptr->data[0];
+            const void** data = ptr->data[0];
             // gets the payload
             const void* payload = *data;
             // returns payload

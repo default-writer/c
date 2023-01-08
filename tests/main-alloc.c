@@ -30,7 +30,7 @@ void array_print_head(struct list_data** const current) {
     // get current context's head
     const struct list_data* ptr = *current;
     // gets data pointer
-    const void **data = ptr->data[0];
+    const void** data = ptr->data[0];
     // prints data value
     printf("*: 0x%llx 0x%llx\n", (LPTR)ptr->data[0], (LPTR)*data);
 }
@@ -115,7 +115,7 @@ void list_using(struct list_data** const current) {
 #endif
     const void* q_peek0 = list->peek(current);
     ZEROPTR(q_peek0)
-    const void* q_pop0 = list->pop(current); 
+    const void* q_pop0 = list->pop(current);
 #ifdef USE_MEMORY_DEBUG_INFO
     array_print(current);
 #endif
@@ -210,7 +210,7 @@ RX_TEST_CASE(myTestSuite, test_empty_list_pop_equals_0, .fixture = test_fixture)
     // creates the list
     const struct list* list = &list_alloc_definition;
     // pops from the list
-    const struct list_data* head = list->pop(&ctx); 
+    const struct list_data* head = list->pop(&ctx);
     // ensures counter is initialized to 0
     RX_ASSERT(head == 0);
 }
@@ -221,7 +221,7 @@ RX_TEST_CASE(myTestSuite, test_empty_list_peek_equals_0, .fixture = test_fixture
     // creates the list
     const struct list* list = &list_alloc_definition;
     // peeks from the list
-    const struct list_data* head = list->peek(&ctx); 
+    const struct list_data* head = list->peek(&ctx);
     // ensures counter is initialized to 0
     RX_ASSERT(head == 0);
 }
@@ -245,7 +245,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_payload, .fixture = test_fixture) {
     struct list_data** ctx = &rx->ctx;
     // creates the list
     const struct list* list = &list_alloc_definition;
-    // prepares the payload    
+    // prepares the payload
     const void* payload = (void*)0xdeadbeef;
     // pushes to the list
     list->push(ctx, payload);

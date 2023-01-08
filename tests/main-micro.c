@@ -113,7 +113,7 @@ void list_using(struct list_data** const current) {
 #endif
     const void* q_peek0 = list->peek(current);
     ZEROPTR(q_peek0)
-    const void* q_pop0 = list->pop(current); 
+    const void* q_pop0 = list->pop(current);
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, list_next, list_data);
 #endif
@@ -265,7 +265,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture) 
     const void* payload = (void*)0xdeadbeef;
     // pushes to the list
     list->push(ctx, payload);
-    // pops from the list 
+    // pops from the list
     const void* head = list->pop(ctx);
     // ensures data is added to the list
     RX_ASSERT(head != 0);

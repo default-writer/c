@@ -118,17 +118,17 @@ void list_using(struct list_data** const current) {
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, list_next, list_data);
 #endif
-    struct list_data* q_pop0 = list->pop(current); 
+    struct list_data* q_pop0 = list->pop(current);
     list->free(&q_pop0);
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, list_next, list_data);
 #endif
-    struct list_data* q_pop1 = list->pop(current); 
+    struct list_data* q_pop1 = list->pop(current);
     list->free(&q_pop1);
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, list_next, list_data);
 #endif
-    struct list_data* q_pop2 = list->pop(current); 
+    struct list_data* q_pop2 = list->pop(current);
     list->free(&q_pop2);
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, list_next, list_data);
@@ -140,12 +140,12 @@ void list_using(struct list_data** const current) {
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, list_next, list_data);
 #endif
-    struct list_data* q_pop4 = list->pop(current); 
+    struct list_data* q_pop4 = list->pop(current);
     list->free(&q_pop4);
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, list_next, list_data);
 #endif
-    struct list_data* q_pop5 = list->peek(current); 
+    struct list_data* q_pop5 = list->peek(current);
     list->free(&q_pop5);
     list->push(current, q_pop0);
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -212,7 +212,7 @@ RX_TEST_CASE(myTestSuite, test_empty_list_peek_equals_0, .fixture = test_fixture
     // creates the list
     const struct list* list = &list_definition;
     // peeks up the current head element
-    const struct list_data* head = list->peek(&ctx); 
+    const struct list_data* head = list->peek(&ctx);
     // ensures no data added to the list
     RX_ASSERT(head == 0);
 }

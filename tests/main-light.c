@@ -110,7 +110,7 @@ void list_using(struct list_data** const current) {
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, list_next, list_data);
 #endif
-    const void* q_pop0 = list->pop(current); 
+    const void* q_pop0 = list->pop(current);
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, list_next, list_data);
 #endif
@@ -126,7 +126,7 @@ void list_using(struct list_data** const current) {
 #endif
     const void* q_pop3 = list->pop(current);
     list->push(current, q_pop3);
-    q_pop3 = list->pop(current); 
+    q_pop3 = list->pop(current);
     ZEROPTR(q_pop3)
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, list_next, list_data);
@@ -193,7 +193,7 @@ RX_TEST_CASE(myTestSuite, test_empty_list_pop_equals_0, .fixture = test_fixture)
     // creates the list
     const struct list* list = &list_light_definition;
     // pops from the list
-    const struct list_data* head = list->pop(&ctx); 
+    const struct list_data* head = list->pop(&ctx);
     // ensures counter is initialized to 0
     RX_ASSERT(head == 0);
 }
@@ -204,7 +204,7 @@ RX_TEST_CASE(myTestSuite, test_empty_list_peek_equals_0, .fixture = test_fixture
     // creates the list
     const struct list* list = &list_light_definition;
     // peeks from the list
-    const struct list_data* head = list->peek(&ctx); 
+    const struct list_data* head = list->peek(&ctx);
     // ensures counter is initialized to 0
     RX_ASSERT(head == 0);
 }

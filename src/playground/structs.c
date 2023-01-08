@@ -64,7 +64,7 @@ RX_TEAR_DOWN(test_tear_down) {
     struct class** ctx = &rx->ctx;
     // destroy list
     class_destroy(ctx);
-    *ctx = 0;    
+    *ctx = 0;
 }
 
 /* Define the fixture. */

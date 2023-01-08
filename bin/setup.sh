@@ -113,7 +113,7 @@ case "${install}" in
         usermod -aG docker $USER
         upgrade
         ;;
-    
+
     "--docker-compose") # installs docker-compose
         update
         apt install -y --fix-broken qemu-kvm libvirt-clients libvirt-daemon-system bridge-utils virtinst libvirt-daemon pass uidmap

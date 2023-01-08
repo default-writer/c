@@ -59,7 +59,7 @@
 ## coverage
 
 ### builds sources with code coverage
- 
+
 ```sh
 ./bin/coverage.sh
 ```
