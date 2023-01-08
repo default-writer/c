@@ -10,8 +10,6 @@ const char* __asan_default_options() { return "detect_leaks=0"; }
 #endif
 
 extern const struct list list_definition;
-extern struct list_data* _new();
-extern void _delete(struct list_data* ptr);
 
 static inline struct list_data* new_list() {
     const struct list* list = &list_definition;
