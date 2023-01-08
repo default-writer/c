@@ -2,10 +2,8 @@
 #include "list-experimental/data.h"
 #include "common/alloc.h"
 
-/* item size */
-const int _item_size = sizeof(void*);
 /* buffer size in bytes = size of 8 items */
-const int _allocation_size = 8*_item_size;
+const int _allocation_size = 8*sizeof(void*);
 
 struct list_data* _new() {
     /* external code allocates memory and resets memory block to zero  */
@@ -94,11 +92,11 @@ const void* list_pop(struct list_data** const current) {
             // gets the payload
             const void* payload = *data;
 #ifdef USE_MEMORY_CLEANUP
-            // resets the memory pointer
-            *data = 0;
+            // resets the memory pointer, rewinds the current data pointer
+            *data-- = 0;
 #endif
             /* free temporary pointer value */
-            ptr->data[0] -= _item_size;
+            ptr->data[0] = data;
             /* returns removed element */
             return payload;
         }
