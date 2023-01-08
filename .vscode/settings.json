@@ -65,7 +65,7 @@
     "stdlib.h": "c"
   },
   "lldb.displayFormat": "auto",
-  "lldb.showDisassembly": "always",
+  "lldb.showDisassembly": "auto",
   "lldb.dereferencePointers": true,
   "editor.tokenColorCustomizations": {
     "textMateRules": [
@@ -104,7 +104,7 @@
   "files.watcherInclude": ["."],
   "files.exclude": {
   },
-  "workbench.editor.enablePreview": false,
+  "workbench.editor.enablePreview": true,
   "pdf-preview.default.scale": "page-width",
   "clangd.onConfigChanged": "restart",
   "clangd.checkUpdates": true,
