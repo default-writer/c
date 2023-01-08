@@ -85,7 +85,7 @@ esac
 
 [ ! -d "${pwd}/coverage" ] && mkdir "${pwd}/coverage"
 
-if [ "${clean}" == "--clean" ]; then
+if [ "${clean}" == "--clean" ] && [ -f "${pwd}/coverage/lcov.info" ]; then
     mv "${pwd}/coverage/lcov.info" "${pwd}/lcov.info"
     rm -rf "${pwd}/coverage"
     mkdir "${pwd}/coverage"
