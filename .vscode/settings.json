@@ -65,7 +65,7 @@
     "stdlib.h": "c"
   },
   "lldb.displayFormat": "auto",
-  "lldb.showDisassembly": "auto",
+  "lldb.showDisassembly": "always",
   "lldb.dereferencePointers": true,
   "editor.tokenColorCustomizations": {
     "textMateRules": [

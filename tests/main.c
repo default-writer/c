@@ -10,8 +10,10 @@ const char* __asan_default_options() { return "detect_leaks=0"; }
 #endif
 
 extern const struct list list_definition;
+extern struct list_data* _new();
+extern void _delete(struct list_data* ptr);
 
-struct list_data* new_list() {
+static inline struct list_data* new_list() {
     const struct list* list = &list_definition;
     struct list_data* ctx = 0;
     // init list
@@ -20,7 +22,7 @@ struct list_data* new_list() {
     return ctx;
 }
 
-void delete_list(struct list_data** ctx) {
+static inline void delete_list(struct list_data** ctx) {
     const struct list* list = &list_definition;
     // destroys list
     list->destroy(ctx, _delete, list_next);
@@ -29,7 +31,7 @@ void delete_list(struct list_data** ctx) {
 }
 
 // default list usage scenario
-void using_list(void (*list_using)(struct list_data** const)) {
+static inline void using_list(void (*list_using)(struct list_data** const)) {
     // initialize current context (stack)
     struct list_data* ctx = new_list();
     // call user method
@@ -39,7 +41,7 @@ void using_list(void (*list_using)(struct list_data** const)) {
 }
 
 // default list usage scenario
-void using_list2(void (*list_using)(struct list_data** const)) {
+static inline void using_list2(void (*list_using)(struct list_data** const)) {
     // initialize current context (stack)
     struct list_data* ctx = new_list();
     // call user method
@@ -49,7 +51,7 @@ void using_list2(void (*list_using)(struct list_data** const)) {
 }
 
 // print head on current context (stack)
-void list_print_head(struct list_data** const current, const void* (*_data)(const struct list_data*)) {
+static inline void list_print_head(struct list_data** const current, const void* (*_data)(const struct list_data*)) {
     // get current context's head
     struct list_data* ptr = *current;
     // visualise item
@@ -59,7 +61,7 @@ void list_print_head(struct list_data** const current, const void* (*_data)(cons
 // print all stack trace to output
 // in a single loop, print out all elements except root element (which does not have a payload)
 // as a result, all stack will be printed in last-to-first order (reverse)
-void list_print(struct list_data** const current, struct list_data* (*list_next)(struct list_data*), const void* (*list_data)(const struct list_data*)) {
+static inline void list_print(struct list_data** const current, struct list_data* (*list_next)(struct list_data*), const void* (*list_data)(const struct list_data*)) {
     // sets the counter
     int i = 0;
     // assigns current's head pointer to the temporary
@@ -78,7 +80,7 @@ void list_print(struct list_data** const current, struct list_data* (*list_next)
 }
 
 // use list
-void list_using(struct list_data** const current) {
+static inline void list_using(struct list_data** const current) {
     // access context's functions pointer
     const struct list* list = &list_definition;
     // prepares the payload
