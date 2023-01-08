@@ -34,15 +34,9 @@ static inline void array_print_head(struct list_data** const current) {
     // gets data pointer
     const void** data = ptr->data[0];
     // prints data value
-    printf("*: 0x%llx 0x%llx\n", (LPTR)ptr->data[0], (LPTR)*data);
+    printf("*: 0x%016llx >0x%016llx\n", (LPTR)ptr->data[0], (LPTR)*data);
 }
 
-static int lcg_state = 0xdeadbeef;
-
-static inline int lcg_parkmiller() {
-	lcg_state = (LPTR)lcg_state* 48271 % 0x7fffffff;
-    return lcg_state;
-}
 
 // print all stack trace to output
 // in a single loop, print out all elements except root element (which does not have a payload)
@@ -56,17 +50,28 @@ static inline void array_print(struct list_data** const current) {
     const void* end = ptr->data[0];
     if (end != ptr->data)
     {
-        // gets data pointer
-        void** data = ptr->data[0];
-        // until we found root element (element with no previous element reference)
         do {
-            // debug output of memory dump
-            printf("%d: 0x%llx 0x%llx\n", ++i, (LPTR)data, (LPTR)*data);
-        } while (ptr->data != --data/*root*/);
+            // gets data pointer
+            void** data = ptr->data[0];
+            // until we found root element (element with no previous element reference)
+            do {
+                // debug output of memory dump
+                printf("%d: 0x%016llx *0x%016llx\n", ++i, (LPTR)data, (LPTR)*data);
+            } while (ptr->data != --data/*root*/);
+            ptr = ptr->next;
+        } while (ptr != 0);
     }
     // stop on root element
 }
 
+/* LCG Park-Miller state */
+static int lcg_state = 0xdeadbeef;
+
+/* LCG Park-Miller function */
+static inline int lcg_parkmiller() {
+	lcg_state = (LPTR)lcg_state* 48271 % 0x7fffffff;
+    return lcg_state;
+}
 
 // default list usage scenario
 static inline void using_list(void (*list_using)(struct list_data** const)) {

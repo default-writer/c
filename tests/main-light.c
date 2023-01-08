@@ -55,13 +55,14 @@ static inline void list_print_head(struct list_data** const current, const void*
     // get current context's head
     struct list_data* ptr = *current;
     // visualise item
-    printf("*: 0x%llx 0x%llx\n", (LPTR)ptr, (LPTR)_data(ptr));
+    printf("*: 0x%016llx >0x%016llx\n", (LPTR)ptr, (LPTR)_data(ptr));
 }
 
 // print all stack trace to output
 // in a single loop, print out all elements except root element (which does not have a payload)
 // as a result, all stack will be printed in last-to-first order (reverse)
 static inline void list_print(struct list_data** const current, struct list_data* (*list_next)(struct list_data*), const void* (*list_data)(const struct list_data*)) {
+    // sets the counter
     int i = 0;
     // assigns current's head pointer to the temporary
     struct list_data* tmp = *current;
@@ -70,7 +71,7 @@ static inline void list_print(struct list_data** const current, struct list_data
         // until we found root element (element with no previous element reference)
         do {
             // debug output of memory dump
-            printf("%d: 0x%llx 0x%llx\n", ++i, (LPTR)tmp, (LPTR)list_data(tmp));
+            printf("%d: 0x%016llx *0x%016llx\n", ++i, (LPTR)tmp, (LPTR)list_data(tmp));
             // remember temprary's prior pointer value to temporary
             tmp = list_next(tmp);
         } while (tmp != 0/*root*/);

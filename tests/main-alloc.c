@@ -34,7 +34,7 @@ static inline void array_print_head(struct list_data** const current) {
     // gets data pointer
     const void** data = ptr->data[0];
     // prints data value
-    printf("*: 0x%llx 0x%llx\n", (LPTR)ptr->data[0], (LPTR)*data);
+    printf("*: 0x%016llx >0x%016llx\n", (LPTR)ptr->data[0], (LPTR)*data);
 }
 
 // print all stack trace to output
@@ -53,7 +53,7 @@ static inline void array_print(struct list_data** const current) {
         do {
             ++i;
             // debug output of memory dump
-            printf("%d: 0x%llx 0x%llx\n", i, (LPTR)end, (LPTR)ptr->data[i]);
+            printf("%d: 0x%016llx *0x%016llx\n", i, (LPTR)end, (LPTR)ptr->data[i]);
             // remember temprary's prior pointer value to temporary
             end = ptr->data + i;
         } while (ptr->data[0] != end/*root*/);
