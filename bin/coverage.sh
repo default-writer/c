@@ -85,11 +85,9 @@ esac
 
 [ ! -d "${pwd}/coverage" ] && mkdir "${pwd}/coverage"
 
-if [ "${clean}" == "--clean" ] && [ -f "${pwd}/coverage/lcov.info" ]; then
-    mv "${pwd}/coverage/lcov.info" "${pwd}/lcov.info"
-    rm -rf "${pwd}/coverage"
-    mkdir "${pwd}/coverage"
-    mv "${pwd}/lcov.info" "${pwd}/coverage/lcov.info"
+if [ "${clean}" == "--clean" ]; then
+    rm -rf "${pwd}/cmake"
+    mkdir "${pwd}/cmake"
 fi
 
 for m in "${array[@]}"; do
