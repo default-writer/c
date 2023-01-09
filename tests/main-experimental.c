@@ -41,7 +41,7 @@ static inline void array_print_head(struct list_data** const current) {
 // as a result, all stack will be printed in last-to-first order (reverse)
 static inline void array_print(struct list_data** const current) {
     // get current context's head
-    const struct list_data* ptr = *current;
+    struct list_data* ptr = *current;
     // sets the counter
     int i = 0;
     // assigns current's head pointer to the temporary
@@ -56,7 +56,8 @@ static inline void array_print(struct list_data** const current) {
                 // debug output of memory dump
                 printf("%d: 0x%016llx *0x%016llx\n", ++i, (LPTR)data, (LPTR)*data);
             } while (ptr->data != --data/*root*/);
-            ptr = ptr->next;
+            // gets next data pointer
+            ptr = list_next(ptr);
         } while (ptr != 0);
     }
     // stop on root element
@@ -371,8 +372,8 @@ RX_TEST_CASE(myTestSuite, test_list_push_pop, .fixture = test_fixture) {
     const struct list* list = &list_experimental_definition;
     // prepares the payload
     const void* payload = (void*)0xdeadbeef;
-    // record buffer has 9 items
-    const void* _recorded[8+1] = { };
+    // record buffer has N items
+    const void* _recorded[2*N+1] = { };
     // pushes all pseudo-random values
     // pushes to the list multiple times
     int i=0;
@@ -380,11 +381,14 @@ RX_TEST_CASE(myTestSuite, test_list_push_pop, .fixture = test_fixture) {
         const void* _payload = (void*)(LPTR)lcg_parkmiller();
         _recorded[i] = _payload;
         list->push(ctx, _payload);
-    } while (++i < 8);
+    } while (++i < 2*N);
     // pushes to the list
     list->push(ctx, payload);
     array_print(ctx);
     _recorded[i] = payload;
+    const void* head = list->peek(ctx);
+    // ensures payload is on top of the stack
+    RX_ASSERT(head == payload);
     // ensures data is added to the list
     do {
         RX_ASSERT(list->pop(ctx) == _recorded[i]);

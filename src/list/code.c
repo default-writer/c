@@ -98,10 +98,12 @@ struct list_data* list_pop(struct list_data** const current) {
         }
         /* resets prev pointer */
         next->prev = 0;
+#ifdef USE_MEMORY_CLEANUP
         /* points to next node */
         ptr->next = 0;
         /* points to next node */
         ptr->prev = 0;
+#endif        
         /* rewinds head pointer to next pointer value */
         *current = next;
         /* returns removed element */

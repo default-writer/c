@@ -324,6 +324,10 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_and_prev_next_equals_0, .fixture = tes
     struct list_data* tmp = list->alloc(payload);
     // pushes to the list
     list->push(ctx, tmp);
+    // peeks from the list
+    const struct list_data* head = list->peek(ctx);
+    // ensures peek does data cleanup
+    RX_ASSERT(head->prev == 0);
     // pops from the list
     struct list_data* current = list->pop(ctx);
     const struct list_data* prev = current->next;
@@ -332,8 +336,12 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_and_prev_next_equals_0, .fixture = tes
     list->free(&current);
     // ensures data is added to the list
     RX_ASSERT(head_payload == payload);
+#ifdef USE_MEMORY_CLEANUP
+    // ensures peek does data cleanup
     RX_ASSERT(prev == 0);
+    // ensures peek does data cleanup
     RX_ASSERT(next == 0);
+#endif
 }
 
 RX_TEST_CASE(myTestSuite, test_list_free_head, .fixture = test_fixture) {

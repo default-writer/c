@@ -2,9 +2,6 @@
 #include "list-experimental/data.h"
 #include "common/alloc.h"
 
-/* defines N-element collection*/
-#define N 1
-
 /* buffer size in bytes = size of n items */
 const int _allocation_size = (N + 1)*sizeof(void*);
 
@@ -86,7 +83,7 @@ const void* list_pop(struct list_data** const current) {
             *current = next;
             /* frees up the memory */
             _delete(ptr);
-            /* updates pointer to the next pointer value */
+            /* updates pointer */
             ptr = next;
         }
         if (ptr && ptr->data[0] != ptr->data) {
@@ -118,17 +115,8 @@ const void* list_peek(struct list_data** const current) {
         struct list_data* ptr = *current;
         /* if we call method on empty stack, do not return head element, return null element by convention */
         if (ptr && ptr->data[0] == ptr->data) {
-            /* gets next pointer */
-            struct list_data* next = list_next(ptr);
-            /* if we call method on empty stack, do not return head element, return null element by convention */
-            if (next == 0) {
-                /* returns default element as null element */
-                return 0;
-            }
-            /* rewinds head pointer to next pointer value */
-            *current = next;
-            /* updates pointer to the next pointer value */
-            ptr = next;
+            /* updates pointer */
+            ptr = list_next(ptr);
         }
         /* if we call method on empty stack, do not return head element, return null element by convention */
         if (ptr && ptr->data[0] != ptr->data) {

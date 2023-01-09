@@ -3,6 +3,9 @@
 
 #include "std/common.h"
 
+/* defines N-element collection*/
+#define N 256
+
 struct list_data {
     /* data */
     void** data;
