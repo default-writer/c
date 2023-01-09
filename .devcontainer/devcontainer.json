@@ -44,8 +44,9 @@
 		"ms-vscode.live-server",
 		"ms-vscode.cpptools-extension-pack",
 		"llvm-vs-code-extensions.vscode-clangd",
-		"UrosVujosevic.explorer-manager",
-		"alefragnani.Bookmarks",
-		"markis.code-coverage"
+		"urosvujosevic.explorer-manager",
+		"alefragnani.bookmarks",
+		"markis.code-coverage",
+		"wraith13.zoombar-vscode"
 	]
 }
