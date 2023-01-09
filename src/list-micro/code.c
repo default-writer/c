@@ -18,7 +18,7 @@ inline size_t size() {
 }
 
 /* gets chunk's next item. external code enshures ptr is not 0 */
-inline struct list_data* list_next(struct list_data *ptr) {
+inline struct list_data* list_next(struct list_data* ptr) {
     /* external code enshures prt is not 0 */
     return ptr->next;
 }

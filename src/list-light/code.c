@@ -18,13 +18,13 @@ inline size_t size() {
 }
 
 /* gets chunk's next item. external code enshures ptr is not 0 */
-inline struct list_data* list_next(struct list_data *ptr) {
+inline struct list_data* list_next(struct list_data* ptr) {
     /* external code enshures prt is not 0 */
     return ptr->next;
 }
 
 /* gets chunk's payload. external code enshures ptr is not 0 */
-inline const void *list_data(const struct list_data *ptr) {
+inline const void *list_data(const struct list_data* ptr) {
     /* external code enshures prt is not 0 */
     return ptr->data;
 }

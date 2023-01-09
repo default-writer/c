@@ -28,7 +28,7 @@ inline size_t size() {
 }
 
 /* gets chunk's next item. external code enshures ptr is not 0 */
-inline struct list_data* list_next(struct list_data *ptr) {
+inline struct list_data* list_next(struct list_data* ptr) {
     /* external code enshures prt is not 0 */
     return ptr->next;
 }
@@ -37,7 +37,7 @@ inline struct list_data* list_next(struct list_data *ptr) {
 /* at current context, data payload stored at allocated memory buffer */
 /* as a result, items counter will increase */
 void list_push(struct list_data** const current, const void* payload) {
-    const struct list_data * tmp = *current;
+    const struct list_data*  tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
         /* gets the current memory pointer */
@@ -127,8 +127,6 @@ const void* list_peek(struct list_data** const current) {
             }
             /* rewinds head pointer to next pointer value */
             *current = next;
-            /* frees up the memory */
-            _delete(ptr);
             /* updates pointer to the next pointer value */
             ptr = next;
         }

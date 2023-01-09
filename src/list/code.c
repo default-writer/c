@@ -18,7 +18,7 @@ inline size_t size() {
 }
 
 /* gets chunk's next item. external code enshures ptr is not 0 */
-inline struct list_data* list_next(struct list_data *ptr) {
+inline struct list_data* list_next(struct list_data* ptr) {
     /* external code enshures prt is not 0 */
     return ptr->next;
 }
@@ -61,7 +61,7 @@ void list_free(struct list_data** const current) {
 /* for the new item, add current head as previous element */
 /* as a result, head will advances to new position, represented as new item */
 struct list_data* list_push(struct list_data** const current, struct list_data* const item) {
-    const struct list_data * tmp = *current;
+    const struct list_data*  tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0 && item != 0) {
         /* gets the current memory pointer */
@@ -84,7 +84,7 @@ struct list_data* list_push(struct list_data** const current, struct list_data* 
 /* for the new stack header, correcponding values will be fixed */
 /* as a result, header will be set to previous position, represented as head's reference to next head */
 struct list_data* list_pop(struct list_data** const current) {
-    const struct list_data * tmp = *current;
+    const struct list_data*  tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
         /* gets the current memory pointer */
@@ -114,7 +114,7 @@ struct list_data* list_pop(struct list_data** const current) {
 /* peek existing element at the top of the stack/queue/list */
 /* at current context, existing head */
 struct list_data* list_peek(struct list_data** const current) {
-    const struct list_data * tmp = *current;
+    const struct list_data*  tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
         /* gets the current memory pointer */

@@ -7,7 +7,7 @@ struct list_data {
     /* data */
     void** data;
     /* next element */
-    struct list_data *next;
+    struct list_data* next;
 };
 
 struct list {

@@ -29,7 +29,7 @@ inline size_t size() {
 /* at current context, data payload stored at allocated memory buffer */
 /* as a result, items counter will increase */
 void list_push(struct list_data** const current, const void* payload) {
-    const struct list_data * tmp = *current;
+    const struct list_data*  tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
         /* gets the current memory pointer */
