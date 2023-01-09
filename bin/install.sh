@@ -43,7 +43,7 @@ case "${install}" in
         git submodule update --recursive --remote
         git pull --recurse-submodules . --quiet
         ;;
-        
+
     "--hooks") # installs git hooks
         cp "${pwd}/.hooks/prepare-commit-msg" "${pwd}/.git/hooks/prepare-commit-msg"
         chmod u+x "${pwd}/.git/hooks/prepare-commit-msg"

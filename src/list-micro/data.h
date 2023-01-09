@@ -6,8 +6,8 @@
 struct list_data {
     /* points to previous node */
     struct list_data* next;
-    /* payload */
-    const void* payload;
+    /* data */
+    const void* data;
 };
 
 struct list {
@@ -22,9 +22,5 @@ struct list {
     /* peek item on current context (stack) */
     const void* (*peek)(struct list_data** const current);
 };
-
-struct list_data* _new();
-void _delete(struct list_data* ptr);
-size_t size();
 
 #endif // _LIST_MICRO_DATA_H_

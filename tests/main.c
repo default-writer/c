@@ -1,9 +1,7 @@
 #include "rexo/include/rexo.h"
 
-#include "std/api.h"
+#include "std/list.h"
 #include "list/data.h"
-
-#include "common/print.h"
 
 #define ZEROPTR(ptr) if (ptr != 0) { ptr = 0; }
 
@@ -13,7 +11,7 @@ const char* __asan_default_options() { return "detect_leaks=0"; }
 
 extern const struct list list_definition;
 
-struct list_data* new_list() {
+static inline struct list_data* new_list() {
     const struct list* list = &list_definition;
     struct list_data* ctx = 0;
     // init list
@@ -22,7 +20,7 @@ struct list_data* new_list() {
     return ctx;
 }
 
-void delete_list(struct list_data** ctx) {
+static inline void delete_list(struct list_data** ctx) {
     const struct list* list = &list_definition;
     // destroys list
     list->destroy(ctx, _delete, list_next);
@@ -31,34 +29,61 @@ void delete_list(struct list_data** ctx) {
 }
 
 // default list usage scenario
-void using_list(void (*list_using)(struct list_data** const)) {
+static inline void using_list(void (*list_using)(struct list_data** const)) {
     // initialize current context (stack)
     struct list_data* ctx = new_list();
-
     // call user method
     list_using(&ctx);
-
     // destroy list
     delete_list(&ctx);
 }
 
 // default list usage scenario
-void using_list2(void (*list_using)(struct list_data** const)) {
+static inline void using_list2(void (*list_using)(struct list_data** const)) {
     // initialize current context (stack)
     struct list_data* ctx = new_list();
-
     // call user method
     list_using(&ctx);
-
     // destroy list
     delete_list(&ctx);
 }
 
+// print head on current context (stack)
+static inline void list_print_head(struct list_data** const current, const void* (*_data)(const struct list_data*)) {
+    // get current context's head
+    struct list_data* ptr = *current;
+    // visualise item
+    printf("*: 0x%016llx >0x%016llx\n", (LPTR)ptr, (LPTR)_data(ptr));
+}
+
+// print all stack trace to output
+// in a single loop, print out all elements except root element (which does not have a payload)
+// as a result, all stack will be printed in last-to-first order (reverse)
+static inline void list_print(struct list_data** const current, struct list_data* (*list_next)(struct list_data*), const void* (*list_data)(const struct list_data*)) {
+    // sets the counter
+    int i = 0;
+    // assigns current's head pointer to the temporary
+    struct list_data* tmp = *current;
+    if (tmp != 0)
+    {
+        // until we found root element (element with no previous element reference)
+        do {
+            // debug output of memory dump
+            printf("%d: 0x%016llx *0x%016llx\n", ++i, (LPTR)tmp, (LPTR)list_data(tmp));
+            // remember temprary's prior pointer value to temporary
+            tmp = list_next(tmp);
+        } while (tmp != 0/*root*/);
+    }
+    // stop on root element
+}
+
 // use list
-void list_using(struct list_data** const current) {
+static inline void list_using(struct list_data** const current) {
     // access context's functions pointer
     const struct list* list = &list_definition;
+    // prepares the payload
     const void* payload = (void*)0xdeadbeef;
+    // peeks and pops from empty list
     const struct list_data* is_null[] = {
         list->peek(current),
         list->pop(current)
@@ -93,17 +118,17 @@ void list_using(struct list_data** const current) {
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, list_next, list_data);
 #endif
-    struct list_data* q_pop0 = list->pop(current); 
+    struct list_data* q_pop0 = list->pop(current);
     list->free(&q_pop0);
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, list_next, list_data);
 #endif
-    struct list_data* q_pop1 = list->pop(current); 
+    struct list_data* q_pop1 = list->pop(current);
     list->free(&q_pop1);
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, list_next, list_data);
 #endif
-    struct list_data* q_pop2 = list->pop(current); 
+    struct list_data* q_pop2 = list->pop(current);
     list->free(&q_pop2);
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, list_next, list_data);
@@ -115,12 +140,12 @@ void list_using(struct list_data** const current) {
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, list_next, list_data);
 #endif
-    struct list_data* q_pop4 = list->pop(current); 
+    struct list_data* q_pop4 = list->pop(current);
     list->free(&q_pop4);
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, list_next, list_data);
 #endif
-    struct list_data* q_pop5 = list->peek(current); 
+    struct list_data* q_pop5 = list->peek(current);
     list->free(&q_pop5);
     list->push(current, q_pop0);
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -166,35 +191,29 @@ RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tea
 RX_TEST_CASE(myTestSuite, test_empty_list_count_equals_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-
-    // enshure that counter is initialized to 0
+    // ensures counter is initialized to 0
     RX_ASSERT(*ctx != 0);
 }
 
 /* test pop from 0 pointer */
 RX_TEST_CASE(myTestSuite, test_empty_list_pop_equals_0, .fixture = test_fixture) {
     struct list_data* ctx = 0;
-
-    // create list
+    // creates the list
     const struct list* list = &list_definition;
-
+    // pups out the current head element
     const struct list_data* head = list->pop(&ctx);
- 
-    // enshure that counter is initialized to 0
+    // ensures no data added to the list
     RX_ASSERT(head == 0);
 }
-
 
 /* test pop from 0 pointer */
 RX_TEST_CASE(myTestSuite, test_empty_list_peek_equals_0, .fixture = test_fixture) {
     struct list_data* ctx = 0;
-
-    // create list
+    // creates the list
     const struct list* list = &list_definition;
-
+    // peeks up the current head element
     const struct list_data* head = list->peek(&ctx);
- 
-    // enshure that counter is initialized to 0
+    // ensures no data added to the list
     RX_ASSERT(head == 0);
 }
 
@@ -202,90 +221,92 @@ RX_TEST_CASE(myTestSuite, test_empty_list_peek_equals_0, .fixture = test_fixture
 RX_TEST_CASE(myTestSuite, test_list_alloc_count_eq_1, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-
-    // create list
+    // creates the list
     const struct list* list = &list_definition;
+    // prepares the payload
     const void* payload = (void*)0xdeadbeef;
-
+    // allocates the memory for the structure
     struct list_data* tmp = list->alloc(payload);
+    // pushes to the list
     list->push(ctx, tmp);
-
-    // ensure that data being added to list
+    // ensures data is added to the list
     RX_ASSERT(*ctx != 0);
 }
 
 RX_TEST_CASE(myTestSuite, test_list_alloc_payload, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-
-    // create list
+    // creates the list
     const struct list* list = &list_definition;
+    // prepares the payload
     const void* payload = (void*)0xdeadbeef;
-
+    // allocates the memory for the structure
     struct list_data* tmp = list->alloc(payload);
+    // pushes to the list
     list->push(ctx, tmp);
-
+    // peeks from list
     const struct list_data* head = list->peek(ctx);
-
-    // ensure that data being added to list
-    RX_ASSERT(head->payload == payload);
+    // ensures data is added to the list
+    RX_ASSERT(head->data == payload);
 }
 
 RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-
-    // create list
+    // creates the list
     const struct list* list = &list_definition;
+    // prepares the payload
     const void* payload = (void*)0xdeadbeef;
-
+    // allocates the memory for the structure
     struct list_data* tmp = list->alloc(payload);
     list->push(ctx, tmp);
-
+    // pop from the list
     struct list_data* head = list->pop(ctx);
-
+    // frees memory allocated for the data
     list->free(&head);
-
+    // ensures no data added to the list
     RX_ASSERT(head == 0);
 }
 
 RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-
-    // create list
+    // creates the list
     const struct list* list = &list_definition;
+    // prepares the payload
     const void* payload = (void*)0xdeadbeef;
-
+    // allocates the memory for the structure
     struct list_data* tmp = list->alloc(payload);
+    // pushes to the list
     list->push(ctx, tmp);
-
+    // pops from the list
     struct list_data* head = list->pop(ctx);
-    const void* head_payload = head->payload;
+    // retrieves the data from the top of the list
+    const void* head_payload = head->data;
+    // frees memory allocated for the data
     list->free(&head);
-
-    // ensure that data being added to list
+    // ensures data is added to the list
     RX_ASSERT(head_payload == payload);
 }
 
 RX_TEST_CASE(myTestSuite, test_list_alloc_and_prev_next_equals_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-
-    // create list
+    // creates the list
     const struct list* list = &list_definition;
+    // prepares the payload
     const void* payload = (void*)0xdeadbeef;
-
+    // allocates the memory for the structure
     struct list_data* tmp = list->alloc(payload);
+    // pushes to the list
     list->push(ctx, tmp);
-
+    // pops from the list
     struct list_data* current = list->pop(ctx);
     const struct list_data* prev = current->next;
     const struct list_data* next = current->prev;
-    const void* head_payload = current->payload;
+    const void* head_payload = current->data;
     list->free(&current);
-
-    // ensure that data being added to list
+    // ensures data is added to the list
     RX_ASSERT(head_payload == payload);
     RX_ASSERT(prev == 0);
     RX_ASSERT(next == 0);
@@ -294,18 +315,18 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_and_prev_next_equals_0, .fixture = tes
 RX_TEST_CASE(myTestSuite, test_list_free_head, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-
-    // create list
+    // creates the list
     const struct list* list = &list_definition;
+    // prepares the payload
     const void* payload = (void*)0xdeadbeef;
-
+    // allocates the memory for the structure
     struct list_data* tmp = list->alloc(payload);
     list->push(ctx, tmp);
-
+    // pops from the list
     struct list_data* head = list->pop(ctx);
+    // frees memory allocated for the data
     list->free(&head);
-
-    // ensure that data pointer is zero
+    // ensures no data added to the list
     RX_ASSERT(head == 0);
 }
 
@@ -313,13 +334,11 @@ RX_TEST_CASE(myTestSuite, test_list_free_head, .fixture = test_fixture) {
 RX_TEST_CASE(myTestSuite, test_list_peek_is_zero, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-
-    // create list
+    // creates the list
     const struct list* list = &list_definition;
-
+    // peeks from the list
     const struct list_data* head = list->peek(ctx);
-
-    // ensure that data being added to list
+    // ensures no data added to the list
     RX_ASSERT(head == 0);
 }
 
@@ -327,13 +346,11 @@ RX_TEST_CASE(myTestSuite, test_list_peek_is_zero, .fixture = test_fixture) {
 RX_TEST_CASE(myTestSuite, test_list_pop_is_zero, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-
-    // create list
+    // creates the list
     const struct list* list = &list_definition;
-
+    // pop from the list
     const struct list_data* head = list->pop(ctx);
-
-    // ensure that data being added to list
+    // ensures no data added to the list
     RX_ASSERT(head == 0);
 }
 

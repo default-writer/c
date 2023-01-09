@@ -42,7 +42,6 @@ build
 **/*.
 **/*tests/*.
 dump.txt
-[cC][mM]ake*
 Makefile
 lcov.info
 report
