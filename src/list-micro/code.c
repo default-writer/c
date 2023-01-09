@@ -68,7 +68,7 @@ const void* list_pop(struct list_data** const current) {
         *current = next;
         /* gets temporary pointer value */
         const void* payload = list_data(ptr);
-        /* free temporary pointer value */
+        /* frees up the memory */
         _delete(ptr);
         /* returns removed element */
         return payload;
