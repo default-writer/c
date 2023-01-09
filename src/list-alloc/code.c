@@ -75,7 +75,7 @@ const void* list_pop(struct list_data** const current) {
             // resets the memory pointer, rewinds the current data pointer
             *data-- = 0;
 #endif
-            /* free temporary pointer value */
+            // writes down the current data pointer
             ptr->data[0] = data;
             /* returns removed element */
             return payload;
