@@ -4,7 +4,7 @@
 #include "std/common.h"
 
 /* defines N-element collection*/
-#define N 256
+#define N 16
 
 struct list_data {
     /* data */
