@@ -18,21 +18,21 @@
     "nateageek.memory-viewer",
     "bpruitt-goddard.mermaid-markdown-syntax-highlighting",
     "bierner.markdown-mermaid",
-    "ms-vscode.cmake-tools",
-    "ms-vscode.live-server",
     "visualstudioexptteam.vscodeintellicode",
     "donjayamanne.python-environment-manager",
     "gruntfuggly.todo-tree",
-    "llvm-vs-code-extensions.vscode-clangd",
     "twxs.cmake",
     "go2sh.cmake-integration-vscode",
     "ryanluker.vscode-coverage-gutters",
     "ms-vscode-remote.remote-containers",
     "github.codespaces",
     "beardedbear.beardedicons",
-    "ms-vscode.cpptools-themes",
-    "ms-vscode.cpptools",
+		"ms-vscode.cmake-tools",
+		"ms-vscode.live-server",
+		"ms-vscode.cpptools-extension-pack",
+		"llvm-vs-code-extensions.vscode-clangd",
     "urosvujosevic.explorer-manager",
-    "alefragnani.bookmarks"
+    "alefragnani.bookmarks",
+    "markis.code-coverage"
   ]
 }

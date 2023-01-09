@@ -34,18 +34,18 @@
 		"bpruitt-goddard.mermaid-markdown-syntax-highlighting",
 		"bierner.markdown-mermaid",
 		"go2sh.cmake-integration-vscode",
-		"llvm-vs-code-extensions.vscode-clangd",
-		"ms-vscode.cmake-tools",
-		"ms-vscode.live-server",
 		"VisualStudioExptTeam.vscodeintellicode",
 		"donjayamanne.python-environment-manager",
 		"Gruntfuggly.todo-tree",
 		"arcanis.vscode-zipfs",
 		"GitHub.codespaces",
 		"BeardedBear.beardedicons",
-		"ms-vscode.cpptools-themes",
-		"ms-vscode.cpptools",
+		"ms-vscode.cmake-tools",
+		"ms-vscode.live-server",
+		"ms-vscode.cpptools-extension-pack",
+		"llvm-vs-code-extensions.vscode-clangd",
 		"UrosVujosevic.explorer-manager",
-		"alefragnani.Bookmarks"
+		"alefragnani.Bookmarks",
+		"markis.code-coverage"
 	]
 }

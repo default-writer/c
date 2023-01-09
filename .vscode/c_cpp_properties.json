@@ -5,7 +5,7 @@
   },
   "configurations": [
     {
-      "name": "Dev Container: C++",
+      "name": "c89",
       "includePath": ["${workspaceFolder}/src"],
       "defines": [],
       "compilerPath": "/usr/bin/gcc",
