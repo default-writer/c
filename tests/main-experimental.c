@@ -373,7 +373,7 @@ RX_TEST_CASE(myTestSuite, test_list_push_pop, .fixture = test_fixture) {
     // prepares the payload
     const void* payload = (void*)0xdeadbeef;
     // record buffer has N items
-    const void* _recorded[2*N+3] = { };
+    const void* _recorded[2*N + 1] = { };
     // pushes all pseudo-random values
     // pushes to the list multiple times
     int i=0;
