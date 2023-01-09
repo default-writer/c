@@ -378,19 +378,26 @@ RX_TEST_CASE(myTestSuite, test_list_push_pop, .fixture = test_fixture) {
     // pushes to the list multiple times
     int i=0;
     do {
+        // generates random values
         const void* _payload = (void*)(LPTR)lcg_parkmiller();
+        // records value
         _recorded[i] = _payload;
+        // pushes to the list
         list->push(ctx, _payload);
     } while (++i < 2*N);
     // pushes to the list
     list->push(ctx, payload);
+    // prints the list
     array_print(ctx);
+    // records the last value
     _recorded[i] = payload;
+    // peeks from the list
     const void* head = list->peek(ctx);
     // ensures payload is on top of the stack
     RX_ASSERT(head == payload);
     // ensures data is added to the list
     do {
+        // ensures recorded values matches to the list values
         RX_ASSERT(list->pop(ctx) == _recorded[i]);
     } while (--i >= 0);
 }
