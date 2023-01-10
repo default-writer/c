@@ -37,5 +37,5 @@ WORKDIR /workspace
 
 COPY --chown=${USER_NAME}:${USER_GROUP} . .
 
-RUN useradd -m docker && echo "docker:docker" | chpasswd && adduser docker sudo
+RUN adduser ${USER_NAME} sudo && useradd -m docker && echo "docker:docker" | chpasswd && adduser docker sudo
 RUN ./bin/clean.sh && ./bin/setup.sh --docker
