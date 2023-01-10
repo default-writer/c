@@ -31,11 +31,11 @@ RUN apt -y update && \
     rm -rf /usr/share/man/ && \
     rm -rf /var/lib/apt/lists/* /tmp/common-setup.sh
 
+RUN useradd -m docker && echo "docker:docker" | chpasswd && adduser docker sudo
 
 USER ${USER_NAME}
 WORKDIR /workspace
 
 COPY --chown=${USER_NAME}:${USER_GROUP} . .
 
-RUN adduser ${USER_NAME} sudo && useradd -m docker && echo "docker:docker" | chpasswd && adduser docker sudo
 RUN ./bin/clean.sh && ./bin/setup.sh --docker
