@@ -115,7 +115,8 @@
         "cmake.ignoreCMakeListsMissing": true,
         "cmake.configureOnOpen": true,
         "cmake.configureOnEdit": true,
-        "window.zoomLevel": 0
+        "window.zoomLevel": 0,
+        "DockerRun.DisableAutoGenerateConfig": true
     },
     "extensions": {
         "recommendations": [
