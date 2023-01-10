@@ -34,6 +34,9 @@
     "urosvujosevic.explorer-manager",
     "alefragnani.bookmarks",
     "markis.code-coverage",
-    "wraith13.zoombar-vscode"
+    "wraith13.zoombar-vscode",
+    "bazelbuild.vscode-bazel",
+    "stackbuild.bazel-stack-vscode",
+    "stackbuild.bazel-stack-vscode-cc"
   ]
 }

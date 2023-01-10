@@ -49,6 +49,8 @@
 		"markis.code-coverage",
 		"twxs.cmake",
 		"wraith13.zoombar-vscode",
-		"BazelBuild.vscode-bazel"
+		"BazelBuild.vscode-bazel",
+		"stackbuild.bazel-stack-vscode",
+		"stackbuild.bazel-stack-vscode-cc"
 	]
 }
