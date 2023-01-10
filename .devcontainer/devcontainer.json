@@ -46,6 +46,8 @@
 		"llvm-vs-code-extensions.vscode-clangd",
 		"UrosVujosevic.explorer-manager",
 		"alefragnani.Bookmarks",
-		"markis.code-coverage"
+		"markis.code-coverage",
+		"twxs.cmake",
+		"wraith13.zoombar-vscode"
 	]
 }
