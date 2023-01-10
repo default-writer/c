@@ -20,6 +20,7 @@ function update() {
 function upgrade() {
     apt upgrade -y
     apt autoremove -y
+    apt full-upgrade -y
 }
 
 case "${install}" in
@@ -38,6 +39,17 @@ case "${install}" in
         upgrade
         ;;
 
+    "--bazel") # installs bazel
+        update
+        apt install -y apt-transport-https curl gnupg
+        curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor >bazel-archive-keyring.gpg
+        sudo mv bazel-archive-keyring.gpg /usr/share/keyrings
+        echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8" | sudo tee /etc/apt/sources.list.d/bazel.list
+        update
+        apt install -y bazel        
+        upgrade
+        ;;
+
     "--gh") # installs gh
         update
         type -p curl >/dev/null || apt install curl -y
@@ -45,7 +57,7 @@ case "${install}" in
         chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
         echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null
         update
-        apt install gh -y
+        apt install -y gh
         upgrade
         ;;
 
@@ -100,6 +112,7 @@ case "${install}" in
     "--docker") # installs docker
         update
         apt install -y \
+            desktop-file-utils \
             ca-certificates \
             curl \
             gnupg \
@@ -116,6 +129,8 @@ case "${install}" in
 
     "--docker-compose") # installs docker-compose
         update
+        apt install -y \
+            desktop-file-utils
         apt install -y --fix-broken qemu-kvm libvirt-clients libvirt-daemon-system bridge-utils virtinst libvirt-daemon pass uidmap
         systemctl enable --now libvirtd
         curl -L https://desktop.docker.com/linux/main/amd64/docker-desktop-4.15.0-amd64.deb -o /tmp/docker-desktop-4.15.0-amd64.deb
