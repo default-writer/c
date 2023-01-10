@@ -206,6 +206,26 @@ RX_TEST_CASE(myTestSuite, test_empty_list_count_equals_0, .fixture = test_fixtur
     RX_ASSERT(*ctx != 0);
 }
 
+/* test peek */
+RX_TEST_CASE(myTestSuite, test_standard_list_peek_does_not_changes_stack, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct list_data** ctx = &rx->ctx;
+    // creates the list
+    const struct list* list = &list_micro_definition;
+    // prepares the payload
+    const void* payload = (void*)0xdeadbeef;
+    // pused to the lsit
+    list->push(ctx, payload);
+    // gets the head pointer to the list
+    const struct list_data* ptr = *ctx;
+    // peeks from the list
+    const void* head = list->peek(ctx);
+    // ensures payload is on top of the stack
+    RX_ASSERT(head == payload);
+    // ensures peek does not changes the head pointer
+    RX_ASSERT(ptr == *ctx);
+}
+
 /* test pop from 0 pointer */
 RX_TEST_CASE(myTestSuite, test_empty_list_pop_equals_0, .fixture = test_fixture) {
     struct list_data* ctx = 0;

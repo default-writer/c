@@ -27,12 +27,13 @@
     "ms-vscode-remote.remote-containers",
     "github.codespaces",
     "beardedbear.beardedicons",
-		"ms-vscode.cmake-tools",
-		"ms-vscode.live-server",
-		"ms-vscode.cpptools-extension-pack",
-		"llvm-vs-code-extensions.vscode-clangd",
+    "ms-vscode.cmake-tools",
+    "ms-vscode.live-server",
+    "ms-vscode.cpptools-extension-pack",
+    "llvm-vs-code-extensions.vscode-clangd",
     "urosvujosevic.explorer-manager",
     "alefragnani.bookmarks",
-    "markis.code-coverage"
+    "markis.code-coverage",
+    "wraith13.zoombar-vscode"
   ]
 }

@@ -3,11 +3,14 @@
 
 #include "std/common.h"
 
+/* defines N-element collection*/
+#define N 8
+
 struct list_data {
     /* data */
     void** data;
     /* next element */
-    struct list_data *next;
+    struct list_data* next;
 };
 
 struct list {

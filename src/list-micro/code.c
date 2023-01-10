@@ -18,7 +18,7 @@ inline size_t size() {
 }
 
 /* gets chunk's next item. external code enshures ptr is not 0 */
-inline struct list_data* list_next(struct list_data *ptr) {
+inline struct list_data* list_next(struct list_data* ptr) {
     /* external code enshures prt is not 0 */
     return ptr->next;
 }
@@ -68,7 +68,7 @@ const void* list_pop(struct list_data** const current) {
         *current = next;
         /* gets temporary pointer value */
         const void* payload = list_data(ptr);
-        /* free temporary pointer value */
+        /* frees up the memory */
         _delete(ptr);
         /* returns removed element */
         return payload;
