@@ -21,8 +21,6 @@
 		"SonarSource.sonarlint-vscode",
 		"JacquesLucke.gcov-viewer",
 		"codezombiech.gitignore",
-		"StackBuild.bazel-stack-vscode-cc",
-		"StackBuild.bazel-stack-vscode",
 		"gabrielgrinberg.auto-run-command",
 		"Sycl.markdown-command-runner",
 		"andifin.testonsave",
@@ -37,7 +35,6 @@
 		"VisualStudioExptTeam.vscodeintellicode",
 		"donjayamanne.python-environment-manager",
 		"Gruntfuggly.todo-tree",
-		"arcanis.vscode-zipfs",
 		"GitHub.codespaces",
 		"BeardedBear.beardedicons",
 		"ms-vscode.cmake-tools",
@@ -51,6 +48,7 @@
 		"wraith13.zoombar-vscode",
 		"BazelBuild.vscode-bazel",
 		"stackbuild.bazel-stack-vscode",
-		"stackbuild.bazel-stack-vscode-cc"
+		"stackbuild.bazel-stack-vscode-cc",
+		"streetsidesoftware.code-spell-checker"
 	]
 }
