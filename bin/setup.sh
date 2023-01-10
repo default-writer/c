@@ -136,6 +136,7 @@ case "${install}" in
         curl -L https://desktop.docker.com/linux/main/amd64/docker-desktop-4.15.0-amd64.deb -o /tmp/docker-desktop-4.15.0-amd64.deb
         apt update -y
         dpkg -i /tmp/docker-desktop-4.15.0-amd64.deb
+        apt install -y --only-upgrade libgbm1 libgl1-mesa-dri libglapi-mesa libglx-mesa0 mesa-va-drivers mesa-vulkan-drivers
         upgrade
         ;;
 
