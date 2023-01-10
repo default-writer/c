@@ -116,6 +116,7 @@
         "cmake.configureOnOpen": true,
         "cmake.configureOnEdit": true,
         "window.zoomLevel": 0,
+        "cmake.reconfigureOnChange": true,
         "DockerRun.DisableAutoGenerateConfig": true
     },
     "extensions": {

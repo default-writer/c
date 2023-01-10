@@ -116,11 +116,12 @@
   "cmake.ignoreCMakeListsMissing": true,
   "cmake.configureOnOpen": true,
   "cmake.configureOnEdit": true,
-  "window.zoomLevel": 0,
   "terminal.integrated.smoothScrolling": true,
   "terminal.integrated.cursorBlinking": true,
   "terminal.integrated.enableFileLinks": true,
   "sonarlint.testFilePattern": "**/test/**,**/*test*,**/*Test*,**/rexo/**",
   "cmake.statusbar.visibility": "compact",
-  "cmake.reconfigureOnChange": true
+  "window.zoomLevel": 0,
+  "cmake.reconfigureOnChange": true,
+  "DockerRun.DisableAutoGenerateConfig": true
 }
