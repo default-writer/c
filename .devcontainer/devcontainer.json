@@ -48,6 +48,9 @@
 		"alefragnani.Bookmarks",
 		"markis.code-coverage",
 		"twxs.cmake",
-		"wraith13.zoombar-vscode"
+		"wraith13.zoombar-vscode",
+		"bazelbuild.vscode-bazel",
+		"stackbuild.bazel-stack-vscode",
+		"stackbuild.bazel-stack-vscode-cc"
 	]
 }

@@ -122,5 +122,6 @@
   "terminal.integrated.enableFileLinks": true,
   "sonarlint.testFilePattern": "**/test/**,**/*test*,**/*Test*,**/rexo/**",
   "cmake.statusbar.visibility": "compact",
-  "cmake.reconfigureOnChange": true
+  "cmake.reconfigureOnChange": true,
+  "DockerRun.DisableAutoGenerateConfig": true
 }
