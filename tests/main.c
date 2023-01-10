@@ -195,6 +195,30 @@ RX_TEST_CASE(myTestSuite, test_empty_list_count_equals_0, .fixture = test_fixtur
     RX_ASSERT(*ctx != 0);
 }
 
+/* test peek */
+RX_TEST_CASE(myTestSuite, test_standard_list_peek_does_not_changes_stack, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct list_data** ctx = &rx->ctx;
+    // creates the list
+    const struct list* list = &list_definition;
+    // prepares the payload
+    const void* payload = (void*)0xdeadbeef;
+    // allocates the memory for the structure
+    struct list_data* tmp = list->alloc(payload);
+    // pused to the lsit
+    list->push(ctx, tmp);
+    // gets the head pointer to the list
+    const struct list_data* ptr = *ctx;
+    // peeks from the list
+    const struct list_data* head = list->peek(ctx);
+    // ensures data is added to the list
+    RX_ASSERT(head != 0);
+    // ensures payload is on top of the stack
+    RX_ASSERT(head->data == payload);
+    // ensures peek does not changes the head pointer
+    RX_ASSERT(ptr == *ctx);
+}
+
 /* test pop from 0 pointer */
 RX_TEST_CASE(myTestSuite, test_empty_list_pop_equals_0, .fixture = test_fixture) {
     struct list_data* ctx = 0;
@@ -300,6 +324,10 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_and_prev_next_equals_0, .fixture = tes
     struct list_data* tmp = list->alloc(payload);
     // pushes to the list
     list->push(ctx, tmp);
+    // peeks from the list
+    const struct list_data* head = list->peek(ctx);
+    // ensures peek does data cleanup
+    RX_ASSERT(head->prev == 0);
     // pops from the list
     struct list_data* current = list->pop(ctx);
     const struct list_data* prev = current->next;
@@ -308,8 +336,12 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_and_prev_next_equals_0, .fixture = tes
     list->free(&current);
     // ensures data is added to the list
     RX_ASSERT(head_payload == payload);
+#ifdef USE_MEMORY_CLEANUP
+    // ensures peek does data cleanup
     RX_ASSERT(prev == 0);
+    // ensures peek does data cleanup
     RX_ASSERT(next == 0);
+#endif
 }
 
 RX_TEST_CASE(myTestSuite, test_list_free_head, .fixture = test_fixture) {

@@ -2,8 +2,8 @@
 #include "list-experimental/data.h"
 #include "common/alloc.h"
 
-/* buffer size in bytes = size of 8 items */
-const int _allocation_size = 8*sizeof(void*);
+/* buffer size in bytes = size of n items */
+const int _allocation_size = (N + 1)*sizeof(void*);
 
 inline struct list_data* _new() {
     /* external code allocates memory and resets memory block to zero  */
@@ -25,7 +25,7 @@ inline size_t size() {
 }
 
 /* gets chunk's next item. external code enshures ptr is not 0 */
-inline struct list_data* list_next(struct list_data *ptr) {
+inline struct list_data* list_next(struct list_data* ptr) {
     /* external code enshures prt is not 0 */
     return ptr->next;
 }
@@ -34,7 +34,7 @@ inline struct list_data* list_next(struct list_data *ptr) {
 /* at current context, data payload stored at allocated memory buffer */
 /* as a result, items counter will increase */
 void list_push(struct list_data** const current, const void* payload) {
-    const struct list_data * tmp = *current;
+    const struct list_data*  tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
         /* gets the current memory pointer */
@@ -81,9 +81,9 @@ const void* list_pop(struct list_data** const current) {
             }
             /* rewinds head pointer to next pointer value */
             *current = next;
-            /* returns actual data */
+            /* frees up the memory */
             _delete(ptr);
-            /* updates pointer to the next pointer value */
+            /* updates pointer */
             ptr = next;
         }
         if (ptr && ptr->data[0] != ptr->data) {
@@ -95,7 +95,7 @@ const void* list_pop(struct list_data** const current) {
             // resets the memory pointer, rewinds the current data pointer
             *data-- = 0;
 #endif
-            /* free temporary pointer value */
+            // writes down the current data pointer
             ptr->data[0] = data;
             /* returns removed element */
             return payload;
@@ -112,7 +112,12 @@ const void* list_peek(struct list_data** const current) {
     /* checks if pointer is not null */
     if (tmp != 0) {
         /* gets the current memory pointer */
-        const struct list_data* ptr = *current;
+        struct list_data* ptr = *current;
+        /* if we call method on empty stack, do not return head element, return null element by convention */
+        if (ptr && ptr->data[0] == ptr->data) {
+            /* updates pointer */
+            ptr = list_next(ptr);
+        }
         /* if we call method on empty stack, do not return head element, return null element by convention */
         if (ptr && ptr->data[0] != ptr->data) {
             // gets data pointer

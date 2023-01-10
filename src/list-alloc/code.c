@@ -29,7 +29,7 @@ inline size_t size() {
 /* at current context, data payload stored at allocated memory buffer */
 /* as a result, items counter will increase */
 void list_push(struct list_data** const current, const void* payload) {
-    const struct list_data * tmp = *current;
+    const struct list_data*  tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
         /* gets the current memory pointer */
@@ -75,7 +75,7 @@ const void* list_pop(struct list_data** const current) {
             // resets the memory pointer, rewinds the current data pointer
             *data-- = 0;
 #endif
-            /* free temporary pointer value */
+            // writes down the current data pointer
             ptr->data[0] = data;
             /* returns removed element */
             return payload;
