@@ -31,7 +31,7 @@ RUN apt -y update && \
     rm -rf /usr/share/man/ && \
     rm -rf /var/lib/apt/lists/* /tmp/common-setup.sh
 
-RUN useradd -m docker && echo "docker:docker" | chpasswd && adduser docker sudo && chmod 666 /var/run/docker.sock
+RUN useradd -m docker && echo "docker:docker" | chpasswd && adduser docker sudo
 
 USER ${USER_NAME}
 WORKDIR /workspace
