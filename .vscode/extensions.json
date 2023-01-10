@@ -37,6 +37,7 @@
     "wraith13.zoombar-vscode",
     "bazelbuild.vscode-bazel",
     "stackbuild.bazel-stack-vscode",
-    "stackbuild.bazel-stack-vscode-cc"
+    "stackbuild.bazel-stack-vscode-cc",
+    "streetsidesoftware.code-spell-checker"
   ]
 }
