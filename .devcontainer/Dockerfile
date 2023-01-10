@@ -14,9 +14,8 @@ ARG COMMON_SCRIPT_SHA="dev-mode"
 ENV TZ=Europe/Istanbul
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-RUN apt -y update && apt install -y sudo
-RUN useradd -m docker && echo "docker:docker" | chpasswd && adduser docker sudo
 RUN groupadd -r ${USER_GROUP} && useradd -ms /bin/bash -g ${USER_GROUP} -G sudo -u ${USER_ID} ${USER_NAME}
+RUN useradd -m docker && echo "docker:docker" | chpasswd && adduser docker sudo
 
 # Install needed packages and setup non-root user. Use a separate RUN statement to add your own dependencies.
 RUN apt -y update && \
@@ -39,3 +38,4 @@ USER ${USER_NAME}
 WORKDIR /workspace
 
 COPY --chown=${USER_NAME}:${USER_GROUP} . .
+RUN ./bin/clean.sh
