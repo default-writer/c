@@ -42,7 +42,7 @@ case "${install}" in
     "--bazel") # installs bazel
         update
         apt install -y apt-transport-https curl gnupg
-        curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor >bazel-archive-keyring.gpg
+        curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --batch --yes --dearmor >bazel-archive-keyring.gpg
         sudo mv bazel-archive-keyring.gpg /usr/share/keyrings
         echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8" | sudo tee /etc/apt/sources.list.d/bazel.list
         update
@@ -82,7 +82,7 @@ case "${install}" in
     "--sublime-merge") # installs sublime-merge
         update
         apt install -y apt-transport-https
-        wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | gpg --dearmor | tee /etc/apt/trusted.gpg.d/sublimehq-archive.gpg > /dev/null
+        wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | gpg --batch --yes --dearmor | tee /etc/apt/trusted.gpg.d/sublimehq-archive.gpg > /dev/null
         echo "deb https://download.sublimetext.com/ apt/stable/" | tee /etc/apt/sources.list.d/sublime-text.list
         apt update -y
         apt install -y sublime-merge
