@@ -98,7 +98,7 @@ RX_TEST_CASE(myTestSuite, test_get_type, .fixture = test_fixture) {
 }
 
 // test class get_type
-RX_TEST_CASE(myTestSuite, test_class_unintialized_is_zero, .fixture = test_fixture) {
+RX_TEST_CASE(myTestSuite, test_class_uninitialized_is_zero, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct class** ctx = &rx->ctx;
     const struct class* class = *ctx;
