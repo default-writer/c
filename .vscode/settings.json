@@ -64,9 +64,6 @@
     "object.h": "c",
     "stdlib.h": "c"
   },
-  "lldb.displayFormat": "auto",
-  "lldb.showDisassembly": "auto",
-  "lldb.dereferencePointers": true,
   "editor.tokenColorCustomizations": {
     "textMateRules": [
       {
@@ -87,7 +84,6 @@
   "C_Cpp.errorSquiggles": "disabled",
   "C_Cpp.intelliSenseEngine": "disabled",
   "sonarlint.pathToCompileCommands": "${workspaceFolder}/cmake/compile_commands.json",
-  "lldb.consoleMode": "commands",
   "testOnSave.enabled": true,
   "testOnSave.languageId": "c",
   "testOnSave.testCommand": "./bin/coverage.sh --all --clean",
@@ -187,5 +183,9 @@
   "disasexpl.associations": {
     "**/*.c": "${workspaceFolder}/${relativeFileDirname}/${fileBasenameNoExtension}.c.s",
     "**/*.cpp": "${workspaceFolder}/${relativeFileDirname}/${fileBasenameNoExtension}.c.s"
-  }
+  },
+  "lldb.displayFormat": "auto",
+  "lldb.showDisassembly": "auto",
+  "lldb.dereferencePointers": true,
+  "lldb.consoleMode": "commands"
 }

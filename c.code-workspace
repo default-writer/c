@@ -171,7 +171,11 @@
         "disasexpl.associations": {
             "**/*.c": "${workspaceFolder}/${relativeFileDirname}/${fileBasenameNoExtension}.c.s",
             "**/*.cpp": "${workspaceFolder}/${relativeFileDirname}/${fileBasenameNoExtension}.c.s"
-        }
+        },
+        "lldb.displayFormat": "auto",
+        "lldb.showDisassembly": "auto",
+        "lldb.dereferencePointers": true,
+        "lldb.consoleMode": "commands"
     },
     "extensions": {
         "recommendations": [
@@ -209,7 +213,8 @@
             "stackbuild.bazel-stack-vscode",
             "stackbuild.bazel-stack-vscode-cc",
             "streetsidesoftware.code-spell-checker",
-            "dseight.disasexpl"
+            "dseight.disasexpl",
+            "maziac.asm-code-lens"
         ]
     }
 }

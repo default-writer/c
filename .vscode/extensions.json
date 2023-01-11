@@ -34,6 +34,7 @@
     "stackbuild.bazel-stack-vscode",
     "stackbuild.bazel-stack-vscode-cc",
     "streetsidesoftware.code-spell-checker",
-    "dseight.disasexpl"
+    "dseight.disasexpl",
+    "maziac.asm-code-lens"
   ]
 }
