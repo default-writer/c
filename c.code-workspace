@@ -204,7 +204,8 @@
             "bazelbuild.vscode-bazel",
             "stackbuild.bazel-stack-vscode",
             "stackbuild.bazel-stack-vscode-cc",
-            "streetsidesoftware.code-spell-checker"
+            "streetsidesoftware.code-spell-checker",
+            "dseight.disasexpl"
         ]
     }
 }

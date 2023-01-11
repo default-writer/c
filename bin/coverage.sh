@@ -112,14 +112,18 @@ cmake \
 ## compile with coverage metadata
 for m in "${array[@]}"; do
     cmake --build "${pwd}/cmake" --target "main${m}"
-
     timeout --foreground 5 "${pwd}/cmake/main${m}"
     lcov --capture --directory "${pwd}/cmake/" --output-file "${pwd}/coverage/main${m}.lcov"
     lcov --remove "${pwd}/coverage/main${m}.lcov" "${pwd}/src/rexo/*" -o "${pwd}/coverage/main${m}.lcov"
-    rm -rf "${pwd}/coverage/main${m}"
 done
 
 find "${pwd}/coverage" -name "main*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
 find "${pwd}/coverage" -name "main*.lcov" -delete
+
+main=$(find "${pwd}/cmake" -name "*.s" -exec echo {} \; | grep -s "main")
+for i in $main; do
+    path="${pwd}/$(echo $i | sed -n -e 's/^.*.dir\/\(.*\)$/\1/p')"
+    cp "${i}" "${path}"
+done
 
 cd "${pwd}"

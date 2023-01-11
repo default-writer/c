@@ -75,8 +75,8 @@ if(UNIX)
     add_definitions(-D_POSIX_C_SOURCE=199309L)
 endif()
 
-add_compile_options(-fgnu89-inline -fsanitize=undefined,address -fsanitize-undefined-trap-on-error -fno-sanitize-recover=all)
-add_link_options(-fgnu89-inline -fsanitize=undefined,address -fsanitize-undefined-trap-on-error -fno-sanitize-recover=all)
+add_compile_options(-save-temps -fgnu89-inline -fsanitize=undefined,address -fsanitize-undefined-trap-on-error -fno-sanitize-recover=all)
+add_link_options(-save-temps -fgnu89-inline -fsanitize=undefined,address -fsanitize-undefined-trap-on-error -fno-sanitize-recover=all)
 
 add_library(liblist-common STATIC ${LIB_COMMON_SOURCE})
 
