@@ -110,11 +110,64 @@
         "DockerRun.DisableAutoGenerateConfig": true,
         "cSpell.words": [
             "asan",
-            "LPTR",
             "parkmiller",
             "Rexo",
+            "LPTR",
             "ZEROPTR"
         ],
+        "cSpell.files": [
+            "**/*.c"
+        ],
+        "cSpell.enabledLanguageIds": [
+            "asciidoc",
+            "c",
+            "cpp",
+            "csharp",
+            "css",
+            "elixir",
+            "erlang",
+            "git-commit",
+            "go",
+            "graphql",
+            "handlebars",
+            "haskell",
+            "html",
+            "jade",
+            "java",
+            "javascript",
+            "javascriptreact",
+            "json",
+            "jsonc",
+            "jupyter",
+            "latex",
+            "less",
+            "markdown",
+            "php",
+            "plaintext",
+            "python",
+            "pug",
+            "restructuredtext",
+            "rust",
+            "scala",
+            "scss",
+            "scminput",
+            "swift",
+            "text",
+            "typescript",
+            "typescriptreact",
+            "vue",
+            "yaml",
+            "yml"
+        ],
+        "cSpell.enableFiletypes": [
+            "*"
+        ],
+        "cSpell.overrides": [
+            {
+                "filename": "**/{*.c.*.h}",
+                "languageId": "c"
+            }
+        ]
     },
     "extensions": {
         "recommendations": [

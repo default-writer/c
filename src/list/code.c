@@ -33,7 +33,7 @@ inline const void* list_data(const struct list_data* ptr) {
 /* at current context, data payload stored at allocated memory buffer */
 /* as a result, items counter will increase */
 struct list_data* list_alloc(const void* payload) {
-    /* creates emty data chunk */
+    /* creates empty data chunk */
     struct list_data* item = _new();
     /* writes data into allocated memory buffer */
     item->data = payload;
@@ -81,7 +81,7 @@ struct list_data* list_push(struct list_data** const current, struct list_data* 
 
 /* pop existing element at the top of the stack/queue/list */
 /* at current context, existing head will be removed out of stack */
-/* for the new stack header, correcponding values will be fixed */
+/* for the new stack header, corresponding values will be fixed */
 /* as a result, header will be set to previous position, represented as head's reference to next head */
 struct list_data* list_pop(struct list_data** const current) {
     const struct list_data*  tmp = *current;

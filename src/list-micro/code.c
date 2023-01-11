@@ -49,7 +49,7 @@ void list_push(struct list_data** const current, const void* payload) {
 
 /* pop existing element at the top of the stack/queue/list */
 /* at current context, existing head will be removed out of stack */
-/* for the new stack header, correcponding values will be fixed */
+/* for the new stack header, corresponding values will be fixed */
 /* as a result, header will be set to previous position, represented as head's reference to next head */
 const void* list_pop(struct list_data** const current) {
     const struct list_data* tmp = *current;

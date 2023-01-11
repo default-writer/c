@@ -380,7 +380,7 @@ RX_TEST_CASE(myTestSuite, test_list_push_pop, .fixture = test_fixture) {
     int i=0;
     do {
         // generates random values
-        const void* _payload = (void*)(LPTR)lcg_parkmiller();
+        const void* _payload = (void*)lcg_parkmiller();
         // records value
         _recorded[i] = _payload;
         // pushes to the list

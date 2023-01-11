@@ -52,7 +52,7 @@ static inline void using_list2(void (*list_using)(struct list_data** const)) {
 static inline void list_print_head(struct list_data** const current, const void* (*_data)(const struct list_data*)) {
     // get current context's head
     struct list_data* ptr = *current;
-    // visualise item
+    // visualize item
     printf("*: 0x%016llx >0x%016llx\n", (LPTR)ptr, (LPTR)_data(ptr));
 }
 
