@@ -58,8 +58,25 @@ set(MAIN_ALLOC_SOURCE tests/main-alloc.c ${LIB_ALLOC_SOURCE})
 set(MAIN_EXPERIMENTAL_SOURCE tests/main-experimental.c ${LIB_EXPERIMENTAL_SOURCE})
 set(MAIN_PLAYGROUND_SOURCE src/playground/structs.c ${LIB_PLAYGROUND_SOURCE})
 
-add_compile_options(-fsanitize=undefined,address -fsanitize-undefined-trap-on-error -fno-sanitize-recover=all)
-add_link_options(-fsanitize=undefined,address -fsanitize-undefined-trap-on-error -fno-sanitize-recover=all)
+if(MSVC)
+    add_compile_options(/W4)
+else()
+    add_compile_options(
+        -Winline -Wpedantic -Wall -Wextra -Waggregate-return -Wcast-align -Wcast-qual
+        -Wconversion -Wfloat-equal -Wpointer-arith -Wshadow -Wstrict-overflow=5
+        -Wswitch -Wswitch-default -Wundef -Wunreachable-code -Wwrite-strings
+        -Wformat-nonliteral -fsanitize=undefined,address)
+    add_link_options(
+        -fsanitize=undefined,address
+    )
+endif()
+
+if(UNIX)
+    add_definitions(-D_POSIX_C_SOURCE=199309L)
+endif()
+
+add_compile_options(-fgnu89-inline -fsanitize=undefined,address -fsanitize-undefined-trap-on-error -fno-sanitize-recover=all)
+add_link_options(-fgnu89-inline -fsanitize=undefined,address -fsanitize-undefined-trap-on-error -fno-sanitize-recover=all)
 
 add_library(liblist-common STATIC ${LIB_COMMON_SOURCE})
 

@@ -1,6 +1,7 @@
 #include "rexo/include/rexo.h"
 
 #include "std/list.h"
+#include "std/types.h"
 #include "list-experimental/data.h"
 
 #define ZEROPTR(ptr) if (ptr != 0) { ptr = 0; }
@@ -64,11 +65,11 @@ static inline void array_print(struct list_data** const current) {
 }
 
 /* LCG Park-Miller state */
-static int lcg_state = 0xdeadbeef;
+static LPTR lcg_state = 0xdeadbeef;
 
 /* LCG Park-Miller function */
-static inline int lcg_parkmiller() {
-	lcg_state = (LPTR)lcg_state* 48271 % 0x7fffffff;
+static inline LPTR lcg_parkmiller() {
+	lcg_state = lcg_state* 48271 % 0x7fffffff;
     return lcg_state;
 }
 
@@ -224,8 +225,8 @@ RX_TEST_CASE(myTestSuite, test_standard_list_peek_does_not_changes_stack, .fixtu
     // creates the list
     const struct list* list = &list_experimental_definition;
     // prepares the payload
-    const void* payload = (void*)0xdeadbeef;
-    // pused to the lsit
+    const BYTE* payload = (void*)0xdeadbeef;
+    // pushed to the list
     list->push(ctx, payload);
     // gets the head pointer to the list
     const struct list_data* ptr = *ctx;
@@ -266,8 +267,8 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_count_eq_1, .fixture = test_fixture) {
     // creates the list
     const struct list* list = &list_experimental_definition;
     // prepares the payload
-    const void* payload = (void*)0xdeadbeef;
-    // pused to the lsit
+    const BYTE* payload = (void*)0xdeadbeef;
+    // pushed to the list
     list->push(ctx, payload);
     // ensures data is added to the list
     RX_ASSERT(*ctx != 0);
@@ -279,7 +280,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_payload, .fixture = test_fixture) {
     // creates the list
     const struct list* list = &list_experimental_definition;
     // prepares the payload
-    const void* payload = (void*)0xdeadbeef;
+    const BYTE* payload = (void*)0xdeadbeef;
     // pushes to the list
     list->push(ctx, payload);
     // peeks from the list
@@ -294,7 +295,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture) 
     // creates the list
     const struct list* list = &list_experimental_definition;
     // prepares the payload
-    const void* payload = (void*)0xdeadbeef;
+    const BYTE* payload = (void*)0xdeadbeef;
     // pushes to the list
     list->push(ctx, payload);
     // pops from the list
@@ -309,7 +310,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture) 
     // creates the list
     const struct list* list = &list_experimental_definition;
     // prepares the payload
-    const void* payload = (void*)0xdeadbeef;
+    const BYTE* payload = (void*)0xdeadbeef;
     // pushes to the list
     list->push(ctx, payload);
     // pops from the list
@@ -348,7 +349,7 @@ RX_TEST_CASE(myTestSuite, test_list_realloc, .fixture = test_fixture) {
     // creates the list
     const struct list* list = &list_experimental_definition;
     // prepares the payload
-    const void* payload = (void*)0xdeadbeef;
+    const BYTE* payload = (void*)0xdeadbeef;
     // pushes to the list multiple times
     list->push(ctx, payload);
     list->push(ctx, payload);
@@ -371,9 +372,9 @@ RX_TEST_CASE(myTestSuite, test_list_push_pop, .fixture = test_fixture) {
     // creates the list
     const struct list* list = &list_experimental_definition;
     // prepares the payload
-    const void* payload = (void*)0xdeadbeef;
+    const BYTE* payload = (void*)0xdeadbeef;
     // record buffer has N items
-    const void* _recorded[2*N + 1] = { };
+    const void* _recorded[2*N + 1] = { 0 };
     // pushes all pseudo-random values
     // pushes to the list multiple times
     int i=0;

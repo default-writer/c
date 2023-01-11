@@ -52,7 +52,7 @@ static inline void array_print(struct list_data** const current) {
             ++i;
             // debug output of memory dump
             printf("%d: 0x%016llx *0x%016llx\n", i, (LPTR)end, (LPTR)ptr->data[i]);
-            // remember temprary's prior pointer value to temporary
+            // remember temporary's prior pointer value to temporary
             end = ptr->data + i;
         } while (ptr->data[0] != end/*root*/);
     }
@@ -211,8 +211,8 @@ RX_TEST_CASE(myTestSuite, test_standard_list_peek_does_not_changes_stack, .fixtu
     // creates the list
     const struct list* list = &list_alloc_definition;
     // prepares the payload
-    const void* payload = (void*)0xdeadbeef;
-    // pused to the lsit
+    const BYTE* payload = (void*)0xdeadbeef;
+    // pushed to the list
     list->push(ctx, payload);
     // gets the head pointer to the list
     const struct list_data* ptr = *ctx;
@@ -253,7 +253,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_count_eq_1, .fixture = test_fixture) {
     // creates the list
     const struct list* list = &list_alloc_definition;
     // prepares the payload
-    const void* payload = (void*)0xdeadbeef;
+    const BYTE* payload = (void*)0xdeadbeef;
     // pushes to the list
     list->push(ctx, payload);
     // ensures data is added to the list
@@ -266,7 +266,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_payload, .fixture = test_fixture) {
     // creates the list
     const struct list* list = &list_alloc_definition;
     // prepares the payload
-    const void* payload = (void*)0xdeadbeef;
+    const BYTE* payload = (void*)0xdeadbeef;
     // pushes to the list
     list->push(ctx, payload);
     // peeks from the list
@@ -281,7 +281,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture) 
     // creates the list
     const struct list* list = &list_alloc_definition;
     // prepares the payload
-    const void* payload = (void*)0xdeadbeef;
+    const BYTE* payload = (void*)0xdeadbeef;
     // pushes to the list
     list->push(ctx, payload);
     // pops from the list
@@ -296,7 +296,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture) 
     // creates the list
     const struct list* list = &list_alloc_definition;
     // prepares the payload
-    const void* payload = (void*)0xdeadbeef;
+    const BYTE* payload = (void*)0xdeadbeef;
     // pushes to the list
     list->push(ctx, payload);
     // pops from the list
@@ -335,7 +335,7 @@ RX_TEST_CASE(myTestSuite, test_list_realloc, .fixture = test_fixture) {
     // creates the list
     const struct list* list = &list_alloc_definition;
     // prepares the payload
-    const void* payload = (void*)0xdeadbeef;
+    const BYTE* payload = (void*)0xdeadbeef;
     // pushes to the list multiple times
     list->push(ctx, payload);
     list->push(ctx, payload);

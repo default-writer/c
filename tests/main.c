@@ -59,7 +59,7 @@ static inline void list_print_head(struct list_data** const current, const void*
 // print all stack trace to output
 // in a single loop, print out all elements except root element (which does not have a payload)
 // as a result, all stack will be printed in last-to-first order (reverse)
-static inline void list_print(struct list_data** const current, struct list_data* (*list_next)(struct list_data*), const void* (*list_data)(const struct list_data*)) {
+static inline void list_print(struct list_data** const current, struct list_data* (*_list_next)(struct list_data*), const void* (*_list_data)(const struct list_data*)) {
     // sets the counter
     int i = 0;
     // assigns current's head pointer to the temporary
@@ -69,9 +69,9 @@ static inline void list_print(struct list_data** const current, struct list_data
         // until we found root element (element with no previous element reference)
         do {
             // debug output of memory dump
-            printf("%d: 0x%016llx *0x%016llx\n", ++i, (LPTR)tmp, (LPTR)list_data(tmp));
-            // remember temprary's prior pointer value to temporary
-            tmp = list_next(tmp);
+            printf("%d: 0x%016llx *0x%016llx\n", ++i, (LPTR)tmp, (LPTR)_list_data(tmp));
+            // remember temporary's prior pointer value to temporary
+            tmp = _list_next(tmp);
         } while (tmp != 0/*root*/);
     }
     // stop on root element
@@ -82,7 +82,7 @@ static inline void list_using(struct list_data** const current) {
     // access context's functions pointer
     const struct list* list = &list_definition;
     // prepares the payload
-    const void* payload = (void*)0xdeadbeef;
+    const BYTE* payload = (void*)0xdeadbeef;
     // peeks and pops from empty list
     const struct list_data* is_null[] = {
         list->peek(current),
@@ -202,10 +202,10 @@ RX_TEST_CASE(myTestSuite, test_standard_list_peek_does_not_changes_stack, .fixtu
     // creates the list
     const struct list* list = &list_definition;
     // prepares the payload
-    const void* payload = (void*)0xdeadbeef;
+    const BYTE* payload = (void*)0xdeadbeef;
     // allocates the memory for the structure
     struct list_data* tmp = list->alloc(payload);
-    // pused to the lsit
+    // pushed to the list
     list->push(ctx, tmp);
     // gets the head pointer to the list
     const struct list_data* ptr = *ctx;
@@ -248,7 +248,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_count_eq_1, .fixture = test_fixture) {
     // creates the list
     const struct list* list = &list_definition;
     // prepares the payload
-    const void* payload = (void*)0xdeadbeef;
+    const BYTE* payload = (void*)0xdeadbeef;
     // allocates the memory for the structure
     struct list_data* tmp = list->alloc(payload);
     // pushes to the list
@@ -263,7 +263,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_payload, .fixture = test_fixture) {
     // creates the list
     const struct list* list = &list_definition;
     // prepares the payload
-    const void* payload = (void*)0xdeadbeef;
+    const BYTE* payload = (void*)0xdeadbeef;
     // allocates the memory for the structure
     struct list_data* tmp = list->alloc(payload);
     // pushes to the list
@@ -280,7 +280,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture) 
     // creates the list
     const struct list* list = &list_definition;
     // prepares the payload
-    const void* payload = (void*)0xdeadbeef;
+    const BYTE* payload = (void*)0xdeadbeef;
     // allocates the memory for the structure
     struct list_data* tmp = list->alloc(payload);
     list->push(ctx, tmp);
@@ -298,7 +298,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture) 
     // creates the list
     const struct list* list = &list_definition;
     // prepares the payload
-    const void* payload = (void*)0xdeadbeef;
+    const BYTE* payload = (void*)0xdeadbeef;
     // allocates the memory for the structure
     struct list_data* tmp = list->alloc(payload);
     // pushes to the list
@@ -319,7 +319,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_and_prev_next_equals_0, .fixture = tes
     // creates the list
     const struct list* list = &list_definition;
     // prepares the payload
-    const void* payload = (void*)0xdeadbeef;
+    const BYTE* payload = (void*)0xdeadbeef;
     // allocates the memory for the structure
     struct list_data* tmp = list->alloc(payload);
     // pushes to the list
@@ -350,7 +350,7 @@ RX_TEST_CASE(myTestSuite, test_list_free_head, .fixture = test_fixture) {
     // creates the list
     const struct list* list = &list_definition;
     // prepares the payload
-    const void* payload = (void*)0xdeadbeef;
+    const BYTE* payload = (void*)0xdeadbeef;
     // allocates the memory for the structure
     struct list_data* tmp = list->alloc(payload);
     list->push(ctx, tmp);

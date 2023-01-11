@@ -150,7 +150,7 @@ void list_init(struct list_data** const current, struct list_data* (*list_new)()
 /* destroys the memory stack */
 /* frees all memory elements */
 /* as a result, memory will be freed */
-void list_destroy(struct list_data** const current, void (*list_delete)(struct list_data*), struct list_data* (*list_next)(struct list_data*)) {
+void list_destroy(struct list_data** const current, void (*_list_delete)(struct list_data*), struct list_data* (*_list_next)(struct list_data*)) {
     /* gets the current memory pointer */
     struct list_data* tmp = *current;
     /* checks if pointer is not null */
@@ -160,9 +160,9 @@ void list_destroy(struct list_data** const current, void (*list_delete)(struct l
             /* gets temporary pointer value */
             struct list_data* ptr = tmp;
             /* gets prev pointer value */
-            struct list_data* next = list_next(ptr);
+            struct list_data* next = _list_next(ptr);
             /* frees up memory, should check for 0 before execution */
-            list_delete(ptr);
+            _list_delete(ptr);
             /* advances temporary pointer value to the next item */
             tmp = next;
         } while (tmp != 0);

@@ -3,7 +3,7 @@
 #include "common/alloc.h"
 
 /* buffer size in bytes = size of n items */
-const int _allocation_size = (N + 1)*sizeof(void*);
+const size_t _allocation_size = (N + 1)*sizeof(void*);
 
 inline struct list_data* _new() {
     /* external code allocates memory and resets memory block to zero  */
@@ -42,7 +42,7 @@ void list_push(struct list_data** const current, const void* payload) {
         // gets data pointer
         const void** data = ptr->data[0];
         /* gets the current data offset for new data allocation */
-        LPTR offset = (void*)(data + 1) - (void*)(ptr->data);
+        LPTR offset = (LPTR)((BYTE*)(data + 1) - (BYTE*)(ptr->data));
         /* checks if current data pointer allocated all data */
         if (offset == _allocation_size) {
             /* creates empty data chunk */

@@ -6,7 +6,7 @@ struct data {
     void* ptr;
 };
 
-LPTR class_get_type(const struct class *class);
+LPTR class_get_type();
 void* class_get_data(const struct class *class);
 void class_set_data(const struct class *class, void* data);
 
@@ -61,7 +61,7 @@ void class_destroy(struct class** const current) {
 
 const struct class class_definition;
 
-LPTR class_get_type(const struct class *class)
+LPTR class_get_type()
 {
     const struct class* type = &class_definition;
     return (LPTR)type;

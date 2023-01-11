@@ -105,11 +105,15 @@
         "cmake.ignoreCMakeListsMissing": true,
         "cmake.configureOnOpen": true,
         "cmake.configureOnEdit": true,
-        "window.zoomLevel": 1.0,
+        "window.zoomLevel": 0,
         "cmake.reconfigureOnChange": true,
         "DockerRun.DisableAutoGenerateConfig": true,
         "cSpell.words": [
-            "LPTR"
+            "asan",
+            "LPTR",
+            "parkmiller",
+            "Rexo",
+            "ZEROPTR"
         ],
     },
     "extensions": {
