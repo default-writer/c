@@ -236,6 +236,7 @@
 		"maziac.asm-code-lens",
 		"ms-vscode.cpptools",
 		"aslamanver.vsc-export",
-		"anweber.statusbar-commands"
+		"anweber.statusbar-commands",
+		"vadimcn.vscode-lldb"
 	]
 }

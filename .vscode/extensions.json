@@ -4,7 +4,6 @@
     "donjayamanne.githistory",
     "codezombiech.gitignore",
     "sonarsource.sonarlint-vscode",
-    "codezombiech.gitignore",
     "andifin.testonsave",
     "tenninebt.vscode-koverage",
     "nateageek.memory-viewer",
@@ -21,6 +20,7 @@
     "maziac.asm-code-lens",
     "ms-vscode.cpptools",
     "aslamanver.vsc-export",
-    "anweber.statusbar-commands"
+    "anweber.statusbar-commands",
+    "vadimcn.vscode-lldb"
   ]
 }
