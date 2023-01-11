@@ -160,18 +160,17 @@
             "yml"
         ],
         "cSpell.enableFiletypes": [
-            "*"
+            "c"
         ],
         "cSpell.overrides": [
             {
-                "filename": "**/{*.c.*.h}",
+                "filename": "**/{*.c,*.h}",
                 "languageId": "c"
             }
         ]
     },
     "extensions": {
         "recommendations": [
-            "9crusher.tabinator",
             "mhutchie.git-graph",
             "donjayamanne.githistory",
             "vadimcn.vscode-lldb",
@@ -194,6 +193,8 @@
             "go2sh.cmake-integration-vscode",
             "ryanluker.vscode-coverage-gutters",
             "ms-vscode-remote.remote-containers",
+            "github.codespaces",
+            "beardedbear.beardedicons",
             "ms-vscode.cmake-tools",
             "ms-vscode.live-server",
             "llvm-vs-code-extensions.vscode-clangd",
