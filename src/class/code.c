@@ -39,7 +39,7 @@ void class_init(struct class** const current) {
     const struct class* tmp = *current;
     /* sets the current memory pointer */
     if (tmp == 0) {
-        /* creates emty data chunk */
+        /* creates emtpy data chunk */
         *current = _new();
     }
 }
