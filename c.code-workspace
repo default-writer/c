@@ -167,7 +167,11 @@
                 "filename": "**/{*.c,*.h}",
                 "languageId": "c"
             }
-        ]
+        ],
+        "disasexpl.associations": {
+            "**/*.c": "${workspaceFolder}/${relativeFileDirname}/${fileBasenameNoExtension}.c.s",
+            "**/*.cpp": "${workspaceFolder}/${relativeFileDirname}/${fileBasenameNoExtension}.c.s"
+        }
     },
     "extensions": {
         "recommendations": [

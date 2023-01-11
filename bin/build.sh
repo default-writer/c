@@ -105,4 +105,10 @@ for m in "${array[@]}"; do
     cmake --build "${pwd}/cmake" --target "main${m}"
 done
 
+main=$(find "${pwd}/cmake" -name "*.s" -exec echo {} \; | grep -s "main")
+for i in $main; do
+    path="${pwd}/$(echo $i | sed -n -e 's/^.*.dir\/\(.*\)$/\1/p')"
+    cp "${i}" "${path}"
+done
+
 cd "${pwd}"
