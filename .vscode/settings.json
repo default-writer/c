@@ -187,5 +187,17 @@
   "lldb.displayFormat": "auto",
   "lldb.showDisassembly": "auto",
   "lldb.dereferencePointers": true,
-  "lldb.consoleMode": "commands"
+  "lldb.consoleMode": "commands",
+  "statusbar_command.commands": [
+    {
+      "text": ".S",
+      "tooltip": "Show disassembly",
+      "alignment": "right",
+      "priority": 1000,
+      "id": "sda_s",
+      "name": "disassembly",
+      "filterFileName": "^.*\\.[c|h]$",
+      "command": "disasexpl.show"
+    },
+  ]
 }
