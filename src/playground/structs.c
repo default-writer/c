@@ -94,7 +94,7 @@ RX_TEST_CASE(myTestSuite, test_get_type, .fixture = test_fixture) {
     const struct class* class = *ctx;
     printf("i is of type class at %llx\n", (LPTR)class);
     // ensures data is added to the list
-    RX_ASSERT(class->get_type(class) == (LPTR)&class_definition);
+    RX_ASSERT(class->get_type() == (LPTR)&class_definition);
 }
 
 // test class get_type
