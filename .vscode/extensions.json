@@ -1,7 +1,4 @@
 {
-  "unwantedRecommendations": [
-    "ms-vscode.cpptools-extension-pack"
-  ],
   "recommendations": [
     "mhutchie.git-graph",
     "donjayamanne.githistory",
@@ -29,7 +26,6 @@
     "beardedbear.beardedicons",
     "ms-vscode.cmake-tools",
     "ms-vscode.live-server",
-    "ms-vscode.cpptools-extension-pack",
     "llvm-vs-code-extensions.vscode-clangd",
     "urosvujosevic.explorer-manager",
     "alefragnani.bookmarks",
