@@ -67,10 +67,10 @@
   "editor.tokenColorCustomizations": {
     "textMateRules": [
       {
-        "scope": "googletest.failed",
-        "settings": {
-          "foreground": "#f00"
-        }
+      "scope": "googletest.failed",
+      "settings": {
+        "foreground": "#f00"
+      }
       }
     ]
   },
@@ -128,57 +128,57 @@
     "ZEROPTR"
   ],
   "cSpell.files": [
-      "**/*.c"
+    "**/*.c"
   ],
   "cSpell.enabledLanguageIds": [
-      "asciidoc",
-      "c",
-      "cpp",
-      "csharp",
-      "css",
-      "elixir",
-      "erlang",
-      "git-commit",
-      "go",
-      "graphql",
-      "handlebars",
-      "haskell",
-      "html",
-      "jade",
-      "java",
-      "javascript",
-      "javascriptreact",
-      "json",
-      "jsonc",
-      "jupyter",
-      "latex",
-      "less",
-      "markdown",
-      "php",
-      "plaintext",
-      "python",
-      "pug",
-      "restructuredtext",
-      "rust",
-      "scala",
-      "scss",
-      "scminput",
-      "swift",
-      "text",
-      "typescript",
-      "typescriptreact",
-      "vue",
-      "yaml",
-      "yml"
+    "asciidoc",
+    "c",
+    "cpp",
+    "csharp",
+    "css",
+    "elixir",
+    "erlang",
+    "git-commit",
+    "go",
+    "graphql",
+    "handlebars",
+    "haskell",
+    "html",
+    "jade",
+    "java",
+    "javascript",
+    "javascriptreact",
+    "json",
+    "jsonc",
+    "jupyter",
+    "latex",
+    "less",
+    "markdown",
+    "php",
+    "plaintext",
+    "python",
+    "pug",
+    "restructuredtext",
+    "rust",
+    "scala",
+    "scss",
+    "scminput",
+    "swift",
+    "text",
+    "typescript",
+    "typescriptreact",
+    "vue",
+    "yaml",
+    "yml"
   ],
   "cSpell.enableFiletypes": [
-      "c"
+    "c"
   ],
   "cSpell.overrides": [
-      {
-          "filename": "**/{*.c,*.h}",
-          "languageId": "c"
-      }
+    {
+      "filename": "**/{*.c,*.h}",
+      "languageId": "c"
+    }
   ],
   "disasexpl.associations": {
     "**/*.c": "${workspaceFolder}/${relativeFileDirname}/${fileBasenameNoExtension}.c.s",
@@ -198,6 +198,6 @@
       "name": "disassembly",
       "filterFileName": "^.*\\.[c|h]$",
       "command": "disasexpl.show"
-    },
+    }
   ]
 }
