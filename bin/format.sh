@@ -37,7 +37,7 @@ case "${install}" in
         array=("WebKit")
         ;;
 
-    "--Microsoft") # A style complying with Microsoft’s style guide
+    "--microsoft") # A style complying with Microsoft’s style guide
         array=("Microsoft")
         ;;
 
