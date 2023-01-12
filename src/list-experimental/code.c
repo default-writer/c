@@ -6,14 +6,12 @@
 size_t _allocation_size = (N + 1) * sizeof(void*);
 
 /* gets size of a memory block to allocate */
-size_t _size()
-{
+size_t _size() {
     /* returns size of a memory block to allocate */
     return sizeof(struct list_data);
 }
 
-struct list_data* _new()
-{
+struct list_data* _new() {
     /* external code allocates memory and resets memory block to zero  */
     struct list_data* ptr = _list_alloc(1, _size());
     ptr->data = _list_alloc(1, _allocation_size);
@@ -21,22 +19,19 @@ struct list_data* _new()
     return ptr;
 }
 
-void _delete(struct list_data* ptr)
-{
+void _delete(struct list_data* ptr) {
     _list_free(ptr->data, _allocation_size);
     _list_free(ptr, _size());
 }
 
 /* gets chunk's next item. external code ensures ptr is not 0 */
-struct list_data* list_next(struct list_data* ptr)
-{
+struct list_data* list_next(struct list_data* ptr) {
     /* external code ensures prt is not 0 */
     return ptr->next;
 }
 
 /* gets chunk's payload. external code ensures ptr is not 0 */
-void* list_data(struct list_data* ptr)
-{
+void* list_data(struct list_data* ptr) {
     // gets data pointer
     void** data = ptr->data[0];
     // gets the payload
@@ -46,16 +41,14 @@ void* list_data(struct list_data* ptr)
 }
 
 /* deletes the data pointer */
-void list_delete(struct list_data* ptr)
-{
+void list_delete(struct list_data* ptr) {
     _delete(ptr);
 }
 
 /* allocates a memory for provided payload  */
 /* at current context, data payload stored at allocated memory buffer */
 /* as a result, items counter will increase */
-void list_push(struct list_data** current, void* payload)
-{
+void list_push(struct list_data** current, void* payload) {
     struct list_data* tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
@@ -86,8 +79,7 @@ void list_push(struct list_data** current, void* payload)
 }
 
 /* pop existing element at the top of the stack/queue/list */
-void* list_pop(struct list_data** current)
-{
+void* list_pop(struct list_data** current) {
     struct list_data* tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
@@ -130,8 +122,7 @@ void* list_pop(struct list_data** current)
 
 /* peek existing element at the top of the stack/queue/list */
 /* at current context, existing head */
-void* list_peek(struct list_data** current)
-{
+void* list_peek(struct list_data** current) {
     struct list_data* tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {

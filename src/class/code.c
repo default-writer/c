@@ -36,14 +36,12 @@ void* context_get_data();
 void context_set_data(void* data);
 
 /* gets size of a memory block to allocate */
-static size_t _size()
-{
+static size_t _size() {
     /* returns size of a memory block to allocate */
     return sizeof(struct class);
 }
 
-static struct class* _new()
-{
+static struct class* _new() {
     const struct list* list = &list_micro_definition;
     struct list_data* ctx = 0;
     // init list
@@ -58,8 +56,7 @@ static struct class* _new()
     return class;
 }
 
-static void _delete(struct class* class)
-{
+static void _delete(struct class* class) {
     const struct list* list = &list_micro_definition;
     struct list_data* ctx = class->data->ctx;
     // destroys list
@@ -71,8 +68,7 @@ static void _delete(struct class* class)
 /* initializes the new context's head element */
 /* as a result, new memory block will be allocated */
 /* current context pointer set to zero */
-void class_init(struct class** current)
-{
+void class_init(struct class** current) {
     /* gets the current memory pointer */
     const struct class* tmp = *current;
     /* sets the current memory pointer */
@@ -85,8 +81,7 @@ void class_init(struct class** current)
 /* destroys the memory stack */
 /* frees all memory elements */
 /* as a result, memory will be freed */
-void class_destroy(struct class** current)
-{
+void class_destroy(struct class** current) {
     /* gets the current memory pointer */
     struct class* tmp = *current;
     /* checks if pointer is not null */
@@ -103,30 +98,25 @@ const struct class class_definition;
 /* context definition */
 struct context context_definition;
 
-LPTR class_get_type()
-{
+LPTR class_get_type() {
     const struct class* type = &class_definition;
     return (LPTR)type;
 }
 
-void* class_get_data(struct class* class)
-{
+void* class_get_data(struct class* class) {
     return class->data->ptr;
 }
 
-void class_set_data(struct class* class, void* data)
-{
+void class_set_data(struct class* class, void* data) {
     class->data->ptr = data;
 }
 
-void context_enter(struct class* class)
-{
+void context_enter(struct class* class) {
     struct context* ctx = &context_definition;
     ctx->self = class;
 }
 
-struct class* context_leave()
-{
+struct class* context_leave() {
     struct context* ctx = &context_definition;
     struct class* class = ctx->self;
 #ifdef USE_MEMORY_CLEANUP
@@ -135,15 +125,13 @@ struct class* context_leave()
     return class;
 }
 
-void* context_get_data()
-{
+void* context_get_data() {
     struct context* context = &context_definition;
     const struct class* class = &class_definition;
     return class->get_data(context->self);
 }
 
-void context_set_data(void* data)
-{
+void context_set_data(void* data) {
     struct context* context = &context_definition;
     const struct class* class = &class_definition;
     class->set_data(context->self, data);

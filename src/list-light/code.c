@@ -3,14 +3,12 @@
 #include "std/list.h"
 
 /* gets size of a memory block to allocate */
-size_t _size()
-{
+size_t _size() {
     /* returns size of a memory block to allocate */
     return sizeof(struct list_data);
 }
 
-struct list_data* _new()
-{
+struct list_data* _new() {
     /* external code allocates memory and resets memory block to zero  */
     return _list_alloc(1, _size());
 }
@@ -18,15 +16,13 @@ struct list_data* _new()
 void _delete(struct list_data* ptr) { _list_free(ptr, _size()); }
 
 /* gets chunk's next item. external code ensures ptr is not 0 */
-struct list_data* list_next(struct list_data* ptr)
-{
+struct list_data* list_next(struct list_data* ptr) {
     /* external code ensures prt is not 0 */
     return ptr->next;
 }
 
 /* gets chunk's payload. external code ensures ptr is not 0 */
-void* list_data(struct list_data* ptr)
-{
+void* list_data(struct list_data* ptr) {
     /* external code ensures prt is not 0 */
     return ptr->data;
 }
@@ -37,8 +33,7 @@ void list_delete(struct list_data* ptr) { _delete(ptr); }
 /* allocates a memory for provided payload  */
 /* at current context, data payload stored at allocated memory buffer */
 /* as a result, items counter will increase */
-void list_push(struct list_data** current, void* payload)
-{
+void list_push(struct list_data** current, void* payload) {
     const struct list_data* tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
@@ -62,8 +57,7 @@ void list_push(struct list_data** current, void* payload)
 /* for the new stack header, corresponding values will be fixed */
 /* as a result, header will be set to previous position, represented as head's
  * reference to next head */
-void* list_pop(struct list_data** current)
-{
+void* list_pop(struct list_data** current) {
     struct list_data* tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
@@ -94,8 +88,7 @@ void* list_pop(struct list_data** current)
 
 /* peek existing element at the top of the stack/queue/list */
 /* at current context, existing head */
-void* list_peek(struct list_data** current)
-{
+void* list_peek(struct list_data** current) {
     struct list_data* tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
@@ -120,8 +113,7 @@ void* list_peek(struct list_data** current)
 /* initializes the new context's head element */
 /* as a result, new memory block will be allocated */
 /* current context pointer set to zero */
-void list_init(struct list_data** current, struct list_data* (*list_new)())
-{
+void list_init(struct list_data** current, struct list_data* (*list_new)()) {
     struct list_data* tmp = *current;
     if (tmp == 0) {
         /* sets the current memory pointer */
@@ -134,8 +126,7 @@ void list_init(struct list_data** current, struct list_data* (*list_new)())
 /* as a result, memory will be freed */
 void list_destroy(struct list_data** current,
     void (*_list_delete)(struct list_data*),
-    struct list_data* (*_list_next)(struct list_data*))
-{
+    struct list_data* (*_list_next)(struct list_data*)) {
     /* gets the current memory pointer */
     struct list_data* tmp = *current;
     /* checks if pointer is not null */

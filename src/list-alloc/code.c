@@ -6,14 +6,12 @@
 size_t _allocation_size = 8 * sizeof(void*);
 
 /* gets size of a memory block to allocate */
-size_t _size()
-{
+size_t _size() {
     /* returns size of a memory block to allocate */
     return sizeof(struct list_data);
 }
 
-struct list_data* _new()
-{
+struct list_data* _new() {
     /* external code allocates memory and resets memory block to zero  */
     struct list_data* ptr = _list_alloc(1, _size());
     ptr->data = _list_alloc(1, _allocation_size);
@@ -22,8 +20,7 @@ struct list_data* _new()
     return ptr;
 }
 
-void _delete(struct list_data* ptr)
-{
+void _delete(struct list_data* ptr) {
     _list_free(ptr->data, ptr->size);
     _list_free(ptr, _size());
 }
@@ -31,8 +28,7 @@ void _delete(struct list_data* ptr)
 /* allocates a memory for provided payload  */
 /* at current context, data payload stored at allocated memory buffer */
 /* as a result, items counter will increase */
-void list_push(struct list_data** current, void* payload)
-{
+void list_push(struct list_data** current, void* payload) {
     const struct list_data* tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
@@ -61,8 +57,7 @@ void list_push(struct list_data** current, void* payload)
 }
 
 /* pop existing element at the top of the stack/queue/list */
-void* list_pop(struct list_data** current)
-{
+void* list_pop(struct list_data** current) {
     const struct list_data* tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
@@ -92,8 +87,7 @@ void* list_pop(struct list_data** current)
 
 /* peek existing element at the top of the stack/queue/list */
 /* at current context, existing head */
-void* list_peek(struct list_data** current)
-{
+void* list_peek(struct list_data** current) {
     const struct list_data* tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
