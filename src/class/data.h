@@ -9,29 +9,30 @@ struct class {
     /* private data definition */
     struct data* data;
     /* reads data */
-    const void* (*get_data)(const struct class *class);
+    void* (*get_data)(struct class* class);
     /* writes data */
-    void (*set_data)(const struct class *class, const void* data);
+    void (*set_data)(struct class* class, void* data);
     /* returns current class type id */
-    LPTR (*get_type)();
+    LPTR(*get_type)
+    ();
 };
 
 struct context {
     /* context class */
-    const struct class* self;
+    struct class* self;
     /* enter context */
-    void (*enter)(const struct class* self);
+    void (*enter)(struct class* self);
     /* leaves context */
-    const struct class* (*leave)();
+    struct class* (*leave)();
     /* reads data */
-    const void* (*get_data)();
+    void* (*get_data)();
     /* writes data */
-    void (*set_data)(const void* data);
+    void (*set_data)(void* data);
 };
 
 /* initializes the class instance */
-void class_init(struct class** const current);
+void class_init(struct class** current);
 /* destroys the class instance */
-void class_destroy(struct class** const current);
+void class_destroy(struct class** current);
 
 #endif // _LIST_DATA_H_

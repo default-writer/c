@@ -14,11 +14,11 @@ struct list_data {
 
 struct list {
     /* push item on current context (stack) */
-    void (*push)(struct list_data** const current, const void* item);
+    void (*push)(struct list_data** current, void* item);
     /* pop item on current context (stack) */
-    const void* (*pop)(struct list_data** const current);
+    void* (*pop)(struct list_data** current);
     /* peek item on current context (stack) */
-    const void* (*peek)(struct list_data** const current);
+    void* (*peek)(struct list_data** current);
 };
 
 #endif // _LIST_ALLOC_DATA_H_

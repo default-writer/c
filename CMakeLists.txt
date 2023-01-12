@@ -99,7 +99,7 @@ target_link_libraries(main-light PRIVATE liblist-light liblist-common)
 target_link_libraries(main-micro PRIVATE liblist-micro liblist-common)
 target_link_libraries(main-alloc PRIVATE liblist-alloc liblist-common)
 target_link_libraries(main-experimental PRIVATE liblist-experimental liblist-common)
-target_link_libraries(main-playground PRIVATE liblist-playground liblist-common)
+target_link_libraries(main-playground PRIVATE liblist-playground liblist-common liblist-micro)
 
 if(CMAKE_BUILD_TYPE STREQUAL "coverage" OR CODE_COVERAGE)
     if("${CMAKE_C_COMPILER_ID}" MATCHES "(Apple)?[Cc]lang" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "(Apple)?[Cc]lang")

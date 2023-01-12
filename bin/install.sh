@@ -53,6 +53,9 @@ case "${install}" in
         rm -rf "${HOME}/.pyenv"
         curl --silent https://pyenv.run | bash
         ;;
+    "--clang-format") # setup default .clang-format file
+        clang-format -style="{BasedOnStyle: WebKit, IndentWidth: 4}" -dump-config > .clang-format
+        ;;
 
     "--devcontainer-extensions") # installs vs code .devcontainers extensions
         code --install-extension ms-vscode-remote.remote-containers

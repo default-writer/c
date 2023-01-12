@@ -3,10 +3,4 @@
 
 #include "std/common.h"
 
-struct list_data* _new();
-void _delete(struct list_data* ptr);
-size_t size();
-struct list_data* list_next(struct list_data* ptr);
-const void* list_data(const struct list_data* ptr);
-
 #endif // _STD_LIST_H_

@@ -97,6 +97,8 @@ done
 find "${pwd}/coverage" -name "*.gcda" -delete
 find "${pwd}/coverage" -name "*.gcno" -delete
 
+"${pwd}/bin/format.sh" --webkit
+
 cmake \
     -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
     -DCMAKE_BUILD_TYPE:STRING=Debug \
@@ -120,7 +122,7 @@ done
 find "${pwd}/coverage" -name "main*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
 find "${pwd}/coverage" -name "main*.lcov" -delete
 
-main=$(find "${pwd}/cmake" -name "*.s" -exec echo {} \; | grep -s "main")
+main=$(find "${pwd}/cmake" -name "*.s" -exec echo {} \;)
 for i in $main; do
     path="${pwd}/$(echo $i | sed -n -e 's/^.*.dir\/\(.*\)$/\1/p')"
     cp "${i}" "${path}"

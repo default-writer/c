@@ -1,41 +1,45 @@
-#include "std/list.h"
-#include "list-alloc/data.h"
 #include "common/alloc.h"
+#include "list-alloc/data.h"
+#include "std/list.h"
 
 /* buffer size in bytes = size of 8 items */
-const size_t _allocation_size = 8*sizeof(void*);
+size_t _allocation_size = 8 * sizeof(void*);
 
- struct list_data* _new() {
+/* gets size of a memory block to allocate */
+size_t _size()
+{
+    /* returns size of a memory block to allocate */
+    return sizeof(struct list_data);
+}
+
+struct list_data* _new()
+{
     /* external code allocates memory and resets memory block to zero  */
-    struct list_data* ptr = _list_alloc(1, size());
+    struct list_data* ptr = _list_alloc(1, _size());
     ptr->data = _list_alloc(1, _allocation_size);
     ptr->data[0] = ptr->data;
     ptr->size = _allocation_size;
     return ptr;
 }
 
- void _delete(struct list_data* ptr) {
+void _delete(struct list_data* ptr)
+{
     _list_free(ptr->data, ptr->size);
-    _list_free(ptr, size());
-}
-
-/* gets size of a memory block to allocate */
- size_t size() {
-    /* returns size of a memory block to allocate */
-    return sizeof(struct list_data);
+    _list_free(ptr, _size());
 }
 
 /* allocates a memory for provided payload  */
 /* at current context, data payload stored at allocated memory buffer */
 /* as a result, items counter will increase */
-void list_push(struct list_data** const current, const void* payload) {
-    const struct list_data*  tmp = *current;
+void list_push(struct list_data** current, void* payload)
+{
+    const struct list_data* tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
         /* gets the current memory pointer */
         struct list_data* ptr = *current;
         // gets data pointer
-        const void** data = ptr->data[0];
+        void** data = ptr->data[0];
         /* gets the current data offset for new data allocation */
         LPTR offset = (LPTR)((BYTE*)(data + 1) - (BYTE*)(ptr->data));
         /* checks if current data pointer allocated all data */
@@ -57,7 +61,8 @@ void list_push(struct list_data** const current, const void* payload) {
 }
 
 /* pop existing element at the top of the stack/queue/list */
-const void* list_pop(struct list_data** const current) {
+void* list_pop(struct list_data** current)
+{
     const struct list_data* tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
@@ -68,9 +73,9 @@ const void* list_pop(struct list_data** const current) {
             /* gets temporary pointer value */
             /* returns actual data */
             // gets data pointer
-            const void** data = ptr->data[0];
+            void** data = ptr->data[0];
             // gets the payload
-            const void* payload = *data;
+            void* payload = *data;
 #ifdef USE_MEMORY_CLEANUP
             // resets the memory pointer, rewinds the current data pointer
             *data-- = 0;
@@ -87,7 +92,8 @@ const void* list_pop(struct list_data** const current) {
 
 /* peek existing element at the top of the stack/queue/list */
 /* at current context, existing head */
-const void* list_peek(struct list_data** const current) {
+void* list_peek(struct list_data** current)
+{
     const struct list_data* tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
@@ -96,9 +102,9 @@ const void* list_peek(struct list_data** const current) {
         /* if we call method on empty stack, do not return head element, return null element by convention */
         if (ptr && ptr->data[0] != ptr->data) {
             // gets data pointer
-            const void** data = ptr->data[0];
+            void** data = ptr->data[0];
             // gets the payload
-            const void* payload = *data;
+            void* payload = *data;
             // returns payload
             return payload;
         }

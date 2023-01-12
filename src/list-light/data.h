@@ -9,20 +9,20 @@ struct list_data {
     /* points to next node */
     struct list_data* next;
     /* data */
-    const void* data;
+    void* data;
 };
 
 struct list {
     /* initialize context */
-    void (*init)(struct list_data** const current, struct list_data* (*new)());
+    void (*init)(struct list_data** current, struct list_data* (*new)());
     /* destroy context */
-    void (*destroy)(struct list_data** const current, void (*delete)(struct list_data*), struct list_data* (*next)(struct list_data*));
+    void (*destroy)(struct list_data** current, void (*delete)(struct list_data*), struct list_data* (*next)(struct list_data*));
     /* push item on current context (stack) */
-    void (*push)(struct list_data** const current, const void* item);
+    void (*push)(struct list_data** current, void* item);
     /* pop item on current context (stack) */
-    const void* (*pop)(struct list_data** const current);
+    void* (*pop)(struct list_data** current);
     /* peek item on current context (stack) */
-    const void* (*peek)(struct list_data** const current);
+    void* (*peek)(struct list_data** current);
 };
 
 #endif // _LIST_LIGHT_H_
