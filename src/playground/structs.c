@@ -148,7 +148,7 @@ RX_TEST_CASE(myTestSuite, test_context_get_data_set_data, .fixture = test_fixtur
     const void* actual = context->get_data();
     const struct class* ptr = context->leave();
     RX_ASSERT(actual == expected);
-    RX_ASSERT(ptr != 0);
+    RX_ASSERT(ptr == class);
 }
 
 int main() {
