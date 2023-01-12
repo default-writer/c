@@ -97,8 +97,6 @@ done
 find "${pwd}/coverage" -name "*.gcda" -delete
 find "${pwd}/coverage" -name "*.gcno" -delete
 
-"${pwd}/bin/format.sh" --webkit
-
 cmake \
     -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
     -DCMAKE_BUILD_TYPE:STRING=Debug \
