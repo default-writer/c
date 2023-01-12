@@ -104,7 +104,6 @@ RX_TEST_CASE(myTestSuite, test_get_type, .fixture = test_fixture)
     struct class* class = *ctx;
     LPTR expected = (LPTR)&class_definition;
     LPTR actual = class->get_type();
-    printf("i is of type class at %llx\n", actual);
     // ensures data is added to the list
     RX_ASSERT(actual == expected);
 }
