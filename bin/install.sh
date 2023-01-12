@@ -53,6 +53,7 @@ case "${install}" in
         rm -rf "${HOME}/.pyenv"
         curl --silent https://pyenv.run | bash
         ;;
+
     "--clang-format") # setup default .clang-format file
         clang-format -style="{BasedOnStyle: WebKit, IndentWidth: 4}" -dump-config > .clang-format
         ;;
