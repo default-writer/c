@@ -1,6 +1,5 @@
 ---
 Language:        Cpp
-# BasedOnStyle:  WebKit
 AccessModifierOffset: -4
 AlignAfterOpenBracket: DontAlign
 AlignArrayOfStructures: None
@@ -33,7 +32,7 @@ BraceWrapping:
   AfterClass:      false
   AfterControlStatement: Never
   AfterEnum:       false
-  AfterFunction:   true
+  AfterFunction:   false
   AfterNamespace:  false
   AfterObjCDeclaration: false
   AfterStruct:     false
@@ -49,7 +48,7 @@ BraceWrapping:
   SplitEmptyNamespace: true
 BreakBeforeBinaryOperators: All
 BreakBeforeConceptDeclarations: true
-BreakBeforeBraces: WebKit
+BreakBeforeBraces: Attach
 BreakBeforeInheritanceComma: false
 BreakInheritanceList: BeforeColon
 BreakBeforeTernaryOperators: true

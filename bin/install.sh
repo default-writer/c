@@ -55,7 +55,7 @@ case "${install}" in
         ;;
 
     "--clang-format") # setup default .clang-format file
-        clang-format -style="{BasedOnStyle: WebKit, IndentWidth: 4}" -dump-config > .clang-format
+        clang-format -style="{BasedOnStyle: WebKit, IndentWidth: 4, BreakBeforeBraces: Attach}" -dump-config > .clang-format
         ;;
 
     "--devcontainer-extensions") # installs vs code .devcontainers extensions
