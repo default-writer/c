@@ -35,9 +35,12 @@ const struct some_data some_data_type =
 
 */
 
+/* externally visible class definition API */
 extern const struct class class_definition;
+/* externally visible class context definition API */
 extern const struct context context_definition;
 
+/* class type */
 struct type
 {
     // type ptr

@@ -14,10 +14,6 @@ inline void _delete(struct class* ptr);
 /* returns class instance size */
 inline size_t size();
 
-/* initializes the class instance */
-inline void class_init(struct class** const current);
-/* destroys the class instance */
-inline void class_destroy(struct class** const current);
 /* returns class type id */
 inline LPTR class_get_type();
 /* returns class data*/

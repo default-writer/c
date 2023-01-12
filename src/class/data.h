@@ -29,4 +29,9 @@ struct context {
     void (*set_data)(const void* data);
 };
 
+/* initializes the class instance */
+void class_init(struct class** const current);
+/* destroys the class instance */
+void class_destroy(struct class** const current);
+
 #endif // _LIST_DATA_H_
