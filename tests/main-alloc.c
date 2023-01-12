@@ -11,12 +11,12 @@ const char* __asan_default_options() { return "detect_leaks=0"; }
 
 extern const struct list list_alloc_definition;
 
-static inline struct list_data* new_list() {
+static  struct list_data* new_list() {
     // returns created object
     return _new();
 }
 
-static inline void delete_list(struct list_data** ctx) {
+static  void delete_list(struct list_data** ctx) {
     // gets pointer
     struct list_data* ptr = *ctx;
     // destroys list
@@ -26,7 +26,7 @@ static inline void delete_list(struct list_data** ctx) {
 }
 
 // print head on current context (stack)
-static inline void array_print_head(struct list_data** const current) {
+static  void array_print_head(struct list_data** const current) {
     // get current context's head
     const struct list_data* ptr = *current;
     // gets data pointer
@@ -38,7 +38,7 @@ static inline void array_print_head(struct list_data** const current) {
 // print all stack trace to output
 // in a single loop, print out all elements except root element (which does not have a payload)
 // as a result, all stack will be printed in last-to-first order (reverse)
-static inline void array_print(struct list_data** const current) {
+static  void array_print(struct list_data** const current) {
     // get current context's head
     const struct list_data* ptr = *current;
     // sets the counter
@@ -60,7 +60,7 @@ static inline void array_print(struct list_data** const current) {
 }
 
 // default list usage scenario
-static inline void using_list(void (*list_using)(struct list_data** const)) {
+static  void using_list(void (*list_using)(struct list_data** const)) {
     // initialize current context (stack)
     struct list_data* ctx = new_list();
     // call user method
@@ -70,7 +70,7 @@ static inline void using_list(void (*list_using)(struct list_data** const)) {
 }
 
 // default list usage scenario
-static inline void using_list2(void (*list_using)(struct list_data** const)) {
+static  void using_list2(void (*list_using)(struct list_data** const)) {
     // initialize current context (stack)
     struct list_data* ctx = new_list();
     // call user method
@@ -80,7 +80,7 @@ static inline void using_list2(void (*list_using)(struct list_data** const)) {
 }
 
 // use list
-static inline void list_using(struct list_data** const current) {
+static  void list_using(struct list_data** const current) {
     // access context's functions pointer
     const struct list* list = &list_alloc_definition;
     const LPTR* payload = (LPTR*)0xdeadbeef;

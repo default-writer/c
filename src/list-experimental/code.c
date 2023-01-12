@@ -5,7 +5,7 @@
 /* buffer size in bytes = size of n items */
 const size_t _allocation_size = (N + 1)*sizeof(void*);
 
-inline struct list_data* _new() {
+ struct list_data* _new() {
     /* external code allocates memory and resets memory block to zero  */
     struct list_data* ptr = _list_alloc(1, size());
     ptr->data = _list_alloc(1, _allocation_size);
@@ -13,19 +13,19 @@ inline struct list_data* _new() {
     return ptr;
 }
 
-inline void _delete(struct list_data* ptr) {
+ void _delete(struct list_data* ptr) {
     _list_free(ptr->data, _allocation_size);
     _list_free(ptr, size());
 }
 
 /* gets size of a memory block to allocate */
-inline size_t size() {
+ size_t size() {
     /* returns size of a memory block to allocate */
     return sizeof(struct list_data);
 }
 
 /* gets chunk's next item. external code ensures ptr is not 0 */
-inline struct list_data* list_next(struct list_data* ptr) {
+ struct list_data* list_next(struct list_data* ptr) {
     /* external code ensures prt is not 0 */
     return ptr->next;
 }
