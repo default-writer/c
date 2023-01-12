@@ -36,6 +36,7 @@ const struct some_data some_data_type =
 */
 
 extern const struct class class_definition;
+extern const struct context context_definition;
 
 struct type
 {
@@ -92,9 +93,11 @@ RX_TEST_CASE(myTestSuite, test_get_type, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct class** ctx = &rx->ctx;
     const struct class* class = *ctx;
-    printf("i is of type class at %llx\n", (LPTR)class);
+    const LPTR expected = (LPTR)&class_definition;
+    const LPTR actual = class->get_type();
+    printf("i is of type class at %llx\n", actual);
     // ensures data is added to the list
-    RX_ASSERT(class->get_type() == (LPTR)&class_definition);
+    RX_ASSERT(actual == expected);
 }
 
 // test class get_type
@@ -102,9 +105,9 @@ RX_TEST_CASE(myTestSuite, test_class_uninitialized_is_zero, .fixture = test_fixt
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct class** ctx = &rx->ctx;
     const struct class* class = *ctx;
-    printf("i is of type class at %llx\n", (LPTR)class);
+    const struct data* actual = class->data;
     // ensures data is added to the list
-    RX_ASSERT(class->data != NULL);
+    RX_ASSERT(actual != 0);
 }
 
 // test class get_type
@@ -112,10 +115,37 @@ RX_TEST_CASE(myTestSuite, test_class_data, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct class** ctx = &rx->ctx;
     const struct class* class = *ctx;
-    class->set_data(class, (void*)*ctx);
-    printf("i is of type class at %llx\n", (LPTR)class);
+    const void* expected = (void*)0xdeadbeef;
+    class->set_data(class, expected);
+    const void* actual = class->get_data(class);
     // ensures data is added to the list
-    RX_ASSERT(class->get_data(class) == (void*)*ctx);
+    RX_ASSERT(actual == expected);
+}
+
+// test context
+RX_TEST_CASE(myTestSuite, test_context_enter_leave, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct class** ctx = &rx->ctx;
+    const struct class* expected = *ctx;
+    const struct context* context = &context_definition;
+    context->enter(expected);
+    const struct class* actual = context->leave();
+    RX_ASSERT(actual == expected);
+}
+
+// test context
+RX_TEST_CASE(myTestSuite, test_context_get_data_set_data, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct class** ctx = &rx->ctx;
+    const struct class* class = *ctx;
+    const struct context* context = &context_definition;
+    const void* expected = (void(*))0xdeadbeef;
+    context->enter(class);
+    context->set_data(expected);
+    const void* actual = context->get_data();
+    const struct class* ptr = context->leave();
+    RX_ASSERT(actual == expected);
+    RX_ASSERT(ptr != 0);
 }
 
 int main() {
