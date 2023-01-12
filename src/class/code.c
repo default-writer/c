@@ -48,7 +48,6 @@ static struct class* _new()
     struct list_data* ctx = 0;
     // init list
     list->init(&ctx);
-    list->destroy(&ctx);
     /* external code allocates memory and resets memory block to zero  */
     struct class* class = _list_alloc(1, _size());
     class->data = _list_alloc(1, sizeof(struct data));
@@ -59,10 +58,14 @@ static struct class* _new()
     return class;
 }
 
-static void _delete(struct class* ptr)
+static void _delete(struct class* class)
 {
-    _list_free(ptr->data, sizeof(struct data));
-    _list_free(ptr, _size());
+    const struct list* list = &list_micro_definition;
+    struct list_data* ctx = class->data->ctx;
+    // destroys list
+    list->destroy(&ctx);
+    _list_free(class->data, sizeof(struct data));
+    _list_free(class, _size());
 }
 
 /* initializes the new context's head element */
