@@ -10,36 +10,27 @@ fi
 
 pwd=$(pwd)
 
-array="undefined"
-clean="undefined"
-
 install="$1"
-remove="$2"
 
-case "${remove}" in
+opts=( )
+while (( "$#" )); do
+    shift
+    opts+=( $1 )
+done
 
-    "")
-        ;;
-
-    "--clean") # cleans up directories before build
-        clean="--clean"
-        ;;
-
-    *)
+function help() {
         commands=$(cat $0 | sed -e 's/^[ \t]*//;' | sed -e '/^[ \t]*$/d' | sed -n -e 's/^"\(.*\)".*#/    \1:/p' | sed -n -e 's/: /:\n        /p')
         script="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
         help=$(\
 cat << EOF
-Builds main test executables into build folder
-Usage: ${script} <option> [--clean]
+Builds binaries
+Usage: ${script} <option> [optional]
 ${commands}
 EOF
 )
         echo "${help}"
         exit
-        ;;
-
-esac
+}
 
 case "${install}" in
 
@@ -68,20 +59,31 @@ case "${install}" in
         ;;
 
     *)
-        commands=$(cat $0 | sed -e 's/^[ \t]*//;' | sed -e '/^[ \t]*$/d' | sed -n -e 's/^"\(.*\)".*#/    \1:/p' | sed -n -e 's/: /:\n        /p')
-        script="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
-        help=$(\
-cat << EOF
-Builds binaries with code converage information ('lcov.info')
-Usage: ${script} <option> [--clean]
-${commands}
-EOF
-)
-        echo "${help}"
-        exit
+        help
         ;;
 
 esac
+
+for opt in "${opts[@]}"; do
+    case "${opt}" in
+
+        "")
+            ;;
+
+        "--clean") # [optional] cleans up directories before build
+            clean="--clean"
+            ;;
+
+        "--silent") # [optional] suppress verbose output
+            silent="--silent"
+            ;;
+
+        *)
+            help
+            ;;
+
+    esac
+done
 
 [ ! -d "${pwd}/coverage" ] && mkdir "${pwd}/coverage"
 
@@ -97,11 +99,20 @@ done
 find "${pwd}/coverage" -name "*.gcda" -delete
 find "${pwd}/coverage" -name "*.gcno" -delete
 
+if [ "${silent}" == "--silent" ]; then
+    exec 2>&1 >/dev/null
+fi
+
+OPTIONS=${SANITIZER_OPTIONS}
+
+export MAKEFLAGS=-j8
+
 cmake \
     -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
     -DCMAKE_BUILD_TYPE:STRING=Debug \
     -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
     -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
+    -DCODE_SANITIZER:BOOL=TRUE \
     -DCODE_COVERAGE:BOOL=TRUE \
     -DLCOV_PATH=$(which lcov) \
     -DGENHTML_PATH==$(which genhtml) \
@@ -109,21 +120,16 @@ cmake \
     -B"${pwd}/cmake" \
     -G "Ninja"
 
-## compile with coverage metadata
 for m in "${array[@]}"; do
     cmake --build "${pwd}/cmake" --target "main${m}"
     timeout --foreground 5 "${pwd}/cmake/main${m}"
-    lcov --capture --directory "${pwd}/cmake/" --output-file "${pwd}/coverage/main${m}.lcov"
+    lcov --capture --directory "${pwd}/cmake/" --output-file "${pwd}/coverage/main${m}.lcov" 2>&1 >/dev/null
     lcov --remove "${pwd}/coverage/main${m}.lcov" "${pwd}/src/rexo/*" -o "${pwd}/coverage/main${m}.lcov"
 done
 
 find "${pwd}/coverage" -name "main*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
 find "${pwd}/coverage" -name "main*.lcov" -delete
 
-main=$(find "${pwd}/cmake" -name "*.s" -exec echo {} \;)
-for i in $main; do
-    path="${pwd}/$(echo $i | sed -n -e 's/^.*.dir\/\(.*\)$/\1/p')"
-    cp "${i}" "${path}"
-done
+"${pwd}/bin/build.sh" ${install} ${opts}
 
 cd "${pwd}"

@@ -75,8 +75,15 @@ if(UNIX)
     add_definitions(-D_POSIX_C_SOURCE=199309L)
 endif()
 
-add_compile_options(-save-temps -fgnu89-inline -fsanitize=undefined,address -fsanitize-undefined-trap-on-error -fno-sanitize-recover=all)
-add_link_options(-save-temps -fgnu89-inline -fsanitize=undefined,address -fsanitize-undefined-trap-on-error -fno-sanitize-recover=all)
+if(CODE_SANITIZER)
+    message("Building with sanitizers")
+    add_compile_options(-save-temps -fgnu89-inline -fsanitize=undefined,address -fsanitize-undefined-trap-on-error -fno-sanitize-recover=all)
+    add_link_options(-save-temps -fgnu89-inline -fsanitize=undefined,address -fsanitize-undefined-trap-on-error -fno-sanitize-recover=all)
+else()
+    message("Building without sanitizers")
+    add_compile_options(-save-temps -fno-sanitize=all)
+    add_link_options(-save-temps -fno-sanitize=all)
+endif()
 
 add_library(list-common STATIC ${LIB_COMMON_SOURCE})
 
@@ -101,9 +108,9 @@ target_link_libraries(main-alloc PRIVATE list-alloc list-common)
 target_link_libraries(main-experimental PRIVATE list-experimental list-common)
 target_link_libraries(main-playground PRIVATE list-playground list-common list-micro)
 
-if(CMAKE_BUILD_TYPE STREQUAL "coverage" OR CODE_COVERAGE)
+if(CODE_COVERAGE)
     if("${CMAKE_C_COMPILER_ID}" MATCHES "(Apple)?[Cc]lang" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "(Apple)?[Cc]lang")
-        message("Building with llvm Code Coverage Tools")
+        message("Building with llvm code coverage tools")
 
         # Warning/Error messages
         if(NOT LLVM_COV_PATH)
@@ -115,7 +122,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "coverage" OR CODE_COVERAGE)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-instr-generate -fcoverage-mapping")
 
     elseif(CMAKE_COMPILER_IS_GNUCXX)
-        message("Building with lcov Code Coverage Tools")
+        message("Building with lcov code coverage tools")
 
         # Warning/Error messages
         if(NOT (CMAKE_BUILD_TYPE STREQUAL "Debug"))
@@ -133,9 +140,6 @@ if(CMAKE_BUILD_TYPE STREQUAL "coverage" OR CODE_COVERAGE)
     else()
         message(FATAL_ERROR "Code coverage requires Clang or GCC. Aborting.")
     endif()
-endif()
-
-if (CODE_COVERAGE)
     if(CMAKE_C_COMPILER_ID MATCHES "(Apple)?[Cc]lang" OR CMAKE_CXX_COMPILER_ID MATCHES "(Apple)?[Cc]lang")
         add_compile_options(-fprofile-instr-generate -fcoverage-mapping)
         add_link_options(-fprofile-instr-generate -fcoverage-mapping)

@@ -10,36 +10,27 @@ fi
 
 pwd=$(pwd)
 
-array="undefined"
-clean="undefined"
-
 install="$1"
-remove="$2"
 
-case "${remove}" in
+opts=( )
+while (( "$#" )); do
+    shift
+    opts+=( $1 ) 
+done
 
-    "")
-        ;;
-
-    "--clean") # cleans up directories before build
-        clean="--clean"
-        ;;
-
-    *)
+function help() {
         commands=$(cat $0 | sed -e 's/^[ \t]*//;' | sed -e '/^[ \t]*$/d' | sed -n -e 's/^"\(.*\)".*#/    \1:/p' | sed -n -e 's/: /:\n        /p')
         script="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
         help=$(\
 cat << EOF
-Builds main test executables into build folder
-Usage: ${script} <option> [--clean]
+Builds binaries
+Usage: ${script} <option> [optional]
 ${commands}
 EOF
 )
         echo "${help}"
         exit
-        ;;
-
-esac
+}
 
 case "${install}" in
 
@@ -68,20 +59,34 @@ case "${install}" in
         ;;
 
     *)
-        commands=$(cat $0 | sed -e 's/^[ \t]*//;' | sed -e '/^[ \t]*$/d' | sed -n -e 's/^"\(.*\)".*#/    \1:/p' | sed -n -e 's/: /:\n        /p')
-        script="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
-        help=$(\
-cat << EOF
-Builds binaries
-Usage: ${script} <option> [--clean]
-${commands}
-EOF
-)
-        echo "${help}"
-        exit
+        help
         ;;
-
 esac
+
+for opt in "${opts[@]}"; do
+    case "${opt}" in
+
+        "")
+            ;;
+
+        "--clean") # [optional] cleans up directories before build
+            clean="--clean"
+            ;;
+
+        "--sanitize") # [optional] builds using sanitizer
+            sanitize="--sanitize"
+            ;;
+
+        "--silent") # [optional] suppress verbose output
+            silent="--silent"
+            ;;
+
+        *)
+            help
+            ;;
+
+    esac
+done
 
 [ ! -d "${pwd}/cmake" ] && mkdir "${pwd}/cmake"
 
@@ -90,16 +95,29 @@ if [ "${clean}" == "--clean" ]; then
     mkdir "${pwd}/cmake"
 fi
 
+if [ "${sanitize}" == "--sanitize" ]; then
+    SANITIZER_OPTIONS=-DCODE_SANITIZER:BOOL=TRUE
+else
+    SANITIZER_OPTIONS=
+fi
+
+if [ "${silent}" == "--silent" ]; then
+    exec 2>&1 >/dev/null
+fi
+
+OPTIONS=${SANITIZER_OPTIONS}
+
+export MAKEFLAGS=-j8
+
 cmake \
     -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
     -DCMAKE_BUILD_TYPE:STRING=Debug \
     -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
     -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
+    ${OPTIONS} \
     -S"${pwd}" \
     -B"${pwd}/cmake" \
     -G "Ninja"
-
-export MAKEFLAGS=-j8
 
 for m in "${array[@]}"; do
     cmake --build "${pwd}/cmake" --target "main${m}"
