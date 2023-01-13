@@ -18,11 +18,7 @@ pwd=$(pwd)
 
 install="$1"
 
-opts=( )
-while (( "$#" )); do
-    shift
-    opts+=( $1 )
-done
+opts=( "${@:2}" )
 
 function help() {
         commands=$(cat $0 | sed -e 's/^[ \t]*//;' | sed -e '/^[ \t]*$/d' | sed -n -e 's/^"\(.*\)".*#/    \1:/p' | sed -n -e 's/: /:\n        /p')
@@ -91,6 +87,10 @@ for opt in "${opts[@]}"; do
     esac
 done
 
+if [ "${silent}" == "--silent" ]; then
+    exec 2>&1 >/dev/null
+fi
+
 [ ! -d "${pwd}/coverage" ] && mkdir "${pwd}/coverage"
 
 if [ "${clean}" == "--clean" ]; then
@@ -105,9 +105,9 @@ done
 find "${pwd}/coverage" -name "*.gcda" -delete
 find "${pwd}/coverage" -name "*.gcno" -delete
 
-if [ "${silent}" == "--silent" ]; then
-    exec 2>&1 >/dev/null
-fi
+export LCOV_PATH=$(which lcov)
+export GENHTML_PATH==$(which genhtml)
+
 
 OPTIONS=${SANITIZER_OPTIONS}
 
@@ -120,8 +120,8 @@ cmake \
     -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
     -DCODE_SANITIZER:BOOL=TRUE \
     -DCODE_COVERAGE:BOOL=TRUE \
-    -DLCOV_PATH=$(which lcov) \
-    -DGENHTML_PATH==$(which genhtml) \
+    -DLCOV_PATH=${LCOV_PATH} \
+    -DGENHTML_PATH=${GENHTML_PATH} \
     -S"${pwd}" \
     -B"${pwd}/cmake" \
     -G "Ninja"
@@ -129,13 +129,17 @@ cmake \
 for m in "${array[@]}"; do
     cmake --build "${pwd}/cmake" --target "main${m}"
     timeout --foreground 5 "${pwd}/cmake/main${m}"
-    lcov --capture --directory "${pwd}/cmake/" --output-file "${pwd}/coverage/main${m}.lcov" 2>&1 >/dev/null
+    lcov --capture --directory "${pwd}/cmake/" --output-file "${pwd}/coverage/main${m}.lcov" &>/dev/null
     lcov --remove "${pwd}/coverage/main${m}.lcov" "${pwd}/src/rexo/*" -o "${pwd}/coverage/main${m}.lcov"
 done
 
 find "${pwd}/coverage" -name "main*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
 find "${pwd}/coverage" -name "main*.lcov" -delete
 
-"${pwd}/bin/build.sh" ${install} ${opts}
+if [ "${silent}" == "--silent" ]; then
+    exec 1>&2 2>&-
+fi
+
+"${pwd}/bin/build.sh" ${install} "${opts[@]}" "${clean:---clean}"
 
 cd "${pwd}"

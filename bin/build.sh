@@ -18,11 +18,7 @@ pwd=$(pwd)
 
 install="$1"
 
-opts=( )
-while (( "$#" )); do
-    shift
-    opts+=( $1 ) 
-done
+opts=( "${@:2}" )
 
 function help() {
         commands=$(cat $0 | sed -e 's/^[ \t]*//;' | sed -e '/^[ \t]*$/d' | sed -n -e 's/^"\(.*\)".*#/    \1:/p' | sed -n -e 's/: /:\n        /p')
@@ -94,6 +90,10 @@ for opt in "${opts[@]}"; do
     esac
 done
 
+if [ "${silent}" == "--silent" ]; then
+    exec 2>&1 >/dev/null
+fi
+
 [ ! -d "${pwd}/cmake" ] && mkdir "${pwd}/cmake"
 
 if [ "${clean}" == "--clean" ]; then
@@ -105,10 +105,6 @@ if [ "${sanitize}" == "--sanitize" ]; then
     SANITIZER_OPTIONS=-DCODE_SANITIZER:BOOL=TRUE
 else
     SANITIZER_OPTIONS=
-fi
-
-if [ "${silent}" == "--silent" ]; then
-    exec 2>&1 >/dev/null
 fi
 
 OPTIONS=${SANITIZER_OPTIONS}
@@ -134,5 +130,11 @@ for i in $main; do
     path="${pwd}/$(echo $i | sed -n -e 's/^.*.dir\/\(.*\)$/\1/p')"
     cp "${i}" "${path}"
 done
+
+if [ "${silent}" == "--silent" ]; then
+    exec 1>&2 2>&-
+fi
+
+echo OK
 
 cd "${pwd}"
