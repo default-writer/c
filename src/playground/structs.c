@@ -93,7 +93,7 @@ RX_TEST_CASE(myTestSuite, test_destroy, .fixture = test_fixture) {
 RX_TEST_CASE(myTestSuite, test_get_type, .fixture = test_fixture) {
     struct class* context = &class_definition;
     // ensures data is added to the list
-    RX_ASSERT(context->get_type() == (__u_int64_t)&class_definition);
+    RX_ASSERT(context->get_type() == (u64)&class_definition);
 }
 
 // test class get_type

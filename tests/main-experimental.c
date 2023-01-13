@@ -35,7 +35,7 @@ static void array_print_head(struct list_data**  current) {
     // gets data pointer
     void** data = ptr->data[0];
     // prints data value
-    printf("*: 0x%016llx >0x%016llx\n", (__u_int64_t)ptr->data[0], (__u_int64_t)*data);
+    printf("*: 0x%016llx >0x%016llx\n", (u64)ptr->data[0], (u64)*data);
 }
 
 // print all stack trace to output
@@ -56,7 +56,7 @@ static void array_print(struct list_data**  current) {
             // until we found root element (element with no previous element reference)
             do {
                 // debug output of memory dump
-                printf("%d: 0x%016llx *0x%016llx\n", ++i, (__u_int64_t)data, (__u_int64_t)*data);
+                printf("%d: 0x%016llx *0x%016llx\n", ++i, (u64)data, (u64)*data);
             } while (ptr->data != --data/*root*/);
             // gets next data pointer
             ptr = list_next(ptr);
@@ -66,10 +66,10 @@ static void array_print(struct list_data**  current) {
 }
 
 /* LCG Park-Miller state */
-static __u_int64_t lcg_state = 0xdeadbeef;
+static u64 lcg_state = 0xdeadbeef;
 
 /* LCG Park-Miller function */
-static __u_int64_t lcg_parkmiller() {
+static u64 lcg_parkmiller() {
     lcg_state = lcg_state* 48271 % 0x7fffffff;
     return lcg_state;
 }
@@ -98,7 +98,7 @@ static void using_list2(void (*list_using)(struct list_data** const)) {
 static void list_using(struct list_data**  current) {
     // access context's functions pointer
     struct list* list = &list_experimental_definition;
-    __u_int8_t* payload = (void*)0xdeadbeef;
+    u8* payload = (void*)0xdeadbeef;
     void* is_null[] = {
         list->peek(current),
         list->pop(current)
@@ -226,7 +226,7 @@ RX_TEST_CASE(myTestSuite, test_standard_list_peek_does_not_changes_stack, .fixtu
     // creates the list
     struct list* list = &list_experimental_definition;
     // prepares the payload
-    __u_int8_t* payload = (void*)0xdeadbeef;
+    u8* payload = (void*)0xdeadbeef;
     // pushed to the list
     list->push(ctx, payload);
     // gets the head pointer to the list
@@ -268,7 +268,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_count_eq_1, .fixture = test_fixture) {
     // creates the list
     struct list* list = &list_experimental_definition;
     // prepares the payload
-    __u_int8_t* payload = (void*)0xdeadbeef;
+    u8* payload = (void*)0xdeadbeef;
     // pushed to the list
     list->push(ctx, payload);
     // ensures data is added to the list
@@ -281,7 +281,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_payload, .fixture = test_fixture) {
     // creates the list
     struct list* list = &list_experimental_definition;
     // prepares the payload
-    __u_int8_t* payload = (void*)0xdeadbeef;
+    u8* payload = (void*)0xdeadbeef;
     // pushes to the list
     list->push(ctx, payload);
     // peeks from the list
@@ -296,7 +296,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture) 
     // creates the list
     struct list* list = &list_experimental_definition;
     // prepares the payload
-    __u_int8_t* payload = (void*)0xdeadbeef;
+    u8* payload = (void*)0xdeadbeef;
     // pushes to the list
     list->push(ctx, payload);
     // pops from the list
@@ -311,7 +311,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture) 
     // creates the list
     struct list* list = &list_experimental_definition;
     // prepares the payload
-    __u_int8_t* payload = (void*)0xdeadbeef;
+    u8* payload = (void*)0xdeadbeef;
     // pushes to the list
     list->push(ctx, payload);
     // pops from the list
@@ -350,7 +350,7 @@ RX_TEST_CASE(myTestSuite, test_list_realloc, .fixture = test_fixture) {
     // creates the list
     struct list* list = &list_experimental_definition;
     // prepares the payload
-    __u_int8_t* payload = (void*)0xdeadbeef;
+    u8* payload = (void*)0xdeadbeef;
     // pushes to the list multiple times
     list->push(ctx, payload);
     list->push(ctx, payload);
@@ -373,7 +373,7 @@ RX_TEST_CASE(myTestSuite, test_list_push_pop, .fixture = test_fixture) {
     // creates the list
     struct list* list = &list_experimental_definition;
     // prepares the payload
-    __u_int8_t* payload = (void*)0xdeadbeef;
+    u8* payload = (void*)0xdeadbeef;
     // record buffer has N items
     void* _recorded[2*N_ELEMENTS + 1] = { 0 };
     // pushes all pseudo-random values

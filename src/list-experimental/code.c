@@ -61,7 +61,7 @@ void list_push(struct list_data** current, void* payload) {
         // gets data pointer
         void** data = ptr->data[0];
         /* gets the current data offset for new data allocation */
-        __u_int64_t offset = (__u_int64_t)((__u_int8_t*)(data + 1) - (__u_int8_t*)(ptr->data));
+        u64 offset = (u64)((u8*)(data + 1) - (u8*)(ptr->data));
         /* checks if current data pointer allocated all data */
         if (offset == ALLOC_SIZE) {
             /* creates empty data chunk */

@@ -27,7 +27,7 @@ static void _delete(struct class_data* ptr);
 static size_t _size();
 
 /* returns class type id */
-__u_int64_t class_get_type();
+u64 class_get_type();
 /* returns class data*/
 void* class_get_data(struct class_data* class);
 /* sets the class data */
@@ -122,9 +122,9 @@ void class_destroy(struct class_data** current) {
     }
 }
 
-__u_int64_t class_get_type() {
+u64 class_get_type() {
     struct class* class = &class_definition;
-    return (__u_int64_t) class;
+    return (u64) class;
 }
 
 void* class_get_data(struct class_data* class) {

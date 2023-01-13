@@ -16,7 +16,7 @@ struct class {
     /* writes data */
     void (*set_data)(struct class_data* class, void* data);
     /* returns current class type id */
-    __u_int64_t (*get_type)();
+    u64 (*get_type)();
     /* enter context */
     void (*push)(struct class_data* self);
     /* leaves context */

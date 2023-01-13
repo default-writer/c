@@ -56,7 +56,7 @@ static void list_print_head(struct list_data**  current,  void* (*_data)(struct 
     // get current context's head
     struct list_data* ptr = *current;
     // visualize item
-    printf("*: 0x%016llx >0x%016llx\n", (__u_int64_t)ptr, (__u_int64_t)_data(ptr));
+    printf("*: 0x%016llx >0x%016llx\n", (u64)ptr, (u64)_data(ptr));
 }
 
 // print all stack trace to output
@@ -72,7 +72,7 @@ static void list_print(struct list_data**  current,struct list_data* (*_list_nex
         // until we found root element (element with no previous element reference)
         do {
             // debug output of memory dump
-            printf("%d: 0x%016llx *0x%016llx\n", ++i, (__u_int64_t)tmp, (__u_int64_t)_list_data(tmp));
+            printf("%d: 0x%016llx *0x%016llx\n", ++i, (u64)tmp, (u64)_list_data(tmp));
             // remember temporary's prior pointer value to temporary
             tmp = _list_next(tmp);
         } while (tmp != 0/*root*/);
@@ -85,7 +85,7 @@ static void list_using(struct list_data**  current) {
     // access context's functions pointer
     struct list* list = &list_definition;
     // prepares the payload
-    __u_int8_t* payload = (void*)0xdeadbeef;
+    u8* payload = (void*)0xdeadbeef;
     // peeks and pops from empty list
     struct list_data* is_null[] = {
         list->peek(current),
@@ -207,7 +207,7 @@ RX_TEST_CASE(myTestSuite, test_standard_list_peek_does_not_changes_stack, .fixtu
     // creates the list
     struct list* list = &list_definition;
     // prepares the payload
-    __u_int8_t* payload = (void*)0xdeadbeef;
+    u8* payload = (void*)0xdeadbeef;
     // allocates the memory for the structure
     struct list_data* tmp = list->alloc(payload);
     // pushed to the list
@@ -253,7 +253,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_count_eq_1, .fixture = test_fixture) {
     // creates the list
     struct list* list = &list_definition;
     // prepares the payload
-    __u_int8_t* payload = (void*)0xdeadbeef;
+    u8* payload = (void*)0xdeadbeef;
     // allocates the memory for the structure
     struct list_data* tmp = list->alloc(payload);
     // pushes to the list
@@ -268,7 +268,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_payload, .fixture = test_fixture) {
     // creates the list
     struct list* list = &list_definition;
     // prepares the payload
-    __u_int8_t* payload = (void*)0xdeadbeef;
+    u8* payload = (void*)0xdeadbeef;
     // allocates the memory for the structure
     struct list_data* tmp = list->alloc(payload);
     // pushes to the list
@@ -285,7 +285,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture) 
     // creates the list
     struct list* list = &list_definition;
     // prepares the payload
-    __u_int8_t* payload = (void*)0xdeadbeef;
+    u8* payload = (void*)0xdeadbeef;
     // allocates the memory for the structure
     struct list_data* tmp = list->alloc(payload);
     list->push(ctx, tmp);
@@ -303,7 +303,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture) 
     // creates the list
     struct list* list = &list_definition;
     // prepares the payload
-    __u_int8_t* payload = (void*)0xdeadbeef;
+    u8* payload = (void*)0xdeadbeef;
     // allocates the memory for the structure
     struct list_data* tmp = list->alloc(payload);
     // pushes to the list
@@ -324,7 +324,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_and_prev_next_equals_0, .fixture = tes
     // creates the list
     struct list* list = &list_definition;
     // prepares the payload
-    __u_int8_t* payload = (void*)0xdeadbeef;
+    u8* payload = (void*)0xdeadbeef;
     // allocates the memory for the structure
     struct list_data* tmp = list->alloc(payload);
     // pushes to the list
@@ -355,7 +355,7 @@ RX_TEST_CASE(myTestSuite, test_list_free_head, .fixture = test_fixture) {
     // creates the list
     struct list* list = &list_definition;
     // prepares the payload
-    __u_int8_t* payload = (void*)0xdeadbeef;
+    u8* payload = (void*)0xdeadbeef;
     // allocates the memory for the structure
     struct list_data* tmp = list->alloc(payload);
     list->push(ctx, tmp);

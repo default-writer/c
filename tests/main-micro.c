@@ -56,7 +56,7 @@ static void list_print_head(struct list_data**  current,  void* (*_data)(struct 
     // get current context's head
     struct list_data* ptr = *current;
     // visualize item
-    printf("*: 0x%016llx >0x%016llx\n", (__u_int64_t)ptr, (__u_int64_t)_data(ptr));
+    printf("*: 0x%016llx >0x%016llx\n", (u64)ptr, (u64)_data(ptr));
 }
 
 // print all stack trace to output
@@ -72,7 +72,7 @@ static void list_print(struct list_data**  current,struct list_data* (*_list_nex
         // until we found root element (element with no previous element reference)
         do {
             // debug output of memory dump
-            printf("%d: 0x%016llx *0x%016llx\n", ++i, (__u_int64_t)tmp, (__u_int64_t)_list_data(tmp));
+            printf("%d: 0x%016llx *0x%016llx\n", ++i, (u64)tmp, (u64)_list_data(tmp));
             // remember temporary's prior pointer value to temporary
             tmp = _list_next(tmp);
         } while (tmp != 0/*root*/);
@@ -84,7 +84,7 @@ static void list_print(struct list_data**  current,struct list_data* (*_list_nex
 static void list_using(struct list_data**  current) {
     // access context's functions pointer
     struct list* list = &list_micro_definition;
-    __u_int8_t* payload = (void*)0xdeadbeef;
+    u8* payload = (void*)0xdeadbeef;
     void* is_null[] = {
         list->peek(current),
         list->pop(current)
@@ -218,7 +218,7 @@ RX_TEST_CASE(myTestSuite, test_standard_list_peek_does_not_changes_stack, .fixtu
     // creates the list
     struct list* list = &list_micro_definition;
     // prepares the payload
-    __u_int8_t* payload = (void*)0xdeadbeef;
+    u8* payload = (void*)0xdeadbeef;
     // pushed to the list
     list->push(ctx, payload);
     // gets the head pointer to the list
@@ -260,7 +260,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_count_eq_1, .fixture = test_fixture) {
     // creates the list
     struct list* list = &list_micro_definition;
     // prepares the payload
-    __u_int8_t* payload = (void*)0xdeadbeef;
+    u8* payload = (void*)0xdeadbeef;
     // pushes to the list
     list->push(ctx, payload);
     // ensures data is added to the list
@@ -273,7 +273,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_payload, .fixture = test_fixture) {
     // creates the list
     struct list* list = &list_micro_definition;
     // prepares the payload
-    __u_int8_t* payload = (void*)0xdeadbeef;
+    u8* payload = (void*)0xdeadbeef;
     // pushes to the list
     list->push(ctx, payload);
     // peeks from the list
@@ -288,7 +288,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture) 
     // creates the list
     struct list* list = &list_micro_definition;
     // prepares the payload
-    __u_int8_t* payload = (void*)0xdeadbeef;
+    u8* payload = (void*)0xdeadbeef;
     // pushes to the list
     list->push(ctx, payload);
     // pops from the list
@@ -303,7 +303,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture) 
     // creates the list
     struct list* list = &list_micro_definition;
     // prepares the payload
-    __u_int8_t* payload = (void*)0xdeadbeef;
+    u8* payload = (void*)0xdeadbeef;
     // pushes to the list
     list->push(ctx, payload);
     // pops from the list
