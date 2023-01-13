@@ -76,6 +76,10 @@ for opt in "${opts[@]}"; do
             clean="--clean"
             ;;
 
+        "--sanitize") # [optional] builds using sanitizer
+            sanitize="--sanitize"
+            ;;
+
         "--silent") # [optional] suppress verbose output
             silent="--silent"
             ;;
@@ -140,6 +144,6 @@ if [ "${silent}" == "--silent" ]; then
     exec 1>&2 2>&-
 fi
 
-"${pwd}/bin/build.sh" ${install} "${opts[@]}" "${clean:---clean}"
+"${pwd}/bin/build.sh" ${install} "${opts[@]}"
 
 cd "${pwd}"
