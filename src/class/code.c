@@ -124,7 +124,7 @@ void class_destroy(struct class_data** current) {
 
 __u_int64_t class_get_type() {
     struct class* class = &class_definition;
-    return (__u_int64_t)class;
+    return (__u_int64_t) class;
 }
 
 void* class_get_data(struct class_data* class) {
@@ -149,7 +149,7 @@ struct class_data* context_pop() {
     struct list* list = &list_micro_definition;
     // pointer to context functions definitions
     struct class_data* context = &class_data;
-    // pops from the list 
+    // pops from the list
     return list->pop(&context->data->list);
 }
 
