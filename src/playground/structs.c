@@ -128,7 +128,7 @@ RX_TEST_CASE(myTestSuite, test_context_enter_leave, .fixture = test_fixture) {
 }
 
 // test context
-RX_TEST_CASE(myTestSuite, test_context_get_data_set_data, .fixture = test_fixture) {
+RX_TEST_CASE(myTestSuite, test_class_get_set_data, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct class_data** ctx = &rx->ctx;
     struct class_data* data = *ctx;

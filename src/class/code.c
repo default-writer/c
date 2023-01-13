@@ -38,9 +38,9 @@ void context_enter(struct class_data* class);
 /* resets the class context */
 struct class* context_leave();
 /* proxy for the class function get_data() */
-void* context_get_data();
+void* class_get();
 /* proxy for the class function set_data( void*)*/
-void context_set_data(void* data);
+void class_set(void* data);
 
 /* gets size of a memory block to allocate */
 static size_t _size() {
@@ -135,7 +135,7 @@ void class_set_data(struct class_data* class, void* data) {
     class->data->ptr = data;
 }
 
-void context_push(struct class_data* class) {
+void class_push(struct class_data* class) {
     // pointer to list functions definitions
     struct list* list = &list_micro_definition;
     // pointer to context functions definitions
@@ -144,7 +144,7 @@ void context_push(struct class_data* class) {
     list->push(&context->data->list, class);
 }
 
-struct class_data* context_pop() {
+struct class_data* class_pop() {
     // pointer to list functions definitions
     struct list* list = &list_micro_definition;
     // pointer to context functions definitions
@@ -153,7 +153,7 @@ struct class_data* context_pop() {
     return list->pop(&context->data->list);
 }
 
-void* context_get_data() {
+void* class_get() {
     // pointer to list functions definitions
     struct list* list = &list_micro_definition;
     // pointer to context functions definitions
@@ -164,7 +164,7 @@ void* context_get_data() {
     return class->get_data(list->peek(&context->data->list));
 }
 
-void context_set_data(void* data) {
+void class_set(void* data) {
     // pointer to list functions definitions
     struct list* list = &list_micro_definition;
     // pointer to context functions definitions
@@ -180,8 +180,8 @@ struct class class_definition = {
     .get_type = class_get_type,
     .get_data = class_get_data,
     .set_data = class_set_data,
-    .push = context_push,
-    .pop = context_pop,
-    .get = context_get_data,
-    .set = context_set_data
+    .push = class_push,
+    .pop = class_pop,
+    .get = class_get,
+    .set = class_set
 };
