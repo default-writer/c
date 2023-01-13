@@ -57,7 +57,7 @@ void list_push(struct list_data** current, void* payload) {
         // gets data pointer
         void** data = ptr->data[0];
         /* gets the current data offset for new data allocation */
-        LPTR offset = (LPTR)((BYTE*)(data + 1) - (BYTE*)(ptr->data));
+        __u_int64_t offset = (__u_int64_t)((__u_int8_t*)(data + 1) - (__u_int8_t*)(ptr->data));
         /* checks if current data pointer allocated all data */
         if (offset == _allocation_size) {
             /* creates empty data chunk */
@@ -143,7 +143,7 @@ void* list_peek(struct list_data** current) {
     return 0;
 }
 
-const struct list list_experimental_definition = {
+struct list list_experimental_definition = {
     .push = list_push,
     .pop = list_pop,
     .peek = list_peek

@@ -176,7 +176,7 @@ void list_destroy(struct list_data** current, void (*_list_delete)(struct list_d
     }
 }
 
-const struct list list_definition = {
+struct list list_definition = {
     // generic methods
     .init = list_init,
     .destroy = list_destroy,

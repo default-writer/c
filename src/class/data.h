@@ -13,13 +13,12 @@ struct class {
     /* writes data */
     void (*set_data)(struct class* class, void* data);
     /* returns current class type id */
-    LPTR(*get_type)
-    ();
+    __u_int64_t (*get_type)();
 };
 
 struct context {
-    /* context class */
-    struct class* self;
+    /* list */
+    struct list_data* list;
     /* enter context */
     void (*enter)(struct class* self);
     /* leaves context */

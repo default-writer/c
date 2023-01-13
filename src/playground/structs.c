@@ -1,5 +1,6 @@
-#include "class/data.h"
 #include "rexo/include/rexo.h"
+
+#include "class/data.h"
 #include "std/common.h"
 
 /*
@@ -28,7 +29,7 @@ int of_type(void* ptr)
     return ptr->type == type;
 }
 
-const struct some_data some_data_type =
+struct some_data some_data_type =
 {
     .of_type = of_type
 };
@@ -97,8 +98,8 @@ RX_TEST_CASE(myTestSuite, test_get_type, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct class** ctx = &rx->ctx;
     struct class* class = *ctx;
-    LPTR expected = (LPTR)&class_definition;
-    LPTR actual = class->get_type();
+    __u_int64_t expected = (__u_int64_t)&class_definition;
+    __u_int64_t actual = class->get_type();
     // ensures data is added to the list
     RX_ASSERT(actual == expected);
 }

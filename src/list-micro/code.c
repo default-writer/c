@@ -140,7 +140,7 @@ void list_destroy(struct list_data** current) {
     }
 }
 
-const struct list list_micro_definition = {
+struct list list_micro_definition = {
     // generic methods
     .init = list_init,
     .destroy = list_destroy,

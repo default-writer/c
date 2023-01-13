@@ -6,7 +6,7 @@
 #define ZEROPTR(ptr) if (ptr != 0) { ptr = 0; }
 
 #ifndef USE_MEMORY_LEAKS_DETECTION
- char* __asan_default_options() { return "detect_leaks=0"; }
+char* __asan_default_options() { return "detect_leaks=0"; }
 #endif
 
 extern  struct list list_micro_definition;
@@ -60,7 +60,7 @@ static void list_print_head(struct list_data**  current,  void* (*_data)(struct 
     // get current context's head
     struct list_data* ptr = *current;
     // visualize item
-    printf("*: 0x%016llx >0x%016llx\n", (LPTR)ptr, (LPTR)_data(ptr));
+    printf("*: 0x%016llx >0x%016llx\n", (__u_int64_t)ptr, (__u_int64_t)_data(ptr));
 }
 
 // print all stack trace to output
@@ -76,7 +76,7 @@ static void list_print(struct list_data**  current,struct list_data* (*_list_nex
         // until we found root element (element with no previous element reference)
         do {
             // debug output of memory dump
-            printf("%d: 0x%016llx *0x%016llx\n", ++i, (LPTR)tmp, (LPTR)_list_data(tmp));
+            printf("%d: 0x%016llx *0x%016llx\n", ++i, (__u_int64_t)tmp, (__u_int64_t)_list_data(tmp));
             // remember temporary's prior pointer value to temporary
             tmp = _list_next(tmp);
         } while (tmp != 0/*root*/);
@@ -88,8 +88,8 @@ static void list_print(struct list_data**  current,struct list_data* (*_list_nex
 static void list_using(struct list_data**  current) {
     // access context's functions pointer
     struct list* list = &list_micro_definition;
-     LPTR* payload = (LPTR*)0xdeadbeef;
-     void* is_null[] = {
+    __u_int64_t* payload = (__u_int64_t*)0xdeadbeef;
+    void* is_null[] = {
         list->peek(current),
         list->pop(current)
     };
@@ -118,57 +118,57 @@ static void list_using(struct list_data**  current) {
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, list_next, list_data);
 #endif
-     void* q_peek0 = list->peek(current);
+    void* q_peek0 = list->peek(current);
     ZEROPTR(q_peek0)
-     void* q_pop0 = list->pop(current);
+    void* q_pop0 = list->pop(current);
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, list_next, list_data);
 #endif
-     void* q_pop1 = list->pop(current);
+    void* q_pop1 = list->pop(current);
     ZEROPTR(q_pop1)
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, list_next, list_data);
 #endif
-     void* q_pop2 = list->pop(current);
+    void* q_pop2 = list->pop(current);
     ZEROPTR(q_pop2)
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, list_next, list_data);
 #endif
-     void* q_peek1 = list->peek(current);
-     void* q_pop3 = list->pop(current);
-     void* q_peek2 = list->peek(current);
+    void* q_peek1 = list->peek(current);
+    void* q_pop3 = list->pop(current);
+    void* q_peek2 = list->peek(current);
     list->push(current, q_pop3);
-     void* q_peek3 = list->peek(current);
+    void* q_peek3 = list->peek(current);
     RX_ASSERT(q_peek1 != q_peek2);
     RX_ASSERT(q_peek2 != q_peek3);
     RX_ASSERT(q_peek1 == q_peek3);
-     void* q_pop4 = list->pop(current);
+    void* q_pop4 = list->pop(current);
     ZEROPTR(q_pop4)
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, list_next, list_data);
 #endif
-     void* q_pop5 = list->pop(current);
+    void* q_pop5 = list->pop(current);
     ZEROPTR(q_pop5)
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, list_next, list_data);
 #endif
-     void* q_peek4 = list->peek(current);
+    void* q_peek4 = list->peek(current);
     list->push(current, q_pop0);
     ZEROPTR(q_peek4)
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, list_next, list_data);
 #endif
-     void* q_pop6 = list->pop(current);
+    void* q_pop6 = list->pop(current);
     ZEROPTR(q_pop6)
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, list_next, list_data);
 #endif
-     void* q_pop7 = list->pop(current);
+    void* q_pop7 = list->pop(current);
     ZEROPTR(q_pop7)
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, list_next, list_data);
 #endif
-     void* q_peek5 = list->peek(current);
+    void* q_peek5 = list->peek(current);
     ZEROPTR(q_peek5)
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, list_next, list_data);
@@ -226,13 +226,13 @@ RX_TEST_CASE(myTestSuite, test_standard_list_peek_does_not_changes_stack, .fixtu
     // creates the list
     struct list* list = &list_micro_definition;
     // prepares the payload
-     BYTE* payload = (void*)0xdeadbeef;
+    __u_int8_t* payload = (void*)0xdeadbeef;
     // pushed to the list
     list->push(ctx, payload);
     // gets the head pointer to the list
     struct list_data* ptr = *ctx;
     // peeks from the list
-     void* head = list->peek(ctx);
+    void* head = list->peek(ctx);
     // ensures payload is on top of the stack
     RX_ASSERT(head == payload);
     // ensures peek does not changes the head pointer
@@ -268,7 +268,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_count_eq_1, .fixture = test_fixture) {
     // creates the list
     struct list* list = &list_micro_definition;
     // prepare the payload
-     BYTE* payload = (void*)0xdeadbeef;
+    __u_int8_t* payload = (void*)0xdeadbeef;
     // pushes to the list
     list->push(ctx, payload);
     // ensures data is added to the list
@@ -281,10 +281,10 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_payload, .fixture = test_fixture) {
     // creates the list
     struct list* list = &list_micro_definition;
     // prepare the payload
-     BYTE* payload = (void*)0xdeadbeef;
+    __u_int8_t* payload = (void*)0xdeadbeef;
     list->push(ctx, payload);
     // peeks from the list
-     void* head = list->peek(ctx);
+    void* head = list->peek(ctx);
     // ensures data is added to the list
     RX_ASSERT(head == payload);
 }
@@ -295,11 +295,11 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture) 
     // creates the list
     struct list* list = &list_micro_definition;
     // prepares the payload
-     BYTE* payload = (void*)0xdeadbeef;
+    __u_int8_t* payload = (void*)0xdeadbeef;
     // pushes to the list
     list->push(ctx, payload);
     // pops from the list
-     void* head = list->pop(ctx);
+    void* head = list->pop(ctx);
     // ensures data is added to the list
     RX_ASSERT(head != 0);
 }
@@ -310,11 +310,11 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture) 
     // creates the list
     struct list* list = &list_micro_definition;
     // prepares the payload
-     BYTE* payload = (void*)0xdeadbeef;
+    __u_int8_t* payload = (void*)0xdeadbeef;
     // pushes to the list
     list->push(ctx, payload);
     // pops from the list
-     void* head = list->pop(ctx);
+    void* head = list->pop(ctx);
     // ensures data is added to the list
     RX_ASSERT(head == payload);
 }
@@ -326,7 +326,7 @@ RX_TEST_CASE(myTestSuite, test_list_peek_is_zero, .fixture = test_fixture) {
     // creates the list
     struct list* list = &list_micro_definition;
     // peeks from the list
-     void* head = list->peek(ctx);
+    void* head = list->peek(ctx);
     // ensures data is added to the list
     RX_ASSERT(head == 0);
 }
@@ -338,7 +338,7 @@ RX_TEST_CASE(myTestSuite, test_list_pop_is_zero, .fixture = test_fixture) {
     // creates the list
     struct list* list = &list_micro_definition;
     // pops from the list
-     void* head = list->pop(ctx);
+    void* head = list->pop(ctx);
     // ensures data is added to the list
     RX_ASSERT(head == 0);
 }

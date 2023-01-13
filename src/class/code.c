@@ -2,14 +2,17 @@
 #include "common/alloc.h"
 #include "list-micro/data.h"
 
+/* class definition */
+extern struct class class_definition;
+/* list definition */
 extern struct list list_micro_definition;
+/* context definition */
+extern struct context context_definition;
 
 /* class data */
 struct data {
     /* data pointer */
     void* ptr;
-    /* list */
-    struct list_data* ctx;
 };
 
 /* creates the class instance */
@@ -20,7 +23,7 @@ static void _delete(struct class* ptr);
 static size_t _size();
 
 /* returns class type id */
-LPTR class_get_type();
+__u_int64_t class_get_type();
 /* returns class data*/
 void* class_get_data(struct class* class);
 /* sets the class data */
@@ -42,7 +45,8 @@ static size_t _size() {
 }
 
 static struct class* _new() {
-    const struct list* list = &list_micro_definition;
+    struct list* list = &list_micro_definition;
+    struct context* context = &context_definition;
     struct list_data* ctx = 0;
     // init list
     list->init(&ctx);
@@ -52,13 +56,14 @@ static struct class* _new() {
     class->get_data = class_get_data;
     class->set_data = class_set_data;
     class->get_type = class_get_type;
-    class->data->ctx = ctx;
+    context->list = ctx;
     return class;
 }
 
 static void _delete(struct class* class) {
-    const struct list* list = &list_micro_definition;
-    struct list_data* ctx = class->data->ctx;
+    struct list* list = &list_micro_definition;
+    struct context* context = &context_definition;
+    struct list_data* ctx = context->list;
     // destroys list
     list->destroy(&ctx);
     _list_free(class->data, sizeof(struct data));
@@ -70,7 +75,7 @@ static void _delete(struct class* class) {
 /* current context pointer set to zero */
 void class_init(struct class** current) {
     /* gets the current memory pointer */
-    const struct class* tmp = *current;
+    struct class* tmp = *current;
     /* sets the current memory pointer */
     if (tmp == 0) {
         /* creates emtpy data chunk */
@@ -93,14 +98,9 @@ void class_destroy(struct class** current) {
     }
 }
 
-/* class definition */
-const struct class class_definition;
-/* context definition */
-struct context context_definition;
-
-LPTR class_get_type() {
-    const struct class* type = &class_definition;
-    return (LPTR)type;
+__u_int64_t class_get_type() {
+    struct class* type = &class_definition;
+    return (__u_int64_t)type;
 }
 
 void* class_get_data(struct class* class) {
@@ -112,32 +112,32 @@ void class_set_data(struct class* class, void* data) {
 }
 
 void context_enter(struct class* class) {
-    struct context* ctx = &context_definition;
-    ctx->self = class;
+    struct list* list = &list_micro_definition;
+    struct context* context = &context_definition;
+    list->push(&context->list, class);
 }
 
 struct class* context_leave() {
-    struct context* ctx = &context_definition;
-    struct class* class = ctx->self;
-#ifdef USE_MEMORY_CLEANUP
-    ctx->self = 0;
-#endif
-    return class;
+    struct list* list = &list_micro_definition;
+    struct context* context = &context_definition;
+    return list->pop(&context->list);
 }
 
 void* context_get_data() {
+    struct list* list = &list_micro_definition;
     struct context* context = &context_definition;
-    const struct class* class = &class_definition;
-    return class->get_data(context->self);
+    struct class* class = &class_definition;
+    return class->get_data(list->peek(&context->list));
 }
 
 void context_set_data(void* data) {
+    struct list* list = &list_micro_definition;
     struct context* context = &context_definition;
-    const struct class* class = &class_definition;
-    class->set_data(context->self, data);
+    struct class* class = &class_definition;
+    class->set_data(list->peek(&context->list), data);
 }
 
-const struct class class_definition = {
+struct class class_definition = {
     // generic methods
     .get_type = class_get_type,
     .get_data = class_get_data,

@@ -29,7 +29,7 @@ void _delete(struct list_data* ptr) {
 /* at current context, data payload stored at allocated memory buffer */
 /* as a result, items counter will increase */
 void list_push(struct list_data** current, void* payload) {
-    const struct list_data* tmp = *current;
+    struct list_data* tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
         /* gets the current memory pointer */
@@ -37,7 +37,7 @@ void list_push(struct list_data** current, void* payload) {
         // gets data pointer
         void** data = ptr->data[0];
         /* gets the current data offset for new data allocation */
-        LPTR offset = (LPTR)((BYTE*)(data + 1) - (BYTE*)(ptr->data));
+        __u_int64_t offset = (__u_int64_t)((__u_int8_t*)(data + 1) - (__u_int8_t*)(ptr->data));
         /* checks if current data pointer allocated all data */
         if (offset == ptr->size) {
             /* reallocates current data pointer to the new memory location */
@@ -58,7 +58,7 @@ void list_push(struct list_data** current, void* payload) {
 
 /* pop existing element at the top of the stack/queue/list */
 void* list_pop(struct list_data** current) {
-    const struct list_data* tmp = *current;
+    struct list_data* tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
         /* gets the current memory pointer */
@@ -88,11 +88,11 @@ void* list_pop(struct list_data** current) {
 /* peek existing element at the top of the stack/queue/list */
 /* at current context, existing head */
 void* list_peek(struct list_data** current) {
-    const struct list_data* tmp = *current;
+    struct list_data* tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
         /* gets the current memory pointer */
-        const struct list_data* ptr = *current;
+        struct list_data* ptr = *current;
         /* if we call method on empty stack, do not return head element, return null element by convention */
         if (ptr && ptr->data[0] != ptr->data) {
             // gets data pointer
@@ -107,7 +107,7 @@ void* list_peek(struct list_data** current) {
     return 0;
 }
 
-const struct list list_alloc_definition = {
+struct list list_alloc_definition = {
     .push = list_push,
     .pop = list_pop,
     .peek = list_peek

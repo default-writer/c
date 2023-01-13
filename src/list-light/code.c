@@ -34,7 +34,7 @@ void list_delete(struct list_data* ptr) { _delete(ptr); }
 /* at current context, data payload stored at allocated memory buffer */
 /* as a result, items counter will increase */
 void list_push(struct list_data** current, void* payload) {
-    const struct list_data* tmp = *current;
+    struct list_data* tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
         /* creates empty data chunk */
@@ -147,7 +147,7 @@ void list_destroy(struct list_data** current,
     }
 }
 
-const struct list list_light_definition = {
+struct list list_light_definition = {
     // generic methods
     .init = list_init,
     .destroy = list_destroy,
