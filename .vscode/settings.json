@@ -24,7 +24,7 @@
   "C_Cpp.intelliSenseEngine": "disabled",
   "testOnSave.enabled": true,
   "testOnSave.languageId": "c",
-  "testOnSave.testCommand": "./bin/coverage.sh --all",
+  "testOnSave.testCommand": "./bin/coverage.sh --all --slient",
   "koverage.coverageFileNames": [
     "lcov.info"
   ],

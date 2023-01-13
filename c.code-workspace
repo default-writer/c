@@ -22,7 +22,7 @@
         "workbench.editor.enablePreview": false,
         "testOnSave.enabled": true,
         "testOnSave.languageId": "c",
-        "testOnSave.testCommand": "./bin/coverage.sh --all",
+        "testOnSave.testCommand": "./bin/coverage.sh --all --slient",
         "koverage.coverageFileNames": [
             "lcov.info"
         ],

@@ -11,16 +11,21 @@ size_t _size() {
     return sizeof(struct list_data);
 }
 
+/* allocates memory pointer */
 struct list_data* _new() {
-    /* external code allocates memory and resets memory block to zero  */
+    /* allocates memory */
     struct list_data* ptr = _list_alloc(1, _size());
+    /* allocates nested memory pointer */
     ptr->data = _list_alloc(1, ALLOC_SIZE);
     ptr->data[0] = ptr->data;
     return ptr;
 }
 
+/* releases the memory pointer */
 void _delete(struct list_data* ptr) {
+    /* releases the nested memory pointer */
     _list_free(ptr->data, ALLOC_SIZE);
+    /* releases the pointer */
     _list_free(ptr, _size());
 }
 
@@ -45,9 +50,7 @@ void list_delete(struct list_data* ptr) {
     _delete(ptr);
 }
 
-/* allocates a memory for provided payload  */
-/* at current context, data payload stored at allocated memory buffer */
-/* as a result, items counter will increase */
+/* pushes the memory pointer */
 void list_push(struct list_data** current, void* payload) {
     struct list_data* tmp = *current;
     /* checks if pointer is not null */
@@ -78,7 +81,7 @@ void list_push(struct list_data** current, void* payload) {
     }
 }
 
-/* pop existing element at the top of the stack/queue/list */
+/* pops existing element at the top of the stack/queue/list */
 void* list_pop(struct list_data** current) {
     struct list_data* tmp = *current;
     /* checks if pointer is not null */
@@ -96,7 +99,7 @@ void* list_pop(struct list_data** current) {
             }
             /* rewinds head pointer to next pointer value */
             *current = next;
-            /* frees up the memory */
+            /* releases the memory */
             list_delete(ptr);
             /* updates pointer */
             ptr = next;

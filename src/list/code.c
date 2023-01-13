@@ -8,12 +8,15 @@ size_t _size() {
     return sizeof(struct list_data);
 }
 
+/* allocates memory pointer */
 struct list_data* _new() {
-    /* external code allocates memory and resets memory block to zero  */
+    /* allocates memory */
     return _list_alloc(1, _size());
 }
 
+/* releases the memory pointer */
 void _delete(struct list_data* ptr) {
+    /* releases the pointer */
     _list_free(ptr, _size());
 }
 
@@ -34,9 +37,7 @@ void list_delete(struct list_data* ptr) {
     _delete(ptr);
 }
 
-/* allocates a memory for provided payload  */
-/* at current context, data payload stored at allocated memory buffer */
-/* as a result, items counter will increase */
+/* allocates memory pointer */
 struct list_data* list_alloc(void* payload) {
     /* creates empty data chunk */
     struct list_data* item = _new();
@@ -46,25 +47,20 @@ struct list_data* list_alloc(void* payload) {
     return item;
 }
 
-/* frees up memory assigned for allocation of items at current position */
-/* at current context, all data needed to be claimed, will be freed */
-/* as a result, all items, starting from specified item, will be deleted */
+/* releases memory pointer */
 void list_free(struct list_data** current) {
     /* gets the current memory pointer */
     struct list_data* tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
-        /* frees up the memory */
+        /* releases the memory */
         list_delete(tmp);
         /* resets current pointer to 0 */
         *current = 0;
     }
 }
 
-/* push new item to existing context */
-/* at current context, new item will be added as next element */
-/* for the new item, add current head as previous element */
-/* as a result, head will advances to new position, represented as new item */
+/* pushes new item to existing context */
 struct list_data* list_push(struct list_data** current, struct list_data* item) {
     struct list_data* tmp = *current;
     /* checks if pointer is not null */
@@ -84,10 +80,7 @@ struct list_data* list_push(struct list_data** current, struct list_data* item) 
     return 0;
 }
 
-/* pop existing element at the top of the stack/queue/list */
-/* at current context, existing head will be removed out of stack */
-/* for the new stack header, corresponding values will be fixed */
-/* as a result, header will be set to previous position, represented as head's reference to next head */
+/* pops existing element at the top of the stack/queue/list */
 struct list_data* list_pop(struct list_data** current) {
     struct list_data* tmp = *current;
     /* checks if pointer is not null */
@@ -118,8 +111,7 @@ struct list_data* list_pop(struct list_data** current) {
     return 0;
 }
 
-/* peek existing element at the top of the stack/queue/list */
-/* at current context, existing head */
+/* peeks existing element at the top of the stack/queue/list */
 struct list_data* list_peek(struct list_data** current) {
     struct list_data* tmp = *current;
     /* checks if pointer is not null */
@@ -141,8 +133,6 @@ struct list_data* list_peek(struct list_data** current) {
 }
 
 /* initializes the new context's head element */
-/* as a result, new memory block will be allocated */
-/* current context pointer set to zero */
 void list_init(struct list_data** current, struct list_data* (*list_new)()) {
     struct list_data* tmp = *current;
     /* checks if pointer is not null */
@@ -153,8 +143,6 @@ void list_init(struct list_data** current, struct list_data* (*list_new)()) {
 }
 
 /* destroys the memory stack */
-/* frees all memory elements */
-/* as a result, memory will be freed */
 void list_destroy(struct list_data** current, void (*_list_delete)(struct list_data*), struct list_data* (*_list_next)(struct list_data*)) {
     /* gets the current memory pointer */
     struct list_data* tmp = *current;
@@ -166,7 +154,7 @@ void list_destroy(struct list_data** current, void (*_list_delete)(struct list_d
             struct list_data* ptr = tmp;
             /* gets prev pointer value */
             struct list_data* next = _list_next(ptr);
-            /* frees up memory, should check for 0 before execution */
+            /* releases the memory, should check for 0 before execution */
             _list_delete(ptr);
             /* advances temporary pointer value to the next item */
             tmp = next;

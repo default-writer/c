@@ -289,7 +289,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture) 
     list->push(ctx, tmp);
     // pop from the list
     struct list_data* head = list->pop(ctx);
-    // frees memory allocated for the data
+    // releases memory allocated for the data
     list->free(&head);
     // ensures no data added to the list
     RX_ASSERT(head == 0);
@@ -310,7 +310,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture) 
     struct list_data* head = list->pop(ctx);
     // retrieves the data from the top of the list
     void* head_payload = head->data;
-    // frees memory allocated for the data
+    // releases memory allocated for the data
     list->free(&head);
     // ensures data is added to the list
     RX_ASSERT(head_payload == payload);
@@ -359,7 +359,7 @@ RX_TEST_CASE(myTestSuite, test_list_free_head, .fixture = test_fixture) {
     list->push(ctx, tmp);
     // pops from the list
     struct list_data* head = list->pop(ctx);
-    // frees memory allocated for the data
+    // releases memory allocated for the data
     list->free(&head);
     // ensures no data added to the list
     RX_ASSERT(head == 0);
