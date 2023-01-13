@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 set -e
 
+err_report() {
+    echo "ERROR: on line $*: $(cat $0 | sed $1!d)" >&2
+}
+
+trap 'err_report $LINENO' ERR
+
 echo preparing commit message;
 
 CommitMessageFile=$1;
