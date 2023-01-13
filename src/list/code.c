@@ -10,11 +10,11 @@ size_t _size() {
 
 /* allocates memory pointer */
 struct list_data* _new() {
-    /* allocates memory */
+    // returns list object
     return _list_alloc(1, _size());
 }
 
-/* releases the memory pointer */
+/* releases memory pointer */
 void _delete(struct list_data* ptr) {
     /* releases the pointer */
     _list_free(ptr, _size());
@@ -53,7 +53,7 @@ void list_free(struct list_data** current) {
     struct list_data* tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
-        /* releases the memory */
+        /* releases memory */
         list_delete(tmp);
         /* resets current pointer to 0 */
         *current = 0;
@@ -154,7 +154,7 @@ void list_destroy(struct list_data** current, void (*_list_delete)(struct list_d
             struct list_data* ptr = tmp;
             /* gets prev pointer value */
             struct list_data* next = _list_next(ptr);
-            /* releases the memory, should check for 0 before execution */
+            /* releases memory, should check for 0 before execution */
             _list_delete(ptr);
             /* advances temporary pointer value to the next item */
             tmp = next;

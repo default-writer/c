@@ -18,10 +18,11 @@ struct list_data* _new() {
     /* allocates nested memory pointer */
     ptr->data = _list_alloc(1, ALLOC_SIZE);
     ptr->data[0] = ptr->data;
+    // returns list object
     return ptr;
 }
 
-/* releases the memory pointer */
+/* releases memory pointer */
 void _delete(struct list_data* ptr) {
     /* releases the nested memory pointer */
     _list_free(ptr->data, ALLOC_SIZE);
@@ -99,7 +100,7 @@ void* list_pop(struct list_data** current) {
             }
             /* rewinds head pointer to next pointer value */
             *current = next;
-            /* releases the memory */
+            /* releases memory */
             list_delete(ptr);
             /* updates pointer */
             ptr = next;

@@ -10,11 +10,11 @@ size_t _size() {
 
 /* allocates memory pointer */
 struct list_data* _new() {
-    /* allocates memory */
+    // returns list object
     return _list_alloc(1, _size());
 }
 
-/* releases the memory pointer */
+/* releases memory pointer */
 void _delete(struct list_data* ptr) {
     /* releases the pointer */
     _list_free(ptr, _size());
@@ -72,7 +72,7 @@ void* list_pop(struct list_data** current) {
         *current = next;
         /* gets temporary pointer value */
         void* payload = list_data(ptr);
-        /* releases the memory */
+        /* releases memory */
         list_delete(ptr);
         /* returns removed element */
         return payload;
@@ -124,7 +124,7 @@ void list_destroy(struct list_data** current) {
             struct list_data* ptr = tmp;
             /* gets prev pointer value */
             struct list_data* next = list_next(ptr);
-            /* releases the memory, should check for 0 before execution */
+            /* releases memory, should check for 0 before execution */
             list_delete(ptr);
             /* advances temporary pointer value to the next item */
             tmp = next;

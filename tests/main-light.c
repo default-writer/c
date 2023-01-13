@@ -12,15 +12,17 @@ struct list_data* list_next(struct list_data* ptr);
 void* list_data(struct list_data* ptr);
 void list_delete(struct list_data* ptr);
 
+/* allocates memory pointer for list object */
 static struct list_data* new_list() {
     struct list* list = &list_light_definition;
     struct list_data* ctx = 0;
     // init list
     list->init(&ctx, _new);
-    // returns created object
+    // returns list object
     return ctx;
 }
 
+/* releases memory pointer for list object */
 static void delete_list(struct list_data** ctx) {
     struct list* list = &list_light_definition;
     // destroys list

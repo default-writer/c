@@ -12,11 +12,13 @@ struct list_data* list_next(struct list_data* ptr);
 void* list_data(struct list_data* ptr);
 void list_delete(struct list_data* ptr);
 
+/* allocates memory pointer for list object */
 static struct list_data* new_list() {
-    // returns created object
+    // returns list object
     return _new();
 }
 
+/* releases memory pointer for list object */
 static void delete_list(struct list_data** ctx) {
     // gets pointer
     struct list_data* ptr = *ctx;

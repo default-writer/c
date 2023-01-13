@@ -19,10 +19,11 @@ struct list_data* _new() {
     ptr->data = _list_alloc(1, ALLOC_SIZE);
     ptr->data[0] = ptr->data;
     ptr->size = ALLOC_SIZE;
+    // returns list object
     return ptr;
 }
 
-/* releases the memory pointer */
+/* releases memory pointer */
 void _delete(struct list_data* ptr) {
     /* releases the nested memory pointer */
     _list_free(ptr->data, ptr->size);

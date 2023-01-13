@@ -64,10 +64,11 @@ static struct class* _new() {
     memcpy(class, definition, _size());
     /* allocates nested memory pointer */
     class->data = _list_alloc(1, sizeof(struct data));
+    // returns class object
     return class;
 }
 
-/* releases the memory pointer */
+/* releases memory pointer */
 static void _delete(struct class* class) {
     // pointer to list functions definitions
     struct list* list = &list_micro_definition;
