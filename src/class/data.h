@@ -5,33 +5,31 @@
 
 struct data;
 
-struct class {
+struct class_data {
     /* private data definition */
     struct data* data;
-    /* reads data */
-    void* (*get_data)(struct class* class);
-    /* writes data */
-    void (*set_data)(struct class* class, void* data);
-    /* returns current class type id */
-    __u_int64_t (*get_type)();
 };
 
-struct context {
-    /* list */
-    struct list_data* list;
-    /* enter context */
-    void (*enter)(struct class* self);
-    /* leaves context */
-    struct class* (*leave)();
+struct class {
     /* reads data */
-    void* (*get_data)();
+    void* (*get_data)(struct class_data* class);
     /* writes data */
-    void (*set_data)(void* data);
+    void (*set_data)(struct class_data* class, void* data);
+    /* returns current class type id */
+    __u_int64_t (*get_type)();
+    /* enter context */
+    void (*push)(struct class_data* self);
+    /* leaves context */
+    struct class_data* (*pop)();
+    /* reads data */
+    void* (*get)();
+    /* writes data */
+    void (*set)(void* data);
 };
 
 /* initializes the class instance */
-void class_init(struct class** current);
+void class_init(struct class_data** current);
 /* destroys the class instance */
-void class_destroy(struct class** current);
+void class_destroy(struct class_data** current);
 
 #endif // _LIST_DATA_H_

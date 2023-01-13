@@ -16,7 +16,7 @@ void list_delete(struct list_data* ptr);
 static struct list_data* new_list() {
     struct list* list = &list_light_definition;
     struct list_data* ctx = 0;
-    // init list
+    // initializes the list
     list->init(&ctx, _new);
     // returns list object
     return ctx;
@@ -25,7 +25,7 @@ static struct list_data* new_list() {
 /* releases memory pointer for list object */
 static void delete_list(struct list_data** ctx) {
     struct list* list = &list_light_definition;
-    // destroys list
+    // destroys the list
     list->destroy(ctx, _delete, list_next);
     // cleans up
     *ctx = 0;

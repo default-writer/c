@@ -22,7 +22,7 @@ static struct list_data* new_list() {
 static void delete_list(struct list_data** ctx) {
     // gets pointer
     struct list_data* ptr = *ctx;
-    // destroys list
+    // destroys the list
     _delete(ptr);
     // cleans up
     *ctx = 0;
