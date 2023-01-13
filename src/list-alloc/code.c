@@ -3,7 +3,7 @@
 #include "std/list.h"
 
 /* buffer size in bytes = size of 8 items */
-size_t _allocation_size = 8 * sizeof(void*);
+size_t ALLOC_SIZE = 8 * sizeof(void*);
 
 /* gets size of a memory block to allocate */
 size_t _size() {
@@ -14,9 +14,9 @@ size_t _size() {
 struct list_data* _new() {
     /* external code allocates memory and resets memory block to zero  */
     struct list_data* ptr = _list_alloc(1, _size());
-    ptr->data = _list_alloc(1, _allocation_size);
+    ptr->data = _list_alloc(1, ALLOC_SIZE);
     ptr->data[0] = ptr->data;
-    ptr->size = _allocation_size;
+    ptr->size = ALLOC_SIZE;
     return ptr;
 }
 
@@ -41,11 +41,11 @@ void list_push(struct list_data** current, void* payload) {
         /* checks if current data pointer allocated all data */
         if (offset == ptr->size) {
             /* reallocates current data pointer to the new memory location */
-            ptr->data = _list_realloc(ptr->data, ptr->size + _allocation_size);
+            ptr->data = _list_realloc(ptr->data, ptr->size + ALLOC_SIZE);
             // writes down the current data pointer
             ptr->data[0] = ptr->data;
             // updates the size of current data chunk
-            ptr->size += _allocation_size;
+            ptr->size += ALLOC_SIZE;
             /* updates current data pointer */
             data = ptr->data[0];
         }

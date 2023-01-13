@@ -3,22 +3,16 @@
 #include "std/list.h"
 #include "list-micro/data.h"
 
-#define ZEROPTR(ptr) if (ptr != 0) { ptr = 0; }
-
-#ifndef USE_MEMORY_LEAKS_DETECTION
-char* __asan_default_options() { return "detect_leaks=0"; }
-#endif
-
 extern  struct list list_micro_definition;
 
 struct list_data* _new();
 void _delete(struct list_data* ptr);
 size_t _size();
 struct list_data* list_next(struct list_data* ptr);
- void* list_data(struct list_data* ptr);
+void* list_data(struct list_data* ptr);
 void list_delete(struct list_data* ptr);
 
- static struct list_data* new_list() {
+static struct list_data* new_list() {
     struct list* list = &list_micro_definition;
     struct list_data* ctx = 0;
     // init list
@@ -88,7 +82,7 @@ static void list_print(struct list_data**  current,struct list_data* (*_list_nex
 static void list_using(struct list_data**  current) {
     // access context's functions pointer
     struct list* list = &list_micro_definition;
-    __u_int64_t* payload = (__u_int64_t*)0xdeadbeef;
+    __u_int8_t* payload = (void*)0xdeadbeef;
     void* is_null[] = {
         list->peek(current),
         list->pop(current)
@@ -180,8 +174,6 @@ typedef struct test_data {
     struct list_data* ctx;
 } *TEST_DATA;
 
-typedef struct test_data TEST_DATA_STRUCT;
-
 /* Initialize the data structure. Its allocation is handled by Rexo. */
 RX_SET_UP(test_set_up) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
@@ -215,8 +207,6 @@ RX_TEST_CASE(myTestSuite, test_empty_list_count_equals_0, .fixture = test_fixtur
     struct list_data** ctx = &rx->ctx;
     // ensures counter is initialized to 0
     RX_ASSERT(*ctx != 0);
-    // disable S5350
-    *ctx = 0;
 }
 
 /* test peek */
@@ -267,7 +257,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_count_eq_1, .fixture = test_fixture) {
     struct list_data** ctx = &rx->ctx;
     // creates the list
     struct list* list = &list_micro_definition;
-    // prepare the payload
+    // prepares the payload
     __u_int8_t* payload = (void*)0xdeadbeef;
     // pushes to the list
     list->push(ctx, payload);
@@ -280,8 +270,9 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_payload, .fixture = test_fixture) {
     struct list_data** ctx = &rx->ctx;
     // creates the list
     struct list* list = &list_micro_definition;
-    // prepare the payload
+    // prepares the payload
     __u_int8_t* payload = (void*)0xdeadbeef;
+    // pushes to the list
     list->push(ctx, payload);
     // peeks from the list
     void* head = list->peek(ctx);

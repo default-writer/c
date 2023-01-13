@@ -3,19 +3,13 @@
 #include "std/list.h"
 #include "list-experimental/data.h"
 
-#define ZEROPTR(ptr) if (ptr != 0) { ptr = 0; }
-
-#ifndef USE_MEMORY_LEAKS_DETECTION
-char* __asan_default_options() { return "detect_leaks=0"; }
-#endif
-
 extern  struct list list_experimental_definition;
 
 struct list_data* _new();
 void _delete(struct list_data* ptr);
 size_t _size();
 struct list_data* list_next(struct list_data* ptr);
- void* list_data(struct list_data* ptr);
+void* list_data(struct list_data* ptr);
 void list_delete(struct list_data* ptr);
 
 static struct list_data* new_list() {
@@ -25,7 +19,7 @@ static struct list_data* new_list() {
 
 static void delete_list(struct list_data** ctx) {
     // gets pointer
-   struct list_data* ptr = *ctx;
+    struct list_data* ptr = *ctx;
     // destroys list
     _delete(ptr);
     // cleans up
@@ -42,13 +36,12 @@ static void array_print_head(struct list_data**  current) {
     printf("*: 0x%016llx >0x%016llx\n", (__u_int64_t)ptr->data[0], (__u_int64_t)*data);
 }
 
-
 // print all stack trace to output
 // in a single loop, print out all elements except root element (which does not have a payload)
 // as a result, all stack will be printed in last-to-first order (reverse)
 static void array_print(struct list_data**  current) {
     // get current context's head
-   struct list_data* ptr = *current;
+    struct list_data* ptr = *current;
     // sets the counter
     int i = 0;
     // assigns current's head pointer to the temporary
@@ -82,7 +75,7 @@ static __u_int64_t lcg_parkmiller() {
 // default list usage scenario
 static void using_list(void (*list_using)(struct list_data** const)) {
     // initialize current context (stack)
-   struct list_data* ctx = new_list();
+    struct list_data* ctx = new_list();
     // call user method
     list_using(&ctx);
     // destroy list
@@ -92,7 +85,7 @@ static void using_list(void (*list_using)(struct list_data** const)) {
 // default list usage scenario
 static void using_list2(void (*list_using)(struct list_data** const)) {
     // initialize current context (stack)
-   struct list_data* ctx = new_list();
+    struct list_data* ctx = new_list();
     // call user method
     list_using(&ctx);
     // destroy list
@@ -103,7 +96,7 @@ static void using_list2(void (*list_using)(struct list_data** const)) {
 static void list_using(struct list_data**  current) {
     // access context's functions pointer
     struct list* list = &list_experimental_definition;
-    __u_int64_t* payload = (__u_int64_t*)0xdeadbeef;
+    __u_int8_t* payload = (void*)0xdeadbeef;
     void* is_null[] = {
         list->peek(current),
         list->pop(current)
@@ -192,13 +185,13 @@ static void list_using(struct list_data**  current) {
 
 /* Data structure to use at the core of our fixture. */
 typedef struct test_data {
-   struct list_data* ctx;
+    struct list_data* ctx;
 } *TEST_DATA;
 
 /* Initialize the data structure. Its allocation is handled by Rexo. */
 RX_SET_UP(test_set_up) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-   struct list_data** ctx = &rx->ctx;
+    struct list_data** ctx = &rx->ctx;
     // initialize list
     *ctx = new_list();
     return RX_SUCCESS;
@@ -206,9 +199,9 @@ RX_SET_UP(test_set_up) {
 
 RX_TEAR_DOWN(test_tear_down) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-   struct list_data** ctx = &rx->ctx;
+    struct list_data** ctx = &rx->ctx;
     /* gets the current memory pointer */
-   struct list_data* ptr = *ctx;
+    struct list_data* ptr = *ctx;
     /* cleans up */
     delete_list(&ptr);
 }
@@ -219,7 +212,7 @@ RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tea
 // test init
 RX_TEST_CASE(myTestSuite, test_empty_list_count_equals_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-   struct list_data** ctx = &rx->ctx;
+    struct list_data** ctx = &rx->ctx;
     // ensures counter is initialized to 0
     RX_ASSERT(*ctx != 0);
 }
@@ -227,7 +220,7 @@ RX_TEST_CASE(myTestSuite, test_empty_list_count_equals_0, .fixture = test_fixtur
 /* test peek */
 RX_TEST_CASE(myTestSuite, test_standard_list_peek_does_not_changes_stack, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-   struct list_data** ctx = &rx->ctx;
+    struct list_data** ctx = &rx->ctx;
     // creates the list
     struct list* list = &list_experimental_definition;
     // prepares the payload
@@ -246,7 +239,7 @@ RX_TEST_CASE(myTestSuite, test_standard_list_peek_does_not_changes_stack, .fixtu
 
 /* test pop from 0 pointer */
 RX_TEST_CASE(myTestSuite, test_empty_list_pop_equals_0, .fixture = test_fixture) {
-   struct list_data* ctx = 0;
+    struct list_data* ctx = 0;
     // creates the list
     struct list* list = &list_experimental_definition;
     // pops from the list
@@ -257,7 +250,7 @@ RX_TEST_CASE(myTestSuite, test_empty_list_pop_equals_0, .fixture = test_fixture)
 
 /* test pop from 0 pointer */
 RX_TEST_CASE(myTestSuite, test_empty_list_peek_equals_0, .fixture = test_fixture) {
-   struct list_data* ctx = 0;
+    struct list_data* ctx = 0;
     // creates the list
     struct list* list = &list_experimental_definition;
     // peeks from the list
@@ -269,7 +262,7 @@ RX_TEST_CASE(myTestSuite, test_empty_list_peek_equals_0, .fixture = test_fixture
 // test alloc
 RX_TEST_CASE(myTestSuite, test_list_alloc_count_eq_1, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-   struct list_data** ctx = &rx->ctx;
+    struct list_data** ctx = &rx->ctx;
     // creates the list
     struct list* list = &list_experimental_definition;
     // prepares the payload
@@ -282,7 +275,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_count_eq_1, .fixture = test_fixture) {
 
 RX_TEST_CASE(myTestSuite, test_list_alloc_payload, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-   struct list_data** ctx = &rx->ctx;
+    struct list_data** ctx = &rx->ctx;
     // creates the list
     struct list* list = &list_experimental_definition;
     // prepares the payload
@@ -297,7 +290,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_payload, .fixture = test_fixture) {
 
 RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-   struct list_data** ctx = &rx->ctx;
+    struct list_data** ctx = &rx->ctx;
     // creates the list
     struct list* list = &list_experimental_definition;
     // prepares the payload
@@ -312,7 +305,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture) 
 
 RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-   struct list_data** ctx = &rx->ctx;
+    struct list_data** ctx = &rx->ctx;
     // creates the list
     struct list* list = &list_experimental_definition;
     // prepares the payload
@@ -328,7 +321,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture) 
 // test peek
 RX_TEST_CASE(myTestSuite, test_list_peek_is_zero, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-   struct list_data** ctx = &rx->ctx;
+    struct list_data** ctx = &rx->ctx;
     // creates the list
     struct list* list = &list_experimental_definition;
     // pops from the list
@@ -340,7 +333,7 @@ RX_TEST_CASE(myTestSuite, test_list_peek_is_zero, .fixture = test_fixture) {
 // test pop
 RX_TEST_CASE(myTestSuite, test_list_pop_is_zero, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-   struct list_data** ctx = &rx->ctx;
+    struct list_data** ctx = &rx->ctx;
     // creates the list
     struct list* list = &list_experimental_definition;
     // pops from the list
@@ -351,7 +344,7 @@ RX_TEST_CASE(myTestSuite, test_list_pop_is_zero, .fixture = test_fixture) {
 
 RX_TEST_CASE(myTestSuite, test_list_realloc, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-   struct list_data** ctx = &rx->ctx;
+    struct list_data** ctx = &rx->ctx;
     // creates the list
     struct list* list = &list_experimental_definition;
     // prepares the payload
@@ -374,13 +367,13 @@ RX_TEST_CASE(myTestSuite, test_list_realloc, .fixture = test_fixture) {
 
 RX_TEST_CASE(myTestSuite, test_list_push_pop, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-   struct list_data** ctx = &rx->ctx;
+    struct list_data** ctx = &rx->ctx;
     // creates the list
     struct list* list = &list_experimental_definition;
     // prepares the payload
     __u_int8_t* payload = (void*)0xdeadbeef;
     // record buffer has N items
-    void* _recorded[2*N + 1] = { 0 };
+    void* _recorded[2*N_ELEMENTS + 1] = { 0 };
     // pushes all pseudo-random values
     // pushes to the list multiple times
     int i=0;
@@ -391,7 +384,7 @@ RX_TEST_CASE(myTestSuite, test_list_push_pop, .fixture = test_fixture) {
         _recorded[i] = _payload;
         // pushes to the list
         list->push(ctx, _payload);
-    } while (++i < 2*N);
+    } while (++i < 2*N_ELEMENTS);
     // pushes to the list
     list->push(ctx, payload);
     // prints the list

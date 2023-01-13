@@ -3,24 +3,18 @@
 #include "std/list.h"
 #include "list-light/data.h"
 
-#define ZEROPTR(ptr) if (ptr != 0) { ptr = 0; }
-
-#ifndef USE_MEMORY_LEAKS_DETECTION
-char* __asan_default_options() { return "detect_leaks=0"; }
-#endif
-
 extern  struct list list_light_definition;
 
 struct list_data* _new();
 void _delete(struct list_data* ptr);
 size_t _size();
 struct list_data* list_next(struct list_data* ptr);
- void* list_data(struct list_data* ptr);
+void* list_data(struct list_data* ptr);
 void list_delete(struct list_data* ptr);
 
 static struct list_data* new_list() {
     struct list* list = &list_light_definition;
-   struct list_data* ctx = 0;
+    struct list_data* ctx = 0;
     // init list
     list->init(&ctx, _new);
     // returns created object
@@ -38,7 +32,7 @@ static void delete_list(struct list_data** ctx) {
 // default list usage scenario
 static void using_list(void (*list_using)(struct list_data** const)) {
     // initialize current context (stack)
-   struct list_data* ctx = new_list();
+    struct list_data* ctx = new_list();
     // call user method
     list_using(&ctx);
     // destroy list
@@ -48,7 +42,7 @@ static void using_list(void (*list_using)(struct list_data** const)) {
 // default list usage scenario
 static void using_list2(void (*list_using)(struct list_data** const)) {
     // initialize current context (stack)
-   struct list_data* ctx = new_list();
+    struct list_data* ctx = new_list();
     // call user method
     list_using(&ctx);
     // destroy list
@@ -58,7 +52,7 @@ static void using_list2(void (*list_using)(struct list_data** const)) {
 // print head on current context (stack)
 static void list_print_head(struct list_data**  current,  void* (*_data)(struct list_data*)) {
     // get current context's head
-   struct list_data* ptr = *current;
+    struct list_data* ptr = *current;
     // visualize item
     printf("*: 0x%016llx >0x%016llx\n", (__u_int64_t)ptr, (__u_int64_t)_data(ptr));
 }
@@ -70,7 +64,7 @@ static void list_print(struct list_data**  current,struct list_data* (*_list_nex
     // sets the counter
     int i = 0;
     // assigns current's head pointer to the temporary
-   struct list_data* tmp = *current;
+    struct list_data* tmp = *current;
     if (tmp != 0)
     {
         // until we found root element (element with no previous element reference)
@@ -118,6 +112,8 @@ static void list_using(struct list_data**  current) {
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, list_next, list_data);
 #endif
+    void* q_peek0 = list->peek(current);
+    ZEROPTR(q_peek0)
     void* q_pop0 = list->pop(current);
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, list_next, list_data);
@@ -132,21 +128,27 @@ static void list_using(struct list_data**  current) {
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, list_next, list_data);
 #endif
+    void* q_peek1 = list->peek(current);
     void* q_pop3 = list->pop(current);
+    void* q_peek2 = list->peek(current);
     list->push(current, q_pop3);
-    q_pop3 = list->pop(current);
-    ZEROPTR(q_pop3)
-#ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current, list_next, list_data);
-#endif
+    void* q_peek3 = list->peek(current);
+    RX_ASSERT(q_peek1 != q_peek2);
+    RX_ASSERT(q_peek2 != q_peek3);
+    RX_ASSERT(q_peek1 == q_peek3);
     void* q_pop4 = list->pop(current);
     ZEROPTR(q_pop4)
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, list_next, list_data);
 #endif
-    void* q_pop5 = list->peek(current);
-    list->push(current, q_pop0);
+    void* q_pop5 = list->pop(current);
     ZEROPTR(q_pop5)
+#ifdef USE_MEMORY_DEBUG_INFO
+    list_print(current, list_next, list_data);
+#endif
+    void* q_peek4 = list->peek(current);
+    list->push(current, q_pop0);
+    ZEROPTR(q_peek4)
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, list_next, list_data);
 #endif
@@ -155,17 +157,27 @@ static void list_using(struct list_data**  current) {
 #ifdef USE_MEMORY_DEBUG_INFO
     list_print(current, list_next, list_data);
 #endif
+    void* q_pop7 = list->pop(current);
+    ZEROPTR(q_pop7)
+#ifdef USE_MEMORY_DEBUG_INFO
+    list_print(current, list_next, list_data);
+#endif
+    void* q_peek5 = list->peek(current);
+    ZEROPTR(q_peek5)
+#ifdef USE_MEMORY_DEBUG_INFO
+    list_print(current, list_next, list_data);
+#endif
 }
 
 /* Data structure to use at the core of our fixture. */
 typedef struct test_data {
-   struct list_data* ctx;
+    struct list_data* ctx;
 } *TEST_DATA;
 
 /* Initialize the data structure. Its allocation is handled by Rexo. */
 RX_SET_UP(test_set_up) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-   struct list_data** ctx = &rx->ctx;
+    struct list_data** ctx = &rx->ctx;
     // access context's functions pointer
     struct list* list = &list_light_definition;
     // initializes to 0
@@ -177,7 +189,7 @@ RX_SET_UP(test_set_up) {
 
 RX_TEAR_DOWN(test_tear_down) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-   struct list_data** ctx = &rx->ctx;
+    struct list_data** ctx = &rx->ctx;
     // access context's functions pointer
     struct list* list = &list_light_definition;
     // destroy list
@@ -192,7 +204,7 @@ RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tea
 // test init
 RX_TEST_CASE(myTestSuite, test_empty_list_count_equals_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-   struct list_data** ctx = &rx->ctx;
+    struct list_data** ctx = &rx->ctx;
     // ensures counter is initialized to 0
     RX_ASSERT(*ctx != 0);
 }
@@ -200,7 +212,7 @@ RX_TEST_CASE(myTestSuite, test_empty_list_count_equals_0, .fixture = test_fixtur
 /* test peek */
 RX_TEST_CASE(myTestSuite, test_standard_list_peek_does_not_changes_stack, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-   struct list_data** ctx = &rx->ctx;
+    struct list_data** ctx = &rx->ctx;
     // creates the list
     struct list* list = &list_light_definition;
     // prepares the payload
@@ -219,7 +231,7 @@ RX_TEST_CASE(myTestSuite, test_standard_list_peek_does_not_changes_stack, .fixtu
 
 /* test pop from 0 pointer */
 RX_TEST_CASE(myTestSuite, test_empty_list_pop_equals_0, .fixture = test_fixture) {
-   struct list_data* ctx = 0;
+    struct list_data* ctx = 0;
     // creates the list
     struct list* list = &list_light_definition;
     // pops from the list
@@ -230,19 +242,19 @@ RX_TEST_CASE(myTestSuite, test_empty_list_pop_equals_0, .fixture = test_fixture)
 
 /* test pop from 0 pointer */
 RX_TEST_CASE(myTestSuite, test_empty_list_peek_equals_0, .fixture = test_fixture) {
-   struct list_data* ctx = 0;
+    struct list_data* ctx = 0;
     // creates the list
     struct list* list = &list_light_definition;
     // peeks from the list
     struct list_data* head = list->peek(&ctx);
-    // ensures counter is initialized to 0
+    // ensures no data added to the list
     RX_ASSERT(head == 0);
 }
 
 // test alloc
 RX_TEST_CASE(myTestSuite, test_list_alloc_count_eq_1, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-   struct list_data** ctx = &rx->ctx;
+    struct list_data** ctx = &rx->ctx;
     // creates the list
     struct list* list = &list_light_definition;
     // prepares the payload
@@ -255,7 +267,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_count_eq_1, .fixture = test_fixture) {
 
 RX_TEST_CASE(myTestSuite, test_list_alloc_payload, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-   struct list_data** ctx = &rx->ctx;
+    struct list_data** ctx = &rx->ctx;
     // creates the list
     struct list* list = &list_light_definition;
     // prepares the payload
@@ -270,7 +282,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_payload, .fixture = test_fixture) {
 
 RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-   struct list_data** ctx = &rx->ctx;
+    struct list_data** ctx = &rx->ctx;
     // creates the list
     struct list* list = &list_light_definition;
     // prepares the payload
@@ -285,7 +297,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture) 
 
 RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-   struct list_data** ctx = &rx->ctx;
+    struct list_data** ctx = &rx->ctx;
     // creates the list
     struct list* list = &list_light_definition;
     // prepares the payload
@@ -301,7 +313,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture) 
 // test peek
 RX_TEST_CASE(myTestSuite, test_list_peek_is_zero, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-   struct list_data** ctx = &rx->ctx;
+    struct list_data** ctx = &rx->ctx;
     // creates the list
     struct list* list = &list_light_definition;
     // peeks from the list
@@ -313,7 +325,7 @@ RX_TEST_CASE(myTestSuite, test_list_peek_is_zero, .fixture = test_fixture) {
 // test pop
 RX_TEST_CASE(myTestSuite, test_list_pop_is_zero, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-   struct list_data** ctx = &rx->ctx;
+    struct list_data** ctx = &rx->ctx;
     // creates the list
     struct list* list = &list_light_definition;
     // pops from the list
