@@ -41,7 +41,6 @@ endif()
 
 include_directories(src)
 
-# common static library
 set(LIB_COMMON_SOURCE src/common/alloc.c)
 
 set(LIB_SOURCE src/list/code.c)
@@ -57,6 +56,29 @@ set(MAIN_MICRO_SOURCE tests/main-micro.c ${LIB_MICRO_SOURCE})
 set(MAIN_ALLOC_SOURCE tests/main-alloc.c ${LIB_ALLOC_SOURCE})
 set(MAIN_EXPERIMENTAL_SOURCE tests/main-experimental.c ${LIB_EXPERIMENTAL_SOURCE})
 set(MAIN_PLAYGROUND_SOURCE src/playground/structs.c ${LIB_PLAYGROUND_SOURCE})
+
+add_library(list-common STATIC ${LIB_COMMON_SOURCE})
+
+add_library(list STATIC ${LIB_SOURCE})
+add_library(list-light STATIC ${LIB_LIGHT_SOURCE})
+add_library(list-micro STATIC ${LIB_MICRO_SOURCE})
+add_library(list-alloc STATIC ${LIB_ALLOC_SOURCE})
+add_library(list-experimental STATIC ${LIB_EXPERIMENTAL_SOURCE})
+add_library(list-playground STATIC ${LIB_PLAYGROUND_SOURCE})
+
+add_executable(main ${MAIN_SOURCE})
+add_executable(main-light ${MAIN_LIGHT_SOURCE})
+add_executable(main-micro ${MAIN_MICRO_SOURCE})
+add_executable(main-alloc ${MAIN_ALLOC_SOURCE})
+add_executable(main-experimental ${MAIN_EXPERIMENTAL_SOURCE})
+add_executable(main-playground ${MAIN_PLAYGROUND_SOURCE})
+
+target_link_libraries(main PRIVATE list list-common)
+target_link_libraries(main-light PRIVATE list-light list-common)
+target_link_libraries(main-micro PRIVATE list-micro list-common)
+target_link_libraries(main-alloc PRIVATE list-alloc list-common)
+target_link_libraries(main-experimental PRIVATE list-experimental list-common)
+target_link_libraries(main-playground PRIVATE list-playground list-micro list-common)
 
 if(MSVC)
     add_compile_options(/W4)
@@ -84,29 +106,6 @@ else()
     add_compile_options(-save-temps -fno-sanitize=all)
     add_link_options(-save-temps -fno-sanitize=all)
 endif()
-
-add_library(list-common STATIC ${LIB_COMMON_SOURCE})
-
-add_library(list STATIC ${LIB_SOURCE})
-add_library(list-light STATIC ${LIB_LIGHT_SOURCE})
-add_library(list-micro STATIC ${LIB_MICRO_SOURCE})
-add_library(list-alloc STATIC ${LIB_ALLOC_SOURCE})
-add_library(list-experimental STATIC ${LIB_EXPERIMENTAL_SOURCE})
-add_library(list-playground STATIC ${LIB_PLAYGROUND_SOURCE})
-
-add_executable(main ${MAIN_SOURCE})
-add_executable(main-light ${MAIN_LIGHT_SOURCE})
-add_executable(main-micro ${MAIN_MICRO_SOURCE})
-add_executable(main-alloc ${MAIN_ALLOC_SOURCE})
-add_executable(main-experimental ${MAIN_EXPERIMENTAL_SOURCE})
-add_executable(main-playground ${MAIN_PLAYGROUND_SOURCE})
-
-target_link_libraries(main PRIVATE list list-common)
-target_link_libraries(main-light PRIVATE list-light list-common)
-target_link_libraries(main-micro PRIVATE list-micro list-common)
-target_link_libraries(main-alloc PRIVATE list-alloc list-common)
-target_link_libraries(main-experimental PRIVATE list-experimental list-common)
-target_link_libraries(main-playground PRIVATE list-playground list-common list-micro)
 
 if(CODE_COVERAGE)
     if("${CMAKE_C_COMPILER_ID}" MATCHES "(Apple)?[Cc]lang" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "(Apple)?[Cc]lang")
