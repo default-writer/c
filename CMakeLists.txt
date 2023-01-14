@@ -107,6 +107,7 @@ if(CODE_COVERAGE)
     endif()
 endif()
 
+set(LIB_MEMORY_SOURCE src/common/memory.c)
 set(LIB_COMMON_SOURCE src/common/alloc.c)
 
 set(LIB_SOURCE src/list/code.c)
@@ -126,7 +127,7 @@ set(MAIN_PLAYGROUND_SOURCE src/playground/structs.c ${LIB_PLAYGROUND_SOURCE})
 include_directories(src)
 
 add_library(list-common STATIC ${LIB_COMMON_SOURCE})
-
+add_library(list-memory STATIC ${LIB_MEMORY_SOURCE})
 add_library(list STATIC ${LIB_SOURCE})
 add_library(list-light STATIC ${LIB_LIGHT_SOURCE})
 add_library(list-micro STATIC ${LIB_MICRO_SOURCE})
@@ -140,7 +141,7 @@ add_executable(main-micro ${MAIN_MICRO_SOURCE})
 add_executable(main-alloc ${MAIN_ALLOC_SOURCE})
 add_executable(main-experimental ${MAIN_EXPERIMENTAL_SOURCE})
 add_executable(main-playground ${MAIN_PLAYGROUND_SOURCE})
-
+target_link_libraries(list-common PRIVATE list-memory)
 target_link_libraries(main PRIVATE list list-common)
 target_link_libraries(main-light PRIVATE list-light list-common)
 target_link_libraries(main-micro PRIVATE list-micro list-common)

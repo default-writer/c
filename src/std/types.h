@@ -1,5 +1,5 @@
-#ifndef _STD_DATA_H_
-#define _STD_DATA_H_
+#ifndef _STD_TYPES_H_
+#define _STD_TYPES_H_
 
 struct list_data;
 
@@ -13,4 +13,4 @@ typedef u32 __u_int32_t;
 typedef u16 __u_int16_t;
 typedef u8 __u_int8_t;
 
-#endif // _STD_DATA_H_
+#endif // _STD_TYPES_H_
