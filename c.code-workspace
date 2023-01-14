@@ -44,7 +44,6 @@
         "cmake.ignoreCMakeListsMissing": true,
         "cmake.configureOnOpen": true,
         "cmake.configureOnEdit": true,
-        "window.zoomLevel": 0,
         "cmake.reconfigureOnChange": true,
         "DockerRun.DisableAutoGenerateConfig": true,
         "cSpell.words": [
@@ -121,12 +120,28 @@
                 "tooltip": "Show disassembly",
                 "alignment": "right",
                 "priority": 1000,
-                "id": "sda_s",
+                "id": "statusbar.disassembly",
                 "name": "disassembly",
                 "filterFileName": "^.*\\.[c|h]$",
                 "command": "disasexpl.show"
             },
+            {
+                "text": ".P",
+                "tooltip": "Toggle presentation ON/OFF",
+                "alignment": "left",
+                "priority": 5,
+                "id": "statusbar.presentation",
+                "scriptEvents": ["vscode.workspace.onDidChangeConfiguration"],
+                "script": "statusBarItem.text = vscode.workspace.getConfiguration('window.zoomLevel') == 1 ? '$(github)' : '$(github-inverted)'",
+                "command": "extension.customPresentationMode",
+            }
         ],
+        "window.zoomLevel": 0,
+        "workbench.colorTheme": "Visual Studio Dark - C++",
+        "customPresentationMode.overrides": {
+          "window.zoomLevel": 1,
+          "workbench.colorTheme": "Visual Studio Dark - C++"
+        },
         "sonarlint.testFilePattern": "{**/test/**,**/*test*,**/*Test*,**/rexo/**}",
         "sonarlint.pathToCompileCommands": "${workspaceFolder}/cmake/compile_commands.json"      
     },
@@ -153,7 +168,8 @@
             "ms-vscode.cpptools",
             "aslamanver.vsc-export",
             "anweber.statusbar-commands",
-            "vadimcn.vscode-lldb"
+            "vadimcn.vscode-lldb",
+            "jdsteinbach.custom-presentation-mode"
         ]
     }
 }

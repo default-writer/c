@@ -146,8 +146,10 @@
       "command": "extension.customPresentationMode",
     }
   ],
+  "window.zoomLevel": 0,
   "workbench.colorTheme": "Visual Studio Dark - C++",
   "customPresentationMode.overrides": {
+    "window.zoomLevel": 1,
     "workbench.colorTheme": "Visual Studio Dark - C++"
   },
   "sonarlint.testFilePattern": "{**/test/**,**/*test*,**/*Test*,**/rexo/**}",
