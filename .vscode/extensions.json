@@ -21,6 +21,7 @@
     "ms-vscode.cpptools",
     "aslamanver.vsc-export",
     "anweber.statusbar-commands",
-    "vadimcn.vscode-lldb"
+    "vadimcn.vscode-lldb",
+    "jdsteinbach.custom-presentation-mode"
   ]
 }

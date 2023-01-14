@@ -54,7 +54,6 @@
   "terminal.integrated.cursorBlinking": true,
   "terminal.integrated.enableFileLinks": true,
   "cmake.statusbar.visibility": "compact",
-  "window.zoomLevel": 0,
   "cmake.reconfigureOnChange": true,
   "DockerRun.DisableAutoGenerateConfig": true,
   "cSpell.words": [
@@ -131,12 +130,26 @@
       "tooltip": "Show disassembly",
       "alignment": "right",
       "priority": 1000,
-      "id": "sda_s",
+      "id": "statusbar.disassembly",
       "name": "disassembly",
       "filterFileName": "^.*\\.[c|h]$",
       "command": "disasexpl.show"
+    },
+    {
+      "text": ".P",
+      "tooltip": "Toggle presentation ON/OFF",
+      "alignment": "left",
+      "priority": 5,
+      "id": "statusbar.presentation",
+      "scriptEvents": ["vscode.workspace.onDidChangeConfiguration"],
+      "script": "statusBarItem.text = vscode.workspace.getConfiguration('window.zoomLevel') == 1 ? '$(github)' : '$(github-inverted)'",
+      "command": "extension.customPresentationMode",
     }
   ],
+  "workbench.colorTheme": "Visual Studio Dark - C++",
+  "customPresentationMode.overrides": {
+    "workbench.colorTheme": "Visual Studio Dark - C++"
+  },
   "sonarlint.testFilePattern": "{**/test/**,**/*test*,**/*Test*,**/rexo/**}",
   "sonarlint.pathToCompileCommands": "${workspaceFolder}/cmake/compile_commands.json"
 }
