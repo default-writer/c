@@ -19,6 +19,6 @@ pwd=$(pwd)
 echo Cleans up uncommited changes and non-gited files and folders
 git clean -f -q -d -x
 
-echo OK
+[[ $SHLVL -gt 2 ]] || echo OK
 
 cd "${pwd}"

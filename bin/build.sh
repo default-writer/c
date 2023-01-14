@@ -135,6 +135,6 @@ if [ "${silent}" == "--silent" ]; then
     exec 1>&2 2>&-
 fi
 
-echo OK
+[[ $SHLVL -gt 2 ]] || echo OK
 
 cd "${pwd}"

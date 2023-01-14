@@ -18,6 +18,6 @@ pwd=$(pwd)
 
 "${pwd}/bin/clean.sh" && "${pwd}/bin/build.sh" --all && "${pwd}/bin/coverage.sh" --all
 
-echo OK
+[[ $SHLVL -gt 2 ]] || echo OK
 
 cd "${pwd}"

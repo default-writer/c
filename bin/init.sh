@@ -33,6 +33,6 @@ echo "NPM version $(npm --version)"
 
 "${pwd}/bin/runme.sh"
 
-echo OK
+[[ $SHLVL -gt 2 ]] || echo OK
 
 cd "${pwd}"

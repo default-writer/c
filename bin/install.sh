@@ -88,6 +88,6 @@ EOF
 
 esac
 
-echo OK
+[[ $SHLVL -gt 2 ]] || echo OK
 
 cd "${pwd}"

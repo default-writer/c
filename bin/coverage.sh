@@ -146,6 +146,6 @@ fi
 
 "${pwd}/bin/build.sh" ${install} "${opts[@]}"
 
-echo OK
+[[ $SHLVL -gt 2 ]] || echo OK
 
 cd "${pwd}"
