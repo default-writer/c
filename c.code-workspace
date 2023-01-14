@@ -132,18 +132,19 @@
                 "priority": 5,
                 "id": "statusbar.presentation",
                 "scriptEvents": ["vscode.workspace.onDidChangeConfiguration"],
-                "script": "statusBarItem.text = vscode.workspace.getConfiguration('window.zoomLevel') == 1 ? '$(github)' : '$(github-inverted)'",
+                "script": "statusBarItem.text = vscode.workspace.getConfiguration('window').get('zoomLevel') == '' ? '$(vm-active)' : '$(vm)'",
                 "command": "extension.customPresentationMode",
             }
         ],
-        "window.zoomLevel": 0,
         "workbench.colorTheme": "Visual Studio Dark - C++",
         "customPresentationMode.overrides": {
           "window.zoomLevel": 1,
           "workbench.colorTheme": "Visual Studio Dark - C++"
         },
         "sonarlint.testFilePattern": "{**/test/**,**/*test*,**/*Test*,**/rexo/**}",
-        "sonarlint.pathToCompileCommands": "${workspaceFolder}/cmake/compile_commands.json"      
+        "sonarlint.pathToCompileCommands": "${workspaceFolder}/cmake/compile_commands.json",
+        "editor.fontWeight": "normal",
+        "window.zoomLevel": 0
     },
     "extensions": {
         "recommendations": [
