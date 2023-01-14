@@ -7,7 +7,7 @@ struct class_data class_data;
 /* class definition */
 extern struct class class_definition;
 /* list definition */
-extern struct list list_micro_definition;
+extern const struct list list_micro_definition;
 /* context definition */
 extern struct context context_definition;
 
@@ -50,8 +50,8 @@ static size_t _size() {
 
 /* allocates memory pointer */
 static struct class_data* _new() {
-    // pointer to list functions definitions
-    struct list* list = &list_micro_definition;
+    // declares pointer to list functions definitions
+    const struct list* list = &list_micro_definition;
     // pointer to context functions definitions
     struct class_data* context = &class_data;
     // class definition
@@ -74,8 +74,8 @@ static struct class_data* _new() {
 
 /* releases memory pointer */
 static void _delete(struct class_data* class) {
-    // pointer to list functions definitions
-    struct list* list = &list_micro_definition;
+    // declares pointer to list functions definitions
+    const struct list* list = &list_micro_definition;
     // pointer to context functions definitions
     struct class_data* context = &class_data;
     // pointer to list data structure
@@ -136,8 +136,8 @@ void class_set_data(struct class_data* class, void* data) {
 }
 
 void class_push(struct class_data* class) {
-    // pointer to list functions definitions
-    struct list* list = &list_micro_definition;
+    // declares pointer to list functions definitions
+    const struct list* list = &list_micro_definition;
     // pointer to context functions definitions
     struct class_data* context = &class_data;
     // pushes to the list
@@ -145,8 +145,8 @@ void class_push(struct class_data* class) {
 }
 
 struct class_data* class_pop() {
-    // pointer to list functions definitions
-    struct list* list = &list_micro_definition;
+    // declares pointer to list functions definitions
+    const struct list* list = &list_micro_definition;
     // pointer to context functions definitions
     struct class_data* context = &class_data;
     // pops from the list
@@ -154,8 +154,8 @@ struct class_data* class_pop() {
 }
 
 void* class_get() {
-    // pointer to list functions definitions
-    struct list* list = &list_micro_definition;
+    // declares pointer to list functions definitions
+    const struct list* list = &list_micro_definition;
     // pointer to context functions definitions
     struct class_data* context = &class_data;
     // pointer to class function definitions
@@ -165,8 +165,8 @@ void* class_get() {
 }
 
 void class_set(void* data) {
-    // pointer to list functions definitions
-    struct list* list = &list_micro_definition;
+    // declares pointer to list functions definitions
+    const struct list* list = &list_micro_definition;
     // pointer to context functions definitions
     struct class_data* context = &class_data;
     // pointer to class function definitions

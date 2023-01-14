@@ -1,6 +1,6 @@
 #include "common/alloc.h"
 #include "list-micro/data.h"
-#include "std/list.h"
+#include "std/common.h"
 
 /* gets size of a memory block to allocate */
 size_t _size() {
@@ -134,7 +134,7 @@ void list_destroy(struct list_data** current) {
     }
 }
 
-struct list list_micro_definition = {
+const struct list list_micro_definition = {
     // generic methods
     .init = list_init,
     .destroy = list_destroy,

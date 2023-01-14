@@ -33,4 +33,6 @@ echo "NPM version $(npm --version)"
 
 "${pwd}/bin/runme.sh"
 
+echo OK
+
 cd "${pwd}"

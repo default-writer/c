@@ -146,4 +146,6 @@ fi
 
 "${pwd}/bin/build.sh" ${install} "${opts[@]}"
 
+echo OK
+
 cd "${pwd}"

@@ -55,4 +55,6 @@ EOF
 
 esac
 
+echo OK
+
 cd "${pwd}"

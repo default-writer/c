@@ -1,11 +1,6 @@
 #ifndef _LIST_EXPERIMENTAL_DATA_H_
 #define _LIST_EXPERIMENTAL_DATA_H_
 
-#include "std/common.h"
-
-/* defines N-element collection*/
-#define N_ELEMENTS 8
-
 struct list_data {
     /* data */
     void** data;

@@ -20,7 +20,7 @@ struct some_data
     int of_type(void* ptr);
 }
 
-extern  struct some_data some_data_type;
+extern struct some_data some_data_type;
 
 int of_type(void* ptr)
 {

@@ -71,4 +71,6 @@ esac
 
 . $HOME/.bashrc
 
+echo OK
+
 cd "${pwd}"

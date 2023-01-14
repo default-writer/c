@@ -8,8 +8,6 @@ struct list_data {
     size_t size;
     /* data */
     void** data;
-    /* next element */
-    struct list_data* next;
 };
 
 struct list {

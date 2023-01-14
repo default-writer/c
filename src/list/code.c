@@ -1,6 +1,6 @@
 #include "common/alloc.h"
 #include "list/data.h"
-#include "std/list.h"
+#include "std/common.h"
 
 /* gets size of a memory block to allocate */
 size_t _size() {
@@ -34,6 +34,7 @@ void* list_data(struct list_data* ptr) {
 
 /* deletes the data pointer */
 void list_delete(struct list_data* ptr) {
+    /* releases the pointer */
     _delete(ptr);
 }
 
@@ -164,7 +165,7 @@ void list_destroy(struct list_data** current, void (*_list_delete)(struct list_d
     }
 }
 
-struct list list_definition = {
+const struct list list_definition = {
     // generic methods
     .init = list_init,
     .destroy = list_destroy,

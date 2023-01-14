@@ -77,4 +77,6 @@ for i in $main; do
     clang-format -i "${pwd}/$i" --style="{BasedOnStyle: ${array}, IndentWidth: 4}"
 done
 
+echo OK
+
 cd "${pwd}"
