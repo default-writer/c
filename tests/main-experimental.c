@@ -514,6 +514,7 @@ RX_TEST_CASE(myTestSuite, test_alloc_8, .fixture = test_fixture) {
 
 // test loop push
 RX_TEST_CASE(myTestSuite, test_list_push_pop, .fixture = test_fixture) {
+    // declares pointer to list parameters definitions
     const struct list_parameters* parameters = &list_parameters_definition;
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
