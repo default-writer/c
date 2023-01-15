@@ -5,12 +5,12 @@
 #include "common/parameters.h"
 
 /* defines N-element collection*/
-#define N_ELEMENTS 256
+#define N_ELEMENTS 1024
 /* buffer size in bytes = size of 8 items */
 #define ALLOC_SIZE(n) ((n) + 1) * sizeof(void*)
 
 extern const struct list list_experimental_definition;
-extern const struct list_parameters list_parameters_definition;
+extern struct list_parameters list_parameters_definition;
 
 struct list_data* _new();
 void _delete(struct list_data* ptr);
@@ -49,7 +49,7 @@ static void array_print_head(struct list_data**  current) {
     // gets data pointer
     void** data = ptr->data[0];
     // prints data value
-    printf("*: 0x%016llx >0x%016llx\n", (u64)ptr->data[0], (u64)*data);
+    printf("   *: 0x%016llx >0x%16llx\n", (u64)ptr->data[0], (u64)*data);
 }
 
 // prints all stack trace to output
@@ -68,7 +68,7 @@ static void array_print(struct list_data**  current) {
             // until we found root element (element with no previous element reference)
             do {
                 // debug output of memory dump
-                printf("%d: 0x%016llx *0x%016llx\n", ++i, (u64)data, (u64)*data);
+                printf("%4d: 0x%016llx *0x%16llx\n", ++i, (u64)data, (u64)*data);
             } while (ptr->data != --data/*root*/);
             // gets next data pointer
             ptr = list_next(ptr);
@@ -514,8 +514,6 @@ RX_TEST_CASE(myTestSuite, test_alloc_8, .fixture = test_fixture) {
 
 // test loop push
 RX_TEST_CASE(myTestSuite, test_list_push_pop, .fixture = test_fixture) {
-    // declares pointer to list parameters definitions
-    const struct list_parameters* parameters = &list_parameters_definition;
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
     // declares pointer to list functions definitions
@@ -523,7 +521,7 @@ RX_TEST_CASE(myTestSuite, test_list_push_pop, .fixture = test_fixture) {
     // prepares the payload
     u8* payload = (void*)0xdeadbeef;
     // record buffer has N items
-    void** _recorded = _list_alloc(1, ALLOC_SIZE(parameters->block_size));
+    void** _recorded = _list_alloc(1, ALLOC_SIZE(N_ELEMENTS));
     // pushes all pseudo-random values
     // pushes to the list multiple times
     int i=0;
@@ -551,15 +549,13 @@ RX_TEST_CASE(myTestSuite, test_list_push_pop, .fixture = test_fixture) {
     do {
         // pops from the list
         void* ptr = list->pop(ctx);
-        // prints values
-        printf("%d: 0x%016llx *0x%016llx\n", i, (u64)ptr, (u64)_recorded[i]);
         // ensures recorded values matches to the list values
         RX_ASSERT(ptr == _recorded[i]);
         // next step
         i--;
     } while (i >= 0);
     // releases memory allocated for the data
-    _list_free(_recorded, ALLOC_SIZE(parameters->block_size));
+    _list_free(_recorded, ALLOC_SIZE(N_ELEMENTS));
 }
 
 int main() {
@@ -567,6 +563,9 @@ int main() {
     printf("---- acceptance test code\n");
 #endif
     // some messy code
+    // declares pointer to list parameters definitions
+    struct list_parameters* parameters = &list_parameters_definition;
+    parameters->block_size = 1;
     using_list(list_using);
     using_list2(list_using);
 #ifdef USE_MEMORY_DEBUG_INFO

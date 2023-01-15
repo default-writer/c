@@ -57,7 +57,7 @@ static void list_print_head(struct list_data**  current,  void* (*_data)(struct 
     // get current context's head
     struct list_data* ptr = *current;
     // visualize item
-    printf("*: 0x%016llx >0x%016llx\n", (u64)ptr, (u64)_data(ptr));
+    printf("   *: 0x%016llx >0x%16llx\n", (u64)ptr, (u64)_data(ptr));
 }
 
 // prints all stack trace to output
@@ -71,7 +71,7 @@ static void list_print(struct list_data**  current,struct list_data* (*_list_nex
         // until we found root element (element with no previous element reference)
         do {
             // debug output of memory dump
-            printf("%d: 0x%016llx *0x%016llx\n", ++i, (u64)tmp, (u64)_list_data(tmp));
+            printf("%4d: 0x%016llx *0x%16llx\n", ++i, (u64)tmp, (u64)_list_data(tmp));
             // remember temporary's prior pointer value to temporary
             tmp = _list_next(tmp);
         } while (tmp != 0/*root*/);

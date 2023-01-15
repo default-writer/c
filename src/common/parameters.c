@@ -9,6 +9,6 @@ struct list_parameters {
     u32 block_size;
 };
 
-const struct list_parameters list_parameters_definition = {
+struct list_parameters list_parameters_definition = {
     .block_size = N_ELEMENTS
 };
