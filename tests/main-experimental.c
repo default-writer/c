@@ -68,7 +68,7 @@ static void array_print(struct list_data**  current) {
             // until we found root element (element with no previous element reference)
             do {
                 // debug output of memory dump
-                printf("%4d: 0x%016llx *0x%16llx\n", ++i, (u64)data, (u64)*data);
+                printf("%4d: 0x%016llx *0x%016llx\n", ++i, (u64)data, (u64)*data);
             } while (ptr->data != --data/*root*/);
             // gets next data pointer
             ptr = list_next(ptr);

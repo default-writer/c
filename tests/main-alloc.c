@@ -62,7 +62,7 @@ static void array_print(struct list_data**  current) {
         do {
             ++i;
             // debug output of memory dump
-            printf("%4d: 0x%016llx *0x%16llx\n", i, (u64)end, (u64)ptr->data[i]);
+            printf("%4d: 0x%016llx *0x%016llx\n", i, (u64)end, (u64)ptr->data[i]);
             // remember temporary's prior pointer value to temporary
             end = ptr->data + i;
         } while (ptr->data[0] != end/*root*/);
