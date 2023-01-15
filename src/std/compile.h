@@ -13,9 +13,9 @@
 #endif
 #endif
 
-#ifdef MEMORY_LEAKS
-#if MEMORY_LEAKS == 1
-#define USE_MEMORY_LEAKS_DETECTION
+#ifdef MEMORY_ALLOC
+#if MEMORY_ALLOC == 1
+#define USE_MEMORY_ALLOC
 #endif
 #endif
 

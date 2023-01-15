@@ -1,7 +1,9 @@
 #include "rexo/include/rexo.h"
-
-#include "class/data.h"
 #include "std/common.h"
+#include "class/data.h"
+#ifdef USE_MEMORY_ALLOC
+#include "common/memory.h"
+#endif
 
 /*
 
@@ -141,6 +143,10 @@ RX_TEST_CASE(myTestSuite, test_class_get_set_data, .fixture = test_fixture) {
 }
 
 int main() {
+#ifdef USE_MEMORY_ALLOC
+    memory_init();
+    memory_destroy();
+#endif
     /* Execute the main function that runs the test cases found. */
     return rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
 }
