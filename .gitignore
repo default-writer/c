@@ -49,7 +49,7 @@ report
 .history
 cmake
 coverage
-
+logs
 .trunk
 .venv
 src/rexo/**
