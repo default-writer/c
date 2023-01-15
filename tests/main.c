@@ -57,7 +57,7 @@ static void list_print_head(struct list_data**  current,  void* (*_data)(struct 
     // get current context's head
     struct list_data* ptr = *current;
     // visualize item
-    printf("   *: 0x%016llx >0x%16llx\n", (u64)ptr, (u64)_data(ptr));
+    printf("   *: 0x%016llx >0x%016llx\n", (u64)ptr, (u64)_data(ptr));
 }
 
 // prints all stack trace to output

@@ -49,7 +49,7 @@ static void array_print_head(struct list_data**  current) {
     // gets data pointer
     void** data = ptr->data[0];
     // prints data value
-    printf("   *: 0x%016llx >0x%16llx\n", (u64)ptr->data[0], (u64)*data);
+    printf("   *: 0x%016llx >0x%016llx\n", (u64)ptr->data[0], (u64)*data);
 }
 
 // prints all stack trace to output
