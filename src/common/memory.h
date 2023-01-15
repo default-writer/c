@@ -3,7 +3,7 @@
 
 #include "std/common.h"
 
-void* memory_alloc(size_t __nmemb, size_t __size);
-void memory_free(void* ptr);
+void* memory_alloc(u32 nmemb, u32 size);
+void memory_free(void* ptr, u32 size);
 
 #endif // _COMMON_MEMORY_H_

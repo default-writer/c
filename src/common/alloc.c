@@ -17,7 +17,7 @@ void _list_free(void* ptr, size_t size) {
 #ifdef USE_MEMORY_CLEANUP
     memset((void*)(u8*)ptr, 0, size);
 #endif
-    memory_free(ptr);
+    memory_free(ptr, size);
 }
 
 void* _list_realloc(void* ptr, size_t size) {
