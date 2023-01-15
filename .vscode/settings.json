@@ -150,9 +150,15 @@
   "customPresentationMode.overrides": {
     "editor.fontWeight": "normal",
     "window.zoomLevel": 0,
-    "workbench.colorTheme": "Yitzchok Light (rainglow)"
+    "workbench.colorTheme": "Yitzchok (rainglow)"
   },
   "sonarlint.testFilePattern": "{**/test/**,**/*test*,**/*Test*,**/rexo/**}",
   "sonarlint.pathToCompileCommands": "${workspaceFolder}/cmake/compile_commands.json",
-  "editor.fontWeight": "normal"
+  "editor.fontWeight": "normal",
+  "window.zoomLevel": 0,
+  "customPresentationMode.backup": {
+    "workbench.colorTheme": "Yitzchok (rainglow)",
+    "editor.fontWeight": "normal",
+    "window.zoomLevel": 2
+  }
 }
