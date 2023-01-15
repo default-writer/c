@@ -567,6 +567,7 @@ int main() {
     struct list_parameters* parameters = &list_parameters_definition;
     parameters->block_size = 1;
     using_list(list_using);
+    parameters->block_size = 256;
     using_list2(list_using);
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- rexo unit test code\n");
