@@ -123,17 +123,10 @@ cmake \
 
 for m in "${array[@]}"; do
     cmake --build "${pwd}/logs" --target "main${m}"
+    "${pwd}/logs/main${m}" > "${pwd}/logs/log${m}.txt"
 done
 
-main=$(find "${pwd}/logs" -name "*.s" -exec echo {} \; | grep -s "main")
-for i in $main; do
-    path="${pwd}/$(echo $i | sed -n -e 's/^.*.dir\/\(.*\)$/\1/p')"
-    cp "${i}" "${path}"
-done
-
-for m in "${array[@]}"; do
-    "${pwd}/logs/main${m}" > "${pwd}/logs/${m}.txt"
-done
+find "${pwd}/logs" -type f -not -name "log*.txt" -delete
 
 if [ "${silent}" == "--silent" ]; then
     exec 1>&2 2>&-

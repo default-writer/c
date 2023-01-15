@@ -71,9 +71,8 @@ EOF
 
 esac
 
-main=$(find "${pwd}/src" -name "*.[c|h]" -exec echo {} \; | grep -v -s "rexo" | sed -n -e 's/^.*\/\(src.*\)$/\1/p')
+main=$(find "${pwd}/src" -type f -name "*.[c|h]" -exec echo {} \; | grep -v -s "rexo" | sed -n -e 's/^.*\/\(src.*\)$/\1/p')
 for i in $main; do
-    echo "formatting ${pwd}/$i"
     clang-format -i "${pwd}/$i" --style="{BasedOnStyle: ${array}, IndentWidth: 4}"
 done
 

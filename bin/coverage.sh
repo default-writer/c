@@ -106,8 +106,8 @@ for m in "${array[@]}"; do
     rm -f "${pwd}/coverage/main${m}.lcov"
 done
 
-find "${pwd}/coverage" -name "*.gcda" -delete
-find "${pwd}/coverage" -name "*.gcno" -delete
+find "${pwd}/coverage" -type f -name "*.gcda" -delete
+find "${pwd}/coverage" -type f -name "*.gcno" -delete
 
 export LCOV_PATH=$(which lcov)
 export GENHTML_PATH==$(which genhtml)
@@ -137,8 +137,8 @@ for m in "${array[@]}"; do
     lcov --remove "${pwd}/coverage/main${m}.lcov" "${pwd}/src/rexo/*" -o "${pwd}/coverage/main${m}.lcov"
 done
 
-find "${pwd}/coverage" -name "main*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
-find "${pwd}/coverage" -name "main*.lcov" -delete
+find "${pwd}/coverage" -type f -name "main*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
+find "${pwd}/coverage" -type f -name "main*.lcov" -delete
 
 if [ "${silent}" == "--silent" ]; then
     exec 1>&2 2>&-
