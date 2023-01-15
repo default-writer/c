@@ -126,7 +126,8 @@ for m in "${array[@]}"; do
     "${pwd}/logs/main${m}" > "${pwd}/logs/log${m}.txt"
 done
 
-find "${pwd}/logs" -type f -not -name "log*.txt" -delete
+find "${pwd}/logs" -type f -not -name "log*" -delete
+find "${pwd}/logs" -type d -empty -delete
 
 if [ "${silent}" == "--silent" ]; then
     exec 1>&2 2>&-
