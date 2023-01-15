@@ -146,12 +146,19 @@
       "command": "extension.customPresentationMode",
     }
   ],
-  "workbench.colorTheme": "Visual Studio Dark - C++",
+  "workbench.colorTheme": "Yitzchok (rainglow)",
   "customPresentationMode.overrides": {
+    "editor.fontWeight": "normal",
     "window.zoomLevel": 0,
-    "workbench.colorTheme": "Visual Studio Light - C++"
+    "workbench.colorTheme": "Yitzchok Light (rainglow)"
+  },
+  "customPresentationMode.backup": {
+    "workbench.colorTheme": "Yitzchok (rainglow)",
+    "editor.fontWeight": "normal",
+    "window.zoomLevel": 0,
   },
   "sonarlint.testFilePattern": "{**/test/**,**/*test*,**/*Test*,**/rexo/**}",
   "sonarlint.pathToCompileCommands": "${workspaceFolder}/cmake/compile_commands.json",
-  "editor.fontWeight": "normal"
+  "editor.fontWeight": "normal",
+  "window.zoomLevel": 0
 }
