@@ -64,7 +64,7 @@ void list_delete(struct list_data* ptr) {
 struct list_data* list_new(struct list_data** current) {
     /* creates empty data chunk */
     struct list_data* item = _new();
-            /* assigns item's next pointer to current pointer */
+    /* assigns item's next pointer to current pointer */
     item->next = *current;
     /* advances position of head pointer to the new head */
     *current = item;
