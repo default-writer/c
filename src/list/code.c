@@ -134,12 +134,12 @@ struct list_data* list_peek(struct list_data** current) {
 }
 
 /* initializes the new context's head element */
-void list_init(struct list_data** current, struct list_data* (*list_new)()) {
+void list_init(struct list_data** current, struct list_data* (*_list_new)()) {
     struct list_data* tmp = *current;
     /* checks if pointer is not null */
     if (tmp == 0) {
         /* sets the current memory pointer */
-        *current = list_new();
+        *current = _list_new();
     }
 }
 

@@ -60,7 +60,7 @@ void list_push(struct list_data** current, void* payload) {
         // gets data pointer
         void** data = ptr->data[0];
         /* gets the current data offset for new data allocation */
-        u64 offset = (u64)((u8*)(data + 1) - (u8*)(ptr->data));
+        u64 offset = (u64)((u8*)(++data) - (u8*)(ptr->data));
         /* checks if current data pointer allocated all data */
         if (offset == ptr->size) {
             /* reallocates current data pointer to the new memory location */
@@ -69,11 +69,7 @@ void list_push(struct list_data** current, void* payload) {
             ptr->size += ALLOC_SIZE(parameters->block_size);
             /* updates current data pointer */
             data = (void**)((u8*)ptr->data + offset);
-            // rewinds the pointer
-            --data;
         }
-        // moves the pointer to the new block
-        ++data;
         // advances the current data pointer, writes data into allocated memory buffer */
         ptr->data[0] = data;
         // writes down the current data pointer

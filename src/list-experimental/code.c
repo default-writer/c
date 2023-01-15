@@ -60,6 +60,18 @@ void list_delete(struct list_data* ptr) {
     _delete(ptr);
 }
 
+/* allocates memory pointer */
+struct list_data* list_new(struct list_data** current) {
+    /* creates empty data chunk */
+    struct list_data* item = _new();
+            /* assigns item's next pointer to current pointer */
+    item->next = *current;
+    /* advances position of head pointer to the new head */
+    *current = item;
+    /* returns created data structure */
+    return item;
+}
+
 /* pushes the memory pointer */
 void list_push(struct list_data** current, void* payload) {
     // declares pointer to list parameters definitions
@@ -72,22 +84,16 @@ void list_push(struct list_data** current, void* payload) {
         // gets data pointer
         void** data = ptr->data[0];
         /* gets the current data offset for new data allocation */
-        u64 offset = (u64)((u8*)(data + 1) - (u8*)(ptr->data));
+        u64 offset = (u64)((u8*)(++data) - (u8*)(ptr->data));
         /* checks if current data pointer allocated all data */
         if (offset == ALLOC_SIZE(parameters->block_size)) {
-            /* creates empty data chunk */
-            struct list_data* item = _new();
-            /* assigns item's next pointer to current pointer */
-            item->next = *current;
-            /* advances position of head pointer to the new head */
-            *current = item;
             /* updates current pointer */
-            ptr = *current;
+            ptr = list_new(current);
             /* updates current data pointer */
             data = ptr->data[0];
+            // moves the pointer to the new block
+            ++data;
         }
-        // moves the pointer to the new block
-        ++data;
         // advances the current data pointer, writes data into allocated memory buffer */
         ptr->data[0] = data;
         // writes down the current data pointer

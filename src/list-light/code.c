@@ -38,23 +38,31 @@ void list_delete(struct list_data* ptr) {
     _delete(ptr);
 }
 
+/* allocates memory pointer */
+struct list_data* list_new(struct list_data** current) {
+    /* creates empty data chunk */
+    struct list_data* item = _new();
+    /* gets the current memory pointer */
+    struct list_data* head = *current;
+    /* assigns item pointer to head's prev pointer value */
+    head->prev = item;
+    /* assigns item's next pointer to current pointer */
+    item->next = *current;
+    /* advances position of head pointer to the new head */
+    *current = item;
+    /* returns created data structure */
+    return item;
+}
+
 /* pushes the memory pointer */
 void list_push(struct list_data** current, void* payload) {
     struct list_data* tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
         /* creates empty data chunk */
-        struct list_data* item = _new();
+        struct list_data* item = list_new(current);
         /* writes data into allocated memory buffer */
         item->data = payload;
-        /* gets the current memory pointer */
-        struct list_data* head = *current;
-        /* assigns item pointer to head's prev pointer value */
-        head->prev = item;
-        /* assigns item's next pointer to current pointer */
-        item->next = *current;
-        /* advances position of head pointer to the new head */
-        *current = item;
     }
 }
 
@@ -112,11 +120,11 @@ void* list_peek(struct list_data** current) {
 }
 
 /* initializes the new context's head element */
-void list_init(struct list_data** current, struct list_data* (*list_new)()) {
+void list_init(struct list_data** current, struct list_data* (*_list_new)()) {
     struct list_data* tmp = *current;
     if (tmp == 0) {
         /* sets the current memory pointer */
-        *current = list_new();
+        *current = _list_new();
     }
 }
 
