@@ -21,6 +21,9 @@ set(MEMORY_DEBUG_INFO ON)
 set(MEMORY_CLEANUP ON)
 set(MEMORY_ALLOC OFF)
 
+set(SANITIZE_BUILD_OPTIONS -save-temps -fgnu89-inline -fsanitize=undefined,address,leak -fsanitize=pointer-compare,pointer-subtract -fsanitize-undefined-trap-on-error -fno-sanitize-recover=all)
+set(NO_SANITIZE_BUILD_OPTIONS -save-temps -fno-sanitize=all)
+
 if(MEMORY_DEBUG_INFO)
     message(STATUS "Configure with memory debug information")
     add_compile_definitions(MEMORY_DEBUG_INFO)
@@ -58,12 +61,12 @@ endif()
 
 if(CODE_SANITIZER)
     message("Building with sanitizers")
-    add_compile_options(-save-temps -fgnu89-inline -fsanitize=undefined,address,leak -fsanitize=pointer-compare,pointer-subtract -fsanitize-undefined-trap-on-error -fno-sanitize-recover=all)
-    add_link_options(-save-temps -fgnu89-inline -fsanitize=undefined,address,leak -fsanitize=pointer-compare,pointer-subtract -fsanitize-undefined-trap-on-error -fno-sanitize-recover=all)
+    add_compile_options(${SANITIZE_BUILD_OPTIONS})
+    add_link_options(${SANITIZE_BUILD_OPTIONS})
 else()
     message("Building without sanitizers")
-    add_compile_options(-save-temps -fno-sanitize=all)
-    add_link_options(-save-temps -fno-sanitize=all)
+    add_compile_options(${NO_SANITIZE_BUILD_OPTIONS})
+    add_link_options(${NO_SANITIZE_BUILD_OPTIONS})
 endif()
 
 if(CODE_COVERAGE)
@@ -149,6 +152,16 @@ add_executable(main-experimental ${MAIN_EXPERIMENTAL_SOURCE})
 add_executable(main-playground ${MAIN_PLAYGROUND_SOURCE})
 add_executable(main-memory ${MAIN_MEMORY_SOURCE})
 
+if(CODE_SANITIZER)
+    message("Building with sanitizers")
+    target_compile_options(main-memory PRIVATE ${SANITIZE_BUILD_OPTIONS})
+    target_link_options(main-memory PRIVATE ${SANITIZE_BUILD_OPTIONS})
+else()
+    message("Building without sanitizers")
+    target_compile_options(main-memory PRIVATE ${NO_SANITIZE_BUILD_OPTIONS})
+    target_link_options(main-memory PRIVATE ${NO_SANITIZE_BUILD_OPTIONS})
+endif()
+
 target_link_libraries(list-alloc PRIVATE list-parameters)
 target_link_libraries(list-experimental PRIVATE list-parameters)
 
@@ -159,7 +172,3 @@ target_link_libraries(main-alloc PRIVATE list-alloc list-lcg list-parameters lis
 target_link_libraries(main-experimental PRIVATE list-experimental list-lcg list-parameters list-common)
 target_link_libraries(main-playground PRIVATE list-playground list-micro list-common)
 target_link_libraries(main-memory PRIVATE list-memory)
-
-target_compile_options(main-memory PRIVATE -fsanitize=undefined,address)
-target_link_options(main-memory PRIVATE -fsanitize=undefined,address)
-
