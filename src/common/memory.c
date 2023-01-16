@@ -26,6 +26,7 @@ static void** ptr = 0;
 */
 
 void memory_init() {
+    ptr = &memory;
     *ptr = calloc(1, MAX_MEMORY);
     ptr = *ptr;
     *ptr = ptr + 1;
