@@ -1,6 +1,6 @@
+#include "class/data.h"
 #include "rexo/include/rexo.h"
 #include "std/common.h"
-#include "class/data.h"
 #ifdef USE_MEMORY_ALLOC
 #include "common/memory.h"
 #endif

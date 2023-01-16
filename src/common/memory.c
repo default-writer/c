@@ -6,7 +6,7 @@
 
 // global allocated memory
 static void* memory = 0;
-
+static void** ptr = 0;
 /*
     Memory allocation works as follows:
 
@@ -29,6 +29,7 @@ void memory_init() {
     if (memory == 0) {
         memory = calloc(1, MAX_MEMORY);
     }
+    ptr = memory;
 }
 
 void memory_destroy() {
@@ -36,18 +37,40 @@ void memory_destroy() {
         free(memory);
         memory = 0;
     }
+    ptr = memory;
 }
 
 void* memory_alloc(u32 nmemb, u32 size) {
-    if (memory == 0) {
-        return calloc(nmemb, size);
-    }
-    return 0;
+    // writes down address of start of free memory pool
+    *ptr = ptr;
+    // decreases the free address space to the requested amount
+    *ptr = (u8*)*ptr + size;
+    // moves pointer to the actual starting address
+    ++ptr;
+    // advances position
+    ptr = *(ptr - 1);
+    // writes down address
+    *(ptr - 1) = ptr;
+    // returns free memory block
+#ifdef USE_MEMORY_DEBUG_INFO
+    printf("   +: 0x%016llx !  %16lld\n", (u64)ptr, (u64)nmemb * size);
+#endif
+    return ptr;
 }
 
-void memory_free(void* ptr, u32 size) {
-    if (memory == 0) {
-        free(ptr);
-    }
-    /* releases global memory */
+// releases global memory
+void memory_free(void* data, u32 size) {
+#ifdef USE_MEMORY_DEBUG_INFO
+    printf("   -: 0x%016llx !  %16lld\n", (u64)data, (u64)size);
+#endif
+    // initializes temporary pointer
+    void** _ptr = data;
+    // advances pointer to service record
+    --_ptr;
+    // erases the service record
+    *_ptr = 0;
+    // increases the free address space to the requested amount
+    *ptr = (u8*)*ptr - size;
+    // updates current allocation position
+    --ptr;
 }

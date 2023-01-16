@@ -159,3 +159,7 @@ target_link_libraries(main-alloc PRIVATE list-alloc list-lcg list-parameters lis
 target_link_libraries(main-experimental PRIVATE list-experimental list-lcg list-parameters list-common)
 target_link_libraries(main-playground PRIVATE list-playground list-micro list-common)
 target_link_libraries(main-memory PRIVATE list-memory)
+
+target_compile_options(main-memory PRIVATE -fsanitize=undefined,address)
+target_link_options(main-memory PRIVATE -fsanitize=undefined,address)
+
