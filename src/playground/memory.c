@@ -57,9 +57,13 @@ void use() {
 }
 
 int main() {
+    memory_init = memory_init_v1;
+    memory_destroy = memory_destroy_v1;
     memory_alloc = memory_alloc_v1;
     memory_free = memory_free_v1;
     use();
+    memory_init = memory_init_v2;
+    memory_destroy = memory_destroy_v2;
     memory_alloc = memory_alloc_v2;
     memory_free = memory_free_v2;
     use();
