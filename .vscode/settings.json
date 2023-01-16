@@ -6,10 +6,10 @@
   "editor.tokenColorCustomizations": {
     "textMateRules": [
       {
-      "scope": "googletest.failed",
-      "settings": {
-        "foreground": "#f00"
-      }
+        "scope": "googletest.failed",
+        "settings": {
+          "foreground": "#f00"
+        }
       }
     ]
   },
@@ -35,9 +35,10 @@
   "coverage-gutters.showLineCoverage": true,
   "coverage-gutters.showGutterCoverage": false,
   "files.autoSave": "off",
-  "files.watcherInclude": ["."],
-  "files.exclude": {
-  },
+  "files.watcherInclude": [
+    "."
+  ],
+  "files.exclude": {},
   "workbench.editor.enablePreview": true,
   "pdf-preview.default.scale": "page-width",
   "clangd.onConfigChanged": "restart",
@@ -142,9 +143,11 @@
       "alignment": "left",
       "priority": 5,
       "id": "statusbar.presentation",
-      "scriptEvents": ["vscode.workspace.onDidChangeConfiguration"],
+      "scriptEvents": [
+        "vscode.workspace.onDidChangeConfiguration"
+      ],
       "script": "statusBarItem.text = vscode.workspace.getConfiguration('window').get('zoomLevel') == '' ? '$(vm-active)' : '$(vm)'",
-      "command": "extension.customPresentationMode",
+      "command": "presentation-mode.toggle",
     }
   ],
   "workbench.colorTheme": "Yitzchok (rainglow)",
@@ -158,5 +161,14 @@
   "editor.fontWeight": "normal",
   "workbench.colorCustomizations": {
     "statusBar.foreground": "#333"
+  },
+  "presentation-mode.active": {
+    "window.zoomLevel": 2
+  },
+  "presentation-mode.inactive": {
+    "window.zoomLevel": 0,
+  },
+  "presentation-mode.configBackup": {
+    "window.zoomLevel": "undefined"
   }
 }
