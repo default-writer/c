@@ -155,5 +155,8 @@
   },
   "sonarlint.testFilePattern": "{**/test/**,**/*test*,**/*Test*,**/rexo/**}",
   "sonarlint.pathToCompileCommands": "${workspaceFolder}/cmake/compile_commands.json",
-  "editor.fontWeight": "normal"
+  "editor.fontWeight": "normal",
+  "workbench.colorCustomizations": {
+    "statusBar.foreground": "#333"
+  }
 }
