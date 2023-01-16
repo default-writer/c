@@ -1,16 +1,13 @@
 #include "common/memory.h"
 #include "std/common.h"
 
-/* buffer size in bytes = size of 8 items */
-#define ALLOC_SIZE(n) ((n) * sizeof(void*))
-
 int main() {
     // initializes memory pool
     memory_init();
     // allocation size aligned to 8 byte boundaries (64-bit pointers)
     u32 size = 2;
     // allocates memory block
-    void** ptr = memory_alloc(1, ALLOC_SIZE(size));
+    void** ptr = memory_alloc(1, size);
     for(u32 i=0; i < size; i++) {
         *(ptr + i) = (void*)0xdeadbeefdeadbeef;
     }
@@ -20,7 +17,7 @@ int main() {
     // allocation size aligned to 8 byte boundaries (64-bit pointers)
     u32 size2 = 3;
     // allocates memory block
-    void** ptr2 = memory_alloc(1, ALLOC_SIZE(size2));
+    void** ptr2 = memory_alloc(1, size2);
     for(u32 i=0; i < size2; i++) {
         *(ptr2 + i) = (void*)0xdeadbeefdeadbeef;
     }
@@ -30,7 +27,7 @@ int main() {
     // allocation size aligned to 8 byte boundaries (64-bit pointers)
     u32 size3 = 16;
     // allocates memory block
-    void** ptr3 = memory_alloc(1, ALLOC_SIZE(size3));
+    void** ptr3 = memory_alloc(1, size3);
     for(u32 i=0; i < size3; i++) {
         *(ptr3 + i) = (void*)0xdeadbeefdeadbeef;
     }

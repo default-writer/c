@@ -43,31 +43,31 @@ void memory_destroy() {
 }
 
 void* memory_alloc_v1(u32 nmemb, u32 size) {
-    ptr = (void*)((u8*)ptr + size);
+    ptr += size;
     *ptr = ptr;
     ++ptr;
     return ptr;
 }
 
 void* memory_alloc_v2(u32 nmemb, u32 size) {
-    void** _ptr = *ptr;
-    ptr = (void*)((u8*)ptr + size);
+    void** tmp = *ptr;
+    ptr += size;
     ++ptr;
     *ptr = ptr + 1;
-    return _ptr;
+    return tmp;
 }
 
 void memory_free_v1(void* data, u32 size) {
     --ptr;
     *ptr = 0;
-    ptr = (void*)((u8*)ptr - size);
+    ptr -= size;
 }
 
 // releases global memory
 void memory_free_v2(void* data, u32 size) {
     --ptr;
     *ptr = 0;
-    ptr = (void*)((u8*)ptr - size);
+    ptr -= size;
 }
 
 void* (*memory_alloc)(u32 nmemb, u32 size) = memory_alloc_v2;
