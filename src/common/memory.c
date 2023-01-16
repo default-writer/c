@@ -27,9 +27,11 @@ static void** ptr = 0;
 
 void memory_init() {
     if (memory == 0) {
-        memory = calloc(1, MAX_MEMORY);
+        ptr = &memory;
+        *ptr = calloc(1, MAX_MEMORY);
     }
     ptr = memory;
+    *ptr = ptr;
 }
 
 void memory_destroy() {
@@ -37,40 +39,39 @@ void memory_destroy() {
         free(memory);
         memory = 0;
     }
-    ptr = memory;
+    ptr = 0;
 }
 
-void* memory_alloc(u32 nmemb, u32 size) {
-    // writes down address of start of free memory pool
+void* memory_alloc_v1(u32 nmemb, u32 size) {
+    ptr = (void*)((u8*)ptr + size);
     *ptr = ptr;
-    // decreases the free address space to the requested amount
-    *ptr = (u8*)*ptr + size;
-    // moves pointer to the actual starting address
     ++ptr;
-    // advances position
-    ptr = *(ptr - 1);
-    // writes down address
-    *(ptr - 1) = ptr;
-    // returns free memory block
-#ifdef USE_MEMORY_DEBUG_INFO
-    printf("   +: 0x%016llx !  %16lld\n", (u64)ptr, (u64)nmemb * size);
-#endif
+    return ptr;
+}
+
+void memory_free_v1(void* data, u32 size) {
+    --ptr;
+    *ptr = 0;
+    ptr = (void*)((u8*)ptr - size);
+}
+
+void* memory_alloc_v2(u32 nmemb, u32 size) {
+    ptr = (void*)((u8*)ptr + size);
+    *ptr = ptr;
+    ++ptr;
+    *ptr = ptr;
+    ++ptr;
     return ptr;
 }
 
 // releases global memory
-void memory_free(void* data, u32 size) {
-#ifdef USE_MEMORY_DEBUG_INFO
-    printf("   -: 0x%016llx !  %16lld\n", (u64)data, (u64)size);
-#endif
-    // initializes temporary pointer
-    void** _ptr = data;
-    // advances pointer to service record
-    --_ptr;
-    // erases the service record
-    *_ptr = 0;
-    // increases the free address space to the requested amount
-    *ptr = (u8*)*ptr - size;
-    // updates current allocation position
+void memory_free_v2(void* data, u32 size) {
     --ptr;
+    *ptr = 0;    
+    --ptr;
+    *ptr = 0;
+    ptr = (void*)((u8*)ptr - size);
 }
+
+void* (*memory_alloc)(u32 nmemb, u32 size) = memory_alloc_v1;
+void (*memory_free)(void* data, u32 size) = memory_free_v1;
