@@ -31,7 +31,7 @@ void memory_init() {
         *ptr = calloc(1, MAX_MEMORY);
     }
     ptr = memory;
-    *ptr = ptr;
+    *ptr = ptr + 1;
 }
 
 void memory_destroy() {
@@ -50,12 +50,11 @@ void* memory_alloc_v1(u32 nmemb, u32 size) {
 }
 
 void* memory_alloc_v2(u32 nmemb, u32 size) {
+    void** _ptr = *ptr;
     ptr = (void*)((u8*)ptr + size);
-    *ptr = ptr;
     ++ptr;
-    *ptr = ptr;
-    ++ptr;
-    return ptr;
+    *ptr = ptr + 1;
+    return _ptr;
 }
 
 void memory_free_v1(void* data, u32 size) {
@@ -67,11 +66,9 @@ void memory_free_v1(void* data, u32 size) {
 // releases global memory
 void memory_free_v2(void* data, u32 size) {
     --ptr;
-    *ptr = 0;    
-    --ptr;
     *ptr = 0;
     ptr = (void*)((u8*)ptr - size);
 }
 
-void* (*memory_alloc)(u32 nmemb, u32 size) = memory_alloc_v1;
-void (*memory_free)(void* data, u32 size) = memory_free_v1;
+void* (*memory_alloc)(u32 nmemb, u32 size) = memory_alloc_v2;
+void (*memory_free)(void* data, u32 size) = memory_free_v2;
