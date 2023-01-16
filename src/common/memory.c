@@ -49,12 +49,6 @@ void* memory_alloc_v1(u32 nmemb, u32 size) {
     return ptr;
 }
 
-void memory_free_v1(void* data, u32 size) {
-    --ptr;
-    *ptr = 0;
-    ptr = (void*)((u8*)ptr - size);
-}
-
 void* memory_alloc_v2(u32 nmemb, u32 size) {
     ptr = (void*)((u8*)ptr + size);
     *ptr = ptr;
@@ -62,6 +56,12 @@ void* memory_alloc_v2(u32 nmemb, u32 size) {
     *ptr = ptr;
     ++ptr;
     return ptr;
+}
+
+void memory_free_v1(void* data, u32 size) {
+    --ptr;
+    *ptr = 0;
+    ptr = (void*)((u8*)ptr - size);
 }
 
 // releases global memory
