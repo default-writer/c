@@ -84,7 +84,16 @@ void memory_free_v2(void* data, u32 size) {
     ptr -= size;
 }
 
-void* (*memory_alloc)(u32 nmemb, u32 size);
-void (*memory_free)(void* data, u32 size);
-void (*memory_init)();
-void (*memory_destroy)();
+const struct memory_allocator memory_allocator_v1 = {
+    .init = memory_init_v1,
+    .destroy = memory_destroy_v1,
+    .alloc = memory_alloc_v1,
+    .free = memory_free_v1
+};
+
+const struct memory_allocator memory_allocator_v2 = {
+    .init = memory_init_v2,
+    .destroy = memory_destroy_v2,
+    .alloc = memory_alloc_v2,
+    .free = memory_free_v2
+};
