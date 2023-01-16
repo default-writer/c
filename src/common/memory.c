@@ -26,19 +26,14 @@ static void** ptr = 0;
 */
 
 void memory_init() {
-    if (memory == 0) {
-        ptr = &memory;
-        *ptr = calloc(1, MAX_MEMORY);
-    }
-    ptr = memory;
+    *ptr = calloc(1, MAX_MEMORY);
+    ptr = *ptr;
     *ptr = ptr + 1;
 }
 
 void memory_destroy() {
-    if (memory != 0) {
-        free(memory);
-        memory = 0;
-    }
+    free(memory);
+    memory = 0;
     ptr = 0;
 }
 
