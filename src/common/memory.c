@@ -1,17 +1,21 @@
 #include "common/memory.h"
 #include "std/common.h"
-#include <stdlib.h>
 
 #define MAX_MEMORY 0xfffffff // 256M bytes
 
 // global allocated memory
 static void* memory = 0;
 static void** ptr = 0;
-/*
-    Memory allocation works as follows:
 
-    1. 8 bytes addressed by pointer should be equals to the address itself being referenced
+/*
+    Linear memory allocation works as follows:
+
+    1. allocation will take extra 8 bytes for pointer data
+    2. out-of-bounds pointer (-8) got first available address
+    3. memory manager assumes that alloc and free follows FIFO order.
+    4. to fast realloc *last* allocated block one should free it and alloc with the new size
 */
+
 /*
     |s|_|_|_|s|_|_|_|_|_|_|s|_|_|_|
 
@@ -55,16 +59,24 @@ void* memory_alloc_v2(u32 nmemb, u32 size) {
 
 void memory_free_v1(void* data, u32 size) {
     --ptr;
+#ifdef USE_MEMORY_CLEANUP
     *ptr = 0;
+#endif
     ptr -= size;
 }
 
 // releases global memory
 void memory_free_v2(void* data, u32 size) {
+#ifdef USE_MEMORY_CLEANUP
+// assert data + size == ptr
+    void** tmp = (void**)data + size;
+    *tmp = 0;
+    // assert ptr - data == size
+    memset(data, 0, size);
+#endif
     --ptr;
-    *ptr = 0;
     ptr -= size;
 }
 
-void* (*memory_alloc)(u32 nmemb, u32 size) = memory_alloc_v2;
-void (*memory_free)(void* data, u32 size) = memory_free_v2;
+void* (*memory_alloc)(u32 nmemb, u32 size);
+void (*memory_free)(void* data, u32 size);

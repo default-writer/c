@@ -36,6 +36,10 @@ EOF
 
 case "${install}" in
 
+    "--memory") # builds and runs '-memory' target
+        array=("-memory")
+        ;;
+
     "--playground") # builds and runs '-playground' target
         array=("-playground")
         ;;
@@ -57,7 +61,7 @@ case "${install}" in
         ;;
 
     "--all") # builds and runs all targets
-        array=("" "-light" "-micro" "-experimental" "-alloc" "-playground")
+        array=("" "-light" "-micro" "-experimental" "-alloc" "-playground" "-memory")
         ;;
 
     *)

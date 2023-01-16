@@ -1,7 +1,7 @@
 #include "common/memory.h"
 #include "std/common.h"
 
-int main() {
+void use() {
     // initializes memory pool
     memory_init();
     // allocation size aligned to 8 byte boundaries (64-bit pointers)
@@ -54,5 +54,14 @@ int main() {
     memory_free(ptr, size);
     // destroys memory pool
     memory_destroy();
+}
+
+int main() {
+    memory_alloc = memory_alloc_v1;
+    memory_free = memory_free_v1;
+    use();
+    memory_alloc = memory_alloc_v2;
+    memory_free = memory_free_v2;
+    use();
     return 0;
 }
