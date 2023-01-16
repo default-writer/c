@@ -73,13 +73,6 @@ void memory_free_v1(void* data, u32 size) {
 
 // releases global memory
 void memory_free_v2(void* data, u32 size) {
-#ifdef USE_MEMORY_CLEANUP
-// assert data + size == ptr
-    void** tmp = (void**)data + size;
-    *tmp = 0;
-    // assert ptr - data == size
-    memset(data, 0, size);
-#endif
     --ptr;
     ptr -= size;
 }
