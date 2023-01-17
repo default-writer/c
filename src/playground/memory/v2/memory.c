@@ -26,7 +26,7 @@
 #include "playground/memory/memory.h"
 #include "std/common.h"
 
-#define MAX_MEMORY 0xfffffff // 256M bytes
+#define MAX_MEMORY 0xffff // 64K bytes
 
 // global allocated memory
 static void* memory = 0;
