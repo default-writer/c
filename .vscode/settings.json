@@ -62,6 +62,7 @@
     "parkmiller",
     "Rexo",
     "sptr",
+    "struct",
     "ulong",
     "ZEROPTR"
   ],
@@ -174,5 +175,6 @@
   },
   "presentation-mode.configBackup": {
     "window.zoomLevel": "undefined"
-  }
+  },
+  "grammarly.files.include": ["**/*.md", "**/*.txt"]
 }
