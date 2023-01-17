@@ -61,7 +61,7 @@ void* memory_alloc_v1(u32 nmemb, u32 size) {
     void** tmp = ptr;
     ptr += size;
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("   +: 0x%016llx >0x%016llx\n", (u64)tmp, (u64)(ptr + size));
+    printf("   +: 0x%016llx >0x%016llx\n", (u64)tmp, (u64)ptr);
 #endif
     return tmp;
 }
