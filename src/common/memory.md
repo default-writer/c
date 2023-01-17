@@ -24,17 +24,21 @@ allocation which completely separates data allocation pools as sensitive allocat
 
 it is similar to pp.1.1 except that pp.1.1 completely omits metadata semantics with exception of fixed-size generic types or static data structures.
 
-## 1.2.1 queued allocation
+## 1.3 allocation pools
 
-allocation based on additional memory pools. idea is to keep track list of items to de-allocate and take pointers from that list. this is the first implementation allowing non-linear allocation/de-allocation on a primary memory pool.
+allocator can use a single memory pool for service any allocation requests by using single or multiple memory pools and buffers for storing metadata information. it is useful in case one buffer has some invalid data or somewhat worse scenario metadata, then another pool can be used to take advantage of several allocation pools.
+
+## 1.4 buffered allocation
+
+allocation can take advantage of using several linear memory buffers to store metadata information. for example, to keep track list of items to de-allocated memory and take pointers from that list one can do an implementation allowing non-linear allocation/de-allocation.
 
 ## 2. pointer metadata
 
-it is also probably would be very helpful to return additional metadata and keep track of the size of the region addressed by the pointer.
+allocators can handle, operate and save additional metadata information related to memory pointers and memory allocation. probably it would be very helpful to return additional metadata info instead of naked pointers to allow monitor of the memory allocation boundaries and keeping track of the size of the region addressed by the pointer.
 
 ## 2.1 language support for metadata
 
-it is questionable why the language authors did not include something like pointer metadata info in C language itself, causing massive blown of several classes of errors list pointer arithmetic, buffer overflow, and buffer underflow.
+C language did not include pointer metadata info in C language standards (C89) itself allowing the different classes of errors like pointer arithmetic, buffer overflow, and buffer underflow errors.
 
 ```c
 struct ptr_metadata {
@@ -42,3 +46,15 @@ struct ptr_metadata {
     u32 size;
 }
 ```
+
+## 2.2 memory allocation blocks
+
+allocation blocks can be used as building blocks for generic programming but the size of that blocks can vary as well
+
+## 2.2.1 fixed memory allocation blocks
+
+allocator uses the constant memory allocation blocks with one or more fixed-size types. possibly, it is practical to use a different type of allocation sizes complying with each or some of the rest sizes, in arithmetical or geometrical progression, i.e. 1,2,3,4,5,6,7,8 or 1,2,3,5,8,13,21,34 or 1,2,4,8,16,32,64,128
+
+## 2.2.2 variable memory allocation blocks
+
+allocator can be used to allocate blocks of memory with different sizes. in general, if the allocator uses memory blocks of different sizes, it actually can form the resulting memory block by combining several allocation blocks from different fixed-size allocation buffers. on the other hand, we can use single subsequent allocation blocks to cover the required allocation size and overlap the requirements with possibly several bytes within the remaining bytes block still not allocated.
