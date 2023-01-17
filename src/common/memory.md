@@ -30,7 +30,11 @@ allocation based on additional memory pools. idea is to keep track list of items
 
 ## 2. pointer metadata
 
-it is also very helpful to return additional metadata and keep track of the size of the region addressed by the pointer.
+it is also probably would be very helpful to return additional metadata and keep track of the size of the region addressed by the pointer.
+
+## 2.1 language support for metadata
+
+it is questionable why the language authors did not include something like pointer metadata info in C language itself, causing massive blown of several classes of errors list pointer arithmetic, buffer overflow, and buffer underflow.
 
 ```c
 struct ptr_metadata {
