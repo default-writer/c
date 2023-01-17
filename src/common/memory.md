@@ -1,12 +1,12 @@
 # metadata
 
-## 1. memory allocation
+## 1 memory allocation
 
-## 1.1. metadata-free allocation
+## 1.1 metadata-free allocation
 
 allocation without metadata being written to the data memory pool except for some static data structures or pointers.
 
-## 1.2. in-place metadata allocation
+## 1.2 in-place metadata allocation
 
 allocation where sensitive allocation metadata is placed in the same memory pool where allocated data resides.
 
@@ -32,7 +32,7 @@ allocator can use a single memory pool for service any allocation requests by us
 
 allocation can take advantage of using several linear memory buffers to store metadata information. for example, to keep track list of items to de-allocated memory and take pointers from that list one can do an implementation allowing non-linear allocation/de-allocation.
 
-## 2. pointer metadata
+## 2 pointer metadata
 
 allocators can handle, operate and save additional metadata information related to memory pointers and memory allocation. probably it would be very helpful to return additional metadata info instead of naked pointers to allow monitor of the memory allocation boundaries and keeping track of the size of the region addressed by the pointer.
 
