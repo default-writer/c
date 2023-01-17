@@ -116,10 +116,11 @@ find "${pwd}/coverage" -type f -name "*.gcno" -delete
 export LCOV_PATH=$(which lcov)
 export GENHTML_PATH==$(which genhtml)
 
-
 OPTIONS=${SANITIZER_OPTIONS}
 
 export MAKEFLAGS=-j8
+
+find "${pwd}" -name "*.s" -delete
 
 cmake \
     -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \

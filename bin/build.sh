@@ -103,7 +103,6 @@ fi
 if [ "${clean}" == "--clean" ]; then
     rm -rf "${pwd}/cmake"
     mkdir "${pwd}/cmake"
-    find . -name "*.s" -delete
 fi
 
 if [ "${sanitize}" == "--sanitize" ]; then
@@ -115,6 +114,8 @@ fi
 OPTIONS=${SANITIZER_OPTIONS}
 
 export MAKEFLAGS=-j8
+
+find "${pwd}/src" -type f -name "*.s" -delete
 
 cmake \
     -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
