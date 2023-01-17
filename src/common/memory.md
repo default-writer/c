@@ -1,27 +1,33 @@
-# 1. memory allocation variants
+# metadata
 
-## 1.1. metadata free allocation
+## 1. memory allocation
+
+## 1.1. metadata-free allocation
 
 allocation without metadata being written to data memory pool with except of some static data structures or pointers.
 
-## 1.2. mixed allocation
+## 1.2. in-place metadata allocation
 
 allocation where sensitive allocation metadata is placed in the same memory pool where allocated data resides.
 
-## 1.2.1 forward reference allocation
+## 1.2.1 reverse order metadata allocation
 
-allocation where allocator calculates the position of metadata token and places the metadata to the end of this region, returning pointer to the start of the region, that is why currently allocated region being written by user program is placed whithin the allocated region.
+allocation where allocator calculates the position of metadata token and places the metadata to the end of this region, returning pointer to the start of the region, that is why currently allocated region being written by user program is placed within the allocated region.
 
-## 1.2.2 backward reference allocation
+## 1.2.2 direct order metadata allocation
 
-the same as above, except that metadata is written first, protecting current metadata block from casual overwrites. it is sligtly better in terms of safety but will also have the same caveeats in case of buffer underflow, allowing corruption of control data.
+the same as above, except that metadata is written first, protecting current metadata block from casual overwrites. it is slightly better in terms of safety but will also have the same caveats in case of buffer underflow, allowing corruption of control data.
 
-## 1.2 separate allocation
+## 1.2 detached metadata allocation
 
 allocation which completely separates data allocation pools as sensitive allocation metadata for manipulation allocations. this is the safest approach in allocation of data.
 
-it is similar to pp.1.1 except that pp.1.1 is completetely omits metadata semantics with exception of fixed-size generic types or static data structures.
+it is similar to pp.1.1 except that pp.1.1 is completely omits metadata semantics with exception of fixed-size generic types or static data structures.
 
 ## 1.2.1 queued allocation
 
-allocation based on additional allocation/deallocation meory pools. idea is to keep track list of items to deallocate and take pointers from that list. this is the first implemetation allowing non-linear allocation/deallocation on a primary memeory pool.
+allocation based on additional memory pools. idea is to keep track list of items to de-allocate and take pointers from that list. this is the first implementation allowing non-linear allocation/de-allocation on a primary memory pool.
+
+## 2. pointer metadata
+
+it is also very helpful to return additional metadata and keep track the size of region adDressed by pointer.

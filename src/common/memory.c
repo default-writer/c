@@ -56,6 +56,9 @@ void memory_destroy_v2() {
 void* memory_alloc_v1(u32 nmemb, u32 size) {
     void** tmp = ptr;
     ptr += size;
+#ifdef USE_MEMORY_DEBUG_INFO
+    printf("   +: 0x%016llx >0x%016llx\n", (u64)tmp, (u64)(ptr + size));
+#endif
     return tmp;
 }
 
@@ -64,17 +67,26 @@ void* memory_alloc_v2(u32 nmemb, u32 size) {
     ptr += size;
     ++ptr;
     *ptr = ptr + 1;
+#ifdef USE_MEMORY_DEBUG_INFO
+    printf("   +: 0x%016llx >0x%016llx\n", (u64)tmp, (u64)*(ptr + size));
+#endif
     return tmp;
 }
 
 void memory_free_v1(void* data, u32 size) {
     ptr-=size;
+#ifdef USE_MEMORY_DEBUG_INFO
+    printf("   -: 0x%016llx !  %16lld\n", (u64)ptr, (u64)size);
+#endif
 }
 
 // releases global memory
 void memory_free_v2(void* data, u32 size) {
     --ptr;
     ptr -= size;
+#ifdef USE_MEMORY_DEBUG_INFO
+    printf("   -: 0x%016llx !  %16lld\n", (u64)ptr, (u64)size);
+#endif
 }
 
 const struct memory_allocator memory_allocator_v1 = {
