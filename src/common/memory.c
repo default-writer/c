@@ -8,12 +8,15 @@ static void* memory = 0;
 static void** ptr = 0;
 
 /*
-    Linear memory allocation works as follows:
+    See `memory.md` for extened list of metadata
+    
+    Simple linear memory allocation works as follows:
 
     1. allocation will take extra 8 bytes for pointer data
     2. out-of-bounds pointer (-8) got first available address
     3. memory manager assumes that alloc and free follows FIFO order.
     4. to fast realloc *last* allocated block one should free it and alloc with the new size
+
 */
 
 /*
@@ -35,16 +38,17 @@ void memory_init_v1() {
     ptr = *ptr;
 }
 
-void memory_destroy_v1() {
-    free(memory);
-    memory = 0;
-    ptr = 0;
-}
 void memory_init_v2() {
     ptr = &memory;
     *ptr = calloc(1, MAX_MEMORY);
     ptr = *ptr;
     *ptr = ptr + 1;
+}
+
+void memory_destroy_v1() {
+    free(memory);
+    memory = 0;
+    ptr = 0;
 }
 
 void memory_destroy_v2() {
