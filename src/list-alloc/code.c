@@ -126,7 +126,7 @@ static void* list_peek(struct list_data** current) {
 }
 
 // prints head on current context (stack)
-static void list_print_head(struct list_data**  current) {
+static void list_print_head(struct list_data** current) {
     // get current context's head
     struct list_data* ptr = *current;
     // gets data pointer
@@ -136,15 +136,14 @@ static void list_print_head(struct list_data**  current) {
 }
 
 // prints all stack trace to output
-static void list_print(struct list_data**  current) {
+static void list_print(struct list_data** current) {
     // get current context's head
     struct list_data* ptr = *current;
     // sets the counter
     int i = 0;
     // assigns current's head pointer to the temporary
     void* end = ptr->data[0];
-    if (end != ptr->data)
-    {
+    if (end != ptr->data) {
         // until we found root element (element with no previous element reference)
         do {
             ++i;
@@ -152,7 +151,7 @@ static void list_print(struct list_data**  current) {
             printf("%4d: 0x%016llx *0x%016llx\n", i, (u64)end, (u64)ptr->data[i]);
             // remember temporary's prior pointer value to temporary
             end = ptr->data + i;
-        } while (ptr->data[0] != end/*root*/);
+        } while (ptr->data[0] != end /*root*/);
     }
     // stop on root element
 }

@@ -1,5 +1,5 @@
-#include "data.h"
 #include "common/alloc.h"
+#include "data.h"
 #include "list-micro/data.h"
 
 struct class_data class_data;

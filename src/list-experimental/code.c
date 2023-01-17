@@ -170,7 +170,7 @@ static void* list_peek(struct list_data** current) {
 }
 
 // prints head on current context (stack)
-static void list_print_head(struct list_data**  current) {
+static void list_print_head(struct list_data** current) {
     // get current context's head
     struct list_data* ptr = *current;
     // gets data pointer
@@ -180,15 +180,14 @@ static void list_print_head(struct list_data**  current) {
 }
 
 // prints all stack trace to output
-static void list_print(struct list_data**  current) {
+static void list_print(struct list_data** current) {
     // get current context's head
     struct list_data* ptr = *current;
     // sets the counter
     int i = 0;
     // assigns current's head pointer to the temporary
     void* end = ptr->data[0];
-    if (end != ptr->data)
-    {
+    if (end != ptr->data) {
         do {
             // gets data pointer
             void** data = ptr->data[0];
@@ -196,7 +195,7 @@ static void list_print(struct list_data**  current) {
             do {
                 // debug output of memory dump
                 printf("%4d: 0x%016llx *0x%016llx\n", ++i, (u64)data, (u64)*data);
-            } while (ptr->data != --data/*root*/);
+            } while (ptr->data != --data /*root*/);
             // gets next data pointer
             ptr = list_next(ptr);
         } while (ptr != 0);

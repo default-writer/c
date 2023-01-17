@@ -1,6 +1,6 @@
 /*
     See `memory.md` for extened list of metadata
-    
+
     Simple linear memory allocation works as follows:
 
     1. allocation will take extra 8 bytes for pointer data
@@ -54,7 +54,7 @@ static void* memory_alloc(u32 nmemb, u32 size) {
 }
 
 static void memory_free(void* data, u32 size) {
-    ptr-=size;
+    ptr -= size;
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("   -: 0x%016llx !  %16lld\n", (u64)ptr, (u64)size);
 #endif

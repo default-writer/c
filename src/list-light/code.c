@@ -154,7 +154,7 @@ static void list_destroy(struct list_data** current) {
 }
 
 // prints head on current context (stack)
-static void list_print_head(struct list_data**  current) {
+static void list_print_head(struct list_data** current) {
     // get current context's head
     struct list_data* ptr = *current;
     // visualize item
@@ -162,20 +162,19 @@ static void list_print_head(struct list_data**  current) {
 }
 
 // prints all stack trace to output
-static void list_print(struct list_data**  current) {
+static void list_print(struct list_data** current) {
     // sets the counter
     int i = 0;
     // assigns current's head pointer to the temporary
     struct list_data* tmp = *current;
-    if (tmp != 0)
-    {
+    if (tmp != 0) {
         // until we found root element (element with no previous element reference)
         do {
             // debug output of memory dump
             printf("%4d: 0x%016llx *0x%016llx\n", ++i, (u64)tmp, (u64)list_data(tmp));
             // remember temporary's prior pointer value to temporary
             tmp = list_next(tmp);
-        } while (tmp != 0/*root*/);
+        } while (tmp != 0 /*root*/);
     }
     // stop on root element
 }
