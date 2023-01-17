@@ -1,12 +1,3 @@
-#include "playground/memory/memory.h"
-#include "std/common.h"
-
-#define MAX_MEMORY 0xfffffff // 256M bytes
-
-// global allocated memory
-static void* memory = 0;
-static void** ptr = 0;
-
 /*
     See `memory.md` for extened list of metadata
     
@@ -32,20 +23,29 @@ static void** ptr = 0;
 
 */
 
-void memory_init_v2() {
+#include "playground/memory/memory.h"
+#include "std/common.h"
+
+#define MAX_MEMORY 0xfffffff // 256M bytes
+
+// global allocated memory
+static void* memory = 0;
+static void** ptr = 0;
+
+static void memory_init() {
     ptr = &memory;
     *ptr = calloc(1, MAX_MEMORY);
     ptr = *ptr;
     *ptr = ptr + 1;
 }
 
-void memory_destroy_v2() {
+static void memory_destroy() {
     free(memory);
     memory = 0;
     ptr = 0;
 }
 
-void* memory_alloc_v2(u32 nmemb, u32 size) {
+static void* memory_alloc(u32 nmemb, u32 size) {
     void** tmp = *ptr;
     ptr += size;
     ++ptr;
@@ -57,7 +57,7 @@ void* memory_alloc_v2(u32 nmemb, u32 size) {
 }
 
 // releases global memory
-void memory_free_v2(void* data, u32 size) {
+static void memory_free(void* data, u32 size) {
     --ptr;
     ptr -= size;
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -66,8 +66,8 @@ void memory_free_v2(void* data, u32 size) {
 }
 
 const struct memory_allocator memory_allocator_v2 = {
-    .init = memory_init_v2,
-    .destroy = memory_destroy_v2,
-    .alloc = memory_alloc_v2,
-    .free = memory_free_v2
+    .init = memory_init,
+    .destroy = memory_destroy,
+    .alloc = memory_alloc,
+    .free = memory_free
 };

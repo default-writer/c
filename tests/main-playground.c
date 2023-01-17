@@ -104,7 +104,7 @@ RX_TEST_CASE(myTestSuite, test_class_uninitialized_is_zero, .fixture = test_fixt
     struct class_data** ctx = &rx->ctx;
     struct class_data* data = *ctx;
     // ensures data is added to the list
-    RX_ASSERT(data->data != 0);
+    RX_ASSERT(data != 0);
 }
 
 // test class get_type

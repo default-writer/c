@@ -3,12 +3,7 @@
 
 #include "std/common.h"
 
-struct data;
-
-struct class_data {
-    /* private data definition */
-    struct data* data;
-};
+struct class_data;
 
 struct class {
     /* reads data */

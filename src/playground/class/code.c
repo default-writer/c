@@ -12,7 +12,7 @@ extern const struct list list_micro_definition;
 extern struct context context_definition;
 
 /* class data */
-struct data {
+struct class_data {
     /* data pointer */
     void* ptr;
     /* list */
@@ -61,13 +61,11 @@ static struct class_data* _new() {
     // initializes the list
     list->init(&ctx);
     // sets the list data pointer
-    context->data->list = ctx;
+    context->list = ctx;
     /* allocates memory */
     struct class_data* ptr = _list_alloc(1, _size());
     /* copy class defintion to the new structure */
     memcpy(ptr, definition, _size());
-    /* allocates nested memory pointer */
-    ptr->data = _list_alloc(1, sizeof(struct data));
     // returns class object
     return ptr;
 }
@@ -79,13 +77,11 @@ static void _delete(struct class_data* class) {
     // pointer to context functions definitions
     struct class_data* context = &class_data;
     // pointer to list data structure
-    struct list_data* ctx = context->data->list;
-    /* releases nested memory pointer */
-    _list_free(class->data, sizeof(struct data));
+    struct list_data* ctx = context->list;
     /* releases the pointer */
     _list_free(class, _size());
     // resets the list data pointer
-    context->data->list = 0;
+    context->list = 0;
     // destroys the list
     list->destroy(&ctx);
 }
@@ -96,10 +92,6 @@ void class_init(struct class_data** current) {
     struct class_data* tmp = *current;
     /* sets the current memory pointer */
     if (tmp == 0) {
-        /* pointer to context functions definitions */
-        struct class_data* context = &class_data;
-        /* allocates memory pointer for class object */
-        context->data = _list_alloc(1, sizeof(struct data));
         /* creates emtpy data chunk */
         *current = _new();
     }
@@ -111,12 +103,8 @@ void class_destroy(struct class_data** current) {
     struct class_data* tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
-        /* pointer to context functions definitions */
-        struct class_data* context = &class_data;
         /* releases the pointer */
         _delete(tmp);
-        /* releases memory pointer for class object */
-        _list_free(context->data, sizeof(struct data));
         /* resets current pointer to 0 */
         *current = 0;
     }
@@ -128,11 +116,11 @@ u64 class_get_type() {
 }
 
 void* class_get_data(struct class_data* class) {
-    return class->data->ptr;
+    return class->ptr;
 }
 
 void class_set_data(struct class_data* class, void* data) {
-    class->data->ptr = data;
+    class->ptr = data;
 }
 
 void class_push(struct class_data* class) {
@@ -141,7 +129,7 @@ void class_push(struct class_data* class) {
     // pointer to context functions definitions
     struct class_data* context = &class_data;
     // pushes to the list
-    list->push(&context->data->list, class);
+    list->push(&context->list, class);
 }
 
 struct class_data* class_pop() {
@@ -150,7 +138,7 @@ struct class_data* class_pop() {
     // pointer to context functions definitions
     struct class_data* context = &class_data;
     // pops from the list
-    return list->pop(&context->data->list);
+    return list->pop(&context->list);
 }
 
 void* class_get() {
@@ -161,7 +149,7 @@ void* class_get() {
     // pointer to class function definitions
     struct class* class = &class_definition;
     // returns data
-    return class->get_data(list->peek(&context->data->list));
+    return class->get_data(list->peek(&context->list));
 }
 
 void class_set(void* data) {
@@ -172,7 +160,7 @@ void class_set(void* data) {
     // pointer to class function definitions
     struct class* class = &class_definition;
     // updates the data
-    class->set_data(list->peek(&context->data->list), data);
+    class->set_data(list->peek(&context->list), data);
 }
 
 struct class class_definition = {
