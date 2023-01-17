@@ -4,13 +4,6 @@
 
 extern const struct list list_micro_definition;
 
-struct list_data* _new();
-void _delete(struct list_data* ptr);
-size_t _size();
-struct list_data* list_next(struct list_data* ptr);
-void* list_data(struct list_data* ptr);
-void list_delete(struct list_data* ptr);
-
 /* allocates memory pointer for list object */
 static struct list_data* new_list() {
     // declares pointer to list functions definitions    
@@ -52,33 +45,6 @@ static void using_list2(void (*list_using)(struct list_data** const)) {
     delete_list(&ctx);
 }
 
-// prints head on current context (stack)
-static void list_print_head(struct list_data**  current,  void* (*_data)(struct list_data*)) {
-    // get current context's head
-    struct list_data* ptr = *current;
-    // visualize item
-    printf("   *: 0x%016llx >0x%016llx\n", (u64)ptr, (u64)_data(ptr));
-}
-
-// prints all stack trace to output
-static void list_print(struct list_data**  current,struct list_data* (*_list_next)(struct list_data*),  void* (*_list_data)(struct list_data*)) {
-    // sets the counter
-    int i = 0;
-    // assigns current's head pointer to the temporary
-    struct list_data* tmp = *current;
-    if (tmp != 0)
-    {
-        // until we found root element (element with no previous element reference)
-        do {
-            // debug output of memory dump
-            printf("%4d: 0x%016llx *0x%016llx\n", ++i, (u64)tmp, (u64)_list_data(tmp));
-            // remember temporary's prior pointer value to temporary
-            tmp = _list_next(tmp);
-        } while (tmp != 0/*root*/);
-    }
-    // stop on root element
-}
-
 // uses the list
 static void list_using(struct list_data**  current) {
     // declares pointer to list functions definitions
@@ -92,42 +58,42 @@ static void list_using(struct list_data**  current) {
     RX_ASSERT(0 == is_null[1]);
     list->push(current, payload);
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print_head(current, list_data);
+    list->print_head(current);
 #endif
     list->push(current, ++payload);
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print_head(current, list_data);
+    list->print_head(current);
 #endif
     list->push(current, ++payload);
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print_head(current, list_data);
+    list->print_head(current);
 #endif
     list->push(current, ++payload);
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print_head(current, list_data);
+    list->print_head(current);
 #endif
     list->push(current, ++payload);
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print_head(current, list_data);
+    list->print_head(current);
 #endif
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current, list_next, list_data);
+    list->print(current);
 #endif
     void* q_peek0 = list->peek(current);
     ZEROPTR(q_peek0)
     void* q_pop0 = list->pop(current);
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current, list_next, list_data);
+    list->print(current);
 #endif
     void* q_pop1 = list->pop(current);
     ZEROPTR(q_pop1)
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current, list_next, list_data);
+    list->print(current);
 #endif
     void* q_pop2 = list->pop(current);
     ZEROPTR(q_pop2)
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current, list_next, list_data);
+    list->print(current);
 #endif
     void* q_peek1 = list->peek(current);
     void* q_pop3 = list->pop(current);
@@ -140,33 +106,33 @@ static void list_using(struct list_data**  current) {
     void* q_pop4 = list->pop(current);
     ZEROPTR(q_pop4)
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current, list_next, list_data);
+    list->print(current);
 #endif
     void* q_pop5 = list->pop(current);
     ZEROPTR(q_pop5)
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current, list_next, list_data);
+    list->print(current);
 #endif
     void* q_peek4 = list->peek(current);
     list->push(current, q_pop0);
     ZEROPTR(q_peek4)
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current, list_next, list_data);
+    list->print(current);
 #endif
     void* q_pop6 = list->pop(current);
     ZEROPTR(q_pop6)
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current, list_next, list_data);
+    list->print(current);
 #endif
     void* q_pop7 = list->pop(current);
     ZEROPTR(q_pop7)
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current, list_next, list_data);
+    list->print(current);
 #endif
     void* q_peek5 = list->peek(current);
     ZEROPTR(q_peek5)
 #ifdef USE_MEMORY_DEBUG_INFO
-    list_print(current, list_next, list_data);
+    list->print(current);
 #endif
 }
 

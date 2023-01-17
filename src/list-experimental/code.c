@@ -8,14 +8,16 @@
 
 extern const struct list_parameters list_parameters_definition;
 
+/* private */
+
 /* gets size of a memory block to allocate */
-size_t _size() {
+static size_t _size() {
     /* returns size of a memory block to allocate */
     return sizeof(struct list_data);
 }
 
 /* allocates memory pointer */
-struct list_data* _new() {
+static struct list_data* _new() {
     // declares pointer to list parameters definitions
     const struct list_parameters* parameters = &list_parameters_definition;
     /* allocates memory */
@@ -29,7 +31,7 @@ struct list_data* _new() {
 }
 
 /* releases memory pointer */
-void _delete(struct list_data* ptr) {
+static void _delete(struct list_data* ptr) {
     // declares pointer to list parameters definitions
     const struct list_parameters* parameters = &list_parameters_definition;
     /* releases the nested memory pointer */
@@ -39,13 +41,13 @@ void _delete(struct list_data* ptr) {
 }
 
 /* gets chunk's next item. external code ensures ptr is not 0 */
-struct list_data* list_next(struct list_data* ptr) {
+static struct list_data* list_next(struct list_data* ptr) {
     /* external code ensures prt is not 0 */
     return ptr->next;
 }
 
 /* gets chunk's payload. external code ensures ptr is not 0 */
-void* list_data(struct list_data* ptr) {
+static void* list_data(struct list_data* ptr) {
     // gets data pointer
     void** data = ptr->data[0];
     // gets the payload
@@ -55,13 +57,13 @@ void* list_data(struct list_data* ptr) {
 }
 
 /* deletes the data pointer */
-void list_delete(struct list_data* ptr) {
+static void list_delete(struct list_data* ptr) {
     /* releases the pointer */
     _delete(ptr);
 }
 
 /* allocates memory pointer */
-struct list_data* list_new(struct list_data** current) {
+static struct list_data* list_new(struct list_data** current) {
     /* creates empty data chunk */
     struct list_data* item = _new();
     /* assigns item's next pointer to current pointer */
@@ -73,7 +75,7 @@ struct list_data* list_new(struct list_data** current) {
 }
 
 /* pushes the memory pointer */
-void list_push(struct list_data** current, void* payload) {
+static void list_push(struct list_data** current, void* payload) {
     // declares pointer to list parameters definitions
     const struct list_parameters* parameters = &list_parameters_definition;
     struct list_data* tmp = *current;
@@ -102,7 +104,7 @@ void list_push(struct list_data** current, void* payload) {
 }
 
 /* pops existing element at the top of the stack/queue/list */
-void* list_pop(struct list_data** current) {
+static void* list_pop(struct list_data** current) {
     struct list_data* tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
@@ -146,7 +148,7 @@ void* list_pop(struct list_data** current) {
 }
 
 /* peeks existing element at the top of the stack/queue/list */
-void* list_peek(struct list_data** current) {
+static void* list_peek(struct list_data** current) {
     struct list_data* tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
@@ -166,6 +168,42 @@ void* list_peek(struct list_data** current) {
     /* if we call method on empty stack, do not return head element, return null element by convention */
     return 0;
 }
+
+// prints head on current context (stack)
+static void list_print_head(struct list_data**  current) {
+    // get current context's head
+    struct list_data* ptr = *current;
+    // gets data pointer
+    void** data = ptr->data[0];
+    // prints data value
+    printf("   *: 0x%016llx >0x%016llx\n", (u64)ptr->data[0], (u64)*data);
+}
+
+// prints all stack trace to output
+static void list_print(struct list_data**  current) {
+    // get current context's head
+    struct list_data* ptr = *current;
+    // sets the counter
+    int i = 0;
+    // assigns current's head pointer to the temporary
+    void* end = ptr->data[0];
+    if (end != ptr->data)
+    {
+        do {
+            // gets data pointer
+            void** data = ptr->data[0];
+            // until we found root element (element with no previous element reference)
+            do {
+                // debug output of memory dump
+                printf("%4d: 0x%016llx *0x%016llx\n", ++i, (u64)data, (u64)*data);
+            } while (ptr->data != --data/*root*/);
+            // gets next data pointer
+            ptr = list_next(ptr);
+        } while (ptr != 0);
+    }
+}
+
+/* public */
 
 /* initializes the new context's head element */
 void list_init(struct list_data** current) {
@@ -202,5 +240,7 @@ void list_destroy(struct list_data** current) {
 const struct list list_experimental_definition = {
     .push = list_push,
     .pop = list_pop,
-    .peek = list_peek
+    .peek = list_peek,
+    .print_head = list_print_head,
+    .print = list_print
 };

@@ -21,6 +21,10 @@ struct list {
     void* (*pop)(struct list_data** current);
     /* peek item on current context (stack) */
     void* (*peek)(struct list_data** current);
+    /* print head */
+    void (*print_head)(struct list_data**  current);
+    /* print */
+    void (*print)(struct list_data**  current);
 };
 
 #endif // _LIST_MICRO_DATA_H_

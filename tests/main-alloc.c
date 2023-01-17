@@ -12,20 +12,18 @@
 extern const struct list list_alloc_definition;
 extern struct list_parameters list_parameters_definition;
 
-struct list_data* _new();
-void _delete(struct list_data* ptr);
-size_t _size();
-struct list_data* list_next(struct list_data* ptr);
-void* list_data(struct list_data* ptr);
-void list_delete(struct list_data* ptr);
-
 /* LCG Park-Miller function */
 u64 lcg_parkmiller();
+
+/* initializes the new context's head element */
+struct list_data* list_init();
+/* destroys the memory stack */
+void list_destroy(struct list_data* ptr);
 
 /* allocates memory pointer for list object */
 static struct list_data* new_list() {
     // returns list object
-    return _new();
+    return list_init();
 }
 
 /* releases memory pointer for list object */
@@ -33,41 +31,9 @@ static void delete_list(struct list_data** ctx) {
     // gets pointer
     struct list_data* ptr = *ctx;
     // destroys the list
-    _delete(ptr);
+    list_destroy(ptr);
     // cleans up
     *ctx = 0;
-}
-
-// prints head on current context (stack)
-static void array_print_head(struct list_data**  current) {
-    // get current context's head
-    struct list_data* ptr = *current;
-    // gets data pointer
-    void** data = ptr->data[0];
-    // prints data value
-    printf("   *: 0x%016llx >0x%016llx\n", (u64)ptr->data[0], (u64)*data);
-}
-
-// prints all stack trace to output
-static void array_print(struct list_data**  current) {
-    // get current context's head
-    struct list_data* ptr = *current;
-    // sets the counter
-    int i = 0;
-    // assigns current's head pointer to the temporary
-    void* end = ptr->data[0];
-    if (end != ptr->data)
-    {
-        // until we found root element (element with no previous element reference)
-        do {
-            ++i;
-            // debug output of memory dump
-            printf("%4d: 0x%016llx *0x%016llx\n", i, (u64)end, (u64)ptr->data[i]);
-            // remember temporary's prior pointer value to temporary
-            end = ptr->data + i;
-        } while (ptr->data[0] != end/*root*/);
-    }
-    // stop on root element
 }
 
 // runs default list usage scenario
@@ -103,42 +69,42 @@ static void list_using(struct list_data**  current) {
     RX_ASSERT(0 == is_null[1]);
     list->push(current, payload);
 #ifdef USE_MEMORY_DEBUG_INFO
-    array_print_head(current);
+    list->print_head(current);
 #endif
     list->push(current, ++payload);
 #ifdef USE_MEMORY_DEBUG_INFO
-    array_print_head(current);
+    list->print_head(current);
 #endif
     list->push(current, ++payload);
 #ifdef USE_MEMORY_DEBUG_INFO
-    array_print_head(current);
+    list->print_head(current);
 #endif
     list->push(current, ++payload);
 #ifdef USE_MEMORY_DEBUG_INFO
-    array_print_head(current);
+    list->print_head(current);
 #endif
     list->push(current, ++payload);
 #ifdef USE_MEMORY_DEBUG_INFO
-    array_print_head(current);
+    list->print_head(current);
 #endif
 #ifdef USE_MEMORY_DEBUG_INFO
-    array_print(current);
+    list->print(current);
 #endif
     void* q_peek0 = list->peek(current);
     ZEROPTR(q_peek0)
     void* q_pop0 = list->pop(current);
 #ifdef USE_MEMORY_DEBUG_INFO
-    array_print(current);
+    list->print(current);
 #endif
     void* q_pop1 = list->pop(current);
     ZEROPTR(q_pop1)
 #ifdef USE_MEMORY_DEBUG_INFO
-    array_print(current);
+    list->print(current);
 #endif
     void* q_pop2 = list->pop(current);
     ZEROPTR(q_pop2)
 #ifdef USE_MEMORY_DEBUG_INFO
-    array_print(current);
+    list->print(current);
 #endif
     void* q_peek1 = list->peek(current);
     void* q_pop3 = list->pop(current);
@@ -151,33 +117,33 @@ static void list_using(struct list_data**  current) {
     void* q_pop4 = list->pop(current);
     ZEROPTR(q_pop4)
 #ifdef USE_MEMORY_DEBUG_INFO
-    array_print(current);
+    list->print(current);
 #endif
     void* q_pop5 = list->pop(current);
     ZEROPTR(q_pop5)
 #ifdef USE_MEMORY_DEBUG_INFO
-    array_print(current);
+    list->print(current);
 #endif
     void* q_peek4 = list->peek(current);
     list->push(current, q_pop0);
     ZEROPTR(q_peek4)
 #ifdef USE_MEMORY_DEBUG_INFO
-    array_print(current);
+    list->print(current);
 #endif
     void* q_pop6 = list->pop(current);
     ZEROPTR(q_pop6)
 #ifdef USE_MEMORY_DEBUG_INFO
-    array_print(current);
+    list->print(current);
 #endif
     void* q_pop7 = list->pop(current);
     ZEROPTR(q_pop7)
 #ifdef USE_MEMORY_DEBUG_INFO
-    array_print(current);
+    list->print(current);
 #endif
     void* q_peek5 = list->peek(current);
     ZEROPTR(q_peek5)
 #ifdef USE_MEMORY_DEBUG_INFO
-    array_print(current);
+    list->print(current);
 #endif
 }
 
@@ -534,7 +500,7 @@ RX_TEST_CASE(myTestSuite, test_list_push_pop, .fixture = test_fixture) {
     // pushes to the list
     list->push(ctx, payload);
     // prints the list
-    array_print(ctx);
+    list->print(ctx);
     // peeks from the list
     void* head = list->peek(ctx);
     // ensures payload is on top of the stack
