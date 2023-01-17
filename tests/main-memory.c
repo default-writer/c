@@ -1,4 +1,4 @@
-#include "common/memory.h"
+#include "playground/memory/memory.h"
 #include "std/common.h"
 
 extern const struct memory_allocator memory_allocator_v1;

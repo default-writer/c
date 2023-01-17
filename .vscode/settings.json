@@ -177,5 +177,5 @@
   "presentation-mode.configBackup": {
     "window.zoomLevel": "undefined"
   },
-  "grammarly.files.include": ["**/*.md", "**/*.txt"]
+  "grammarly.files.include": ["**/*.md"]
 }

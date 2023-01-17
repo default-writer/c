@@ -110,7 +110,7 @@ if(CODE_COVERAGE)
     endif()
 endif()
 
-set(LIB_MEMORY_SOURCE src/common/memory.c)
+set(LIB_MEMORY_SOURCE src/playground/memory/v1/memory.c src/playground/memory/v2/memory.c)
 set(LIB_COMMON_SOURCE src/common/alloc.c)
 set(LIB_LCG_SOURCE src/common/lcg.c)
 set(LIB_PARAMETERS_SOURCE src/common/parameters.c)
@@ -128,7 +128,7 @@ set(MAIN_MICRO_SOURCE tests/main-micro.c ${LIB_MICRO_SOURCE})
 set(MAIN_ALLOC_SOURCE tests/main-alloc.c ${LIB_ALLOC_SOURCE})
 set(MAIN_EXPERIMENTAL_SOURCE tests/main-experimental.c ${LIB_EXPERIMENTAL_SOURCE})
 set(MAIN_PLAYGROUND_SOURCE tests/main-playground.c ${LIB_PLAYGROUND_SOURCE})
-set(MAIN_MEMORY_SOURCE src/playground/memory/memory.c ${LIB_MEMORY_SOURCE})
+set(MAIN_MEMORY_SOURCE tests/main-memory.c ${LIB_MEMORY_SOURCE})
 
 include_directories(src)
 

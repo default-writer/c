@@ -2,7 +2,7 @@
 #include "rexo/include/rexo.h"
 #include "std/common.h"
 #ifdef USE_MEMORY_ALLOC
-#include "common/memory.h"
+#include "playground/memory/memory.h"
 #endif
 
 /*

@@ -3,6 +3,13 @@
 
 #include "std/common.h"
 
+struct data;
+
+struct memory_allocator_data {
+    /* private data definition */
+    struct data* data;
+};
+
 struct memory_allocator {
     void (*init)();
     void (*destroy)();
