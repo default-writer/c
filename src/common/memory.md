@@ -21,3 +21,7 @@ the same as above, except that metadata is written first, protecting current met
 allocation which completely separates data allocation pools as sensitive allocation metadata for manipulation allocations. this is the safest approach in allocation of data.
 
 it is similar to pp.1.1 except that pp.1.1 is completetely omits metadata semantics with exception of fixed-size generic types or static data structures.
+
+## 1.2.1 queued allocation
+
+allocation based on additional allocation/deallocation meory pools. idea is to keep track list of items to deallocate and take pointers from that list. this is the first implemetation allowing non-linear allocation/deallocation on a primary memeory pool.
