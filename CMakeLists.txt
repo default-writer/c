@@ -120,15 +120,15 @@ set(LIB_LIGHT_SOURCE src/list-light/code.c)
 set(LIB_MICRO_SOURCE src/list-micro/code.c)
 set(LIB_ALLOC_SOURCE src/list-alloc/code.c)
 set(LIB_EXPERIMENTAL_SOURCE src/list-experimental/code.c)
-set(LIB_PLAYGROUND_SOURCE src/class/code.c)
+set(LIB_PLAYGROUND_SOURCE src/playground/class/code.c)
 
 set(MAIN_SOURCE tests/main.c ${LIB_SOURCE})
 set(MAIN_LIGHT_SOURCE tests/main-light.c ${LIB_LIGHT_SOURCE})
 set(MAIN_MICRO_SOURCE tests/main-micro.c ${LIB_MICRO_SOURCE})
 set(MAIN_ALLOC_SOURCE tests/main-alloc.c ${LIB_ALLOC_SOURCE})
 set(MAIN_EXPERIMENTAL_SOURCE tests/main-experimental.c ${LIB_EXPERIMENTAL_SOURCE})
-set(MAIN_PLAYGROUND_SOURCE src/playground/structs.c ${LIB_PLAYGROUND_SOURCE})
-set(MAIN_MEMORY_SOURCE src/playground/memory.c ${LIB_MEMORY_SOURCE})
+set(MAIN_PLAYGROUND_SOURCE tests/main-playground.c ${LIB_PLAYGROUND_SOURCE})
+set(MAIN_MEMORY_SOURCE src/playground/memory/memory.c ${LIB_MEMORY_SOURCE})
 
 include_directories(src)
 

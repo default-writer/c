@@ -165,7 +165,8 @@
   "sonarlint.pathToCompileCommands": "${workspaceFolder}/cmake/compile_commands.json",
   "editor.fontWeight": "normal",
   "workbench.colorCustomizations": {
-    "statusBar.foreground": "#333"
+    "statusBar.background": "#a47b00",
+    "statusBar.foreground": "#fff"
   },
   "presentation-mode.active": {
     "window.zoomLevel": 2

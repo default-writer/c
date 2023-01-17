@@ -3,25 +3,22 @@
 - `List<T>` implementations
 - code coverage
 - coverage hot-reload
-
-# timeline
+- memory allocation playground
+- docs: [memory.md](memory.md), [memory.pdf](memory.pdf)
 
 ## 2023
 
-- added implementation without realloc with random access inside a block
+- added several implementations
 
 ## 2022
 
 - playing around with visibility in class declarations
 
+## lab
 
-# lab
+working with containers requires some in-place installations and batch scripting both in the host and inside the running development container. when creating a container for the first time it is strongly recommended to use scripts to clean up and install dependencies
 
-- working with containers requires some in-place installations and batch scripting both in host and inside the running development container
-- when created container for the first time it is strongly recommended to use scripts to cleanup and install dependencies
-
-
-#  shell
+## shell
 
 ### bootstraps build
 
@@ -49,8 +46,7 @@
 
 ### cleans up the root directory
 
-- forsefully removes any generated folders
-- breaks sonarlint and other directory based stuff (sonarlint searchs for **build** directory)
+removes any generated folders. possibly breaks other directory-based tools
 
 ```sh
 ./bin/cleanup.sh

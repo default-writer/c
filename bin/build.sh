@@ -103,6 +103,7 @@ fi
 if [ "${clean}" == "--clean" ]; then
     rm -rf "${pwd}/cmake"
     mkdir "${pwd}/cmake"
+    find . -name "*.s" -delete
 fi
 
 if [ "${sanitize}" == "--sanitize" ]; then
