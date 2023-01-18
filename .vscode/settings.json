@@ -177,5 +177,6 @@
   "presentation-mode.configBackup": {
     "window.zoomLevel": "undefined"
   },
-  "grammarly.files.include": ["**/*.md"]
+  "grammarly.files.include": ["**/*.md"],
+  "grammarly.files.exclude": ["CMakeLists.txt"]
 }

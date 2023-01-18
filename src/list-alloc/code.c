@@ -6,6 +6,7 @@
 /* buffer size in bytes = size of 8 items */
 #define ALLOC_SIZE(n) ((n) + 1) * sizeof(void*)
 
+/* list parameters definition */
 extern struct list_parameters list_parameters_definition;
 
 /* private */

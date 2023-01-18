@@ -31,6 +31,7 @@
 // global allocated memory
 static void* memory = 0;
 static void** ptr = 0;
+static void** deleted = 0;
 
 static void memory_init() {
     ptr = &memory;
@@ -65,7 +66,7 @@ static void memory_free(void* data, u32 size) {
 #endif
 }
 
-const struct memory_allocator memory_allocator_v2 = {
+const struct memory_allocator memory_allocator_v3 = {
     .init = memory_init,
     .destroy = memory_destroy,
     .alloc = memory_alloc,

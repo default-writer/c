@@ -1,4 +1,4 @@
-#include "playground/class/data.h"
+#include "playground/class/class.h"
 #include "rexo/include/rexo.h"
 #include "std/common.h"
 #ifdef USE_MEMORY_ALLOC
@@ -39,9 +39,7 @@ struct some_data some_data_type =
 */
 
 /* externally visible class definition API */
-extern struct class class_definition;
-/* externally visible class context definition API */
-extern struct context context_definition;
+extern const struct class class_definition;
 /* externally visible class data definition API */
 extern struct class_data class_data;
 
@@ -93,7 +91,7 @@ RX_TEST_CASE(myTestSuite, test_destroy, .fixture = test_fixture) {
 
 // test class get_type
 RX_TEST_CASE(myTestSuite, test_get_type, .fixture = test_fixture) {
-    struct class* context = &class_definition;
+    const struct class* context = &class_definition;
     // ensures data is added to the list
     RX_ASSERT(context->get_type() == (u64)&class_definition);
 }
@@ -112,7 +110,7 @@ RX_TEST_CASE(myTestSuite, test_class_data, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct class_data** ctx = &rx->ctx;
     struct class_data* class = *ctx;
-    struct class* context = &class_definition;
+    const struct class* context = &class_definition;
     void* payload = (void*)0xdeadbeef;
     context->set_data(class, payload);
     // ensures data is added to the list
@@ -124,7 +122,7 @@ RX_TEST_CASE(myTestSuite, test_context_enter_leave, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct class_data** ctx = &rx->ctx;
     struct class_data* data = *ctx;
-    struct class* context = &class_definition;
+    const struct class* context = &class_definition;
     context->push(data);
     RX_ASSERT(context->pop() == data);
 }
@@ -134,7 +132,7 @@ RX_TEST_CASE(myTestSuite, test_class_get_set_data, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct class_data** ctx = &rx->ctx;
     struct class_data* data = *ctx;
-    struct class* context = &class_definition;
+    const struct class* context = &class_definition;
     void* payload = (void(*))0xdeadbeef;
     context->push(data);
     context->set(payload);

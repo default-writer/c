@@ -9,11 +9,13 @@
 /* buffer size in bytes = size of 8 items */
 #define ALLOC_SIZE(n) ((n) + 1) * sizeof(void*)
 
+/* list definition */
 extern const struct list list_alloc_definition;
+/* list parameters definition */
 extern struct list_parameters list_parameters_definition;
 
 /* LCG Park-Miller function */
-u64 lcg_parkmiller();
+extern u64 lcg_parkmiller();
 
 /* initializes the new context's head element */
 struct list_data* list_init();

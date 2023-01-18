@@ -1,5 +1,5 @@
-#ifndef _LIST_DATA_H_
-#define _LIST_DATA_H_
+#ifndef _PLAYGROUND_CLASS_H_
+#define _PLAYGROUND_CLASS_H_
 
 #include "std/common.h"
 
@@ -27,4 +27,4 @@ void class_init(struct class_data** current);
 /* destroys the class instance */
 void class_destroy(struct class_data** current);
 
-#endif // _LIST_DATA_H_
+#endif // _PLAYGROUND_CLASS_H_
