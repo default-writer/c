@@ -20,6 +20,7 @@ static const struct list* list = &list_v1;
 
 /* Data structure to use at the core of our fixture. */
 typedef struct test_data {
+    void* ptr;
 } * TEST_DATA;
 
 /* Initialize the data structure. Its allocation is handled by Rexo. */
