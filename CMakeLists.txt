@@ -130,6 +130,7 @@ set(MAIN_EXPERIMENTAL_SOURCE tests/main-experimental.c ${LIB_EXPERIMENTAL_SOURCE
 set(MAIN_PLAYGROUND_SOURCE tests/main-playground.c ${LIB_PLAYGROUND_SOURCE})
 set(MAIN_MEMORY_SOURCE tests/main-memory.c ${LIB_MEMORY_SOURCE})
 set(MAIN_ZEN_SOURCE src/playground/zen/zen.c)
+set(MAIN_BRAIN_SOURCE src/playground/brain/brain.c)
 
 include_directories(src)
 
@@ -153,6 +154,7 @@ add_executable(main-experimental ${MAIN_EXPERIMENTAL_SOURCE})
 add_executable(main-playground ${MAIN_PLAYGROUND_SOURCE})
 add_executable(main-memory ${MAIN_MEMORY_SOURCE})
 add_executable(zen ${MAIN_ZEN_SOURCE})
+add_executable(brain ${MAIN_BRAIN_SOURCE})
 
 if(CODE_SANITIZER)
     message("Building with sanitizers")
