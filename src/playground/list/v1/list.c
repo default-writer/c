@@ -3,6 +3,8 @@
 
 #define MAX_MEMORY 0xffff // 64K bytes
 
+/*private */
+
 // global allocated memory
 static void* list = 0;
 static void** ptr = 0;
@@ -14,14 +16,14 @@ static void list_init() {
 }
 
 static void list_destroy() {
+    ptr = 0;
     free(list);
     list = 0;
-    ptr = 0;
 }
 
 static void list_push(void* data) {
     void** tmp = ptr;
-    ptr += sizeof(void*);
+    ++ptr;
     *tmp = data;
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("   +: 0x%016llx >0x%016llx\n", (u64)tmp, (u64)*tmp);
@@ -29,11 +31,11 @@ static void list_push(void* data) {
 }
 
 static void* list_pop() {
-    ptr -= sizeof(void*);
+    --ptr;
     void** tmp = ptr;
     void* data = *tmp;
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("   -: 0x%016llx !  %16lld\n", (u64)ptr, (u64)*ptr);
+    printf("   -: 0x%016llx >0x%016llx\n", (u64)tmp, (u64)*tmp);
 #endif
 #ifdef USE_MEMORY_CLEANUP
     *tmp = 0;
@@ -42,14 +44,15 @@ static void* list_pop() {
 }
 
 static void* list_peek() {
-    ptr -= sizeof(void*);
-    void** tmp = ptr;
+    void** tmp = ptr - 1;
     void* data = *tmp;
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("   *: 0x%016llx >0x%016llx\n", (u64)ptr, (u64)*ptr);
+    printf("   *: 0x%016llx >0x%016llx\n", (u64)tmp, (u64)*tmp);
 #endif
     return data;
 }
+
+/* public */
 
 const struct list list_v1 = {
     .init = list_init,

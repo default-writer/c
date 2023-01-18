@@ -7,11 +7,11 @@ struct class_data;
 
 struct class {
     /* initialize context */
-    void (*init)(struct class_data** current);
+    struct class_data* (*new)();
     /* destroy context */
-    void (*destroy)(struct class_data** current);
+    void (*delete)(struct class_data* class);
     /* enter context */
-    void (*push)(struct class_data* self);
+    void (*push)(struct class_data* class);
     /* leaves context */
     struct class_data* (*pop)();
     /* reads data */

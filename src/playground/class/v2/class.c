@@ -2,8 +2,6 @@
 #include "playground/list/list.h"
 #include "common/alloc.h"
 
-/* class definition */
-extern const struct class class_definition;
 /* list definition */
 extern const struct list list_v1;
 /* class data definition */
@@ -52,15 +50,15 @@ static void _delete(struct class_data* class) {
 }
 
 /* initializes the new context's head element */
-static void class_object_init(struct class_data** current) {
+static struct class_data* class_new() {
     /* creates emtpy data chunk */
-    *current = _new();
+    return _new();
 }
 
 /* destroys the memory stack */
-static void class_object_destroy(struct class_data** current) {
+static void class_delete(struct class_data* class) {
     /* releases the pointer */
-    _delete(*current);
+    _delete(class);
 }
 
 static void* class_get_data(struct class_data* class) {
@@ -93,9 +91,9 @@ static void class_set(void* data) {
 
 /* public */
 
-const struct class class_definition = {
-    .init = class_object_init,
-    .destroy = class_object_destroy,
+const struct class class_definition_v2 = {
+    .new = class_new,
+    .delete = class_delete,
     // generic methods
     .push = class_push,
     .pop = class_pop,
