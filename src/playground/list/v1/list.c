@@ -6,50 +6,36 @@
 /*private */
 
 // global allocated memory
-static void* list = 0;
 static void** ptr = 0;
 
 static void list_init() {
-    ptr = &list;
-    *ptr = calloc(1, MAX_MEMORY);
-    ptr = *ptr;
+    ptr = calloc(1, MAX_MEMORY);
 }
 
 static void list_destroy() {
+    free(ptr);
     ptr = 0;
-    free(list);
-    list = 0;
 }
 
 static void list_push(void* data) {
-    void** tmp = ptr;
-    ++ptr;
-    *tmp = data;
+    *ptr++ = data;
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("   +: 0x%016llx >0x%016llx\n", (u64)tmp, (u64)*tmp);
+    printf("   +: 0x%016llx >0x%016llx\n", (u64)ptr - 1, (u64)data);
 #endif
 }
 
 static void* list_pop() {
-    --ptr;
-    void** tmp = ptr;
-    void* data = *tmp;
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("   -: 0x%016llx >0x%016llx\n", (u64)tmp, (u64)*tmp);
+    printf("   -: 0x%016llx >0x%016llx\n", (u64)ptr - 1, (u64)*(ptr - 1));
 #endif
-#ifdef USE_MEMORY_CLEANUP
-    *tmp = 0;
-#endif
-    return data;
+    return *--ptr;
 }
 
 static void* list_peek() {
-    void** tmp = ptr - 1;
-    void* data = *tmp;
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("   *: 0x%016llx >0x%016llx\n", (u64)tmp, (u64)*tmp);
+    printf("   *: 0x%016llx >0x%016llx\n", (u64)ptr - 1, (u64)*(ptr - 1));
 #endif
-    return data;
+    return *(ptr - 1);
 }
 
 /* public */
