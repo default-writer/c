@@ -37,31 +37,31 @@ EOF
 case "${install}" in
 
     "--memory") # builds and runs '-memory' target
-        array=("-memory")
+        array=("main-memory")
         ;;
 
     "--playground") # builds and runs '-playground' target
-        array=("-playground")
+        array=("main-playground")
         ;;
 
     "--alloc") # builds and runs '-alloc' target
-        array=("-alloc")
+        array=("main-alloc")
         ;;
 
     "--experimental") # builds and runs '-experimental' target
-        array=("-experimental")
+        array=("main-experimental")
         ;;
 
     "--micro") # builds and runs '-micro' target
-        array=("-micro")
+        array=("main-micro")
         ;;
 
     "--light") # builds and runs '-light' target
-        array=("-light")
+        array=("main-light")
         ;;
 
     "--all") # builds and runs all targets
-        array=("" "-light" "-micro" "-experimental" "-alloc" "-playground" "-memory")
+        array=("zen" "main" "main-light" "main-micro" "main-experimental" "main-alloc" "main-playground" "main-memory")
         ;;
 
     *)
@@ -107,7 +107,7 @@ if [ "${clean}" == "--clean" ]; then
 fi
 
 for m in "${array[@]}"; do
-    rm -f "${pwd}/coverage/main${m}.lcov"
+    rm -f "${pwd}/coverage/${m}.lcov"
 done
 
 export LCOV_PATH=$(which lcov)
@@ -135,10 +135,10 @@ cmake \
     -G "Ninja"
 
 for m in "${array[@]}"; do
-    cmake --build "${pwd}/cmake" --target "main${m}"
-    timeout --foreground 5 "${pwd}/cmake/main${m}"
-    lcov --capture --directory "${pwd}/cmake/" --output-file "${pwd}/coverage/main${m}.lcov" &>/dev/null
-    lcov --remove "${pwd}/coverage/main${m}.lcov" "${pwd}/src/rexo/*" -o "${pwd}/coverage/main${m}.lcov"
+    cmake --build "${pwd}/cmake" --target "${m}"
+    timeout --foreground 5 "${pwd}/cmake/${m}"
+    lcov --capture --directory "${pwd}/cmake/" --output-file "${pwd}/coverage/${m}.lcov" &>/dev/null
+    lcov --remove "${pwd}/coverage/${m}.lcov" "${pwd}/src/rexo/*" -o "${pwd}/coverage/${m}.lcov"
 done
 
 find "${pwd}/coverage" -type f -name "main*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"

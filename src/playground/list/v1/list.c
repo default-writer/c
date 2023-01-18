@@ -20,20 +20,20 @@ static void list_destroy() {
 static void list_push(void* data) {
     *ptr++ = data;
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("   +: 0x%016llx >0x%016llx\n", (u64)ptr - 1, (u64)*(ptr - 1));
+    printf("   +: 0x%016llx >0x%016llx\n", (u64)ptr - 1, (u64) * (ptr - 1));
 #endif
 }
 
 static void* list_pop() {
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("   -: 0x%016llx >0x%016llx\n", (u64)ptr - 1, (u64)*(ptr - 1));
+    printf("   -: 0x%016llx >0x%016llx\n", (u64)ptr - 1, (u64) * (ptr - 1));
 #endif
     return *--ptr;
 }
 
 static void* list_peek() {
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("   *: 0x%016llx >0x%016llx\n", (u64)ptr - 1, (u64)*(ptr - 1));
+    printf("   *: 0x%016llx >0x%016llx\n", (u64)ptr - 1, (u64) * (ptr - 1));
 #endif
     return *(ptr - 1);
 }

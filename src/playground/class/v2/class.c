@@ -1,6 +1,6 @@
 #include "playground/class/class.h"
-#include "playground/list/list.h"
 #include "common/alloc.h"
+#include "playground/list/list.h"
 
 /* list definition */
 extern const struct list list_v1;

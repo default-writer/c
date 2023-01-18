@@ -129,6 +129,7 @@ set(MAIN_ALLOC_SOURCE tests/main-alloc.c ${LIB_ALLOC_SOURCE})
 set(MAIN_EXPERIMENTAL_SOURCE tests/main-experimental.c ${LIB_EXPERIMENTAL_SOURCE})
 set(MAIN_PLAYGROUND_SOURCE tests/main-playground.c ${LIB_PLAYGROUND_SOURCE})
 set(MAIN_MEMORY_SOURCE tests/main-memory.c ${LIB_MEMORY_SOURCE})
+set(MAIN_ZEN_SOURCE src/playground/zen/zen.c)
 
 include_directories(src)
 
@@ -151,6 +152,7 @@ add_executable(main-alloc ${MAIN_ALLOC_SOURCE})
 add_executable(main-experimental ${MAIN_EXPERIMENTAL_SOURCE})
 add_executable(main-playground ${MAIN_PLAYGROUND_SOURCE})
 add_executable(main-memory ${MAIN_MEMORY_SOURCE})
+add_executable(zen ${MAIN_ZEN_SOURCE})
 
 if(CODE_SANITIZER)
     message("Building with sanitizers")

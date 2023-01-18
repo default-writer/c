@@ -37,31 +37,31 @@ EOF
 case "${install}" in
 
     "--memory") # builds and runs '-memory' target
-        array=("-memory")
+        array=("main-memory")
         ;;
 
     "--playground") # builds and runs '-playground' target
-        array=("-playground")
+        array=("main-playground")
         ;;
 
     "--alloc") # builds and runs '-alloc' target
-        array=("-alloc")
+        array=("main-alloc")
         ;;
 
     "--experimental") # builds and runs '-experimental' target
-        array=("-experimental")
+        array=("main-experimental")
         ;;
 
     "--micro") # builds and runs '-micro' target
-        array=("-micro")
+        array=("main-micro")
         ;;
 
     "--light") # builds and runs '-light' target
-        array=("-light")
+        array=("main-light")
         ;;
 
     "--all") # builds and runs all targets
-        array=("" "-light" "-micro" "-experimental" "-alloc" "-playground" "-memory")
+        array=("zen" "main" "main-light" "main-micro" "main-experimental" "main-alloc" "main-playground" "main-memory")
         ;;
 
     *)
@@ -126,8 +126,8 @@ cmake \
     -G "Ninja"
 
 for m in "${array[@]}"; do
-    cmake --build "${pwd}/logs" --target "main${m}"
-    "${pwd}/logs/main${m}" > "${pwd}/logs/log${m}.txt"
+    cmake --build "${pwd}/logs" --target "${m}"
+    "${pwd}/logs/${m}" > "${pwd}/logs/log${m}.txt"
 done
 
 find "${pwd}/logs" -type f -not -name "log*" -delete

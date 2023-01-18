@@ -7,7 +7,7 @@ struct list {
     void (*init)();
     void (*destroy)();
     void (*push)(void* data);
-    void* (*pop)();    
+    void* (*pop)();
     void* (*peek)();
 };
 
