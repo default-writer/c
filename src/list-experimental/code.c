@@ -207,7 +207,7 @@ static void list_print(struct list_data** current) {
 /* initializes the new context's head element */
 void list_init(struct list_data** current) {
     struct list_data* tmp = *current;
-    /* checks if pointer is not null */
+    /* checks if pointer is null */
     if (tmp == 0) {
         /* sets the current memory pointer */
         *current = _new();

@@ -178,5 +178,7 @@
     "window.zoomLevel": "undefined"
   },
   "grammarly.files.include": ["**/*.md"],
-  "grammarly.files.exclude": ["CMakeLists.txt"]
+  "grammarly.files.exclude": [
+    "CMakeLists.txt"
+  ]
 }
