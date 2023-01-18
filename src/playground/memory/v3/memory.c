@@ -1,28 +1,3 @@
-/*
-    See `memory.md` for extened list of metadata
-
-    Simple linear memory allocation works as follows:
-
-    1. allocation will take extra 8 bytes for pointer data
-    2. out-of-bounds pointer (-8) got first available address
-    3. memory manager assumes that alloc and free follows FIFO order.
-    4. to fast realloc *last* allocated block one should free it and alloc with the new size
-
-*/
-
-/*
-    |s|_|_|_|s|_|_|_|_|_|_|s|_|_|_|
-
-      start address >|         end address >|
-                     |                      |
-    +----------------+----------------------+
-    |< service area >|< addressable memory >|
-    +---------------+-----------------------+
-    |< allocated space                     >|
-    +---------------------------------------+
-
-*/
-
 #include "playground/memory/memory.h"
 #include "std/common.h"
 

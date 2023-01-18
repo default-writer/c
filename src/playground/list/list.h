@@ -3,11 +3,12 @@
 
 #include "std/common.h"
 
-struct memory_allocator {
+struct list {
     void (*init)();
     void (*destroy)();
-    void* (*alloc)(u32 nmemb, u32 size);
-    void (*free)(void* data, u32 size);
+    void (*push)(void* data);
+    void* (*pop)();    
+    void* (*peek)();
 };
 
 #endif // _PLAYGROUND_LIST_H_

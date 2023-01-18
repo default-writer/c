@@ -5,39 +5,6 @@
 #include "playground/memory/memory.h"
 #endif
 
-/*
-
-C type system
-
-Any data struct will have last for bytes as pointer to its type methods
-and any type will contain method of_type(...) which will check validity of data
-
-struct some_data
-{
-    struct some_data* type;
-}
-
-struct some_data
-{
-    int of_type(void* ptr);
-}
-
-extern struct some_data some_data_type;
-
-int of_type(void* ptr)
-{
-    struct some_data* type = &some_data_type;
-    struct some_data* ptr = (struct some_data*)ptr;
-    return ptr->type == type;
-}
-
-struct some_data some_data_type =
-{
-    .of_type = of_type
-};
-
-*/
-
 /* externally visible class definition API */
 extern const struct class class_definition;
 /* externally visible class data definition API */
