@@ -38,7 +38,16 @@ RX_TEAR_DOWN(test_tear_down) {
 RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tear_down);
 
 // test context
-RX_TEST_CASE(myTestSuite, test_context_enter_leave, .fixture = test_fixture) {
+RX_TEST_CASE(myTestSuite, test_context_enter_leave_v1, .fixture = test_fixture) {
+    const struct class* context = &class_definition_v1;
+    struct class_data* data = context->new();
+    context->push(data);
+    RX_ASSERT(context->pop() == data);
+    context->delete(data);
+}
+
+// test context
+RX_TEST_CASE(myTestSuite, test_context_enter_leave_v2, .fixture = test_fixture) {
     const struct class* context = &class_definition_v2;
     struct class_data* data = context->new();
     context->push(data);
@@ -47,7 +56,19 @@ RX_TEST_CASE(myTestSuite, test_context_enter_leave, .fixture = test_fixture) {
 }
 
 // test context
-RX_TEST_CASE(myTestSuite, test_class_get_set_data, .fixture = test_fixture) {
+RX_TEST_CASE(myTestSuite, test_class_get_set_data_v1, .fixture = test_fixture) {
+    const struct class* context = &class_definition_v1;
+    struct class_data* data = context->new();
+    void* payload = (void(*))0xdeadbeef;
+    context->push(data);
+    context->set(payload);
+    RX_ASSERT(context->get() == payload);
+    RX_ASSERT(context->pop() == data);
+    context->delete(data);
+}
+
+// test context
+RX_TEST_CASE(myTestSuite, test_class_get_set_data_v2, .fixture = test_fixture) {
     const struct class* context = &class_definition_v2;
     struct class_data* data = context->new();
     void* payload = (void(*))0xdeadbeef;
@@ -59,7 +80,32 @@ RX_TEST_CASE(myTestSuite, test_class_get_set_data, .fixture = test_fixture) {
 }
 
 // test context
-RX_TEST_CASE(myTestSuite, test_class_push_pop_get_set_data, .fixture = test_fixture) {
+RX_TEST_CASE(myTestSuite, test_class_push_pop_get_set_data_v1, .fixture = test_fixture) {
+    const struct class* context = &class_definition_v1;
+    struct class_data* data1 = context->new();
+    struct class_data* data2 = context->new();
+
+    void* payload1 = (void(*))0xdeadbeef;
+    void* payload2 = (void(*))0xbebebebe;
+
+    context->push(data1);
+    context->set(payload1);
+
+    context->push(data2);
+    context->set(payload2);
+
+    RX_ASSERT(context->get() == payload2);
+    RX_ASSERT(context->pop() == data2);
+
+    RX_ASSERT(context->get() == payload1);
+    RX_ASSERT(context->pop() == data1);
+
+    context->delete(data1);
+    context->delete(data2);
+}
+
+// test context
+RX_TEST_CASE(myTestSuite, test_class_push_pop_get_set_data_v2, .fixture = test_fixture) {
     const struct class* context = &class_definition_v2;
     struct class_data* data1 = context->new();
     struct class_data* data2 = context->new();
