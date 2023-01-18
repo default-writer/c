@@ -14,10 +14,14 @@ struct class_data {
     /* data pointer */
     void* ptr;
     /* list */
-    struct list_data* list;
 };
 
 /* private */
+
+/* class data list */
+static struct list_data* class_data_list;
+/* list definition */
+static const struct list* list = &list_micro_definition;
 
 /* creates the class instance */
 static struct class_data* _new();
@@ -50,10 +54,6 @@ static size_t _size() {
 
 /* allocates memory pointer */
 static struct class_data* _new() {
-    // declares pointer to list functions definitions
-    const struct list* list = &list_micro_definition;
-    // pointer to context functions definitions
-    struct class_data* context = &class_data;
     // class definition
     const struct class* definition = &class_definition;
     // pointer to list data structure
@@ -61,7 +61,7 @@ static struct class_data* _new() {
     // initializes the list
     list->init(&ctx);
     // sets the list data pointer
-    context->list = ctx;
+    class_data_list = ctx;
     /* allocates memory */
     struct class_data* ptr = _list_alloc(1, _size());
     /* copy class defintion to the new structure */
@@ -72,23 +72,14 @@ static struct class_data* _new() {
 
 /* releases memory pointer */
 static void _delete(struct class_data* class) {
-    // declares pointer to list functions definitions
-    const struct list* list = &list_micro_definition;
-    // pointer to context functions definitions
-    struct class_data* context = &class_data;
     // pointer to list data structure
-    struct list_data* ctx = context->list;
+    struct list_data* ctx = class_data_list;
     /* releases the pointer */
     _list_free(class, _size());
     // resets the list data pointer
-    context->list = 0;
+    class_data_list = 0;
     // destroys the list
     list->destroy(&ctx);
-}
-
-static u64 class_get_type() {
-    const struct class* class = &class_definition;
-    return (u64) class;
 }
 
 static void* class_get_data(struct class_data* class) {
@@ -100,43 +91,23 @@ static void class_set_data(struct class_data* class, void* data) {
 }
 
 static void class_push(struct class_data* class) {
-    // declares pointer to list functions definitions
-    const struct list* list = &list_micro_definition;
-    // pointer to context functions definitions
-    struct class_data* context = &class_data;
     // pushes to the list
-    list->push(&context->list, class);
+    list->push(&class_data_list, class);
 }
 
 static struct class_data* class_pop() {
-    // declares pointer to list functions definitions
-    const struct list* list = &list_micro_definition;
-    // pointer to context functions definitions
-    struct class_data* context = &class_data;
     // pops from the list
-    return list->pop(&context->list);
+    return list->pop(&class_data_list);
 }
 
 static void* class_get() {
-    // declares pointer to list functions definitions
-    const struct list* list = &list_micro_definition;
-    // pointer to class function definitions
-    const struct class* class = &class_definition;
-    // pointer to context functions definitions
-    struct class_data* context = &class_data;
     // returns data
-    return class->get_data(list->peek(&context->list));
+    return class_get_data(list->peek(&class_data_list));
 }
 
 static void class_set(void* data) {
-    // declares pointer to list functions definitions
-    const struct list* list = &list_micro_definition;
-    // pointer to class function definitions
-    const struct class* class = &class_definition;
-    // pointer to context functions definitions
-    struct class_data* context = &class_data;
     // updates the data
-    class->set_data(list->peek(&context->list), data);
+    class_set_data(list->peek(&class_data_list), data);
 }
 
 /* public */
@@ -165,13 +136,8 @@ void class_destroy(struct class_data** current) {
     }
 }
 
-struct class_data class_data;
-
 const struct class class_definition = {
     // generic methods
-    .get_type = class_get_type,
-    .get_data = class_get_data,
-    .set_data = class_set_data,
     .push = class_push,
     .pop = class_pop,
     .get = class_get,

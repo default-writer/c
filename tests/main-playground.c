@@ -90,31 +90,12 @@ RX_TEST_CASE(myTestSuite, test_destroy, .fixture = test_fixture) {
 }
 
 // test class get_type
-RX_TEST_CASE(myTestSuite, test_get_type, .fixture = test_fixture) {
-    const struct class* context = &class_definition;
-    // ensures data is added to the list
-    RX_ASSERT(context->get_type() == (u64)&class_definition);
-}
-
-// test class get_type
 RX_TEST_CASE(myTestSuite, test_class_uninitialized_is_zero, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct class_data** ctx = &rx->ctx;
     struct class_data* data = *ctx;
     // ensures data is added to the list
     RX_ASSERT(data != 0);
-}
-
-// test class get_type
-RX_TEST_CASE(myTestSuite, test_class_data, .fixture = test_fixture) {
-    TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct class_data** ctx = &rx->ctx;
-    struct class_data* class = *ctx;
-    const struct class* context = &class_definition;
-    void* payload = (void*)0xdeadbeef;
-    context->set_data(class, payload);
-    // ensures data is added to the list
-    RX_ASSERT(context->get_data(class) == payload);
 }
 
 // test context
