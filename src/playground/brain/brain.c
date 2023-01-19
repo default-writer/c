@@ -17,7 +17,7 @@ void _fclose(FILE* file) { printf("file closed: %s\n", file); }
 #endif
 
 void process(u8 *data) {
-    printf("%s", data);
+    printf("%s\n", data);
 }
 
 int main() {
