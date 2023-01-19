@@ -35,6 +35,13 @@ EOF
 }
 
 case "${install}" in
+    "--brain") # builds and runs '-brain' target
+        array=("brain")
+        ;;
+
+    "--zen") # builds and runs '-zen' target
+        array=("zen")
+        ;;
 
     "--memory") # builds and runs '-memory' target
         array=("main-memory")
@@ -83,6 +90,10 @@ for opt in "${opts[@]}"; do
             sanitize="--sanitize"
             ;;
 
+        "--mocks") # [optional] builds with mocks
+            mocks="--mocks"
+            ;;
+
         "--silent") # [optional] suppress verbose output
             silent="--silent"
             ;;
@@ -111,7 +122,11 @@ else
     SANITIZER_OPTIONS=
 fi
 
-OPTIONS=${SANITIZER_OPTIONS}
+if [ "${mocks}" == "--mocks" ]; then
+    MOCKS_OPTIONS=-DMOCKS:BOOL=TRUE
+else
+    MOCKS_OPTIONS=
+fi
 
 export MAKEFLAGS=-j8
 
@@ -122,7 +137,8 @@ cmake \
     -DCMAKE_BUILD_TYPE:STRING=Debug \
     -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
     -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
-    ${OPTIONS} \
+    ${SANITIZER_OPTIONS} \
+    ${MOCKS_OPTIONS} \
     -S"${pwd}" \
     -B"${pwd}/cmake" \
     -G "Ninja"
@@ -131,7 +147,7 @@ for m in "${array[@]}"; do
     cmake --build "${pwd}/cmake" --target "${m}"
 done
 
-main=$(find "${pwd}/cmake" -type f -name "*.s" -exec echo {} \; | grep -s "main")
+main=$(find "${pwd}/cmake" -type f -name "*.s" -exec echo {} \;)
 for i in $main; do
     path="${pwd}/$(echo $i | sed -n -e 's/^.*.dir\/\(.*\)$/\1/p')"
     cp "${i}" "${path}"

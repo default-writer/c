@@ -35,6 +35,13 @@ EOF
 }
 
 case "${install}" in
+    "--brain") # builds and runs '-brain' target
+        array=("brain")
+        ;;
+
+    "--zen") # builds and runs '-zen' target
+        array=("zen")
+        ;;
 
     "--memory") # builds and runs '-memory' target
         array=("main-memory")
@@ -84,6 +91,10 @@ for opt in "${opts[@]}"; do
             sanitize="--sanitize"
             ;;
 
+        "--mocks") # [optional] builds with mocks
+            mocks="--mocks"
+            ;;
+
         "--silent") # [optional] suppress verbose output
             silent="--silent"
             ;;
@@ -110,6 +121,12 @@ for m in "${array[@]}"; do
     rm -f "${pwd}/coverage/${m}.lcov"
 done
 
+if [ "${mocks}" == "--mocks" ]; then
+    MOCKS_OPTIONS=-DMOCKS:BOOL=TRUE
+else
+    MOCKS_OPTIONS=
+fi
+
 export LCOV_PATH=$(which lcov)
 export GENHTML_PATH==$(which genhtml)
 
@@ -126,6 +143,7 @@ cmake \
     -DCMAKE_BUILD_TYPE:STRING=Debug \
     -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
     -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
+    ${MOCKS_OPTIONS} \
     -DCODE_SANITIZER:BOOL=TRUE \
     -DCODE_COVERAGE:BOOL=TRUE \
     -DLCOV_PATH=${LCOV_PATH} \
@@ -136,13 +154,15 @@ cmake \
 
 for m in "${array[@]}"; do
     cmake --build "${pwd}/cmake" --target "${m}"
-    timeout --foreground 5 "${pwd}/cmake/${m}"
+    timeout --foreground 5 "${pwd}/cmake/${m}" 2>&1 > "${pwd}/coverage/log-${m}.txt" || echo ERROR: "${m}"
     lcov --capture --directory "${pwd}/cmake/" --output-file "${pwd}/coverage/${m}.lcov" &>/dev/null
     lcov --remove "${pwd}/coverage/${m}.lcov" "${pwd}/src/rexo/*" -o "${pwd}/coverage/${m}.lcov"
 done
 
-find "${pwd}/coverage" -type f -name "main*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
-find "${pwd}/coverage" -type f -name "main*.lcov" -delete
+find "${pwd}/coverage" -type f -name "*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
+for m in "${array[@]}"; do
+    rm -f "${pwd}/coverage/${m}.lcov"
+done
 
 if [ "${silent}" == "--silent" ]; then
     exec 1>&2 2>&-

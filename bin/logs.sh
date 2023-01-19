@@ -35,6 +35,13 @@ EOF
 }
 
 case "${install}" in
+    "--brain") # builds and runs '-brain' target
+        array=("brain")
+        ;;
+
+    "--zen") # builds and runs '-zen' target
+        array=("zen")
+        ;;
 
     "--memory") # builds and runs '-memory' target
         array=("main-memory")
@@ -83,6 +90,10 @@ for opt in "${opts[@]}"; do
             sanitize="--sanitize"
             ;;
 
+        "--mocks") # [optional] builds with mocks
+            mocks="--mocks"
+            ;;
+
         "--silent") # [optional] suppress verbose output
             silent="--silent"
             ;;
@@ -111,6 +122,12 @@ else
     SANITIZER_OPTIONS=
 fi
 
+if [ "${mocks}" == "--mocks" ]; then
+    MOCKS_OPTIONS=-DMOCKS:BOOL=TRUE
+else
+    MOCKS_OPTIONS=
+fi
+
 OPTIONS=${SANITIZER_OPTIONS}
 
 export MAKEFLAGS=-j8
@@ -120,17 +137,18 @@ cmake \
     -DCMAKE_BUILD_TYPE:STRING=Debug \
     -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
     -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
-    ${OPTIONS} \
+    ${SANITIZER_OPTIONS} \
+    ${MOCKS_OPTIONS} \
     -S"${pwd}" \
     -B"${pwd}/logs" \
     -G "Ninja"
 
 for m in "${array[@]}"; do
     cmake --build "${pwd}/logs" --target "${m}"
-    "${pwd}/logs/${m}" > "${pwd}/logs/log${m}.txt"
+    timeout --foreground 5 "${pwd}/logs/${m}" 2>&1 > "${pwd}/logs/log-${m}.txt" || echo ERROR: "${m}"
 done
 
-find "${pwd}/logs" -type f -not -name "log*" -delete
+find "${pwd}/logs" -type f -not -name "log-*" -delete
 find "${pwd}/logs" -type d -empty -delete
 
 if [ "${silent}" == "--silent" ]; then

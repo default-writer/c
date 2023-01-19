@@ -19,4 +19,10 @@
 #endif
 #endif
 
+#ifdef MOCKS
+#if MOCKS == 1
+#define USE_MOCKS
+#endif
+#endif
+
 #endif // _STD_COMPILE_H_
