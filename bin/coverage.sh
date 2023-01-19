@@ -159,6 +159,7 @@ for m in "${array[@]}"; do
     lcov --remove "${pwd}/coverage/${m}.lcov" "${pwd}/src/rexo/*" -o "${pwd}/coverage/${m}.lcov"
 done
 
+find "${pwd}/coverage" -type f -type f -empty -delete
 find "${pwd}/coverage" -type f -name "*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
 for m in "${array[@]}"; do
     rm -f "${pwd}/coverage/${m}.lcov"
