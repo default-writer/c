@@ -35,12 +35,13 @@ EOF
 }
 
 case "${install}" in
-    "--brain") # builds and runs '-brain' target
-        array=("brain")
-        ;;
 
     "--zen") # builds and runs '-zen' target
         array=("zen")
+        ;;
+
+    "--brain") # builds and runs '-brain' target
+        array=("main-brain")
         ;;
 
     "--memory") # builds and runs '-memory' target
@@ -68,7 +69,7 @@ case "${install}" in
         ;;
 
     "--all") # builds and runs all targets
-        array=("brain" "zen" "main" "main-light" "main-micro" "main-experimental" "main-alloc" "main-playground" "main-memory")
+        array=("zen" "main" "main-light" "main-micro" "main-experimental" "main-alloc" "main-playground" "main-memory")
         ;;
 
     *)

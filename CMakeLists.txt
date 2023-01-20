@@ -21,6 +21,9 @@ set(MEMORY_DEBUG_INFO ON)
 set(MEMORY_CLEANUP ON)
 set(MEMORY_ALLOC OFF)
 
+set(SANITIZE_BUILD_OPTIONS -save-temps -fgnu89-inline -fsanitize=undefined,address,leak -fsanitize=pointer-compare,pointer-subtract -fsanitize-undefined-trap-on-error -fno-sanitize-recover=all)
+set(NO_SANITIZE_BUILD_OPTIONS -save-temps -fno-sanitize=all)
+
 if(MEMORY_DEBUG_INFO)
     message(STATUS "Configure with memory debug information")
     add_compile_definitions(MEMORY_DEBUG_INFO)
@@ -56,9 +59,6 @@ if(MOCKS)
 else()
     message("Building without mocks")
 endif()
-
-set(SANITIZE_BUILD_OPTIONS -save-temps -fgnu89-inline -fsanitize=undefined,address,leak -fsanitize=pointer-compare,pointer-subtract -fsanitize-undefined-trap-on-error -fno-sanitize-recover=all)
-set(NO_SANITIZE_BUILD_OPTIONS -save-temps -fno-sanitize=all)
 
 if(MSVC)
     add_compile_options(/W4)
@@ -129,6 +129,7 @@ set(LIB_ALLOC_SOURCE src/list-alloc/code.c)
 set(LIB_EXPERIMENTAL_SOURCE src/list-experimental/code.c)
 set(LIB_PLAYGROUND_SOURCE src/playground/class/v1/class.c src/playground/class/v2/class.c src/playground/list/v1/list.c)
 set(LIB_MEMORY_SOURCE src/playground/memory/v1/memory.c src/playground/memory/v2/memory.c)
+set(LIB_BRAIN_SOURCE src/playground/brain/brain.c)
 
 set(MAIN_SOURCE tests/main.c ${LIB_SOURCE})
 set(MAIN_LIGHT_SOURCE tests/main-light.c ${LIB_LIGHT_SOURCE})
@@ -137,8 +138,9 @@ set(MAIN_ALLOC_SOURCE tests/main-alloc.c ${LIB_ALLOC_SOURCE})
 set(MAIN_EXPERIMENTAL_SOURCE tests/main-experimental.c ${LIB_EXPERIMENTAL_SOURCE})
 set(MAIN_PLAYGROUND_SOURCE tests/main-playground.c ${LIB_PLAYGROUND_SOURCE})
 set(MAIN_MEMORY_SOURCE tests/main-memory.c ${LIB_MEMORY_SOURCE})
+set(MAIN_BRAIN_SOURCE tests/main-brain.c)
+
 set(MAIN_ZEN_SOURCE src/playground/zen/zen.c)
-set(MAIN_BRAIN_SOURCE src/playground/brain/brain.c)
 
 include_directories(src)
 
@@ -146,13 +148,13 @@ add_library(list-memory STATIC ${LIB_MEMORY_SOURCE})
 add_library(list-common STATIC ${LIB_COMMON_SOURCE})
 add_library(list-lcg STATIC ${LIB_LCG_SOURCE})
 add_library(list-parameters STATIC ${LIB_PARAMETERS_SOURCE})
-
 add_library(list STATIC ${LIB_SOURCE})
 add_library(list-light STATIC ${LIB_LIGHT_SOURCE})
 add_library(list-micro STATIC ${LIB_MICRO_SOURCE})
 add_library(list-alloc STATIC ${LIB_ALLOC_SOURCE})
 add_library(list-experimental STATIC ${LIB_EXPERIMENTAL_SOURCE})
 add_library(list-playground STATIC ${LIB_PLAYGROUND_SOURCE})
+add_library(list-brain STATIC ${LIB_BRAIN_SOURCE})
 
 add_executable(main ${MAIN_SOURCE})
 add_executable(main-light ${MAIN_LIGHT_SOURCE})
@@ -161,8 +163,9 @@ add_executable(main-alloc ${MAIN_ALLOC_SOURCE})
 add_executable(main-experimental ${MAIN_EXPERIMENTAL_SOURCE})
 add_executable(main-playground ${MAIN_PLAYGROUND_SOURCE})
 add_executable(main-memory ${MAIN_MEMORY_SOURCE})
+add_executable(main-brain ${MAIN_BRAIN_SOURCE})
+
 add_executable(zen ${MAIN_ZEN_SOURCE})
-add_executable(brain ${MAIN_BRAIN_SOURCE})
 
 target_link_libraries(list-alloc PRIVATE list-parameters)
 target_link_libraries(list-experimental PRIVATE list-parameters)
@@ -174,10 +177,11 @@ target_link_libraries(main-alloc PRIVATE list-alloc list-lcg list-parameters lis
 target_link_libraries(main-experimental PRIVATE list-experimental list-lcg list-parameters list-common)
 target_link_libraries(main-playground PRIVATE list-playground list-micro list-common)
 target_link_libraries(main-memory PRIVATE list-memory)
+target_link_libraries(main-brain PRIVATE list-brain)
 
-FILE(WRITE input.txt
-"<>="
-"=<+"
-"-"
-"+-="
+FILE(WRITE ${CMAKE_BINARY_DIR}/input.txt
+    "<>="
+    "=<+"
+    "-"
+    "+-="
 )
