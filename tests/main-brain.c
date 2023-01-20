@@ -20,17 +20,16 @@ int main(int argc, char** argv) {
     }
     strcat(cwd, "/input.txt");
     FILE *f = fopen(cwd, "rb");
-    if (f == 0) { 
-        perror("file not found");
-        exit(-1);
+    if (f != 0) { 
+        fseek(f, 0, SEEK_END);
+        u32 size = (u32)ftell(f);
+        fseek(f, 0, SEEK_SET);
+        char *data = calloc(1, size + 1);
+            fread(data,1,size,f);
+            fclose(f);
+
+            process(data);
+        free(data);
     }
-    fseek(f, 0, SEEK_END);
-    u32 size = (u32)ftell(f);
-    fseek(f, 0, SEEK_SET);
-    char *data = calloc(1, size + 1);
-    fread(data,1,size,f);
-    fclose(f);
-    process(data);
-    free(data);
     return 0;
 }
