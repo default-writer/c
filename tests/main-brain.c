@@ -27,10 +27,11 @@ long get_file_size(FILE* f) {
 int main(int argc, char** argv) {
     char cwd[PATH_MAX];
     FILE *f;
+    char* data;
     get_full_path(argc, argv, cwd, "/input.txt");
     if ((f = fopen(cwd, "rb")) != 0) {
         u32 size = (u32)get_file_size(f);
-        char *data = calloc(1, size + 1);
+        data = calloc(1, size + 1);
         fread(data,1,size,f);
         fclose(f);
         process(data);
