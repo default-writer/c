@@ -169,6 +169,14 @@
       "priority": 1000,
       "id": "statusbar.coverage.on",
       "command": "code-coverage.show"
+    },
+    {
+      "text": ".H",
+      "tooltip": "Toggle clandg inlay type hints ON/OFF",
+      "alignment": "right",
+      "priority": 1000,
+      "id": "statusbar.cland.hints",
+      "command": "clangd.inlayHints.toggle"
     }
     //markis.code-coverage
     //code-coverage.show
