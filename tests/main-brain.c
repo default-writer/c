@@ -4,8 +4,7 @@
 #include <linux/limits.h>
 #include <string.h>
 
-void process(char* data)
-{
+void process(char* data) {
     printf("%s\n", data);
 }
 
@@ -27,7 +26,6 @@ int main(int argc, char** argv) {
         char *data = calloc(1, size + 1);
             fread(data,1,size,f);
             fclose(f);
-
             process(data);
         free(data);
     }

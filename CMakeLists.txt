@@ -180,8 +180,5 @@ target_link_libraries(main-memory PRIVATE list-memory)
 target_link_libraries(main-brain PRIVATE list-brain)
 
 FILE(WRITE ${CMAKE_BINARY_DIR}/input.txt
-    "<>="
-    "=<+"
-    "-"
-    "+-="
+    "fopen<\"input.txt\",\"rb\">f (? f==0 perror<\"file not found\" exit<1 : print<\"all ok\")"
 )
