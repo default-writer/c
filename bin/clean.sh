@@ -38,7 +38,6 @@ EOF
 case "${install}" in
 
     "--all") # cleans up uncommited changes and non-gited files and folders
-        help
         ;;
 
     *)
