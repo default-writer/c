@@ -178,8 +178,6 @@
       "id": "statusbar.cland.hints",
       "command": "clangd.inlayHints.toggle"
     }
-    //markis.code-coverage
-    //code-coverage.show
   ],
   "workbench.colorTheme": "Yitzchok (rainglow)",
   "customPresentationMode.overrides": {
