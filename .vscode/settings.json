@@ -155,18 +155,18 @@
       "command": "presentation-mode.toggle",
     },
     {
-      "text": ".c",
-      "tooltip": "Toggle code coverage OFF",
-      "alignment": "right",
-      "priority": 1000,
-      "id": "statusbar.coverage.off",
+        "text": ".c",
+        "tooltip": "Toggle code coverage OFF",
+        "alignment": "right",
+        "priority": 1000,
+        "id": "statusbar.coverage.off",
       "command": "code-coverage.hide"
     },
     {
       "text": ".C",
       "tooltip": "Toggle code coverage ON",
       "alignment": "right",
-      "priority": 1000,
+      "priority": 1001,
       "id": "statusbar.coverage.on",
       "command": "code-coverage.show"
     },
@@ -174,10 +174,18 @@
       "text": ".H",
       "tooltip": "Toggle clandg inlay type hints ON/OFF",
       "alignment": "right",
-      "priority": 1000,
+      "priority": 1002,
       "id": "statusbar.cland.hints",
       "command": "clangd.inlayHints.toggle"
-    }
+    },
+    {
+      "text": ".T",
+      "tooltip": "Open twitch chat",
+      "alignment": "right",
+      "priority": 1003,
+      "id": "statusbar.twitch.open",
+      "command": "twitch.open"
+    },
   ],
   "workbench.colorTheme": "Yitzchok (rainglow)",
   "customPresentationMode.overrides": {
