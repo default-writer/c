@@ -44,8 +44,18 @@ endif()
 
 if(CODE_SANITIZER)
     message("Building with sanitizers")
-    add_compile_options(${SANITIZE_BUILD_OPTIONS})
-    add_link_options(${SANITIZE_BUILD_OPTIONS})
+    if(MSVC)
+        add_compile_options(/W4)
+    else()
+        add_compile_options(
+            -Winline -Wpedantic -Wall -Wextra -Waggregate-return -Wcast-align -Wcast-qual
+            -Wconversion -Wfloat-equal -Wpointer-arith -Wshadow -Wstrict-overflow=5
+            -Wswitch -Wswitch-default -Wundef -Wunreachable-code -Wwrite-strings
+            -Wformat-nonliteral -fsanitize=undefined,address ${SANITIZE_BUILD_OPTIONS})
+        add_link_options(
+            -fsanitize=undefined,address ${SANITIZE_BUILD_OPTIONS}
+        )
+    endif()
 else()
     message("Building without sanitizers")
     add_compile_options(${NO_SANITIZE_BUILD_OPTIONS})
@@ -58,19 +68,6 @@ if(MOCKS)
     add_definitions(-DMOCKS)
 else()
     message("Building without mocks")
-endif()
-
-if(MSVC)
-    add_compile_options(/W4)
-else()
-    add_compile_options(
-        -Winline -Wpedantic -Wall -Wextra -Waggregate-return -Wcast-align -Wcast-qual
-        -Wconversion -Wfloat-equal -Wpointer-arith -Wshadow -Wstrict-overflow=5
-        -Wswitch -Wswitch-default -Wundef -Wunreachable-code -Wwrite-strings
-        -Wformat-nonliteral -fsanitize=undefined,address)
-    add_link_options(
-        -fsanitize=undefined,address
-    )
 endif()
 
 if(UNIX)
