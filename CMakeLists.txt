@@ -21,8 +21,8 @@ set(MEMORY_DEBUG_INFO ON)
 set(MEMORY_CLEANUP ON)
 set(MEMORY_ALLOC OFF)
 
-set(SANITIZE_BUILD_OPTIONS -save-temps -fgnu89-inline -fsanitize=undefined,address,leak -fsanitize=pointer-compare,pointer-subtract -fsanitize-undefined-trap-on-error -fno-sanitize-recover=all)
-set(NO_SANITIZE_BUILD_OPTIONS -save-temps -fno-sanitize=all)
+set(SANITIZE_BUILD_OPTIONS -save-temps -std=gnu89 -fgnu89-inline -fsanitize=undefined,address,leak -fsanitize=pointer-compare,pointer-subtract -fsanitize-undefined-trap-on-error -fno-sanitize-recover=all -finline-functions-called-once)
+set(NO_SANITIZE_BUILD_OPTIONS -save-temps -fno-sanitize=all -std=gnu89 -fgnu89-inline)
 
 if(MEMORY_DEBUG_INFO)
     message(STATUS "Configure with memory debug information")
@@ -51,9 +51,9 @@ if(CODE_SANITIZER)
             -Winline -Wpedantic -Wall -Wextra -Waggregate-return -Wcast-align -Wcast-qual
             -Wconversion -Wfloat-equal -Wpointer-arith -Wshadow -Wstrict-overflow=5
             -Wswitch -Wswitch-default -Wundef -Wunreachable-code -Wwrite-strings
-            -Wformat-nonliteral -fsanitize=undefined,address ${SANITIZE_BUILD_OPTIONS})
+            -Wformat-nonliteral ${SANITIZE_BUILD_OPTIONS})
         add_link_options(
-            -fsanitize=undefined,address ${SANITIZE_BUILD_OPTIONS}
+            ${SANITIZE_BUILD_OPTIONS}
         )
     endif()
 else()
@@ -151,7 +151,7 @@ add_library(list-micro STATIC ${LIB_MICRO_SOURCE})
 add_library(list-alloc STATIC ${LIB_ALLOC_SOURCE})
 add_library(list-experimental STATIC ${LIB_EXPERIMENTAL_SOURCE})
 add_library(list-playground STATIC ${LIB_PLAYGROUND_SOURCE})
-add_library(list-brain STATIC ${LIB_BRAIN_SOURCE})
+# add_library(list-brain STATIC ${LIB_BRAIN_SOURCE})
 
 add_executable(main ${MAIN_SOURCE})
 add_executable(main-light ${MAIN_LIGHT_SOURCE})
@@ -174,7 +174,7 @@ target_link_libraries(main-alloc PRIVATE list-alloc list-lcg list-parameters lis
 target_link_libraries(main-experimental PRIVATE list-experimental list-lcg list-parameters list-common)
 target_link_libraries(main-playground PRIVATE list-playground list-micro list-common)
 target_link_libraries(main-memory PRIVATE list-memory)
-target_link_libraries(main-brain PRIVATE list-brain)
+target_link_libraries(main-brain)
 
 FILE(WRITE ${CMAKE_BINARY_DIR}/input.txt
     "fopen<\"input.txt\",\"rb\">f (? f==0 perror<\"file not found\" exit<1 : print<\"all ok\")"
