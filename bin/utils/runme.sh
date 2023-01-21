@@ -16,8 +16,8 @@ fi
 
 pwd=$(pwd)
 
-"${pwd}/bin/clean.sh"
-"${pwd}/bin/format.sh" --inherit-parent-config
+"${pwd}/bin/clean.sh" --all
+"${pwd}/bin/format.sh" --all
 "${pwd}/bin/coverage.sh" --all --clean --sanitize --silent
 
 [[ $SHLVL -gt 2 ]] || echo OK

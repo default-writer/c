@@ -16,10 +16,21 @@ fi
 
 pwd=$(pwd)
 
-array="undefined"
-clean="undefined"
-
 install="$1"
+
+function help() {
+        commands=$(cat $0 | sed -e 's/^[ \t]*//;' | sed -e '/^[ \t]*$/d' | sed -n -e 's/^"\(.*\)".*#/    \1:/p' | sed -n -e 's/: /:\n        /p')
+        script="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
+        help=$(\
+cat << EOF
+Formats sources based on provided style guide
+Usage: ${script} <option>
+${commands}
+EOF
+)
+        echo "${help}"
+        exit
+}
 
 case "${install}" in
 
@@ -51,22 +62,12 @@ case "${install}" in
         array=("GNU")
         ;;
  
-    "--inherit-parent-config") # Not a real style, but allows to use the .clang-format file from the parent directory
+    "--all") # Not a real style, but allows to use the .clang-format file from the parent directory
         array=("InheritParentConfig")
         ;;
 
     *)
-        commands=$(cat $0 | sed -e 's/^[ \t]*//;' | sed -e '/^[ \t]*$/d' | sed -n -e 's/^"\(.*\)".*#/    \1:/p' | sed -n -e 's/: /:\n        /p')
-        script="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
-        help=$(\
-cat << EOF
-Formats sources based on provided style guide
-Usage: ${script} <option>
-${commands}
-EOF
-)
-        echo "${help}"
-        exit
+        help
         ;;
 
 esac

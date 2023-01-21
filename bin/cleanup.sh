@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-#!/usr/bin/env bash
 set -e
 
 err_report() {
@@ -19,14 +18,12 @@ pwd=$(pwd)
 
 install="$1"
 
-opts=( "${@:2}" )
-
 function help() {
         commands=$(cat $0 | sed -e 's/^[ \t]*//;' | sed -e '/^[ \t]*$/d' | sed -n -e 's/^"\(.*\)".*#/    \1:/p' | sed -n -e 's/: /:\n        /p')
         script="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
         help=$(\
 cat << EOF
-Builds binaries
+Cleans up directories
 Usage: ${script} <option>
 ${commands}
 EOF

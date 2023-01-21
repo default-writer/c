@@ -16,13 +16,13 @@ fi
 
 pwd=$(pwd)
 
-"${pwd}/bin/install.sh" --git
-"${pwd}/bin/install.sh" --submodule
-"${pwd}/bin/install.sh" --hooks
-"${pwd}/bin/env.sh" --nvm
-"${pwd}/bin/nvm.sh"
+"${pwd}/bin/utils/install.sh" --git
+"${pwd}/bin/utils/install.sh" --submodule
+"${pwd}/bin/utils/install.sh" --hooks
+"${pwd}/bin/utils/env.sh" --nvm
+"${pwd}/bin/utils/nvm.sh"
 
-. "${pwd}/bin/nvm.sh"
+. "${pwd}/bin/utils/nvm.sh"
 
 nvm --version
 nvm install 19.3.0
@@ -31,7 +31,7 @@ npm install -g npm@9.2.0
 echo "Node version $(node --version)"
 echo "NPM version $(npm --version)"
 
-"${pwd}/bin/runme.sh"
+"${pwd}/bin/utils/runme.sh"
 
 [[ $SHLVL -gt 2 ]] || echo OK
 

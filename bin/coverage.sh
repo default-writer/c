@@ -25,7 +25,7 @@ function help() {
         script="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
         help=$(\
 cat << EOF
-Builds binaries
+Builds binaries and creates coverage info
 Usage: ${script} <option> [optional]
 ${commands}
 EOF
