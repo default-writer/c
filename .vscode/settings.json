@@ -273,7 +273,7 @@
     "ghs",
     "diab"
   ],
-  "clang-format.style": ".clang-fromat",
+  "clang-format.style": ".clang-format",
   "clang-format.language.c.enable": true,
   "clang-tidy.lintOnSave": true
 }
