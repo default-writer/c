@@ -18,8 +18,8 @@ pwd=$(pwd)
 
 install="$1"
 
-main=$(find "${pwd}/bin/libs" -type f -name "*.sh" -exec echo {} \;)
-for i in $main; do
+libs=$(find "${pwd}/bin/libs" -type f -name "*.sh" -exec echo {} \;)
+for i in $libs; do
     import="$(echo $i | sed -n -e 's/^.*bin\/libs\/\(.*\)$/\1/p')"
     . "${pwd}/bin/libs/${import}"
 done
