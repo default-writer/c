@@ -72,6 +72,10 @@ case "${install}" in
         clang-format -style="{BasedOnStyle: WebKit, IndentWidth: 4, BreakBeforeBraces: Attach}" -dump-config > .clang-format
         ;;
 
+    "--clang-tidy") # setup default .clang-tidy file
+        clang-tidy --format-style="{BasedOnStyle: WebKit, IndentWidth: 4, BreakBeforeBraces: Attach}" -dump-config > .clang-tidy
+        ;;
+
     "--devcontainer-extensions") # installs vs code .devcontainers extensions
         code --install-extension ms-vscode-remote.remote-containers
         ;;

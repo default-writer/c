@@ -45,6 +45,7 @@
   "clangd.onConfigChanged": "restart",
   "clangd.checkUpdates": true,
   "clangd.restartAfterCrash": true,
+  "clangd.detectExtensionConflicts": true,
   "cmake.showConsoleAutomatically": true,
   "cmake.configureOnStart": true,
   "cmake.sourceDirectory": "${workspaceFolder}",
@@ -272,7 +273,7 @@
     "ghs",
     "diab"
   ],
+  "clang-format.style": ".clang-fromat",
   "clang-format.language.c.enable": true,
-  "clang-tidy.lintOnSave": true,
-  "clangd.detectExtensionConflicts": true
+  "clang-tidy.lintOnSave": true
 }
