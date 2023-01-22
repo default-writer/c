@@ -147,18 +147,6 @@
       "command": "disasexpl.show"
     },
     {
-      "text": ".P",
-      "tooltip": "Toggle presentation ON/OFF",
-      "alignment": "left",
-      "priority": 5,
-      "id": "statusbar.presentation",
-      "scriptEvents": [
-        "vscode.workspace.onDidChangeConfiguration"
-      ],
-      "script": "statusBarItem.text = vscode.workspace.getConfiguration('window').get('zoomLevel') == '' ? '$(vm-active)' : '$(vm)'",
-      "command": "presentation-mode.toggle",
-    },
-    {
       "text": ".c",
       "tooltip": "Toggle code coverage OFF",
       "alignment": "right",
