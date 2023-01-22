@@ -7,13 +7,13 @@ void process(char* data) {
 
 void get_full_path(int argc, char** argv, char* path, const char* file_name) {
     if (argc > 0) {
-        strcpy(path, argv[0]);
+        strcpy(path, argv[0]); // NOLINT
     }
     char* p = strrchr(path, '/');
     if (p != 0) {
         *p = 0;
     }
-    strcat(path, file_name);
+    strcat(path, file_name); // NOLINT
 }
 
 long get_file_size(FILE* f) {
