@@ -109,6 +109,14 @@ case "${install}" in
         upgrade
         ;;
 
+    "--clang-lldb-mi") # installs lldb-mi dependencies
+        update
+        apt-get install -y libclang-dev liblldb-dev || sudo apt-get install libclang-6.0-dev liblldb-6.0-dev || sudo apt-get install libclang-4.0-dev liblldb-4.0-dev || sudo apt-get install libclang-3.8-dev liblldb-3.8-dev
+        apt install python3-lldb-14
+        ln -s /usr/lib/llvm-14/lib/python3.10/dist-packages/lldb/* /usr/lib/python3/dist-packages/lldb/
+        upgrade
+        ;;
+
     "--clang-format") # installs clang-format
         update
         apt install -y clang-format

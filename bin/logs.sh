@@ -147,7 +147,7 @@ cmake \
 
 for m in "${array[@]}"; do
     cmake --build "${pwd}/logs" --target "${m}"
-    timeout --foreground 5 "${pwd}/logs/${m}" 2>&1 > "${pwd}/logs/log-${m}.txt" || echo ERROR: "${m}"
+    timeout --foreground 5 "${pwd}/logs/${m}" 2>&1 >"${pwd}/logs/log-${m}.txt" || echo ERROR: "${m}"
 done
 
 find "${pwd}/logs" -type f -not -name "log-*" -delete

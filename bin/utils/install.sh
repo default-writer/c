@@ -18,6 +18,12 @@ pwd=$(pwd)
 
 install="$1"
 
+main=$(find "${pwd}/bin/libs" -type f -name "*.sh" -exec echo {} \;)
+for i in $main; do
+    import="$(echo $i | sed -n -e 's/^.*bin\/libs\/\(.*\)$/\1/p')"
+    . "${pwd}/bin/libs/${import}"
+done
+
 case "${install}" in
 
     "--env") # installs env variables ('. ./install.sh env')
@@ -45,9 +51,11 @@ case "${install}" in
         ;;
 
     "--submodule") # installs rexo as git submodule
-        git submodule init || (git submodule add https://github.com/christophercrouzet/rexo.git src/rexo && git submodule init)
-        git submodule update --recursive --remote
-        git pull --recurse-submodules . --quiet
+        git-submodule-install https://github.com/christophercrouzet/rexo.git src/rexo
+        ;;
+
+    "--submodule-lldb-mi") # installs lldb-mi as git submodule
+        git-submodule-install https://github.com/lldb-tools/lldb-mi.git src/lldb-mi
         ;;
 
     "--hooks") # installs git hooks
@@ -70,6 +78,15 @@ case "${install}" in
 
     "--docker-extensions") # installs vs code docker extensions
         code --install-extension ms-azuretools.vscode-docker
+        ;;
+
+    "--marp-extention") # istalls marp vscode extension for markdown presentation
+        code --install-extension marp-team.marp-vscode
+        npm install -g @marp-team/marp-cli
+        ;;
+
+    "--marp-cli") # istalls marp cli globally for markdown presentation
+        npm install -g @marp-team/marp-cli
         ;;
 
     *)

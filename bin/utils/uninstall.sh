@@ -18,6 +18,12 @@ pwd=$(pwd)
 
 install="$1"
 
+main=$(find "${pwd}/bin/libs" -type f -name "*.sh" -exec echo {} \;)
+for i in $main; do
+    import="$(echo $i | sed -n -e 's/^.*bin\/libs\/\(.*\)$/\1/p')"
+    . "${pwd}/bin/libs/${import}"
+done
+
 case "${install}" in
 
     "--git") # unsets git config global environment variables
@@ -25,10 +31,12 @@ case "${install}" in
         git config --global --unset pull.rebase
         ;;
 
-    "--submodule") # deinits git submodule rexo and cleans up rexo directories
-        git submodule deinit -f src/rexo
-        rm -rf .git/modules/src/rexo
-        git rm -f src/rexo
+    "--submodule-rexo") # deinits git submodule rexo and cleans up rexo directories
+        git-submodule-uninstall src/rexo
+        ;;
+
+    "--submodule-lldb-mi") # installs lldb-mi as git submodule
+        git-submodule-uninstall src/lldb-mi
         ;;
 
     "--hooks") # removes prepare-commit-msg hook from .git
