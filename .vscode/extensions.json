@@ -22,6 +22,7 @@
     "aslamanver.vsc-export",
     "anweber.statusbar-commands",
     "vadimcn.vscode-lldb",
-    "jdsteinbach.custom-presentation-mode"
+    "jdsteinbach.custom-presentation-mode",
+    "daylerees.rainglow"
   ]
 }
