@@ -217,7 +217,7 @@
     "**/*.md"
   ],
   "grammarly.files.exclude": [
-    "CMakeLists.txt"
+    "*.txt"
   ],
   "C_Cpp.default.cStandard": "c89",
   "cmake.allowUnsupportedPresetsVersions": true,
