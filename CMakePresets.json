@@ -13,6 +13,9 @@
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/cmake",
             "cacheVariables": {
+                "CMAKE_C_COMPILER": "/usr/bin/gcc",
+                "CMAKE_CXX_COMPILER": "/usr/bin/g++",
+                "CMAKE_BUILD_TYPE": "Debug",
                 "MEMORY_DEBUG_INFO": {
                     "type": "BOOL",
                     "value": "ON"

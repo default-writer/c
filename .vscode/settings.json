@@ -38,6 +38,7 @@
   "files.watcherInclude": [
     "."
   ],
+  "editor.formatOnSave": true,
   "files.exclude": {},
   "workbench.editor.enablePreview": true,
   "pdf-preview.default.scale": "page-width",
@@ -51,11 +52,11 @@
   "cmake.ignoreCMakeListsMissing": true,
   "cmake.configureOnOpen": true,
   "cmake.configureOnEdit": true,
+  "cmake.statusbar.visibility": "compact",
+  "cmake.reconfigureOnChange": true,
   "terminal.integrated.smoothScrolling": true,
   "terminal.integrated.cursorBlinking": true,
   "terminal.integrated.enableFileLinks": true,
-  "cmake.statusbar.visibility": "compact",
-  "cmake.reconfigureOnChange": true,
   "DockerRun.DisableAutoGenerateConfig": true,
   "cSpell.words": [
     "asan",
@@ -67,7 +68,8 @@
     "ZEROPTR"
   ],
   "cSpell.files": [
-    "**/*.c", "**/*.md"
+    "**/*.c",
+    "**/*.md"
   ],
   "cSpell.enabledLanguageIds": [
     "asciidoc",
@@ -111,7 +113,8 @@
     "yml"
   ],
   "cSpell.enableFiletypes": [
-    "c", "asciidoc"
+    "c",
+    "asciidoc"
   ],
   "cSpell.overrides": [
     {
@@ -155,11 +158,11 @@
       "command": "presentation-mode.toggle",
     },
     {
-        "text": ".c",
-        "tooltip": "Toggle code coverage OFF",
-        "alignment": "right",
-        "priority": 1000,
-        "id": "statusbar.coverage.off",
+      "text": ".c",
+      "tooltip": "Toggle code coverage OFF",
+      "alignment": "right",
+      "priority": 1000,
+      "id": "statusbar.coverage.off",
       "command": "code-coverage.hide"
     },
     {
@@ -209,8 +212,67 @@
   "presentation-mode.configBackup": {
     "window.zoomLevel": "undefined"
   },
-  "grammarly.files.include": ["**/*.md"],
+  "grammarly.files.include": [
+    "**/*.md"
+  ],
   "grammarly.files.exclude": [
     "CMakeLists.txt"
-  ]
+  ],
+  "C_Cpp.default.cStandard": "c89",
+  "cmake.allowUnsupportedPresetsVersions": true,
+  "cmake.debugConfig": {
+    "MIMode": "gdb",
+    "miDebuggerPath": "/usr/bin/gdb",
+    "setupCommands": [
+      {
+        "description": "Enable pretty-printing for lldb",
+        "text": "-enable-pretty-printing",
+        "ignoreFailures": true
+      }
+    ]
+  },
+  "cmake.autoSelectActiveFolder": true,
+  "cmake.default.generator": "Ninja",
+  "cmake.buildBeforeRun": true,
+  "cmake.defaultVariants": {
+    "buildType": {
+      "default": "debug",
+      "description": "The build type.",
+      "choices": {
+        "debug": {
+          "short": "Debug",
+          "long": "Disable optimizations - include debug information.",
+          "buildType": "Debug"
+        },
+        "release": {
+          "short": "Release",
+          "long": "Optimize for speed - exclude debug information.",
+          "buildType": "Release"
+        },
+        "minsize": {
+          "short": "MinSizeRel",
+          "long": "Optimize for smallest binary size - exclude debug information.",
+          "buildType": "MinSizeRel"
+        },
+        "reldeb": {
+          "short": "RelWithDebInfo",
+          "long": "Optimize for speed - include debug information.",
+          "buildType": "RelWithDebInfo"
+        }
+      }
+    }
+  },
+  "cmake.default.buildDirectory": "${workspaceFolder}/cmake",
+  "cmake.cpptools.guessSourceFileConfigurations": true,
+  "cmake.enabledOutputParsers": [
+    "cmake",
+    "gcc",
+    "gnuld",
+    "msvc",
+    "ghs",
+    "diab"
+  ],
+  "clang-format.language.c.enable": true,
+  "clang-tidy.lintOnSave": true,
+  "clangd.detectExtensionConflicts": true
 }
