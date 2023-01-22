@@ -8,26 +8,11 @@
 // global allocated memory
 static void** ptr = 0;
 
-static void list_init() {
-    ptr = calloc(1, MAX_MEMORY);
-}
-
-static void list_destroy() {
-    free(ptr);
-    ptr = 0;
-}
-
-static void list_push(void* data) {
-    *ptr++ = data;
-}
-
-static void* list_pop() {
-    return *--ptr;
-}
-
-static void* list_peek() {
-    return *(ptr - 1);
-}
+static void list_init() { ptr = calloc(1, MAX_MEMORY); }
+static void list_destroy() { free(ptr); }
+static void list_push(void* data) { *ptr++ = data; }
+static void* list_pop() { return *--ptr; }
+static void* list_peek() { return *(ptr - 1); }
 
 /* public */
 
