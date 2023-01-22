@@ -69,11 +69,11 @@ case "${install}" in
         ;;
 
     "--clang-format") # setup default .clang-format file
-        clang-format -style="{BasedOnStyle: WebKit, IndentWidth: 4, BreakBeforeBraces: Attach}" -dump-config > .clang-format
+        clang-format -style="{BasedOnStyle: WebKit, IndentWidth: 4, BreakBeforeBraces: Attach}" --dump-config > .clang-format
         ;;
 
     "--clang-tidy") # setup default .clang-tidy file
-        clang-tidy --format-style="{BasedOnStyle: WebKit, IndentWidth: 4, BreakBeforeBraces: Attach}" -dump-config > .clang-tidy
+        clang-tidy --format-style="{BasedOnStyle: WebKit, IndentWidth: 4, BreakBeforeBraces: Attach}" --dump-config > .clang-tidy
         ;;
 
     "--devcontainer-extensions") # installs vs code .devcontainers extensions
