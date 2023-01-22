@@ -69,7 +69,7 @@ case "${install}" in
         ;;
 
     "--all") # builds and runs all targets
-        array=("zen" "main" "main-light" "main-micro" "main-experimental" "main-alloc" "main-playground" "main-memory")
+        array=("zen" "main" "main-brain" "main-light" "main-micro" "main-experimental" "main-alloc" "main-playground" "main-memory")
         ;;
 
     *)
