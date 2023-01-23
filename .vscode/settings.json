@@ -3,25 +3,15 @@
     "*.h": "c",
     "*.c": "c",
   },
-  "editor.tokenColorCustomizations": {
-    "textMateRules": [
-      {
-        "scope": "googletest.failed",
-        "settings": {
-          "foreground": "#f00"
-        }
-      }
-    ]
-  },
+  "terminal.integrated.smoothScrolling": true,
+  "terminal.integrated.cursorBlinking": true,
+  "terminal.integrated.enableFileLinks": true,
   "terminal.integrated.defaultProfile.linux": "bash",
   "terminal.integrated.profiles.linux": {
     "bash": {
       "path": "/bin/bash"
     }
   },
-  "C_Cpp.dimInactiveRegions": true,
-  "C_Cpp.errorSquiggles": "disabled",
-  "C_Cpp.intelliSenseEngine": "disabled",
   "testOnSave.enabled": true,
   "testOnSave.languageId": "c",
   "testOnSave.testCommand": "./bin/coverage.sh --all --silent --clean",
@@ -38,7 +28,6 @@
   "files.watcherInclude": [
     "."
   ],
-  "editor.formatOnSave": true,
   "files.exclude": {},
   "workbench.editor.enablePreview": true,
   "pdf-preview.default.scale": "page-width",
@@ -55,12 +44,11 @@
   "cmake.configureOnEdit": true,
   "cmake.statusbar.visibility": "compact",
   "cmake.reconfigureOnChange": true,
-  "terminal.integrated.smoothScrolling": true,
-  "terminal.integrated.cursorBlinking": true,
-  "terminal.integrated.enableFileLinks": true,
   "DockerRun.DisableAutoGenerateConfig": true,
   "cSpell.words": [
     "asan",
+    "calloc",
+    "chatgpt",
     "parkmiller",
     "Rexo",
     "sptr",
@@ -179,6 +167,7 @@
       "command": "twitch.open"
     },
   ],
+  "window.zoomLevel": 2,
   "workbench.colorTheme": "Yitzchok (rainglow)",
   "customPresentationMode.overrides": {
     "editor.fontWeight": "normal",
@@ -187,7 +176,6 @@
   },
   "sonarlint.testFilePattern": "{**/test/**,**/*test*,**/*Test*,**/rexo/**}",
   "sonarlint.pathToCompileCommands": "${workspaceFolder}/cmake/compile_commands.json",
-  "editor.fontWeight": "normal",
   "workbench.colorCustomizations": {
     "statusBar.background": "#a47b00",
     "statusBar.foreground": "#fff"
@@ -207,6 +195,9 @@
   "grammarly.files.exclude": [
     "*.txt"
   ],
+  "C_Cpp.dimInactiveRegions": true,
+  "C_Cpp.errorSquiggles": "disabled",
+  "C_Cpp.intelliSenseEngine": "disabled",
   "C_Cpp.default.cStandard": "c89",
   "cmake.allowUnsupportedPresetsVersions": true,
   "cmake.debugConfig": {
@@ -261,7 +252,10 @@
     "ghs",
     "diab"
   ],
-  "clang-format.style": ".clang-format",
+  "clang-format.style": "{BasedOnStyle: WebKit, IndentWidth: 4, BreakBeforeBraces: Attach}",
   "clang-format.language.c.enable": true,
-  "clang-tidy.lintOnSave": true
+  "clang-tidy.lintOnSave": true,
+  "editor.formatOnSave": true,
+  "editor.fontWeight": "normal",
+  "editor.fontFamily": "'Ubuntu Mono', 'monospace', monospace"
 }

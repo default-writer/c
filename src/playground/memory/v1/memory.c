@@ -19,7 +19,7 @@ static void memory_destroy() {
     ptr = 0;
 }
 
-static void* memory_alloc(u32 nmemb, u32 size) {
+static void* memory_alloc(u32 size) {
     void** tmp = ptr;
     ptr += size;
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -28,7 +28,7 @@ static void* memory_alloc(u32 nmemb, u32 size) {
     return tmp;
 }
 
-static void memory_free(void* data, u32 size) {
+static void memory_free(const void* data, u32 size) {
     ptr -= size;
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("   -: 0x%016llx !  %16lld\n", (u64)ptr, (u64)size);

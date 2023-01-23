@@ -20,7 +20,7 @@ static void memory_destroy() {
     ptr = 0;
 }
 
-static void* memory_alloc(u32 nmemb, u32 size) {
+static void* memory_alloc(u32 size) {
     void** tmp = *ptr;
     ptr += size;
     ++ptr;
@@ -32,7 +32,7 @@ static void* memory_alloc(u32 nmemb, u32 size) {
 }
 
 // releases global memory
-static void memory_free(void* data, u32 size) {
+static void memory_free(const void* data, u32 size) {
     --ptr;
     ptr -= size;
 #ifdef USE_MEMORY_DEBUG_INFO

@@ -47,7 +47,7 @@ static struct list_data* list_next(struct list_data* ptr) {
 }
 
 /* gets chunk's payload. external code ensures ptr is not 0 */
-static void* list_data(struct list_data* ptr) {
+static void* list_data(const struct list_data* ptr) {
     // gets data pointer
     void** data = ptr->data[0];
     // gets the payload
@@ -78,7 +78,7 @@ static struct list_data* list_new(struct list_data** current) {
 static void list_push(struct list_data** current, void* payload) {
     // declares pointer to list parameters definitions
     const struct list_parameters* parameters = &list_parameters_definition;
-    struct list_data* tmp = *current;
+    const struct list_data* tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
         /* gets the current memory pointer */
@@ -105,7 +105,7 @@ static void list_push(struct list_data** current, void* payload) {
 
 /* pops existing element at the top of the stack/queue/list */
 static void* list_pop(struct list_data** current) {
-    struct list_data* tmp = *current;
+    const struct list_data* tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
         /* gets the current memory pointer */
@@ -149,7 +149,7 @@ static void* list_pop(struct list_data** current) {
 
 /* peeks existing element at the top of the stack/queue/list */
 static void* list_peek(struct list_data** current) {
-    struct list_data* tmp = *current;
+    const struct list_data* tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
         /* gets the current memory pointer */
@@ -172,7 +172,7 @@ static void* list_peek(struct list_data** current) {
 // prints head on current context (stack)
 static void list_print_head(struct list_data** current) {
     // get current context's head
-    struct list_data* ptr = *current;
+    const struct list_data* ptr = *current;
     // gets data pointer
     void** data = ptr->data[0];
     // prints data value
@@ -186,7 +186,7 @@ static void list_print(struct list_data** current) {
     // sets the counter
     int i = 0;
     // assigns current's head pointer to the temporary
-    void* end = ptr->data[0];
+    const void* end = ptr->data[0];
     if (end != ptr->data) {
         do {
             // gets data pointer
@@ -206,7 +206,7 @@ static void list_print(struct list_data** current) {
 
 /* initializes the new context's head element */
 void list_init(struct list_data** current) {
-    struct list_data* tmp = *current;
+    const struct list_data* tmp = *current;
     /* checks if pointer is null */
     if (tmp == 0) {
         /* sets the current memory pointer */
