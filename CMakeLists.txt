@@ -21,8 +21,43 @@ set(MEMORY_DEBUG_INFO ON)
 set(MEMORY_CLEANUP ON)
 set(MEMORY_ALLOC OFF)
 
-set(SANITIZE_BUILD_OPTIONS -save-temps -std=gnu89 -fgnu89-inline -fsanitize=undefined,address,leak -fsanitize=pointer-compare,pointer-subtract -fsanitize-undefined-trap-on-error -fno-sanitize-recover=all -finline-functions-called-once)
-set(NO_SANITIZE_BUILD_OPTIONS -save-temps -fno-sanitize=all -std=gnu89 -fgnu89-inline)
+set(GNU_STANDARD -std=gnu89 -fgnu89-inline)
+set(SANITIZE
+    ${GNU_STANDARD}
+    -save-temps
+    -fsanitize=undefined,address,leak
+    -fsanitize=pointer-compare,pointer-subtract
+    -fsanitize-undefined-trap-on-error
+    -fno-sanitize-recover=all
+    -finline-functions-called-once)
+set(NO_SANITIZE
+    ${GNU_STANDARD}
+    -save-temps
+    -fno-sanitize=all)
+set(OPTIONS
+    -Winline
+    -Wpedantic
+    -Werror
+    -Wall
+    -Wextra
+    -Wmissing-prototypes
+    -Wstrict-prototypes
+    -Wold-style-definition
+    -Waggregate-return
+    -Wcast-align
+    -Wcast-qual
+    -Wconversion
+    -Wfloat-equal
+    -Wpointer-arith
+    -Wshadow
+    -Wstrict-overflow=5
+    -Wswitch
+    -Wswitch-default
+    -Wundef
+    -Wunreachable-code
+    -Wwrite-strings
+    -Wformat-nonliteral
+)
 
 if(MEMORY_DEBUG_INFO)
     message(STATUS "Configure with memory debug information")
@@ -44,22 +79,12 @@ endif()
 
 if(CODE_SANITIZER)
     message("Building with sanitizers")
-    if(MSVC)
-        add_compile_options(/W4)
-    else()
-        add_compile_options(
-            -Winline -Wpedantic -Wall -Wextra -Waggregate-return -Wcast-align -Wcast-qual
-            -Wconversion -Wfloat-equal -Wpointer-arith -Wshadow -Wstrict-overflow=5
-            -Wswitch -Wswitch-default -Wundef -Wunreachable-code -Wwrite-strings
-            -Wformat-nonliteral ${SANITIZE_BUILD_OPTIONS})
-        add_link_options(
-            ${SANITIZE_BUILD_OPTIONS}
-        )
-    endif()
+    add_compile_options(${SANITIZE} ${OPTIONS})
+    add_link_options(${SANITIZE} ${OPTIONS})
 else()
     message("Building without sanitizers")
-    add_compile_options(${NO_SANITIZE_BUILD_OPTIONS})
-    add_link_options(${NO_SANITIZE_BUILD_OPTIONS})
+    add_compile_options(${NO_SANITIZE})
+    add_link_options(${NO_SANITIZE})
 endif()
 
 if(MOCKS)
