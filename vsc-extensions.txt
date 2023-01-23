@@ -32,8 +32,10 @@ mhutchie.git-graph
 mindaro-dev.file-downloader
 monokai.theme-monokai-pro-vscode
 ms-azuretools.vscode-docker
+ms-vscode-remote.remote-containers
 ms-vscode.cmake-tools
 ms-vscode.cpptools
+ms-vscode.cpptools-extension-pack
 ms-vscode.cpptools-themes
 ms-vscode.hexeditor
 ms-vscode.live-server
@@ -43,12 +45,15 @@ ms-vsliveshare.vsliveshare
 ms-vsliveshare.vsliveshare-audio
 ms-vsliveshare.vsliveshare-pack
 NateAGeek.memory-viewer
+notskm.clang-tidy
 paragdiwan.gitpatch
 ryanluker.vscode-coverage-gutters
 saber2pr.file-git-history
 SolarLiner.linux-themes
 SonarSource.sonarlint-vscode
 srmeyers.git-prefix
+StackBuild.bazel-stack-vscode
+StackBuild.bazel-stack-vscode-cc
 streetsidesoftware.code-spell-checker
 Sycl.markdown-command-runner
 tenninebt.vscode-koverage
@@ -56,7 +61,7 @@ twxs.cmake
 uyiosa-enabulele.reopenclosedtab
 vadimcn.vscode-lldb
 VisualStudioExptTeam.vscodeintellicode
-xyz.local-history
+xaver.clang-format
 yzane.markdown-pdf
 yzhang.markdown-all-in-one
 znck.grammarly
