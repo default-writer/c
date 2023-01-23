@@ -29,6 +29,7 @@ static void* memory_alloc(u32 size) {
 }
 
 static void memory_free(const void* data, u32 size) {
+    ZEROPTR(data)
     ptr -= size;
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("   -: 0x%016llx !  %16lld\n", (u64)ptr, (u64)size);
