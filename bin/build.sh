@@ -133,6 +133,7 @@ fi
 export MAKEFLAGS=-j8
 
 find "${pwd}/src" -type f -name "*.s" -delete
+find "${pwd}/tests" -type f -name "*.s" -delete
 
 cmake \
     -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
