@@ -193,7 +193,7 @@
     "**/*.md"
   ],
   "grammarly.files.exclude": [
-    "*.txt"
+    "**/*.txt"
   ],
   "C_Cpp.dimInactiveRegions": true,
   "C_Cpp.errorSquiggles": "disabled",
