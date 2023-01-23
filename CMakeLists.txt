@@ -21,28 +21,33 @@ set(MEMORY_DEBUG_INFO ON)
 set(MEMORY_CLEANUP ON)
 set(MEMORY_ALLOC OFF)
 
-set(GNU_STANDARD -std=gnu89 -fgnu89-inline)
-set(SANITIZE
-    ${GNU_STANDARD}
+set(STANDARD
     -save-temps
+    -std=gnu89
+    -fgnu89-inline
+)
+
+set(INLINE 
+    -finline-functions-called-once
+)
+
+set(SANITIZE
     -fsanitize=undefined,address,leak
     -fsanitize=pointer-compare,pointer-subtract
     -fsanitize-undefined-trap-on-error
     -fno-sanitize-recover=all
-    -finline-functions-called-once)
+)
+
 set(NO_SANITIZE
-    ${GNU_STANDARD}
-    -save-temps
-    -fno-sanitize=all)
+    -fno-sanitize=all
+)
+
 set(OPTIONS
     -Winline
     -Wpedantic
     -Werror
     -Wall
     -Wextra
-    -Wmissing-prototypes
-    -Wstrict-prototypes
-    -Wold-style-definition
     -Waggregate-return
     -Wcast-align
     -Wcast-qual
@@ -57,6 +62,12 @@ set(OPTIONS
     -Wunreachable-code
     -Wwrite-strings
     -Wformat-nonliteral
+)
+
+set(STRICT
+    -Wstrict-prototypes
+    -Wmissing-prototypes
+    -Wold-style-definition
 )
 
 if(MEMORY_DEBUG_INFO)
@@ -79,12 +90,12 @@ endif()
 
 if(CODE_SANITIZER)
     message("Building with sanitizers")
-    add_compile_options(${SANITIZE} ${OPTIONS})
-    add_link_options(${SANITIZE} ${OPTIONS})
+    add_compile_options(${STANDARD} ${SANITIZE} ${OPTIONS})
+    add_link_options(${STANDARD} ${SANITIZE} ${OPTIONS})
 else()
     message("Building without sanitizers")
-    add_compile_options(${NO_SANITIZE})
-    add_link_options(${NO_SANITIZE})
+    add_compile_options(${STANDARD} ${NO_SANITIZE})
+    add_link_options(${STANDARD} ${NO_SANITIZE})
 endif()
 
 if(MOCKS)
