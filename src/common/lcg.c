@@ -1,7 +1,7 @@
 #include "std/common.h"
 
 /* LCG Park-Miller state */
-u64 lcg_state = 0xdeadbeef & 0x7fffffff - 1; // 0x5eadbeee08
+u64 lcg_state = 0xdeadbeef & 0x7fffffff - 1; // 0x5eadbeee
 
 /* LCG Park-Miller function */
 u64 lcg_parkmiller() {
