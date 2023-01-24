@@ -27,7 +27,8 @@ done
 case "${install}" in
 
     "--clangd") # installs clangd 15.0.6
-        [ -d "${pwd}/clangd" ] && rm -rf "${pwd}/clangd" && mkdir "${pwd}/clangd"
+        [ -d "${pwd}/clangd" ] && rm -rf "${pwd}/clangd"
+        mkdir "${pwd}/clangd"
         curl --silent -L https://github.com/clangd/clangd/releases/download/15.0.6/clangd-linux-15.0.6.zip -o "${pwd}/clangd/clangd-linux-15.0.6.zip"
         unzip -q "${pwd}/clangd/clangd-linux-15.0.6.zip" -d "${pwd}/clangd/"
         rm -f "${pwd}/clangd/clangd-linux-15.0.6.zip"
