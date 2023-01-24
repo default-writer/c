@@ -47,6 +47,23 @@ case "${install}" in
         rm -rf $HOME/.pyenv
         ;;
 
+
+    "--devcontainer-extensions") # installs vs code .devcontainers extensions
+        code --log error --uninstall-extension ms-vscode-remote.remote-containers &>/dev/null
+        ;;
+
+    "--docker-extensions") # installs vs code docker extensions
+        code --log error --uninstall-extension ms-azuretools.vscode-docker &>/dev/null
+        ;;
+
+    "--marp-extention") # istalls marp vscode extension
+        code --log error --uninstall-extension marp-team.marp-vscode &>/dev/null
+        ;;
+
+    "--run-on-save") # istalls run on save vsode extension
+        code --log error --uninstall-extension emeraldwalk.RunOnSave &>/dev/null
+        ;;
+
     *)
         commands=$(cat $0 | sed -e 's/^[ \t]*//;' | sed -e '/^[ \t]*$/d' | sed -n -e 's/^"\(.*\)".*#/    \1:/p' | sed -n -e 's/: /:\n        /p')
         script="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"

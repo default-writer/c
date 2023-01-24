@@ -85,19 +85,22 @@ case "${install}" in
         ;;
 
     "--devcontainer-extensions") # installs vs code .devcontainers extensions
-        code --install-extension ms-vscode-remote.remote-containers
+        code --install-extension ms-vscode-remote.remote-containers --force &>/dev/null
         ;;
 
     "--docker-extensions") # installs vs code docker extensions
-        code --install-extension ms-azuretools.vscode-docker
+        code --install-extension ms-azuretools.vscode-docker --force &>/dev/null
         ;;
 
-    "--marp-extention") # istalls marp vscode extension for markdown presentation
-        code --install-extension marp-team.marp-vscode
-        npm install -g @marp-team/marp-cli
+    "--marp-extention") # istalls marp vscode extension
+        code --install-extension marp-team.marp-vscode --force &>/dev/null
         ;;
 
-    "--marp-cli") # istalls marp cli globally for markdown presentation
+    "--run-on-save") # istalls run on save vsode extension
+        code --install-extension emeraldwalk.RunOnSave --force &>/dev/null
+        ;;
+
+    "--marp-cli") # istalls marp cli globally
         npm install -g @marp-team/marp-cli
         ;;
 
