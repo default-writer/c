@@ -262,5 +262,14 @@
   "cmake.additionalKits": [
     "${workspaceFolder}"
   ],
-  "cmake.useCMakePresets": "always"
+  "cmake.useCMakePresets": "always",
+  "emeraldwalk.runonsave": {
+    "commands": [
+      {
+        "match": "\\.clang-format$",
+        "isAsync": true,
+        "cmd": "./bin/format.sh --all"
+      }
+    ]
+  }
 }
