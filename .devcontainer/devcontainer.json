@@ -1,26 +1,26 @@
 {
-    "name": "C++",
-    // Update the 'dockerComposeFile' list if you have more compose files or use different names.
-    "dockerComposeFile": "docker-compose.yml",
-    // The 'service' property is the name of the service for the container that VS Code should
-    // use. Update this value and .devcontainer/docker-compose.yml to the real service name.
-    "service": "app",
-    // The 'workspaceFolder' property is the path VS Code should open by default when
-    // connected. Corresponds to a volume mount in .devcontainer/docker-compose.yml
-    "workspaceFolder": "/workspace",
-    // Set *default* container specific settings.json values on container create.
-    "settings": {
+	"name": "C++",
+	// Update the 'dockerComposeFile' list if you have more compose files or use different names.
+	"dockerComposeFile": "docker-compose.yml",
+	// The 'service' property is the name of the service for the container that VS Code should
+	// use. Update this value and .devcontainer/docker-compose.yml to the real service name.
+	"service": "app",
+	// The 'workspaceFolder' property is the path VS Code should open by default when
+	// connected. Corresponds to a volume mount in .devcontainer/docker-compose.yml
+	"workspaceFolder": "/workspace",
+	// Set *default* container specific settings.json values on container create.
+	"settings": {
 		"files.associations": {
-            "*.h": "c",
+			"*.h": "c",
 			"*.c": "c"
 		},
 		"editor.tokenColorCustomizations": {
 			"textMateRules": [
 				{
-				"scope": "googletest.failed",
-				"settings": {
-					"foreground": "#f00"
-				}
+					"scope": "googletest.failed",
+					"settings": {
+						"foreground": "#f00"
+					}
 				}
 			]
 		},
@@ -46,10 +46,11 @@
 		"coverage-gutters.showLineCoverage": true,
 		"coverage-gutters.showGutterCoverage": false,
 		"files.autoSave": "off",
-		"files.watcherInclude": ["."],
-		"files.exclude": {
-		},
-		"workbench.editor.enablePreview": true,
+		"files.watcherInclude": [
+			"."
+		],
+		"files.exclude": {},
+		"workbench.editor.enablePreview": false,
 		"pdf-preview.default.scale": "page-width",
 		"clangd.onConfigChanged": "restart",
 		"clangd.checkUpdates": true,
@@ -151,10 +152,11 @@
 		"sonarlint.testFilePattern": "{**/test/**,**/*test*,**/*Test*,**/rexo/**}",
 		"sonarlint.pathToCompileCommands": "${workspaceFolder}/cmake/compile_commands.json"
 	},
-    // C++ select language server:
-    // use either llvm-vs-code-extensions.vscode-clangd or ms-vscode.cpptools-extension-pack
-    // Add the IDs of extensions you want installed when the container is created.
-    "extensions": [
+	// C++ select language server:
+	// use either llvm-vs-code-extensions.vscode-clangd or ms-vscode.cpptools-extension-pack
+	// Add the IDs of extensions you want installed when the container is created.
+	"extensions": [
+		"daylerees.rainglow",
 		"mhutchie.git-graph",
 		"donjayamanne.githistory",
 		"codezombiech.gitignore",

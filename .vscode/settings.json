@@ -29,7 +29,6 @@
     "."
   ],
   "files.exclude": {},
-  "workbench.editor.enablePreview": true,
   "pdf-preview.default.scale": "page-width",
   "cmake.showConsoleAutomatically": true,
   "cmake.configureOnStart": true,
@@ -164,7 +163,12 @@
     },
   ],
   "window.zoomLevel": 0,
+  "workbench.editor.enablePreview": false,
   "workbench.colorTheme": "Yitzchok (rainglow)",
+  "workbench.colorCustomizations": {
+    "statusBar.background": "#a47b00",
+    "statusBar.foreground": "#fff"
+  },
   "customPresentationMode.overrides": {
     "editor.fontWeight": "normal",
     "window.zoomLevel": 2,
@@ -172,10 +176,6 @@
   },
   "sonarlint.testFilePattern": "{**/test/**,**/*test*,**/*Test*,**/rexo/**}",
   "sonarlint.pathToCompileCommands": "${workspaceFolder}/cmake/compile_commands.json",
-  "workbench.colorCustomizations": {
-    "statusBar.background": "#a47b00",
-    "statusBar.foreground": "#fff"
-  },
   "presentation-mode.active": {
     "window.zoomLevel": 2
   },

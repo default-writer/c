@@ -9,17 +9,17 @@
             "*.h": "c",
             "*.c": "c"
         },
-        "files.watcherInclude": ["."],
+        "files.watcherInclude": [
+            "."
+        ],
         "files.autoSave": "off",
-        "files.exclude": {
-        },
+        "files.exclude": {},
         "terminal.integrated.defaultProfile.linux": "bash",
         "terminal.integrated.profiles.linux": {
             "bash": {
                 "path": "/bin/bash"
             }
         },
-        "workbench.editor.enablePreview": false,
         "testOnSave.enabled": true,
         "testOnSave.languageId": "c",
         "testOnSave.testCommand": "./bin/coverage.sh --all --silent --clean",
@@ -131,15 +131,22 @@
                 "alignment": "left",
                 "priority": 5,
                 "id": "statusbar.presentation",
-                "scriptEvents": ["vscode.workspace.onDidChangeConfiguration"],
+                "scriptEvents": [
+                    "vscode.workspace.onDidChangeConfiguration"
+                ],
                 "script": "statusBarItem.text = vscode.workspace.getConfiguration('window').get('zoomLevel') == '' ? '$(vm-active)' : '$(vm)'",
                 "command": "extension.customPresentationMode",
             }
         ],
-        "workbench.colorTheme": "Visual Studio Dark - C++",
+        "workbench.editor.enablePreview": false,
+        "workbench.colorTheme": "Yitzchok (rainglow)",
+        "workbench.colorCustomizations": {
+            "statusBar.background": "#a47b00",
+            "statusBar.foreground": "#fff"
+        },
         "customPresentationMode.overrides": {
-          "window.zoomLevel": 1,
-          "workbench.colorTheme": "Visual Studio Dark - C++"
+            "window.zoomLevel": 1,
+            "workbench.colorTheme": "Yitzchok (rainglow)"
         },
         "sonarlint.testFilePattern": "{**/test/**,**/*test*,**/*Test*,**/rexo/**}",
         "sonarlint.pathToCompileCommands": "${workspaceFolder}/cmake/compile_commands.json",
@@ -148,6 +155,7 @@
     },
     "extensions": {
         "recommendations": [
+            "daylerees.rainglow",
             "mhutchie.git-graph",
             "donjayamanne.githistory",
             "codezombiech.gitignore",
