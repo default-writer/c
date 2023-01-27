@@ -5,7 +5,6 @@
 // global allocated memory
 static void* memory = 0;
 static void** ptr = 0;
-static void** deleted = 0;
 
 static void memory_init() {
     ptr = &memory;

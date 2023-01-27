@@ -1,5 +1,4 @@
 #include "playground/memory/memory.h"
-#include "std/common.h"
 
 #define MAX_MEMORY 0xffff // 64K bytes
 
