@@ -18,16 +18,11 @@ pwd=$(pwd)
 
 install="$1"
 
-function update() {
-    apt install -y --fix-broken
-    apt update -y --fix-missing
-}
+. "${pwd}/bin/scripts/load.sh"
 
-function upgrade() {
-    apt upgrade -y
-    apt autoremove -y
-    apt full-upgrade -y
-}
+## Installs optional dependencies
+## Usage: ${script} <option>
+## ${commands}
 
 case "${install}" in
 
@@ -163,16 +158,7 @@ case "${install}" in
         ;;
 
     *)
-        commands=$(cat $0 | sed -e 's/^[ \t]*//;' | sed -e '/^[ \t]*$/d' | sed -n -e 's/^"\(.*\)".*#/    \1:/p' | sed -n -e 's/: /:\n        /p')
-        script="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
-        help=$(\
-cat << EOF
-Installs optional dependencies
-Usage: ${script} <option>
-${commands}
-EOF
-)
-        echo "${help}"
+        help
         exit
         ;;
 

@@ -1,3 +1,3 @@
 [submodule "src/rexo"]
-    path = src/rexo
-    url = https://github.com/christophercrouzet/rexo.git
+	path = src/rexo
+	url = https://github.com/christophercrouzet/rexo.git

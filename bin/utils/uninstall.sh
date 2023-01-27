@@ -32,11 +32,11 @@ case "${install}" in
         ;;
 
     "--submodule-rexo") # deinits git submodule rexo and cleans up rexo directories
-        git-submodule-uninstall src/rexo
+        submodule-uninstall ${pwd} src/rexo
         ;;
 
     "--submodule-lldb-mi") # installs lldb-mi as git submodule
-        git-submodule-uninstall src/lldb-mi
+        submodule-uninstall ${pwd} src/lldb-mi
         ;;
 
     "--hooks") # removes prepare-commit-msg hook from .git

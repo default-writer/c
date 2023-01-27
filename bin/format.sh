@@ -18,19 +18,11 @@ pwd=$(pwd)
 
 install="$1"
 
-function help() {
-        commands=$(cat $0 | sed -e 's/^[ \t]*//;' | sed -e '/^[ \t]*$/d' | sed -n -e 's/^"\(.*\)".*#/    \1:/p' | sed -n -e 's/: /:\n        /p')
-        script="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
-        help=$(\
-cat << EOF
-Formats sources based on provided style guide
-Usage: ${script} <option>
-${commands}
-EOF
-)
-        echo "${help}"
-        exit
-}
+. "${pwd}/bin/scripts/load.sh"
+
+## Formats sources based on provided style guide
+## Usage: ${script} <option>
+## ${commands}
 
 case "${install}" in
 

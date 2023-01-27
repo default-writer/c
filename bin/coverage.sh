@@ -20,19 +20,11 @@ install="$1"
 
 opts=( "${@:2}" )
 
-function help() {
-        commands=$(cat $0 | sed -e 's/^[ \t]*//;' | sed -e '/^[ \t]*$/d' | sed -n -e 's/^"\(.*\)".*#/    \1:/p' | sed -n -e 's/: /:\n        /p')
-        script="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
-        help=$(\
-cat << EOF
-Builds binaries and creates coverage info
-Usage: ${script} <option> [optional]
-${commands}
-EOF
-)
-        echo "${help}"
-        exit
-}
+. "${pwd}/bin/scripts/load.sh"
+
+## Builds binaries and creates coverage info
+## Usage: ${script} <option> [optional]
+## ${commands}
 
 case "${install}" in
 

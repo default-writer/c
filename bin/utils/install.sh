@@ -18,11 +18,11 @@ pwd=$(pwd)
 
 install="$1"
 
-libs=$(find "${pwd}/bin/libs" -type f -name "*.sh" -exec echo {} \;)
-for i in $libs; do
-    import="$(echo $i | sed -n -e 's/^.*bin\/libs\/\(.*\)$/\1/p')"
-    . "${pwd}/bin/libs/${import}"
-done
+. "${pwd}/bin/scripts/load.sh"
+
+## Installs optional dependencies
+## Usage: ${script} <option>
+## ${commands}
 
 case "${install}" in
 
@@ -58,12 +58,12 @@ case "${install}" in
         git config --global pull.rebase false
         ;;
 
-    "--submodule") # installs rexo as git submodule
-        git-submodule-install https://github.com/christophercrouzet/rexo.git src/rexo
+    "--submodule-rexo") # installs rexo as git submodule
+        submodule-install https://github.com/christophercrouzet/rexo.git src/rexo
         ;;
 
     "--submodule-lldb-mi") # installs lldb-mi as git submodule
-        git-submodule-install https://github.com/lldb-tools/lldb-mi.git src/lldb-mi
+        submodule-install https://github.com/lldb-tools/lldb-mi.git src/lldb-mi
         ;;
 
     "--hooks") # installs git hooks
@@ -105,16 +105,7 @@ case "${install}" in
         ;;
 
     *)
-        commands=$(cat $0 | sed -e 's/^[ \t]*//;' | sed -e '/^[ \t]*$/d' | sed -n -e 's/^"\(.*\)".*#/    \1:/p' | sed -n -e 's/: /:\n        /p')
-        script="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
-        help=$(\
-cat << EOF
-Installs optional dependencies
-Usage: ${script} <option>
-${commands}
-EOF
-)
-        echo "${help}"
+        help
         exit
         ;;
 
