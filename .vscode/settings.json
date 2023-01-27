@@ -248,7 +248,7 @@
     "ghs",
     "diab"
   ],
-  "clangd.path": "/home/user/code/c/clangd/clangd_15.0.6/bin/clangd",
+  "clangd.path": "${workspaceFolder}/clangd/clangd_15.0.6/bin/clangd",
   "clangd.checkUpdates": true,
   "clangd.restartAfterCrash": true,
   "clangd.onConfigChanged": "restart",
