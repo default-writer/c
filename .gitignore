@@ -55,3 +55,4 @@ logs
 **/*.c.s
 src/rexo
 clangd
+gh
