@@ -162,7 +162,7 @@
       "command": "twitch.open"
     },
   ],
-  "window.zoomLevel": 2,
+  "window.zoomLevel": 0,
   "workbench.editor.enablePreview": false,
   "workbench.colorTheme": "Yitzchok (rainglow)",
   "workbench.colorCustomizations": {
@@ -271,5 +271,6 @@
         "cmd": "./bin/format.sh --all"
       }
     ]
-  }
+  },
+  "memory-view.showMemoryPanel": true
 }
