@@ -3,7 +3,7 @@
 #include "playground/list/list.h"
 
 /* list definition */
-extern const struct list list_v1;
+extern const struct list list_v2;
 /* class data definition */
 extern struct class_data class_data;
 
@@ -17,7 +17,7 @@ struct class_data {
 /* private */
 
 /* list definition */
-static const struct list* list = &list_v1;
+static const struct list* list = &list_v2;
 
 /* creates the class instance */
 static struct class_data* _new();

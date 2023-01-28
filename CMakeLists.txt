@@ -160,7 +160,7 @@ set(LIB_LIGHT_SOURCE src/list-light/code.c)
 set(LIB_MICRO_SOURCE src/list-micro/code.c)
 set(LIB_ALLOC_SOURCE src/list-alloc/code.c)
 set(LIB_EXPERIMENTAL_SOURCE src/list-experimental/code.c)
-set(LIB_PLAYGROUND_SOURCE src/playground/class/v1/class.c src/playground/class/v2/class.c src/playground/list/v1/list.c)
+set(LIB_PLAYGROUND_SOURCE src/playground/class/v1/class.c src/playground/class/v2/class.c src/playground/list/v2/list.c)
 set(LIB_MEMORY_SOURCE src/playground/memory/v1/memory.c src/playground/memory/v2/memory.c)
 set(LIB_BRAIN_SOURCE src/playground/brain/brain.c)
 
