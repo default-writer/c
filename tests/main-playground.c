@@ -9,16 +9,16 @@
 /* externally visible class definition API */
 extern const struct class class_definition_v1;
 /* list definition */
-extern const struct list list_v2;
+extern const struct list list_v1;
 /* externally visible class data definition API */
 extern struct class_data class_data;
 
 /* list definition */
-static const struct list* list = &list_v2;
+static const struct list* list = &list_v1;
 
 /* Data structure to use at the core of our fixture. */
 typedef struct test_data {
-    void* ptr;
+    struct list_data* ctx;
 } * TEST_DATA;
 
 /* Initialize the data structure. Its allocation is handled by Rexo. */
@@ -34,6 +34,26 @@ RX_TEAR_DOWN(test_tear_down) {
 
 /* Define the fixture. */
 RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tear_down);
+
+// test context
+RX_TEST_CASE(myTestSuite, test_list_push_v1, .fixture = test_fixture) {
+    // prepares the payload
+    u8* payload = (void*)0xdeadbeef;
+    // pushes to the list multiple times
+    list->push(payload);
+    list->push(payload);
+    list->push(payload);
+    list->push(payload);
+    // pops from the list
+    list->pop();
+    list->pop();
+    list->pop();
+    // peeks from the list
+    void* head = list->peek();
+    // ensures data is added to the list
+    RX_ASSERT(head == payload);
+}
+
 
 // test context
 RX_TEST_CASE(myTestSuite, test_context_enter_leave_v1, .fixture = test_fixture) {

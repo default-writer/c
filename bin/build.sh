@@ -44,6 +44,10 @@ case "${install}" in
         array=("main-playground")
         ;;
 
+    "--playground2") # builds and runs '-playground2' target
+        array=("main-playground2")
+        ;;
+
     "--alloc") # builds and runs '-alloc' target
         array=("main-alloc")
         ;;
@@ -61,7 +65,7 @@ case "${install}" in
         ;;
 
     "--all") # builds and runs all targets
-        array=("zen" "main" "main-brain" "main-light" "main-micro" "main-experimental" "main-alloc" "main-playground" "main-memory")
+        array=("zen" "main" "main-brain" "main-light" "main-micro" "main-experimental" "main-alloc" "main-playground" "main-playground2" "main-memory")
         ;;
 
     *)
