@@ -1,6 +1,6 @@
-#include "playground/class/class.h"
+#include "playground/class/v2/class.h"
 #include "common/alloc.h"
-#include "playground/list/list.h"
+#include "playground/list/v2/list.h"
 
 /* list definition */
 extern const struct list list_v2;
@@ -27,9 +27,9 @@ static void _delete(struct class_data* ptr);
 static size_t _size();
 
 /* proxy for the class function get_data() */
-static void* class_get();
+static void* class_get(struct list_data* ptr);
 /* proxy for the class function set_data( void*)*/
-static void class_set(void* data);
+static void class_set(struct list_data* ptr, void* data);
 
 /* gets size of a memory block to allocate */
 static size_t _size() {
@@ -69,24 +69,24 @@ static void class_set_data(struct class_data* class, void* data) {
     class->ptr = data;
 }
 
-static void class_push(struct class_data* class) {
+static void class_push(struct list_data* ptr, struct class_data* class) {
     // pushes to the list
-    list->push(class);
+    list->push(ptr, class);
 }
 
-static struct class_data* class_pop() {
+static struct class_data* class_pop(struct list_data* ptr) {
     // pops from the list
-    return list->pop();
+    return list->pop(ptr);
 }
 
-static void* class_get() {
+static void* class_get(struct list_data* ptr) {
     // returns data
-    return class_get_data(list->peek());
+    return class_get_data(list->peek(ptr));
 }
 
-static void class_set(void* data) {
+static void class_set(struct list_data* ptr, void* data) {
     // updates the data
-    class_set_data(list->peek(), data);
+    class_set_data(list->peek(ptr), data);
 }
 
 /* public */
