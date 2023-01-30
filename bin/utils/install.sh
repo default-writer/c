@@ -27,11 +27,12 @@ install="$1"
 case "${install}" in
 
     "--clangd") # installs clangd 15.0.6
-        [ -d "${pwd}/clangd" ] && rm -rf "${pwd}/clangd"
-        mkdir "${pwd}/clangd"
-        curl --silent -L https://github.com/clangd/clangd/releases/download/15.0.6/clangd-linux-15.0.6.zip -o "${pwd}/clangd/clangd-linux-15.0.6.zip"
-        unzip -q "${pwd}/clangd/clangd-linux-15.0.6.zip" -d "${pwd}/clangd/"
-        rm -f "${pwd}/clangd/clangd-linux-15.0.6.zip"
+        if [ ! -f "${pwd}/clangd/clangd_15.0.6/bin/clangd" ]; then
+            [ ! -d "${pwd}/clangd" ] && mkdir "${pwd}/clangd"
+            curl --silent -L https://github.com/clangd/clangd/releases/download/15.0.6/clangd-linux-15.0.6.zip -o "${pwd}/clangd/clangd-linux-15.0.6.zip"
+            unzip -o -q "${pwd}/clangd/clangd-linux-15.0.6.zip" -d "${pwd}/clangd/"
+            rm -f "${pwd}/clangd/clangd-linux-15.0.6.zip"
+        fi
         ;;
 
     "--env") # installs env variables ('. ./install.sh env')

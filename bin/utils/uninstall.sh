@@ -18,13 +18,17 @@ pwd=$(pwd)
 
 install="$1"
 
-main=$(find "${pwd}/bin/libs" -type f -name "*.sh" -exec echo {} \;)
-for i in $main; do
-    import="$(echo $i | sed -n -e 's/^.*bin\/libs\/\(.*\)$/\1/p')"
-    . "${pwd}/bin/libs/${import}"
-done
+. "${pwd}/bin/scripts/load.sh"
+
+## Uninstalls optional dependencies
+## Usage: ${script} <option>
+## ${commands}
 
 case "${install}" in
+
+    "--clangd") # uninstalls clangd 15.0.6
+        rm -rf "${pwd}/clangd"
+        ;;
 
     "--git") # unsets git config global environment variables
         git config --global --unset safe.directory
@@ -65,17 +69,7 @@ case "${install}" in
         ;;
 
     *)
-        commands=$(cat $0 | sed -e 's/^[ \t]*//;' | sed -e '/^[ \t]*$/d' | sed -n -e 's/^"\(.*\)".*#/    \1:/p' | sed -n -e 's/: /:\n        /p')
-        script="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
-        help=$(\
-cat << EOF
-Uninstalls optional dependencies
-Usage: ${script} <option>
-${commands}
-EOF
-)
-        echo "${help}"
-        exit
+        help
         ;;
 
 esac
