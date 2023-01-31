@@ -7,14 +7,16 @@
 
 // global allocated memory
 static void** ptr = 0;
+static void* base = 0;
 
 static void list_init() {
-    ptr = calloc(1, MAX_MEMORY);
+    base = ptr = calloc(1, MAX_MEMORY);
 }
 
 static void list_destroy() {
-    free(ptr);
+    free(base);
     ptr = 0;
+    base = 0;
 }
 
 static void list_push(void* data) {
