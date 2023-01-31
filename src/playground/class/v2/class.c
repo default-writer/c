@@ -9,6 +9,8 @@ extern struct class_data class_data;
 
 /* class data */
 struct class_data {
+    /* list pointer */
+    struct list_data* list;
     /* data pointer */
     void* ptr;
     /* list */
@@ -27,9 +29,9 @@ static void _delete(struct class_data* ptr);
 static size_t _size();
 
 /* proxy for the class function get_data() */
-static void* class_get(struct list_data* ptr);
+static void* class_get(struct class_data* class);
 /* proxy for the class function set_data( void*)*/
-static void class_set(struct list_data* ptr, void* data);
+static void class_set(struct class_data* class, void* data);
 
 /* gets size of a memory block to allocate */
 static size_t _size() {
@@ -50,9 +52,11 @@ static void _delete(struct class_data* class) {
 }
 
 /* initializes the new context's head element */
-static struct class_data* class_new() {
+static struct class_data* class_new(struct list_data* ptr) {
     /* creates emtpy data chunk */
-    return _new();
+    struct class_data* _class = _new();
+    _class->list = ptr;
+    return _class;
 }
 
 /* destroys the memory stack */
@@ -69,24 +73,24 @@ static void class_set_data(struct class_data* class, void* data) {
     class->ptr = data;
 }
 
-static void class_push(struct list_data* ptr, struct class_data* class) {
+static void class_push(struct class_data* class) {
     // pushes to the list
-    list->push(ptr, class);
+    list->push(class->list, class);
 }
 
-static struct class_data* class_pop(struct list_data* ptr) {
+static struct class_data* class_pop(struct class_data* class) {
     // pops from the list
-    return list->pop(ptr);
+    return list->pop(class->list);
 }
 
-static void* class_get(struct list_data* ptr) {
+static void* class_get(struct class_data* class) {
     // returns data
-    return class_get_data(list->peek(ptr));
+    return class_get_data(list->peek(class->list));
 }
 
-static void class_set(struct list_data* ptr, void* data) {
+static void class_set(struct class_data* class, void* data) {
     // updates the data
-    class_set_data(list->peek(ptr), data);
+    class_set_data(list->peek(class->list), data);
 }
 
 /* public */
