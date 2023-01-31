@@ -1,5 +1,5 @@
-#include "playground/class/class.h"
-#include "playground/list/list.h"
+#include "playground/class/v1/class.h"
+#include "playground/list/v1/list.h"
 #include "rexo/include/rexo.h"
 #include "std/common.h"
 #ifdef USE_MEMORY_ALLOC
@@ -49,7 +49,7 @@ RX_TEST_CASE(myTestSuite, test_list_push_v1, .fixture = test_fixture) {
     list->pop();
     list->pop();
     // peeks from the list
-    void* head = list->peek();
+    const void* head = list->peek();
     // ensures data is added to the list
     RX_ASSERT(head == payload);
 }
