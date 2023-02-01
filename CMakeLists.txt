@@ -176,6 +176,7 @@ set(MAIN_PLAYGROUND_SOURCE tests/v1/main-playground.c ${LIB_PLAYGROUND_SOURCE})
 set(MAIN_PLAYGROUND2_SOURCE tests/v2/main-playground.c ${LIB_PLAYGROUND2_SOURCE})
 set(MAIN_MEMORY_SOURCE tests/main-memory.c ${LIB_MEMORY_SOURCE})
 set(MAIN_BRAIN_SOURCE tests/main-brain.c)
+set(MAIN_TEST_SOURCE src/playground/test.c)
 
 set(MAIN_ZEN_SOURCE src/playground/zen/zen.c)
 
@@ -205,6 +206,7 @@ add_executable(main-playground ${MAIN_PLAYGROUND_SOURCE})
 add_executable(main-playground2 ${MAIN_PLAYGROUND2_SOURCE})
 add_executable(main-memory ${MAIN_MEMORY_SOURCE})
 add_executable(main-brain ${MAIN_BRAIN_SOURCE})
+add_executable(main-test ${MAIN_TEST_SOURCE})
 
 add_executable(zen ${MAIN_ZEN_SOURCE})
 
@@ -220,6 +222,7 @@ target_link_libraries(main-playground PRIVATE list-playground list-micro list-co
 target_link_libraries(main-playground2 PRIVATE list-playground2 list-micro list-common list2)
 target_link_libraries(main-memory PRIVATE list-memory list)
 target_link_libraries(main-brain)
+target_link_libraries(main-test)
 
 FILE(WRITE ${CMAKE_BINARY_DIR}/input.txt
     "fopen<\"input.txt\",\"rb\">f (? f==0 perror<\"file not found\" exit<1 : print<\"all ok\")"
