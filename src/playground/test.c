@@ -1,7 +1,5 @@
 #include "std/common.h"
-#include <string.h>
 
-// char* output - выходной массив
 static void dec_to_hex(int dec_input, char* const lo, char* const hi) {
     int low = (dec_input % 16);
     int high = dec_input / 16;
