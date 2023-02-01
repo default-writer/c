@@ -1,10 +1,10 @@
 #include "std/common.h"
 
-static void dec_to_hex(int dec_input, char* const lo, char* const hi) {
-    int low = (dec_input % 16);
-    int high = dec_input / 16;
-    *lo = (char)(low < 10 ? '0' + low : 'a' + low - 10);
-    *hi = (char)(high < 10 ? '0' + high : 'a' + high - 10);
+static char itoa(int v) { return (char)(v < 10 ? '0' + v : 'a' + (v - 10)); }
+
+static void dec_to_hex(int value, char* const lo, char* const hi) {
+    *lo = itoa(value % 16);
+    *hi = itoa(value / 16);
 }
 
 static int rgb(u8 r, u8 g, u8 b, char* const output) {
