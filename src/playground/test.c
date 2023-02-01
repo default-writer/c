@@ -3,8 +3,8 @@
 static char itoa(u8 v) { return (char)(v < 10 ? '0' + v : v<16 ? 'a' + (v - 10) : '0'); }
 
 static void dec_to_hex(u8 value, char* const lo, char* const hi) {
-    *lo = itoa(value % 16);
-    *hi = itoa(value / 16);
+    *lo = itoa(value & 0x0F);
+    *hi = itoa(value & 0xF0);
 }
 
 static int rgb(u8 r, u8 g, u8 b, char* const output) {
