@@ -28,6 +28,10 @@ opts=( "${@:2}" )
 
 case "${install}" in
 
+    "--test") # builds and runs '-test' target
+        array=("main-test")
+        ;;
+
     "--zen") # builds and runs '-zen' target
         array=("zen")
         ;;
@@ -65,7 +69,7 @@ case "${install}" in
         ;;
 
     "--all") # builds and runs all targets
-        array=("zen" "main" "main-light" "main-micro" "main-experimental" "main-alloc" "main-playground" "main-playground2" "main-memory")
+        array=("zen" "main" "main-test" "main-brain" "main-light" "main-micro" "main-experimental" "main-alloc" "main-playground" "main-playground2" "main-memory")
         ;;
 
     *)
