@@ -93,13 +93,13 @@ int rgb(int r, int g, int b, char* output) {
 
 int main() {
 
-    char buffer[8] = { '0',  'x', ' ', ' ', ' ', ' ', ' ', ' ' };
+    char buffer[7] = { ' ', ' ', ' ', ' ', ' ', ' ', '\0' };
 
-    pointer = strlen(buffer) - 1;
+    pointer = 5;
 
-    rgb(12, 33, 18, buffer); // точка, где буфер корраптится
+    rgb(12, 33, 18, &buffer[0]);
 
-    printf("%s\n", buffer);
+    printf("0x%s\n", buffer);
 
     // cout<< buffer << "\n";
     return 0;
