@@ -1,11 +1,11 @@
 #include "std/common.h"
 #include "playground/brain/brain.h"
 
-void process(char* data) {
+extern inline void process(char* data) {
     printf("%s\n", data);
 }
 
-void get_full_path(int argc, char** argv, char* path, const char* file_name) {
+extern inline void get_full_path(int argc, char** argv, char* path, const char* file_name) {
     if (argc > 0) {
         strcpy(path, argv[0]); // NOLINT
     }
@@ -16,7 +16,7 @@ void get_full_path(int argc, char** argv, char* path, const char* file_name) {
     strcat(path, file_name); // NOLINT
 }
 
-long get_file_size(FILE* f) {
+extern inline long get_file_size(FILE* f) {
     fseek(f, 0, SEEK_END);
     long size = ftell(f);
     fseek(f, 0, SEEK_SET);
