@@ -2,3 +2,6 @@ InlayHints:
   Enabled: Yes
   ParameterNames: Yes
   DeducedTypes: No
+
+CompileFlags:
+  Add: [-Wno-undefined-inline]
