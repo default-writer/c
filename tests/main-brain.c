@@ -1,41 +1,86 @@
-#include "std/common.h"
+#include "playground/pointer/pointer.h"
+
 #include "playground/brain/brain.h"
 
-extern inline void process(char* data) {
+extern struct pointer_methods pointer_methods_definition;
+
+const struct pointer_methods* pointer = &pointer_methods_definition;
+
+struct pointer* copy(const char* data);
+void open_file();
+void read_file();
+
+extern inline void process() {
+    struct pointer* data_ptr = pointer->pop();
+    char* data = pointer->data(data_ptr);
     printf("%s\n", data);
+    pointer->delete (data_ptr);
 }
 
-extern inline void get_full_path(int argc, char** argv, char* path, const char* file_name) {
-    if (argc > 0) {
-        strcpy(path, argv[0]); // NOLINT
+extern inline struct pointer* get_full_path() {
+    struct pointer* data_ptr = pointer->new (PATH_MAX);
+    struct pointer* argv_ptr = pointer->pop(); // NOLINT
+    pointer->strcpy(data_ptr, argv_ptr);
+    struct pointer* pattern_ptr = copy("/");
+    struct pointer* last_match_ptr = pointer->match_last(data_ptr, pattern_ptr);
+    pointer->delete (pattern_ptr);
+    char* data = pointer->data(last_match_ptr);
+    if (data != 0) {
+        *data = 0;
     }
-    char* p = strrchr(path, '/');
-    if (p != 0) {
-        *p = 0;
-    }
-    strcat(path, file_name); // NOLINT
+    pointer->delete (last_match_ptr);
+    struct pointer* file_name_ptr = pointer->pop(); // NOLINT
+    pointer->strcat(data_ptr, file_name_ptr);
+    pointer->delete (argv_ptr);
+    pointer->delete (file_name_ptr);
+    return data_ptr;
 }
 
-extern inline long get_file_size(FILE* f) {
-    fseek(f, 0, SEEK_END);
-    long size = ftell(f);
-    fseek(f, 0, SEEK_SET);
-    return size;
+struct data {
+    char* file;
+};
+
+struct pointer* copy(const char* data) {
+    u32 size = strlen(data) + 1;
+    struct pointer* data_ptr = pointer->new (size);
+    memcpy(pointer->data(data_ptr), data, size); // NOLINT
+    return data_ptr;
+}
+
+void open_file() {
+    struct pointer* file_path_ptr = pointer->pop();
+    struct pointer* mode_ptr = pointer->pop();
+    const char* file_path = pointer->data(file_path_ptr);
+    const char* mode = pointer->data(mode_ptr);
+    FILE* f = fopen(file_path, mode); // NOLINT
+    struct pointer* f_ptr = pointer->new_file(f);
+    pointer->push(f_ptr);
+    pointer->delete (mode_ptr);
+    pointer->delete (file_path_ptr);
+}
+
+void read_file() {
+    struct pointer* f_ptr = pointer->pop();
+    struct pointer* data_ptr = pointer->data(f_ptr);
+    pointer->delete (f_ptr);
+    pointer->push(data_ptr);
 }
 
 int main(int argc, char** argv) {
-    char cwd[PATH_MAX];
-    FILE *f;
-    char* data;
-    u32 size;
-    get_full_path(argc, argv, cwd, "/input.txt");
-    if ((f = fopen(cwd, "rb")) != 0) {
-        size = (u32)get_file_size(f);
-        data = calloc(1, size + 1);
-        fread(data, 1, size, f);
-        fclose(f);
-        process(data);
-        free(data);
+    if (argc > 0) {
+        pointer_init();
+        struct pointer* file_name_ptr = copy("/input.txt");
+        struct pointer* argv_ptr = copy(argv[0]);
+        pointer->push(file_name_ptr);
+        pointer->push(argv_ptr);
+        struct pointer* cwd_ptr = get_full_path();
+        struct pointer* mode_ptr = copy("rb");
+        pointer->push(mode_ptr);
+        pointer->push(cwd_ptr);
+        open_file();
+        read_file();
+        process();
+        pointer_destroy();
     }
     return 0;
 }

@@ -1,6 +1,8 @@
-#include "playground/class/v1/class.h"
 #include "common/alloc.h"
+
 #include "list-micro/data.h"
+
+#include "playground/class/v1/class.h"
 
 /* list definition */
 extern const struct list list_micro_definition;

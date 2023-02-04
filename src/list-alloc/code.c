@@ -1,7 +1,7 @@
 #include "common/alloc.h"
 #include "common/parameters.h"
+
 #include "list-alloc/data.h"
-#include "std/common.h"
 
 /* buffer size in bytes = size of 8 items */
 #define ALLOC_SIZE(n) ((n) + 1) * sizeof(void*)

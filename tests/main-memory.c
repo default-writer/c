@@ -1,5 +1,4 @@
 #include "playground/memory/memory.h"
-#include "std/common.h"
 
 extern const struct memory_allocator memory_allocator_v1;
 extern const struct memory_allocator memory_allocator_v2;

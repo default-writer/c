@@ -272,5 +272,6 @@
       }
     ]
   },
-  "memory-view.showMemoryPanel": true
+  "memory-view.showMemoryPanel": true,
+  "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
 }

@@ -1,7 +1,8 @@
 #include "playground/class/v2/class.h"
 #include "playground/list/v2/list.h"
+
 #include "rexo/include/rexo.h"
-#include "std/common.h"
+
 #ifdef USE_MEMORY_ALLOC
 #include "playground/memory/memory.h"
 #endif
@@ -25,13 +26,11 @@ typedef struct test_data {
 /* Initialize the data structure. Its allocation is handled by Rexo. */
 RX_SET_UP(test_set_up) {
     list_data = list->new();
-    list->init(list_data);
     // success
     return RX_SUCCESS;
 }
 
 RX_TEAR_DOWN(test_tear_down) {
-    list->destroy(list_data);
     list->delete(list_data);
 }
 

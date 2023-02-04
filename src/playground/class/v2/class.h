@@ -2,7 +2,6 @@
 #define _PLAYGROUND_CLASS_H_
 
 #include "playground/list/v2/list.h"
-#include "std/common.h"
 
 struct class_data;
 

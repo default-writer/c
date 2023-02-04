@@ -1,8 +1,9 @@
-#include "rexo/include/rexo.h"
-#include "std/common.h"
-#include "list-alloc/data.h"
 #include "common/alloc.h"
 #include "common/parameters.h"
+
+#include "list-alloc/data.h"
+
+#include "rexo/include/rexo.h"
 
 /* defines N-element collection*/
 #define N_ELEMENTS 1024

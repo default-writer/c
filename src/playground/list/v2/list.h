@@ -12,8 +12,6 @@ struct list_data {
 struct list {
     struct list_data* (*new)();
     void (*delete)(struct list_data* pointer);
-    void (*init)(struct list_data* pointer);
-    void (*destroy)(struct list_data* pointer);
     void* (*push)(struct list_data* pointer, void* data);
     void* (*pop)(struct list_data* pointer);
     void* (*peek)(struct list_data* pointer);

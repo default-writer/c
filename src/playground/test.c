@@ -1,6 +1,8 @@
 #include "std/common.h"
 
-static char itoa(u8 v) { return (char)(v < 10 ? '0' + v : v<16 ? 'a' + (v - 10) : '0'); }
+static char itoa(u8 v) {
+    return (char)(v < 10 ? '0' + v : (v < 16 ? 'a' + (v - 10) : '0'));
+}
 
 static void dec_to_hex(u8 value, char* lo, char* hi) {
     *lo = itoa(value & 0x0F);
