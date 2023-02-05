@@ -159,12 +159,10 @@ struct pointer* pointer_open_file(struct pointer* file_path_ptr, struct pointer*
     const char* file_path = pointer_data(file_path_ptr);
     const char* mode = pointer_data(mode_ptr);
     FILE* file = fopen(file_path, mode); // NOLINT
-    struct pointer* f_ptr = _list_alloc(1, sizeof(struct pointer));
-    f_ptr->data = _list_alloc(1, sizeof(struct file_handler));
+    struct pointer* f_ptr = pointer_alloc(sizeof(struct file_handler));
+    f_ptr->type = TYPE_FILE;
     struct file_handler* handler = f_ptr->data;
     handler->file = file;
-    f_ptr->size = sizeof(struct file_handler);
-    f_ptr->type = TYPE_FILE;
     return f_ptr;
 }
 
