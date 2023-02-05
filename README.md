@@ -3,7 +3,8 @@
 ![image info](./resources/icons8-ubuntu-96.png)
 
 - 05 feb 2023:
-  - implemented automatic garbage collection (GC) and build options for building with automatic GC enabled
+  - added automatic garbage collection (GC)
+  - added build options for GC mode
 
 - `List<T>` implementations
 - code coverage
