@@ -1,9 +1,9 @@
 # c project description
 
+![image info](./resources/icons8-ubuntu-96.png)
+
 - 05 feb 2023:
   - implemented automatic garbage collection (GC) and build options for building with automatic GC enabled
-
-![image info](./resources/icons8-ubuntu-96.png)
 
 - `List<T>` implementations
 - code coverage
