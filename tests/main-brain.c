@@ -8,9 +8,9 @@ const struct pointer_methods* pointer = &pointer_methods_definition;
 
 extern inline void source() {
     struct pointer* file_name_ptr = pointer->load("/input.txt");
-    struct pointer* argv_ptr = pointer->pop();
     struct pointer* head_ptr = pointer->peek();
     pointer->printf(head_ptr);
+    struct pointer* argv_ptr = pointer->pop();
     struct pointer* data_ptr = pointer->alloc(PATH_MAX);
     pointer->strcpy(data_ptr, argv_ptr);
 #ifndef USE_GC
