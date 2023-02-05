@@ -33,29 +33,28 @@ extern inline struct pointer* source() {
 }
 
 int main(int argc, char** argv) {
-    if (argc > 0) {
-        pointer_init();
-        struct pointer* file_name_ptr = pointer->load("/input.txt");
-        struct pointer* argv_ptr = pointer->load(argv[0]);
-        pointer->push(file_name_ptr);
-        pointer->push(argv_ptr);
-        struct pointer* file_path_ptr = source();
-        struct pointer* mode_ptr = pointer->load("rb");
-        struct pointer* f_ptr = pointer->open_file(file_path_ptr, mode_ptr);
+    ZEROPTR(argc)
+    pointer_init();
+    struct pointer* file_name_ptr = pointer->load("/input.txt");
+    struct pointer* argv_ptr = pointer->load(argv[0]);
+    pointer->push(file_name_ptr);
+    pointer->push(argv_ptr);
+    struct pointer* file_path_ptr = source();
+    struct pointer* mode_ptr = pointer->load("rb");
+    struct pointer* f_ptr = pointer->open_file(file_path_ptr, mode_ptr);
 #ifndef USE_GC
-        pointer->free(mode_ptr);
-        pointer->free(file_path_ptr);
+    pointer->free(mode_ptr);
+    pointer->free(file_path_ptr);
 #endif
-        struct pointer* data_ptr = pointer->read_file(f_ptr);
-        pointer->close_file(f_ptr);
+    struct pointer* data_ptr = pointer->read_file(f_ptr);
+    pointer->close_file(f_ptr);
 #ifndef USE_GC
-        pointer->free(f_ptr);
+    pointer->free(f_ptr);
 #endif
-        pointer->printf(data_ptr);
+    pointer->printf(data_ptr);
 #ifndef USE_GC
-        pointer->free(data_ptr);
+    pointer->free(data_ptr);
 #endif
-        pointer_destroy();
-    }
+    pointer_destroy();
     return 0;
 }
