@@ -19,6 +19,7 @@ struct pointer_methods {
     struct pointer* (*load)(const char* data);
     struct pointer* (*open_file)(struct pointer* file_path_ptr, struct pointer* mode_ptr);
     void (*printf)(struct pointer* ptr);
+    void (*put_char)(struct pointer* ptr, char value);
 };
 
 typedef void (*pointer_function)(struct pointer* ptr);

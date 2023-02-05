@@ -8,28 +8,20 @@ const struct pointer_methods* pointer = &pointer_methods_definition;
 
 void open_file();
 void read_file();
-
-extern inline void process() {
-    struct pointer* data_ptr = pointer->pop();
-    pointer->printf(data_ptr);
-    pointer->free(data_ptr);
-}
+void process();
 
 extern inline struct pointer* get_full_path() {
-    struct pointer* data_ptr = pointer->alloc(PATH_MAX);
     struct pointer* argv_ptr = pointer->pop(); // NOLINT
+    struct pointer* data_ptr = pointer->alloc(PATH_MAX);
     pointer->strcpy(data_ptr, argv_ptr);
+    pointer->free(argv_ptr);
     struct pointer* pattern_ptr = pointer->load("/");
     struct pointer* last_match_ptr = pointer->match_last(data_ptr, pattern_ptr);
     pointer->free(pattern_ptr);
-    char* data = pointer->data(last_match_ptr);
-    if (data != 0) {
-        *data = 0;
-    }
+    pointer->put_char(last_match_ptr, '\0');
     pointer->free(last_match_ptr);
     struct pointer* file_name_ptr = pointer->pop(); // NOLINT
     pointer->strcat(data_ptr, file_name_ptr);
-    pointer->free(argv_ptr);
     pointer->free(file_name_ptr);
     return data_ptr;
 }
@@ -42,9 +34,9 @@ void open_file() {
     struct pointer* file_path_ptr = pointer->pop();
     struct pointer* mode_ptr = pointer->pop();
     struct pointer* f_ptr = pointer->open_file(file_path_ptr, mode_ptr);
-    pointer->push(f_ptr);
     pointer->free(mode_ptr);
     pointer->free(file_path_ptr);
+    pointer->push(f_ptr);
 }
 
 void read_file() {
@@ -52,6 +44,12 @@ void read_file() {
     struct pointer* data_ptr = pointer->data(f_ptr);
     pointer->free(f_ptr);
     pointer->push(data_ptr);
+}
+
+extern inline void process() {
+    struct pointer* data_ptr = pointer->pop();
+    pointer->printf(data_ptr);
+    pointer->free(data_ptr);
 }
 
 int main(int argc, char** argv) {

@@ -50,6 +50,7 @@ static struct pointer* pointer_match_last(struct pointer* src_ptr, struct pointe
 static struct pointer* pointer_load(const char* data);
 static struct pointer* pointer_open_file(struct pointer* file_path_ptr, struct pointer* mode_ptr);
 static void pointer_printf(struct pointer* ptr);
+static void pointer_put_char(struct pointer* ptr, char value);
 
 void pointer_init() {
     base->list = list->alloc(DEFAULT_SIZE);
@@ -180,6 +181,13 @@ static void pointer_printf(struct pointer* ptr) {
     puts(data);
 }
 
+static void pointer_put_char(struct pointer* ptr, char value) {
+    char* data = pointer_data(ptr);
+    if (data != 0) {
+        *data = value;
+    }
+}
+
 const struct pointer_methods pointer_methods_definition = {
     .alloc = pointer_alloc,
     .free = pointer_free,
@@ -193,5 +201,6 @@ const struct pointer_methods pointer_methods_definition = {
     .match_last = pointer_match_last,
     .load = pointer_load,
     .open_file = pointer_open_file,
-    .printf = pointer_printf
+    .printf = pointer_printf,
+    .put_char = pointer_put_char
 };
