@@ -55,7 +55,7 @@ static void* list_data(struct list_data* ptr) {
 static void list_push(struct list_data** current, void* payload) {
     // declares pointer to list parameters definitions
     const struct list_parameters* parameters = &list_parameters_definition;
-    struct list_data* tmp = *current;
+    const struct list_data* tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
         /* gets the current memory pointer */
@@ -82,7 +82,7 @@ static void list_push(struct list_data** current, void* payload) {
 
 /* pops existing element at the top of the stack/queue/list */
 static void* list_pop(struct list_data** current) {
-    struct list_data* tmp = *current;
+    const struct list_data* tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
         /* gets the current memory pointer */
@@ -111,7 +111,7 @@ static void* list_pop(struct list_data** current) {
 
 /* peeks existing element at the top of the stack/queue/list */
 static void* list_peek(struct list_data** current) {
-    struct list_data* tmp = *current;
+    const struct list_data* tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
         /* gets the current memory pointer */
@@ -129,7 +129,7 @@ static void* list_peek(struct list_data** current) {
 // prints head on current context (stack)
 static void list_print_head(struct list_data** current) {
     // get current context's head
-    struct list_data* ptr = *current;
+    const struct list_data* ptr = *current;
     // gets data pointer
     void** data = ptr->data[0];
     // prints data value

@@ -58,7 +58,7 @@ static struct list_data* list_new(struct list_data** current) {
 
 /* pushes the memory pointer */
 static void list_push(struct list_data** current, void* payload) {
-    struct list_data* tmp = *current;
+    const struct list_data* tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
         /* creates empty data chunk */
@@ -70,7 +70,7 @@ static void list_push(struct list_data** current, void* payload) {
 
 /* pops existing element at the top of the stack/queue/list */
 static void* list_pop(struct list_data** current) {
-    struct list_data* tmp = *current;
+    const struct list_data* tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
         /* gets the current memory pointer */
@@ -100,13 +100,13 @@ static void* list_pop(struct list_data** current) {
 
 /* peeks existing element at the top of the stack/queue/list */
 static void* list_peek(struct list_data** current) {
-    struct list_data* tmp = *current;
+    const struct list_data* tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
         /* gets the current memory pointer */
         struct list_data* ptr = *current;
         /* gets next pointer */
-        struct list_data* next = list_next(ptr);
+        const struct list_data* next = list_next(ptr);
         /* if we call method on empty stack, do not return head element, return null
          * element by convention */
         if (next == 0) {
@@ -123,7 +123,7 @@ static void* list_peek(struct list_data** current) {
 
 /* initializes the new context's head element */
 static void list_init(struct list_data** current) {
-    struct list_data* tmp = *current;
+    const struct list_data* tmp = *current;
     /* checks if pointer is null */
     if (tmp == 0) {
         /* sets the current memory pointer */

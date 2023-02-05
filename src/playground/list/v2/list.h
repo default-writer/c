@@ -10,8 +10,8 @@ struct list_data {
 };
 
 struct list {
-    struct list_data* (*new)();
-    void (*delete)(struct list_data* pointer);
+    struct list_data* (*alloc)(u64 size);
+    void (*free)(struct list_data* pointer);
     void* (*push)(struct list_data* pointer, void* data);
     void* (*pop)(struct list_data* pointer);
     void* (*peek)(struct list_data* pointer);

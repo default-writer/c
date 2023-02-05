@@ -2,17 +2,19 @@
 #include "common/alloc.h"
 #include "playground/list/v2/list.h"
 
+#define DEFAULT_SIZE 0xffff // 64K bytes
+
 /* list definition */
 extern const struct list list_v2;
 
 /* private */
 struct pointer_data {
-    struct list_data* args;
+    struct list_data* list;
 };
 
-struct pointer_data root_pointer;
+static struct pointer_data pointer;
 
-struct pointer_data* root = &root_pointer;
+static struct pointer_data* base = &pointer;
 
 /* list definition */
 static const struct list* list = &list_v2;
@@ -32,21 +34,36 @@ struct file_handler {
     FILE* file;
 };
 
-void* pointer_data(struct pointer* ptr);
-u64 pointer_size(struct pointer* ptr);
-void pointer_push(struct pointer* ptr);
-struct pointer* pointer_peek();
-struct pointer* pointer_pop();
-
 void pointer_init();
 void pointer_destroy();
 
-struct pointer* pointer_alloc(u64 size);
-void pointer_free(struct pointer* ptr);
+static void* pointer_data(struct pointer* ptr);
+static u64 pointer_size(struct pointer* ptr);
+static void pointer_push(struct pointer* ptr);
+static struct pointer* pointer_peek();
+static struct pointer* pointer_pop();
+static struct pointer* pointer_alloc(u64 size);
+static void pointer_free(struct pointer* ptr);
+static void pointer_strcpy(struct pointer* dest_ptr, struct pointer* src_ptr);
+static void pointer_strcat(struct pointer* dest_ptr, struct pointer* src_ptr);
+static struct pointer* pointer_match_last(struct pointer* src_ptr, struct pointer* match_ptr);
+static struct pointer* pointer_load(const char* data);
+static struct pointer* pointer_open_file(struct pointer* file_path_ptr, struct pointer* mode_ptr);
+static void pointer_printf(struct pointer* ptr);
 
-const struct pointer_methods pointer_methods_definition;
+void pointer_init() {
+    base->list = list->alloc(DEFAULT_SIZE);
+}
 
-void* pointer_data(struct pointer* ptr) {
+void pointer_destroy() {
+    struct pointer* ptr;
+    while ((ptr = list->pop(base->list)) != 0) {
+        pointer_free(ptr);
+    }
+    list->free(base->list);
+}
+
+static void* pointer_data(struct pointer* ptr) {
     if (ptr->type == TYPE_FILE) {
         // unpack inner file handler
         struct file_handler* handler = ptr->data;
@@ -58,7 +75,7 @@ void* pointer_data(struct pointer* ptr) {
     return ptr->data;
 }
 
-u64 pointer_size(struct pointer* ptr) {
+static u64 pointer_size(struct pointer* ptr) {
     if (ptr->type == TYPE_FILE) {
         struct file_handler* handler = ptr->data;
         FILE* file = handler->file;
@@ -70,31 +87,19 @@ u64 pointer_size(struct pointer* ptr) {
     return ptr->size;
 }
 
-void pointer_push(struct pointer* ptr) {
-    list->push(root->args, ptr);
+static void pointer_push(struct pointer* ptr) {
+    list->push(base->list, ptr);
 }
 
-struct pointer* pointer_peek() {
-    return list->peek(root->args);
+static struct pointer* pointer_peek() {
+    return list->peek(base->list);
 }
 
-struct pointer* pointer_pop() {
-    return list->pop(root->args);
+static struct pointer* pointer_pop() {
+    return list->pop(base->list);
 }
 
-void pointer_init() {
-    root->args = list->new ();
-}
-
-void pointer_destroy() {
-    struct pointer* ptr;
-    while ((ptr = list->pop(root->args)) != 0) {
-        pointer_free(ptr);
-    }
-    list->delete (root->args);
-}
-
-struct pointer* pointer_alloc(u64 size) {
+static struct pointer* pointer_alloc(u64 size) {
     struct pointer* ptr = _list_alloc(1, sizeof(struct pointer));
     if (size != 0) {
         ptr->data = _list_alloc(1, size);
@@ -103,7 +108,7 @@ struct pointer* pointer_alloc(u64 size) {
     return ptr;
 }
 
-void pointer_free(struct pointer* ptr) {
+static void pointer_free(struct pointer* ptr) {
     if (ptr->type == TYPE_FILE) {
         struct file_handler* handler = ptr->data;
         FILE* file = handler->file;
@@ -118,19 +123,19 @@ void pointer_free(struct pointer* ptr) {
     ptr = 0;
 }
 
-void pointer_strcpy(struct pointer* dest_ptr, struct pointer* src_ptr) {
+static void pointer_strcpy(struct pointer* dest_ptr, struct pointer* src_ptr) {
     char* dest = pointer_data(dest_ptr);
     const char* src = pointer_data(src_ptr); // NOLINT
     strcpy(dest, src); // NOLINT
 }
 
-void pointer_strcat(struct pointer* dest_ptr, struct pointer* src_ptr) {
+static void pointer_strcat(struct pointer* dest_ptr, struct pointer* src_ptr) {
     char* dest = pointer_data(dest_ptr);
     const char* src = pointer_data(src_ptr); // NOLINT
     strcat(dest, src); // NOLINT
 }
 
-struct pointer* pointer_match_last(struct pointer* src_ptr, struct pointer* match_ptr) {
+static struct pointer* pointer_match_last(struct pointer* src_ptr, struct pointer* match_ptr) {
     const char* src = pointer_data(src_ptr);
     const char* match = pointer_data(match_ptr);
     if (match != 0 && *match != 0) {
@@ -148,14 +153,14 @@ struct pointer* pointer_match_last(struct pointer* src_ptr, struct pointer* matc
     return 0;
 }
 
-struct pointer* pointer_load(const char* data) {
+static struct pointer* pointer_load(const char* data) {
     u64 size = strlen(data) + 1;
     struct pointer* data_ptr = pointer_alloc(size);
     memcpy(pointer_data(data_ptr), data, size); // NOLINT
     return data_ptr;
 }
 
-struct pointer* pointer_open_file(struct pointer* file_path_ptr, struct pointer* mode_ptr) {
+static struct pointer* pointer_open_file(struct pointer* file_path_ptr, struct pointer* mode_ptr) {
     const char* file_path = pointer_data(file_path_ptr);
     const char* mode = pointer_data(mode_ptr);
     FILE* file = fopen(file_path, mode); // NOLINT
@@ -166,7 +171,7 @@ struct pointer* pointer_open_file(struct pointer* file_path_ptr, struct pointer*
     return f_ptr;
 }
 
-void pointer_printf(struct pointer* ptr) {
+static void pointer_printf(struct pointer* ptr) {
     const char* data = pointer_data(ptr);
 #ifdef USE_MEMORY_DEBUG_INFO
     void* ptr_data = ptr->data;
