@@ -7,24 +7,24 @@ void use(const struct memory_allocator* allocator) {
     // initializes memory pool
     allocator->init();
     // allocation size aligned to 8 byte boundaries (64-bit pointers)
-    u32 size = 2;
+    u64 size = 2;
     // allocates memory block
     void** ptr = allocator->alloc(size);
-    for(u32 i=0; i < size; i++) {
+    for (u64 i = 0; i < size; i++) {
         *(ptr + i) = (void*)0xdeadbeefdeadbeef;
     }
     // allocation size aligned to 8 byte boundaries (64-bit pointers)
-    u32 size2 = 3;
+    u64 size2 = 3;
     // allocates memory block
     void** ptr2 = allocator->alloc(size2);
-    for(u32 i=0; i < size2; i++) {
+    for (u64 i = 0; i < size2; i++) {
         *(ptr2 + i) = (void*)0xdeadbeefdeadbeef;
     }
     // allocation size aligned to 8 byte boundaries (64-bit pointers)
-    u32 size3 = 16;
+    u64 size3 = 16;
     // allocates memory block
     void** ptr3 = allocator->alloc(size3);
-    for(u32 i=0; i < size3; i++) {
+    for (u64 i = 0; i < size3; i++) {
         *(ptr3 + i) = (void*)0xdeadbeefdeadbeef;
     }
     // releases memory block

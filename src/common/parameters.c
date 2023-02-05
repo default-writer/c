@@ -4,7 +4,7 @@
 #define N_ELEMENTS 2048
 
 struct list_parameters {
-    u32 block_size;
+    u64 block_size;
 };
 
 struct list_parameters list_parameters_definition = {

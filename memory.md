@@ -105,7 +105,7 @@ C language did not include pointer metadata info in C language standards (C89) i
 ```c
 struct ptr_metadata {
     void* ptr;
-    u32 size;
+    u64 size;
 }
 ```
 

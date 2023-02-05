@@ -5,7 +5,7 @@
 
 /* list parameters */
 struct list_parameters {
-    u32 block_size;
+    u64 block_size;
 };
 
 #endif // _COMMON_PARAMETERS_H_

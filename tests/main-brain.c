@@ -14,25 +14,25 @@ extern inline void process() {
     struct pointer* data_ptr = pointer->pop();
     char* data = pointer->data(data_ptr);
     printf("%s\n", data);
-    pointer->delete (data_ptr);
+    pointer->free(data_ptr);
 }
 
 extern inline struct pointer* get_full_path() {
-    struct pointer* data_ptr = pointer->new (PATH_MAX);
+    struct pointer* data_ptr = pointer->alloc(PATH_MAX);
     struct pointer* argv_ptr = pointer->pop(); // NOLINT
     pointer->strcpy(data_ptr, argv_ptr);
     struct pointer* pattern_ptr = copy("/");
     struct pointer* last_match_ptr = pointer->match_last(data_ptr, pattern_ptr);
-    pointer->delete (pattern_ptr);
+    pointer->free(pattern_ptr);
     char* data = pointer->data(last_match_ptr);
     if (data != 0) {
         *data = 0;
     }
-    pointer->delete (last_match_ptr);
+    pointer->free(last_match_ptr);
     struct pointer* file_name_ptr = pointer->pop(); // NOLINT
     pointer->strcat(data_ptr, file_name_ptr);
-    pointer->delete (argv_ptr);
-    pointer->delete (file_name_ptr);
+    pointer->free(argv_ptr);
+    pointer->free(file_name_ptr);
     return data_ptr;
 }
 
@@ -41,8 +41,8 @@ struct data {
 };
 
 struct pointer* copy(const char* data) {
-    u32 size = strlen(data) + 1;
-    struct pointer* data_ptr = pointer->new (size);
+    u64 size = strlen(data) + 1;
+    struct pointer* data_ptr = pointer->alloc(size);
     memcpy(pointer->data(data_ptr), data, size); // NOLINT
     return data_ptr;
 }
@@ -55,14 +55,14 @@ void open_file() {
     FILE* f = fopen(file_path, mode); // NOLINT
     struct pointer* f_ptr = pointer->new_file(f);
     pointer->push(f_ptr);
-    pointer->delete (mode_ptr);
-    pointer->delete (file_path_ptr);
+    pointer->free(mode_ptr);
+    pointer->free(file_path_ptr);
 }
 
 void read_file() {
     struct pointer* f_ptr = pointer->pop();
     struct pointer* data_ptr = pointer->data(f_ptr);
-    pointer->delete (f_ptr);
+    pointer->free(f_ptr);
     pointer->push(data_ptr);
 }
 

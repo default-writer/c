@@ -6,6 +6,11 @@
 static void* memory = 0;
 static void** ptr = 0;
 
+static void* memory_alloc(u64 size);
+static void memory_free(const void* data, u64 size);
+static void memory_init();
+static void memory_destroy();
+
 static void memory_init() {
     ptr = &memory;
     *ptr = calloc(1, MAX_MEMORY);
@@ -19,7 +24,7 @@ static void memory_destroy() {
     ptr = 0;
 }
 
-static void* memory_alloc(u32 size) {
+static void* memory_alloc(u64 size) {
     void** tmp = *ptr;
     ptr += size;
     ++ptr;
@@ -31,12 +36,12 @@ static void* memory_alloc(u32 size) {
 }
 
 // releases global memory
-static void memory_free(const void* data, u32 size) {
+static void memory_free(const void* data, u64 size) {
     ZEROPTR(data)
     --ptr;
     ptr -= size;
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("   -: 0x%016llx !  %16lld\n", (u64)ptr, (u64)size);
+    printf("   -: 0x%016llx !  %16lld\n", (u64)ptr, size);
 #endif
 }
 

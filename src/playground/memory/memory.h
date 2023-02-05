@@ -6,8 +6,8 @@
 struct memory_allocator {
     void (*init)();
     void (*destroy)();
-    void* (*alloc)(u32 size);
-    void (*free)(const void* data, u32 size);
+    void* (*alloc)(u64 size);
+    void (*free)(const void* data, u64 size);
 };
 
 #endif // _PLAYGROUND_MEMORY_H_

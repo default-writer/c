@@ -196,7 +196,7 @@ typedef void (*function)();
 //         print("all ok")
 //     }
 //     fseek(f, 0, SEEK_END); 
-//     u32 size = (u32)ftell(f);
+//     u64 size = (u32)ftell(f);
 //     fseek(f, 0, SEEK_SET);
 
 //     u8 *data = calloc(1, size + 1);
