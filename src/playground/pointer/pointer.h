@@ -18,6 +18,7 @@ struct pointer_methods {
     struct pointer* (*match_last)(struct pointer* src_ptr, struct pointer* match_prt);
     struct pointer* (*load)(const char* data);
     struct pointer* (*open_file)(struct pointer* file_path_ptr, struct pointer* mode_ptr);
+    void (*printf)(struct pointer* ptr);
 };
 
 typedef void (*pointer_function)(struct pointer* ptr);

@@ -1,7 +1,6 @@
-#include "common/alloc.h"
-
-#include "playground/list/v2/list.h"
 #include "playground/pointer/pointer.h"
+#include "common/alloc.h"
+#include "playground/list/v2/list.h"
 
 /* list definition */
 extern const struct list list_v2;
@@ -169,6 +168,15 @@ struct pointer* pointer_open_file(struct pointer* file_path_ptr, struct pointer*
     return f_ptr;
 }
 
+void pointer_printf(struct pointer* ptr) {
+    const char* data = pointer_data(ptr);
+#ifdef USE_MEMORY_DEBUG_INFO
+    void* ptr_data = ptr->data;
+    printf("   .: 0x%016llx >0x%016llx\n", (u64)ptr, (u64)ptr_data);
+#endif
+    puts(data);
+}
+
 const struct pointer_methods pointer_methods_definition = {
     .alloc = pointer_alloc,
     .free = pointer_free,
@@ -181,5 +189,6 @@ const struct pointer_methods pointer_methods_definition = {
     .strcat = pointer_strcat,
     .match_last = pointer_match_last,
     .load = pointer_load,
-    .open_file = pointer_open_file
+    .open_file = pointer_open_file,
+    .printf = pointer_printf
 };

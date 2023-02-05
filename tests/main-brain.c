@@ -11,8 +11,7 @@ void read_file();
 
 extern inline void process() {
     struct pointer* data_ptr = pointer->pop();
-    char* data = pointer->data(data_ptr);
-    printf("%s\n", data);
+    pointer->printf(data_ptr);
     pointer->free(data_ptr);
 }
 
