@@ -153,11 +153,10 @@ cmake \
     -DCMAKE_BUILD_TYPE:STRING=Debug \
     -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
     -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
-    ${OPTIONS} \
-    -DCODE_SANITIZER:BOOL=TRUE \
-    -DCODE_COVERAGE:BOOL=TRUE \
     -DLCOV_PATH=${LCOV_PATH} \
     -DGENHTML_PATH=${GENHTML_PATH} \
+    -DCODE_COVERAGE:BOOL=TRUE \
+    ${OPTIONS} \
     -S"${pwd}" \
     -B"${pwd}/cmake" \
     -G "Ninja"
