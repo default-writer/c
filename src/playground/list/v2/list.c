@@ -37,6 +37,7 @@ static void* list_push(struct list_data* pointer, void* data) {
 }
 
 static void* list_pop(struct list_data* pointer) {
+    *pointer->ptr = 0;
     return pointer->ptr != pointer->base ? *--pointer->ptr : 0;
 }
 
