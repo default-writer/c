@@ -45,8 +45,6 @@ void pointer_destroy();
 struct pointer* pointer_alloc(u64 size);
 void pointer_free(struct pointer* ptr);
 
-struct pointer* pointer_new_file(FILE* file);
-
 const struct pointer_methods pointer_methods_definition;
 
 void* pointer_data(struct pointer* ptr) {
@@ -64,10 +62,10 @@ void* pointer_data(struct pointer* ptr) {
 u64 pointer_size(struct pointer* ptr) {
     if (ptr->type == TYPE_FILE) {
         struct file_handler* handler = ptr->data;
-        FILE* f = handler->file;
-        fseek(f, 0, SEEK_END); // NOLINT
-        long size = ftell(f);
-        fseek(f, 0, SEEK_SET);
+        FILE* file = handler->file;
+        fseek(file, 0, SEEK_END); // NOLINT
+        long size = ftell(file);
+        fseek(file, 0, SEEK_SET);
         return (u64)size;
     }
     return ptr->size;
@@ -106,16 +104,6 @@ struct pointer* pointer_alloc(u64 size) {
     return ptr;
 }
 
-struct pointer* pointer_new_file(FILE* file) {
-    struct pointer* ptr = _list_alloc(1, sizeof(struct pointer));
-    ptr->data = _list_alloc(1, sizeof(struct file_handler));
-    struct file_handler* handler = ptr->data;
-    handler->file = file;
-    ptr->size = sizeof(struct file_handler);
-    ptr->type = TYPE_FILE;
-    return ptr;
-}
-
 void pointer_free(struct pointer* ptr) {
     if (ptr->type == TYPE_FILE) {
         struct file_handler* handler = ptr->data;
@@ -123,7 +111,7 @@ void pointer_free(struct pointer* ptr) {
         fclose(file);
     }
     if (ptr->size != 0) {
-        _list_free(ptr->data, (size_t)ptr->size);
+        _list_free(ptr->data, ptr->size);
         ptr->data = 0;
         ptr->size = 0;
     }
@@ -161,10 +149,29 @@ struct pointer* pointer_match_last(struct pointer* src_ptr, struct pointer* matc
     return 0;
 }
 
+struct pointer* pointer_load(const char* data) {
+    u64 size = strlen(data) + 1;
+    struct pointer* data_ptr = pointer_alloc(size);
+    memcpy(pointer_data(data_ptr), data, size); // NOLINT
+    return data_ptr;
+}
+
+struct pointer* pointer_open_file(struct pointer* file_path_ptr, struct pointer* mode_ptr) {
+    const char* file_path = pointer_data(file_path_ptr);
+    const char* mode = pointer_data(mode_ptr);
+    FILE* file = fopen(file_path, mode); // NOLINT
+    struct pointer* f_ptr = _list_alloc(1, sizeof(struct pointer));
+    f_ptr->data = _list_alloc(1, sizeof(struct file_handler));
+    struct file_handler* handler = f_ptr->data;
+    handler->file = file;
+    f_ptr->size = sizeof(struct file_handler);
+    f_ptr->type = TYPE_FILE;
+    return f_ptr;
+}
+
 const struct pointer_methods pointer_methods_definition = {
     .alloc = pointer_alloc,
     .free = pointer_free,
-    .new_file = pointer_new_file,
     .push = pointer_push,
     .peek = pointer_peek,
     .pop = pointer_pop,
@@ -172,5 +179,7 @@ const struct pointer_methods pointer_methods_definition = {
     .size = pointer_size,
     .strcpy = pointer_strcpy,
     .strcat = pointer_strcat,
-    .match_last = pointer_match_last
+    .match_last = pointer_match_last,
+    .load = pointer_load,
+    .open_file = pointer_open_file
 };
