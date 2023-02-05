@@ -79,57 +79,57 @@ static void list_using(struct list_data** current) {
 #ifdef USE_MEMORY_DEBUG_INFO
     list->print(current);
 #endif
-    void* q_peek0 = list->peek(current);
+    const void* q_peek0 = list->peek(current);
     ZEROPTR(q_peek0)
     void* q_pop0 = list->pop(current);
 #ifdef USE_MEMORY_DEBUG_INFO
     list->print(current);
 #endif
-    void* q_pop1 = list->pop(current);
+    const void* q_pop1 = list->pop(current);
     ZEROPTR(q_pop1)
 #ifdef USE_MEMORY_DEBUG_INFO
     list->print(current);
 #endif
-    void* q_pop2 = list->pop(current);
+    const void* q_pop2 = list->pop(current);
     ZEROPTR(q_pop2)
 #ifdef USE_MEMORY_DEBUG_INFO
     list->print(current);
 #endif
-    void* q_peek1 = list->peek(current);
+    const void* q_peek1 = list->peek(current);
     void* q_pop3 = list->pop(current);
-    void* q_peek2 = list->peek(current);
+    const void* q_peek2 = list->peek(current);
     list->push(current, q_pop3);
-    void* q_peek3 = list->peek(current);
+    const void* q_peek3 = list->peek(current);
     RX_ASSERT(q_peek1 != q_peek2);
     RX_ASSERT(q_peek2 != q_peek3);
     RX_ASSERT(q_peek1 == q_peek3);
-    void* q_pop4 = list->pop(current);
+    const void* q_pop4 = list->pop(current);
     ZEROPTR(q_pop4)
 #ifdef USE_MEMORY_DEBUG_INFO
     list->print(current);
 #endif
-    void* q_pop5 = list->pop(current);
+    const void* q_pop5 = list->pop(current);
     ZEROPTR(q_pop5)
 #ifdef USE_MEMORY_DEBUG_INFO
     list->print(current);
 #endif
-    void* q_peek4 = list->peek(current);
+    const void* q_peek4 = list->peek(current);
     list->push(current, q_pop0);
     ZEROPTR(q_peek4)
 #ifdef USE_MEMORY_DEBUG_INFO
     list->print(current);
 #endif
-    void* q_pop6 = list->pop(current);
+    const void* q_pop6 = list->pop(current);
     ZEROPTR(q_pop6)
 #ifdef USE_MEMORY_DEBUG_INFO
     list->print(current);
 #endif
-    void* q_pop7 = list->pop(current);
+    const void* q_pop7 = list->pop(current);
     ZEROPTR(q_pop7)
 #ifdef USE_MEMORY_DEBUG_INFO
     list->print(current);
 #endif
-    void* q_peek5 = list->peek(current);
+    const void* q_peek5 = list->peek(current);
     ZEROPTR(q_peek5)
 #ifdef USE_MEMORY_DEBUG_INFO
     list->print(current);
@@ -187,9 +187,9 @@ RX_TEST_CASE(myTestSuite, test_standard_list_peek_does_not_changes_stack, .fixtu
     // pushed to the list
     list->push(ctx, payload);
     // gets the head pointer to the list
-    struct list_data* ptr = *ctx;
+    const struct list_data* ptr = *ctx;
     // peeks from the list
-    void* head = list->peek(ctx);
+    const void* head = list->peek(ctx);
     // ensures payload is on top of the stack
     RX_ASSERT(head == payload);
     // ensures peek does not changes the head pointer
@@ -202,7 +202,7 @@ RX_TEST_CASE(myTestSuite, test_empty_list_pop_equals_0, .fixture = test_fixture)
     // declares pointer to list functions definitions
     const struct list* list = &list_micro_definition;
     // pops from the list
-    struct list_data* head = list->pop(&ctx);
+    const struct list_data* head = list->pop(&ctx);
     // ensures head is not initialized
     RX_ASSERT(head == 0);
 }
@@ -213,7 +213,7 @@ RX_TEST_CASE(myTestSuite, test_empty_list_peek_equals_0, .fixture = test_fixture
     // declares pointer to list functions definitions
     const struct list* list = &list_micro_definition;
     // peeks from the list
-    struct list_data* head = list->peek(&ctx);
+    const struct list_data* head = list->peek(&ctx);
     // ensures head is not initialized
     RX_ASSERT(head == 0);
 }
@@ -242,7 +242,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_payload, .fixture = test_fixture) {
     // pushes to the list
     list->push(ctx, payload);
     // peeks from the list
-    void* head = list->peek(ctx);
+    const void* head = list->peek(ctx);
     // ensures data is added to the list
     RX_ASSERT(head == payload);
 }
@@ -257,7 +257,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture) 
     // pushes to the list
     list->push(ctx, payload);
     // pops from the list
-    void* head = list->pop(ctx);
+    const void* head = list->pop(ctx);
     // ensures data is added to the list
     RX_ASSERT(head != 0);
 }
@@ -272,7 +272,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture) 
     // pushes to the list
     list->push(ctx, payload);
     // pops from the list
-    void* head = list->pop(ctx);
+    const void* head = list->pop(ctx);
     // ensures data is added to the list
     RX_ASSERT(head == payload);
 }
@@ -284,7 +284,7 @@ RX_TEST_CASE(myTestSuite, test_list_peek_is_zero, .fixture = test_fixture) {
     // declares pointer to list functions definitions
     const struct list* list = &list_micro_definition;
     // peeks from the list
-    void* head = list->peek(ctx);
+    const void* head = list->peek(ctx);
     // ensures head is not initialized
     RX_ASSERT(head == 0);
 }
@@ -296,7 +296,7 @@ RX_TEST_CASE(myTestSuite, test_list_pop_is_zero, .fixture = test_fixture) {
     // declares pointer to list functions definitions
     const struct list* list = &list_micro_definition;
     // pops from the list
-    void* head = list->pop(ctx);
+    const void* head = list->pop(ctx);
     // ensures head is not initialized
     RX_ASSERT(head == 0);
 }
