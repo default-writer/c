@@ -147,7 +147,7 @@ cmake \
     -G "Ninja"
 
 for m in "${array[@]}"; do
-    cmake --build "${pwd}/cmake" --target "${m}"
+    cmake --build "${pwd}/cmake" --target "${m}" || (echo ERROR: "${m}" && exit 1)
 done
 
 main=$(find "${pwd}/cmake" -type f -name "*.s" -exec echo {} \;)

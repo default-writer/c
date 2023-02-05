@@ -1,7 +1,5 @@
 #include "playground/list/v2/list.h"
 
-#define DEFAULT_SIZE 0xffff // 64K bytes
-
 /*private */
 
 static struct list_data* list_alloc(u64 size);
@@ -11,9 +9,6 @@ static void* list_pop(struct list_data* pointer);
 static void* list_peek(struct list_data* pointer);
 
 static struct list_data* list_alloc(u64 size) {
-    if (size == 0) {
-        size = DEFAULT_SIZE;
-    }
     struct list_data* ptr = calloc(1, sizeof(struct list_data));
     ptr->base = calloc(size, sizeof(void*));
     ptr->ptr = ptr->base;
@@ -37,8 +32,12 @@ static void* list_push(struct list_data* pointer, void* data) {
 }
 
 static void* list_pop(struct list_data* pointer) {
-    *pointer->ptr = 0;
-    return pointer->ptr != pointer->base ? *--pointer->ptr : 0;
+    void* tmp = 0;
+    if (pointer->ptr != pointer->base) {
+        tmp = *--pointer->ptr;
+        *pointer->ptr = 0;
+    }
+    return tmp;
 }
 
 static void* list_peek(struct list_data* pointer) {

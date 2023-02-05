@@ -147,8 +147,8 @@ cmake \
     -G "Ninja"
 
 for m in "${array[@]}"; do
-    cmake --build "${pwd}/logs" --target "${m}"
-    timeout --foreground 5 "${pwd}/logs/${m}" 2>&1 >"${pwd}/logs/log-${m}.txt" || echo ERROR: "${m}"
+    cmake --build "${pwd}/logs" --target "${m}" || (echo ERROR: "${m}" && exit 1)
+    timeout --foreground 5 "${pwd}/logs/${m}" 2>&1 >"${pwd}/logs/log-${m}.txt" || (echo ERROR: "${m}" && exit 1)
 done
 
 find "${pwd}/logs" -type f -not -name "log-*" -delete
