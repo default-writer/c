@@ -7,7 +7,9 @@ struct pointer;
 
 struct pointer_methods {
     struct pointer* (*alloc)(u64 size);
+#ifndef USE_GC
     void (*free)(struct pointer* ptr);
+#endif
     void (*push)(struct pointer* ptr);
     struct pointer* (*peek)();
     struct pointer* (*pop)();

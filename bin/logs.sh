@@ -97,6 +97,10 @@ for opt in "${opts[@]}"; do
             mocks="--mocks"
             ;;
 
+        "--gc") # [optional] builds with garbage collector
+            gc="--gc"
+            ;;
+
         "--silent") # [optional] suppress verbose output
             silent="--silent"
             ;;
@@ -131,7 +135,13 @@ else
     MOCKS_OPTIONS=
 fi
 
-OPTIONS=${SANITIZER_OPTIONS}
+if [ "${gc}" == "--gc" ]; then
+    GC_OPTIONS=-DGC:BOOL=TRUE
+else
+    GC_OPTIONS=
+fi
+
+OPTIONS=$(echo "${MOCKS_OPTIONS} ${GC_OPTIONS} ${SANITIZER_OPTIONS}")
 
 export MAKEFLAGS=-j8
 
@@ -140,8 +150,7 @@ cmake \
     -DCMAKE_BUILD_TYPE:STRING=Debug \
     -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
     -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
-    ${SANITIZER_OPTIONS} \
-    ${MOCKS_OPTIONS} \
+    ${OPTIONS} \
     -S"${pwd}" \
     -B"${pwd}/logs" \
     -G "Ninja"

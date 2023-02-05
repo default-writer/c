@@ -60,7 +60,7 @@ static void using_list2(void (*list_using)(struct list_data** const)) {
 }
 
 // uses the list
-static void list_using(struct list_data**  current) {
+static void list_using(struct list_data** current) {
     // declares pointer to list functions definitions
     const struct list* list = &list_alloc_definition;
     u8* payload = (void*)0xdeadbeef;
@@ -153,7 +153,7 @@ static void list_using(struct list_data**  current) {
 /* Data structure to use at the core of our fixture. */
 typedef struct test_data {
     struct list_data* ctx;
-} *TEST_DATA;
+}* TEST_DATA;
 
 /* Initialize the data structure. Its allocation is handled by Rexo. */
 RX_SET_UP(test_set_up) {
@@ -487,7 +487,7 @@ RX_TEST_CASE(myTestSuite, test_list_push_pop, .fixture = test_fixture) {
     void** _recorded = _list_alloc(1, ALLOC_SIZE(N_ELEMENTS));
     // pushes all pseudo-random values
     // pushes to the list multiple times
-    int i=0;
+    int i = 0;
     do {
         // generates random values
         void* _payload = (void*)lcg_parkmiller();

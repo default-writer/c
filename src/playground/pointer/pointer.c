@@ -67,7 +67,6 @@ void pointer_destroy() {
     list->free(base->list);
 #ifdef USE_GC
     struct pointer* ptr;
-    list->free(base->list);
     while ((ptr = list->pop(gc->list)) != 0) {
         pointer_free(ptr);
     }
@@ -116,7 +115,7 @@ static struct pointer* pointer_alloc(u64 size) {
 #endif
     return ptr;
 }
-#ifndef USE_GC
+
 static void pointer_free(struct pointer* ptr) {
     if (ptr != 0) {
         if (ptr->size != 0) {
@@ -128,7 +127,6 @@ static void pointer_free(struct pointer* ptr) {
         ptr = 0;
     }
 }
-#endif
 
 static void pointer_close_file(struct pointer* ptr) {
     if (ptr != 0 && ptr->type == TYPE_FILE) {
@@ -218,24 +216,11 @@ static void pointer_put_char(struct pointer* ptr, char value) {
     }
 }
 
-#ifdef USE_GC
 const struct pointer_methods pointer_methods_definition = {
     .alloc = pointer_alloc,
-    .push = pointer_push,
-    .peek = pointer_peek,
-    .pop = pointer_pop,
-    .strcpy = pointer_strcpy,
-    .strcat = pointer_strcat,
-    .match_last = pointer_match_last,
-    .load = pointer_load,
-    .open_file = pointer_open_file,
-    .printf = pointer_printf,
-    .put_char = pointer_put_char
-};
-#else
-const struct pointer_methods pointer_methods_definition = {
-    .alloc = pointer_alloc,
+#ifndef USE_GC
     .free = pointer_free,
+#endif
     .push = pointer_push,
     .peek = pointer_peek,
     .pop = pointer_pop,
@@ -249,4 +234,3 @@ const struct pointer_methods pointer_methods_definition = {
     .printf = pointer_printf,
     .put_char = pointer_put_char
 };
-#endif

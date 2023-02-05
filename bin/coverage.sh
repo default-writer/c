@@ -96,6 +96,10 @@ for opt in "${opts[@]}"; do
             mocks="--mocks"
             ;;
 
+        "--gc") # [optional] builds with garbage collector
+            gc="--gc"
+            ;;
+
         "--silent") # [optional] suppress verbose output
             silent="--silent"
             ;;
@@ -128,11 +132,16 @@ else
     MOCKS_OPTIONS=
 fi
 
+if [ "${gc}" == "--gc" ]; then
+    GC_OPTIONS=-DGC:BOOL=TRUE
+else
+    GC_OPTIONS=
+fi
+
+OPTIONS=$(echo "${MOCKS_OPTIONS} ${GC_OPTIONS} ${SANITIZER_OPTIONS}")
+
 export LCOV_PATH=$(which lcov)
 export GENHTML_PATH==$(which genhtml)
-
-OPTIONS=${SANITIZER_OPTIONS}
-
 export MAKEFLAGS=-j8
 
 find "${pwd}/coverage" -type f -name "*.gcda" -delete
@@ -144,7 +153,7 @@ cmake \
     -DCMAKE_BUILD_TYPE:STRING=Debug \
     -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
     -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
-    ${MOCKS_OPTIONS} \
+    ${OPTIONS} \
     -DCODE_SANITIZER:BOOL=TRUE \
     -DCODE_COVERAGE:BOOL=TRUE \
     -DLCOV_PATH=${LCOV_PATH} \

@@ -20,7 +20,7 @@ static const struct list* list = &list_v1;
 /* Data structure to use at the core of our fixture. */
 typedef struct test_data {
     struct list_data* ctx;
-} * TEST_DATA;
+}* TEST_DATA;
 
 /* Initialize the data structure. Its allocation is handled by Rexo. */
 RX_SET_UP(test_set_up) {
@@ -58,29 +58,29 @@ RX_TEST_CASE(myTestSuite, test_list_push_v1, .fixture = test_fixture) {
 // test context
 RX_TEST_CASE(myTestSuite, test_context_enter_leave_v1, .fixture = test_fixture) {
     const struct class* context = &class_definition_v1;
-    struct class_data* data = context->new();
+    struct class_data* data = context->new ();
     context->push(data);
     RX_ASSERT(context->pop() == data);
-    context->delete(data);
+    context->delete (data);
 }
 
 // test context
 RX_TEST_CASE(myTestSuite, test_class_get_set_data_v1, .fixture = test_fixture) {
     const struct class* context = &class_definition_v1;
-    struct class_data* data = context->new();
+    struct class_data* data = context->new ();
     void* payload = (void(*))0xdeadbeef;
     context->push(data);
     context->set(payload);
     RX_ASSERT(context->get() == payload);
     RX_ASSERT(context->pop() == data);
-    context->delete(data);
+    context->delete (data);
 }
 
 // test context
 RX_TEST_CASE(myTestSuite, test_class_push_pop_get_set_data_v1, .fixture = test_fixture) {
     const struct class* context = &class_definition_v1;
-    struct class_data* data1 = context->new();
-    struct class_data* data2 = context->new();
+    struct class_data* data1 = context->new ();
+    struct class_data* data2 = context->new ();
 
     void* payload1 = (void(*))0xdeadbeef;
     void* payload2 = (void(*))0xbebebebe;
@@ -97,8 +97,8 @@ RX_TEST_CASE(myTestSuite, test_class_push_pop_get_set_data_v1, .fixture = test_f
     RX_ASSERT(context->get() == payload1);
     RX_ASSERT(context->pop() == data1);
 
-    context->delete(data1);
-    context->delete(data2);
+    context->delete (data1);
+    context->delete (data2);
 }
 
 int main() {

@@ -20,6 +20,7 @@ static void list_free(struct list_data* pointer) {
     free(pointer->base);
     pointer->base = 0;
     pointer->ptr = 0;
+    pointer->max = 0;
     free(pointer);
     pointer = 0;
 }

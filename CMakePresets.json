@@ -16,15 +16,19 @@
                 "CMAKE_C_COMPILER": "/usr/bin/gcc",
                 "CMAKE_CXX_COMPILER": "/usr/bin/g++",
                 "CMAKE_BUILD_TYPE": "Debug",
-                "MEMORY_DEBUG_INFO": {
+                "CONFIG_MEMORY_DEBUG_INFO": {
                     "type": "BOOL",
                     "value": "ON"
                 },
-                "MEMORY_CLEANUP": {
+                "CONFIG_MEMORY_CLEANUP": {
                     "type": "BOOL",
                     "value": "ON"
                 },
-                "MEMORY_ALLOC": {
+                "CONFIG_MEMORY_ALLOC": {
+                    "type": "BOOL",
+                    "value": "OFF"
+                },
+                "MEMORY_GC": {
                     "type": "BOOL",
                     "value": "OFF"
                 }

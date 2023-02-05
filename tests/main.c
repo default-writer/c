@@ -16,7 +16,7 @@ static struct list_data* new_list() {
 }
 
 /* releases memory pointer for list object */
-static void delete_list(struct list_data** ctx) {    
+static void delete_list(struct list_data** ctx) {
     // declares pointer to list functions definitions
     const struct list* list = &list_definition;
     // destroys the list
@@ -46,7 +46,7 @@ static void using_list2(void (*list_using)(struct list_data** const)) {
 }
 
 // uses the list
-static void list_using(struct list_data**  current) {
+static void list_using(struct list_data** current) {
     // declares pointer to list functions definitions
     const struct list* list = &list_definition;
     // prepares the payload
@@ -128,7 +128,7 @@ static void list_using(struct list_data**  current) {
 /* Data structure to use at the core of our fixture. */
 typedef struct test_data {
     struct list_data* ctx;
-} *TEST_DATA;
+}* TEST_DATA;
 
 /* Initialize the data structure. Its allocation is handled by Rexo. */
 RX_SET_UP(test_set_up) {
