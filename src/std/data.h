@@ -1,5 +1,5 @@
-#ifndef _STD_TYPES_H_
-#define _STD_TYPES_H_
+#ifndef _STD_DATA_H_
+#define _STD_DATA_H_
 
 struct list_data;
 
@@ -13,4 +13,4 @@ typedef signed long int s32;
 typedef signed short int s16;
 typedef signed char s8;
 
-#endif // _STD_TYPES_H_
+#endif // _STD_DATA_H_
