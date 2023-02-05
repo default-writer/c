@@ -13,8 +13,10 @@ struct pointer_data {
 };
 
 static struct pointer_data pointer;
+static struct pointer_data buffer;
 
 static struct pointer_data* base = &pointer;
+static struct pointer_data* gc = &buffer;
 
 /* list definition */
 static const struct list* list = &list_v2;
@@ -54,6 +56,7 @@ static void pointer_put_char(struct pointer* ptr, char value);
 
 void pointer_init() {
     base->list = list->alloc(DEFAULT_SIZE);
+    gc->list = list->alloc(DEFAULT_SIZE);
 }
 
 void pointer_destroy() {
@@ -62,6 +65,10 @@ void pointer_destroy() {
         pointer_free(ptr);
     }
     list->free(base->list);
+    while ((ptr = list->pop(gc->list)) != 0) {
+        pointer_free(ptr);
+    }
+    list->free(gc->list);
 }
 
 static void* pointer_data(struct pointer* ptr) {
@@ -106,6 +113,7 @@ static struct pointer* pointer_alloc(u64 size) {
         ptr->data = _list_alloc(1, size);
         ptr->size = size;
     }
+    list->push(gc->list, ptr);
     return ptr;
 }
 
