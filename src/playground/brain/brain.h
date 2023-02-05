@@ -3,6 +3,6 @@
 
 #include "playground/pointer/pointer.h"
 
-extern inline struct pointer* source() __attribute__((always_inline));
+extern inline void source() __attribute__((always_inline));
 
 #endif // _PLAYGROUND_BRAIN_H_
