@@ -2,27 +2,33 @@
 
 ![image info](./resources/icons8-ubuntu-96.png)
 
-## history
-
-- 05 feb 2023:
-  - added automatic garbage collection (GC)
-  - added build options for GC mode
-
 ## features
 
 - `List<T>` implementations
 - code coverage
 - coverage hot-reload
 - memory allocation playground
+- automatic garbage collection implementation (GC)
+
+## history
+
+### 2023
+
+- added GC implementation
+- added several list implementations
+  
+### 2022
+
+- playing around with visibility in class declarations
 
 ## documentation
 
-- [memory](memory.md) PDF([memory.pdf](memory.pdf))
-- [list](list.md) PDF([list.pdf](list.pdf))
-- [class](class.md) PDF([class.pdf](class.pdf))
-- [history](history.md)
-- [scripts](scripts.md)
-- [lab](lab.md)
+- [memory](docs/memory.md) PDF([memory.pdf][memory])
+- [list](docs/list.md) PDF([list.pdf][list])
+- [class](docs/class.md) PDF([class.pdf][class])
+- [history](docs/history.md) PDF([history][history])
+- [scripts](docs/scripts.md) PDF([scripts][scripts])
+- [labs](docs/labs.md) PDF([labs][labs])
 
 ## resources
 
@@ -41,3 +47,10 @@
 ## requirements
 
 - [rexo](https://github.com/christophercrouzet/rexo)
+
+[memory]: docs/pdf/memory.pdf
+[list]: docs/pdf/list.pdf
+[class]: docs/pdf/class.pdf
+[history]: docs/pdf/history.pdf
+[scripts]: docs/pdf/scripts.pdf
+[labs]: docs/pdf/labs.pdf

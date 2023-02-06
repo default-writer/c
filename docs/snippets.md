@@ -1,6 +1,6 @@
-# brain language
+# brain language code snippets
 
-## think tanks
+## prototype
 
 ```c
 
