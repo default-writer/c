@@ -23,6 +23,7 @@
     "anweber.statusbar-commands",
     "vadimcn.vscode-lldb",
     "jdsteinbach.custom-presentation-mode",
-    "daylerees.rainglow"
+    "daylerees.rainglow",
+    "bierner.github-markdown-preview"
   ]
 }

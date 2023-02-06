@@ -178,6 +178,7 @@
 		"ms-vscode.cpptools",
 		"aslamanver.vsc-export",
 		"anweber.statusbar-commands",
-		"vadimcn.vscode-lldb"
+		"vadimcn.vscode-lldb",
+		"bierner.github-markdown-preview"
 	]
 }
