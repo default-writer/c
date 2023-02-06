@@ -27,10 +27,6 @@
                 "CONFIG_MEMORY_ALLOC": {
                     "type": "BOOL",
                     "value": "OFF"
-                },
-                "MEMORY_GC": {
-                    "type": "BOOL",
-                    "value": "OFF"
                 }
             }
         }
