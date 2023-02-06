@@ -1,6 +1,8 @@
+#include "macros.h"
 #include "playground/pointer/pointer.h"
 
 #include "playground/brain/brain.h"
+#include <string.h>
 
 extern struct pointer_methods pointer_methods_definition;
 
@@ -10,6 +12,11 @@ extern inline void source() {
     struct pointer* file_name_ptr = pointer->load("/input.txt");
     struct pointer* head_ptr = pointer->peek();
     pointer->printf(head_ptr);
+    struct pointer* argc_ptr = pointer->pop(); // NOLINT
+    ZEROPTR(argc_ptr)
+#ifndef USE_GC
+    pointer->free(argc_ptr);
+#endif
     struct pointer* argv_ptr = pointer->pop();
     struct pointer* data_ptr = pointer->alloc(PATH_MAX);
     pointer->strcpy(data_ptr, argv_ptr);
@@ -51,6 +58,11 @@ int main(int argc, char** argv) {
     pointer_init();
     struct pointer* argv_ptr = pointer->load(argv[0]);
     pointer->push(argv_ptr);
+    char buffer[24];
+    memset(buffer, 0, 24); // NOLINT
+    sprintf(buffer, "%d", argc); // NOLINT
+    struct pointer* argc_ptr = pointer->load(buffer);
+    pointer->push(argc_ptr);
     source();
     pointer_destroy();
     return 0;
