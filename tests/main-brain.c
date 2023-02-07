@@ -53,13 +53,13 @@ extern inline void source() {
 }
 
 int main(int argc, char** argv) {
-    ZEROPTR(argc)
     pointer_init();
     struct pointer* argv_ptr = pointer->load(argv[0]);
     pointer->push(argv_ptr);
     char buffer[24];
     memset(buffer, 0, 24); // NOLINT
     sprintf(buffer, "%d", argc); // NOLINT
+    ZEROPTR(argc)
     struct pointer* argc_ptr = pointer->load(buffer);
     pointer->push(argc_ptr);
     source();
