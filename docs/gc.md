@@ -18,7 +18,7 @@
 - GC can find an AST leafs for call tree where allocation / de-allocation call can be placed
 - GC can automatically put allocation / de-allocation method calls in AST
 - GC and memory allocator can calculates total required memory for the program using AST
-- GC and memory allocator can allocate / de-allocate required memory blocks during the program execution
+- GC and memory allocator operate required memory blocks during the program execution
 
 ### lazy strategy pattern
 
