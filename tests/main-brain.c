@@ -38,8 +38,8 @@ extern inline void source() {
     struct pointer* mode_ptr = pointer->load("rb");
     struct pointer* f_ptr = pointer->open_file(data_ptr, mode_ptr);
 #ifndef USE_GC
-    pointer->free(mode_ptr);
     pointer->free(data_ptr);
+    pointer->free(mode_ptr);
 #endif
     struct pointer* file_data_ptr = pointer->read_file(f_ptr);
     pointer->close_file(f_ptr);
