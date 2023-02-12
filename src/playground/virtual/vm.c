@@ -1,7 +1,7 @@
 #include "playground/virtual/vm.h"
 #include "playground/list/v2/list.h"
 
-#define DEFAULT_SIZE 0xffff // 64K bytes
+#include "common/alloc.h"
 
 /* list definition */
 extern const struct list list_v2;
@@ -27,27 +27,21 @@ static u64 to_virtual_address(void** base, void** ptr);
 /* implementation */
 
 static struct vm_data* vm_init(u64 size) {
-    struct vm_data* pointer = calloc(1, sizeof(struct vm_data));
-    pointer->base = calloc(1, size * sizeof(void*));
+    struct vm_data* pointer = _list_alloc(1, sizeof(struct vm_data));
+    pointer->base = _list_alloc(size, sizeof(void*));
     void* max = (void*)((u64*)pointer->base + size);
     pointer->max = max;
     pointer->size = size;
     pointer->ptr = pointer->base;
-    cache = list->alloc(DEFAULT_SIZE);
+    cache = list->alloc(size);
     return pointer;
 }
 
 static void vm_destroy(struct vm_data* pointer) {
     list->free(cache);
     cache = 0;
-    free(pointer->base);
-#ifdef USE_MEMORY_CLEANUP
-    pointer->base = 0;
-    pointer->ptr = 0;
-    pointer->max = 0;
-    pointer->size = 0;
-#endif
-    free(pointer);
+    _list_free(pointer->base, pointer->size * sizeof(void*));
+    _list_free(pointer, sizeof(struct vm_data));
     pointer = 0;
 }
 

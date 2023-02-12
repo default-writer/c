@@ -1,9 +1,8 @@
 #include "playground/pointer/pointer.h"
-#include "common/alloc.h"
 #include "playground/list/v2/list.h"
 #include "playground/virtual/vm.h"
 
-#define DEFAULT_SIZE 0xffff // 64K bytes
+#include "common/alloc.h"
 
 /* list definition */
 extern const struct vm vm_definition;
@@ -42,7 +41,7 @@ struct file_handler {
     FILE* file;
 };
 
-void pointer_init();
+void pointer_init(u64 size);
 void pointer_destroy();
 
 /* api */
@@ -88,11 +87,11 @@ void pointer_get(struct init_data* init) {
 #endif
 }
 
-void pointer_init() {
-    base->vm = vm->init(DEFAULT_SIZE);
-    base->list = list->alloc(DEFAULT_SIZE);
+void pointer_init(u64 size) {
+    base->vm = vm->init(size);
+    base->list = list->alloc(size);
 #ifdef USE_GC
-    gc->list = list->alloc(DEFAULT_SIZE);
+    gc->list = list->alloc(size);
 #endif
 }
 

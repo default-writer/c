@@ -29,7 +29,7 @@ struct pointer_methods {
 
 typedef void (*pointer_function)(u64 ptr);
 
-void pointer_init();
+void pointer_init(u64 size);
 void pointer_destroy();
 
 struct init_data {

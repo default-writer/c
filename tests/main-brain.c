@@ -7,7 +7,7 @@
 
 #include "rexo/include/rexo.h"
 
-#define DEFAULT_SIZE 0xffff // 64K bytes
+#define DEFAULT_SIZE 0x100
 
 /* list definition */
 extern const struct vm vm_definition;
@@ -215,7 +215,7 @@ int main(int argc, char** argv) {
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- acceptance test code\n");
 #endif
-    pointer_init();
+    pointer_init(DEFAULT_SIZE);
     u64 argv_ptr = pointer->load(argv[0]);
     pointer->push(argv_ptr);
     source();
