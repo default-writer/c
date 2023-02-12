@@ -343,6 +343,9 @@ static void pointer_put_char(u64 ptr, char value) {
 
 static void pointer_realloc_internal(struct pointer* ptr, u64 size) {
     if (ptr != 0 && ptr->data != 0) {
+#ifdef USE_MEMORY_DEBUG_INFO
+        printf("   &: 0x%016llx !  %16lld\n", (u64)ptr->data, ptr->size);
+#endif
         ptr->data = _list_realloc(ptr->data, size);
         ptr->size = size;
     }
