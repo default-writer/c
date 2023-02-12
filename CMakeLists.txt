@@ -165,6 +165,7 @@ set(LIB_PARAMETERS_SOURCE src/common/parameters.c)
 
 set(LIB_LIST1_SOURCE src/playground/list/v1/list.c)
 set(LIB_LIST2_SOURCE src/playground/list/v2/list.c)
+set(LIB_VM_SOURCE src/playground/virtual/vm.c)
 set(LIB_STANDARD_SOURCE src/list/code.c)
 set(LIB_LIGHT_SOURCE src/list-light/code.c)
 set(LIB_MICRO_SOURCE src/list-micro/code.c)
@@ -193,6 +194,7 @@ include_directories(src)
 
 add_library(list-v1 STATIC ${LIB_LIST1_SOURCE})
 add_library(list-v2 STATIC ${LIB_LIST2_SOURCE})
+add_library(vm STATIC ${LIB_VM_SOURCE})
 add_library(list-memory STATIC ${LIB_MEMORY_SOURCE})
 add_library(list-common STATIC ${LIB_COMMON_SOURCE})
 add_library(list-lcg STATIC ${LIB_LCG_SOURCE})
@@ -232,7 +234,7 @@ target_link_libraries(main-experimental PRIVATE list-experimental list-lcg list-
 target_link_libraries(main-playground PRIVATE list-playground list-micro list-common list-v1)
 target_link_libraries(main-playground2 PRIVATE list-playground2 list-micro list-common list-v2)
 target_link_libraries(main-memory PRIVATE list-memory list-v1)
-target_link_libraries(main-brain PRIVATE list-pointer list-v2)
+target_link_libraries(main-brain PRIVATE list-pointer list-v2 vm)
 target_link_libraries(main-test)
 
 FILE(WRITE ${CMAKE_BINARY_DIR}/input.txt
