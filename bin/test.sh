@@ -23,14 +23,20 @@ opts=( "${@:2}" )
 . "${pwd}/bin/scripts/load.sh"
 
 ## Builds and tests binaries
-## Usage: ${script} <option> [optional]
+## Usage: ${script} <option>
 ## ${commands}
+## Example .args file:
+## --all
+## --clean
+## --silent
+## --sanitize
+## --gc
 
 case "${install}" in
 
     "--args") # builds and runs with args from .args file
-        args = $(cat "${pwd}/.coverage")
-        "${pwd}/bin/covarage.sh" $args
+        if [ -f "${pwd}/.args" ]; then args=$(cat "${pwd}/.args"); fi
+        "${pwd}/bin/coverage.sh" $args
         ;;
 
     *)
