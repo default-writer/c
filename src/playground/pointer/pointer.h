@@ -6,27 +6,41 @@
 struct pointer;
 
 struct pointer_methods {
-    struct pointer* (*alloc)(u64 size);
+    u64 (*alloc)(u64 size); // this method is unsafe cause allows to allocate more unused memory
+    u64 (*copy)(u64 ptr);
+    u64 (*peek)(); // this method is unsafe, cause it allows to free stack head
+    void (*push)(u64 ptr);
+    u64 (*pop)();
+    void (*strcpy)(u64 dest, u64 src);
+    void (*strcat)(u64 dest, u64 src);
+    u64 (*match_last)(u64 src_ptr, u64 match_prt);
+    u64 (*load)(const char* data);
+    u64 (*open_file)(u64 file_path_ptr, u64 mode_ptr);
+    u64 (*read_file)(u64 ptr);
+    void (*close_file)(u64 ptr);
+    void (*printf)(u64 ptr);
+    void (*put_char)(u64 ptr, char value);
 #ifndef USE_GC
-    void (*free)(struct pointer* ptr);
+    void (*free)(u64 ptr);
+#else
+    void (*gc)();
 #endif
-    void (*push)(struct pointer* ptr);
-    struct pointer* (*peek)();
-    struct pointer* (*pop)();
-    void (*strcpy)(struct pointer* dest, struct pointer* src);
-    void (*strcat)(struct pointer* dest, struct pointer* src);
-    struct pointer* (*match_last)(struct pointer* src_ptr, struct pointer* match_prt);
-    struct pointer* (*load)(const char* data);
-    struct pointer* (*open_file)(struct pointer* file_path_ptr, struct pointer* mode_ptr);
-    struct pointer* (*read_file)(struct pointer* ptr);
-    void (*close_file)(struct pointer* ptr);
-    void (*printf)(struct pointer* ptr);
-    void (*put_char)(struct pointer* ptr, char value);
 };
 
-typedef void (*pointer_function)(struct pointer* ptr);
+typedef void (*pointer_function)(u64 ptr);
 
-void pointer_init();
+void pointer_init(u64 size);
 void pointer_destroy();
+
+struct init_data {
+    struct vm_data* vm;
+    struct list_data* list;
+#ifdef USE_GC
+    struct list_data* gc_list;
+#endif
+};
+
+void pointer_get(struct init_data* init);
+void pointer_set(struct init_data* init);
 
 #endif // _PLAYGROUND_POINTER_H_
