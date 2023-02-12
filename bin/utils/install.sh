@@ -59,6 +59,19 @@ case "${install}" in
         git config --global pull.rebase false
         ;;
 
+    "--args") # install test .args file
+        args=$(\
+cat << EOF
+--all
+--clean
+--silent
+--sanitize
+--gc
+EOF
+)
+        echo $args > "${pwd}/.args"
+        ;;
+
     "--submodule-rexo") # installs rexo as git submodule
         submodule-install https://github.com/christophercrouzet/rexo.git src/rexo
         ;;
