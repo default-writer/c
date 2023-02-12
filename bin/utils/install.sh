@@ -60,16 +60,8 @@ case "${install}" in
         ;;
 
     "--args") # install test .args file
-        args=$(\
-cat << EOF
---all
---clean
---silent
---sanitize
---gc
-EOF
-)
-        echo $args > "${pwd}/.args"
+        args=( '--all' '--clean' '--silent' '--sanitize' '--gc' )
+        printf '%s\n' "${args[@]}" > "${pwd}/.args"
         ;;
 
     "--submodule-rexo") # installs rexo as git submodule
