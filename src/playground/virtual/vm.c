@@ -60,7 +60,7 @@ u64 vm_alloc(struct vm_data* pointer) {
     if (ptr != pointer->max) {
         offset = to_virtual_address(pointer->base, ptr);
     }
-    return offset + 1;
+    return offset;
 }
 
 void vm_free(struct vm_data* pointer, u64 address) {
@@ -73,12 +73,14 @@ void vm_free(struct vm_data* pointer, u64 address) {
     }
 }
 
+static u64 address_space = 0;
+
 static u64 to_virtual_address(void** base, void** ptr) {
-    return (u64)(ptr - base) + 1;
+    return (u64)(ptr - base) + 1 + address_space;
 }
 
 static void* to_real_address(void** base, u64 address) {
-    return base + address - 1;
+    return base + address - 1 + address_space;
 }
 
 static void* vm_read(struct vm_data* pointer, u64 address) {
