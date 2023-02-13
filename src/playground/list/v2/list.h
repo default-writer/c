@@ -7,6 +7,7 @@ struct list_data {
     void** ptr;
     void** base;
     void** max;
+    u64 size;
 };
 
 struct list {
