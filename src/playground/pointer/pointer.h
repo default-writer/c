@@ -6,9 +6,9 @@
 struct pointer;
 
 struct pointer_methods {
-    u64 (*alloc)(u64 size); // this method is unsafe cause allows to allocate more unused memory
+    u64 (*alloc)();
     u64 (*copy)(u64 ptr);
-    u64 (*peek)(); // this method is unsafe, cause it allows to free stack head
+    u64 (*peek)();
     void (*push)(u64 ptr);
     u64 (*pop)();
     void (*strcpy)(u64 dest, u64 src);

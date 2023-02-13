@@ -50,7 +50,7 @@ static void pointer_push(u64 ptr);
 static u64 pointer_copy(u64 ptr);
 static u64 pointer_peek();
 static u64 pointer_pop();
-static u64 pointer_alloc(u64 size);
+static u64 pointer_alloc();
 static void pointer_free(u64 ptr);
 static void pointer_strcpy(u64 dest_ptr, u64 src_ptr);
 static void pointer_strcat(u64 dest_ptr, u64 src_ptr);
@@ -170,9 +170,9 @@ static u64 pointer_pop() {
     return (u64)list->pop(base->list);
 }
 
-static u64 pointer_alloc(u64 size) {
+static u64 pointer_alloc() {
     u64 data = 0;
-    struct pointer* ptr = pointer_alloc_internal(size);
+    struct pointer* ptr = pointer_alloc_internal(0);
     data = vm->alloc(base->vm);
     vm->write(base->vm, data, ptr);
 #ifdef USE_GC

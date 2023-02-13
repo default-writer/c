@@ -85,7 +85,7 @@ RX_TEST_CASE(myTestSuite, test_print_load_1, .fixture = test_fixture) {
 // test init
 RX_TEST_CASE(myTestSuite, test_strcpy_0, .fixture = test_fixture) {
     u64 pattern_ptr = pointer->load("/");
-    u64 empty_ptr = pointer->alloc(0);
+    u64 empty_ptr = pointer->alloc();
     pointer->strcpy(empty_ptr, pattern_ptr);
     RX_ASSERT(pattern_ptr != 0);
     RX_ASSERT(empty_ptr != 0);
@@ -97,7 +97,7 @@ RX_TEST_CASE(myTestSuite, test_strcpy_0, .fixture = test_fixture) {
 
 // test init
 RX_TEST_CASE(myTestSuite, test_strcat_0, .fixture = test_fixture) {
-    u64 zero_ptr = pointer->alloc(0);
+    u64 zero_ptr = pointer->alloc();
     u64 char_ptr = pointer->load("/");
     pointer->strcat(zero_ptr, char_ptr);
     RX_ASSERT(zero_ptr != 0);
@@ -111,7 +111,7 @@ RX_TEST_CASE(myTestSuite, test_strcat_0, .fixture = test_fixture) {
 // test init
 RX_TEST_CASE(myTestSuite, test_strcat_1, .fixture = test_fixture) {
     u64 char_ptr = pointer->load("/");
-    u64 pattern_ptr = pointer->alloc(1);
+    u64 pattern_ptr = pointer->alloc(0);
     pointer->strcat(pattern_ptr, char_ptr);
     RX_ASSERT(char_ptr != 0);
     RX_ASSERT(pattern_ptr != 0);
@@ -162,8 +162,8 @@ RX_TEST_CASE(myTestSuite, test_double_free, .fixture = test_fixture) {
 // test init
 RX_TEST_CASE(myTestSuite, test_strcpy_load, .fixture = test_fixture) {
     u64 char_ptr = pointer->load("/");
-    u64 pattern_ptr = pointer->alloc(1);
-    u64 empty_ptr = pointer->alloc(0);
+    u64 pattern_ptr = pointer->alloc();
+    u64 empty_ptr = pointer->alloc();
     pointer->strcat(pattern_ptr, char_ptr);
 #ifndef USE_GC
     pointer->free(char_ptr);
@@ -173,6 +173,21 @@ RX_TEST_CASE(myTestSuite, test_strcpy_load, .fixture = test_fixture) {
     RX_ASSERT(empty_ptr != 0);
 #ifndef USE_GC
     pointer->free(empty_ptr);
+    pointer->free(pattern_ptr);
+#endif
+}
+
+// test init
+RX_TEST_CASE(myTestSuite, test_strcat_load, .fixture = test_fixture) {
+    u64 char_ptr = pointer->load("/");
+    u64 pattern_ptr = pointer->load("*");
+    pointer->strcat(pattern_ptr, char_ptr);
+    RX_ASSERT(pattern_ptr != 0);
+    RX_ASSERT(char_ptr != 0);
+#ifndef USE_GC
+    pointer->free(char_ptr);
+#endif
+#ifndef USE_GC
     pointer->free(pattern_ptr);
 #endif
 }
