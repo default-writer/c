@@ -62,14 +62,16 @@ static void vm_destroy(struct vm_data* pointer) {
 u64 vm_alloc(struct vm_data* pointer) {
     u64 address = 0;
     void** ptr = list->pop(cache);
-    if (ptr == 0) {
-        ptr = pointer->ptr++;
-    }
-    if (ptr != pointer->max) {
-        address = to_virtual_address(pointer->base, ptr);
+    if (pointer->ptr != pointer->max) {
+        if (ptr == 0) {
+            ptr = pointer->ptr++;
+        }
+        if (ptr != pointer->max) {
+            address = to_virtual_address(pointer->base, ptr);
 #ifdef USE_MEMORY_DEBUG_INFO
-        printf("   +: 0x%016llx >0x%016llx\n", (u64)ptr, address);
+            printf("   +: 0x%016llx >0x%016llx\n", (u64)ptr, address);
 #endif
+        }
     }
     return address;
 }
