@@ -225,7 +225,15 @@ static void pointer_strcpy(u64 dest, u64 src) {
         if (dest_ptr->size == 0) {
             dest_ptr->data = _list_alloc(1, src_ptr->size);
             dest_ptr->size = src_ptr->size;
+        } else {
+            // the use precalculated string lengths is alternative to
+            // strlen(src_ptr->data) + 1
+            u64 size = src_ptr->size + 1;
+            if (dest_ptr->size < size) {
+                pointer_realloc_internal(dest_ptr, size);
+            }
         }
+
         char* data_dest = dest_ptr->data;
         const char* data_src = src_ptr->data; // NOLINT
         strcpy(data_dest, data_src); // NOLINT
@@ -240,7 +248,9 @@ static void pointer_strcat(u64 dest, u64 src) {
             dest_ptr->data = _list_alloc(1, src_ptr->size);
             dest_ptr->size = src_ptr->size;
         } else {
-            u64 size = strlen(dest_ptr->data) + src_ptr->size;
+            // the use precalculated string lengths is alternative to
+            // strlen(dest_ptr->data) + strlen(src_ptr->data) + 1
+            u64 size = dest_ptr->size + src_ptr->size - 1;
             if (dest_ptr->size < size) {
                 pointer_realloc_internal(dest_ptr, size);
             }
@@ -281,9 +291,9 @@ static u64 pointer_match_last(u64 src, u64 match) {
 static u64 pointer_load(const char* src_data) {
     u64 data = 0;
     if (src_data != 0) {
-        u64 size = strlen(src_data);
+        u64 size = strlen(src_data) + 1;
         if (size != 0) {
-            struct pointer* data_ptr = pointer_alloc_internal(size + 1);
+            struct pointer* data_ptr = pointer_alloc_internal(size);
             memcpy(data_ptr->data, src_data, size); // NOLINT
             data = vm->alloc(base->vm);
             vm->write(base->vm, data, data_ptr);
