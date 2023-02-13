@@ -206,10 +206,10 @@ RX_TEST_CASE(myTestSuite, test_strcpy_load_load, .fixture = test_fixture) {
     RX_ASSERT(pattern_ptr != 0);
     RX_ASSERT(char_ptr != 0);
 #ifndef USE_GC
-    pointer->free(char_ptr);
+    pointer->free(pattern_ptr);
 #endif
 #ifndef USE_GC
-    pointer->free(pattern_ptr);
+    pointer->free(char_ptr);
 #endif
 }
 
