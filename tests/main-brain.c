@@ -158,15 +158,14 @@ RX_TEST_CASE(myTestSuite, test_strcat_load_alloc_alloc, .fixture = test_fixture)
     u64 pattern_ptr = pointer->alloc();
     u64 empty_ptr = pointer->alloc();
     pointer->strcat(pattern_ptr, char_ptr);
-#ifndef USE_GC
-    pointer->free(char_ptr);
-#endif
     pointer->strcpy(empty_ptr, pattern_ptr);
+    RX_ASSERT(char_ptr != 0);
     RX_ASSERT(pattern_ptr != 0);
     RX_ASSERT(empty_ptr != 0);
 #ifndef USE_GC
     pointer->free(empty_ptr);
     pointer->free(pattern_ptr);
+    pointer->free(char_ptr);
 #endif
 }
 
@@ -178,10 +177,8 @@ RX_TEST_CASE(myTestSuite, test_strcat_load_load, .fixture = test_fixture) {
     RX_ASSERT(pattern_ptr != 0);
     RX_ASSERT(char_ptr != 0);
 #ifndef USE_GC
-    pointer->free(char_ptr);
-#endif
-#ifndef USE_GC
     pointer->free(pattern_ptr);
+    pointer->free(char_ptr);
 #endif
 }
 
@@ -207,8 +204,6 @@ RX_TEST_CASE(myTestSuite, test_strcpy_load_load, .fixture = test_fixture) {
     RX_ASSERT(char_ptr != 0);
 #ifndef USE_GC
     pointer->free(pattern_ptr);
-#endif
-#ifndef USE_GC
     pointer->free(char_ptr);
 #endif
 }
