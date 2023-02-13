@@ -27,14 +27,14 @@ static u64 to_virtual_address(void** base, void** ptr);
 
 /* implementation */
 
-static u64 address_space = 0;
+static u64 address_space = 0x1000;
 
 static u64 to_virtual_address(void** base, void** ptr) {
-    return (u64)(ptr - base) + 1 + address_space;
+    return (u64)(ptr - base) + address_space + 1;
 }
 
 static void* to_real_address(void** base, u64 address) {
-    return base + address - 1 + address_space;
+    return base + address - address_space - 1;
 }
 
 static struct vm_data* vm_init(u64 size) {
@@ -77,7 +77,7 @@ u64 vm_alloc(struct vm_data* pointer) {
 }
 
 void vm_free(struct vm_data* pointer, u64 address) {
-    if (address > 0 && address < pointer->size) {
+    if (address > address_space && address - address_space < pointer->size) {
         void** ptr = to_real_address(pointer->base, address);
         if (*ptr != 0) {
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -91,7 +91,7 @@ void vm_free(struct vm_data* pointer, u64 address) {
 
 static void* vm_read(struct vm_data* pointer, u64 address) {
     void** data = 0;
-    if (address > 0 && address < pointer->size) {
+    if (address > address_space && address - address_space < pointer->size) {
         data = to_real_address(pointer->base, address);
         data = *data;
     }
@@ -99,7 +99,7 @@ static void* vm_read(struct vm_data* pointer, u64 address) {
 }
 
 static void vm_write(struct vm_data* pointer, u64 address, void* value) {
-    if (address > 0 && address < pointer->size) {
+    if (address > address_space && address - address_space < pointer->size) {
         void** ptr = to_real_address(pointer->base, address);
         *ptr = value;
     }
