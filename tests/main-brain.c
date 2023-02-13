@@ -89,32 +89,6 @@ RX_TEST_CASE(myTestSuite, test_print_load_empty, .fixture = test_fixture) {
 }
 
 // test init
-RX_TEST_CASE(myTestSuite, test_strcat_alloc_load, .fixture = test_fixture) {
-    u64 zero_ptr = pointer->alloc();
-    u64 char_ptr = pointer->load("/");
-    pointer->strcat(zero_ptr, char_ptr);
-    RX_ASSERT(zero_ptr != 0);
-    RX_ASSERT(char_ptr != 0);
-#ifndef USE_GC
-    pointer->free(zero_ptr);
-    pointer->free(char_ptr);
-#endif
-}
-
-// test init
-RX_TEST_CASE(myTestSuite, test_strcat_load_alloc, .fixture = test_fixture) {
-    u64 char_ptr = pointer->load("/");
-    u64 pattern_ptr = pointer->alloc();
-    pointer->strcat(pattern_ptr, char_ptr);
-    RX_ASSERT(char_ptr != 0);
-    RX_ASSERT(pattern_ptr != 0);
-#ifndef USE_GC
-    pointer->free(char_ptr);
-    pointer->free(pattern_ptr);
-#endif
-}
-
-// test init
 RX_TEST_CASE(myTestSuite, test_load_copy, .fixture = test_fixture) {
     u64 char_ptr = pointer->load("/");
     u64 copy_ptr = pointer->copy(char_ptr);
@@ -148,6 +122,32 @@ RX_TEST_CASE(myTestSuite, test_load_free_free, .fixture = test_fixture) {
     RX_ASSERT(char_ptr != 0);
 #ifndef USE_GC
     pointer->free(char_ptr);
+    pointer->free(char_ptr);
+#endif
+}
+
+// test init
+RX_TEST_CASE(myTestSuite, test_strcat_load_alloc, .fixture = test_fixture) {
+    u64 char_ptr = pointer->load("/");
+    u64 pattern_ptr = pointer->alloc();
+    pointer->strcat(pattern_ptr, char_ptr);
+    RX_ASSERT(char_ptr != 0);
+    RX_ASSERT(pattern_ptr != 0);
+#ifndef USE_GC
+    pointer->free(char_ptr);
+    pointer->free(pattern_ptr);
+#endif
+}
+
+// test init
+RX_TEST_CASE(myTestSuite, test_strcat_alloc_load, .fixture = test_fixture) {
+    u64 zero_ptr = pointer->alloc();
+    u64 char_ptr = pointer->load("/");
+    pointer->strcat(zero_ptr, char_ptr);
+    RX_ASSERT(zero_ptr != 0);
+    RX_ASSERT(char_ptr != 0);
+#ifndef USE_GC
+    pointer->free(zero_ptr);
     pointer->free(char_ptr);
 #endif
 }
