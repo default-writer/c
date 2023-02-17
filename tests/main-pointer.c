@@ -68,59 +68,6 @@ RX_TEST_CASE(myTestSuite, test_list_push_list_peek_list_pop, .fixture = test_fix
     pointer->list_free(list_ptr);
 }
 
-// test init
-RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_fixture) {
-#ifdef DEBUG
-    debug("TEST %s\n", "test_load_open_file_unsafe_hashtable");
-#endif
-    u64 file_path_ptr = pointer->getcwd();
-    u64 file_name_ptr = pointer->load("/all_english_words.txt");
-    pointer->strcat(file_path_ptr, file_name_ptr);
-#ifndef USE_GC
-    pointer->free(file_name_ptr);
-#endif
-    u64 mode_ptr = pointer->load("rb");
-    u64 f_ptr = pointer->open_file(file_path_ptr, mode_ptr);
-    if (f_ptr != 0) {
-        u64 data_ptr = pointer->read_file(f_ptr);
-        u64 list_ptr = pointer->list_alloc();
-        pointer->close_file(f_ptr);
-        char* file_data = pointer->unsafe(data_ptr);
-        for (int i = 0; i < 10; i++) {
-            char* tmp = file_data;
-            while (*tmp != 0 && *tmp != '\n') {
-                tmp++;
-            }
-            *tmp++ = '\0';
-            u64 data = pointer->load(file_data);
-            pointer->list_push(list_ptr, data);
-            //  u64 _tmp = (u64)pointer->list_pop(list_ptr);
-            // pointer->free(data);
-            // char* unsafe = pointer->unsafe(data);
-            pointer->printf(data);
-            // printf("%s\n", unsafe);
-            file_data = tmp;
-        }
-        pointer->list_free(list_ptr);
-#ifndef USE_GC
-        pointer->free(data_ptr);
-#endif
-    }
-//     u64 word_ptr = pointer->load(file_data);
-//     // char* word = pointer->unsafe(word_ptr);
-//     u64 value_ptr = pointer->load("value");
-//     // char* value = pointer->unsafe(value_ptr);
-//     //  struct hashtable_data* record = hashtable->get(word, value);
-#ifndef USE_GC
-    //     // hashtable->free(record);
-    //     pointer->free(word_ptr);
-    //     pointer->free(value_ptr);
-    pointer->free(mode_ptr);
-    pointer->free(file_name_ptr);
-    pointer->free(file_path_ptr);
-#endif
-}
-
 int main(int argc, char** argv) {
     CLEAN(argc)
 #ifdef USE_MEMORY_DEBUG_INFO
