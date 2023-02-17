@@ -60,7 +60,12 @@ RX_TEST_CASE(myTestSuite, test_list_push_list_peek_list_pop, .fixture = test_fix
         char* data = pointer->unsafe(ch0);
         *(buffer + i) = *data;
         u64 ch = pointer->list_pop(list_ptr);
+#ifdef USE_GC
+        CLEAN(ch)
+#endif
+#ifndef USE_GC
         pointer->free(ch);
+#endif
     }
     printf("%s\n", buffer);
     free(buffer);
