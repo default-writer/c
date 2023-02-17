@@ -136,6 +136,8 @@ static void list_destroy(struct list_data** current) {
     }
 }
 
+#ifdef USE_MEMORY_DEBUG_INFO
+
 // prints head on current context (stack)
 static void list_print_head(struct list_data** current) {
     // get current context's head
@@ -162,6 +164,8 @@ static void list_print(struct list_data** current) {
     // stop on root element
 }
 
+#endif
+
 /* public */
 
 const struct list list_micro_definition = {
@@ -172,6 +176,8 @@ const struct list list_micro_definition = {
     .push = list_push,
     .pop = list_pop,
     .peek = list_peek,
+#ifdef USE_MEMORY_DEBUG_INFO
     .print_head = list_print_head,
     .print = list_print
+#endif
 };

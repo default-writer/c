@@ -18,6 +18,16 @@ void* _list_alloc(size_t nmemb, size_t size) {
 }
 
 void _list_free(void* ptr, size_t size) {
+    if (ptr == 0) {
+        void* callstack[128];
+        int frames = backtrace(callstack, 128);
+        char** strings = backtrace_symbols(callstack, frames);
+        for (int i = 0; i < frames; ++i) {
+            printf("WARING: null pointer:\n%s\n", strings[i]);
+        }
+        free(strings);
+        return;
+    }
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("   -: 0x%016llx !  %16lld\n", (u64)ptr, (u64)size);
 #endif

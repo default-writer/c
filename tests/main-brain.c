@@ -2,7 +2,9 @@
 
 #include "playground/brain/brain.h"
 #include "playground/hashtable/hashtable.h"
-#include "playground/list/v2/list.h"
+
+// #include "playground/list/v2/list.h"
+#include "list-micro/data.h"
 #include "playground/pointer/pointer.h"
 #include "playground/virtual/vm.h"
 
@@ -12,49 +14,25 @@
 
 /* list definition */
 extern const struct vm vm_definition;
-// extern const struct hashtable hashtable_definition;
-extern const struct list list_v2;
-
-/* list definition */
-static const struct list* list = &list_v2;
-static const struct vm* vm = &vm_definition;
-// static const struct hashtable* hashtable = &hashtable_definition;
-
+extern const struct list list_micro_definition;
 extern struct pointer_methods pointer_methods_definition;
 const struct pointer_methods* pointer = &pointer_methods_definition;
 
 typedef struct test_data {
-    struct init_data* ctx;
+    struct pointer_data* ctx;
 }* TEST_DATA;
 
 RX_SET_UP(test_set_up) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct init_data** ctx = &rx->ctx;
-    *ctx = calloc(1, sizeof(struct init_data));
-    struct init_data* init = *ctx;
-    init->vm = vm->init(DEFAULT_SIZE);
-    init->list = list->alloc(DEFAULT_SIZE);
-#ifdef USE_GC
-    init->gc_list = list->alloc(DEFAULT_SIZE);
-#endif
-    pointer_set(*ctx);
+    struct pointer_data** ctx = &rx->ctx;
+    pointer_set(ctx);
     return RX_SUCCESS;
 }
 
 RX_TEAR_DOWN(test_tear_down) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct init_data** ctx = &rx->ctx;
-    struct init_data* init = *ctx;
-#ifdef USE_GC
-    pointer->gc(void);
-#endif
-    pointer_get(init);
-    vm->destroy(init->vm);
-    list->free(init->list);
-#ifdef USE_GC
-    list->free(init->gc_list);
-#endif
-    free(*ctx);
+    struct pointer_data** ctx = &rx->ctx;
+    pointer_get(ctx);
 }
 
 /* Define the fixture. */
@@ -288,6 +266,7 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
     u64 mode_ptr = pointer->load("rb");
     u64 f_ptr = pointer->open_file(file_path_ptr, mode_ptr);
     u64 data_ptr = pointer->read_file(f_ptr);
+    u64 list_ptr = pointer->list_alloc();
     if (f_ptr != 0) {
         pointer->close_file(f_ptr);
         char* file_data = pointer->unsafe(data_ptr);
@@ -297,10 +276,13 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
                 tmp++;
             }
             *tmp++ = '\0';
+            // u64 data = pointer->load(file_data);
+            // pointer->list_push(list_ptr, data);
             printf("%s\n", file_data);
             file_data = tmp;
         }
     }
+    pointer->list_free(list_ptr);
 //     u64 word_ptr = pointer->load(file_data);
 //     // char* word = pointer->unsafe(word_ptr);
 //     u64 value_ptr = pointer->load("value");
@@ -348,21 +330,18 @@ extern inline void source(void) {
 }
 
 int main(int argc, char** argv) {
-    ZEROPTR(argc)
+    CLEAN(argc)
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- acceptance test code\n");
 #endif
-    pointer_init(DEFAULT_SIZE);
+    pointer->init(DEFAULT_SIZE);
     u64 argv_ptr = pointer->load(argv[0]);
     pointer->push(argv_ptr);
     source();
 #ifndef USE_GC
     pointer->free(argv_ptr);
 #endif
-#ifdef USE_GC
-    pointer->gc(void);
-#endif
-    pointer_destroy();
+    pointer->destroy();
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- rexo unit test code\n");
 #endif

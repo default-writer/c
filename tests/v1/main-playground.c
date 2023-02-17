@@ -24,13 +24,13 @@ typedef struct test_data {
 
 /* Initialize the data structure. Its allocation is handled by Rexo. */
 RX_SET_UP(test_set_up) {
-    list->init(void);
+    list->init();
     // success
     return RX_SUCCESS;
 }
 
 RX_TEAR_DOWN(test_tear_down) {
-    list->destroy(void);
+    list->destroy();
 }
 
 /* Define the fixture. */
@@ -46,11 +46,11 @@ RX_TEST_CASE(myTestSuite, test_list_push_v1, .fixture = test_fixture) {
     list->push(payload);
     list->push(payload);
     // pops from the list
-    list->pop(void);
-    list->pop(void);
-    list->pop(void);
+    list->pop();
+    list->pop();
+    list->pop();
     // peeks from the list
-    const void* head = list->peek(void);
+    const void* head = list->peek();
     // ensures data is added to the list
     RX_ASSERT(head == payload);
 }
@@ -58,7 +58,7 @@ RX_TEST_CASE(myTestSuite, test_list_push_v1, .fixture = test_fixture) {
 // test context
 RX_TEST_CASE(myTestSuite, test_context_enter_leave_v1, .fixture = test_fixture) {
     const struct class* context = &class_definition_v1;
-    struct class_data* data = context->new (void);
+    struct class_data* data = context->new ();
     context->push(data);
     RX_ASSERT(context->pop() == data);
     context->delete (data);
@@ -67,7 +67,7 @@ RX_TEST_CASE(myTestSuite, test_context_enter_leave_v1, .fixture = test_fixture) 
 // test context
 RX_TEST_CASE(myTestSuite, test_class_get_set_data_v1, .fixture = test_fixture) {
     const struct class* context = &class_definition_v1;
-    struct class_data* data = context->new (void);
+    struct class_data* data = context->new ();
     void* payload = (void(*))0xdeadbeef;
     context->push(data);
     context->set(payload);
@@ -79,8 +79,8 @@ RX_TEST_CASE(myTestSuite, test_class_get_set_data_v1, .fixture = test_fixture) {
 // test context
 RX_TEST_CASE(myTestSuite, test_class_push_pop_get_set_data_v1, .fixture = test_fixture) {
     const struct class* context = &class_definition_v1;
-    struct class_data* data1 = context->new (void);
-    struct class_data* data2 = context->new (void);
+    struct class_data* data1 = context->new ();
+    struct class_data* data2 = context->new ();
 
     void* payload1 = (void(*))0xdeadbeef;
     void* payload2 = (void(*))0xbebebebe;

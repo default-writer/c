@@ -93,18 +93,18 @@ static void list_using(struct list_data** current) {
     list->print(current);
 #endif
     void* q_peek0 = list->peek(current);
-    ZEROPTR(q_peek0)
+    CLEAN(q_peek0)
     void* q_pop0 = list->pop(current);
 #ifdef USE_MEMORY_DEBUG_INFO
     list->print(current);
 #endif
     void* q_pop1 = list->pop(current);
-    ZEROPTR(q_pop1)
+    CLEAN(q_pop1)
 #ifdef USE_MEMORY_DEBUG_INFO
     list->print(current);
 #endif
     void* q_pop2 = list->pop(current);
-    ZEROPTR(q_pop2)
+    CLEAN(q_pop2)
 #ifdef USE_MEMORY_DEBUG_INFO
     list->print(current);
 #endif
@@ -117,33 +117,33 @@ static void list_using(struct list_data** current) {
     RX_ASSERT(q_peek2 != q_peek3);
     RX_ASSERT(q_peek1 == q_peek3);
     void* q_pop4 = list->pop(current);
-    ZEROPTR(q_pop4)
+    CLEAN(q_pop4)
 #ifdef USE_MEMORY_DEBUG_INFO
     list->print(current);
 #endif
     void* q_pop5 = list->pop(current);
-    ZEROPTR(q_pop5)
+    CLEAN(q_pop5)
 #ifdef USE_MEMORY_DEBUG_INFO
     list->print(current);
 #endif
     void* q_peek4 = list->peek(current);
     list->push(current, q_pop0);
-    ZEROPTR(q_peek4)
+    CLEAN(q_peek4)
 #ifdef USE_MEMORY_DEBUG_INFO
     list->print(current);
 #endif
     void* q_pop6 = list->pop(current);
-    ZEROPTR(q_pop6)
+    CLEAN(q_pop6)
 #ifdef USE_MEMORY_DEBUG_INFO
     list->print(current);
 #endif
     void* q_pop7 = list->pop(current);
-    ZEROPTR(q_pop7)
+    CLEAN(q_pop7)
 #ifdef USE_MEMORY_DEBUG_INFO
     list->print(current);
 #endif
     void* q_peek5 = list->peek(current);
-    ZEROPTR(q_peek5)
+    CLEAN(q_peek5)
 #ifdef USE_MEMORY_DEBUG_INFO
     list->print(current);
 #endif
@@ -489,7 +489,7 @@ RX_TEST_CASE(myTestSuite, test_list_push_pop, .fixture = test_fixture) {
     int i = 0;
     do {
         // generates random values
-        void* _payload = (void*)lcg_parkmiller_state(void);
+        void* _payload = (void*)lcg_parkmiller_state();
         // records value
         _recorded[i] = _payload;
         // pushes to the list

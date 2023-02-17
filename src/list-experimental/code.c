@@ -169,6 +169,8 @@ static void* list_peek(struct list_data** current) {
     return 0;
 }
 
+#ifdef USE_MEMORY_DEBUG_INFO
+
 // prints head on current context (stack)
 static void list_print_head(struct list_data** current) {
     // get current context's head
@@ -201,6 +203,8 @@ static void list_print(struct list_data** current) {
         } while (ptr != 0);
     }
 }
+
+#endif
 
 /* public */
 
@@ -240,6 +244,8 @@ const struct list list_experimental_definition = {
     .push = list_push,
     .pop = list_pop,
     .peek = list_peek,
+#ifdef USE_MEMORY_DEBUG_INFO
     .print_head = list_print_head,
     .print = list_print
+#endif
 };

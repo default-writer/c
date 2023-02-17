@@ -7,6 +7,7 @@
 extern const struct list list_v2;
 
 /*private */
+
 static const struct list* list = &list_v2;
 static struct list_data* cache;
 

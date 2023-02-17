@@ -5,7 +5,7 @@
   },
   "terminal.integrated.smoothScrolling": true,
   "terminal.integrated.cursorBlinking": true,
-  "terminal.integrated.enableFileLinks": true,
+  "terminal.integrated.enableFileLinks": "on",
   "terminal.integrated.defaultProfile.linux": "bash",
   "terminal.integrated.profiles.linux": {
     "bash": {
@@ -43,6 +43,7 @@
   "cSpell.words": [
     "asan",
     "calloc",
+    "callstack",
     "chatgpt",
     "dlinfo",
     "gregs",
@@ -54,7 +55,7 @@
     "sptr",
     "struct",
     "ulong",
-    "ZEROPTR"
+    "CLEAN"
   ],
   "cSpell.files": [
     "**/*.c",

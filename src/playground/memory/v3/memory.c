@@ -36,7 +36,7 @@ static void* memory_alloc(u64 size) {
 
 // releases global memory
 static void memory_free(const void* data, u64 size) {
-    ZEROPTR(data)
+    CLEAN(data);
     --ptr;
     ptr -= size;
 #ifdef USE_MEMORY_DEBUG_INFO

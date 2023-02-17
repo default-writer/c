@@ -4,8 +4,16 @@
 #include "std/common.h"
 
 struct pointer;
+struct pointer_data;
 
 struct pointer_methods {
+    void (*init)(u64 size);
+    void (*destroy)(void);
+    u64 (*list_alloc)(void);
+    void (*list_free)(u64);
+    u64 (*list_peek)(u64 list_ptr);
+    u64 (*list_pop)(u64 list_ptr);
+    void (*list_push)(u64 list_ptr, u64 ptr);
     u64 (*alloc)(void);
     u64 (*copy)(u64 ptr);
     u64 (*peek)(void);
@@ -29,20 +37,7 @@ struct pointer_methods {
 #endif
 };
 
-typedef void (*pointer_function)(u64 ptr);
-
-void pointer_init(u64 size);
-void pointer_destroy(void);
-
-struct init_data {
-    struct vm_data* vm;
-    struct list_data* list;
-#ifdef USE_GC
-    struct list_data* gc_list;
-#endif
-};
-
-void pointer_get(struct init_data* init);
-void pointer_set(struct init_data* init);
+void pointer_get(struct pointer_data** init);
+void pointer_set(struct pointer_data** init);
 
 #endif // _PLAYGROUND_POINTER_H_

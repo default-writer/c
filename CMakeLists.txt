@@ -181,7 +181,6 @@ set(LIB_PLAYGROUND2_SOURCE src/playground/class/v2/class.c)
 set(LIB_MEMORY_SOURCE src/playground/memory/v1/memory.c src/playground/memory/v2/memory.c)
 set(LIB_BRAIN_SOURCE src/playground/brain/brain.c)
 set(LIB_POINTER_SOURCE src/playground/pointer/pointer.c)
-# set(LIB_SIGSEGV_SOURCE src/playground/signal/sigsegv.c)
 
 set(MAIN_STANDARD_SOURCE tests/main.c ${LIB_STANDARD_SOURCE})
 set(MAIN_LIGHT_SOURCE tests/main-light.c ${LIB_LIGHT_SOURCE})
@@ -191,7 +190,7 @@ set(MAIN_EXPERIMENTAL_SOURCE tests/main-experimental.c ${LIB_EXPERIMENTAL_SOURCE
 set(MAIN_PLAYGROUND_SOURCE tests/v1/main-playground.c ${LIB_PLAYGROUND_SOURCE})
 set(MAIN_PLAYGROUND2_SOURCE tests/v2/main-playground.c ${LIB_PLAYGROUND2_SOURCE})
 set(MAIN_MEMORY_SOURCE tests/main-memory.c ${LIB_MEMORY_SOURCE})
-set(MAIN_BRAIN_SOURCE tests/main-brain.c ${LIB_SIGSEGV_SOURCE})
+set(MAIN_BRAIN_SOURCE tests/main-brain.c)
 set(MAIN_TEST_SOURCE src/playground/test.c)
 set(MAIN_ZEN_SOURCE src/playground/zen/zen.c)
 
@@ -214,7 +213,6 @@ add_library(list-playground STATIC ${LIB_PLAYGROUND_SOURCE})
 add_library(list-playground2 STATIC ${LIB_PLAYGROUND2_SOURCE})
 add_library(list-brain STATIC ${LIB_BRAIN_SOURCE})
 add_library(list-pointer STATIC ${LIB_POINTER_SOURCE})
-# add_library(sigsegv SHARED ${LIB_SIGSEGV_SOURCE})
 
 add_executable(main ${MAIN_STANDARD_SOURCE})
 add_executable(main-light ${MAIN_LIGHT_SOURCE})
@@ -241,7 +239,7 @@ target_link_libraries(main-experimental PRIVATE list-experimental list-lcg list-
 target_link_libraries(main-playground PRIVATE list-playground list-micro list-common list-v1)
 target_link_libraries(main-playground2 PRIVATE list-playground2 list-micro list-common list-v2)
 target_link_libraries(main-memory PRIVATE list-memory list-v1)
-target_link_libraries(main-brain PRIVATE list-pointer list-v2 vm hashtable)
+target_link_libraries(main-brain PRIVATE list-pointer list-v2 vm hashtable list-micro list-v2)
 target_link_libraries(main-test)
 
 configure_file(all_english_words.txt ${CMAKE_BINARY_DIR}/all_english_words.txt COPYONLY)
