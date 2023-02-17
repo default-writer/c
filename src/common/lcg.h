@@ -4,6 +4,7 @@
 #include "std/common.h"
 
 /* LCG Park-Miller function */
-u64 lcg_parkmiller();
+u32 lcg_parkmiller(u32* state);
+u32 lcg_parkmiller_state(void);
 
 #endif // _COMMON_LCG_H_

@@ -5,13 +5,13 @@
 /* private */
 
 /* gets size of a memory block to allocate */
-static size_t _size() {
+static size_t _size(void) {
     /* returns size of a memory block to allocate */
     return sizeof(struct list_data);
 }
 
 /* allocates memory pointer */
-static struct list_data* _new() {
+static struct list_data* _new(void) {
     // returns list object
     return _list_alloc(1, _size());
 }

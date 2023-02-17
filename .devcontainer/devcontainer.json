@@ -35,7 +35,7 @@
 		"C_Cpp.intelliSenseEngine": "disabled",
 		"testOnSave.enabled": true,
 		"testOnSave.languageId": "c",
-		"testOnSave.testCommand": "./bin/coverage.sh --all --clean --silent --sanitize --gc",
+		"testOnSave.testCommand": "./bin/coverage.sh --all --clean --silent --sanitize",
 		"koverage.coverageFileNames": [
 			"lcov.info"
 		],

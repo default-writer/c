@@ -27,25 +27,25 @@ static struct list_data* class_list_data = &list_data;
 static const struct list* list = &list_micro_definition;
 
 /* creates the class instance */
-static struct class_data* _new();
+static struct class_data* _new(void);
 /* deletes the class instance */
 static void _delete(struct class_data* ptr);
 /* returns class instance size */
-static size_t _size();
+static size_t _size(void);
 
 /* proxy for the class function get_data() */
-static void* class_get();
+static void* class_get(void);
 /* proxy for the class function set_data( void*)*/
 static void class_set(void* data);
 
 /* gets size of a memory block to allocate */
-static size_t _size() {
+static size_t _size(void) {
     /* returns size of a memory block to allocate */
     return sizeof(struct class_data);
 }
 
 /* allocates memory pointer */
-static struct class_data* _new() {
+static struct class_data* _new(void) {
     // returns class object
     return _list_alloc(1, _size());
 }
@@ -57,9 +57,9 @@ static void _delete(struct class_data* class) {
 }
 
 /* initializes the new context's head element */
-static struct class_data* class_new() {
+static struct class_data* class_new(void) {
     /* creates emtpy data chunk */
-    return _new();
+    return _new(void);
 }
 
 /* destroys the memory stack */
@@ -81,12 +81,12 @@ static void class_push(struct class_data* class) {
     list->push(&class_list_data, class);
 }
 
-static struct class_data* class_pop() {
+static struct class_data* class_pop(void) {
     // pops from the list
     return list->pop(&class_list_data);
 }
 
-static void* class_get() {
+static void* class_get(void) {
     // returns data
     return class_get_data(list->peek(&class_list_data));
 }

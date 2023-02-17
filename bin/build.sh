@@ -104,6 +104,10 @@ for opt in "${opts[@]}"; do
             silent="--silent"
             ;;
 
+        "--valgrind") # [optional] runs using valgrind (disables --sanitize on build)
+            valgrind="--valgrind"
+            ;;
+
         *)
             help
             ;;
@@ -115,14 +119,14 @@ if [ "${silent}" == "--silent" ]; then
     exec 2>&1 >/dev/null
 fi
 
-[ ! -d "${pwd}/cmake" ] && mkdir "${pwd}/cmake"
+[ ! -d "${pwd}/build" ] && mkdir "${pwd}/build"
 
 if [ "${clean}" == "--clean" ]; then
-    rm -rf "${pwd}/cmake"
-    mkdir "${pwd}/cmake"
+    rm -rf "${pwd}/build"
+    mkdir "${pwd}/build"
 fi
 
-if [ "${sanitize}" == "--sanitize" ]; then
+if [ "${sanitize}" == "--sanitize" ] && [ "${valgrind}" != "--valgrind" ]; then
     SANITIZER_OPTIONS=-DCODE_SANITIZER:BOOL=TRUE
 else
     SANITIZER_OPTIONS=
@@ -140,6 +144,12 @@ else
     GC_OPTIONS=
 fi
 
+if [ "${valgrind}" == "--valgrind" ]; then
+    VALGRIND_OPTIONS=valgrind
+else
+    VALGRIND_OPTIONS=
+fi
+
 OPTIONS=$(echo "${MOCKS_OPTIONS} ${GC_OPTIONS} ${SANITIZER_OPTIONS}")
 
 export MAKEFLAGS=-j8
@@ -154,14 +164,15 @@ cmake \
     -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
     ${OPTIONS} \
     -S"${pwd}" \
-    -B"${pwd}/cmake" \
+    -B"${pwd}/build" \
     -G "Ninja"
 
 for m in "${array[@]}"; do
-    cmake --build "${pwd}/cmake" --target "${m}" || (echo ERROR: "${m}" && exit 1)
+    cmake --build "${pwd}/build" --target "${m}" || (echo ERROR: "${m}" && exit 1)
+    timeout --foreground 5 ${VALGRIND_OPTIONS} "${pwd}/build/${m}" 2>&1 >"${pwd}/build/log-${m}.txt" || (echo ERROR: "${m}" && exit 1)
 done
 
-main=$(find "${pwd}/cmake" -type f -name "*.s" -exec echo {} \;)
+main=$(find "${pwd}/build" -type f -name "*.s" -exec echo {} \;)
 for i in $main; do
     path="${pwd}/$(echo $i | sed -n -e 's/^.*.dir\/\(.*\)$/\1/p')"
     cp "${i}" "${path}"

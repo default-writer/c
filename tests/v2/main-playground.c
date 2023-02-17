@@ -88,10 +88,10 @@ RX_TEST_CASE(myTestSuite, test_class_push_pop_get_set_data_v2, .fixture = test_f
     context->delete (data2);
 }
 
-int main() {
+int main(void) {
 #ifdef USE_MEMORY_ALLOC
-    memory_init();
-    memory_destroy();
+    memory_init(void);
+    memory_destroy(void);
 #endif
     /* Execute the main function that runs the test cases found. */
     return rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;

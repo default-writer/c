@@ -24,11 +24,11 @@ struct class_data {
 static const struct list* list = &list_v2;
 
 /* creates the class instance */
-static struct class_data* _new();
+static struct class_data* _new(void);
 /* deletes the class instance */
 static void _delete(struct class_data* ptr);
 /* returns class instance size */
-static size_t _size();
+static size_t _size(void);
 
 /* proxy for the class function get_data() */
 static void* class_get(struct class_data* class);
@@ -36,13 +36,13 @@ static void* class_get(struct class_data* class);
 static void class_set(struct class_data* class, void* data);
 
 /* gets size of a memory block to allocate */
-static size_t _size() {
+static size_t _size(void) {
     /* returns size of a memory block to allocate */
     return sizeof(struct class_data);
 }
 
 /* allocates memory pointer */
-static struct class_data* _new() {
+static struct class_data* _new(void) {
     // returns class object
     return _list_alloc(1, _size());
 }

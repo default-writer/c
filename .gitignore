@@ -36,7 +36,6 @@ chud.log
 node_modules
 vcpkg
 bazel*
-build
 **/*.gcda
 **/*.gcno
 **/*.
@@ -47,6 +46,7 @@ lcov.info
 report
 .cache
 .history
+build
 cmake
 coverage
 logs

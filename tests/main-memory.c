@@ -5,7 +5,7 @@ extern const struct memory_allocator memory_allocator_v2;
 
 void use(const struct memory_allocator* allocator) {
     // initializes memory pool
-    allocator->init();
+    allocator->init(void);
     // allocation size aligned to 8 byte boundaries (64-bit pointers)
     u64 size = 2;
     // allocates memory block
@@ -34,10 +34,10 @@ void use(const struct memory_allocator* allocator) {
     // releases memory block
     allocator->free(ptr, size);
     // destroys memory pool
-    allocator->destroy();
+    allocator->destroy(void);
 }
 
-int main() {
+int main(void) {
     use(&memory_allocator_v1);
     use(&memory_allocator_v2);
     return 0;

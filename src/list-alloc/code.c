@@ -12,13 +12,13 @@ extern struct list_parameters list_parameters_definition;
 /* private */
 
 /* gets size of a memory block to allocate */
-static size_t _size() {
+static size_t _size(void) {
     /* returns size of a memory block to allocate */
     return sizeof(struct list_data);
 }
 
 /* allocates memory pointer */
-static struct list_data* _new() {
+static struct list_data* _new(void) {
     // declares pointer to list parameters definitions
     const struct list_parameters* parameters = &list_parameters_definition;
     /* allocates memory */
@@ -160,8 +160,8 @@ static void list_print(struct list_data** current) {
 /* public */
 
 /* initializes the new context's head element */
-struct list_data* list_init() {
-    return _new();
+struct list_data* list_init(void) {
+    return _new(void);
 }
 
 /* destroys the memory stack */

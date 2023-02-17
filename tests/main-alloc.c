@@ -16,15 +16,15 @@ extern const struct list list_alloc_definition;
 extern struct list_parameters list_parameters_definition;
 
 /* LCG Park-Miller function */
-extern u64 lcg_parkmiller();
+extern u64 lcg_parkmiller_state(void);
 
 /* initializes the new context's head element */
-struct list_data* list_init();
+struct list_data* list_init(void);
 /* destroys the memory stack */
 void list_destroy(struct list_data* ptr);
 
 /* allocates memory pointer for list object */
-static struct list_data* new_list() {
+static struct list_data* new_list(void) {
     // returns list object
     return list_init();
 }
@@ -490,7 +490,7 @@ RX_TEST_CASE(myTestSuite, test_list_push_pop, .fixture = test_fixture) {
     int i = 0;
     do {
         // generates random values
-        void* _payload = (void*)lcg_parkmiller();
+        void* _payload = (void*)lcg_parkmiller_state();
         // records value
         _recorded[i] = _payload;
         // pushes to the list
@@ -521,7 +521,7 @@ RX_TEST_CASE(myTestSuite, test_list_push_pop, .fixture = test_fixture) {
     _list_free(_recorded, ALLOC_SIZE(N_ELEMENTS));
 }
 
-int main() {
+int main(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- acceptance test code\n");
 #endif

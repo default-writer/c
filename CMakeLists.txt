@@ -31,9 +31,13 @@ set(INLINE
     -finline-functions-called-once
 )
 
+set(CLANGD
+    -fsanitize=bounds-strict
+    -static-libasan
+)
+
 set(SANITIZE
-    -fsanitize=undefined,address,leak
-    -fsanitize=pointer-compare,pointer-subtract
+    -fsanitize=address,undefined,leak,pointer-compare,pointer-subtract,float-cast-overflow,float-divide-by-zero
     -fsanitize-undefined-trap-on-error
     -fno-sanitize-recover=all
 )
@@ -166,6 +170,7 @@ set(LIB_PARAMETERS_SOURCE src/common/parameters.c)
 set(LIB_LIST1_SOURCE src/playground/list/v1/list.c)
 set(LIB_LIST2_SOURCE src/playground/list/v2/list.c)
 set(LIB_VM_SOURCE src/playground/virtual/vm.c)
+set(LIB_HASHTABLE_SOURCE src/playground/hashtable/hashtable.c)
 set(LIB_STANDARD_SOURCE src/list/code.c)
 set(LIB_LIGHT_SOURCE src/list-light/code.c)
 set(LIB_MICRO_SOURCE src/list-micro/code.c)
@@ -176,6 +181,7 @@ set(LIB_PLAYGROUND2_SOURCE src/playground/class/v2/class.c)
 set(LIB_MEMORY_SOURCE src/playground/memory/v1/memory.c src/playground/memory/v2/memory.c)
 set(LIB_BRAIN_SOURCE src/playground/brain/brain.c)
 set(LIB_POINTER_SOURCE src/playground/pointer/pointer.c)
+# set(LIB_SIGSEGV_SOURCE src/playground/signal/sigsegv.c)
 
 set(MAIN_STANDARD_SOURCE tests/main.c ${LIB_STANDARD_SOURCE})
 set(MAIN_LIGHT_SOURCE tests/main-light.c ${LIB_LIGHT_SOURCE})
@@ -185,9 +191,8 @@ set(MAIN_EXPERIMENTAL_SOURCE tests/main-experimental.c ${LIB_EXPERIMENTAL_SOURCE
 set(MAIN_PLAYGROUND_SOURCE tests/v1/main-playground.c ${LIB_PLAYGROUND_SOURCE})
 set(MAIN_PLAYGROUND2_SOURCE tests/v2/main-playground.c ${LIB_PLAYGROUND2_SOURCE})
 set(MAIN_MEMORY_SOURCE tests/main-memory.c ${LIB_MEMORY_SOURCE})
-set(MAIN_BRAIN_SOURCE tests/main-brain.c)
+set(MAIN_BRAIN_SOURCE tests/main-brain.c ${LIB_SIGSEGV_SOURCE})
 set(MAIN_TEST_SOURCE src/playground/test.c)
-
 set(MAIN_ZEN_SOURCE src/playground/zen/zen.c)
 
 include_directories(src)
@@ -195,6 +200,7 @@ include_directories(src)
 add_library(list-v1 STATIC ${LIB_LIST1_SOURCE})
 add_library(list-v2 STATIC ${LIB_LIST2_SOURCE})
 add_library(vm STATIC ${LIB_VM_SOURCE})
+add_library(hashtable ${LIB_HASHTABLE_SOURCE})
 add_library(list-memory STATIC ${LIB_MEMORY_SOURCE})
 add_library(list-common STATIC ${LIB_COMMON_SOURCE})
 add_library(list-lcg STATIC ${LIB_LCG_SOURCE})
@@ -208,6 +214,7 @@ add_library(list-playground STATIC ${LIB_PLAYGROUND_SOURCE})
 add_library(list-playground2 STATIC ${LIB_PLAYGROUND2_SOURCE})
 add_library(list-brain STATIC ${LIB_BRAIN_SOURCE})
 add_library(list-pointer STATIC ${LIB_POINTER_SOURCE})
+# add_library(sigsegv SHARED ${LIB_SIGSEGV_SOURCE})
 
 add_executable(main ${MAIN_STANDARD_SOURCE})
 add_executable(main-light ${MAIN_LIGHT_SOURCE})
@@ -234,8 +241,10 @@ target_link_libraries(main-experimental PRIVATE list-experimental list-lcg list-
 target_link_libraries(main-playground PRIVATE list-playground list-micro list-common list-v1)
 target_link_libraries(main-playground2 PRIVATE list-playground2 list-micro list-common list-v2)
 target_link_libraries(main-memory PRIVATE list-memory list-v1)
-target_link_libraries(main-brain PRIVATE list-pointer list-v2 vm)
+target_link_libraries(main-brain PRIVATE list-pointer list-v2 vm hashtable)
 target_link_libraries(main-test)
+
+configure_file(all_english_words.txt ${CMAKE_BINARY_DIR}/all_english_words.txt COPYONLY)
 
 FILE(WRITE ${CMAKE_BINARY_DIR}/input.txt
     "fopen<\"input.txt\",\"rb\">f (? f==0 perror<\"file not found\" exit<1 : print<\"all ok\")"

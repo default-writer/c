@@ -4,11 +4,11 @@
 #include "std/common.h"
 
 struct list {
-    void (*init)();
-    void (*destroy)();
+    void (*init)(void);
+    void (*destroy)(void);
     void (*push)(void* data);
-    void* (*pop)();
-    void* (*peek)();
+    void* (*pop)(void);
+    void* (*peek)(void);
 };
 
 #endif // _PLAYGROUND_LIST_H_

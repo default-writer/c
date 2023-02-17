@@ -1,8 +1,7 @@
-#include "playground/virtual/vm.h"
-#include "playground/list/v2/list.h"
-
 #include "common/alloc.h"
-#include <stdio.h>
+
+#include "playground/list/v2/list.h"
+#include "playground/virtual/vm.h"
 
 /* list definition */
 extern const struct list list_v2;
@@ -27,7 +26,7 @@ static u64 to_virtual_address(void** base, void** ptr);
 
 /* implementation */
 
-static u64 address_space = 0x1000;
+static u64 address_space = 0x0;
 
 static u64 to_virtual_address(void** base, void** ptr) {
     return (u64)(ptr - base) + address_space + 1;

@@ -6,31 +6,33 @@
 struct pointer;
 
 struct pointer_methods {
-    u64 (*alloc)();
+    u64 (*alloc)(void);
     u64 (*copy)(u64 ptr);
-    u64 (*peek)();
+    u64 (*peek)(void);
     void (*push)(u64 ptr);
-    u64 (*pop)();
+    u64 (*pop)(void);
     void (*strcpy)(u64 dest, u64 src);
     void (*strcat)(u64 dest, u64 src);
     u64 (*match_last)(u64 src_ptr, u64 match_prt);
+    u64 (*getcwd)(void);
     u64 (*load)(const char* data);
     u64 (*open_file)(u64 file_path_ptr, u64 mode_ptr);
     u64 (*read_file)(u64 ptr);
     void (*close_file)(u64 ptr);
     void (*printf)(u64 ptr);
     void (*put_char)(u64 ptr, char value);
+    char* (*unsafe)(u64 ptr);
 #ifndef USE_GC
     void (*free)(u64 ptr);
 #else
-    void (*gc)();
+    void (*gc)(void);
 #endif
 };
 
 typedef void (*pointer_function)(u64 ptr);
 
 void pointer_init(u64 size);
-void pointer_destroy();
+void pointer_destroy(void);
 
 struct init_data {
     struct vm_data* vm;

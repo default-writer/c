@@ -105,6 +105,10 @@ for opt in "${opts[@]}"; do
             silent="--silent"
             ;;
 
+        "--valgrind") # [optional] runs using valgrind (disables --sanitize on build)
+            valgrind="--valgrind"
+            ;;
+
         *)
             help
             ;;
@@ -141,6 +145,12 @@ else
     GC_OPTIONS=
 fi
 
+if [ "${valgrind}" == "--valgrind" ]; then
+    VALGRIND_OPTIONS=valgrind
+else
+    VALGRIND_OPTIONS=
+fi
+
 OPTIONS=$(echo "${MOCKS_OPTIONS} ${GC_OPTIONS} ${SANITIZER_OPTIONS}")
 
 export MAKEFLAGS=-j8
@@ -157,7 +167,7 @@ cmake \
 
 for m in "${array[@]}"; do
     cmake --build "${pwd}/logs" --target "${m}" || (echo ERROR: "${m}" && exit 1)
-    timeout --foreground 5 "${pwd}/logs/${m}" 2>&1 >"${pwd}/logs/log-${m}.txt" || (echo ERROR: "${m}" && exit 1)
+    timeout --foreground 5 ${VALGRIND_OPTIONS} "${pwd}/logs/${m}" 2>&1 >"${pwd}/logs/log-${m}.txt" || (echo ERROR: "${m}" && exit 1)
 done
 
 find "${pwd}/logs" -type f -not -name "log-*" -delete

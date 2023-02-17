@@ -104,6 +104,10 @@ for opt in "${opts[@]}"; do
             silent="--silent"
             ;;
 
+        "--valgrind") # [optional] runs using valgrind (disables --sanitize on build)
+            valgrind="--valgrind"
+            ;;
+
         *)
             help
             ;;
@@ -118,8 +122,8 @@ fi
 [ ! -d "${pwd}/coverage" ] && mkdir "${pwd}/coverage"
 
 if [ "${clean}" == "--clean" ]; then
-    rm -rf "${pwd}/cmake"
-    mkdir "${pwd}/cmake"
+    rm -rf "${pwd}/coverage"
+    mkdir "${pwd}/coverage"
 fi
 
 for m in "${array[@]}"; do
@@ -136,6 +140,12 @@ if [ "${gc}" == "--gc" ]; then
     GC_OPTIONS=-DGC:BOOL=TRUE
 else
     GC_OPTIONS=
+fi
+
+if [ "${valgrind}" == "--valgrind" ]; then
+    VALGRIND_OPTIONS=valgrind
+else
+    VALGRIND_OPTIONS=
 fi
 
 OPTIONS=$(echo "${MOCKS_OPTIONS} ${GC_OPTIONS} ${SANITIZER_OPTIONS}")
@@ -158,13 +168,13 @@ cmake \
     -DCODE_COVERAGE:BOOL=TRUE \
     ${OPTIONS} \
     -S"${pwd}" \
-    -B"${pwd}/cmake" \
+    -B"${pwd}/coverage" \
     -G "Ninja"
 
 for m in "${array[@]}"; do
-    cmake --build "${pwd}/cmake" --target "${m}" || (echo ERROR: "${m}" && exit 1)
-    timeout --foreground 5 "${pwd}/cmake/${m}" 2>&1 >"${pwd}/coverage/log-${m}.txt" || (echo ERROR: "${m}" && exit 1)
-    lcov --capture --directory "${pwd}/cmake/" --output-file "${pwd}/coverage/${m}.lcov" &>/dev/null
+    cmake --build "${pwd}/coverage" --target "${m}" || (echo ERROR: "${m}" && exit 1)
+    timeout --foreground 5 ${VALGRIND_OPTIONS} "${pwd}/coverage/${m}" 2>&1 >"${pwd}/coverage/log-${m}.txt" || (echo ERROR: "${m}" && exit 1)
+    lcov --capture --directory "${pwd}/coverage/" --output-file "${pwd}/coverage/${m}.lcov" &>/dev/null
     lcov --remove "${pwd}/coverage/${m}.lcov" "${pwd}/src/rexo/*" -o "${pwd}/coverage/${m}.lcov"
 done
 

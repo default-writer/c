@@ -24,13 +24,13 @@ typedef struct test_data {
 
 /* Initialize the data structure. Its allocation is handled by Rexo. */
 RX_SET_UP(test_set_up) {
-    list->init();
+    list->init(void);
     // success
     return RX_SUCCESS;
 }
 
 RX_TEAR_DOWN(test_tear_down) {
-    list->destroy();
+    list->destroy(void);
 }
 
 /* Define the fixture. */
@@ -46,11 +46,11 @@ RX_TEST_CASE(myTestSuite, test_list_push_v1, .fixture = test_fixture) {
     list->push(payload);
     list->push(payload);
     // pops from the list
-    list->pop();
-    list->pop();
-    list->pop();
+    list->pop(void);
+    list->pop(void);
+    list->pop(void);
     // peeks from the list
-    const void* head = list->peek();
+    const void* head = list->peek(void);
     // ensures data is added to the list
     RX_ASSERT(head == payload);
 }
@@ -58,7 +58,7 @@ RX_TEST_CASE(myTestSuite, test_list_push_v1, .fixture = test_fixture) {
 // test context
 RX_TEST_CASE(myTestSuite, test_context_enter_leave_v1, .fixture = test_fixture) {
     const struct class* context = &class_definition_v1;
-    struct class_data* data = context->new ();
+    struct class_data* data = context->new (void);
     context->push(data);
     RX_ASSERT(context->pop() == data);
     context->delete (data);
@@ -67,7 +67,7 @@ RX_TEST_CASE(myTestSuite, test_context_enter_leave_v1, .fixture = test_fixture) 
 // test context
 RX_TEST_CASE(myTestSuite, test_class_get_set_data_v1, .fixture = test_fixture) {
     const struct class* context = &class_definition_v1;
-    struct class_data* data = context->new ();
+    struct class_data* data = context->new (void);
     void* payload = (void(*))0xdeadbeef;
     context->push(data);
     context->set(payload);
@@ -79,8 +79,8 @@ RX_TEST_CASE(myTestSuite, test_class_get_set_data_v1, .fixture = test_fixture) {
 // test context
 RX_TEST_CASE(myTestSuite, test_class_push_pop_get_set_data_v1, .fixture = test_fixture) {
     const struct class* context = &class_definition_v1;
-    struct class_data* data1 = context->new ();
-    struct class_data* data2 = context->new ();
+    struct class_data* data1 = context->new (void);
+    struct class_data* data2 = context->new (void);
 
     void* payload1 = (void(*))0xdeadbeef;
     void* payload2 = (void(*))0xbebebebe;
@@ -101,10 +101,10 @@ RX_TEST_CASE(myTestSuite, test_class_push_pop_get_set_data_v1, .fixture = test_f
     context->delete (data2);
 }
 
-int main() {
+int main(void) {
 #ifdef USE_MEMORY_ALLOC
-    memory_init();
-    memory_destroy();
+    memory_init(void);
+    memory_destroy(void);
 #endif
     /* Execute the main function that runs the test cases found. */
     return rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;

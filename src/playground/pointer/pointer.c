@@ -1,8 +1,8 @@
-#include "playground/pointer/pointer.h"
-#include "playground/list/v2/list.h"
-#include "playground/virtual/vm.h"
-
 #include "common/alloc.h"
+
+#include "playground/list/v2/list.h"
+#include "playground/pointer/pointer.h"
+#include "playground/virtual/vm.h"
 
 /* list definition */
 extern const struct vm vm_definition;
@@ -39,30 +39,37 @@ struct pointer {
 
 struct file_handler {
     FILE* file;
+#ifdef USE_MEMORY_DEBUG_INFO
+    char* path;
+#endif
 };
 
 void pointer_init(u64 size);
-void pointer_destroy();
+void pointer_destroy(void);
 
 /* api */
 
 static void pointer_push(u64 ptr);
 static u64 pointer_copy(u64 ptr);
-static u64 pointer_peek();
-static u64 pointer_pop();
-static u64 pointer_alloc();
+static u64 pointer_peek(void);
+static u64 pointer_pop(void);
+static u64 pointer_alloc(void);
 static void pointer_free(u64 ptr);
+static char* pointer_unsafe(u64 ptr);
 static void pointer_strcpy(u64 dest_ptr, u64 src_ptr);
 static void pointer_strcat(u64 dest_ptr, u64 src_ptr);
 static u64 pointer_match_last(u64 src_ptr, u64 match_ptr);
 static u64 pointer_load(const char* data);
+static u64 pointer_getcwd(void);
 static u64 pointer_open_file(u64 file_path_ptr, u64 mode_ptr);
 static u64 pointer_read_file(u64 ptr);
 static void pointer_close_file(u64 ptr);
 static void pointer_printf(u64 ptr);
 static void pointer_put_char(u64 ptr, char value);
+static char* char_copy(char* s, u64 size);
+
 #ifdef USE_GC
-static void pointer_gc();
+static void pointer_gc(void);
 #endif
 
 /* internal */
@@ -95,9 +102,9 @@ void pointer_init(u64 size) {
 #endif
 }
 
-void pointer_destroy() {
+void pointer_destroy(void) {
 #ifdef USE_GC
-    pointer_gc();
+    pointer_gc(void);
 #endif
     vm->destroy(base->vm);
     list->free(base->list);
@@ -107,37 +114,13 @@ void pointer_destroy() {
 }
 
 #ifdef USE_GC
-static void pointer_gc() {
+static void pointer_gc(void) {
     u64 ptr = 0;
     while ((ptr = (u64)list->pop(gc->list)) != 0) {
         pointer_free(ptr);
     }
 }
 #endif
-
-static u64 pointer_read_file(u64 ptr) {
-    u64 data = 0;
-    if (ptr != 0) {
-        struct pointer* file_ptr = vm->read(base->vm, ptr);
-        if (file_ptr->type == TYPE_FILE) {
-            // unpack inner file handler
-            struct file_handler* handler = file_ptr->data;
-            FILE* file = handler->file;
-            fseek(file, 0, SEEK_END); // NOLINT
-            u64 size = (u64)ftell(file);
-            fseek(file, 0, SEEK_SET);
-            u64 data_size = size + 1;
-            struct pointer* data_ptr = pointer_alloc_internal(data_size);
-            fread(data_ptr->data, 1, size, handler->file);
-            data = vm->alloc(base->vm);
-            vm->write(base->vm, data, data_ptr);
-#ifdef USE_GC
-            list->push(gc->list, (void*)data);
-#endif
-        }
-    }
-    return data;
-}
 
 static void pointer_push(u64 ptr) {
     if (ptr != 0) {
@@ -162,15 +145,15 @@ static u64 pointer_copy(u64 ptr) {
     return data;
 }
 
-static u64 pointer_peek() {
+static u64 pointer_peek(void) {
     return (u64)list->peek(base->list);
 }
 
-static u64 pointer_pop() {
+static u64 pointer_pop(void) {
     return (u64)list->pop(base->list);
 }
 
-static u64 pointer_alloc() {
+static u64 pointer_alloc(void) {
     u64 data = 0;
     struct pointer* ptr = pointer_alloc_internal(0);
     data = vm->alloc(base->vm);
@@ -207,15 +190,13 @@ static void pointer_free(u64 ptr) {
     }
 }
 
-static void pointer_close_file(u64 ptr) {
+static char* pointer_unsafe(u64 ptr) {
+    char* data = 0;
     if (ptr != 0) {
         struct pointer* data_ptr = vm->read(base->vm, ptr);
-        if (data_ptr->type == TYPE_FILE) {
-            struct file_handler* handler = data_ptr->data;
-            FILE* file = handler->file;
-            fclose(file);
-        }
+        data = data_ptr->data;
     }
+    return data;
 }
 
 static void pointer_strcpy(u64 dest, u64 src) {
@@ -226,14 +207,11 @@ static void pointer_strcpy(u64 dest, u64 src) {
             dest_ptr->data = _list_alloc(1, src_ptr->size);
             dest_ptr->size = src_ptr->size;
         } else {
-            // the use precalculated string lengths is alternative to
-            // strlen(src_ptr->data) + 1
             u64 size = src_ptr->size + 1;
             if (dest_ptr->size < size) {
                 pointer_realloc_internal(dest_ptr, size);
             }
         }
-
         char* data_dest = dest_ptr->data;
         const char* data_src = src_ptr->data; // NOLINT
         strcpy(data_dest, data_src); // NOLINT
@@ -248,8 +226,6 @@ static void pointer_strcat(u64 dest, u64 src) {
             dest_ptr->data = _list_alloc(1, src_ptr->size);
             dest_ptr->size = src_ptr->size;
         } else {
-            // the use precalculated string lengths is alternative to
-            // strlen(dest_ptr->data) + strlen(src_ptr->data) + 1
             u64 size = dest_ptr->size + src_ptr->size - 1;
             if (dest_ptr->size < size) {
                 pointer_realloc_internal(dest_ptr, size);
@@ -305,6 +281,17 @@ static u64 pointer_load(const char* src_data) {
     return data;
 }
 
+static u64 pointer_getcwd(void) {
+    char cwd[PATH_MAX];
+    u64 data_ptr;
+    getcwd(cwd, sizeof(cwd));
+    char* data = _list_alloc(1, strlen(cwd) + 1);
+    strcpy(data, cwd); // NOLINT
+    data_ptr = pointer_load(data);
+    free(data);
+    return data_ptr;
+}
+
 static u64 pointer_open_file(u64 file_path, u64 mode) {
     u64 data = 0;
     struct pointer* file_path_ptr = vm->read(base->vm, file_path);
@@ -313,17 +300,80 @@ static u64 pointer_open_file(u64 file_path, u64 mode) {
         const char* file_path_data = file_path_ptr->data;
         const char* mode_data = mode_ptr->data;
         FILE* file = fopen(file_path_data, mode_data); // NOLINT
-        struct pointer* f_ptr = pointer_alloc_internal(sizeof(struct file_handler));
-        f_ptr->type = TYPE_FILE;
-        struct file_handler* handler = f_ptr->data;
-        handler->file = file;
-        data = vm->alloc(base->vm);
-        vm->write(base->vm, data, f_ptr);
-#ifdef USE_GC
-        list->push(gc->list, (void*)data);
+#ifdef USE_MEMORY_DEBUG_INFO
+        if (file != 0) {
+            debug("file exists: %s\n", file_path_data);
+        } else {
+            debug("file does not exist: %s\n", file_path_data);
+        }
 #endif
+        if (file != 0) {
+            struct pointer* f_ptr = pointer_alloc_internal(sizeof(struct file_handler));
+            f_ptr->type = TYPE_FILE;
+            struct file_handler* handler = f_ptr->data;
+            handler->file = file;
+#ifdef USE_MEMORY_DEBUG_INFO
+            handler->path = char_copy(file_path_ptr->data, file_path_ptr->size);
+#endif
+            data = vm->alloc(base->vm);
+            vm->write(base->vm, data, f_ptr);
+#ifdef USE_GC
+            list->push(gc->list, (void*)data);
+#endif
+        }
     }
     return data;
+}
+
+static u64 pointer_read_file(u64 ptr) {
+    u64 data = 0;
+    if (ptr != 0) {
+        struct pointer* file_ptr = vm->read(base->vm, ptr);
+        if (file_ptr->type == TYPE_FILE) {
+            struct file_handler* handler = file_ptr->data;
+            FILE* file = handler->file;
+#ifdef USE_MEMORY_DEBUG_INFO
+            debug("file handler: 0x%016llx\n", (u64)handler->file);
+            debug("file name: %s\n", handler->path);
+#endif
+            if (file != 0) {
+                fseek(file, 0, SEEK_END); // NOLINT
+                u64 size = (u64)ftell(file);
+                fseek(file, 0, SEEK_SET);
+                u64 data_size = size + 1;
+                struct pointer* data_ptr = pointer_alloc_internal(data_size);
+#ifdef USE_MEMORY_DEBUG_INFO
+                debug("file size: %lld\n", size);
+#endif
+                fread(data_ptr->data, 1, size, handler->file);
+                data = vm->alloc(base->vm);
+                vm->write(base->vm, data, data_ptr);
+            }
+#ifdef USE_GC
+            list->push(gc->list, (void*)data);
+#endif
+        }
+    }
+    return data;
+}
+
+static void pointer_close_file(u64 ptr) {
+    if (ptr != 0) {
+        struct pointer* file_ptr = vm->read(base->vm, ptr);
+        if (file_ptr->type == TYPE_FILE) {
+            struct file_handler* handler = file_ptr->data;
+#ifdef USE_MEMORY_DEBUG_INFO
+            free(handler->path);
+#endif
+            FILE* file = handler->file;
+            if (file != 0) {
+                fclose(file);
+            }
+#ifndef USE_GC
+            pointer_free(ptr);
+#endif
+        }
+    }
 }
 
 static void pointer_printf(u64 ptr) {
@@ -350,6 +400,13 @@ static void pointer_put_char(u64 ptr, char value) {
     }
 }
 
+static char* char_copy(char* s, u64 len) /* make a duplicate of s */
+{
+    char* p = calloc(1, len); /* +1 for ’\0’ */
+    memcpy(p, s, len); // NOLINT
+    return p;
+}
+
 static void pointer_realloc_internal(struct pointer* ptr, u64 size) {
     if (ptr != 0 && ptr->data != 0) {
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -370,6 +427,7 @@ const struct pointer_methods pointer_methods_definition = {
     .strcat = pointer_strcat,
     .match_last = pointer_match_last,
     .load = pointer_load,
+    .getcwd = pointer_getcwd,
     .open_file = pointer_open_file,
     .read_file = pointer_read_file,
     .close_file = pointer_close_file,
@@ -377,6 +435,7 @@ const struct pointer_methods pointer_methods_definition = {
     .put_char = pointer_put_char,
 #ifndef USE_GC
     .free = pointer_free,
+    .unsafe = pointer_unsafe
 #else
     .gc = pointer_gc
 #endif

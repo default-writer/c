@@ -5,7 +5,7 @@
 extern const struct list list_light_definition;
 
 /* allocates memory pointer for list object */
-static struct list_data* new_list() {
+static struct list_data* new_list(void) {
     // declares pointer to list functions definitions
     const struct list* list = &list_light_definition;
     struct list_data* ctx = 0;
@@ -301,7 +301,7 @@ RX_TEST_CASE(myTestSuite, test_list_pop_is_zero, .fixture = test_fixture) {
     RX_ASSERT(head == 0);
 }
 
-int main() {
+int main(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- acceptance test code\n");
 #endif

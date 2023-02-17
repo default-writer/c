@@ -60,7 +60,7 @@ case "${install}" in
         ;;
 
     "--args") # install test .args file
-        args=( '--all' '--clean' '--silent' '--sanitize' '--gc' )
+        args=( '--all' '--clean' '--silent' '--sanitize' )
         printf '%s\n' "${args[@]}" > "${pwd}/.args"
         ;;
 

@@ -16,7 +16,7 @@ static int rgb(int r, int g, int b, char* output) {
     return 0;
 }
 
-int main() {
+int main(void) {
     char buffer[7] = { ' ', ' ', ' ', ' ', ' ', ' ', '\0' };
     rgb(12, 33, 18, buffer);
     printf("rgb(12,33,18) = #%s\n", buffer);

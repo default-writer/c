@@ -32,11 +32,11 @@ I hope it will help you to make a code review.
 // global allocated memory
 static void** ptr = 0;
 
-static void list_init() { ptr = calloc(1, MAX_MEMORY); }
-static void list_destroy() { free(ptr); }
+static void list_init(void) { ptr = calloc(1, MAX_MEMORY); }
+static void list_destroy(void) { free(ptr); }
 static void list_push(void* data) {*ptr++ = data; }
-static void*list_pop() { return*--ptr; }
-static void*list_peek() { return*(ptr - 1); }
+static void*list_pop(void) { return*--ptr; }
+static void*list_peek(void) { return*(ptr - 1); }
 
 /*public*/
 
