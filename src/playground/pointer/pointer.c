@@ -90,6 +90,7 @@ static void pointer_gc(void);
 /* internal */
 static struct pointer* pointer_alloc_internal(u64 size, enum type type);
 static void pointer_realloc_internal(struct pointer* ptr, u64 size);
+static void pointer_free_internal(struct pointer* ptr);
 
 /* implementation*/
 
@@ -207,6 +208,9 @@ static void pointer_list_free(u64 ptr) {
         if (data_ptr != 0 && data_ptr->size > 0 && data_ptr->type == TYPE_LIST) {
             if (data_ptr->data != 0) {
                 struct list_handler* handler = data_ptr->data;
+                while ((ptr = (u64)list->pop(&handler->list)) != 0) {
+                    pointer_free(ptr);
+                }
                 list->destroy(&handler->list);
                 _list_free(data_ptr->data, data_ptr->size);
 #ifdef USE_MEMORY_CLEANUP
@@ -214,17 +218,20 @@ static void pointer_list_free(u64 ptr) {
                 data_ptr->size = 0;
 #endif
             }
-            _list_free(data_ptr, sizeof(struct pointer));
+            pointer_free_internal(data_ptr);
         }
     }
 }
 
-static void pointer_list_push(u64 ptr, u64 data_ptr) {
-    if (ptr != 0 && data_ptr != 0) {
-        struct pointer* list_ptr = vm->read(base->vm, ptr);
+static void pointer_list_push(u64 ptr_list, u64 ptr) {
+    if (ptr_list != 0 && ptr != 0) {
+        struct pointer* list_ptr = vm->read(base->vm, ptr_list);
         struct list_handler* handler = list_ptr->data;
         if (list_ptr->size > 0 && list_ptr->type == TYPE_LIST) {
             list->push(&handler->list, (void*)ptr);
+#ifdef USE_GC
+            list->push(&base->gc, (void*)ptr);
+#endif
         }
     }
 }
@@ -267,11 +274,24 @@ static u64 pointer_alloc(void) {
 static struct pointer* pointer_alloc_internal(u64 size, enum type type) {
     struct pointer* ptr = _list_alloc(1, sizeof(struct pointer));
     if (size != 0) {
-        ptr->type = type;
         ptr->data = _list_alloc(1, size);
+        ptr->type = type;
         ptr->size = size;
     }
     return ptr;
+}
+
+static void pointer_free_internal(struct pointer* ptr) {
+    if (ptr != 0) {
+        if (ptr->data != 0 && ptr->size > 0) {
+            _list_free(ptr->data, ptr->size);
+        }
+#ifdef USE_MEMORY_CLEANUP
+        ptr->data = 0;
+        ptr->size = 0;
+#endif
+    }
+    _list_free(ptr, sizeof(struct pointer));
 }
 
 static void pointer_free(u64 ptr) {
@@ -279,14 +299,7 @@ static void pointer_free(u64 ptr) {
         struct pointer* data_ptr = vm->read(base->vm, ptr);
         vm->free(base->vm, ptr);
         if (data_ptr != 0) {
-            if (data_ptr->size != 0) {
-                _list_free(data_ptr->data, data_ptr->size);
-#ifdef USE_MEMORY_CLEANUP
-                data_ptr->data = 0;
-                data_ptr->size = 0;
-#endif
-            }
-            _list_free(data_ptr, sizeof(struct pointer));
+            pointer_free_internal(data_ptr);
         }
     }
 }

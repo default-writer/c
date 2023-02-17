@@ -265,9 +265,9 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
 #endif
     u64 mode_ptr = pointer->load("rb");
     u64 f_ptr = pointer->open_file(file_path_ptr, mode_ptr);
-    u64 data_ptr = pointer->read_file(f_ptr);
-    u64 list_ptr = pointer->list_alloc();
     if (f_ptr != 0) {
+        u64 data_ptr = pointer->read_file(f_ptr);
+        u64 list_ptr = pointer->list_alloc();
         pointer->close_file(f_ptr);
         char* file_data = pointer->unsafe(data_ptr);
         for (int i = 0; i < 100; i++) {
@@ -276,13 +276,20 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
                 tmp++;
             }
             *tmp++ = '\0';
-            // u64 data = pointer->load(file_data);
-            // pointer->list_push(list_ptr, data);
-            printf("%s\n", file_data);
+            u64 data = pointer->load(file_data);
+            pointer->list_push(list_ptr, data);
+            //  u64 _tmp = (u64)pointer->list_pop(list_ptr);
+            // pointer->free(data);
+            char* unsafe = pointer->unsafe(data);
+            printf("%s\n", unsafe);
             file_data = tmp;
         }
+        pointer->list_free(list_ptr);
+#ifndef USE_GC
+        pointer->free(list_ptr);
+        pointer->free(data_ptr);
+#endif
     }
-    pointer->list_free(list_ptr);
 //     u64 word_ptr = pointer->load(file_data);
 //     // char* word = pointer->unsafe(word_ptr);
 //     u64 value_ptr = pointer->load("value");
@@ -292,7 +299,6 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
     //     // hashtable->free(record);
     //     pointer->free(word_ptr);
     //     pointer->free(value_ptr);
-    pointer->free(data_ptr);
     pointer->free(mode_ptr);
     pointer->free(file_name_ptr);
     pointer->free(file_path_ptr);
