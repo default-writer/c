@@ -38,8 +38,8 @@ static void* to_real_address(void** base, u64 address) {
 }
 
 static struct vm_data* vm_init(u64 size) {
-    struct vm_data* pointer = _list_alloc(1, sizeof(struct vm_data));
-    pointer->base = _list_alloc(size, sizeof(void*));
+    struct vm_data* pointer = _list_alloc(sizeof(struct vm_data));
+    pointer->base = _list_alloc(size * sizeof(void*));
     pointer->max = (void*)((u64*)pointer->base + size);
     pointer->ptr = pointer->base;
     pointer->size = size;

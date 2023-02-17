@@ -21,9 +21,9 @@ static struct list_data* _new(void) {
     // declares pointer to list parameters definitions
     const struct list_parameters* parameters = &list_parameters_definition;
     /* allocates memory */
-    struct list_data* ptr = _list_alloc(1, _size());
+    struct list_data* ptr = _list_alloc(_size());
     /* allocates nested memory pointer */
-    ptr->data = _list_alloc(1, ALLOC_SIZE(parameters->block_size));
+    ptr->data = _list_alloc(ALLOC_SIZE(parameters->block_size));
     // sets the head
     ptr->data[0] = ptr->data;
     // returns list object

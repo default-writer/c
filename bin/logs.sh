@@ -40,6 +40,10 @@ case "${install}" in
         array=("main-brain")
         ;;
 
+    "--pointer") # builds and runs '-pointer' target
+        array=("main-pointer")
+        ;;
+
     "--memory") # builds and runs '-memory' target
         array=("main-memory")
         ;;
@@ -69,12 +73,11 @@ case "${install}" in
         ;;
 
     "--all") # builds and runs all targets
-        array=("zen" "main" "main-test" "main-brain" "main-light" "main-micro" "main-experimental" "main-alloc" "main-playground" "main-playground2" "main-memory")
+        array=("zen" "main" "main-pointer" "main-test" "main-brain" "main-light" "main-micro" "main-experimental" "main-alloc" "main-playground" "main-playground2" "main-memory")
         ;;
 
     *)
         help
-        exit
         ;;
 
 esac

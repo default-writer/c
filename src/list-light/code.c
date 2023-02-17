@@ -13,7 +13,7 @@ static size_t _size(void) {
 /* allocates memory pointer */
 static struct list_data* _new(void) {
     // returns list object
-    return _list_alloc(1, _size());
+    return _list_alloc(_size());
 }
 
 /* releases memory pointer */

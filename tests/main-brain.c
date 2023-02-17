@@ -40,7 +40,7 @@ RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tea
 
 // test init
 RX_TEST_CASE(myTestSuite, test_print_0, .fixture = test_fixture) {
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef DEBUG
     debug("TEST %s\n", "test_print_0");
 #endif
     pointer->printf(0);
@@ -48,7 +48,7 @@ RX_TEST_CASE(myTestSuite, test_print_0, .fixture = test_fixture) {
 
 // test init
 RX_TEST_CASE(myTestSuite, test_load_0, .fixture = test_fixture) {
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef DEBUG
     debug("TEST %s\n", "test_load_0");
 #endif
     u64 empty_ptr = pointer->load(0);
@@ -57,7 +57,7 @@ RX_TEST_CASE(myTestSuite, test_load_0, .fixture = test_fixture) {
 
 // test init
 RX_TEST_CASE(myTestSuite, test_load_empty, .fixture = test_fixture) {
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef DEBUG
     debug("TEST %s\n", "test_load_empty");
 #endif
     u64 empty_ptr = pointer->load("");
@@ -69,7 +69,7 @@ RX_TEST_CASE(myTestSuite, test_load_empty, .fixture = test_fixture) {
 
 // test init
 RX_TEST_CASE(myTestSuite, test_print_load_empty, .fixture = test_fixture) {
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef DEBUG
     debug("TEST %s\n", "test_print_load_empty");
 #endif
     u64 empty_ptr = pointer->load("");
@@ -82,7 +82,7 @@ RX_TEST_CASE(myTestSuite, test_print_load_empty, .fixture = test_fixture) {
 
 // test init
 RX_TEST_CASE(myTestSuite, test_load_copy, .fixture = test_fixture) {
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef DEBUG
     debug("TEST %s\n", "test_load_copy");
 #endif
     u64 char_ptr = pointer->load("/");
@@ -98,7 +98,7 @@ RX_TEST_CASE(myTestSuite, test_load_copy, .fixture = test_fixture) {
 
 // test init
 RX_TEST_CASE(myTestSuite, test_load_push_peek_pop, .fixture = test_fixture) {
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef DEBUG
     debug("TEST %s\n", "test_load_push_peek_pop");
 #endif
     u64 char_ptr = pointer->load("/");
@@ -116,7 +116,7 @@ RX_TEST_CASE(myTestSuite, test_load_push_peek_pop, .fixture = test_fixture) {
 }
 
 RX_TEST_CASE(myTestSuite, test_load_free_free, .fixture = test_fixture) {
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef DEBUG
     debug("TEST %s\n", "test_load_free_free");
 #endif
     u64 char_ptr = pointer->load("/");
@@ -129,7 +129,7 @@ RX_TEST_CASE(myTestSuite, test_load_free_free, .fixture = test_fixture) {
 
 // test init
 RX_TEST_CASE(myTestSuite, test_strcat_load_alloc, .fixture = test_fixture) {
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef DEBUG
     debug("TEST %s\n", "test_strcat_load_alloc");
 #endif
     u64 char_ptr = pointer->load("/");
@@ -145,7 +145,7 @@ RX_TEST_CASE(myTestSuite, test_strcat_load_alloc, .fixture = test_fixture) {
 
 // test init
 RX_TEST_CASE(myTestSuite, test_strcat_alloc_load, .fixture = test_fixture) {
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef DEBUG
     debug("TEST %s\n", "test_strcat_alloc_load");
 #endif
     u64 zero_ptr = pointer->alloc();
@@ -161,7 +161,7 @@ RX_TEST_CASE(myTestSuite, test_strcat_alloc_load, .fixture = test_fixture) {
 
 // test init
 RX_TEST_CASE(myTestSuite, test_strcat_load_alloc_alloc, .fixture = test_fixture) {
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef DEBUG
     debug("TEST %s\n", "test_strcat_load_alloc_alloc");
 #endif
     u64 char_ptr = pointer->load("/");
@@ -181,7 +181,7 @@ RX_TEST_CASE(myTestSuite, test_strcat_load_alloc_alloc, .fixture = test_fixture)
 
 // test init
 RX_TEST_CASE(myTestSuite, test_strcat_load_load, .fixture = test_fixture) {
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef DEBUG
     debug("TEST %s\n", "test_strcat_load_load");
 #endif
     u64 char_ptr = pointer->load("/");
@@ -197,7 +197,7 @@ RX_TEST_CASE(myTestSuite, test_strcat_load_load, .fixture = test_fixture) {
 
 // test init
 RX_TEST_CASE(myTestSuite, test_strcpy_load_alloc, .fixture = test_fixture) {
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef DEBUG
     debug("TEST %s\n", "test_strcpy_load_alloc");
 #endif
     u64 pattern_ptr = pointer->load("/");
@@ -213,7 +213,7 @@ RX_TEST_CASE(myTestSuite, test_strcpy_load_alloc, .fixture = test_fixture) {
 
 // test init
 RX_TEST_CASE(myTestSuite, test_strcpy_load_load, .fixture = test_fixture) {
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef DEBUG
     debug("TEST %s\n", "test_strcpy_load_load");
 #endif
     u64 char_ptr = pointer->load("/input.txt");
@@ -229,7 +229,7 @@ RX_TEST_CASE(myTestSuite, test_strcpy_load_load, .fixture = test_fixture) {
 
 // test init
 RX_TEST_CASE(myTestSuite, test_load_open_file_close_file, .fixture = test_fixture) {
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef DEBUG
     debug("TEST %s\n", "test_load_open_file_close_file");
 #endif
     u64 file_path_ptr = pointer->getcwd();
@@ -254,7 +254,7 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_close_file, .fixture = test_fixtur
 // test init
 
 RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_fixture) {
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef DEBUG
     debug("TEST %s\n", "test_load_open_file_unsafe_hashtable");
 #endif
     u64 file_path_ptr = pointer->getcwd();
@@ -286,7 +286,6 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
         }
         pointer->list_free(list_ptr);
 #ifndef USE_GC
-        pointer->free(list_ptr);
         pointer->free(data_ptr);
 #endif
     }

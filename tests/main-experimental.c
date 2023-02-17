@@ -483,7 +483,7 @@ RX_TEST_CASE(myTestSuite, test_list_push_pop, .fixture = test_fixture) {
     // prepares the payload
     u8* payload = (void*)0xdeadbeef;
     // record buffer has N items
-    void** _recorded = _list_alloc(1, ALLOC_SIZE(N_ELEMENTS));
+    void** _recorded = _list_alloc(ALLOC_SIZE(N_ELEMENTS));
     // pushes all pseudo-random values
     // pushes to the list multiple times
     int i = 0;
