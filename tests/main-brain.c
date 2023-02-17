@@ -251,8 +251,8 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_close_file, .fixture = test_fixtur
     pointer->free(file_path_ptr);
 #endif
 }
-// test init
 
+// test init
 RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_fixture) {
 #ifdef DEBUG
     debug("TEST %s\n", "test_load_open_file_unsafe_hashtable");
@@ -278,8 +278,6 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
             *tmp++ = '\0';
             u64 data = pointer->load(file_data);
             pointer->list_push(list_ptr, data);
-            //  u64 _tmp = (u64)pointer->list_pop(list_ptr);
-            // pointer->free(data);
             char* unsafe = pointer->unsafe(data);
             printf("%s\n", unsafe);
             file_data = tmp;
@@ -289,15 +287,7 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
         pointer->free(data_ptr);
 #endif
     }
-//     u64 word_ptr = pointer->load(file_data);
-//     // char* word = pointer->unsafe(word_ptr);
-//     u64 value_ptr = pointer->load("value");
-//     // char* value = pointer->unsafe(value_ptr);
-//     //  struct hashtable_data* record = hashtable->get(word, value);
 #ifndef USE_GC
-    //     // hashtable->free(record);
-    //     pointer->free(word_ptr);
-    //     pointer->free(value_ptr);
     pointer->free(mode_ptr);
     pointer->free(file_name_ptr);
     pointer->free(file_path_ptr);

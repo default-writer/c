@@ -38,6 +38,37 @@ RX_TEAR_DOWN(test_tear_down) {
 /* Define the fixture. */
 RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tear_down);
 
+// test init
+RX_TEST_CASE(myTestSuite, test_list_push_list_peek_list_pop, .fixture = test_fixture) {
+    u64 list_ptr = pointer->list_alloc();
+    const char* source = "Hello, world!";
+    u64 size = strlen(source);
+    char* dest = calloc(1, size + 1);
+    memcpy(dest, source, size + 1); // NOLINT
+    for (u64 i = 0; i < size; i++) {
+        char* ptr = dest + i;
+        char* tmp = ptr + 1;
+        char ch = *tmp;
+        *tmp = 0;
+        u64 data = pointer->load(ptr);
+        *tmp = ch;
+        pointer->list_push(list_ptr, data);
+    }
+    char* buffer = calloc(1, size + 1);
+    for (u64 i = 0; i < size; i++) {
+        u64 ch0 = pointer->list_peek(list_ptr);
+        char* data = pointer->unsafe(ch0);
+        *(buffer + i) = *data;
+        u64 ch = pointer->list_pop(list_ptr);
+        pointer->free(ch);
+    }
+    printf("%s\n", buffer);
+    free(buffer);
+    free(dest);
+    pointer->list_free(list_ptr);
+}
+
+// test init
 RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_fixture) {
 #ifdef DEBUG
     debug("TEST %s\n", "test_load_open_file_unsafe_hashtable");
