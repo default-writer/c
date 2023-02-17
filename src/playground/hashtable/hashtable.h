@@ -10,6 +10,8 @@ struct hashtable_data { /* table entry: */
 };
 
 struct hashtable {
+    void (*init)(u64 size);
+    void (*destroy)(void);
     struct hashtable_data* (*alloc)(char* name, char* value);
     void (*free)(struct hashtable_data* node);
     struct hashtable_data* (*find)(char* s);

@@ -16,6 +16,7 @@
 extern const struct vm vm_definition;
 extern const struct list list_micro_definition;
 extern struct pointer_methods pointer_methods_definition;
+
 const struct pointer_methods* pointer = &pointer_methods_definition;
 
 typedef struct test_data {

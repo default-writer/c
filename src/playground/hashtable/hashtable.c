@@ -9,11 +9,14 @@
 
 static char* copy(char*);
 static u32 hashfunc(char* s);
-static struct hashtable_data* hashtable[DEFAULT_SIZE]; /* pointer table */
+static struct hashtable_data** hashtable; /* pointer table */
 static struct hashtable_data* hashtable_find(char* s);
 static struct hashtable_data* hashtable_get(char* name, char* value);
 static struct hashtable_data* hashtable_alloc(char* name, char* value);
 static void hashtable_set(struct hashtable_data* node, char* name, char* value);
+
+static void hashtable_init(u64 size);
+static void hashtable_destroy(void);
 
 extern u32 lcg_state;
 
@@ -42,6 +45,14 @@ static u32 hashfunc(char* s) {
         return hash % DEFAULT_SIZE;
     }
     return 0;
+}
+
+static void hashtable_init(u64 size) {
+    hashtable = calloc(size, sizeof(struct hashtable_data*));
+}
+
+static void hashtable_destroy(void) {
+    free(hashtable);
 }
 
 static struct hashtable_data* hashtable_alloc(char* name, char* value) {
@@ -99,6 +110,8 @@ static char* copy(char* s) /* make a duplicate of s */
 }
 
 const struct hashtable hashtable_definition = {
+    .init = hashtable_init,
+    .destroy = hashtable_destroy,
     .alloc = hashtable_alloc,
     .free = hashtable_free,
     .find = hashtable_find,
