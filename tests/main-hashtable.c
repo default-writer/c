@@ -41,7 +41,15 @@ RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tea
 // test init
 RX_TEST_CASE(myTestSuite, test_hashtable_test, .fixture = test_fixture) {
     ht->init(HASHTABLE_SIZE);
+    char* key = calloc(1, sizeof(char) + 1);
+    char* value = calloc(1, sizeof(char) + 1);
+    memcpy(key, "1", 2); // NOLINT
+    memcpy(value, "a", 2); // NOLINT
+    struct hashtable_data* tmp = ht->alloc(key, value);
+    ht->free(tmp);
     ht->destroy();
+    free(key);
+    free(value);
     RX_ASSERT(0 == 0);
 }
 

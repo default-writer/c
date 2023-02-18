@@ -1,4 +1,4 @@
---pointer
+--hashtable
 --clean
 --silent
 --sanitize

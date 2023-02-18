@@ -7,8 +7,8 @@
 
 #define DEFAULT_SIZE 101
 
-static char* copy(char*);
-static u32 hashfunc(char* s);
+static void update(char** prev, char* new);
+static u32 hashfunc(char* source);
 static struct hashtable_data** hashtable; /* pointer table */
 static struct hashtable_data* hashtable_find(char* s);
 static struct hashtable_data* hashtable_get(char* name, char* value);
@@ -20,46 +20,51 @@ static void hashtable_destroy(void);
 
 extern u32 lcg_state;
 
-/* hash: form hash value for string s */
-static u32 hashfunc(char* s) {
-    if (s != 0) {
-        u32 hash = 0;
-        u32 p = (u8)*s;
-        while (*s != 0) {
+static u64 hashtable_size = DEFAULT_SIZE;
 
+/* hash: form hash value for string s */
+static u32 hashfunc(char* source) {
+    u32 data = 0;
+    if (source != 0) {
+        u32 hash = 0;
+        char* ptr = source;
+        u32 p = (u8)*ptr;
+        while (*ptr != 0) {
             u16 p0 = (u16)(p & 0xff);
             u16 p1 = (u16)((p & 0xff00) >> 8);
             u16 p2 = (u16)((p & 0xff0000) >> 16);
             u16 p3 = (u16)((p & 0xff000000) >> 24);
-
-            u16 p4 = (u8)*s;
-
+            u16 p4 = (u8)*ptr;
             p3 = (u16)((p4 ^ p3) + (p2 | ~p4));
             p2 = (u16)((p3 ^ p2) + (p1 | ~p3));
             p1 = (u16)((p2 ^ p1) + (p0 | ~p2));
             p0 = (u16)((p1 ^ p0) + (p3 | ~p1));
-
             hash = (u32)(p4 + (p3 << 1) + (p2 << 3) + (p1 << 5) + (p0 << 7));
-            s++;
+            ptr++;
         }
-        return hash % DEFAULT_SIZE;
+        data = hash % hashtable_size;
     }
-    return 0;
+    return data;
 }
 
 static void hashtable_init(u64 size) {
+    hashtable_size = size;
     hashtable = calloc(size, sizeof(struct hashtable_data*));
 }
 
 static void hashtable_destroy(void) {
+    for (u64 i = 0; i < hashtable_size; i++) {
+        free(hashtable[i]);
+    }
     free(hashtable);
+    hashtable_size = 0;
 }
 
 static struct hashtable_data* hashtable_alloc(char* name, char* value) {
     struct hashtable_data* node = calloc(1, sizeof(struct hashtable_data));
+    update(&node->name, name);
+    update(&node->value, value);
     u32 hash = hashfunc(name);
-    node->name = copy(name);
-    node->value = copy(value);
     node->next = hashtable[hash];
     hashtable[hash] = node;
     return node;
@@ -67,13 +72,18 @@ static struct hashtable_data* hashtable_alloc(char* name, char* value) {
 
 static void hashtable_free(struct hashtable_data* node) {
     if (node != 0) {
-        u32 hash = hashfunc(node->name);
-        hashtable[hash] = 0;
-        struct hashtable_data* tmp;
-        while (node != 0) {
-            tmp = node;
-            node = node->next;
-            free(tmp);
+        struct hashtable_data* tmp = node;
+        if (tmp != 0) {
+            struct hashtable_data* next;
+            do {
+                next = tmp->next;
+                u32 hash = hashfunc(tmp->name);
+                free(tmp->name);
+                free(tmp->value);
+                free(tmp);
+                tmp = hashtable[hash];
+                hashtable[hash] = 0;
+            } while (next != 0);
         }
     }
 }
@@ -98,15 +108,19 @@ static struct hashtable_data* hashtable_get(char* name, char* value) {
 
 static void hashtable_set(struct hashtable_data* node, char* name, char* value) {
     printf("%s %s\n", node->name, name);
-    free(node->value); /*free previous value */
-    node->value = copy(value);
+    update(&node->value, value);
 }
 
-static char* copy(char* s) /* make a duplicate of s */
-{
-    char* p = calloc(1, strlen(s) + 1); /* +1 for ’\0’ */
-    strcpy(p, s); // NOLINT
-    return p;
+static void update(char** prev, char* new) {
+    if (prev != 0) {
+        if (*prev != 0) {
+            free(*prev);
+            *prev = 0;
+        }
+        char* value = calloc(1, strlen(new) + 1); /* +1 for ’\0’ */
+        strcpy(value, new); // NOLINT
+        *prev = value;
+    }
 }
 
 const struct hashtable hashtable_definition = {
