@@ -81,8 +81,13 @@ static void hashtable_free(struct hashtable_data* node) {
             do {
                 u32 hash = hashfunc(tmp->name);
                 if (hashtable[hash] != 0) {
-                    struct hashtable_data* root = hashtable_extract(hashtable[hash], tmp);
-                    if (hashtable[hash] == root) {
+                    struct hashtable_data* found = hashtable_extract(hashtable[hash], tmp);
+                    if (hashtable[hash] != found) {
+                        free(tmp->name);
+                        free(tmp->value);
+                        free(tmp);
+                        break;
+                    } else {
                         hashtable[hash] = 0;
                     }
                 }
