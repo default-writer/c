@@ -11,6 +11,7 @@ static struct hashtable_data** hashtable; /* pointer table */
 
 static struct hashtable_data* hashtable_alloc(char* name, char* value);
 static void hashtable_free(struct hashtable_data* node);
+static struct hashtable_data* hashtable_extract(struct hashtable_data* head, struct hashtable_data* node);
 static struct hashtable_data* hashtable_find(char* name);
 static struct hashtable_data* hashtable_get(char* name, char* value);
 static void hashtable_set(struct hashtable_data* node, char* name, char* value);
@@ -79,15 +80,33 @@ static void hashtable_free(struct hashtable_data* node) {
             struct hashtable_data* next;
             do {
                 u32 hash = hashfunc(tmp->name);
+                if (hashtable[hash] != 0) {
+                    struct hashtable_data* root = hashtable_extract(hashtable[hash], tmp);
+                    if (hashtable[hash] == root) {
+                        hashtable[hash] = 0;
+                    }
+                }
                 next = tmp->next;
                 free(tmp->name);
                 free(tmp->value);
                 free(tmp);
                 tmp = next;
-                hashtable[hash] = 0;
             } while (next != 0);
         }
     }
+}
+
+static struct hashtable_data* hashtable_extract(struct hashtable_data* head, struct hashtable_data* node) {
+    struct hashtable_data* tmp = head;
+    struct hashtable_data* prev = 0;
+    while (tmp != 0 && tmp != node) {
+        prev = tmp;
+        tmp = tmp->next;
+    }
+    if (tmp != 0 && prev != 0) {
+        prev->next = tmp->next;
+    }
+    return tmp;
 }
 
 static struct hashtable_data* hashtable_find(char* name) {
