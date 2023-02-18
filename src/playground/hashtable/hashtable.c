@@ -7,13 +7,14 @@
 
 #define DEFAULT_SIZE 101
 
-static void update(char** prev, char* new);
-static u32 hashfunc(char* source);
 static struct hashtable_data** hashtable; /* pointer table */
-static struct hashtable_data* hashtable_find(char* s);
-static struct hashtable_data* hashtable_get(char* name, char* value);
+
 static struct hashtable_data* hashtable_alloc(char* name, char* value);
+static void hashtable_free(struct hashtable_data* node);
+static struct hashtable_data* hashtable_find(char* name);
+static struct hashtable_data* hashtable_get(char* name, char* value);
 static void hashtable_set(struct hashtable_data* node, char* name, char* value);
+static void update(char** prev, char* new);
 
 static void hashtable_init(u64 size);
 static void hashtable_destroy(void);
@@ -54,7 +55,7 @@ static void hashtable_init(u64 size) {
 
 static void hashtable_destroy(void) {
     for (u64 i = 0; i < hashtable_size; i++) {
-        free(hashtable[i]);
+        hashtable_free(hashtable[i]);
     }
     free(hashtable);
     hashtable_size = 0;
@@ -65,7 +66,8 @@ static struct hashtable_data* hashtable_alloc(char* name, char* value) {
     update(&node->name, name);
     update(&node->value, value);
     u32 hash = hashfunc(name);
-    node->next = hashtable[hash];
+    struct hashtable_data* next = hashtable[hash];
+    node->next = next;
     hashtable[hash] = node;
     return node;
 }
@@ -76,12 +78,12 @@ static void hashtable_free(struct hashtable_data* node) {
         if (tmp != 0) {
             struct hashtable_data* next;
             do {
-                next = tmp->next;
                 u32 hash = hashfunc(tmp->name);
+                next = tmp->next;
                 free(tmp->name);
                 free(tmp->value);
                 free(tmp);
-                tmp = hashtable[hash];
+                tmp = next;
                 hashtable[hash] = 0;
             } while (next != 0);
         }
