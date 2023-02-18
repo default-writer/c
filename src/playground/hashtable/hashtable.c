@@ -7,6 +7,8 @@
 
 #define DEFAULT_SIZE 101
 
+static struct hashtable_data* hashtable_extract_internal(struct hashtable_data* head, struct hashtable_data* ptr);
+
 static struct hashtable_data** hashtable; /* pointer table */
 
 static struct hashtable_data* hashtable_alloc(char* key, char* value);
@@ -15,8 +17,6 @@ static struct hashtable_data* hashtable_find(char* key);
 static struct hashtable_data* hashtable_get(char* key);
 static void hashtable_set(char* key, char* value);
 static void update(char** prev, char* new);
-
-static struct hashtable_data* hashtable_extract_internal(struct hashtable_data* head, struct hashtable_data* ptr);
 
 static void hashtable_init(u64 size);
 static void hashtable_destroy(void);
@@ -63,6 +63,19 @@ static void hashtable_destroy(void) {
     hashtable_size = 0;
 }
 
+static struct hashtable_data* hashtable_extract_internal(struct hashtable_data* head, struct hashtable_data* ptr) {
+    struct hashtable_data* node = head;
+    struct hashtable_data* prev = 0;
+    while (node != 0 && node != ptr) {
+        prev = node;
+        node = node->next;
+    }
+    if (node != 0 && prev != 0) {
+        prev->next = node->next;
+    }
+    return node;
+}
+
 static struct hashtable_data* hashtable_alloc(char* key, char* value) {
     struct hashtable_data* node = calloc(1, sizeof(struct hashtable_data));
     update(&node->key, key);
@@ -102,19 +115,6 @@ static void hashtable_free(struct hashtable_data* node) {
     }
 }
 
-static struct hashtable_data* hashtable_extract_internal(struct hashtable_data* head, struct hashtable_data* ptr) {
-    struct hashtable_data* node = head;
-    struct hashtable_data* prev = 0;
-    while (node != 0 && node != ptr) {
-        prev = node;
-        node = node->next;
-    }
-    if (node != 0 && prev != 0) {
-        prev->next = node->next;
-    }
-    return node;
-}
-
 static struct hashtable_data* hashtable_find(char* key) {
     struct hashtable_data* node = hashtable[hashfunc(key)];
     while (node != 0) {
@@ -123,6 +123,9 @@ static struct hashtable_data* hashtable_find(char* key) {
         }
         node = node->next;
     }
+#ifdef USE_MEMORY_DEBUG_INFO
+    printf("   $:   %16s !  %16s\n", node->key, node->value);
+#endif
     return node;
 }
 
