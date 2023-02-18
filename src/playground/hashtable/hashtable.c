@@ -9,13 +9,14 @@
 
 static struct hashtable_data** hashtable; /* pointer table */
 
-static struct hashtable_data* hashtable_alloc(char* name, char* value);
+static struct hashtable_data* hashtable_alloc(char* key, char* value);
 static void hashtable_free(struct hashtable_data* node);
-static struct hashtable_data* hashtable_extract(struct hashtable_data* head, struct hashtable_data* node);
-static struct hashtable_data* hashtable_find(char* name);
-static struct hashtable_data* hashtable_get(char* name, char* value);
-static void hashtable_set(struct hashtable_data* node, char* name, char* value);
+static struct hashtable_data* hashtable_find(char* key);
+static struct hashtable_data* hashtable_get(char* key);
+static void hashtable_set(char* key, char* value);
 static void update(char** prev, char* new);
+
+static struct hashtable_data* hashtable_extract_internal(struct hashtable_data* head, struct hashtable_data* ptr);
 
 static void hashtable_init(u64 size);
 static void hashtable_destroy(void);
@@ -62,11 +63,11 @@ static void hashtable_destroy(void) {
     hashtable_size = 0;
 }
 
-static struct hashtable_data* hashtable_alloc(char* name, char* value) {
+static struct hashtable_data* hashtable_alloc(char* key, char* value) {
     struct hashtable_data* node = calloc(1, sizeof(struct hashtable_data));
-    update(&node->name, name);
+    update(&node->key, key);
     update(&node->value, value);
-    u32 hash = hashfunc(name);
+    u32 hash = hashfunc(key);
     struct hashtable_data* next = hashtable[hash];
     node->next = next;
     hashtable[hash] = node;
@@ -75,66 +76,76 @@ static struct hashtable_data* hashtable_alloc(char* name, char* value) {
 
 static void hashtable_free(struct hashtable_data* node) {
     if (node != 0) {
-        struct hashtable_data* tmp = node;
-        if (tmp != 0) {
+        struct hashtable_data* ptr = node;
+        if (ptr != 0) {
             struct hashtable_data* next;
             do {
-                u32 hash = hashfunc(tmp->name);
+                u32 hash = hashfunc(ptr->key);
                 if (hashtable[hash] != 0) {
-                    struct hashtable_data* found = hashtable_extract(hashtable[hash], tmp);
+                    struct hashtable_data* found = hashtable_extract_internal(hashtable[hash], ptr);
                     if (hashtable[hash] != found) {
-                        free(tmp->name);
-                        free(tmp->value);
-                        free(tmp);
+                        free(ptr->key);
+                        free(ptr->value);
+                        free(ptr);
                         break;
                     } else {
                         hashtable[hash] = 0;
                     }
                 }
-                next = tmp->next;
-                free(tmp->name);
-                free(tmp->value);
-                free(tmp);
-                tmp = next;
+                next = ptr->next;
+                free(ptr->key);
+                free(ptr->value);
+                free(ptr);
+                ptr = next;
             } while (next != 0);
         }
     }
 }
 
-static struct hashtable_data* hashtable_extract(struct hashtable_data* head, struct hashtable_data* node) {
-    struct hashtable_data* tmp = head;
+static struct hashtable_data* hashtable_extract_internal(struct hashtable_data* head, struct hashtable_data* ptr) {
+    struct hashtable_data* node = head;
     struct hashtable_data* prev = 0;
-    while (tmp != 0 && tmp != node) {
-        prev = tmp;
-        tmp = tmp->next;
+    while (node != 0 && node != ptr) {
+        prev = node;
+        node = node->next;
     }
-    if (tmp != 0 && prev != 0) {
-        prev->next = tmp->next;
+    if (node != 0 && prev != 0) {
+        prev->next = node->next;
     }
-    return tmp;
+    return node;
 }
 
-static struct hashtable_data* hashtable_find(char* name) {
-    struct hashtable_data* node = hashtable[hashfunc(name)];
-    while (node != 0 && strcmp(name, node->name) != 0) {
+static struct hashtable_data* hashtable_find(char* key) {
+    struct hashtable_data* node = hashtable[hashfunc(key)];
+    while (node != 0) {
+        if (node->next == 0) {
+            break;
+        }
         node = node->next;
     }
     return node;
 }
 
-static struct hashtable_data* hashtable_get(char* name, char* value) {
-    struct hashtable_data* node = hashtable_find(name);
-    if (node == 0) {
-        node = hashtable_alloc(name, value);
-    } else {
-        hashtable_set(node, name, value);
+static struct hashtable_data* hashtable_get(char* key) {
+    struct hashtable_data* node = hashtable[hashfunc(key)];
+    if (node != 0) {
+#ifdef USE_MEMORY_DEBUG_INFO
+        printf("   $:   %16s !  %16s\n", node->key, node->value);
+#endif
     }
     return node;
 }
 
-static void hashtable_set(struct hashtable_data* node, char* name, char* value) {
-    printf("%s %s\n", node->name, name);
-    update(&node->value, value);
+static void hashtable_set(char* key, char* value) {
+    struct hashtable_data* node = hashtable[hashfunc(key)];
+    if (node != 0) {
+        update(&node->value, value);
+    } else {
+        node = hashtable_alloc(key, value);
+    }
+#ifdef USE_MEMORY_DEBUG_INFO
+    printf("   $: 0x%16s !  %16s\n", node->key, node->value);
+#endif
 }
 
 static void update(char** prev, char* new) {

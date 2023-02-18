@@ -5,18 +5,18 @@
 
 struct hashtable_data { /* table entry: */
     struct hashtable_data* next; /* next entry in chain */
-    char* name; /* defined name */
+    char* key; /* defined name */
     char* value; /* replacement text */
 };
 
 struct hashtable {
     void (*init)(u64 size);
     void (*destroy)(void);
-    struct hashtable_data* (*alloc)(char* name, char* value);
+    struct hashtable_data* (*alloc)(char* key, char* value);
     void (*free)(struct hashtable_data* node);
-    struct hashtable_data* (*find)(char* s);
-    struct hashtable_data* (*get)(char* name, char* value);
-    void (*set)(struct hashtable_data* node, char* name, char* value);
+    struct hashtable_data* (*find)(char* key);
+    struct hashtable_data* (*get)(char* key);
+    void (*set)(char* key, char* value);
 };
 
 #endif // _PLAYGROUND_HASHTABLE_H_
