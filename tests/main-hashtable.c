@@ -8,6 +8,7 @@
 #include "playground/virtual/vm.h"
 
 #include "rexo/include/rexo.h"
+#include "std/macros.h"
 
 #define HASHTABLE_SIZE 101
 
@@ -312,6 +313,8 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
         u64 data_ptr = pointer->read_file(f_ptr);
         u64 list_ptr = pointer->list_alloc();
         pointer->close_file(f_ptr);
+        u64 size = pointer->size(data_ptr);
+        CLEAN(size)
         char* file_data = pointer->unsafe(data_ptr);
         for (int i = 0; i < 100; i++) {
             char* tmp = file_data;

@@ -71,6 +71,7 @@ static void pointer_list_push(u64 ptr, u64 data_ptr);
 static u64 pointer_list_peek(u64 ptr);
 static u64 pointer_list_pop(u64 ptr);
 static char* pointer_unsafe(u64 ptr);
+static u64 pointer_size(u64 ptr);
 static void pointer_strcpy(u64 dest_ptr, u64 src_ptr);
 static void pointer_strcat(u64 dest_ptr, u64 src_ptr);
 static u64 pointer_match_last(u64 src_ptr, u64 match_ptr);
@@ -311,6 +312,15 @@ static char* pointer_unsafe(u64 ptr) {
         data = data_ptr->data;
     }
     return data;
+}
+
+static u64 pointer_size(u64 ptr) {
+    u64 size = 0;
+    if (ptr != 0) {
+        struct pointer* data_ptr = vm->read(base->vm, ptr);
+        size = data_ptr->size;
+    }
+    return size;
 }
 
 static void pointer_strcpy(u64 dest, u64 src) {
@@ -554,6 +564,7 @@ const struct pointer_methods pointer_methods_definition = {
     .printf = pointer_printf,
     .put_char = pointer_put_char,
     .unsafe = pointer_unsafe,
+    .size = pointer_size,
 #ifndef USE_GC
     .free = pointer_free,
 #else
