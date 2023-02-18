@@ -124,18 +124,20 @@ static struct hashtable_data* hashtable_find(char* key) {
         node = node->next;
     }
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("   $:   %16s !  %16s\n", node->key, node->value);
+    if (node != 0) {
+        printf(" ? $: 0x%016llx !  %16s :  %16s\n", (u64)node, node->key, node->value);
+    }
 #endif
     return node;
 }
 
 static struct hashtable_data* hashtable_get(char* key) {
     struct hashtable_data* node = hashtable[hashfunc(key)];
-    if (node != 0) {
 #ifdef USE_MEMORY_DEBUG_INFO
-        printf("   $:   %16s !  %16s\n", node->key, node->value);
-#endif
+    if (node != 0) {
+        printf(" < $: 0x%016llx !  %16s :  %16s\n", (u64)node, node->key, node->value);
     }
+#endif
     return node;
 }
 
@@ -147,7 +149,9 @@ static void hashtable_set(char* key, char* value) {
         node = hashtable_alloc(key, value);
     }
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("   $: 0x%16s !  %16s\n", node->key, node->value);
+    if (node != 0) {
+        printf(" > $: 0x%016llx !  %16s :  %16s\n", (u64)node, node->key, node->value);
+    }
 #endif
 }
 
