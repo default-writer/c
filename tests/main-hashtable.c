@@ -15,8 +15,10 @@
 extern const struct vm vm_definition;
 extern const struct list list_micro_definition;
 extern struct hashtable hashtable_definition;
+extern struct pointer_methods pointer_methods_definition;
 
 const struct hashtable* hashtable = &hashtable_definition;
+const struct pointer_methods* pointer = &pointer_methods_definition;
 
 typedef struct test_data {
     struct pointer_data* ctx;
@@ -291,6 +293,48 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_set_get, .fixture = test_fixture)
     free(value3);
     free(value);
     RX_ASSERT(0 == 0);
+}
+
+// test init
+RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_fixture) {
+#ifdef DEBUG
+    debug("TEST %s\n", "test_load_open_file_unsafe_hashtable");
+#endif
+    u64 file_path_ptr = pointer->getcwd();
+    u64 file_name_ptr = pointer->load("/all_english_words.txt");
+    pointer->strcat(file_path_ptr, file_name_ptr);
+#ifndef USE_GC
+    pointer->free(file_name_ptr);
+#endif
+    u64 mode_ptr = pointer->load("rb");
+    u64 f_ptr = pointer->open_file(file_path_ptr, mode_ptr);
+    if (f_ptr != 0) {
+        u64 data_ptr = pointer->read_file(f_ptr);
+        u64 list_ptr = pointer->list_alloc();
+        pointer->close_file(f_ptr);
+        char* file_data = pointer->unsafe(data_ptr);
+        for (int i = 0; i < 100; i++) {
+            char* tmp = file_data;
+            while (*tmp != 0 && *tmp != '\n') {
+                tmp++;
+            }
+            *tmp++ = '\0';
+            u64 data = pointer->load(file_data);
+            pointer->list_push(list_ptr, data);
+            char* unsafe = pointer->unsafe(data);
+            printf("%s\n", unsafe);
+            file_data = tmp;
+        }
+        pointer->list_free(list_ptr);
+#ifndef USE_GC
+        pointer->free(data_ptr);
+#endif
+    }
+#ifndef USE_GC
+    pointer->free(mode_ptr);
+    pointer->free(file_name_ptr);
+    pointer->free(file_path_ptr);
+#endif
 }
 
 int main(int argc, char** argv) {
