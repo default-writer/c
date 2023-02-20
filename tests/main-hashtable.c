@@ -315,8 +315,12 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
         u64 list_ptr = pointer->list_alloc();
         pointer->close_file(f_ptr);
         u64 size = pointer->size(data_ptr);
+#ifdef USE_MEMORY_DEBUG_INFO
+        printf("file size: %16lld\n", size);
+#endif
+        CLEAN(size)
         char* file_data = pointer->unsafe(data_ptr);
-        char* file_end = file_data + size;
+        char* file_end = file_data + 0xffff;
         while (file_data < file_end) {
             char* tmp = file_data;
             while (*tmp != 0 && *tmp != '\n') {

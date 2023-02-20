@@ -491,7 +491,7 @@ static u64 pointer_read_file(u64 ptr) {
                 u64 data_size = size + 1;
                 struct pointer* data_ptr = pointer_alloc_internal(data_size, TYPE_PTR);
 #ifdef DEBUG
-                debug("file size: %lld\n", size);
+                debug("file size: %16lld\n", size);
 #endif
                 fread(data_ptr->data, 1, size, handler->file);
                 data = vm->write(&base->vm, data_ptr);
