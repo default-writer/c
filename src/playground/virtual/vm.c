@@ -84,7 +84,8 @@ static u64 vm_alloc_internal(struct vm_data** current) {
     u64 address = 0;
     void** ptr = list->pop(cache);
     if (ptr == 0) {
-        address = to_virtual_address_internal(pointer, pointer->sp);
+        ptr = pointer->sp;
+        address = to_virtual_address_internal(pointer, ptr);
         while (address > pointer->address_space + pointer->size) {
             if (pointer->next == 0) {
                 pointer->next = vm_init_internal(pointer->size, pointer->address_space + pointer->size);
@@ -92,12 +93,18 @@ static u64 vm_alloc_internal(struct vm_data** current) {
             }
             pointer = pointer->next;
         }
-        ptr = pointer->sp++;
-    }
-    address = to_virtual_address_internal(pointer, ptr);
+        ptr = pointer->sp;
+        ++pointer->sp;
+        address = to_virtual_address_internal(pointer, ptr);
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("  >+: 0x%016llx >0x%016llx\n", (u64)ptr, address);
+        printf("  >+: 0x%016llx >0x%016llx\n", (u64)ptr, address);
 #endif
+    } else {
+        address = to_virtual_address_internal(pointer, ptr);
+#ifdef USE_MEMORY_DEBUG_INFO
+        printf("  >.: 0x%016llx >0x%016llx\n", (u64)ptr, address);
+#endif
+    }
     *current = pointer;
     return address;
 }
