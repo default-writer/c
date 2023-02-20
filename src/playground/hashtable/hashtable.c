@@ -125,7 +125,7 @@ static struct hashtable_data* hashtable_find(char* key) {
     }
 #ifdef USE_MEMORY_DEBUG_INFO
     if (node != 0) {
-        printf(" ? $: 0x%016llx !  %16s :  %16s\n", (u64)node, node->key, node->value);
+        printf("  .$: 0x%016llx !  %16s :  %16s\n", (u64)node, node->key, node->value);
     }
 #endif
     return node;
