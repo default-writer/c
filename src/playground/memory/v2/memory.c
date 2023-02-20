@@ -30,7 +30,7 @@ static void* memory_alloc(u64 size) {
     ++ptr;
     *ptr = ptr + 1;
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("   +: 0x%016llx >0x%016llx\n", (u64)tmp, (u64)(*(tmp + size)));
+    printf("  0+: 0x%016llx >0x%016llx\n", (u64)tmp, (u64)(*(tmp + size)));
 #endif
     return tmp;
 }
@@ -41,7 +41,7 @@ static void memory_free(const void* data, u64 size) {
     --ptr;
     ptr -= size;
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("   -: 0x%016llx !  %16lld\n", (u64)ptr, size);
+    printf("  0-: 0x%016llx !  %16lld\n", (u64)ptr, size);
 #endif
 }
 

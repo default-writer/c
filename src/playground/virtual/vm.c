@@ -96,7 +96,7 @@ static u64 vm_alloc_internal(struct vm_data** current) {
     }
     address = to_virtual_address_internal(pointer, ptr);
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("   +: 0x%016llx >0x%016llx\n", (u64)ptr, address);
+    printf("  >+: 0x%016llx >0x%016llx\n", (u64)ptr, address);
 #endif
     *current = pointer;
     return address;
@@ -108,7 +108,7 @@ static void* vm_free(struct vm_data** current, u64 address) {
         void** ptr = vm_read_internal(current, address);
         if (ptr != 0) {
 #ifdef USE_MEMORY_DEBUG_INFO
-            printf("   -: 0x%016llx >0x%016llx\n", (u64)ptr, address);
+            printf("  >-: 0x%016llx >0x%016llx\n", (u64)ptr, address);
 #endif
             list->push(cache, ptr);
             data = *ptr;
