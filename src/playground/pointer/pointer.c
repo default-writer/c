@@ -99,23 +99,6 @@ static void pointer_print_vm_internal(struct vm_data* vm_ptr);
 
 /* implementation*/
 
-void pointer_ctx_init(struct pointer_data** ctx, u64 size) {
-    /* ctx */
-    *ctx = calloc(1, sizeof(struct pointer_data));
-    struct pointer_data* ptr = *ctx;
-    /* vm */
-    vm->init(&ptr->vm, size);
-    base->vm = ptr->vm;
-    /* list */
-    list->init(&ptr->list);
-    base->list = ptr->list;
-#ifdef USE_GC
-    /* gc */
-    list->init(&ptr->gc);
-    base->gc = ptr->gc;
-#endif
-}
-
 static void pointer_print_vm_internal(struct vm_data* vm_ptr) {
     while (vm_ptr->prev != 0) {
         vm_ptr = vm_ptr->prev;
@@ -131,6 +114,23 @@ static void pointer_print_vm_internal(struct vm_data* vm_ptr) {
 #endif
     }
     vm_enumerator_destroy(data);
+}
+
+void pointer_ctx_init(struct pointer_data** ctx, u64 size) {
+    /* ctx */
+    *ctx = calloc(1, sizeof(struct pointer_data));
+    struct pointer_data* ptr = *ctx;
+    /* vm */
+    vm->init(&ptr->vm, size);
+    base->vm = ptr->vm;
+    /* list */
+    list->init(&ptr->list);
+    base->list = ptr->list;
+#ifdef USE_GC
+    /* gc */
+    list->init(&ptr->gc);
+    base->gc = ptr->gc;
+#endif
 }
 
 void pointer_ctx_destroy(struct pointer_data** ctx) {
