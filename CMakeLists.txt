@@ -243,9 +243,9 @@ target_link_libraries(main-experimental PRIVATE list-experimental list-lcg list-
 target_link_libraries(main-playground PRIVATE list-playground list-micro list-common list-v1)
 target_link_libraries(main-playground2 PRIVATE list-playground2 list-micro list-common list-v2)
 target_link_libraries(main-memory PRIVATE list-memory list-v1)
-target_link_libraries(main-brain PRIVATE list-pointer vm list-v2 list-micro)
-target_link_libraries(main-pointer PRIVATE list-pointer vm list-v2 list-micro)
-target_link_libraries(main-hashtable PRIVATE list-pointer vm list-v2 hashtable list-micro)
+target_link_libraries(main-brain PRIVATE list-pointer list-micro vm)
+target_link_libraries(main-pointer PRIVATE list-pointer list-micro vm)
+target_link_libraries(main-hashtable PRIVATE list-pointer list-micro vm hashtable)
 target_link_libraries(main-test)
 
 configure_file(all_english_words.txt ${CMAKE_BINARY_DIR}/all_english_words.txt COPYONLY)

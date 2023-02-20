@@ -52,7 +52,7 @@ static u32 hashfunc(char* source) {
 
 static void hashtable_init(u64 size) {
     hashtable_size = size;
-    hashtable = calloc(size, sizeof(struct hashtable_data*));
+    hashtable = calloc(size, sizeof(void*));
 }
 
 static void hashtable_destroy(void) {

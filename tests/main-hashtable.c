@@ -11,6 +11,7 @@
 #include "std/macros.h"
 
 #define HASHTABLE_SIZE 101
+#define DEFAULT_SIZE 0xffff
 
 /* list definition */
 extern const struct vm vm_definition;
@@ -28,14 +29,14 @@ typedef struct test_data {
 RX_SET_UP(test_set_up) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct pointer_data** ctx = &rx->ctx;
-    pointer_set(ctx);
+    pointer_setup(ctx, DEFAULT_SIZE);
     return RX_SUCCESS;
 }
 
 RX_TEAR_DOWN(test_tear_down) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct pointer_data** ctx = &rx->ctx;
-    pointer_get(ctx);
+    pointer_reset(ctx);
 }
 
 /* Define the fixture. */
@@ -314,9 +315,9 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
         u64 list_ptr = pointer->list_alloc();
         pointer->close_file(f_ptr);
         u64 size = pointer->size(data_ptr);
-        CLEAN(size)
         char* file_data = pointer->unsafe(data_ptr);
-        for (int i = 0; i < 100; i++) {
+        char* file_end = file_data + size;
+        while (file_data < file_end) {
             char* tmp = file_data;
             while (*tmp != 0 && *tmp != '\n') {
                 tmp++;

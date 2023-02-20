@@ -63,9 +63,6 @@ RX_TEST_CASE(myTestSuite, test_class_get_set_data_v2, .fixture = test_fixture) {
 // test context
 RX_TEST_CASE(myTestSuite, test_class_push_pop_get_set_data_v2, .fixture = test_fixture) {
     const struct class* context = &class_definition_v2;
-    // another data structure passed as parameters to "class" data constructor
-    // you can't really write something like that because class_data implementation is hidden on purpose!
-    // data1->list = list_data;
     struct class_data* data1 = context->new (list_data);
     struct class_data* data2 = context->new (list_data);
 

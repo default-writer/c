@@ -4,19 +4,32 @@
 #include "std/common.h"
 
 struct vm_data {
-    void** ptr;
-    void** base;
-    void** max;
+    void** sp; // stack pointer
+    void** bp; // base pointer
+    struct vm_data* next;
+    struct vm_data* prev;
+    u64 address_space;
     u64 size;
 };
 
-struct vm {
-    struct vm_data* (*init)(u64 size);
-    void (*destroy)(struct vm_data* pointer);
-    u64 (*alloc)(struct vm_data* pointer);
-    void (*free)(struct vm_data* pointer, u64 address);
-    void* (*read)(struct vm_data* pointer, u64 address);
-    void (*write)(struct vm_data* pointer, u64 address, void* value);
+struct enumerator_data {
+    void** value;
+    void** current;
 };
+
+struct vm_data_enumerator {
+    void* (*next)(struct vm_data**, struct enumerator_data* ptr);
+};
+
+struct vm {
+    void (*init)(struct vm_data** current, u64 size);
+    void (*destroy)(struct vm_data** current);
+    void* (*free)(struct vm_data** current, u64 address);
+    void* (*read)(struct vm_data** current, u64 address);
+    u64 (*write)(struct vm_data** current, void* value);
+};
+
+struct enumerator_data* vm_enumerator_init(struct vm_data** current);
+void vm_enumerator_destroy(struct enumerator_data* data);
 
 #endif // _PLAYGROUND_VIRTUAL_H_
