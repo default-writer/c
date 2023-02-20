@@ -38,7 +38,7 @@ struct pointer_methods {
 #endif
 };
 
-void pointer_setup(struct pointer_data** ctx, u64 size);
-void pointer_reset(struct pointer_data** ctx);
+void pointer_ctx_init(struct pointer_data** ctx, u64 size);
+void pointer_ctx_destroy(struct pointer_data** ctx);
 
 #endif // _PLAYGROUND_POINTER_H_

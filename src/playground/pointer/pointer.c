@@ -99,7 +99,7 @@ static void pointer_print_vm_internal(struct vm_data* vm_ptr);
 
 /* implementation*/
 
-void pointer_setup(struct pointer_data** ctx, u64 size) {
+void pointer_ctx_init(struct pointer_data** ctx, u64 size) {
     /* ctx */
     *ctx = calloc(1, sizeof(struct pointer_data));
     struct pointer_data* ptr = *ctx;
@@ -133,7 +133,7 @@ static void pointer_print_vm_internal(struct vm_data* vm_ptr) {
     vm_enumerator_destroy(data);
 }
 
-void pointer_reset(struct pointer_data** ctx) {
+void pointer_ctx_destroy(struct pointer_data** ctx) {
 #ifdef USE_MEMORY_DEBUG_INFO
     pointer_print_vm_internal(base->vm);
 #endif

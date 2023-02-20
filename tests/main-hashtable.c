@@ -29,14 +29,14 @@ typedef struct test_data {
 RX_SET_UP(test_set_up) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct pointer_data** ctx = &rx->ctx;
-    pointer_setup(ctx, DEFAULT_SIZE);
+    pointer_ctx_init(ctx, DEFAULT_SIZE);
     return RX_SUCCESS;
 }
 
 RX_TEAR_DOWN(test_tear_down) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct pointer_data** ctx = &rx->ctx;
-    pointer_reset(ctx);
+    pointer_ctx_destroy(ctx);
 }
 
 /* Define the fixture. */
