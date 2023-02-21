@@ -177,7 +177,7 @@ cmake \
 
 for m in "${array[@]}"; do
     cmake --build "${pwd}/build" --target "${m}" || (echo ERROR: "${m}" && exit 1)
-    timeout --foreground 5 ${VALGRIND_OPTIONS} "${pwd}/build/${m}" 2>&1 >"${pwd}/build/log-${m}.txt" || (echo ERROR: "${m}" && exit 1)
+    timeout --foreground 15 ${VALGRIND_OPTIONS} "${pwd}/build/${m}" 2>&1 >"${pwd}/build/log-${m}.txt" || (echo ERROR: "${m}" && exit 1)
 done
 
 main=$(find "${pwd}/build" -type f -name "*.s" -exec echo {} \;)

@@ -11,8 +11,10 @@ extern const struct list list_micro_definition;
 /*private */
 
 // static const struct list* list = &list_v2;
+#ifndef USE_GC
 static const struct list* list = &list_micro_definition;
 static struct list_data** cache;
+#endif
 // static struct vm_data** current;
 
 /* api */
@@ -56,34 +58,41 @@ static struct vm_data* vm_init_internal(u64 size, u64 address_space) {
 }
 
 static void vm_init(struct vm_data** current, u64 size) {
+#ifndef USE_GC
     cache = _list_alloc(sizeof(void*));
     list->init(cache);
+#endif
     *current = vm_init_internal(size, 0);
 }
 
 static void vm_destroy(struct vm_data** current) {
+#ifndef USE_GC
     list->destroy(cache);
     _list_free(cache, sizeof(void*));
 #ifdef USE_MEMORY_CLEANUP
     cache = 0;
 #endif
+#endif
     struct vm_data* vm = *current;
-    while (vm->next != 0) {
-        vm = vm->next;
+    while (vm->prev != 0) {
+        vm = vm->prev;
     }
     while (vm != 0) {
-        struct vm_data* prev = vm->prev;
+        struct vm_data* next = vm->next;
         _list_free(vm->bp, vm->size * sizeof(void*));
         _list_free(vm, sizeof(struct vm_data));
-        vm = prev;
+        vm = next;
     }
 }
 
 static u64 vm_alloc_internal(struct vm_data** current) {
     struct vm_data* pointer = *current;
     u64 address = 0;
-    void** ptr = list->pop(cache);
+    void** ptr;
+#ifndef USE_GC
+    ptr = list->pop(cache);
     if (ptr == 0) {
+#endif
         ptr = pointer->sp;
         address = to_virtual_address_internal(pointer, ptr);
         while (address > pointer->address_space + pointer->size) {
@@ -99,15 +108,18 @@ static u64 vm_alloc_internal(struct vm_data** current) {
 #ifdef USE_MEMORY_DEBUG_INFO
         printf("  >+: 0x%016llx >0x%016llx\n", (u64)ptr, address);
 #endif
+#ifndef USE_GC
     } else {
         address = to_virtual_address_internal(pointer, ptr);
 #ifdef USE_MEMORY_DEBUG_INFO
         printf("  >.: 0x%016llx >0x%016llx\n", (u64)ptr, address);
 #endif
     }
+#endif
     *current = pointer;
     return address;
 }
+// #endif
 
 static void* vm_free(struct vm_data** current, u64 address) {
     void* data = 0;
@@ -117,7 +129,9 @@ static void* vm_free(struct vm_data** current, u64 address) {
 #ifdef USE_MEMORY_DEBUG_INFO
             printf("  >-: 0x%016llx >0x%016llx\n", (u64)ptr, address);
 #endif
+#ifndef USE_GC
             list->push(cache, ptr);
+#endif
             data = *ptr;
             *ptr = 0;
         }
@@ -198,7 +212,6 @@ const struct vm_data_enumerator vm_data_enumerator_definition = {
 const struct vm vm_definition = {
     .init = vm_init,
     .destroy = vm_destroy,
-    //.alloc = vm_alloc,
     .free = vm_free,
     .read = vm_read,
     .write = vm_write

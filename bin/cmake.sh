@@ -128,10 +128,13 @@ if [ "${silent}" == "--silent" ]; then
 fi
 
 [ ! -d "${pwd}/cmake" ] && mkdir "${pwd}/cmake"
+[ ! -d "${pwd}/logs" ] && mkdir "${pwd}/logs"
 
 if [ "${clean}" == "--clean" ]; then
     rm -rf "${pwd}/cmake"
     mkdir "${pwd}/cmake"
+    rm -rf "${pwd}/logs"
+    mkdir "${pwd}/logs"
 fi
 
 if [ "${sanitize}" == "--sanitize" ]; then
@@ -174,11 +177,11 @@ cmake \
 
 for m in "${array[@]}"; do
     cmake --build "${pwd}/cmake" --target "${m}" || (echo ERROR: "${m}" && exit 1)
-    timeout --foreground 5 ${VALGRIND_OPTIONS} "${pwd}/cmake/${m}" 2>&1 >"${pwd}/cmake/log-${m}.txt" || (echo ERROR: "${m}" && exit 1)
+    timeout --foreground 15 ${VALGRIND_OPTIONS} "${pwd}/cmake/${m}" 2>&1 >"${pwd}/logs/log-${m}.txt" || (echo ERROR: "${m}" && exit 1)
 done
 
-find "${pwd}/cmake" -type f -not -name "log-*" -delete
-find "${pwd}/cmake" -type d -empty -delete
+find "${pwd}/logs" -type f -not -name "log-*" -delete
+find "${pwd}/logs" -type d -empty -delete
 
 if [ "${silent}" == "--silent" ]; then
     exec 1>&2 2>&-

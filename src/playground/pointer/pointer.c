@@ -84,7 +84,6 @@ static u64 pointer_read_file(u64 ptr);
 static void pointer_close_file(u64 ptr);
 static void pointer_printf(u64 ptr);
 static void pointer_put_char(u64 ptr, char value);
-static char* char_copy(char* s, u64 size);
 
 #ifdef USE_GC
 static void pointer_gc(void);
@@ -118,7 +117,7 @@ static void pointer_print_vm_internal(struct vm_data* vm_ptr) {
 
 void pointer_ctx_init(struct pointer_data** ctx, u64 size) {
     /* ctx */
-    *ctx = calloc(1, sizeof(struct pointer_data));
+    *ctx = _list_alloc(sizeof(struct pointer_data));
     struct pointer_data* ptr = *ctx;
     /* vm */
     vm->init(&ptr->vm, size);
@@ -151,7 +150,7 @@ void pointer_ctx_destroy(struct pointer_data** ctx) {
     ptr->vm = base->vm;
     vm->destroy(&ptr->vm);
     /* ctx */
-    free(*ctx);
+    _list_free(*ctx, sizeof(struct pointer_data));
 }
 
 extern const struct list list_micro_definition;
@@ -435,10 +434,11 @@ static u64 pointer_getcwd(void) {
     char cwd[PATH_MAX];
     u64 data_ptr;
     getcwd(cwd, sizeof(cwd));
-    char* data = _list_alloc(strlen(cwd) + 1);
+    u64 size = strlen(cwd) + 1;
+    char* data = _list_alloc(size);
     strcpy(data, cwd); // NOLINT
     data_ptr = pointer_load(data);
-    free(data);
+    _list_free(data, size);
     return data_ptr;
 }
 
@@ -462,7 +462,7 @@ static u64 pointer_open_file(u64 file_path, u64 mode) {
             struct file_handler* handler = f_ptr->data;
             handler->file = file;
 #ifdef USE_MEMORY_DEBUG_INFO
-            handler->path = char_copy(file_path_ptr->data, file_path_ptr->size);
+            handler->path = file_path_ptr->data;
 #endif
             data = vm->write(&base->vm, f_ptr);
 #ifdef USE_GC
@@ -509,9 +509,6 @@ static void pointer_close_file(u64 ptr) {
         struct pointer* file_ptr = vm->read(&base->vm, ptr);
         if (file_ptr->type == TYPE_FILE) {
             struct file_handler* handler = file_ptr->data;
-#ifdef USE_MEMORY_DEBUG_INFO
-            free(handler->path);
-#endif
             FILE* file = handler->file;
             if (file != 0) {
                 fclose(file);
@@ -545,13 +542,6 @@ static void pointer_put_char(u64 ptr, char value) {
             *data = value;
         }
     }
-}
-
-static char* char_copy(char* s, u64 len) /* make a duplicate of s */
-{
-    char* p = calloc(1, len); /* +1 for ’\0’ */
-    memcpy(p, s, len); // NOLINT
-    return p;
 }
 
 static void pointer_realloc_internal(struct pointer* ptr, u64 size) {

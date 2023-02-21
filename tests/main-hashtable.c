@@ -52,100 +52,100 @@ RX_TEST_CASE(myTestSuite, test_hashtable_init_destroy, .fixture = test_fixture) 
 // test init
 RX_TEST_CASE(myTestSuite, test_hashtable_alloc_free, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
-    char* key = calloc(1, sizeof(char) + 1);
-    char* value = calloc(1, sizeof(char) + 1);
+    char* key = _list_alloc(sizeof(char) + 1);
+    char* value = _list_alloc(sizeof(char) + 1);
     memcpy(key, "1", 2); // NOLINT
     memcpy(value, "a", 2); // NOLINT
     struct hashtable_data* tmp = hashtable->alloc(key, value);
     hashtable->free(tmp);
     hashtable->destroy();
-    free(key);
-    free(value);
+    _list_free(key, 0);
+    _list_free(value, 0);
     RX_ASSERT(0 == 0);
 }
 
 // test init
 RX_TEST_CASE(myTestSuite, test_hashtable_alloc, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
-    char* key = calloc(1, sizeof(char) + 1);
-    char* value = calloc(1, sizeof(char) + 1);
+    char* key = _list_alloc(sizeof(char) + 1);
+    char* value = _list_alloc(sizeof(char) + 1);
     memcpy(key, "1", 2); // NOLINT
     memcpy(value, "a", 2); // NOLINT
-    hashtable->alloc(key, value); // case when user forget to free, we care about our users, really
+    hashtable->alloc(key, value);
     hashtable->destroy();
-    free(key);
-    free(value);
+    _list_free(key, 0);
+    _list_free(value, 0);
     RX_ASSERT(0 == 0);
 }
 
 // test init
 RX_TEST_CASE(myTestSuite, test_hashtable_alloc_alloc, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
-    char* key = calloc(1, sizeof(char) + 1);
-    char* value = calloc(1, sizeof(char) + 1);
+    char* key = _list_alloc(sizeof(char) + 1);
+    char* value = _list_alloc(sizeof(char) + 1);
     memcpy(key, "1", 2); // NOLINT
     memcpy(value, "a", 2); // NOLINT
     hashtable->alloc(key, value);
     hashtable->alloc(key, value);
     hashtable->destroy();
-    free(key);
-    free(value);
+    _list_free(key, 0);
+    _list_free(value, 0);
     RX_ASSERT(0 == 0);
 }
 
 // test init
 RX_TEST_CASE(myTestSuite, test_hashtable_alloc_alloc_alloc, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
-    char* key = calloc(1, sizeof(char) + 1);
-    char* value = calloc(1, sizeof(char) + 1);
+    char* key = _list_alloc(sizeof(char) + 1);
+    char* value = _list_alloc(sizeof(char) + 1);
     memcpy(key, "1", 2); // NOLINT
     memcpy(value, "a", 2); // NOLINT
     hashtable->alloc(key, value);
     hashtable->alloc(key, value);
     hashtable->alloc(key, value);
     hashtable->destroy();
-    free(key);
-    free(value);
+    _list_free(key, 0);
+    _list_free(value, 0);
     RX_ASSERT(0 == 0);
 }
 
 // test init
 RX_TEST_CASE(myTestSuite, test_hashtable_alloc_free_alloc, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
-    char* key = calloc(1, sizeof(char) + 1);
-    char* value = calloc(1, sizeof(char) + 1);
+    char* key = _list_alloc(sizeof(char) + 1);
+    char* value = _list_alloc(sizeof(char) + 1);
     memcpy(key, "1", 2); // NOLINT
     memcpy(value, "a", 2); // NOLINT
     struct hashtable_data* temp = hashtable->alloc(key, value);
     hashtable->free(temp);
     hashtable->alloc(key, value);
     hashtable->destroy();
-    free(key);
-    free(value);
+    _list_free(key, 0);
+    _list_free(value, 0);
     RX_ASSERT(0 == 0);
 }
 
 // test init
 RX_TEST_CASE(myTestSuite, test_hashtable_alloc_alloc_free, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
-    char* key = calloc(1, sizeof(char) + 1);
-    char* value = calloc(1, sizeof(char) + 1);
+    char* key = _list_alloc(sizeof(char) + 1);
+    char* value = _list_alloc(sizeof(char) + 1);
     memcpy(key, "1", 2); // NOLINT
     memcpy(value, "a", 2); // NOLINT
     struct hashtable_data* temp = hashtable->alloc(key, value);
     hashtable->alloc(key, value);
     hashtable->free(temp);
     hashtable->destroy();
-    free(key);
-    free(value);
+    _list_free(key, 0);
+    _list_free(value, 0);
     RX_ASSERT(0 == 0);
 }
 
 // test init
 RX_TEST_CASE(myTestSuite, test_hashtable_alloc_free_alloc_free, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
-    char* key = calloc(1, sizeof(char) + 1);
-    char* value = calloc(1, sizeof(char) + 1);
+    char* key = _list_alloc(sizeof(char) + 1);
+    char* value = _list_alloc(sizeof(char) + 1);
     memcpy(key, "1", 2); // NOLINT
     memcpy(value, "a", 2); // NOLINT
     struct hashtable_data* temp = hashtable->alloc(key, value);
@@ -153,16 +153,16 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_free_alloc_free, .fixture = test_
     temp = hashtable->alloc(key, value);
     hashtable->free(temp);
     hashtable->destroy();
-    free(key);
-    free(value);
+    _list_free(key, 0);
+    _list_free(value, 0);
     RX_ASSERT(0 == 0);
 }
 
 // test init
 RX_TEST_CASE(myTestSuite, test_hashtable_alloc_alloc_temp_alloc_free_temp_alloc_alloc, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
-    char* key = calloc(1, sizeof(char) + 1);
-    char* value = calloc(1, sizeof(char) + 1);
+    char* key = _list_alloc(sizeof(char) + 1);
+    char* value = _list_alloc(sizeof(char) + 1);
     memcpy(key, "1", 2); // NOLINT
     memcpy(value, "a", 2); // NOLINT
     hashtable->alloc(key, value);
@@ -172,21 +172,21 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_alloc_temp_alloc_free_temp_alloc_
     hashtable->alloc(key, value);
     hashtable->alloc(key, value);
     hashtable->destroy();
-    free(key);
-    free(value);
+    _list_free(key, 0);
+    _list_free(value, 0);
     RX_ASSERT(0 == 0);
 }
 
 // test init
 RX_TEST_CASE(myTestSuite, test_hashtable_alloc_alloc_alloc_temp_alloc_alloc_free_temp, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
-    char* key = calloc(6, sizeof(char));
-    char* key1 = calloc(2, sizeof(char));
-    char* key2 = calloc(2, sizeof(char));
-    char* key3 = calloc(2, sizeof(char));
-    char* key4 = calloc(2, sizeof(char));
-    char* key5 = calloc(2, sizeof(char));
-    char* value = calloc(2, sizeof(char));
+    char* key = _list_alloc(6 * sizeof(char));
+    char* key1 = _list_alloc(2 * sizeof(char));
+    char* key2 = _list_alloc(2 * sizeof(char));
+    char* key3 = _list_alloc(2 * sizeof(char));
+    char* key4 = _list_alloc(2 * sizeof(char));
+    char* key5 = _list_alloc(2 * sizeof(char));
+    char* value = _list_alloc(2 * sizeof(char));
     memcpy(key, "12345", 6); // NOLINT
     memcpy(key1, "1", 2); // NOLINT
     memcpy(key2, "2", 2); // NOLINT
@@ -232,27 +232,27 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_alloc_alloc_temp_alloc_alloc_free
     RX_ASSERT(node_key != 0);
     RX_ASSERT(nonexistent_key == 0);
     hashtable->destroy();
-    free(key);
-    free(key1);
-    free(key2);
-    free(key3);
-    free(key4);
-    free(key5);
-    free(value);
+    _list_free(key, 0);
+    _list_free(key1, 0);
+    _list_free(key2, 0);
+    _list_free(key3, 0);
+    _list_free(key4, 0);
+    _list_free(key5, 0);
+    _list_free(value, 0);
     RX_ASSERT(0 == 0);
 }
 
 // test init
 RX_TEST_CASE(myTestSuite, test_hashtable_alloc_set_get, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
-    char* key = calloc(6, sizeof(char));
-    char* key1 = calloc(2, sizeof(char));
-    char* key2 = calloc(2, sizeof(char));
-    char* key3 = calloc(2, sizeof(char));
-    char* value1 = calloc(2, sizeof(char));
-    char* value2 = calloc(2, sizeof(char));
-    char* value3 = calloc(2, sizeof(char));
-    char* value = calloc(5, sizeof(char));
+    char* key = _list_alloc(6 * sizeof(char));
+    char* key1 = _list_alloc(2 * sizeof(char));
+    char* key2 = _list_alloc(2 * sizeof(char));
+    char* key3 = _list_alloc(2 * sizeof(char));
+    char* value1 = _list_alloc(2 * sizeof(char));
+    char* value2 = _list_alloc(2 * sizeof(char));
+    char* value3 = _list_alloc(2 * sizeof(char));
+    char* value = _list_alloc(5 * sizeof(char));
     memcpy(key, "12345", 6); // NOLINT
     memcpy(key1, "1", 2); // NOLINT
     memcpy(key2, "1", 2); // NOLINT
@@ -286,14 +286,14 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_set_get, .fixture = test_fixture)
     RX_ASSERT(strcmp(key_value->value, value) == 0);
     hashtable->free(temp);
     hashtable->destroy();
-    free(key);
-    free(key1);
-    free(key2);
-    free(key3);
-    free(value1);
-    free(value2);
-    free(value3);
-    free(value);
+    _list_free(key, 0);
+    _list_free(key1, 0);
+    _list_free(key2, 0);
+    _list_free(key3, 0);
+    _list_free(value1, 0);
+    _list_free(value2, 0);
+    _list_free(value3, 0);
+    _list_free(value, 0);
     RX_ASSERT(0 == 0);
 }
 

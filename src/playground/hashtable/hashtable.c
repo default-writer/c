@@ -52,14 +52,14 @@ static u32 hashfunc(char* source) {
 
 static void hashtable_init(u64 size) {
     hashtable_size = size;
-    hashtable = calloc(size, sizeof(void*));
+    hashtable = _list_alloc(hashtable_size * sizeof(void*));
 }
 
 static void hashtable_destroy(void) {
     for (u64 i = 0; i < hashtable_size; i++) {
         hashtable_free(hashtable[i]);
     }
-    free(hashtable);
+    _list_free(hashtable, hashtable_size * sizeof(void*));
     hashtable_size = 0;
 }
 
@@ -77,7 +77,7 @@ static struct hashtable_data* hashtable_extract_internal(struct hashtable_data* 
 }
 
 static struct hashtable_data* hashtable_alloc(char* key, char* value) {
-    struct hashtable_data* node = calloc(1, sizeof(struct hashtable_data));
+    struct hashtable_data* node = _list_alloc(sizeof(struct hashtable_data));
     update(&node->key, key);
     update(&node->value, value);
     u32 hash = hashfunc(key);
@@ -97,18 +97,18 @@ static void hashtable_free(struct hashtable_data* node) {
                 if (hashtable[hash] != 0) {
                     struct hashtable_data* found = hashtable_extract_internal(hashtable[hash], ptr);
                     if (hashtable[hash] != found) {
-                        free(ptr->key);
-                        free(ptr->value);
-                        free(ptr);
+                        _list_free(ptr->key, 0);
+                        _list_free(ptr->value, 0);
+                        _list_free(ptr, sizeof(struct hashtable_data));
                         break;
                     } else {
                         hashtable[hash] = 0;
                     }
                 }
                 next = ptr->next;
-                free(ptr->key);
-                free(ptr->value);
-                free(ptr);
+                _list_free(ptr->key, 0);
+                _list_free(ptr->value, 0);
+                _list_free(ptr, sizeof(struct hashtable_data));
                 ptr = next;
             } while (next != 0);
         }
@@ -158,10 +158,10 @@ static void hashtable_set(char* key, char* value) {
 static void update(char** prev, char* new) {
     if (prev != 0) {
         if (*prev != 0) {
-            free(*prev);
+            _list_free(*prev, 0);
             *prev = 0;
         }
-        char* value = calloc(1, strlen(new) + 1); /* +1 for ’\0’ */
+        char* value = _list_alloc(strlen(new) + 1); /* +1 for ’\0’ */
         strcpy(value, new); // NOLINT
         *prev = value;
     }

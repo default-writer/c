@@ -1,3 +1,5 @@
+#include "common/alloc.h"
+
 #include "playground/list/v1/list.h"
 
 #define MAX_MEMORY 0xffff // 64K bytes
@@ -9,11 +11,11 @@ static void** ptr = 0;
 static void* base = 0;
 
 static void list_init(void) {
-    base = ptr = calloc(1, MAX_MEMORY);
+    base = ptr = _list_alloc(MAX_MEMORY);
 }
 
 static void list_destroy(void) {
-    free(base);
+    _list_free(base, 0);
     ptr = 0;
     base = 0;
 }

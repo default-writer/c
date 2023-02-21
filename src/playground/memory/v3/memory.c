@@ -6,9 +6,9 @@
 static void* memory = 0;
 static void** ptr = 0;
 
-static void* memory_alloc(u64 size);
 static void memory_init(void);
 static void memory_destroy(void);
+static void* memory_alloc(u64 size);
 static void memory_free(const void* data, u64 size);
 
 static void memory_init(void) {
@@ -17,6 +17,7 @@ static void memory_init(void) {
     ptr = *ptr;
     *ptr = ptr + 1;
 }
+
 static void memory_destroy(void) {
     free(memory);
     memory = 0;
@@ -36,7 +37,7 @@ static void* memory_alloc(u64 size) {
 
 // releases global memory
 static void memory_free(const void* data, u64 size) {
-    CLEAN(data);
+    CLEAN(data)
     --ptr;
     ptr -= size;
 #ifdef USE_MEMORY_DEBUG_INFO

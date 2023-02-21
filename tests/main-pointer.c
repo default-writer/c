@@ -44,7 +44,7 @@ RX_TEST_CASE(myTestSuite, test_list_push_list_peek_list_pop, .fixture = test_fix
     u64 list_ptr = pointer->list_alloc();
     const char* source = "Hello, world!";
     u64 size = strlen(source);
-    char* dest = calloc(1, size + 1);
+    char* dest = _list_alloc(size + 1);
     memcpy(dest, source, size + 1); // NOLINT
     for (u64 i = 0; i < size; i++) {
         char* ptr = dest + i;
@@ -55,7 +55,7 @@ RX_TEST_CASE(myTestSuite, test_list_push_list_peek_list_pop, .fixture = test_fix
         *tmp = ch;
         pointer->list_push(list_ptr, data);
     }
-    char* buffer = calloc(1, size + 1);
+    char* buffer = _list_alloc(size + 1);
     for (u64 i = 0; i < size; i++) {
         u64 ch0 = pointer->list_peek(list_ptr);
         char* data = pointer->unsafe(ch0);
@@ -69,8 +69,8 @@ RX_TEST_CASE(myTestSuite, test_list_push_list_peek_list_pop, .fixture = test_fix
 #endif
     }
     printf("%s\n", buffer);
-    free(buffer);
-    free(dest);
+    _list_free(buffer, 0);
+    _list_free(dest, 0);
     pointer->list_free(list_ptr);
 }
 
@@ -78,7 +78,7 @@ RX_TEST_CASE(myTestSuite, test_list_push_list_peek_list_pop, .fixture = test_fix
 RX_TEST_CASE(myTestSuite, test_list_peek_0, .fixture = test_fixture) {
     const char* source = "Hello, world! A very long string do not fit in 8 bytes.";
     u64 size = strlen(source);
-    char* dest = calloc(1, size + 1);
+    char* dest = _list_alloc(size + 1);
     memcpy(dest, source, size + 1); // NOLINT
     for (u64 i = 0; i < size; i++) {
         char* ptr = dest + i;
@@ -89,7 +89,7 @@ RX_TEST_CASE(myTestSuite, test_list_peek_0, .fixture = test_fixture) {
         *tmp = ch;
         pointer->push(data);
     }
-    char* buffer = calloc(1, size + 1);
+    char* buffer = _list_alloc(size + 1);
     for (u64 i = 0; i < size; i++) {
         char* data = pointer->unsafe(i + 1);
         *(buffer + i) = *data;
@@ -98,13 +98,12 @@ RX_TEST_CASE(myTestSuite, test_list_peek_0, .fixture = test_fixture) {
 #endif
     }
     printf("%s\n", buffer);
-    free(buffer);
-    free(dest);
+    _list_free(buffer, 0);
+    _list_free(dest, 0);
 }
 
 int main(int argc, char** argv) {
     CLEAN(argc)
-    // CLEAN(argv)
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- acceptance test code\n");
 #endif

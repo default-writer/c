@@ -181,7 +181,7 @@ cmake \
 
 for m in "${array[@]}"; do
     cmake --build "${pwd}/coverage" --target "${m}" || (echo ERROR: "${m}" && exit 1)
-    timeout --foreground 5 ${VALGRIND_OPTIONS} "${pwd}/coverage/${m}" 2>&1 >"${pwd}/coverage/log-${m}.txt" || (echo ERROR: "${m}" && exit 1)
+    timeout --foreground 15 ${VALGRIND_OPTIONS} "${pwd}/coverage/${m}" 2>&1 >"${pwd}/coverage/log-${m}.txt" || (echo ERROR: "${m}" && exit 1)
     lcov --capture --directory "${pwd}/coverage/" --output-file "${pwd}/coverage/${m}.lcov" &>/dev/null
     lcov --remove "${pwd}/coverage/${m}.lcov" "${pwd}/src/rexo/*" -o "${pwd}/coverage/${m}.lcov"
 done

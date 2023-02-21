@@ -13,16 +13,16 @@ void* _list_alloc(u64 size) {
         ptr = calloc(1, size);
 #endif
 #ifdef USE_MEMORY_DEBUG_INFO
-        printf("   +: 0x%016llx !  %16lld\n", (u64)ptr, (u64)size);
+        printf("   +: 0x%016llx !  %16lld\n", (u64)ptr, size);
 #endif
     }
     return ptr;
 }
 
 void _list_free(void* ptr, u64 size) {
-    if (ptr != 0 && size != 0) {
+    if (ptr != 0) {
 #ifdef USE_MEMORY_DEBUG_INFO
-        printf("   -: 0x%016llx !  %16lld\n", (u64)ptr, (u64)size);
+        printf("   -: 0x%016llx !  %16lld\n", (u64)ptr, size);
 #endif
 #ifdef USE_MEMORY_CLEANUP
         memset((void*)(u8*)ptr, 0, size); // NOLINT
