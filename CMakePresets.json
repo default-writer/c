@@ -27,6 +27,10 @@
                 "CONFIG_MEMORY_ALLOC": {
                     "type": "BOOL",
                     "value": "OFF"
+                },
+                "CODE_SANITIZER": {
+                    "type": "BOOL",
+                    "value": "ON"
                 }
             }
         }
