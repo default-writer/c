@@ -450,13 +450,6 @@ static u64 pointer_open_file(u64 file_path, u64 mode) {
         const char* file_path_data = file_path_ptr->data;
         const char* mode_data = mode_ptr->data;
         FILE* file = fopen(file_path_data, mode_data); // NOLINT
-#ifdef DEBUG
-        if (file != 0) {
-            debug("file exists: %s\n", file_path_data);
-        } else {
-            debug("file does not exist: %s\n", file_path_data);
-        }
-#endif
         if (file != 0) {
             struct pointer* f_ptr = pointer_alloc_internal(sizeof(struct file_handler), TYPE_FILE);
             struct file_handler* handler = f_ptr->data;
@@ -480,19 +473,12 @@ static u64 pointer_read_file(u64 ptr) {
         if (file_ptr->type == TYPE_FILE) {
             struct file_handler* handler = file_ptr->data;
             FILE* file = handler->file;
-#ifdef DEBUG
-            debug("file handler: 0x%016llx\n", (u64)handler->file);
-            debug("file name: %s\n", handler->path);
-#endif
             if (file != 0) {
                 fseek(file, 0, SEEK_END); // NOLINT
                 u64 size = (u64)ftell(file);
                 fseek(file, 0, SEEK_SET);
                 u64 data_size = size + 1;
                 struct pointer* data_ptr = pointer_alloc_internal(data_size, TYPE_PTR);
-#ifdef DEBUG
-                debug("file size: %16lld\n", size);
-#endif
                 fread(data_ptr->data, 1, size, handler->file);
                 data = vm->write(&base->vm, data_ptr);
             }
@@ -546,9 +532,6 @@ static void pointer_put_char(u64 ptr, char value) {
 
 static void pointer_realloc_internal(struct pointer* ptr, u64 size) {
     if (ptr != 0 && ptr->data != 0) {
-#ifdef DEBUG
-        printf("   &: 0x%016llx !  %16lld\n", (u64)ptr->data, ptr->size);
-#endif
         ptr->data = _list_realloc(ptr->data, size);
         ptr->size = size;
     }

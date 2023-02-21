@@ -299,9 +299,6 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_set_get, .fixture = test_fixture)
 
 // test init
 RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_fixture) {
-#ifdef DEBUG
-    debug("TEST %s\n", "test_load_open_file_unsafe_hashtable");
-#endif
     u64 file_path_ptr = pointer->getcwd();
     u64 file_name_ptr = pointer->load("/all_english_words.txt");
     pointer->strcat(file_path_ptr, file_name_ptr);

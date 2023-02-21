@@ -39,9 +39,6 @@ void* _list_realloc(void* ptr, u64 size) {
     void* data = 0;
     if (ptr != 0 && size != 0) {
         data = realloc(ptr, size);
-#ifdef DEBUG
-        printf("   &: 0x%016llx !  %16lld\n", (u64)ptr, (u64)size);
-#endif
     }
     return data;
 }

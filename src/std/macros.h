@@ -6,10 +6,4 @@
         ptr = 0;    \
     }
 
-#ifdef DEBUG
-
-#define debug(fmt, ...) printf("%s:%d:\n" fmt, __FILE__, __LINE__, __VA_ARGS__)
-
-#endif
-
 #endif // _STD_MACROS_H_
