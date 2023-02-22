@@ -178,7 +178,7 @@ set(LIB_ALLOC_SOURCE src/list-alloc/code.c)
 set(LIB_EXPERIMENTAL_SOURCE src/list-experimental/code.c)
 set(LIB_PLAYGROUND_SOURCE src/playground/class/v1/class.c)
 set(LIB_PLAYGROUND2_SOURCE src/playground/class/v2/class.c)
-set(LIB_MEMORY_SOURCE src/playground/memory/v1/memory.c src/playground/memory/v2/memory.c)
+set(LIB_MEMORY_SOURCE src/playground/memory/v1/memory.c src/playground/memory/v2/memory_v2.c)
 set(LIB_BRAIN_SOURCE src/playground/brain/brain.c)
 set(LIB_POINTER_SOURCE src/playground/pointer/pointer.c)
 
