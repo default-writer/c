@@ -16,6 +16,19 @@ static void memory_init(void) {
     *ptr = calloc(1, MAX_MEMORY);
     ptr = *ptr;
     *ptr = ptr + 1;
+    // some ideas:
+
+    // while (*tmp != 0) {
+    //     tmp = *tmp;
+    // }
+
+    // *ptr = tmp;
+    // tmp = calloc(1, (size + 2) * sizeof(void*));
+
+    // *ptr = tmp;
+    // ptr = *ptr;
+
+    // *(tmp - 1) = ptr;
 }
 
 static void memory_destroy(void) {

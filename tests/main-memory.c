@@ -2,6 +2,7 @@
 
 extern const struct memory_allocator memory_allocator_v1;
 extern const struct memory_allocator memory_allocator_v2;
+extern const struct memory_allocator memory_allocator_v3;
 
 void use(const struct memory_allocator* allocator) {
     // initializes memory pool
@@ -40,5 +41,6 @@ void use(const struct memory_allocator* allocator) {
 int main(void) {
     use(&memory_allocator_v1);
     use(&memory_allocator_v2);
+    use(&memory_allocator_v3);
     return 0;
 }
