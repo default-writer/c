@@ -44,12 +44,24 @@ static void* memory_alloc(u64 size) {
 }
 
 // releases global memory
-static void memory_free(void* data, u64 size) {
-    CLEAN(size)
+static u64 _size(void* data) {
     void** head = data;
     void** next = *(head - 1);
-    void* last = *(head - 2);
-    size = (u64)(next - head);
+    return (u64)(next - head);
+}
+
+// releases global memory
+static void memory_free(void* data, u64 size) {
+    void** head = data;
+    void** next = *(head - 1);
+    void** last = *(head - 2);
+    if (*next == 0) {
+        ptr = last;
+        next = ptr + _size(ptr);
+        *next = 0;
+    }
+    CLEAN(size)
+    size = _size(data);
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("  0-: 0x%016llx !  %16lld\n", (u64)last, size);
 #endif
