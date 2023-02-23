@@ -50,7 +50,7 @@ static void memory_free(void* data, u64 size) {
     size = (u64)((void**)(*(tmp - 1)) - (void**)data);
     ptr = (void**)(*(tmp - 2));
 #ifdef USE_MEMORY_CLEANUP
-    memset(tmp - 2, 0, size + 3); // NOLINT
+    memset(tmp - 2, 0, (size + 3) * sizeof(void*)); // NOLINT
 #endif
     free(tmp - 2);
 #ifdef USE_MEMORY_DEBUG_INFO
