@@ -9,26 +9,29 @@ static void** ptr = 0;
 static void memory_init(void);
 static void memory_destroy(void);
 static void* memory_alloc(u64 size);
-static void memory_free(const void* data, u64 size);
+static void memory_free(void* data, u64 size);
+
+static void* alloc(void** prev, void* next, u64 size) {
+    void** tmp = calloc(1, (size + 3) * sizeof(void*)); //
+    prev = *prev;
+    *prev = tmp;
+
+    *tmp = next;
+    *(tmp + 1) = tmp + size + 2;
+    *(tmp + 2) = prev;
+
+    return tmp + 2;
+}
 
 static void memory_init(void) {
     ptr = &memory;
-    *ptr = calloc(1, MAX_MEMORY);
-    ptr = *ptr;
-    *ptr = ptr + 1;
+    *ptr = ptr;
+    ptr = alloc(ptr, 0, 0);
     // some ideas:
 
     // while (*tmp != 0) {
     //     tmp = *tmp;
     // }
-
-    // *ptr = tmp;
-    // tmp = calloc(1, (size + 2) * sizeof(void*));
-
-    // *ptr = tmp;
-    // ptr = *ptr;
-
-    // *(tmp - 1) = ptr;
 }
 
 static void memory_destroy(void) {
@@ -38,21 +41,23 @@ static void memory_destroy(void) {
 }
 
 static void* memory_alloc(u64 size) {
-    void** tmp = *ptr;
-    ptr += size;
-    ++ptr;
-    *ptr = ptr + 1;
+    ptr = alloc(ptr - 1, ptr, size);
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("  0+: 0x%016llx >0x%016llx\n", (u64)tmp, (u64)(*(tmp + size)));
+    printf("  0+: 0x%016llx >0x%016llx\n", (u64)ptr, (u64)(*ptr));
 #endif
-    return tmp;
+    return ptr;
 }
 
 // releases global memory
-static void memory_free(const void* data, u64 size) {
-    CLEAN(data)
-    --ptr;
-    ptr -= size;
+static void memory_free(void* data, u64 size) {
+    CLEAN(size)
+    void** tmp = data;
+    size = (u64)((void**)(*(tmp - 1)) - (void**)data);
+    ptr = (void**)(*(tmp - 2));
+#ifdef USE_MEMORY_CLEANUP
+    memset(tmp - 2, 0, size + 3); // NOLINT
+#endif
+    free(tmp - 2);
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("  0-: 0x%016llx !  %16lld\n", (u64)ptr, size);
 #endif

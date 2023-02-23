@@ -9,7 +9,7 @@ static void** ptr = 0;
 static void memory_init(void);
 static void memory_destroy(void);
 static void* memory_alloc(u64 size);
-static void memory_free(const void* data, u64 size);
+static void memory_free(void* data, u64 size);
 
 static void memory_init(void) {
     ptr = &memory;
@@ -36,7 +36,7 @@ static void* memory_alloc(u64 size) {
 }
 
 // releases global memory
-static void memory_free(const void* data, u64 size) {
+static void memory_free(void* data, u64 size) {
     CLEAN(data)
     --ptr;
     ptr -= size;
