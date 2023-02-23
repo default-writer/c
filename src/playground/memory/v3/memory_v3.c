@@ -11,14 +11,14 @@ static void memory_destroy(void);
 static void* memory_alloc(u64 size);
 static void memory_free(void* data, u64 size);
 
-static void* alloc(void** prev, void* next, u64 size) {
+static void* alloc(void** next, void* prev, u64 size) {
     void** tmp = calloc(1, (size + 3) * sizeof(void*)); //
-    prev = *prev;
-    *prev = tmp;
+    next = *next;
+    *next = tmp;
 
-    *tmp = next;
+    *tmp = prev;
     *(tmp + 1) = tmp + size + 2;
-    *(tmp + 2) = prev;
+    *(tmp + 2) = next;
 
     return tmp + 2;
 }
@@ -46,16 +46,17 @@ static void* memory_alloc(u64 size) {
 // releases global memory
 static void memory_free(void* data, u64 size) {
     CLEAN(size)
-    void** tmp = data;
-    size = (u64)((void**)(*(tmp - 1)) - (void**)data);
-    ptr = (void**)(*(tmp - 2));
-#ifdef USE_MEMORY_CLEANUP
-    memset(tmp - 2, 0, (size + 3) * sizeof(void*)); // NOLINT
-#endif
-    free(tmp - 2);
+    void** head = data;
+    void** next = *(head - 1);
+    void* last = *(head - 2);
+    size = (u64)(next - head);
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("  0-: 0x%016llx !  %16lld\n", (u64)ptr, size);
+    printf("  0-: 0x%016llx !  %16lld\n", (u64)last, size);
 #endif
+#ifdef USE_MEMORY_CLEANUP
+    memset(head - 2, 0, (size + 3) * sizeof(void*)); // NOLINT
+#endif
+    free(head - 2);
 }
 
 const struct memory_allocator memory_allocator_v3 = {
