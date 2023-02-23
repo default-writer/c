@@ -27,11 +27,6 @@ static void memory_init(void) {
     ptr = &memory;
     *ptr = ptr;
     ptr = alloc(ptr, 0, 0);
-    // some ideas:
-
-    // while (*tmp != 0) {
-    //     tmp = *tmp;
-    // }
 }
 
 static void memory_destroy(void) {
