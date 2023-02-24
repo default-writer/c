@@ -55,6 +55,7 @@ static void memory_free(void* data, u64 size) {
     void** next = *(head - 1);
     void** last = *(head - 2);
     if (*next == 0) {
+        ptr = last;
         next = last + offset(last);
         *next = 0;
     }
