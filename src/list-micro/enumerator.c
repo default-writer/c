@@ -16,9 +16,9 @@ static void* list_data_enumerator_next(struct enumerator_data* enumerator) {
     if (list != 0) {
         enumerator->current = (void*)list->next;
         data = list->data;
+        enumerator->value = data;
     }
-    enumerator->value = data;
-    return enumerator->value;
+    return data;
 }
 
 static struct enumerator_data* list_enumerator_init(void) {
