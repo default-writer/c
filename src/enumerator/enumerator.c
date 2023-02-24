@@ -1,14 +1,8 @@
 #include "common/alloc.h"
 
-#include "std/enumerator.h"
-
 #include "list-micro/data.h"
 
-struct list_data_enumerator {
-    struct enumerator_data* (*init)(void);
-    void (*destroy)(struct enumerator_data* enumerator);
-    void* (*next)(struct enumerator_data* ptr);
-};
+#include "enumerator/enumerator.h"
 
 static void* list_data_enumerator_next(struct enumerator_data* enumerator) {
     struct list_data* list = (struct list_data*)enumerator->current;
