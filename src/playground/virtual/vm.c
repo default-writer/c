@@ -2,13 +2,14 @@
 
 // #include "playground/list/v2/list.h"
 #include "list-micro/data.h"
+
 #include "playground/virtual/vm.h"
 
 /* list definition */
 // extern const struct list list_v2;
 extern const struct list list_micro_definition;
 
-/*private */
+/* private */
 
 // static const struct list* list = &list_v2;
 #ifndef USE_GC

@@ -3,6 +3,8 @@
 
 #include "std/common.h"
 
+#include "std/enumerator.h"
+
 struct vm_data {
     void** sp; // stack pointer
     void** bp; // base pointer
@@ -10,11 +12,6 @@ struct vm_data {
     struct vm_data* prev;
     u64 address_space;
     u64 size;
-};
-
-struct enumerator_data {
-    void** value;
-    void** current;
 };
 
 struct vm_data_enumerator {
