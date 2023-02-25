@@ -3,7 +3,7 @@
 
 #include "std/common.h"
 
-#include "std/enumerator.h"
+#include "enumerator/enumerator.h"
 
 struct vm_data {
     void** sp; // stack pointer

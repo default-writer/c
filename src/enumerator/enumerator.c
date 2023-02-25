@@ -1,7 +1,5 @@
 #include "common/alloc.h"
 
-#include "list-micro/data.h"
-
 #include "enumerator/enumerator.h"
 
 static void list_enumerator_init(struct enumerator_data** enumerator);
@@ -33,10 +31,10 @@ static void* list_data_enumerator_next(struct enumerator_data** enumerator) {
     void* data = 0;
     if (enumerator != 0 && *enumerator != 0) {
         struct enumerator_data* ptr = *enumerator;
-        struct list_data* list = (struct list_data*)ptr->current;
+        void* list = ptr->current;
         if (list != 0) {
-            ptr->current = (void*)list->next;
-            ptr->value = list->data;
+            ptr->current = ptr->next(list);
+            ptr->value = ptr->data(list);
             data = ptr->value;
         }
     }

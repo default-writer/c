@@ -4,9 +4,11 @@
 #include "std/common.h"
 
 struct enumerator_data {
-    void** value;
     void** current;
+    void** value;
     void** initial;
+    void* (*next)(void*);
+    void* (*data)(void*);
 };
 
 struct list_data_enumerator {
