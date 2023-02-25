@@ -6,12 +6,14 @@
 struct enumerator_data {
     void** value;
     void** current;
+    void** initial;
 };
 
 struct list_data_enumerator {
-    struct enumerator_data* (*init)(void);
-    void (*destroy)(struct enumerator_data* enumerator);
-    void* (*next)(struct enumerator_data* ptr);
+    void (*init)(struct enumerator_data** enumerator);
+    void (*destroy)(struct enumerator_data** enumerator);
+    void* (*next)(struct enumerator_data** enumerator);
+    void (*reset)(struct enumerator_data** enumerator);
 };
 
 #endif // _LIST_ENUMERATOR_H_
