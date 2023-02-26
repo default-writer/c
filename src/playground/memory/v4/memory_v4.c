@@ -92,7 +92,7 @@ static void memory_free(void* data) {
     _list_free(head - 2, size);
 }
 
-const struct memory_allocator memory_allocator_v3 = {
+const struct memory_allocator memory_allocator_v4 = {
     .init = memory_init,
     .destroy = memory_destroy,
     .alloc = memory_alloc,

@@ -48,11 +48,15 @@ case "${install}" in
         array=("main-hashtable")
         ;;
 
-    "--memory") # builds and runs '-memory' target
-        array=("main-memory")
+    "--memory1") # builds and runs '-memory1' target
+        array=("main-memory1")
         ;;
 
-    "--playground1") # builds and runs '-playground' target
+    "--memory2") # builds and runs '-memory2' target
+        array=("main-memory2")
+        ;;
+
+    "--playground1") # builds and runs '-playground1' target
         array=("main-playground1")
         ;;
 
@@ -77,7 +81,7 @@ case "${install}" in
         ;;
 
     "--all") # builds and runs all targets
-        array=("zen" "main" "main-pointer" "main-hashtable" "main-test" "main-brain" "main-light" "main-micro" "main-experimental" "main-alloc" "main-playground1" "main-playground2" "main-memory")
+        array=("zen" "main" "main-pointer" "main-hashtable" "main-test" "main-brain" "main-light" "main-micro" "main-experimental" "main-alloc" "main-playground1" "main-playground2" "main-memory1" "main-memory2")
         ;;
 
     *)
