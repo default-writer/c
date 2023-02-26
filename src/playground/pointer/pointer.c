@@ -102,9 +102,9 @@ static void pointer_print_vm_internal(struct vm_data* vm_ptr) {
     while (vm_ptr->prev != 0) {
         vm_ptr = vm_ptr->prev;
     }
-    struct enumerator_data* data = vm_enumerator_init(&vm_ptr);
+    struct enumerator_data* data = vm_enumerator_init(vm_ptr);
     void* enumerator_ptr = 0;
-    while ((enumerator_ptr = enumerator->next(&vm_ptr, data)) != 0) {
+    while ((enumerator_ptr = enumerator->next(data)) != 0) {
         struct pointer* data_ptr = (struct pointer*)enumerator_ptr;
 #ifdef USE_MEMORY_DEBUG_INFO
         if (data_ptr != 0 && data_ptr->data != 0) {

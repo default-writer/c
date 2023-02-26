@@ -15,7 +15,7 @@ struct vm_data {
 };
 
 struct vm_data_enumerator {
-    void* (*next)(struct vm_data**, struct enumerator_data* ptr);
+    void* (*next)(struct enumerator_data* enumerator);
 };
 
 struct vm {
@@ -26,7 +26,7 @@ struct vm {
     u64 (*write)(struct vm_data** current, void* value);
 };
 
-struct enumerator_data* vm_enumerator_init(struct vm_data** current);
-void vm_enumerator_destroy(struct enumerator_data* data);
+struct enumerator_data* vm_enumerator_init(struct vm_data* vm);
+void vm_enumerator_destroy(struct enumerator_data* enumerator);
 
 #endif // _PLAYGROUND_VIRTUAL_H_

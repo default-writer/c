@@ -3,7 +3,10 @@
 // #include "playground/list/v2/list.h"
 #include "list-micro/data.h"
 
+#include "enumerator/enumerator.h"
+
 #include "playground/virtual/vm.h"
+#include "std/macros.h"
 
 /* list definition */
 // extern const struct list list_v2;
@@ -34,12 +37,10 @@ static void* to_real_address_internal(struct vm_data* vm, u64 address);
 static u64 to_virtual_address_internal(struct vm_data* vm, void** ptr);
 
 /* public */
-struct enumerator_data* vm_enumerator_init(struct vm_data** current);
+struct enumerator_data* vm_enumerator_init(struct vm_data* vm);
 void vm_enumerator_destroy(struct enumerator_data* data);
 
 /* implementation */
-
-// static u64 address_space = 0x0;
 
 static u64 to_virtual_address_internal(struct vm_data* vm, void** ptr) {
     return (u64)(ptr - vm->bp) + vm->address_space + 1;
@@ -175,34 +176,42 @@ static u64 vm_write(struct vm_data** current, void* value) {
     return address;
 }
 
-static void* vm_data_enumerator_next(struct vm_data** current, struct enumerator_data* enumerator) {
-    struct vm_data* vm = *current;
+struct enumerator_data_state {
+    struct vm_data* vm;
+    void** ptr;
+};
+
+static void* vm_data_enumerator_next(struct enumerator_data* enumerator) {
     void* data = 0;
+    struct enumerator_data_state* state = (struct enumerator_data_state*)enumerator->current;
+    struct vm_data* vm = state->vm;
     while (data == 0) {
-        if (enumerator->current == vm->sp) {
+        if (state->ptr == vm->sp) {
             if (vm->next == 0) {
                 break;
             }
             vm = vm->next;
-            *current = vm;
-            enumerator->current = vm->bp;
+            state->vm = vm;
+            state->ptr = vm->bp;
         }
-        data = enumerator->current++;
+        data = state->ptr++;
     }
-    enumerator->value = data;
-    return enumerator->value;
+    return data;
 }
 
 /* public */
 
-struct enumerator_data* vm_enumerator_init(struct vm_data** current) {
-    struct vm_data* vm = *current;
-    struct enumerator_data* data = _list_alloc(sizeof(struct enumerator_data));
-    data->current = vm->bp;
-    return data;
+struct enumerator_data* vm_enumerator_init(struct vm_data* vm) {
+    struct enumerator_data* enumerator = _list_alloc(sizeof(struct enumerator_data));
+    struct enumerator_data_state* state = _list_alloc(sizeof(struct enumerator_data_state));
+    state->vm = vm;
+    state->ptr = vm->bp;
+    enumerator->current = state;
+    return enumerator;
 }
 
 void vm_enumerator_destroy(struct enumerator_data* enumerator) {
+    _list_free(enumerator->current, sizeof(struct enumerator_data_state));
     _list_free(enumerator, sizeof(struct enumerator_data));
 }
 

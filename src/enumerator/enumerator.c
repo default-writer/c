@@ -2,48 +2,26 @@
 
 #include "enumerator/enumerator.h"
 
-static void list_enumerator_init(struct enumerator_data** enumerator);
-static void list_enumerator_destroy(struct enumerator_data** enumerator);
-static void list_data_enumerator_reset(struct enumerator_data** enumerator);
-static void* list_data_enumerator_next(struct enumerator_data** enumerator);
+static void* list_data_enumerator_next(struct enumerator_data* enumerator);
 
-static void list_enumerator_init(struct enumerator_data** enumerator) {
-    if (enumerator != 0 && *enumerator != 0) {
-        *enumerator = _list_alloc(sizeof(struct enumerator_data));
-    }
+struct enumerator_data* list_enumerator_init(void);
+void list_enumerator_destroy(struct enumerator_data* enumerator);
+
+struct enumerator_data* list_enumerator_init(void) {
+    struct enumerator_data* enumerator = _list_alloc(sizeof(struct enumerator_data));
+    return enumerator;
 }
 
-static void list_enumerator_destroy(struct enumerator_data** enumerator) {
-    if (enumerator != 0 && *enumerator != 0) {
-        _list_free(*enumerator, sizeof(struct enumerator_data));
-        *enumerator = 0;
-    }
+void list_enumerator_destroy(struct enumerator_data* enumerator) {
+    _list_free(enumerator, sizeof(struct enumerator_data));
 }
 
-static void list_data_enumerator_reset(struct enumerator_data** enumerator) {
-    if (enumerator != 0 && *enumerator != 0) {
-        struct enumerator_data* ptr = *enumerator;
-        ptr->current = ptr->initial;
-    }
-}
-
-static void* list_data_enumerator_next(struct enumerator_data** enumerator) {
+static void* list_data_enumerator_next(struct enumerator_data* enumerator) {
     void* data = 0;
-    if (enumerator != 0 && *enumerator != 0) {
-        struct enumerator_data* ptr = *enumerator;
-        void* list = ptr->current;
-        if (list != 0) {
-            ptr->current = ptr->next(list);
-            ptr->value = ptr->data(list);
-            data = ptr->value;
-        }
-    }
+    data = enumerator->current;
     return data;
 }
 
 const struct list_data_enumerator list_data_enumerator_definition = {
-    .init = list_enumerator_init,
-    .destroy = list_enumerator_destroy,
-    .reset = list_data_enumerator_reset,
     .next = list_data_enumerator_next
 };

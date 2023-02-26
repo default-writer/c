@@ -4,18 +4,14 @@
 #include "std/common.h"
 
 struct enumerator_data {
-    void** current;
-    void** value;
-    void** initial;
-    void* (*next)(void*);
-    void* (*data)(void*);
+    void* current;
 };
 
 struct list_data_enumerator {
-    void (*init)(struct enumerator_data** enumerator);
-    void (*destroy)(struct enumerator_data** enumerator);
-    void* (*next)(struct enumerator_data** enumerator);
-    void (*reset)(struct enumerator_data** enumerator);
+    void* (*next)(struct enumerator_data* enumerator);
 };
+
+struct enumerator_data* list_enumerator_init(void);
+void list_enumerator_destroy(struct enumerator_data* enumerator);
 
 #endif // _LIST_ENUMERATOR_H_
