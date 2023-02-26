@@ -52,8 +52,8 @@ case "${install}" in
         array=("main-memory")
         ;;
 
-    "--playground") # builds and runs '-playground' target
-        array=("main-playground")
+    "--playground1") # builds and runs '-playground' target
+        array=("main-playground1")
         ;;
 
     "--playground2") # builds and runs '-playground2' target
@@ -77,7 +77,7 @@ case "${install}" in
         ;;
 
     "--all") # builds and runs all targets
-        array=("zen" "main" "main-pointer" "main-hashtable" "main-test" "main-brain" "main-light" "main-micro" "main-experimental" "main-alloc" "main-playground" "main-playground2" "main-memory")
+        array=("zen" "main" "main-pointer" "main-hashtable" "main-test" "main-brain" "main-light" "main-micro" "main-experimental" "main-alloc" "main-playground1" "main-playground2" "main-memory")
         ;;
 
     *)

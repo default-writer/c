@@ -61,12 +61,13 @@ static void memory_destroy(void) {
 
 static void* memory_alloc(u64 size) {
     void* tmp = list->pop(cache);
-    if (tmp == 0 || offset(tmp) <= size) {
-        ptr = alloc(ptr - 1, ptr, size);
-#ifdef USE_MEMORY_DEBUG_INFO
-        printf("  0+: 0x%016llx >0x%016llx\n", (u64)ptr, (u64)(*ptr));
-#endif
+    if (tmp != 0 && offset(tmp) <= size) {
+        return tmp;
     }
+    ptr = alloc(ptr - 1, ptr, size);
+#ifdef USE_MEMORY_DEBUG_INFO
+    printf("  0+: 0x%016llx >0x%016llx\n", (u64)ptr, (u64)(*ptr));
+#endif
     return ptr;
 }
 
