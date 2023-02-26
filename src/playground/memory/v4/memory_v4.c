@@ -90,7 +90,7 @@ static void* memory_alloc(u64 size) {
     void* tmp = list->peek(cache);
     void** data = 0;
     u64 cached_size = offset(tmp);
-    if (tmp != 0 && cached_size <= size) {
+    if (tmp != 0 && cached_size >= size) {
         data = list->pop(cache);
 #ifdef USE_MEMORY_DEBUG_INFO
         printf("  0*: 0x%016llx >  %16lld\n", (u64)data, cached_size);
