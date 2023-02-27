@@ -1,6 +1,5 @@
 #include "common/alloc.h"
 
-// #include "playground/list/v2/list.h"
 #include "list-micro/data.h"
 
 #include "enumerator/enumerator.h"
@@ -9,17 +8,14 @@
 #include "std/macros.h"
 
 /* list definition */
-// extern const struct list list_v2;
 extern const struct list list_micro_definition;
 
 /* private */
 
-// static const struct list* list = &list_v2;
 #ifndef USE_GC
 static const struct list* list = &list_micro_definition;
 static struct list_data** cache;
 #endif
-// static struct vm_data** current;
 
 /* api */
 
@@ -37,6 +33,7 @@ static void* to_real_address_internal(struct vm_data* vm, u64 address);
 static u64 to_virtual_address_internal(struct vm_data* vm, void** ptr);
 
 /* public */
+
 struct enumerator_data* vm_enumerator_init(struct vm_data* vm);
 void vm_enumerator_destroy(struct enumerator_data* data);
 
