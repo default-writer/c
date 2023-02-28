@@ -45,17 +45,18 @@
     "calloc",
     "callstack",
     "chatgpt",
+    "CLEAN",
     "dlinfo",
     "gregs",
     "Jaco",
     "NGREG",
     "NOSTACK",
+    "octa",
     "parkmiller",
     "Rexo",
     "sptr",
     "struct",
-    "ulong",
-    "CLEAN"
+    "ulong"
   ],
   "cSpell.files": [
     "**/*.c",
