@@ -139,9 +139,6 @@ static void memory_free_internal(void* data) {
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("  0-: 0x%016llx !  %16lld\n", (u64)data, size);
 #endif
-#ifdef USE_MEMORY_CLEANUP
-    memset(head - memory_offset, 0, (size + memory_offset) * sizeof(void*)); // NOLINT
-#endif
     _list_free(head - memory_offset, (size + memory_offset) * sizeof(void*));
 }
 
