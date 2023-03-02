@@ -179,7 +179,6 @@ static void* memory_alloc(u64 size) {
         struct memory_ref* ptr = _ref(data);
         if (ptr != 0) {
 #ifdef USE_MEMORY_DEBUG_INFO
-            printf("  p*: 0x%016llx .0x%016llx .0x%016llx\n", (u64)ptr, (u64)ptr->next, (u64)ptr->last);
             printf("  0*: 0x%016llx >  %16lld\n", (u64)data, cached_size);
 #endif
         }
@@ -189,7 +188,6 @@ static void* memory_alloc(u64 size) {
         struct memory_ref* ptr = _ref(data);
         if (ptr != 0) {
 #ifdef USE_MEMORY_DEBUG_INFO
-            printf("  p+: 0x%016llx .0x%016llx .0x%016llx\n", (u64)ptr, (u64)ptr->next, (u64)ptr->last);
             printf("  0+: 0x%016llx >  %16lld\n", (u64)data, size);
 #endif
         }
