@@ -126,6 +126,9 @@ static void* memory_alloc_internal(void* data, u64 size) {
     struct memory_ref* ptr = _ref(data);
     if (ptr != 0) {
         ptr->last = tmp;
+#ifdef USE_MEMORY_DEBUG_INFO
+        printf("  p.: 0x%016llx .0x%016llx .0x%016llx\n", (u64)ptr, (u64)ptr->next, (u64)ptr->last);
+#endif
     }
     struct memory_ref* _current = (struct memory_ref*)tmp;
     _current->next = _ptr(tmp + size);
@@ -181,7 +184,8 @@ static void* memory_alloc(u64 size) {
 #endif
         }
     } else {
-        data = memory_alloc_internal(current, size);
+        current = memory_alloc_internal(current, size);
+        data = current;
         struct memory_ref* ptr = _ref(data);
         if (ptr != 0) {
 #ifdef USE_MEMORY_DEBUG_INFO
