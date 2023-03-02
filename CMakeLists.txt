@@ -195,7 +195,6 @@ set(MAIN_MEMORY2_SOURCE tests/v2/main-memory_v2.c ${LIB_MEMORY2_SOURCE})
 set(MAIN_BRAIN_SOURCE tests/main-brain.c)
 set(MAIN_POINTER_SOURCE tests/main-pointer.c)
 set(MAIN_HASHTABLE_SOURCE tests/main-hashtable.c)
-set(MAIN_TEST_SOURCE src/playground/test.c)
 set(MAIN_ZEN_SOURCE src/playground/zen/zen.c)
 
 include_directories(src)
@@ -231,7 +230,6 @@ add_executable(main-memory2 ${MAIN_MEMORY2_SOURCE})
 add_executable(main-brain ${MAIN_BRAIN_SOURCE})
 add_executable(main-pointer ${MAIN_POINTER_SOURCE})
 add_executable(main-hashtable ${MAIN_HASHTABLE_SOURCE})
-add_executable(main-test ${MAIN_TEST_SOURCE})
 
 add_executable(zen ${MAIN_ZEN_SOURCE})
 
@@ -251,7 +249,6 @@ target_link_libraries(main-memory2 PRIVATE list-memory2 list-micro list-common)
 target_link_libraries(main-brain PRIVATE list-pointer list-micro vm)
 target_link_libraries(main-pointer PRIVATE list-pointer list-micro vm)
 target_link_libraries(main-hashtable PRIVATE list-pointer list-micro vm hashtable)
-target_link_libraries(main-test)
 
 configure_file(all_english_words.txt ${CMAKE_BINARY_DIR}/all_english_words.txt COPYONLY)
 
