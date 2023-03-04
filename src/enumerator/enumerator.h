@@ -1,5 +1,5 @@
-#ifndef _LIST_ENUMERATOR_H_
-#define _LIST_ENUMERATOR_H_
+#ifndef _ENUMERATOR_H_
+#define _ENUMERATOR_H_
 
 #include "std/common.h"
 
@@ -14,4 +14,4 @@ struct list_data_enumerator {
 struct enumerator_data* list_enumerator_init(void);
 void list_enumerator_destroy(struct enumerator_data* enumerator);
 
-#endif // _LIST_ENUMERATOR_H_
+#endif // _ENUMERATOR_H_

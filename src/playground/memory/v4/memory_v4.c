@@ -4,6 +4,8 @@
 
 #include "common/alloc.h"
 
+#include "memory/ref.h"
+
 #include "list-micro/data.h"
 
 // the idea:
@@ -61,8 +63,6 @@ extern const struct list list_micro_definition;
 static const struct list* list = &list_micro_definition;
 static struct list_data** cache;
 
-struct memory_ref;
-
 // global allocated memory
 static struct memory_ref* memory;
 static void** current = 0;
@@ -84,12 +84,6 @@ static void* memory_alloc_internal(void* data, u64 size);
 static void memory_free_internal(void* data);
 
 /* implementation */
-
-struct memory_ref {
-    void* next;
-    void* prev;
-    u64 size;
-};
 
 const u64 memory_offset = sizeof(struct memory_ref) / sizeof(void*);
 
