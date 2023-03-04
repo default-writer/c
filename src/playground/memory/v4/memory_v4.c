@@ -86,8 +86,9 @@ static void memory_free_internal(void* data);
 /* implementation */
 
 struct memory_ref {
-    void* last;
     void* next;
+    void* prev;
+    u64 size;
 };
 
 const u64 memory_offset = sizeof(struct memory_ref) / sizeof(void*);
@@ -113,25 +114,24 @@ static void* _ptr(void* data) {
 static u64 _sizeof(void* data) {
     u64 size = 0;
     if (data != 0) {
-        void** head = data;
         struct memory_ref* ptr = _ref(data);
-        void** next = ptr->next;
-        size = (u64)(next - head);
+        size = ptr->size;
     }
     return size;
 }
 
 static void* memory_alloc_internal(void* data, u64 size) {
-    void** tmp = _list_alloc((size + memory_offset) * sizeof(void*));
     struct memory_ref* ptr = _ref(data);
+    void** tmp = _list_alloc((size + memory_offset) * sizeof(void*));
     if (ptr != 0) {
-        ptr->last = tmp;
+        ptr->next = _ptr(tmp);
 #ifdef USE_MEMORY_DEBUG_INFO
-        printf("  p.: 0x%016llx .0x%016llx .0x%016llx\n", (u64)ptr, (u64)ptr->next, (u64)ptr->last);
+        printf("  p.: 0x%016llx .0x%016llx .0x%016llx\n", (u64)data, (u64)ptr->prev, (u64)ptr->next);
 #endif
     }
-    struct memory_ref* _current = (struct memory_ref*)tmp;
-    _current->next = _ptr(tmp + size);
+    struct memory_ref* _current = _ref(ptr->next);
+    _current->size = size;
+    _current->prev = _ptr(ptr);
     return tmp + memory_offset;
 }
 
@@ -161,7 +161,7 @@ static void memory_destroy(void) {
     list->destroy(cache);
     _list_free(cache, sizeof(void*));
     --memory;
-    _list_free(memory->last, sizeof(struct memory_ref));
+    _list_free(_ref(memory->next), sizeof(struct memory_ref));
     _list_free(memory, sizeof(struct memory_ref));
 #ifdef USE_MEMORY_CLEANUP
     memory = 0;
