@@ -4,8 +4,8 @@
 #include "std/common.h"
 
 struct memory_ref {
-    void* next;
-    void* prev;
+    struct memory_ref* next;
+    struct memory_ref* prev;
     u64 size;
 };
 
