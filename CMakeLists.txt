@@ -218,7 +218,7 @@ add_library(list-playground1 STATIC ${LIB_PLAYGROUND1_SOURCE})
 add_library(list-playground2 STATIC ${LIB_PLAYGROUND2_SOURCE})
 add_library(list-brain STATIC ${LIB_BRAIN_SOURCE})
 add_library(list-pointer STATIC ${LIB_POINTER_SOURCE})
-add_library(memory-list STATIC ${LIB_MEMORY_LIST_SOURCE} )
+add_library(memory-list STATIC ${LIB_MEMORY_LIST_SOURCE})
 
 add_executable(main ${MAIN_STANDARD_SOURCE})
 add_executable(main-light ${MAIN_LIGHT_SOURCE})
