@@ -3,10 +3,10 @@
 
 #include "std/common.h"
 
-void* list_peek(void);
-void list_push(void* data);
-void* list_pop(void);
-void list_init(void);
-void list_destroy(void);
+void* memory_list_peek(void);
+void memory_list_push(void* data);
+void* memory_list_pop(void);
+void memory_list_init(void);
+void memory_list_destroy(void);
 
 #endif // _PLAYGROUND_MEMORY_LIST_H_

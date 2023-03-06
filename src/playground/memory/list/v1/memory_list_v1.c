@@ -59,19 +59,19 @@ extern const struct list list_micro_definition;
 static const struct list* list = &list_micro_definition;
 static struct list_data** cache;
 
-void list_init(void) {
+void memory_list_init(void) {
     cache = _list_alloc(sizeof(void*));
     list->init(cache);
 }
 
-void* list_peek(void) {
+void* memory_list_peek(void) {
     // struct memory_ref* ptr
     // void* data = _ptr(ptr);
     // return data;
     return list->peek(cache);
 }
 
-void list_push(void* data) {
+void memory_list_push(void* data) {
     // struct memory_ref* next = _ref(data);
     // if (ptr != 0) {
     //     struct memory_ref* prev = ptr->prev;
@@ -80,7 +80,7 @@ void list_push(void* data) {
     list->push(cache, data);
 }
 
-void* list_pop(void) {
+void* memory_list_pop(void) {
     // void* data = _ptr(ptr);
     // if (ptr != 0) {
     //     struct memory_ref* next = ptr->next;
@@ -96,7 +96,7 @@ void* list_pop(void) {
     return list->pop(cache);
 }
 
-void list_destroy(void) {
+void memory_list_destroy(void) {
     list->destroy(cache);
     _list_free(cache, sizeof(void*));
 #ifdef USE_MEMORY_CLEANUP
