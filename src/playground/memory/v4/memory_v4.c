@@ -87,15 +87,15 @@ static void memory_init(void) {
     memory = _list_alloc(sizeof(struct memory_ref));
     ++memory;
     current = memory_alloc_internal(memory, 0);
-    list_init();
+    memory_list_init();
 }
 
 static void memory_destroy(void) {
     void* data = 0;
-    while ((data = list_pop()) != 0) {
+    while ((data = memory_list_pop()) != 0) {
         memory_free_internal(data);
     }
-    list_destroy();
+    memory_list_destroy();
     --memory;
     _list_free(_ref(memory->next), sizeof(struct memory_ref));
     _list_free(memory, sizeof(struct memory_ref));
@@ -106,11 +106,11 @@ static void memory_destroy(void) {
 }
 
 static void* memory_alloc(u64 size) {
-    void* tmp = list_peek();
+    void* tmp = memory_list_peek();
     void** data = 0;
     u64 cached_size = _sizeof(tmp);
     if (tmp != 0 && cached_size >= size) {
-        data = list_pop();
+        data = memory_list_pop();
         struct memory_ref* ptr = _ref(data);
         if (ptr != 0) {
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -132,7 +132,7 @@ static void* memory_alloc(u64 size) {
 
 // releases global memory
 static void memory_free(void* data) {
-    list_push(data);
+    memory_list_push(data);
 }
 
 /* public */
