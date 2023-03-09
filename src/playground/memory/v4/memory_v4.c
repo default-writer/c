@@ -52,10 +52,6 @@ static void* memory_alloc_internal(void* data, u64 size) {
 static void memory_free_internal(void* data) {
     if (data != 0) {
         void** head = data;
-        u64 size = ref->size(data);
-#ifdef USE_MEMORY_DEBUG_INFO
-        printf("  0-: 0x%016llx !  %16lld\n", (u64)data, size);
-#endif
         ref->free(head);
     }
 }
@@ -86,18 +82,12 @@ static void* memory_alloc(u64 size) {
     void* tmp = memory_list_peek();
     void* data = 0;
     struct memory_ref* ptr = ref->ref(tmp);
-    u64 data_size = 0;
     if (ptr != 0 && ptr->size >= size) {
         data = memory_list_pop();
-        data_size = ptr->size;
     } else {
         data = memory_alloc_internal(current, size);
-        data_size = size;
         current = data; // advance current ptr to the new data
     }
-#ifdef USE_MEMORY_DEBUG_INFO
-    printf("  0+: 0x%016llx >  %16lld\n", (u64)data, data_size);
-#endif
     return data;
 }
 
