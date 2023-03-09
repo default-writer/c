@@ -103,8 +103,9 @@ static const u64 memory_offset = sizeof(struct memory_ref) / sizeof(void*);
 const struct memory_ref_methods memory_ref_definition = {
     .init = memory_ref_init,
     .destroy = memory_ref_destroy,
-    .ref = memory_ref_ref,
-    .ptr = memory_ref_ptr,
+    // .ref = memory_ref_ref,
+    // .ptr = memory_ref_ptr,
+    .size = memory_ref_size,
     .alloc = memory_ref_alloc,
     .free = memory_ref_free
 };

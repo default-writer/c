@@ -41,8 +41,8 @@ static void memory_destroy(void) {
 static void* memory_alloc(u64 size) {
     void* tmp = memory_list_peek();
     void* data = 0;
-    struct memory_ref* ptr = ref->ref(tmp);
-    if (ptr != 0 && ptr->size >= size) {
+    u64 ptr_size = ref->size(tmp);
+    if (ptr_size != 0 && ptr_size >= size) {
         data = memory_list_pop();
     } else {
         data = ref->alloc(size);

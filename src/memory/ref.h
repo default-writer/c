@@ -11,13 +11,12 @@ struct memory_ref {
 
 struct memory_ref_methods {
     void (*init)(void);
-    struct memory_ref* (*ref)(void* data);
-    void* (*ptr)(struct memory_ref* data);
+    void (*destroy)(void);
+    // struct memory_ref* (*ref)(void* data);
+    // void* (*ptr)(struct memory_ref* data);
     u64 (*size)(void* data);
-    // struct memory_ref* (*alloc)(u64 size);
     void* (*alloc)(u64 size);
     void (*free)(void* ptr);
-    void (*destroy)(void);
 };
 
 #endif // _MEMORY_REF_H_
