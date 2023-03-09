@@ -1,8 +1,6 @@
 #ifndef _STD_DATA_H_
 #define _STD_DATA_H_
 
-struct list_data;
-
 typedef unsigned long long u64;
 typedef unsigned long int u32;
 typedef unsigned short int u16;

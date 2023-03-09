@@ -9,9 +9,9 @@
 static const u64 memory_offset;
 
 static struct memory_ref* memory_ref_ref(void* data);
-static void* memory_ref_ptr(void* data);
+static void* memory_ref_ptr(struct memory_ref* data);
 static u64 memory_ref_size(void* data);
-static void* memory_ref_alloc(u64 size);
+static struct memory_ref* memory_ref_alloc(u64 size);
 
 /* implementation */
 
@@ -24,10 +24,10 @@ static struct memory_ref* memory_ref_ref(void* data) {
     return ptr;
 }
 
-static void* memory_ref_ptr(void* data) {
+static void* memory_ref_ptr(struct memory_ref* data) {
     struct memory_ref* ptr = 0;
     if (data != 0) {
-        ptr = (struct memory_ref*)data;
+        ptr = data;
         ++ptr;
     }
     return (void*)ptr;
@@ -42,7 +42,7 @@ static u64 memory_ref_size(void* data) {
     return size;
 }
 
-static void* memory_ref_alloc(u64 size) {
+static struct memory_ref* memory_ref_alloc(u64 size) {
     return _list_alloc((size + memory_offset) * sizeof(void*));
 }
 

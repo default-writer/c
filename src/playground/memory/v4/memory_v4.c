@@ -32,29 +32,32 @@ static void memory_free_internal(void* data);
 /* implementation */
 
 static void* memory_alloc_internal(void* data, u64 size) {
-    struct memory_ref* ptr = ref->ref(data);
-    if (ptr != 0) {
-        void** tmp = ref->alloc(size);
-        ptr->next = ref->ptr(tmp);
+    void* ptr = 0;
+    if (data != 0) {
+        struct memory_ref* ref_ptr = ref->ref(data);
+        struct memory_ref* tmp = ref->alloc(size);
+        ref_ptr->next = ref->ptr(tmp);
 #ifdef USE_MEMORY_DEBUG_INFO
-        printf("  p.: 0x%016llx .0x%016llx .0x%016llx\n", (u64)data, (u64)ptr->prev, (u64)ptr->next);
+        printf("  p.: 0x%016llx .0x%016llx .0x%016llx\n", (u64)data, (u64)ref_ptr->prev, (u64)ref_ptr->next);
 #endif
-        struct memory_ref* _current = ref->ref(ptr->next);
+        struct memory_ref* _current = ref->ref(ref_ptr->next);
         _current->size = size;
-        _current->prev = ref->ptr(ptr);
-        ptr = ptr->next;
+        _current->prev = ref->ptr(ref_ptr);
+        ptr = ref_ptr->next;
     }
     return ptr;
 }
 
 // releases global memory
 static void memory_free_internal(void* data) {
-    void** head = data;
-    u64 size = ref->size(data);
+    if (data != 0) {
+        void** head = data;
+        u64 size = ref->size(data);
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("  0-: 0x%016llx !  %16lld\n", (u64)data, size);
+        printf("  0-: 0x%016llx !  %16lld\n", (u64)data, size);
 #endif
-    ref->free(head);
+        ref->free(head);
+    }
 }
 
 static void memory_init(void) {
@@ -81,26 +84,20 @@ static void memory_destroy(void) {
 
 static void* memory_alloc(u64 size) {
     void* tmp = memory_list_peek();
-    void** data = 0;
-    u64 cached_size = ref->size(tmp);
-    if (tmp != 0 && cached_size >= size) {
+    void* data = 0;
+    struct memory_ref* ptr = ref->ref(tmp);
+    u64 data_size = 0;
+    if (ptr != 0 && ptr->size >= size) {
         data = memory_list_pop();
-        struct memory_ref* ptr = ref->ref(data);
-        if (ptr != 0) {
-#ifdef USE_MEMORY_DEBUG_INFO
-            printf("  0*: 0x%016llx >  %16lld\n", (u64)data, cached_size);
-#endif
-        }
+        data_size = ptr->size;
     } else {
-        current = memory_alloc_internal(current, size);
-        data = current;
-        struct memory_ref* ptr = ref->ref(data);
-        if (ptr != 0) {
-#ifdef USE_MEMORY_DEBUG_INFO
-            printf("  0+: 0x%016llx >  %16lld\n", (u64)data, size);
-#endif
-        }
+        data = memory_alloc_internal(current, size);
+        data_size = size;
+        current = data; // advance current ptr to the new data
     }
+#ifdef USE_MEMORY_DEBUG_INFO
+    printf("  0+: 0x%016llx >  %16lld\n", (u64)data, data_size);
+#endif
     return data;
 }
 
