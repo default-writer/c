@@ -13,10 +13,6 @@ extern struct memory_ref_methods memory_ref_definition;
 
 static struct memory_ref_methods* ref = &memory_ref_definition;
 
-// global allocated memory
-static struct memory_ref* memory;
-static void** current = 0;
-
 /* api */
 
 static void memory_init(void);
@@ -26,56 +22,20 @@ static void memory_free(void* data);
 
 /* declaration */
 
-static void* memory_alloc_internal(void* data, u64 size);
-static void memory_free_internal(void* data);
-
 /* implementation */
 
-static void* memory_alloc_internal(void* data, u64 size) {
-    void* ptr = 0;
-    if (data != 0) {
-        struct memory_ref* ref_ptr = ref->ref(data);
-        struct memory_ref* tmp = ref->alloc(size);
-        ref_ptr->next = ref->ptr(tmp);
-#ifdef USE_MEMORY_DEBUG_INFO
-        printf("  p.: 0x%016llx .0x%016llx .0x%016llx\n", (u64)data, (u64)ref_ptr->prev, (u64)ref_ptr->next);
-#endif
-        struct memory_ref* _current = ref->ref(ref_ptr->next);
-        _current->size = size;
-        _current->prev = ref->ptr(ref_ptr);
-        ptr = ref_ptr->next;
-    }
-    return ptr;
-}
-
-// releases global memory
-static void memory_free_internal(void* data) {
-    if (data != 0) {
-        void** head = data;
-        ref->free(head);
-    }
-}
-
 static void memory_init(void) {
-    memory = _list_alloc(sizeof(struct memory_ref));
-    ++memory;
-    current = memory_alloc_internal(memory, 0);
+    ref->init();
     memory_list_init();
 }
 
 static void memory_destroy(void) {
     void* data = 0;
     while ((data = memory_list_pop()) != 0) {
-        memory_free_internal(data);
+        ref->free(data);
     }
     memory_list_destroy();
-    --memory;
-    _list_free(ref->ref(memory->next), sizeof(struct memory_ref));
-    _list_free(memory, sizeof(struct memory_ref));
-#ifdef USE_MEMORY_CLEANUP
-    memory = 0;
-    current = 0;
-#endif
+    ref->destroy();
 }
 
 static void* memory_alloc(u64 size) {
@@ -85,8 +45,7 @@ static void* memory_alloc(u64 size) {
     if (ptr != 0 && ptr->size >= size) {
         data = memory_list_pop();
     } else {
-        data = memory_alloc_internal(current, size);
-        current = data; // advance current ptr to the new data
+        data = ref->alloc(size);
     }
     return data;
 }
