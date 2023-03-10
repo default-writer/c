@@ -24,6 +24,7 @@ static void vm_destroy(struct vm_data** current);
 static void* vm_free(struct vm_data** current, u64 address);
 static void* vm_read(struct vm_data** current, u64 address);
 static u64 vm_write(struct vm_data** current, void* value);
+static void* vm_data_enumerator_next(struct enumerator_data* enumerator);
 
 /* internal */
 
