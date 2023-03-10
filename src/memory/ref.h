@@ -6,6 +6,7 @@
 struct memory_ref {
     struct memory_ref* prev;
     struct memory_ref* next;
+    struct memory_ref* cache;
     u64 size;
 };
 

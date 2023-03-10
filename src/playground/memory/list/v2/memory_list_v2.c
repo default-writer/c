@@ -4,7 +4,8 @@
 
 #include "memory_list_v2.h"
 
-struct memory_ref* current;
+/* private */
+static struct memory_ref** current;
 
 /*
        _____________
@@ -15,10 +16,8 @@ struct memory_ref* current;
                  |             ^
                  *------x------*
 */
-void memory_list_init(struct memory_ref* ptr) {
-    current = ptr;
-    current->prev = 0;
-    current->next = 0;
+void memory_list_init(void) {
+    current = _list_alloc(sizeof(void*));
 }
 
 /*
@@ -30,7 +29,7 @@ void memory_list_init(struct memory_ref* ptr) {
 
 */
 struct memory_ref* memory_list_peek(void) {
-    return current;
+    return *current;
 }
 
 /*
@@ -44,12 +43,10 @@ struct memory_ref* memory_list_peek(void) {
 
 */
 void memory_list_push(struct memory_ref* ptr) {
-    if (current != 0) {
-        current->prev = ptr;
-        ptr->next = current;
-        ptr->prev = 0;
-        current = ptr;
+    if (ptr != 0) {
+        ptr->cache = *current;
     }
+    *current = ptr;
 }
 
 /*
@@ -63,19 +60,15 @@ void memory_list_push(struct memory_ref* ptr) {
 
 */
 struct memory_ref* memory_list_pop(void) {
-    struct memory_ref* ptr = 0;
-    if (current != 0) {
-        ptr = current->next;
-        current->next = 0;
-        current = ptr;
-    }
+    struct memory_ref* ptr = *current;
     if (ptr != 0) {
-        ptr->prev = 0;
+        *current = ptr->cache;
     }
     return ptr;
 }
 
 void memory_list_destroy(void) {
+    _list_free(current, sizeof(void*));
 #ifdef USE_MEMORY_CLEANUP
     current = 0;
 #endif

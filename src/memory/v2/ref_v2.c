@@ -85,15 +85,14 @@ static void memory_ref_free(void* data) {
 }
 
 static void memory_ref_init(void) {
+    memory_list_init();
     memory = _list_alloc(sizeof(struct memory_ref));
     ++memory;
     current = (void*)memory;
     current = memory_ref_alloc(0);
-    memory_list_init(memory_ref_ref(current));
 }
 
 static void memory_ref_destroy(void) {
-    memory_list_destroy();
     --memory;
     _list_free(memory_ref_ref(memory->next), sizeof(struct memory_ref));
     _list_free(memory, sizeof(struct memory_ref));
@@ -101,6 +100,7 @@ static void memory_ref_destroy(void) {
     memory = 0;
     current = 0;
 #endif
+    memory_list_destroy();
 }
 
 static void memory_ref_push(void* data) {
@@ -119,7 +119,7 @@ static void* memory_ref_pop(void) {
 }
 
 static void* memory_ref_peek(void) {
-    void* data = memory_list_pop();
+    void* data = memory_list_peek();
     void* ptr = 0;
     if (data != 0) {
         ptr = memory_ref_ptr(data);
