@@ -27,6 +27,8 @@ void use(const struct memory_allocator* allocator) {
         *(ptr3 + i) = (void*)0xdeadbeefdeadbeef;
     }
     // releases memory block
+    allocator->free(ptr2);
+    // releases memory block
     allocator->free(ptr3);
     // allocation size aligned to 8 byte boundaries (64-bit pointers)
     u64 size4 = 16;
@@ -37,8 +39,6 @@ void use(const struct memory_allocator* allocator) {
     }
     // releases memory block
     allocator->free(ptr4);
-    // releases memory block
-    allocator->free(ptr2);
     // releases memory block
     allocator->free(ptr1);
     // destroys memory pool

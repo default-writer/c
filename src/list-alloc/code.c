@@ -71,7 +71,7 @@ static void list_push(struct list_data** current, void* payload) {
             // updates the size of current data chunk
             ptr->size += ALLOC_SIZE(parameters->block_size);
             /* updates current data pointer */
-            data = (void**)((u8*)ptr->data + offset);
+            data = (void**)(void*)((u8*)ptr->data + offset);
         }
         // advances the current data pointer, writes data into allocated memory buffer */
         ptr->data[0] = data;
