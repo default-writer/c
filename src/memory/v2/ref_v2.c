@@ -93,6 +93,10 @@ static void memory_ref_init(void) {
 }
 
 static void memory_ref_destroy(void) {
+    void* data = 0;
+    while ((data = memory_ref_pop()) != 0) {
+        memory_ref_free(data);
+    }
     --memory;
     _list_free(memory_ref_ref(memory->next), sizeof(struct memory_ref));
     _list_free(memory, sizeof(struct memory_ref));

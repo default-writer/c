@@ -1,6 +1,6 @@
 #include "playground/memory/v5/memory_v5.h"
 
-extern const struct memory_allocator memory_allocator_v4;
+extern const struct memory_allocator memory_allocator_v5;
 
 void use(const struct memory_allocator* allocator) {
     // initializes memory pool
@@ -46,6 +46,6 @@ void use(const struct memory_allocator* allocator) {
 }
 
 int main(void) {
-    use(&memory_allocator_v4);
+    use(&memory_allocator_v5);
     return 0;
 }

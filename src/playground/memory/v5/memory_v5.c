@@ -27,10 +27,6 @@ static void memory_init(void) {
 }
 
 static void memory_destroy(void) {
-    void* data = 0;
-    while ((data = ref->pop()) != 0) {
-        ref->free(data);
-    }
     ref->destroy();
 }
 
@@ -53,7 +49,7 @@ static void memory_free(void* data) {
 
 /* public */
 
-const struct memory_allocator memory_allocator_v4 = {
+const struct memory_allocator memory_allocator_v5 = {
     .init = memory_init,
     .destroy = memory_destroy,
     .alloc = memory_alloc,
