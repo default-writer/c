@@ -1,5 +1,5 @@
-#ifndef _PLAYGROUND_LIST_H_
-#define _PLAYGROUND_LIST_H_
+#ifndef _PLAYGROUND_LIST_V2_H_
+#define _PLAYGROUND_LIST_V2_H_
 
 #include "std/common.h"
 
@@ -18,4 +18,4 @@ struct list {
     void* (*peek)(struct list_data* pointer);
 };
 
-#endif // _PLAYGROUND_LIST_H_
+#endif // _PLAYGROUND_LIST_V2_H_

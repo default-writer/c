@@ -1,4 +1,4 @@
-#include "playground/memory/memory.h"
+#include "playground/memory/api/v1/memory.h"
 
 extern const struct memory_allocator memory_allocator_v1;
 extern const struct memory_allocator memory_allocator_v2;

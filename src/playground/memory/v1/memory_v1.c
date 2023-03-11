@@ -1,4 +1,4 @@
-#include "playground/memory/memory.h"
+#include "playground/memory/api/v1/memory.h"
 
 #define MAX_MEMORY 0xffff // 64K bytes
 

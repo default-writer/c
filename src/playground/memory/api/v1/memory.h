@@ -1,5 +1,5 @@
-#ifndef _PLAYGROUND_MEMORY_H_
-#define _PLAYGROUND_MEMORY_H_
+#ifndef _PLAYGROUND_MEMORY_V1_H_
+#define _PLAYGROUND_MEMORY_V1_H_
 
 #include "std/common.h"
 
@@ -10,4 +10,4 @@ struct memory_allocator {
     void (*free)(void* data, u64 size);
 };
 
-#endif // _PLAYGROUND_MEMORY_H_
+#endif // _PLAYGROUND_MEMORY_V1_H_
