@@ -1,6 +1,6 @@
 #include "playground/memory/api/v2/memory.h"
 
-#define MAX_MEMORY 0xffff // 64K bytes
+#define MAX_MEMORY 0xfffffc // 16777215 (0xffffff) octa-bytes or 134217720 bytes (128MB)
 
 #include "common/alloc.h"
 
@@ -19,14 +19,17 @@ static void* memory_alloc(u64 size);
 static void memory_free(void* data);
 
 /* declaration */
+static void* memory;
 
 /* implementation */
 
 static void memory_init(void) {
     ref->init();
+    memory = ref->alloc(MAX_MEMORY);
 }
 
 static void memory_destroy(void) {
+    ref->free(memory);
     ref->destroy();
 }
 
