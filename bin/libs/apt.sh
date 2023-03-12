@@ -13,6 +13,7 @@ function update() {
 }
 
 function upgrade() {
+    update
     apt upgrade -y
     apt autoremove -y
     apt full-upgrade -y

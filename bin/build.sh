@@ -169,7 +169,9 @@ export MAKEFLAGS=-j8
 find "${pwd}/src" -type f -name "*.s" -delete
 find "${pwd}/tests" -type f -name "*.s" -delete
 
-cmake \
+[ -d "${pwd}/cmake-3.25/bin" ] && cmake=${pwd}/cmake-3.25/bin/cmake || cmake=cmake
+
+${cmake} \
     -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
     -DCMAKE_BUILD_TYPE:STRING=Debug \
     -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
@@ -180,7 +182,7 @@ cmake \
     -G "Ninja"
 
 for m in "${array[@]}"; do
-    cmake --build "${pwd}/build" --target "${m}" || (echo ERROR: "${m}" && exit 1)
+    ${cmake} --build "${pwd}/build" --target "${m}" || (echo ERROR: "${m}" && exit 1)
     timeout --foreground 15 ${VALGRIND_OPTIONS} "${pwd}/build/${m}" 2>&1 >"${pwd}/build/log-${m}.txt" || (echo ERROR: "${m}" && exit 1)
 done
 

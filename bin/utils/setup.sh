@@ -114,13 +114,26 @@ case "${install}" in
 
     "--clang-format") # installs clang-format
         update
+        sudo wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
+        build=$(echo $(lsb_release -a 2>&1 | tail -1 | sed  -e 's/\w*:\s*//g'))
+        repository=$(echo deb http://apt.llvm.org/${build} llvm-toolchain-${build} main)
+        sudo add-apt-repository "${repository}"
+        upgrade
         apt install -y clang-format
-        apt install -y --only-upgrade apport apport-gtk python3-apport python3-problem-report gnome-remote-desktop grub-common grub-pc grub-pc-bin grub2-common gstreamer1.0-pipewire libpipewire-0.3-0 libpipewire-0.3-common libpipewire-0.3-modules open-vm-tools open-vm-tools-desktop python3-software-properties software-properties-common software-properties-gtk libgbm1 libgl1-mesa-dri libglapi-mesa libglx-mesa0 mesa-va-drivers mesa-vulkan-drivers
+        apt install -y apport apport-gtk python3-apport python3-problem-report gnome-remote-desktop grub-common grub-pc grub-pc-bin grub2-common gstreamer1.0-pipewire  open-vm-tools open-vm-tools-desktop python3-software-properties software-properties-common software-properties-gtk libgbm1 libgl1-mesa-dri libglapi-mesa libglx-mesa0 mesa-va-drivers mesa-vulkan-drivers
+        apt install -y --only-upgrade apport apport-gtk python3-apport python3-problem-report gnome-remote-desktop grub-common grub-pc grub-pc-bin grub2-common gstreamer1.0-pipewire  open-vm-tools open-vm-tools-desktop python3-software-properties software-properties-common software-properties-gtk libgbm1 libgl1-mesa-dri libglapi-mesa libglx-mesa0 mesa-va-drivers mesa-vulkan-drivers
         upgrade
         ;;
 
     "--cmake") # installs cmake
         update
+        export DEBIAN_FRONTEND=noninteractive
+        set -a && eval "$(sudo tee --append /etc/environment <<<'DEBIAN_FRONTEND=noninteractive')" && set +a
+        wget https://github.com/Kitware/CMake/releases/download/v3.25.3/cmake-3.25.3-linux-x86_64.sh -O /tmp/cmake-3.25.3-linux-x86_64.sh
+        chmod +x /tmp/cmake-3.25.3-linux-x86_64.sh
+        [ ! -d "${pwd}/cmake-3.25" ] && mkdir ${pwd}/cmake-3.25
+        DEBIAN_FRONTEND=noninteractive sudo /tmp/cmake-3.25.3-linux-x86_64.sh --prefix=${pwd}/cmake-3.25 --skip-license
+        rm /tmp/cmake-3.25.3-linux-x86_64.sh
         apt install -y --no-install-recommends curl ca-certificates git build-essential lldb lcov cmake clangd clang-format g++ gcc gdb lcov ninja-build
         upgrade
         ;;

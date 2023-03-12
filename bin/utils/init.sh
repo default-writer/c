@@ -17,19 +17,21 @@ fi
 pwd=$(pwd)
 
 "${pwd}/bin/utils/install.sh" --git
-"${pwd}/bin/utils/install.sh" --submodule
+"${pwd}/bin/utils/install.sh" --submodule-rexo
 "${pwd}/bin/utils/install.sh" --hooks
-"${pwd}/bin/utils/env.sh" --nvm
-"${pwd}/bin/utils/nvm.sh"
+sudo "${pwd}/bin/utils/setup.sh" --clang-format
+sudo "${pwd}/bin/utils/setup.sh" --cmake
+# "${pwd}/bin/utils/env.sh" --nvm
+# "${pwd}/bin/utils/nvm.sh"
 
-. "${pwd}/bin/utils/nvm.sh"
+# . "${pwd}/bin/utils/nvm.sh"
 
-nvm --version
-nvm install 19.3.0
-nvm use 19.3.0
-npm install -g npm@9.2.0
-echo "Node version $(node --version)"
-echo "NPM version $(npm --version)"
+# nvm --version
+# nvm install 19.3.0
+# nvm use 19.3.0
+# npm install -g npm@9.2.0
+# echo "Node version $(node --version)"
+# echo "NPM version $(npm --version)"
 
 "${pwd}/bin/utils/runme.sh"
 

@@ -170,7 +170,9 @@ find "${pwd}/coverage" -type f -name "*.gcda" -delete
 find "${pwd}/coverage" -type f -name "*.gcno" -delete
 find "${pwd}" -type f -name "*.s" -delete
 
-cmake \
+[ -d "${pwd}/cmake-3.25/bin" ] && cmake=${pwd}/cmake-3.25/bin/cmake || cmake=cmake
+
+${cmake} \
     -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
     -DCMAKE_BUILD_TYPE:STRING=Debug \
     -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
@@ -184,7 +186,7 @@ cmake \
     -G "Ninja"
 
 for m in "${array[@]}"; do
-    cmake --build "${pwd}/coverage" --target "${m}" || (echo ERROR: "${m}" && exit 1)
+    ${cmake} --build "${pwd}/coverage" --target "${m}" || (echo ERROR: "${m}" && exit 1)
     timeout --foreground 15 ${VALGRIND_OPTIONS} "${pwd}/coverage/${m}" 2>&1 >"${pwd}/coverage/log-${m}.txt" || (echo ERROR: "${m}" && exit 1)
     lcov --capture --directory "${pwd}/coverage/" --output-file "${pwd}/coverage/${m}.lcov" &>/dev/null
     lcov --remove "${pwd}/coverage/${m}.lcov" "${pwd}/src/rexo/*" -o "${pwd}/coverage/${m}.lcov"

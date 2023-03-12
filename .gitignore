@@ -48,12 +48,14 @@ report
 .history
 build
 cmake
+/cmake-*
 coverage
 logs
 .trunk
 .venv
 .args
 **/*.c.s
+**/*.s
 src/rexo
 clangd
 gh

@@ -166,7 +166,9 @@ OPTIONS=$(echo "${MOCKS_OPTIONS} ${GC_OPTIONS} ${SANITIZER_OPTIONS}")
 
 export MAKEFLAGS=-j8
 
-cmake \
+[ -d "${pwd}/cmake-3.25/bin" ] && cmake=${pwd}/cmake-3.25/bin/cmake || cmake=cmake
+
+${cmake} \
     -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
     -DCMAKE_BUILD_TYPE:STRING=Debug \
     -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
@@ -177,7 +179,7 @@ cmake \
     -G "Ninja"
 
 for m in "${array[@]}"; do
-    cmake --build "${pwd}/logs" --target "${m}" || (echo ERROR: "${m}" && exit 1)
+    ${cmake} --build "${pwd}/logs" --target "${m}" || (echo ERROR: "${m}" && exit 1)
     timeout --foreground 15 ${VALGRIND_OPTIONS} "${pwd}/logs/${m}" 2>&1 >"${pwd}/logs/log-${m}.txt" || (echo ERROR: "${m}" && exit 1)
 done
 

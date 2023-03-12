@@ -30,6 +30,10 @@ case "${install}" in
         rm -rf "${pwd}/clangd"
         ;;
 
+    "--cmake") # uninstalls cmake cmake 3.25.3
+        rm -rf "${pwd}/cmake-3.25"
+        ;;
+
     "--git") # unsets git config global environment variables
         git config --global --unset safe.directory
         git config --global --unset pull.rebase
@@ -50,7 +54,6 @@ case "${install}" in
     "--pyenv") # removes .pyenv folder
         rm -rf $HOME/.pyenv
         ;;
-
 
     "--devcontainer-extensions") # installs vs code .devcontainers extensions
         code --log error --uninstall-extension ms-vscode-remote.remote-containers &>/dev/null
