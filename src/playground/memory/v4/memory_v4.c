@@ -1,12 +1,10 @@
 #include "playground/memory/api/v2/memory.h"
 
-#define MAX_MEMORY 0xffff // 64K bytes
-
-#include "common/alloc.h"
-
-#include "memory/ref.h"
+#include "memory/api/v1/ref.h"
 
 #include "playground/memory/list/v1/memory_list_v1.h"
+
+#define MAX_MEMORY 0xffff // 64K bytes
 
 // offset for memory_ref structure
 extern struct memory_ref_methods memory_ref_definition;

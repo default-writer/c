@@ -268,7 +268,7 @@ target_link_libraries(main-playground2 PRIVATE list-playground2 list-micro list-
 target_link_libraries(main-memory1 PRIVATE list-memory1)
 target_link_libraries(main-memory2 PRIVATE list-memory2 memory-ref1)
 target_link_libraries(main-memory3 PRIVATE list-memory3 memory-ref2)
-target_link_libraries(main-memory4 PRIVATE list-memory4 memory-ref3)
+target_link_libraries(main-memory4 PRIVATE list-memory4 memory-ref3 list-lcg)
 target_link_libraries(main-brain PRIVATE list-pointer list-micro vm)
 target_link_libraries(main-pointer PRIVATE list-pointer list-micro vm)
 target_link_libraries(main-hashtable PRIVATE list-pointer list-micro vm hashtable)

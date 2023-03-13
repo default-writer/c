@@ -1,14 +1,9 @@
-#ifndef _MEMORY_REF_H_
-#define _MEMORY_REF_H_
+#ifndef _MEMORY_REF_V1_H_
+#define _MEMORY_REF_V1_H_
 
 #include "std/common.h"
 
-struct memory_ref {
-    struct memory_ref* prev;
-    struct memory_ref* next;
-    struct memory_ref* cache;
-    u64 size;
-};
+#include "memory/api/ref.h"
 
 struct memory_ref_methods {
     void (*init)(void);
@@ -23,4 +18,4 @@ struct memory_ref_methods {
     void* (*peek)(void);
 };
 
-#endif // _MEMORY_REF_H_
+#endif // _MEMORY_REF_V1_H_

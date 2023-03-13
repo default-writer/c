@@ -1,7 +1,5 @@
 #include "common/alloc.h"
 
-#include "memory/ref.h"
-
 #include "memory_list_v2.h"
 
 /* private */

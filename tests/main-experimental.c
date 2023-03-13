@@ -1,7 +1,10 @@
 #include "common/alloc.h"
+
 #include "common/parameters.h"
 
 #include "list-experimental/data.h"
+
+#include "common/lcg.h"
 
 #include "rexo/include/rexo.h"
 
@@ -19,7 +22,7 @@ void list_init(struct list_data** current);
 void list_destroy(struct list_data** current);
 
 /* LCG Park-Miller function */
-extern u64 lcg_parkmiller_state(void);
+// extern u64 lcg_parkmiller_64(void);
 
 /* allocates memory pointer for list object */
 static struct list_data* new_list(void) {
@@ -489,7 +492,7 @@ RX_TEST_CASE(myTestSuite, test_list_push_pop, .fixture = test_fixture) {
     int i = 0;
     do {
         // generates random values
-        void* _payload = (void*)lcg_parkmiller_state();
+        void* _payload = (void*)lcg_parkmiller_64();
         // records value
         _recorded[i] = _payload;
         // pushes to the list

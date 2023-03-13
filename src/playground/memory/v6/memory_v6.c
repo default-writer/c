@@ -1,10 +1,8 @@
 #include "playground/memory/api/v2/memory.h"
 
+#include "memory/api/v2/ref.h"
+
 #define MAX_MEMORY 0xfffffc // 16777215 (0xffffff) octa-bytes or 134217720 bytes (128MB)
-
-#include "common/alloc.h"
-
-#include "memory/ref.h"
 
 // offset for memory_ref structure
 extern struct memory_ref_methods memory_ref_definition;
@@ -19,30 +17,27 @@ static void* memory_alloc(u64 size);
 static void memory_free(void* data);
 
 /* declaration */
-static void* memory;
+// static void* memory;
 
 /* implementation */
 
 static void memory_init(void) {
-    ref->init();
-    memory = ref->alloc(MAX_MEMORY);
+    u64 memory_offset = (sizeof(struct memory_ref) / sizeof(void*));
+    u64 size = 0; // MAX_MEMORY >> 3;
+    size += 2 + memory_offset;
+    size += 3 + memory_offset;
+    size += 16 + memory_offset;
+    ref->init(size);
+    // memory = ref->alloc(size);
+    // ref->use(memory, size);
 }
 
 static void memory_destroy(void) {
-    ref->free(memory);
     ref->destroy();
 }
 
 static void* memory_alloc(u64 size) {
-    void* tmp = ref->peek();
-    void* data = 0;
-    u64 ptr_size = ref->size(tmp);
-    if (ptr_size != 0 && ptr_size >= size) {
-        data = ref->pop();
-    } else {
-        data = ref->alloc(size);
-    }
-    return data;
+    return ref->alloc(size);
 }
 
 // releases global memory
