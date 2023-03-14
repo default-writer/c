@@ -17,19 +17,11 @@ static void* memory_alloc(u64 size);
 static void memory_free(void* data);
 
 /* declaration */
-// static void* memory;
 
 /* implementation */
 
 static void memory_init(void) {
-    u64 memory_offset = (sizeof(struct memory_ref) / sizeof(void*));
-    u64 size = 0; // MAX_MEMORY >> 3;
-    size += 2 + memory_offset;
-    size += 3 + memory_offset;
-    size += 16 + memory_offset;
-    ref->init(size);
-    // memory = ref->alloc(size);
-    // ref->use(memory, size);
+    ref->init(0);
 }
 
 static void memory_destroy(void) {

@@ -101,10 +101,10 @@ static void* memory_ref_alloc(u64 size) {
             u64 ptr_size = memory_ref_size(tmp);
             if (ptr_size != 0 && ptr_size >= size) {
                 ptr = memory_ref_pop();
-                memory_ref_use(ptr);
+                memory_ref_push(ptr);
             } else {
                 ptr = memory_ref_alloc_internal(size);
-                memory_ref_use(ptr);
+                memory_ref_push(ptr);
             }
         }
     }
@@ -128,8 +128,10 @@ static void memory_ref_init(u64 size) {
     ++memory;
     current = (void*)memory;
     current = memory_ref_alloc(0);
-    void* data = memory_ref_alloc(size);
-    memory_ref_use(data);
+    if (size > 0) {
+        void* data = memory_ref_alloc(size);
+        memory_ref_use(data);
+    }
 }
 
 static void memory_ref_destroy(void) {
