@@ -14,7 +14,7 @@
 
 static const u64 memory_offset;
 
-static struct memory_ref* memory;
+static struct memory_ref* memory_ptr;
 
 struct memory_ref_ptr {
     struct memory_ref* ptr;
@@ -25,10 +25,10 @@ static struct memory_ref_ptr alloc_ptr;
 static struct memory_ref_ptr* alloc = &alloc_ptr;
 
 // global allocated memory
-static void** current = 0;
+// static void** current = 0;
 
 static struct memory_ref* memory_ref_ref(void* data);
-static void* memory_ref_ptr(struct memory_ref* data);
+static void* memory_ref_ptr(struct memory_ref* ptr);
 static u64 memory_ref_size(void* data);
 static void* memory_ref_alloc(u64 size);
 static void memory_ref_free(void* data);
@@ -37,13 +37,13 @@ static void memory_ref_destroy(void);
 static void memory_ref_push(void* data);
 static void* memory_ref_pop(void);
 static void* memory_ref_peek(void);
-static void memory_ref_use(void* data);
-static void* memory_ref_alloc_internal(u64 size);
+// static void memory_ref_use(void* data);
+
+static void memory_alloc_internal(u64 size);
 
 /* implementation */
 
-static struct memory_ref*
-memory_ref_ref(void* data) {
+static struct memory_ref* memory_ref_ref(void* data) {
     struct memory_ref* ptr = 0;
     if (data != 0) {
         ptr = (struct memory_ref*)data;
@@ -52,13 +52,13 @@ memory_ref_ref(void* data) {
     return ptr;
 }
 
-static void* memory_ref_ptr(struct memory_ref* data) {
-    struct memory_ref* ptr = 0;
-    if (data != 0) {
-        ptr = data;
-        ++ptr;
+static void* memory_ref_ptr(struct memory_ref* ptr) {
+    void* data = 0;
+    if (ptr != 0) {
+        struct memory_ref* tmp = ptr;
+        data = (void*)++tmp;
     }
-    return (void*)ptr;
+    return data;
 }
 
 static u64 memory_ref_size(void* data) {
@@ -70,106 +70,84 @@ static u64 memory_ref_size(void* data) {
     return size;
 }
 
-static void* memory_ref_alloc_internal(u64 size) {
-    void* data = current;
-    void* ptr = 0;
-    if (data != 0) {
-        struct memory_ref* ref_ptr = memory_ref_ref(data);
-        struct memory_ref* tmp = _list_alloc((size + memory_offset) * sizeof(void*));
-        ref_ptr->next = memory_ref_ptr(tmp);
-#ifdef USE_MEMORY_DEBUG_INFO
-        printf("  p.: 0x%016llx .0x%016llx .0x%016llx\n", (u64)data, (u64)ref_ptr->prev, (u64)ref_ptr->next);
-#endif
-        struct memory_ref* _current = memory_ref_ref(ref_ptr->next);
-        _current->size = size;
-        _current->prev = memory_ref_ptr(ref_ptr);
-        ptr = ref_ptr->next;
-        current = ptr; // advance current ptr to the new dat
-    }
-    return ptr;
-}
-
 static void* memory_ref_alloc(u64 size) {
-    struct memory_ref* data = (struct memory_ref*)current;
-    struct memory_ref* ptr = 0;
-    if (data != 0) {
-        if (size > 0 && alloc->ptr != 0 && alloc->size >= size + memory_offset) {
-            alloc->size -= size + memory_offset;
-            ptr = ((void*)((u64*)alloc->ptr + alloc->size + memory_offset));
-        } else {
-            void* tmp = memory_ref_peek();
-            u64 ptr_size = memory_ref_size(tmp);
-            if (ptr_size != 0 && ptr_size >= size) {
-                ptr = memory_ref_pop();
-                memory_ref_push(ptr);
-            } else {
-                ptr = memory_ref_alloc_internal(size);
-                memory_ref_push(ptr);
-            }
-        }
+    struct memory_ref* ptr = memory_ref_peek();
+    void* data = 0;
+    if (ptr != 0 && size > 0 && alloc->ptr != 0 && alloc->size >= size) {
+        alloc->size -= size;
+        data = memory_ref_ptr(alloc->ptr);
+        data = (u64*)data + alloc->size;
     }
-    return ptr;
+    return data;
 }
 
 static void memory_ref_free(void* data) {
     if (data != 0) {
-        void** ptr = data;
-        u64 size = memory_ref_size(data);
-        _list_free(ptr - memory_offset, (size + memory_offset) * sizeof(void*));
-#ifdef USE_MEMORY_DEBUG_INFO
-        printf("  0-: 0x%016llx !  %16lld\n", (u64)data, size);
-#endif
+        struct memory_ref* ptr = data;
+        _list_free(ptr, (ptr->size + memory_offset) * sizeof(void*));
     }
 }
 
 static void memory_ref_init(u64 size) {
     memory_list_init();
-    memory = _list_alloc(sizeof(struct memory_ref));
-    ++memory;
-    current = (void*)memory;
-    current = memory_ref_alloc(0);
+    memory_ptr = _list_alloc(sizeof(struct memory_ref));
+    // ++memory_ptr;
     if (size > 0) {
-        void* data = memory_ref_alloc(size);
-        memory_ref_use(data);
+        memory_ptr->next = _list_alloc((size + memory_offset) * sizeof(void*));
+        memory_ptr->next->size = size;
+        memory_list_push(memory_ptr->next);
+        memory_alloc_internal(size);
     }
 }
 
 static void memory_ref_destroy(void) {
-    struct memory_ref* data = 0;
-    while ((data = memory_ref_pop()) != 0) {
-        memory_ref_free(data);
+    struct memory_ref* ptr = 0;
+    while ((ptr = memory_ref_pop()) != 0) {
+        memory_ref_free(ptr);
     }
-    // if (memory_alloc_ptr != 0) {
-    //     void* data = memory_ref_ptr(memory_alloc_ptr);
-    //     memory_ref_free(data);
-    // }
-    --memory;
-    _list_free(memory_ref_ref(memory->next), sizeof(struct memory_ref));
-    _list_free(memory, sizeof(struct memory_ref));
+    // --memory_ptr;
+    _list_free(memory_ptr, sizeof(struct memory_ref));
 #ifdef USE_MEMORY_CLEANUP
-    memory = 0;
-    current = 0;
-    alloc->ptr = 0;
-    alloc->size = 0;
+    memory_ptr = 0;
 #endif
     memory_list_destroy();
 }
 
+static void memory_alloc_internal(u64 size) {
+    struct memory_ref* ptr = memory_list_peek();
+    void* data = ptr;
+    struct memory_ref* next_ptr = _list_alloc((size + memory_offset) * sizeof(void*));
+    next_ptr->size = size;
+    next_ptr->prev = memory_ref_ptr(ptr);
+    if (ptr != 0) {
+        ptr->next = memory_ref_ptr(next_ptr);
+#ifdef USE_MEMORY_DEBUG_INFO
+        printf("  p.: 0x%016llx .0x%016llx .0x%016llx\n", (u64)data, (u64)ptr->prev, (u64)ptr->next);
+#endif
+    }
+    ptr = next_ptr;
+    memory_list_push(next_ptr);
+    alloc->ptr = ptr;
+    alloc->size = ptr->size;
+}
+
 static void memory_ref_push(void* data) {
     if (data != 0) {
-        struct memory_ref* ptr = memory_ref_ref(data);
-        if (data != ptr && ptr == alloc->ptr) {
-            memory_ref_use(ptr->prev);
-            memory_list_push(ptr);
+        struct memory_ref* ptr = memory_list_peek();
+        void* current = memory_ref_ptr(ptr);
+        if (data == current) {
+            if (alloc->ptr == ptr) {
+                alloc->size = alloc->ptr->size;
+            }
         }
     }
 }
 
 static void* memory_ref_pop(void) {
-    void* ptr = 0;
-    struct memory_ref* data = memory_list_pop();
+    struct memory_ref* ptr = 0;
+    void* data = memory_list_pop();
     if (data != 0) {
-        ptr = memory_ref_ptr(data);
+        ptr = data;
     }
     return ptr;
 }
@@ -178,7 +156,7 @@ static void* memory_ref_peek(void) {
     void* data = memory_list_peek();
     void* ptr = 0;
     if (data != 0) {
-        ptr = memory_ref_ptr(data);
+        ptr = memory_ref_ref(data);
     }
     return ptr;
 }
@@ -186,11 +164,6 @@ static void* memory_ref_peek(void) {
 /* public */
 
 static const u64 memory_offset = sizeof(struct memory_ref) / sizeof(void*);
-
-static void memory_ref_use(void* data) {
-    alloc->ptr = memory_ref_ref(data);
-    alloc->size = alloc->ptr->size;
-}
 
 const struct memory_ref_methods memory_ref_definition = {
     .init = memory_ref_init,

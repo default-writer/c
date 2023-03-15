@@ -178,10 +178,16 @@ set(LIB_ALLOC_SOURCE src/list-alloc/code.c)
 set(LIB_EXPERIMENTAL_SOURCE src/list-experimental/code.c)
 set(LIB_PLAYGROUND1_SOURCE src/playground/class/v1/class.c)
 set(LIB_PLAYGROUND2_SOURCE src/playground/class/v2/class.c)
-set(LIB_MEMORY1_SOURCE src/playground/memory/v1/memory_v1.c src/playground/memory/v2/memory_v2.c src/playground/memory/v3/memory_v3.c)
-set(LIB_MEMORY2_SOURCE src/playground/memory/v4/memory_v4.c)
-set(LIB_MEMORY3_SOURCE src/playground/memory/v5/memory_v5.c)
-set(LIB_MEMORY4_SOURCE src/playground/memory/v6/memory_v6.c)
+set(LIB_MEMORY1_SOURCE
+    src/playground/memory/v1/memory_v1.c 
+    src/playground/memory/v2/memory_v2.c
+    src/playground/memory/v3/memory_v3.c)
+set(LIB_MEMORY2_SOURCE 
+    src/playground/memory/v4/memory_v4.c)
+set(LIB_MEMORY3_SOURCE
+    src/playground/memory/v5/memory_v5.c)
+set(LIB_MEMORY4_SOURCE
+    src/playground/memory/v6/memory_v6.c)
 set(LIB_BRAIN_SOURCE src/playground/brain/brain.c)
 set(LIB_POINTER_SOURCE src/playground/pointer/pointer.c)
 set(LIB_MEMORY_LIST1_SOURCE src/playground/memory/list/v1/memory_list_v1.c)

@@ -1,4 +1,4 @@
-#include "playground/memory/api/v2/memory.h"
+#include "playground/memory/api/v3/memory.h"
 
 #include "memory/api/v2/ref.h"
 
@@ -11,7 +11,7 @@ static struct memory_ref_methods* ref = &memory_ref_definition;
 
 /* api */
 
-static void memory_init(void);
+static void memory_init(u64 size);
 static void memory_destroy(void);
 static void* memory_alloc(u64 size);
 static void memory_free(void* data);
@@ -20,8 +20,8 @@ static void memory_free(void* data);
 
 /* implementation */
 
-static void memory_init(void) {
-    ref->init(0);
+static void memory_init(u64 size) {
+    ref->init(size);
 }
 
 static void memory_destroy(void) {
