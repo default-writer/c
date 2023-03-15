@@ -135,10 +135,8 @@ static void memory_ref_push(void* data) {
     if (data != 0) {
         struct memory_ref* ptr = memory_list_peek();
         void* current = memory_ref_ptr(ptr);
-        if (data == current) {
-            if (alloc->ptr == ptr) {
-                alloc->size = alloc->ptr->size;
-            }
+        if (data == current && alloc->ptr == ptr) {
+            alloc->size = alloc->ptr->size;
         }
     }
 }
