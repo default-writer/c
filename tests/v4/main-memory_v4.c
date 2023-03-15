@@ -28,7 +28,7 @@ void use(const struct memory_allocator* allocator) {
     // releases memory block
     allocator->free(_ptr2);
     // allocation size aligned to 8 byte boundaries (64-bit pointers)
-    u64 _size3 = 16;
+    u64 _size3 = 17;
     // allocates memory block
     void** _ptr3 = allocator->alloc(_size3);
     for (u64 i = 0; i < _size3; i++) {

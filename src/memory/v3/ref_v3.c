@@ -73,11 +73,12 @@ static u64 memory_ref_size(void* data) {
 static void* memory_ref_alloc(u64 size) {
     struct memory_ref* ptr = memory_ref_peek();
     void* data = 0;
-    if (ptr != 0 && size > 0 && alloc->ptr != 0 && alloc->size >= size) {
-        alloc->size -= size;
-        data = memory_ref_ptr(alloc->ptr);
-        data = (u64*)data + alloc->size;
+    if (ptr != 0 && size > 0 && alloc->size < size) {
+        memory_alloc_internal(size * 16);
     }
+    alloc->size -= size;
+    data = memory_ref_ptr(alloc->ptr);
+    data = (u64*)data + alloc->size;
     return data;
 }
 
@@ -154,7 +155,7 @@ static void* memory_ref_peek(void) {
     void* data = memory_list_peek();
     void* ptr = 0;
     if (data != 0) {
-        ptr = memory_ref_ref(data);
+        ptr = data;
     }
     return ptr;
 }
