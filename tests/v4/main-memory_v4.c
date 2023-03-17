@@ -5,7 +5,7 @@
 extern const struct memory_allocator memory_allocator_v6;
 
 void use(const struct memory_allocator* allocator) {
-    u64 index = 16;
+    u64 index = 21;
     // initializes memory pool
     allocator->init(index);
     // allocation size aligned to 8 byte boundaries (64-bit pointers)
@@ -45,6 +45,15 @@ void use(const struct memory_allocator* allocator) {
     }
     // releases memory block
     allocator->free(_ptr4);
+    // allocation size aligned to 8 byte boundaries (64-bit pointers)
+    u64 _size5 = 22;
+    // allocates memory block
+    void** _ptr5 = allocator->alloc(_size5);
+    for (u64 i = 0; i < _size5; i++) {
+        *(_ptr5 + i) = (void*)lcg_parkmiller_64();
+    }
+    // releases memory block
+    allocator->free(_ptr5);
     // destroys memory pool
     allocator->destroy();
 }

@@ -50,7 +50,7 @@ static void* memory_ref_alloc(u64 size) {
     struct memory_ref* ptr = memory_ref_peek_internal();
     void* data = 0;
     if (ptr != 0 && size > 0 && alloc->size < size) {
-        memory_alloc_internal(size * 16);
+        memory_alloc_internal(size * 2);
     }
     alloc->size -= size;
     data = memory_ref_ptr_internal(alloc->ptr);
