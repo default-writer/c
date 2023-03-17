@@ -2,7 +2,7 @@
 
 #include "common/lcg.h"
 
-extern const struct memory_allocator memory_allocator_v5;
+extern const struct memory_allocator memory_allocator_v6;
 
 void use(const struct memory_allocator* allocator) {
     u64 index = 21;
@@ -50,6 +50,6 @@ void use(const struct memory_allocator* allocator) {
 }
 
 int main(void) {
-    use(&memory_allocator_v5);
+    use(&memory_allocator_v6);
     return 0;
 }

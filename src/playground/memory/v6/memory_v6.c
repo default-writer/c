@@ -39,7 +39,7 @@ static void memory_free(void* data) {
 
 /* public */
 
-const struct memory_allocator memory_allocator_v5 = {
+const struct memory_allocator memory_allocator_v6 = {
     .init = memory_init,
     .destroy = memory_destroy,
     .alloc = memory_alloc,
