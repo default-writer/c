@@ -5,7 +5,7 @@
 extern const struct memory_allocator memory_allocator_v6;
 
 void use(const struct memory_allocator* allocator) {
-    u64 index = 21;
+    u64 index = 16;
     // initializes memory pool
     allocator->init(index);
     // allocation size aligned to 8 byte boundaries (64-bit pointers)
