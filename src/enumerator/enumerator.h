@@ -3,8 +3,10 @@
 
 #include "std/common.h"
 
+struct vm_data_state;
+
 struct enumerator_data {
-    void* current;
+    struct vm_data_state* current;
 };
 
 struct list_data_enumerator {

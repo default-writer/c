@@ -6,8 +6,8 @@
 #include "enumerator/enumerator.h"
 
 struct vm_data {
-    void** sp; // stack pointer
-    void** bp; // base pointer
+    struct pointer** sp; // stack pointer
+    struct pointer** bp; // base pointer
     struct vm_data* next;
     struct vm_data* prev;
     u64 address_space;
@@ -15,18 +15,16 @@ struct vm_data {
 };
 
 struct vm_data_enumerator {
-    void* (*next)(struct enumerator_data* enumerator);
+    struct pointer* (*next)(void);
 };
 
 struct vm {
     void (*init)(struct vm_data** current, u64 size);
     void (*destroy)(struct vm_data** current);
-    void* (*free)(struct vm_data** current, u64 address);
-    void* (*read)(struct vm_data** current, u64 address);
-    u64 (*write)(struct vm_data** current, void* value);
+    struct pointer* (*free)(struct vm_data** current, u64 address);
+    struct pointer* (*read)(struct vm_data** current, u64 address);
+    u64 (*write)(struct vm_data** current, struct pointer* value);
+    void (*memory_dump)(struct vm_data* vm_ptr);
 };
-
-struct enumerator_data* vm_enumerator_init(struct vm_data* vm);
-void vm_enumerator_destroy(struct enumerator_data* enumerator);
 
 #endif // _PLAYGROUND_VIRTUAL_H_

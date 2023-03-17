@@ -3,7 +3,21 @@
 
 #include "std/common.h"
 
-struct pointer;
+enum type {
+    // value used for pointer type
+    TYPE_PTR = 0,
+    // value used for file type
+    TYPE_FILE = 1,
+    // value used for list type
+    TYPE_LIST = 2
+};
+
+struct pointer {
+    void* data;
+    u64 size;
+    enum type type;
+};
+
 struct pointer_data;
 
 struct pointer_methods {

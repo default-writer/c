@@ -8,9 +8,7 @@
 
 /* list definition */
 extern const struct vm vm_definition;
-
 extern const struct list list_micro_definition;
-extern const struct vm_data_enumerator vm_data_enumerator_definition;
 
 /* private */
 
@@ -28,19 +26,6 @@ static struct pointer_data* base = &pointer;
 /* list definition */
 static const struct vm* vm = &vm_definition;
 static const struct list* list = &list_micro_definition;
-static const struct vm_data_enumerator* enumerator = &vm_data_enumerator_definition;
-
-enum type {
-    TYPE_PTR = 0, // pointer type
-    TYPE_FILE = 1, // file type
-    TYPE_LIST = 2
-};
-
-struct pointer {
-    void* data;
-    u64 size;
-    enum type type;
-};
 
 struct file_handler {
     FILE* file;
@@ -91,26 +76,38 @@ static void pointer_gc(void);
 static struct pointer* pointer_alloc_internal(u64 size, enum type type);
 static void pointer_realloc_internal(struct pointer* ptr, u64 size);
 static void pointer_free_internal(struct pointer* ptr);
-static void pointer_print_vm_internal(struct vm_data* vm_ptr);
 
-/* implementation*/
-
-static void pointer_print_vm_internal(struct vm_data* vm_ptr) {
-    while (vm_ptr->prev != 0) {
-        vm_ptr = vm_ptr->prev;
+static struct pointer* pointer_alloc_internal(u64 size, enum type type) {
+    struct pointer* ptr = _list_alloc(sizeof(struct pointer));
+    if (size != 0) {
+        ptr->data = _list_alloc(size);
+        ptr->type = type;
+        ptr->size = size;
     }
-    struct enumerator_data* data = vm_enumerator_init(vm_ptr);
-    void* enumerator_ptr = 0;
-    while ((enumerator_ptr = enumerator->next(data)) != 0) {
-        struct pointer* data_ptr = (struct pointer*)enumerator_ptr;
-#ifdef USE_MEMORY_DEBUG_INFO
-        if (data_ptr != 0 && data_ptr->data != 0) {
-            printf("   ^: 0x%016llx >0x%016llx\n", (u64)data_ptr, (u64)data_ptr->data);
+    return ptr;
+}
+
+static void pointer_realloc_internal(struct pointer* ptr, u64 size) {
+    if (ptr != 0 && ptr->data != 0) {
+        ptr->data = _list_realloc(ptr->data, size);
+        ptr->size = size;
+    }
+}
+
+static void pointer_free_internal(struct pointer* ptr) {
+    if (ptr != 0) {
+        if (ptr->data != 0 && ptr->size != 0) {
+            _list_free(ptr->data, ptr->size);
         }
+#ifdef USE_MEMORY_CLEANUP
+        ptr->data = 0;
+        ptr->size = 0;
 #endif
     }
-    vm_enumerator_destroy(data);
+    _list_free(ptr, sizeof(struct pointer));
 }
+
+/* implementation*/
 
 void pointer_ctx_init(struct pointer_data** ctx, u64 size) {
     /* ctx */
@@ -131,7 +128,7 @@ void pointer_ctx_init(struct pointer_data** ctx, u64 size) {
 
 void pointer_ctx_destroy(struct pointer_data** ctx) {
 #ifdef USE_MEMORY_DEBUG_INFO
-    pointer_print_vm_internal(base->vm);
+    vm->memory_dump(base->vm);
 #endif
     struct pointer_data* ptr = *ctx;
 #ifdef USE_GC
@@ -162,7 +159,7 @@ void pointer_init(u64 size) {
 
 void pointer_destroy(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
-    pointer_print_vm_internal(base->vm);
+    vm->memory_dump(base->vm);
 #endif
 #ifdef USE_GC
     pointer_gc();
@@ -295,29 +292,6 @@ static u64 pointer_alloc(void) {
     list->push(&base->gc, (void*)data);
 #endif
     return data;
-}
-
-static struct pointer* pointer_alloc_internal(u64 size, enum type type) {
-    struct pointer* ptr = _list_alloc(sizeof(struct pointer));
-    if (size != 0) {
-        ptr->data = _list_alloc(size);
-        ptr->type = type;
-        ptr->size = size;
-    }
-    return ptr;
-}
-
-static void pointer_free_internal(struct pointer* ptr) {
-    if (ptr != 0) {
-        if (ptr->data != 0 && ptr->size != 0) {
-            _list_free(ptr->data, ptr->size);
-        }
-#ifdef USE_MEMORY_CLEANUP
-        ptr->data = 0;
-        ptr->size = 0;
-#endif
-    }
-    _list_free(ptr, sizeof(struct pointer));
 }
 
 static void pointer_free(u64 ptr) {
@@ -527,12 +501,7 @@ static void pointer_put_char(u64 ptr, char value) {
     }
 }
 
-static void pointer_realloc_internal(struct pointer* ptr, u64 size) {
-    if (ptr != 0 && ptr->data != 0) {
-        ptr->data = _list_realloc(ptr->data, size);
-        ptr->size = size;
-    }
-}
+/* public */
 
 const struct pointer_methods pointer_methods_definition = {
     .init = pointer_init,
