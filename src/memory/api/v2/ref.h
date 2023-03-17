@@ -8,14 +8,10 @@
 struct memory_ref_methods {
     void (*init)(u64 size);
     void (*destroy)(void);
-    // struct memory_ref* (*ref)(void* data);
-    // void* (*ptr)(struct memory_ref* data);
-    u64 (*size)(void* data);
     void* (*alloc)(u64 size);
     void (*free)(void* ptr);
     void (*push)(void* data);
     void* (*pop)(void);
-    // void (*use)(void* data);
     void* (*peek)(void);
 };
 
