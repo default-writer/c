@@ -54,6 +54,24 @@ void use(const struct memory_allocator* allocator) {
     }
     // releases memory block
     allocator->free(_ptr5);
+    // allocation size aligned to 8 byte boundaries (64-bit pointers)
+    u64 _size6 = 21;
+    // allocates memory block
+    void** _ptr6 = allocator->alloc(_size6);
+    for (u64 i = 0; i < _size6; i++) {
+        *(_ptr6 + i) = (void*)lcg_parkmiller_64();
+    }
+    // releases memory block
+    allocator->free(_ptr6);
+    // allocation size aligned to 8 byte boundaries (64-bit pointers)
+    u64 _size7 = 20;
+    // allocates memory block
+    void** _ptr7 = allocator->alloc(_size7);
+    for (u64 i = 0; i < _size7; i++) {
+        *(_ptr7 + i) = (void*)lcg_parkmiller_64();
+    }
+    // releases memory block
+    allocator->free(_ptr7);
     // destroys memory pool
     allocator->destroy();
 }

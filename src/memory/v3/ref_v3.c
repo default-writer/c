@@ -1,12 +1,12 @@
 #include "common/alloc.h"
 
-#include "memory/api/ref.h"
+// #include "memory/api/ref.h"
 
-#include "memory/api/v2/ref.h"
+#include "memory/api/v3/ref.h"
 
 #include "common/alloc.h"
 
-#include "playground/memory/list/v2/memory_list_v2.h"
+#include "playground/memory/list/v3/memory_list_v3.h"
 
 #include "std/macros.h"
 
@@ -21,15 +21,12 @@ struct memory_ref_ptr {
     u64 size;
 };
 
-static struct memory_ref_ptr alloc_ptr;
-static struct memory_ref_ptr* alloc = &alloc_ptr;
-
 static void* memory_ref_alloc(u64 size);
 static void memory_ref_init(u64 size);
 static void memory_ref_destroy(void);
 static void memory_ref_free(void* data);
 
-static void memory_alloc_internal(u64 size);
+static struct memory_ref* memory_alloc_internal(u64 size);
 static void memory_ref_free_internal(void* data);
 static void* memory_ref_ptr_internal(struct memory_ref* ptr);
 static void* memory_ref_peek_internal(void);
@@ -49,12 +46,15 @@ static void* memory_ref_ptr_internal(struct memory_ref* ptr) {
 static void* memory_ref_alloc(u64 size) {
     struct memory_ref* ptr = memory_ref_peek_internal();
     void* data = 0;
-    if (ptr != 0 && size > 0 && alloc->size < size) {
-        memory_alloc_internal(size * 2);
+    if (ptr != 0 && size > 0 && ptr->size < size) {
+        ptr = memory_alloc_internal(size);
     }
-    alloc->size -= size;
-    data = memory_ref_ptr_internal(alloc->ptr);
-    data = (u64*)data + alloc->size;
+    ptr->size -= size;
+#ifdef USE_MEMORY_DEBUG_INFO
+    printf("  c.: 0x%016llx .0x%016llx >  %16lld !  %16lld\n", (u64)ptr, (u64)ptr->cache, ptr->address_space, ptr->size); // NOLINT
+#endif
+    data = memory_ref_ptr_internal(ptr);
+    data = (u64*)data + ptr->size;
     return data;
 }
 
@@ -71,8 +71,9 @@ static void memory_ref_init(u64 size) {
     if (size > 0) {
         memory_ptr->next = _list_alloc((size + memory_offset) * sizeof(void*));
         memory_ptr->next->size = size;
+        memory_ptr->next->address_space = size;
         memory_list_push(memory_ptr->next);
-        memory_alloc_internal(size);
+        // memory_alloc_internal(size);
     }
 }
 
@@ -88,11 +89,12 @@ static void memory_ref_destroy(void) {
     memory_list_destroy();
 }
 
-static void memory_alloc_internal(u64 size) {
+static struct memory_ref* memory_alloc_internal(u64 size) {
     struct memory_ref* ptr = memory_list_peek();
     void* data = ptr;
     struct memory_ref* next_ptr = _list_alloc((size + memory_offset) * sizeof(void*));
     next_ptr->size = size;
+    next_ptr->address_space = size;
     next_ptr->prev = memory_ref_ptr_internal(ptr);
     if (ptr != 0) {
         ptr->next = memory_ref_ptr_internal(next_ptr);
@@ -101,17 +103,16 @@ static void memory_alloc_internal(u64 size) {
 #endif
     }
     ptr = next_ptr;
-    memory_list_push(next_ptr);
-    alloc->ptr = ptr;
-    alloc->size = ptr->size;
+    memory_list_push(ptr);
+    return ptr;
 }
 
 static void memory_ref_free(void* data) {
     if (data != 0) {
         struct memory_ref* ptr = memory_list_peek();
         void* current = memory_ref_ptr_internal(ptr);
-        if (data == current && alloc->ptr == ptr) {
-            alloc->size = alloc->ptr->size;
+        if (data == current) {
+            ptr->size = ptr->address_space;
         }
     }
 }
