@@ -25,15 +25,15 @@ static struct memory_ref_ptr alloc_ptr;
 static struct memory_ref_ptr* alloc = &alloc_ptr;
 
 static void* memory_ref_alloc(u64 size);
-static void memory_ref_free(void* data);
 static void memory_ref_init(u64 size);
 static void memory_ref_destroy(void);
-static void memory_ref_push(void* data);
-static void* memory_ref_pop(void);
-static void* memory_ref_peek(void);
+static void memory_ref_free(void* data);
 
 static void memory_alloc_internal(u64 size);
+static void memory_ref_free_internal(void* data);
 static void* memory_ref_ptr_internal(struct memory_ref* ptr);
+static void* memory_ref_peek_internal(void);
+static void* memory_ref_pop_internal(void);
 
 /* implementation */
 
@@ -47,7 +47,7 @@ static void* memory_ref_ptr_internal(struct memory_ref* ptr) {
 }
 
 static void* memory_ref_alloc(u64 size) {
-    struct memory_ref* ptr = memory_ref_peek();
+    struct memory_ref* ptr = memory_ref_peek_internal();
     void* data = 0;
     if (ptr != 0 && size > 0 && alloc->size < size) {
         memory_alloc_internal(size * 16);
@@ -58,7 +58,7 @@ static void* memory_ref_alloc(u64 size) {
     return data;
 }
 
-static void memory_ref_free(void* data) {
+static void memory_ref_free_internal(void* data) {
     if (data != 0) {
         struct memory_ref* ptr = data;
         _list_free(ptr, (ptr->size + memory_offset) * sizeof(void*));
@@ -78,8 +78,8 @@ static void memory_ref_init(u64 size) {
 
 static void memory_ref_destroy(void) {
     struct memory_ref* ptr = 0;
-    while ((ptr = memory_ref_pop()) != 0) {
-        memory_ref_free(ptr);
+    while ((ptr = memory_ref_pop_internal()) != 0) {
+        memory_ref_free_internal(ptr);
     }
     _list_free(memory_ptr, sizeof(struct memory_ref));
 #ifdef USE_MEMORY_CLEANUP
@@ -106,7 +106,7 @@ static void memory_alloc_internal(u64 size) {
     alloc->size = ptr->size;
 }
 
-static void memory_ref_push(void* data) {
+static void memory_ref_free(void* data) {
     if (data != 0) {
         struct memory_ref* ptr = memory_list_peek();
         void* current = memory_ref_ptr_internal(ptr);
@@ -116,7 +116,7 @@ static void memory_ref_push(void* data) {
     }
 }
 
-static void* memory_ref_pop(void) {
+static void* memory_ref_pop_internal(void) {
     struct memory_ref* ptr = 0;
     void* data = memory_list_pop();
     if (data != 0) {
@@ -125,7 +125,7 @@ static void* memory_ref_pop(void) {
     return ptr;
 }
 
-static void* memory_ref_peek(void) {
+static void* memory_ref_peek_internal(void) {
     void* data = memory_list_peek();
     void* ptr = 0;
     if (data != 0) {
@@ -142,8 +142,5 @@ const struct memory_ref_methods memory_ref_definition = {
     .init = memory_ref_init,
     .destroy = memory_ref_destroy,
     .alloc = memory_ref_alloc,
-    .free = memory_ref_free,
-    .push = memory_ref_push,
-    .pop = memory_ref_pop,
-    .peek = memory_ref_peek
+    .free = memory_ref_free
 };

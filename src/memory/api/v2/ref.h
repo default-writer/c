@@ -9,8 +9,7 @@ struct memory_ref_methods {
     void (*init)(u64 size);
     void (*destroy)(void);
     void* (*alloc)(u64 size);
-    void (*free)(void* ptr);
-    void (*push)(void* data);
+    void (*free)(void* data);
     void* (*pop)(void);
     void* (*peek)(void);
 };

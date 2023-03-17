@@ -34,7 +34,7 @@ static void* memory_alloc(u64 size) {
 
 // releases global memory
 static void memory_free(void* data) {
-    ref->push(data);
+    ref->free(data);
 }
 
 /* public */
