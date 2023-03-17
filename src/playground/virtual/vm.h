@@ -25,6 +25,7 @@ struct vm {
     struct pointer* (*read)(struct vm_data** current, u64 address);
     u64 (*write)(struct vm_data** current, struct pointer* value);
     void (*memory_dump)(struct vm_data* vm_ptr);
+    void (*memory_dump_ref)(struct vm_data* vm_ptr);
 };
 
 #endif // _PLAYGROUND_VIRTUAL_H_

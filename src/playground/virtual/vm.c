@@ -31,10 +31,12 @@ static struct vm_state* state = &vm_state;
 static void vm_init(struct vm_data** current, u64 size);
 static void vm_destroy(struct vm_data** current);
 static void vm_memory_dump(struct vm_data* vm_ptr);
+static void vm_memory_dump_ref(struct vm_data* vm_ptr);
 static struct pointer* vm_free(struct vm_data** current, u64 address);
 static struct pointer* vm_read(struct vm_data** current, u64 address);
 static u64 vm_write(struct vm_data** current, struct pointer* value);
 static struct pointer* vm_data_enumerator_next(void);
+static struct pointer* vm_data_enumerator_next_ref(void);
 
 /* internal */
 
@@ -167,6 +169,22 @@ static void vm_memory_dump(struct vm_data* vm_ptr) {
     vm_enumerator_destroy_internal();
 }
 
+static void vm_memory_dump_ref(struct vm_data* vm_ptr) {
+    while (vm_ptr->prev != 0) {
+        vm_ptr = vm_ptr->prev;
+    }
+    vm_enumerator_init_internal(vm_ptr);
+    struct pointer* data_ptr = 0;
+    while ((data_ptr = vm_data_enumerator_next_ref()) != 0) {
+#ifdef USE_MEMORY_DEBUG_INFO
+        if (data_ptr != 0 && data_ptr->data != 0) {
+            printf("   &: 0x%016llx >0x%016llx\n", (u64)data_ptr, (u64)data_ptr->data);
+        }
+#endif
+    }
+    vm_enumerator_destroy_internal();
+}
+
 static struct pointer* vm_free(struct vm_data** current, u64 address) {
     struct pointer* data = 0;
     if (address != 0) {
@@ -220,6 +238,23 @@ static struct pointer* vm_data_enumerator_next(void) {
             state->vm = vm;
             state->ptr = vm->bp;
         }
+        data = (struct pointer*)state->ptr++;
+    }
+    return data;
+}
+
+static struct pointer* vm_data_enumerator_next_ref(void) {
+    struct pointer* data = 0;
+    struct vm_data* vm = state->vm;
+    while (data == 0) {
+        if (state->ptr == vm->sp) {
+            if (vm->next == 0) {
+                break;
+            }
+            vm = vm->next;
+            state->vm = vm;
+            state->ptr = vm->bp;
+        }
         data = *state->ptr++;
     }
     return data;
@@ -233,5 +268,6 @@ const struct vm vm_definition = {
     .free = vm_free,
     .read = vm_read,
     .write = vm_write,
-    .memory_dump = vm_memory_dump
+    .memory_dump = vm_memory_dump,
+    .memory_dump_ref = vm_memory_dump_ref
 };

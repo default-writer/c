@@ -128,6 +128,7 @@ void pointer_ctx_init(struct pointer_data** ctx, u64 size) {
 
 void pointer_ctx_destroy(struct pointer_data** ctx) {
 #ifdef USE_MEMORY_DEBUG_INFO
+    vm->memory_dump_ref(base->vm);
     vm->memory_dump(base->vm);
 #endif
     struct pointer_data* ptr = *ctx;
@@ -159,6 +160,7 @@ void pointer_init(u64 size) {
 
 void pointer_destroy(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
+    vm->memory_dump_ref(base->vm);
     vm->memory_dump(base->vm);
 #endif
 #ifdef USE_GC
