@@ -2,8 +2,6 @@
 
 #include "list-micro/data.h"
 
-#include "enumerator/enumerator.h"
-
 #include "playground/virtual/vm.h"
 
 #include "playground/pointer/pointer.h"

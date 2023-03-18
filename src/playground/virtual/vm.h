@@ -3,8 +3,6 @@
 
 #include "std/common.h"
 
-#include "enumerator/enumerator.h"
-
 struct vm_data;
 
 struct vm {
