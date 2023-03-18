@@ -28,15 +28,9 @@ for opt in "${opts[@]}"; do
     case "${opt}" in
 
         "")
-            clean="--clean"
             sanitize="--sanitize"
-            mocks="--mocks"
             gc="--gc"
             silent="--silent"
-            ;;
-
-        "--clean") # [optional] cleans up directories before build
-            clean="--clean"
             ;;
 
         "--sanitize") # [optional] builds using sanitizer
@@ -58,6 +52,10 @@ for opt in "${opts[@]}"; do
         "--valgrind") # [optional] runs using valgrind (disables --sanitize on build)
             valgrind="--valgrind"
             ;;
+        
+        "--help") # shows help
+            help
+            ;;
 
         *)
             help
@@ -71,11 +69,6 @@ if [ "${silent}" == "--silent" ]; then
 fi
 
 [ ! -d "${pwd}/build" ] && mkdir "${pwd}/build"
-
-if [ "${clean}" == "--clean" ]; then
-    rm -rf "${pwd}/build"
-    mkdir "${pwd}/build"
-fi
 
 if [ "${sanitize}" == "--sanitize" ] && [ "${valgrind}" != "--valgrind" ]; then
     SANITIZER_OPTIONS=--sanitize
@@ -101,11 +94,11 @@ else
     VALGRIND_OPTIONS=
 fi
 
-OPTIONS=$(echo "${MOCKS_OPTIONS} ${GC_OPTIONS} ${SANITIZER_OPTIONS} ${VALGRIND_OPTIONS}")
+OPTIONS=$(echo "--all --clean ${SANITIZER_OPTIONS} ${MOCKS_OPTIONS} ${GC_OPTIONS} ${VALGRIND_OPTIONS}")
 
-"${pwd}/bin/build.sh" --all ${OPTIONS}
-"${pwd}/bin/coverage.sh" --all ${OPTIONS}
-"${pwd}/bin/logs.sh" --all ${OPTIONS}
+"${pwd}/bin/build.sh" ${OPTIONS}
+"${pwd}/bin/coverage.sh" ${OPTIONS}
+"${pwd}/bin/logs.sh" ${OPTIONS}
 
 if [ "${silent}" == "--silent" ]; then
     exec 1>&2 2>&-
