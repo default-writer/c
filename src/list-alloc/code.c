@@ -1,6 +1,5 @@
 #include "common/alloc.h"
 #include "common/parameters.h"
-
 #include "list-alloc/data.h"
 
 /* buffer size in bytes = size of 8 items */

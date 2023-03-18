@@ -1,5 +1,4 @@
 #include "list-micro/data.h"
-
 #include "rexo/include/rexo.h"
 
 extern const struct list list_micro_definition;

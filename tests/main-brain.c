@@ -1,12 +1,8 @@
 #include "common/alloc.h"
-
+#include "list-micro/data.h"
 #include "playground/brain/brain.h"
 #include "playground/hashtable/hashtable.h"
-
-#include "list-micro/data.h"
 #include "playground/pointer/pointer.h"
-#include "playground/virtual/vm.h"
-
 #include "rexo/include/rexo.h"
 
 #define DEFAULT_SIZE 0x100

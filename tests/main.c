@@ -1,5 +1,4 @@
 #include "list/data.h"
-
 #include "rexo/include/rexo.h"
 
 extern const struct list list_definition;

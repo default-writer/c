@@ -1,6 +1,5 @@
-#include "std/common.h"
-
 #include "lcg.h"
+#include "std/common.h"
 
 /* LCG Park-Miller state */
 static u64 lcg_state = (0xdeadbeef & 0x7fffffff) - 1; // 0x5eadbeee

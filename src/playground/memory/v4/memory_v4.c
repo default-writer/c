@@ -1,7 +1,5 @@
-#include "playground/memory/api/v2/memory.h"
-
 #include "memory/api/v1/ref.h"
-
+#include "playground/memory/api/v2/memory.h"
 #include "playground/memory/list/v1/memory_list_v1.h"
 
 #define MAX_MEMORY 0xffff // 64K bytes

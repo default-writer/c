@@ -1,6 +1,5 @@
-#include "common/alloc.h"
-
 #include "playground/list/v1/list.h"
+#include "common/alloc.h"
 
 #define MAX_MEMORY 0xffff // 64K bytes
 

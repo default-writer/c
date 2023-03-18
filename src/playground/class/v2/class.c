@@ -1,8 +1,6 @@
-#include "common/alloc.h"
-
-#include "playground/list/v2/list.h"
-
 #include "playground/class/v2/class.h"
+#include "common/alloc.h"
+#include "playground/list/v2/list.h"
 
 /* list definition */
 extern const struct list list_v2;

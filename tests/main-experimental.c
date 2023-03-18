@@ -1,11 +1,7 @@
 #include "common/alloc.h"
-
-#include "common/parameters.h"
-
-#include "list-experimental/data.h"
-
 #include "common/lcg.h"
-
+#include "common/parameters.h"
+#include "list-experimental/data.h"
 #include "rexo/include/rexo.h"
 
 /* defines N-element collection*/

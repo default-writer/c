@@ -1,9 +1,8 @@
 #ifndef _STD_TIME_H_
 #define _STD_TIME_H_
 
-#include <sys/time.h>
-
 #include "std/data.h"
+#include <sys/time.h>
 
 #define TIME_INIT(s)      \
     struct timeval s##t1; \

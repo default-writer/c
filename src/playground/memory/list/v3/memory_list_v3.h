@@ -2,7 +2,6 @@
 #define _PLAYGROUND_MEMORY_LIST_H_
 
 #include "memory/api/v3/ref.h"
-
 #include "std/common.h"
 
 struct memory_ref* memory_list_peek(void);

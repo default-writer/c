@@ -1,6 +1,5 @@
-#include "playground/memory/api/v3/memory.h"
-
 #include "common/lcg.h"
+#include "playground/memory/api/v3/memory.h"
 
 extern const struct memory_allocator memory_allocator_v6;
 

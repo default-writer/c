@@ -1,6 +1,5 @@
-#include "common/alloc.h"
-
 #include "memory_list_v3.h"
+#include "common/alloc.h"
 
 /* private */
 static struct memory_ref** current;

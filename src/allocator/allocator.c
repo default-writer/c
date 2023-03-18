@@ -1,6 +1,5 @@
-#include "common/alloc.h"
-
 #include "allocator.h"
+#include "common/alloc.h"
 
 void* _alloc(u64 size);
 void _free(void* ptr, u64 size);

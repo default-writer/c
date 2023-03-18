@@ -1,5 +1,4 @@
 #include "common/alloc.h"
-
 #include "list-micro/data.h"
 
 /* private */

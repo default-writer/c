@@ -1,8 +1,6 @@
-#include "common/alloc.h"
-
-#include "list-micro/data.h"
-
 #include "memory_list_v1.h"
+#include "common/alloc.h"
+#include "list-micro/data.h"
 
 // the idea:
 //

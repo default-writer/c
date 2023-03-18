@@ -169,7 +169,7 @@ set(LIB_PARAMETERS_SOURCE src/common/parameters.c)
 
 set(LIB_LIST1_SOURCE src/playground/list/v1/list.c)
 set(LIB_LIST2_SOURCE src/playground/list/v2/list.c)
-set(LIB_VM_SOURCE src/playground/virtual/vm.c)
+set(LIB_VM_SOURCE src/playground/vm/v1/vm.c)
 set(LIB_HASHTABLE_SOURCE src/playground/hashtable/hashtable.c)
 set(LIB_STANDARD_SOURCE src/list/code.c)
 set(LIB_LIGHT_SOURCE src/list-light/code.c)
