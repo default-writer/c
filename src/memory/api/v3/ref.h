@@ -3,11 +3,6 @@
 
 #include "std/common.h"
 
-struct node {
-    struct node* prev;
-    struct node* next;
-};
-
 struct memory_ref {
     struct memory_ref* prev;
     struct memory_ref* next;
