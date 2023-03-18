@@ -14,10 +14,6 @@ struct vm_data {
     u64 size;
 };
 
-struct vm_data_enumerator {
-    struct pointer* (*next)(void);
-};
-
 struct vm {
     void (*init)(struct vm_data** current, u64 size);
     void (*destroy)(struct vm_data** current);

@@ -23,6 +23,10 @@ struct vm_state {
     struct pointer** ptr;
 };
 
+struct vm_data_enumerator {
+    struct pointer* (*next)(void);
+};
+
 static struct vm_state vm_state;
 static struct vm_state* state = &vm_state;
 
