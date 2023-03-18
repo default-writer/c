@@ -5,14 +5,7 @@
 
 #include "enumerator/enumerator.h"
 
-struct vm_data {
-    struct pointer** sp; // stack pointer
-    struct pointer** bp; // base pointer
-    struct vm_data* prev;
-    struct vm_data* next;
-    u64 address_space;
-    u64 size;
-};
+struct vm_data;
 
 struct vm {
     void (*init)(struct vm_data** current, u64 size);
