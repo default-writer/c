@@ -3,7 +3,6 @@
 #include "playground/brain/brain.h"
 #include "playground/hashtable/hashtable.h"
 
-// #include "playground/list/v2/list.h"
 #include "list-micro/data.h"
 #include "playground/pointer/pointer.h"
 #include "playground/virtual/vm.h"
