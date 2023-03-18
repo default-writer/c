@@ -8,8 +8,8 @@
 struct vm_data {
     struct pointer** sp; // stack pointer
     struct pointer** bp; // base pointer
-    struct vm_data* next;
     struct vm_data* prev;
+    struct vm_data* next;
     u64 address_space;
     u64 size;
 };
