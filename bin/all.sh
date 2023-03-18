@@ -27,12 +27,6 @@ opts=( "${@:1}" )
 for opt in "${opts[@]}"; do
     case "${opt}" in
 
-        "")
-            sanitize="--sanitize"
-            gc="--gc"
-            silent="--silent"
-            ;;
-
         "--sanitize") # [optional] builds using sanitizer
             sanitize="--sanitize"
             ;;
@@ -42,7 +36,7 @@ for opt in "${opts[@]}"; do
             ;;
 
         "--gc") # [optional] builds with garbage collector
-            gc="--gc"
+            garbage_collector="--gc"
             ;;
 
         "--silent") # [optional] suppress verbose output
@@ -68,33 +62,40 @@ if [ "${silent}" == "--silent" ]; then
     exec 2>&1 >/dev/null
 fi
 
-[ ! -d "${pwd}/build" ] && mkdir "${pwd}/build"
 
-if [ "${sanitize}" == "--sanitize" ] && [ "${valgrind}" != "--valgrind" ]; then
-    SANITIZER_OPTIONS=--sanitize
+TARGET_OPTIONS=" --all --clean"
+
+if [ "${opts}" == "" ]; then
+    sanitize="--sanitize"
+    silent="--silent"
+    gc="--gc"
+fi
+
+if [ "${sanitize}" == "--sanitize" ]; then
+    SANITIZER_OPTIONS=" --sanitize"
 else
-    SANITIZER_OPTIONS=
+    SANITIZER_OPTIONS=""
 fi
 
 if [ "${mocks}" == "--mocks" ]; then
-    MOCKS_OPTIONS=-DMOCKS:BOOL=TRUE
+    MOCKS_OPTIONS=" --mocks"
 else
-    MOCKS_OPTIONS=--mocks
+    MOCKS_OPTIONS=""
 fi
 
 if [ "${gc}" == "--gc" ]; then
-    GC_OPTIONS=--gc
+    GC_OPTIONS=" --gc"
 else
-    GC_OPTIONS=
+    GC_OPTIONS=""
 fi
 
 if [ "${valgrind}" == "--valgrind" ]; then
-    VALGRIND_OPTIONS=--valgrind
+    VALGRIND_OPTIONS=" --valgrind"
 else
-    VALGRIND_OPTIONS=
+    VALGRIND_OPTIONS=""
 fi
 
-OPTIONS=$(echo "--all --clean ${SANITIZER_OPTIONS} ${MOCKS_OPTIONS} ${GC_OPTIONS} ${VALGRIND_OPTIONS}")
+OPTIONS=$(echo "${TARGET_OPTIONS}${SANITIZER_OPTIONS}${MOCKS_OPTIONS}${GC_OPTIONS}${VALGRIND_OPTIONS}")
 
 "${pwd}/bin/build.sh" ${OPTIONS}
 "${pwd}/bin/coverage.sh" ${OPTIONS}

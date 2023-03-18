@@ -142,7 +142,7 @@ if [ "${clean}" == "--clean" ]; then
     mkdir "${pwd}/build"
 fi
 
-if [ "${sanitize}" == "--sanitize" ] && [ "${valgrind}" != "--valgrind" ]; then
+if [ "${sanitize}" == "--sanitize" ] && [ "${valgrind}" == "" ] || [ "${valgrind}" != "--valgrind" ]; then
     SANITIZER_OPTIONS=-DCODE_SANITIZER:BOOL=TRUE
 else
     SANITIZER_OPTIONS=
