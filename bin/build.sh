@@ -164,16 +164,17 @@ else
     GC_OPTIONS=
 fi
 
+
+if [ "${callgrind}" == "--callgrind" ] && [ "${valgrind}" != "" ]; then
+    CALLGRIND_OPTIONS=" --tool=callgrind"
+else
+    CALLGRIND_OPTIONS=
+fi
+
 if [ "${valgrind}" == "--valgrind" ]; then
     VALGRIND_OPTIONS="valgrind ${CALLGRIND_OPTIONS}"
 else
     VALGRIND_OPTIONS=
-fi
-
-if [ "${callgrind}" == "--callgrind" ] && [ "${valgrind}" == "--valgrind" ]; then
-    CALLGRIND_OPTIONS=" --tool=callgrind"
-else
-    CALLGRIND_OPTIONS=
 fi
 
 
