@@ -36,7 +36,7 @@ for opt in "${opts[@]}"; do
             ;;
 
         "--gc") # [optional] builds with garbage collector
-            garbage_collector="--gc"
+            gc="--gc"
             ;;
 
         "--silent") # [optional] suppress verbose output
@@ -58,16 +58,10 @@ for opt in "${opts[@]}"; do
     esac
 done
 
-if [ "${silent}" == "--silent" ]; then
-    exec 2>&1 >/dev/null
-fi
-
-
 TARGET_OPTIONS=" --all --clean"
 
 if [ "${opts}" == "" ]; then
     sanitize="--sanitize"
-    silent="--silent"
     gc="--gc"
 fi
 
@@ -75,6 +69,12 @@ if [ "${sanitize}" == "--sanitize" ]; then
     SANITIZER_OPTIONS=" --sanitize"
 else
     SANITIZER_OPTIONS=""
+fi
+
+if [ "${silent}" == "--silent" ]; then
+    SILENT_OPTIONS=" --silent"
+else
+    SILENT_OPTIONS=""
 fi
 
 if [ "${mocks}" == "--mocks" ]; then
@@ -100,10 +100,6 @@ OPTIONS=$(echo "${TARGET_OPTIONS}${SANITIZER_OPTIONS}${MOCKS_OPTIONS}${GC_OPTION
 "${pwd}/bin/build.sh" ${OPTIONS}
 "${pwd}/bin/coverage.sh" ${OPTIONS}
 "${pwd}/bin/logs.sh" ${OPTIONS}
-
-if [ "${silent}" == "--silent" ]; then
-    exec 1>&2 2>&-
-fi
 
 [[ $SHLVL -gt 2 ]] || echo OK
 
