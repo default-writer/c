@@ -29,63 +29,63 @@ opts=( "${@:2}" )
 case "${install}" in
 
     "--zen") # builds and runs '-zen' target
-        array=("zen")
+        array+=("zen")
         ;;
 
     "--brain") # builds and runs '-brain' target
-        array=("main-brain")
+        array+=("main-brain")
         ;;
 
     "--pointer") # builds and runs '-pointer' target
-        array=("main-pointer")
+        array+=("main-pointer")
         ;;
 
     "--hashtable") # builds and runs '-hashtable' target
-        array=("main-hashtable")
+        array+=("main-hashtable")
         ;;
 
     "--memory1") # builds and runs '-memory1' target
-        array=("main-memory1")
+        array+=("main-memory1")
         ;;
 
     "--memory2") # builds and runs '-memory2' target
-        array=("main-memory2")
+        array+=("main-memory2")
         ;;
 
     "--memory3") # builds and runs '-memory3' target
-        array=("main-memory3")
+        array+=("main-memory3")
         ;;
 
     "--memory4") # builds and runs '-memory4' target
-        array=("main-memory4")
+        array+=("main-memory4")
         ;;
 
     "--playground1") # builds and runs '-playground1' target
-        array=("main-playground1")
+        array+=("main-playground1")
         ;;
 
     "--playground2") # builds and runs '-playground2' target
-        array=("main-playground2")
+        array+=("main-playground2")
         ;;
 
     "--alloc") # builds and runs '-alloc' target
-        array=("main-alloc")
+        array+=("main-alloc")
         ;;
 
     "--experimental") # builds and runs '-experimental' target
-        array=("main-experimental")
+        array+=("main-experimental")
         ;;
 
     "--micro") # builds and runs '-micro' target
-        array=("main-micro")
+        array+=("main-micro")
         ;;
 
     "--light") # builds and runs '-light' target
-        array=("main-light")
+        array+=("main-light")
         ;;
 
     "--all") # builds and runs all targets
-        array=("zen" "main" "main-pointer" "main-hashtable" "main-brain" "main-light" "main-micro" "main-experimental" "main-alloc" "main-playground1" "main-playground2" "main-memory1" "main-memory2" "main-memory3" "main-memory4")
+        all="--all"
         ;;
 
     *)
@@ -172,6 +172,26 @@ OPTIONS=$(echo "${MOCKS_OPTIONS} ${GC_OPTIONS} ${SANITIZER_OPTIONS}")
 export MAKEFLAGS=-j8
 
 [ -d "${pwd}/cmake-3.25/bin" ] && cmake=${pwd}/cmake-3.25/bin/cmake || cmake=cmake
+
+if [ "${all}" == "--all" ]; then
+
+[ ! -d "${pwd}/config" ] && mkdir "${pwd}/config"
+
+${cmake} \
+    -DTARGETS:BOOL=ON \
+    ${OPTIONS} \
+    -S"${pwd}" \
+    -B"${pwd}/config" \
+    -G "Ninja"
+
+targets=$(cat "${pwd}/config/targets.txt")
+for target in ${targets[@]}; do
+    array+=("${target}")
+done
+
+rm -rf "${pwd}/config"
+
+fi
 
 ${cmake} \
     -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \

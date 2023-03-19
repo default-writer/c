@@ -27,35 +27,35 @@ install="$1"
 case "${install}" in
 
     "--llvm") # A style complying with the LLVM coding standards
-        array=("LLVM")
+        format=("LLVM")
         ;;
 
     "--google") # A style complying with Google’s C++ style guide
-        array=("Google")
+        format=("Google")
         ;;
 
     "--chromium") # A style complying with Chromium’s style guide
-        array=("Chromium")
+        format=("Chromium")
         ;;
 
     "--mozilla") # A style complying with Mozilla’s style guide
-        array=("Mozilla")
+        format=("Mozilla")
         ;;
 
     "--webkit") # A style complying with WebKit’s style guide
-        array=("WebKit")
+        format=("WebKit")
         ;;
 
     "--microsoft") # A style complying with Microsoft’s style guide
-        array=("Microsoft")
+        format=("Microsoft")
         ;;
 
     "--gnu") # A style complying with the GNU coding standards
-        array=("GNU")
+        format=("GNU")
         ;;
  
     "--all") # Not a real style, but allows to use the .clang-format file from the parent directory
-        array=("InheritParentConfig")
+        format=("InheritParentConfig")
         ;;
 
     *)
@@ -66,7 +66,7 @@ esac
 
 main=$(find "${pwd}/src" -type f -name "*.[c|h]" -exec echo {} \; | grep -v -s "rexo" | sed -n -e 's/^.*\/\(src.*\)$/\1/p')
 for i in $main; do
-    clang-format -i "${pwd}/$i" --style="{BasedOnStyle: ${array}, IndentWidth: 4}"
+    clang-format -i "${pwd}/$i" --style="{BasedOnStyle: ${format}, IndentWidth: 4}"
 done
 
 [[ $SHLVL -gt 2 ]] || echo OK

@@ -169,7 +169,8 @@ set(LIB_PARAMETERS_SOURCE src/common/parameters.c)
 
 set(LIB_LIST1_SOURCE src/playground/list/v1/list.c)
 set(LIB_LIST2_SOURCE src/playground/list/v2/list.c)
-set(LIB_VM_SOURCE src/playground/vm/v1/vm.c)
+set(LIB_VM1_SOURCE src/playground/vm/v1/vm.c)
+set(LIB_VM2_SOURCE src/playground/vm/v2/vm.c)
 set(LIB_HASHTABLE_SOURCE src/playground/hashtable/hashtable.c)
 set(LIB_STANDARD_SOURCE src/list/code.c)
 set(LIB_LIGHT_SOURCE src/list-light/code.c)
@@ -211,13 +212,16 @@ set(MAIN_MEMORY4_SOURCE tests/v4/main-memory_v4.c ${LIB_MEMORY4_SOURCE})
 set(MAIN_BRAIN_SOURCE tests/main-brain.c)
 set(MAIN_POINTER_SOURCE tests/main-pointer.c)
 set(MAIN_HASHTABLE_SOURCE tests/main-hashtable.c)
+set(MAIN_VM1_SOURCE tests/v1/main-vm1.c)
+set(MAIN_VM2_SOURCE tests/v2/main-vm2.c)
 set(MAIN_ZEN_SOURCE src/playground/zen/zen.c)
 
 include_directories(src)
 
 add_library(list-v1 STATIC ${LIB_LIST1_SOURCE})
 add_library(list-v2 STATIC ${LIB_LIST2_SOURCE})
-add_library(vm STATIC ${LIB_VM_SOURCE})
+add_library(vm-v1 STATIC ${LIB_VM1_SOURCE})
+add_library(vm-v2 STATIC ${LIB_VM2_SOURCE})
 add_library(hashtable ${LIB_HASHTABLE_SOURCE})
 add_library(list-memory1 STATIC ${LIB_MEMORY1_SOURCE})
 add_library(list-memory2 STATIC ${LIB_MEMORY2_SOURCE})
@@ -256,6 +260,8 @@ add_executable(main-memory4 ${MAIN_MEMORY4_SOURCE})
 add_executable(main-brain ${MAIN_BRAIN_SOURCE})
 add_executable(main-pointer ${MAIN_POINTER_SOURCE})
 add_executable(main-hashtable ${MAIN_HASHTABLE_SOURCE})
+add_executable(main-vm1 ${MAIN_VM1_SOURCE})
+add_executable(main-vm2 ${MAIN_VM2_SOURCE})
 
 add_executable(zen ${MAIN_ZEN_SOURCE})
 
@@ -277,12 +283,26 @@ target_link_libraries(main-memory1 PRIVATE list-memory1)
 target_link_libraries(main-memory2 PRIVATE list-memory2 memory-ref1)
 target_link_libraries(main-memory3 PRIVATE list-memory3 memory-ref2)
 target_link_libraries(main-memory4 PRIVATE list-memory4 memory-ref3 list-lcg)
-target_link_libraries(main-brain PRIVATE list-pointer list-micro vm)
-target_link_libraries(main-pointer PRIVATE list-pointer list-micro vm)
-target_link_libraries(main-hashtable PRIVATE list-pointer list-micro vm hashtable)
+target_link_libraries(main-brain PRIVATE list-pointer list-micro vm-v1)
+target_link_libraries(main-pointer PRIVATE list-pointer list-micro vm-v1)
+target_link_libraries(main-hashtable PRIVATE list-pointer list-micro vm-v1 hashtable)
+target_link_libraries(main-vm1 PRIVATE list-pointer list-micro vm-v1)
+target_link_libraries(main-vm2 PRIVATE list-pointer list-micro vm-v2)
 
 configure_file(all_english_words.txt ${CMAKE_BINARY_DIR}/all_english_words.txt COPYONLY)
 
 FILE(WRITE ${CMAKE_BINARY_DIR}/input.txt
     "fopen<\"input.txt\",\"rb\">f (? f==0 perror<\"file not found\" exit<1 : print<\"all ok\")"
 )
+
+if(TARGETS)
+
+get_property(target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
+list(FILTER target_names INCLUDE REGEX "^main-")
+string(REGEX REPLACE ";" " " target_names "${target_names}")
+
+FILE(WRITE ${CMAKE_BINARY_DIR}/targets.txt
+    "${target_names}"
+)
+
+endif()
