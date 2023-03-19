@@ -61,3 +61,4 @@ src/rexo
 clangd
 gh
 .~*
+callgrind.out.*

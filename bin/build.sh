@@ -124,6 +124,10 @@ for opt in "${opts[@]}"; do
             valgrind="--valgrind"
             ;;
 
+        "--callgrind") # [optional] runs using valgrind with tool callgrind (disables --sanitize on build)
+            callgrind="--callgrind"
+            ;;
+
         *)
             help
             ;;
@@ -161,15 +165,23 @@ else
 fi
 
 if [ "${valgrind}" == "--valgrind" ]; then
-    VALGRIND_OPTIONS=valgrind
+    VALGRIND_OPTIONS="valgrind ${CALLGRIND_OPTIONS}"
 else
     VALGRIND_OPTIONS=
 fi
+
+if [ "${callgrind}" == "--callgrind" ] && [ "${valgrind}" == "--valgrind" ]; then
+    CALLGRIND_OPTIONS=" --tool=callgrind"
+else
+    CALLGRIND_OPTIONS=
+fi
+
 
 OPTIONS=$(echo "${MOCKS_OPTIONS} ${GC_OPTIONS} ${SANITIZER_OPTIONS}")
 
 export MAKEFLAGS=-j8
 
+find "${pwd}" -type f -name "callgrind.out.*" -delete
 find "${pwd}/src" -type f -name "*.s" -delete
 find "${pwd}/tests" -type f -name "*.s" -delete
 
