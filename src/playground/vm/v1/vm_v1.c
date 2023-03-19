@@ -1,7 +1,7 @@
-#include "playground/vm/vm.h"
 #include "common/alloc.h"
 #include "list-micro/data.h"
 #include "playground/pointer/pointer.h"
+#include "playground/vm/vm.h"
 
 /* list definition */
 extern const struct list list_micro_definition;
