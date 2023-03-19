@@ -165,7 +165,7 @@ else
 fi
 
 
-if [ "${callgrind}" == "--callgrind" ] && [ "${valgrind}" != "" ]; then
+if [ "${callgrind}" == "--callgrind" ] && [ "${valgrind}" == "--valgrind" ]; then
     CALLGRIND_OPTIONS=" --tool=callgrind"
 else
     CALLGRIND_OPTIONS=
