@@ -29,6 +29,7 @@ opts=( "${@:2}" )
 case "${install}" in
 
     "")
+        target="--all"
         ;;
 
     "--target") # builds and runs specified target
