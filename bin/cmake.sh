@@ -80,7 +80,7 @@ for opt in ${opts[@]}; do
             callgrind="--callgrind"
             ;;
 
-        "--help") # shows command sdesctiption
+        "--help") # shows command desctiption
             help
             ;;
 
