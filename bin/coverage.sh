@@ -28,64 +28,16 @@ opts=( "${@:2}" )
 
 case "${install}" in
 
-    "--zen") # builds and runs '-zen' target
-        array+=("zen")
+    "")
         ;;
 
-    "--brain") # builds and runs '-brain' target
-        array+=("main-brain")
-        ;;
-
-    "--pointer") # builds and runs '-pointer' target
-        array+=("main-pointer")
-        ;;
-
-    "--hashtable") # builds and runs '-hashtable' target
-        array+=("main-hashtable")
-        ;;
-
-    "--memory1") # builds and runs '-memory1' target
-        array+=("main-memory1")
-        ;;
-
-    "--memory2") # builds and runs '-memory2' target
-        array+=("main-memory2")
-        ;;
-
-    "--memory3") # builds and runs '-memory3' target
-        array+=("main-memory3")
-        ;;
-
-    "--memory4") # builds and runs '-memory4' target
-        array+=("main-memory4")
-        ;;
-
-    "--playground1") # builds and runs '-playground1' target
-        array+=("main-playground1")
-        ;;
-
-    "--playground2") # builds and runs '-playground2' target
-        array+=("main-playground2")
-        ;;
-
-    "--alloc") # builds and runs '-alloc' target
-        array+=("main-alloc")
-        ;;
-
-    "--experimental") # builds and runs '-experimental' target
-        array+=("main-experimental")
-        ;;
-
-    "--micro") # builds and runs '-micro' target
-        array+=("main-micro")
-        ;;
-
-    "--light") # builds and runs '-light' target
-        array+=("main-light")
+    "--target") # builds and runs specified target
+        opts=( "${@:3}" )
+        target="--target"
         ;;
 
     "--all") # builds and runs all targets
-        all="--all"
+        target="--all"
         ;;
 
     *)
@@ -94,8 +46,8 @@ case "${install}" in
 
 esac
 
-for opt in "${opts[@]}"; do
-    case "${opt}" in
+for opt in ${opts[@]}; do
+    case ${opt} in
 
         "")
             ;;
@@ -124,6 +76,14 @@ for opt in "${opts[@]}"; do
             valgrind="--valgrind"
             ;;
 
+        "--callgrind") # [optional] runs using valgrind with tool callgrind (disables --sanitize on build)
+            callgrind="--callgrind"
+            ;;
+
+        "--help") # shows command sdesctiption
+            help
+            ;;
+
         *)
             help
             ;;
@@ -142,59 +102,25 @@ if [ "${clean}" == "--clean" ]; then
     mkdir "${pwd}/coverage"
 fi
 
-for m in "${array[@]}"; do
+for m in ${array[@]}; do
     rm -f "${pwd}/coverage/${m}.lcov"
 done
 
-if [ "${mocks}" == "--mocks" ]; then
-    MOCKS_OPTIONS=-DMOCKS:BOOL=TRUE
+cmake=$(get-cmake)
+if [ "${target}" == "--all" ]; then
+    array=( $(get-targets) )
 else
-    MOCKS_OPTIONS=
+    array=( $2 )
 fi
 
-if [ "${gc}" == "--gc" ]; then
-    GC_OPTIONS=-DGC:BOOL=TRUE
-else
-    GC_OPTIONS=
-fi
-
-if [ "${valgrind}" == "--valgrind" ]; then
-    VALGRIND_OPTIONS=valgrind
-else
-    VALGRIND_OPTIONS=
-fi
-
-OPTIONS=$(echo "${MOCKS_OPTIONS} ${GC_OPTIONS} ${SANITIZER_OPTIONS}")
+coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" )
+for f in "${coverage}"; do
+    find "${pwd}/coverage" -type f -name "${f}" -delete
+done
 
 export LCOV_PATH=$(which lcov)
 export GENHTML_PATH==$(which genhtml)
 export MAKEFLAGS=-j8
-
-find "${pwd}/coverage" -type f -name "*.gcda" -delete
-find "${pwd}/coverage" -type f -name "*.gcno" -delete
-find "${pwd}" -type f -name "*.s" -delete
-
-[ -d "${pwd}/cmake-3.25/bin" ] && cmake=${pwd}/cmake-3.25/bin/cmake || cmake=cmake
-
-if [ "${all}" == "--all" ]; then
-
-[ ! -d "${pwd}/config" ] && mkdir "${pwd}/config"
-
-${cmake} \
-    -DTARGETS:BOOL=ON \
-    ${OPTIONS} \
-    -S"${pwd}" \
-    -B"${pwd}/config" \
-    -G "Ninja"
-
-targets=$(cat "${pwd}/config/targets.txt")
-for target in ${targets[@]}; do
-    array+=("${target}")
-done
-
-rm -rf "${pwd}/config"
-
-fi
 
 ${cmake} \
     -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
@@ -204,29 +130,27 @@ ${cmake} \
     -DLCOV_PATH=${LCOV_PATH} \
     -DGENHTML_PATH=${GENHTML_PATH} \
     -DCODE_COVERAGE:BOOL=TRUE \
-    ${OPTIONS} \
+    $(cmake-options) \
     -S"${pwd}" \
     -B"${pwd}/coverage" \
-    -G "Ninja"
+    -G "Ninja" 2>&1 >/dev/null
 
-for m in "${array[@]}"; do
-    ${cmake} --build "${pwd}/coverage" --target "${m}" || (echo ERROR: "${m}" && exit 1)
-    timeout --foreground 15 ${VALGRIND_OPTIONS} "${pwd}/coverage/${m}" 2>&1 >"${pwd}/coverage/log-${m}.txt" || (echo ERROR: "${m}" && exit 1)
+for m in ${array[@]}; do
+    ${cmake} --build "${pwd}/coverage" --target "${m}" 2>&1 >/dev/null || (echo ERROR: "${m}" && exit 1)
+    timeout --foreground 15 $(cmake-valgrind-options) "${pwd}/coverage/${m}" 2>&1 >"${pwd}/coverage/log-${m}.txt" || (echo ERROR: "${m}" && exit 1)
     lcov --capture --directory "${pwd}/coverage/" --output-file "${pwd}/coverage/${m}.lcov" &>/dev/null
     lcov --remove "${pwd}/coverage/${m}.lcov" "${pwd}/src/rexo/*" -o "${pwd}/coverage/${m}.lcov"
 done
 
-find "${pwd}/coverage" -type f -type f -empty -delete
 find "${pwd}/coverage" -type f -name "*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
-for m in "${array[@]}"; do
+
+for m in ${array[@]}; do
     rm -f "${pwd}/coverage/${m}.lcov"
 done
 
 if [ "${silent}" == "--silent" ]; then
     exec 1>&2 2>&-
 fi
-
-"${pwd}/bin/build.sh" ${install} "${opts[@]}"
 
 [[ $SHLVL -gt 2 ]] || echo OK
 

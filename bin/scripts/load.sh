@@ -7,7 +7,7 @@ err_report() {
 
 trap 'err_report $LINENO' ERR
 
-function load-libs() {
+function get-libs() {
     local libs=$(find "${pwd}/bin/libs" -type f -name "*.sh" -exec echo {} \;)
     for i in $libs; do
         local import="$(echo $i | sed -n -e 's/^.*bin\/libs\/\(.*\)$/\1/p')"
@@ -15,4 +15,4 @@ function load-libs() {
     done
 }
 
-load-libs
+get-libs

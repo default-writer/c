@@ -28,64 +28,16 @@ opts=( "${@:2}" )
 
 case "${install}" in
 
-    "--zen") # builds and runs '-zen' target
-        array+=("zen")
+    "")
         ;;
 
-    "--brain") # builds and runs '-brain' target
-        array+=("main-brain")
-        ;;
-
-    "--pointer") # builds and runs '-pointer' target
-        array+=("main-pointer")
-        ;;
-
-    "--hashtable") # builds and runs '-hashtable' target
-        array+=("main-hashtable")
-        ;;
-
-    "--memory1") # builds and runs '-memory1' target
-        array+=("main-memory1")
-        ;;
-
-    "--memory2") # builds and runs '-memory2' target
-        array+=("main-memory2")
-        ;;
-
-    "--memory3") # builds and runs '-memory3' target
-        array+=("main-memory3")
-        ;;
-
-    "--memory4") # builds and runs '-memory4' target
-        array+=("main-memory4")
-        ;;
-
-    "--playground1") # builds and runs '-playground1' target
-        array+=("main-playground1")
-        ;;
-
-    "--playground2") # builds and runs '-playground2' target
-        array+=("main-playground2")
-        ;;
-
-    "--alloc") # builds and runs '-alloc' target
-        array+=("main-alloc")
-        ;;
-
-    "--experimental") # builds and runs '-experimental' target
-        array+=("main-experimental")
-        ;;
-
-    "--micro") # builds and runs '-micro' target
-        array+=("main-micro")
-        ;;
-
-    "--light") # builds and runs '-light' target
-        array+=("main-light")
+    "--target") # builds and runs specified target
+        opts=( "${@:3}" )
+        target="--target"
         ;;
 
     "--all") # builds and runs all targets
-        all="--all"
+        target="--all"
         ;;
 
     *)
@@ -94,8 +46,8 @@ case "${install}" in
 
 esac
 
-for opt in "${opts[@]}"; do
-    case "${opt}" in
+for opt in ${opts[@]}; do
+    case ${opt} in
 
         "")
             ;;
@@ -128,6 +80,10 @@ for opt in "${opts[@]}"; do
             callgrind="--callgrind"
             ;;
 
+        "--help") # shows command sdesctiption
+            help
+            ;;
+
         *)
             help
             ;;
@@ -146,81 +102,33 @@ if [ "${clean}" == "--clean" ]; then
     mkdir "${pwd}/build"
 fi
 
-if [ "${sanitize}" == "--sanitize" ] && [ "${valgrind}" == "" ] || [ "${valgrind}" != "--valgrind" ]; then
-    SANITIZER_OPTIONS=-DCODE_SANITIZER:BOOL=TRUE
-else
-    SANITIZER_OPTIONS=
-fi
-
-if [ "${mocks}" == "--mocks" ]; then
-    MOCKS_OPTIONS=-DMOCKS:BOOL=TRUE
-else
-    MOCKS_OPTIONS=
-fi
-
-if [ "${gc}" == "--gc" ]; then
-    GC_OPTIONS=-DGC:BOOL=TRUE
-else
-    GC_OPTIONS=
-fi
-
-
-if [ "${callgrind}" == "--callgrind" ] && [ "${valgrind}" == "--valgrind" ]; then
-    CALLGRIND_OPTIONS=" --tool=callgrind"
-else
-    CALLGRIND_OPTIONS=
-fi
-
-if [ "${valgrind}" == "--valgrind" ]; then
-    VALGRIND_OPTIONS="valgrind ${CALLGRIND_OPTIONS}"
-else
-    VALGRIND_OPTIONS=
-fi
-
-
-OPTIONS=$(echo "${MOCKS_OPTIONS} ${GC_OPTIONS} ${SANITIZER_OPTIONS}")
-
-export MAKEFLAGS=-j8
-
 find "${pwd}" -type f -name "callgrind.out.*" -delete
 find "${pwd}/src" -type f -name "*.s" -delete
 find "${pwd}/tests" -type f -name "*.s" -delete
 
-[ -d "${pwd}/cmake-3.25/bin" ] && cmake=${pwd}/cmake-3.25/bin/cmake || cmake=cmake
-
-if [ "${all}" == "--all" ]; then
-
-[ ! -d "${pwd}/config" ] && mkdir "${pwd}/config"
-
-${cmake} \
-    -DTARGETS:BOOL=ON \
-    ${OPTIONS} \
-    -S"${pwd}" \
-    -B"${pwd}/config" \
-    -G "Ninja"
-
-targets=$(cat "${pwd}/config/targets.txt")
-for target in ${targets[@]}; do
-    array+=("${target}")
-done
-
-rm -rf "${pwd}/config"
-
+cmake=$(get-cmake)
+if [ "${target}" == "--all" ]; then
+    array=( $(get-targets) )
+else
+    array=( $2 )
 fi
+
+export MAKEFLAGS=-j8
 
 ${cmake} \
     -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
     -DCMAKE_BUILD_TYPE:STRING=Debug \
     -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
     -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
-    ${OPTIONS} \
+    $(cmake-options) \
     -S"${pwd}" \
     -B"${pwd}/build" \
-    -G "Ninja"
+    -G "Ninja" 2>&1 >/dev/null
 
-for m in "${array[@]}"; do
-    ${cmake} --build "${pwd}/build" --target "${m}" || (echo ERROR: "${m}" && exit 1)
-    timeout --foreground 15 ${VALGRIND_OPTIONS} "${pwd}/build/${m}" 2>&1 >"${pwd}/build/log-${m}.txt" || (echo ERROR: "${m}" && exit 1)
+
+for m in ${array[@]}; do
+    ${cmake} --build "${pwd}/build" --target "${m}" 2>&1 >/dev/null || (echo ERROR: "${m}" && exit 1)
+    timeout --foreground 15 $(cmake-valgrind-options) "${pwd}/build/${m}" 2>&1 >"${pwd}/build/log-${m}.txt" || (echo ERROR: "${m}" && exit 1)
 done
 
 main=$(find "${pwd}/build" -type f -name "*.s" -exec echo {} \;)

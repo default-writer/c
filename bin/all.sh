@@ -16,7 +16,9 @@ fi
 
 pwd=$(pwd)
 
-opts=( "${@:1}" )
+install="$1"
+
+opts=( "${@:2}" )
 
 . "${pwd}/bin/scripts/load.sh"
 
@@ -24,82 +26,31 @@ opts=( "${@:1}" )
 ## Usage: ${script} <option> [optional]
 ## ${commands}
 
-for opt in "${opts[@]}"; do
-    case "${opt}" in
+case "${install}" in
 
-        "--sanitize") # [optional] builds using sanitizer
-            sanitize="--sanitize"
-            ;;
+    "")
+        ;;
 
-        "--mocks") # [optional] builds with mocks
-            mocks="--mocks"
-            ;;
+    "--target") # builds and runs specified target
+        target="--target $2"
+        opts=( "${@:3}" )
+        ;;
 
-        "--gc") # [optional] builds with garbage collector
-            gc="--gc"
-            ;;
+    "--all") # builds and runs all targets
+        target="--all"
+        ;;
 
-        "--silent") # [optional] suppress verbose output
-            silent="--silent"
-            ;;
+    *)
+        help
+        ;;
 
-        "--valgrind") # [optional] runs using valgrind (disables --sanitize on build)
-            valgrind="--valgrind"
-            ;;
-        
-        "--help") # shows help
-            help
-            ;;
+esac
 
-        *)
-            help
-            ;;
+COMMAND_LINE_OPTIONS=$(get-options ${opts})
 
-    esac
-done
-
-TARGET_OPTIONS=" --all --clean"
-
-if [ "${opts}" == "" ]; then
-    sanitize="--sanitize"
-    gc="--gc"
-fi
-
-if [ "${sanitize}" == "--sanitize" ]; then
-    SANITIZER_OPTIONS=" --sanitize"
-else
-    SANITIZER_OPTIONS=""
-fi
-
-if [ "${silent}" == "--silent" ]; then
-    SILENT_OPTIONS=" --silent"
-else
-    SILENT_OPTIONS=""
-fi
-
-if [ "${mocks}" == "--mocks" ]; then
-    MOCKS_OPTIONS=" --mocks"
-else
-    MOCKS_OPTIONS=""
-fi
-
-if [ "${gc}" == "--gc" ]; then
-    GC_OPTIONS=" --gc"
-else
-    GC_OPTIONS=""
-fi
-
-if [ "${valgrind}" == "--valgrind" ]; then
-    VALGRIND_OPTIONS=" --valgrind"
-else
-    VALGRIND_OPTIONS=""
-fi
-
-OPTIONS=$(echo "${TARGET_OPTIONS}${SANITIZER_OPTIONS}${MOCKS_OPTIONS}${GC_OPTIONS}${VALGRIND_OPTIONS}")
-
-"${pwd}/bin/build.sh" ${OPTIONS}
-"${pwd}/bin/coverage.sh" ${OPTIONS}
-"${pwd}/bin/logs.sh" ${OPTIONS}
+"${pwd}/bin/build.sh" ${COMMAND_LINE_OPTIONS}
+"${pwd}/bin/coverage.sh" ${COMMAND_LINE_OPTIONS}
+"${pwd}/bin/logs.sh" ${COMMAND_LINE_OPTIONS}
 
 [[ $SHLVL -gt 2 ]] || echo OK
 
