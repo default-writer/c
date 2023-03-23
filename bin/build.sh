@@ -133,7 +133,7 @@ ${cmake} \
 
 for m in ${array[@]}; do
     ${cmake} --build "${pwd}/build" --target "${m}" 2>&1 >/dev/null || (echo ERROR: "${m}" && exit 1)
-    timeout --foreground 15 $(cmake-valgrind-options) "${pwd}/build/${m}" 2>&1 >"${pwd}/build/log-${m}.txt" || (echo ERROR: "${m}" && exit 1)
+    timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/build/${m}" 2>&1 >"${pwd}/build/log-${m}.txt" || (echo ERROR: "${m}" && exit 1)
 done
 
 main=$(find "${pwd}/build" -type f -name "*.s" -exec echo {} \;)

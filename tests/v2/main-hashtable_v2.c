@@ -10,7 +10,7 @@
 #define DEFAULT_SIZE 0xffff
 
 /* list definition */
-extern const struct vm vm_definition;
+
 extern const struct list list_micro_definition;
 extern struct hashtable hashtable_definition;
 extern struct pointer_methods pointer_methods_definition;
@@ -311,9 +311,8 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
 #ifdef USE_MEMORY_DEBUG_INFO
         printf("data size: %16lld\n", size);
 #endif
-        CLEAN(size)
         char* file_data = pointer->unsafe(data_ptr);
-        char* file_end = file_data + 0xffff;
+        char* file_end = file_data + size;
         while (file_data < file_end) {
             char* tmp = file_data;
             while (*tmp != 0 && *tmp != '\n') {

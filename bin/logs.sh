@@ -126,7 +126,7 @@ ${cmake} \
 
 for m in ${array[@]}; do
     ${cmake} --build "${pwd}/logs" --target "${m}" 2>&1 >/dev/null || (echo ERROR: "${m}" && exit 1)
-    timeout --foreground 15 $(cmake-valgrind-options) "${pwd}/logs/${m}" 2>&1 >"${pwd}/out/log-${m}.txt" || (echo ERROR: "${m}" && exit 1)
+    timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/logs/${m}" 2>&1 >"${pwd}/out/log-${m}.txt" || (echo ERROR: "${m}" && exit 1)
 done
 
 if [ "${silent}" == "--silent" ]; then

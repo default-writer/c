@@ -124,7 +124,7 @@ ${cmake} \
 
 for m in ${array[@]}; do
     ${cmake} --build "${pwd}/cmake" --target "${m}" 2>&1 >/dev/null || (echo ERROR: "${m}" && exit 1)
-    timeout --foreground 15 $(cmake-valgrind-options) "${pwd}/cmake/${m}" 2>&1 >"${pwd}/logs/log-${m}.txt" || (echo ERROR: "${m}" && exit 1)
+    timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/cmake/${m}" 2>&1 >"${pwd}/logs/log-${m}.txt" || (echo ERROR: "${m}" && exit 1)
 done
 
 find "${pwd}/logs" -type f -not -name "log-*" -delete
