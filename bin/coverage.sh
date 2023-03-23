@@ -113,11 +113,6 @@ else
     array=( $2 )
 fi
 
-coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" )
-for f in "${coverage}"; do
-    find "${pwd}/coverage" -type f -name "${f}" -delete
-done
-
 export LCOV_PATH=$(which lcov)
 export GENHTML_PATH==$(which genhtml)
 export MAKEFLAGS=-j8

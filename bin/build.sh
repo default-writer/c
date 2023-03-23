@@ -113,6 +113,11 @@ else
     array=( $2 )
 fi
 
+coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" )
+for f in "${coverage}"; do
+    find "${pwd}/coverage" -type f -name "${f}" -delete
+done
+
 export MAKEFLAGS=-j8
 
 ${cmake} \
