@@ -49,6 +49,7 @@
     "dlinfo",
     "gregs",
     "Jaco",
+    "murmurhash",
     "NGREG",
     "NOSTACK",
     "octa",

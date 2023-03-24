@@ -17,6 +17,9 @@ struct hashtable {
     struct hashtable_data* (*find)(char* key);
     struct hashtable_data* (*get)(char* key);
     void (*set)(char* key, char* value);
+    void (*setup)(u32 (*function)(char* source));
 };
+
+u32 murmurhash3(char* source);
 
 #endif // _PLAYGROUND_HASHTABLE_H_

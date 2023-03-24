@@ -3,8 +3,11 @@
 #include "common/lcg.h"
 #include "playground/list/v2/list.h"
 #include "playground/pointer/pointer.h"
+#include "std/macros.h"
 
 #define DEFAULT_SIZE 101
+
+static u64 lcg_state = 0;
 
 static struct hashtable_data* hashtable_extract_internal(struct hashtable_data* head, struct hashtable_data* ptr);
 
@@ -15,23 +18,41 @@ static void hashtable_free(struct hashtable_data* node);
 static struct hashtable_data* hashtable_find(char* key);
 static struct hashtable_data* hashtable_get(char* key);
 static void hashtable_set(char* key, char* value);
+static void hashtable_setup(u32 (*function)(char* source));
 static void update(char** prev, char* new);
+static u32 default_hash_function(char* source);
+static u32 hash_func(char* source);
 
 static void hashtable_init(u64 size);
 static void hashtable_destroy(void);
 
-extern u32 lcg_state;
-
 static u64 hashtable_size = DEFAULT_SIZE;
 
+static u32 (*hash_function_ptr)(char* source) = 0;
+
+static void hashtable_setup(u32 (*function)(char* source)) {
+    if (hash_function_ptr != 0) {
+        hash_function_ptr = function;
+    }
+}
+
 /* hash: form hash value for string s */
-static u32 hashfunc(char* source) {
+static u32 hash_func(char* source) {
+    if (hash_function_ptr != 0) {
+        return hash_function_ptr(source);
+    }
+    return default_hash_function(source);
+}
+
+/* hash: form hash value for string s */
+static u32 default_hash_function(char* source) {
     u32 data = 0;
     if (source != 0) {
         u32 hash = 0;
         char* ptr = source;
-        u32 p = (u8)*ptr;
+        u32 p;
         while (*ptr != 0) {
+            p = hash;
             u16 p0 = (u16)(p & 0xff);
             u16 p1 = (u16)((p & 0xff00) >> 8);
             u16 p2 = (u16)((p & 0xff0000) >> 16);
@@ -45,6 +66,62 @@ static u32 hashfunc(char* source) {
             ptr++;
         }
         data = hash % hashtable_size;
+    }
+    return data;
+}
+
+/* hash: form hash value for string s */
+u32 murmurhash3(char* source) {
+    u32 data = 0;
+    if (source != 0) {
+        u32 len = 0;
+        u8* ptr = (u8*)source;
+        while (*ptr != 0) {
+            ptr++;
+        }
+        len = (u32)(ptr - (u8*)source);
+
+        const u32 m = 0x5bd1e995;
+        u32 hash = lcg_state ^ len;
+
+        u8* buf = (u8*)ptr;
+
+        // Mix 4 bytes at a time into the hash.
+        while (len >= 4) {
+            u32 p0 = (u32)buf[0];
+            u32 p1 = (u32)(buf[1] << 8);
+            u32 p2 = (u32)(buf[2] << 16);
+            u32 p3 = (u32)(buf[3] << 24);
+            u32 k = p0 | p1 | p2 | p3;
+            k *= m;
+            k ^= k >> 24;
+            k *= m;
+            hash *= m;
+            hash ^= k;
+            buf += 4;
+            len -= 4;
+        }
+
+        // Handle the last few bytes of the input array.
+        switch (len) {
+        case 3:
+            hash ^= (u32)(buf[2] << 16); // NOLINT
+            FALL_THROUGH;
+            /* fall through */
+        case 2:
+            hash ^= (u32)(buf[1] << 8);
+        case 1:
+            hash ^= (u32)(buf[0]);
+            hash *= m;
+        default:
+            break;
+        };
+
+        // Do a few final mixes of the hash.
+        hash ^= hash >> 13;
+        hash *= m;
+        hash ^= hash >> 15;
+        data = hash;
     }
     return data;
 }
@@ -79,7 +156,7 @@ static struct hashtable_data* hashtable_alloc(char* key, char* value) {
     struct hashtable_data* node = _list_alloc(sizeof(struct hashtable_data));
     update(&node->key, key);
     update(&node->value, value);
-    u32 hash = hashfunc(key);
+    u32 hash = hash_func(key);
     struct hashtable_data* next = hashtable[hash];
     node->next = next;
     hashtable[hash] = node;
@@ -92,7 +169,7 @@ static void hashtable_free(struct hashtable_data* node) {
         if (ptr != 0) {
             struct hashtable_data* next;
             do {
-                u32 hash = hashfunc(ptr->key);
+                u32 hash = hash_func(ptr->key);
                 if (hashtable[hash] != 0) {
                     struct hashtable_data* found = hashtable_extract_internal(hashtable[hash], ptr);
                     if (hashtable[hash] != found) {
@@ -115,7 +192,7 @@ static void hashtable_free(struct hashtable_data* node) {
 }
 
 static struct hashtable_data* hashtable_find(char* key) {
-    struct hashtable_data* node = hashtable[hashfunc(key)];
+    struct hashtable_data* node = hashtable[hash_func(key)];
     while (node != 0) {
         if (node->next == 0) {
             break;
@@ -131,7 +208,7 @@ static struct hashtable_data* hashtable_find(char* key) {
 }
 
 static struct hashtable_data* hashtable_get(char* key) {
-    struct hashtable_data* node = hashtable[hashfunc(key)];
+    struct hashtable_data* node = hashtable[hash_func(key)];
 #ifdef USE_MEMORY_DEBUG_INFO
     if (node != 0) {
         printf("  <$: 0x%016llx !  %16s :  %16s\n", (u64)node, node->key, node->value);
@@ -141,7 +218,7 @@ static struct hashtable_data* hashtable_get(char* key) {
 }
 
 static void hashtable_set(char* key, char* value) {
-    struct hashtable_data* node = hashtable[hashfunc(key)];
+    struct hashtable_data* node = hashtable[hash_func(key)];
     if (node != 0) {
         update(&node->value, value);
     } else {
@@ -166,6 +243,8 @@ static void update(char** prev, char* new) {
     }
 }
 
+/* public */
+
 const struct hashtable hashtable_definition = {
     .init = hashtable_init,
     .destroy = hashtable_destroy,
@@ -173,5 +252,6 @@ const struct hashtable hashtable_definition = {
     .free = hashtable_free,
     .find = hashtable_find,
     .get = hashtable_get,
-    .set = hashtable_set
+    .set = hashtable_set,
+    .setup = hashtable_setup
 };

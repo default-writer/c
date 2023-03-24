@@ -176,6 +176,7 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_alloc_temp_alloc_free_temp_alloc_
 // test init
 RX_TEST_CASE(myTestSuite, test_hashtable_alloc_alloc_alloc_temp_alloc_alloc_free_temp, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
+    hashtable->setup(murmurhash3);
     char* key = _list_alloc(6 * sizeof(char));
     char* key1 = _list_alloc(2 * sizeof(char));
     char* key2 = _list_alloc(2 * sizeof(char));

@@ -66,6 +66,7 @@ set(OPTIONS
     -Wunreachable-code
     -Wwrite-strings
     -Wformat-nonliteral
+    -Wno-implicit-fallthrough
 )
 
 set(STRICT
@@ -270,6 +271,7 @@ add_executable(main-vm1 ${MAIN_VM1_SOURCE})
 add_executable(main-vm2 ${MAIN_VM2_SOURCE})
 add_executable(main-zen ${MAIN_ZEN_SOURCE})
 
+target_link_libraries(hashtable PRIVATE list-lcg)
 target_link_libraries(list-alloc PRIVATE list-parameters)
 target_link_libraries(list-pointer1 PRIVATE list-common)
 target_link_libraries(list-pointer2 PRIVATE list-common)
