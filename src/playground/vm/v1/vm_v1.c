@@ -22,6 +22,7 @@ struct vm_data {
     u64 size;
 };
 
+#ifdef USE_MEMORY_DEBUG_INFO
 struct vm_state {
     struct vm_data* vm;
     struct pointer** ptr;
@@ -31,7 +32,6 @@ struct vm_data_enumerator {
     struct pointer* (*next)(void);
 };
 
-#ifdef USE_MEMORY_DEBUG_INFO
 static struct vm_state vm_state;
 static struct vm_state* state = &vm_state;
 #endif
