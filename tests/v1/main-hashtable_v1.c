@@ -19,20 +19,15 @@ const struct hashtable* hashtable = &hashtable_definition;
 const struct pointer_methods* pointer = &pointer_methods_definition;
 
 typedef struct test_data {
-    struct pointer_data* ctx;
 }* TEST_DATA;
 
 RX_SET_UP(test_set_up) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct pointer_data** ctx = &rx->ctx;
-    pointer_ctx_init(ctx, DEFAULT_SIZE);
     return RX_SUCCESS;
 }
 
 RX_TEAR_DOWN(test_tear_down) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct pointer_data** ctx = &rx->ctx;
-    pointer_ctx_destroy(ctx);
 }
 
 /* Define the fixture. */
