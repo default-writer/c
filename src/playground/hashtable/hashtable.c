@@ -110,9 +110,13 @@ u32 murmurhash3(char* source) {
             /* fall through */
         case 2:
             hash ^= (u32)(buf[1] << 8);
+            FALL_THROUGH;
+            /* fall through */
         case 1:
             hash ^= (u32)(buf[0]);
             hash *= m;
+            FALL_THROUGH;
+            /* fall through */
         default:
             break;
         };
