@@ -80,6 +80,10 @@ for opt in ${opts[@]}; do
             callgrind="--callgrind"
             ;;
 
+        "--debug") # [optional] runs using debug memory debug info
+            debug="--debug"
+            ;;
+
         "--help") # shows command desctiption
             help
             ;;
@@ -106,10 +110,19 @@ if [ "${clean}" == "--clean" ]; then
 fi
 
 cmake=$(get-cmake)
-if [ "${target}" == "--all" ]; then
-    array=( $(get-targets) )
-else
-    array=( $2 )
+targets=( $(get-targets) )
+if [ "${target}" == "--target" ]; then
+    for target in ${targets[@]}; do
+        if [ "${target}" == "$2" ]; then 
+            array=( ${target} )
+            break
+        fi
+    done
+    if [ "$(echo ${array[@]})" == "" ]; then
+        help
+        exit 8
+    fi
+    targets=( ${array[@]} )
 fi
 
 export MAKEFLAGS=-j8
@@ -124,9 +137,13 @@ ${cmake} \
     -B"${pwd}/logs" \
     -G "Ninja" 2>&1 >/dev/null
 
-for m in ${array[@]}; do
-    ${cmake} --build "${pwd}/logs" --target "${m}" 2>&1 >/dev/null || (echo ERROR: "${m}" && exit 1)
-    timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/logs/${m}" 2>&1 >"${pwd}/out/log-${m}.txt" || (echo ERROR: "${m}" && exit 1)
+for target in ${targets[@]}; do
+    if [ "${silent}" == "--silent" ]; then
+        ${cmake} --build "${pwd}/logs" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
+    else
+        ${cmake} --build "${pwd}/logs" --target "${target}" || (echo ERROR: "${target}" && exit 1)
+    fi
+    timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/logs/${target}" 2>&1 >"${pwd}/out/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
 done
 
 if [ "${silent}" == "--silent" ]; then

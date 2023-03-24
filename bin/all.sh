@@ -47,11 +47,16 @@ case "${install}" in
 
 esac
 
-COMMAND_LINE_OPTIONS=$(get-options ${opts})
-
-"${pwd}/bin/build.sh" ${COMMAND_LINE_OPTIONS}
-"${pwd}/bin/coverage.sh" ${COMMAND_LINE_OPTIONS}
-"${pwd}/bin/logs.sh" ${COMMAND_LINE_OPTIONS}
+COMMAND_LINE_OPTIONS=$(get-options ${opts[@]})
+if [ $? -eq 0 ]; then
+    "${pwd}/bin/build.sh" ${COMMAND_LINE_OPTIONS}
+fi
+if [ $? -eq 0 ]; then
+    "${pwd}/bin/coverage.sh" ${COMMAND_LINE_OPTIONS}
+fi
+if [ $? -eq 0 ]; then
+    "${pwd}/bin/logs.sh" ${COMMAND_LINE_OPTIONS}
+fi
 
 [[ $SHLVL -gt 2 ]] || echo OK
 

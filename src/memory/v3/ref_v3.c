@@ -84,7 +84,9 @@ static void memory_ref_destroy(void) {
 
 static struct memory_ref* memory_alloc_internal(u64 size) {
     struct memory_ref* ptr = memory_list_peek();
+#ifdef USE_MEMORY_DEBUG_INFO
     void* data = ptr;
+#endif
     struct memory_ref* next_ptr = _list_alloc((size + memory_offset) * sizeof(void*));
     next_ptr->size = size;
     next_ptr->address_space = size;

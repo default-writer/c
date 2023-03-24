@@ -30,7 +30,7 @@ case "${install}" in
         ;;
 
     *)
-        help    
+        help
         ;;
 
 esac

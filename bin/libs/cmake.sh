@@ -49,7 +49,7 @@ function get-targets() {
 }
 
 function get-options() {
-    local opts=$1
+    local opts=${@:1}
     for opt in ${opts[@]}; do
         case ${opt} in
 
@@ -84,6 +84,14 @@ function get-options() {
                 callgrind="--callgrind"
                 ;;
 
+            "--debug") # [optional] runs using debug memory debug info
+                debug="--debug"
+                ;;
+
+            "--help") # shows command desctiption
+                help="--help"
+                ;;
+
             *)
                 help
                 ;;
@@ -91,7 +99,7 @@ function get-options() {
         esac
     done
 
-    echo " ${target} ${clean} ${sanitize} ${mocks} ${gc} ${silent} ${valgrind} ${callgrind}"
+    echo " ${target} ${clean} ${sanitize} ${mocks} ${gc} ${silent} ${valgrind} ${callgrind} ${debug} ${help}"
 }
 
 function cmake-options() {
@@ -111,7 +119,11 @@ function cmake-options() {
         gc_options=-DGC:BOOL=TRUE
     fi
 
-    echo " ${sanitize_options} ${mocs_options} ${gc_options}"
+    if [ "${debug}" == "--debug" ]; then
+        debug_options=-DCONFIG_MEMORY_DEBUG_INFO:BOOL=TRUE
+    fi
+
+    echo " ${sanitize_options} ${mocs_options} ${gc_options} ${debug_options}"
 }
 
 function cmake-valgrind-options() {

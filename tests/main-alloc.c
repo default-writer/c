@@ -503,7 +503,9 @@ RX_TEST_CASE(myTestSuite, test_list_push_pop, .fixture = test_fixture) {
     // pushes to the list
     list->push(ctx, payload);
     // prints the list
+#ifdef USE_MEMORY_DEBUG_INFO
     list->print(ctx);
+#endif
     // peeks from the list
     const void* head = list->peek(ctx);
     // ensures payload is on top of the stack

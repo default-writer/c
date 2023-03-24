@@ -27,11 +27,13 @@ static struct list_data* list_next(struct list_data* ptr) {
     return ptr->next;
 }
 
+#ifdef USE_MEMORY_DEBUG_INFO
 /* gets chunk's payload. external code ensures ptr is not 0 */
 static void* list_data(struct list_data* ptr) {
     /* external code ensures prt is not 0 */
     return ptr->data;
 }
+#endif
 
 /* deletes the data pointer */
 static void list_delete(struct list_data* ptr) {
