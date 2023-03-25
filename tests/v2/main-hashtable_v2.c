@@ -1,7 +1,7 @@
 #include "common/alloc.h"
 #include "list-micro/data.h"
 #include "playground/brain/brain.h"
-#include "playground/hashtable/hashtable.h"
+#include "playground/hashtable/v2/hashtable_v2.h"
 #include "playground/pointer/pointer.h"
 #include "rexo/include/rexo.h"
 #include "std/macros.h"
@@ -206,9 +206,9 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_alloc_alloc_temp_alloc_alloc_free
     RX_ASSERT(values2[1] != 0);
     RX_ASSERT(values2[0] != values2[1]);
     hashtable->free(temp);
-    struct hashtable_data* get_values1_0 = hashtable->get(values1[0]->key);
+    struct hashtable_data* get_values1_0 = hashtable->value(hashtable->get(values1[0]->key));
     RX_ASSERT(get_values1_0 != values1[0]);
-    struct hashtable_data* get_values1_1 = hashtable->get(values1[1]->key);
+    struct hashtable_data* get_values1_1 = hashtable->value(hashtable->get(values1[1]->key));
     RX_ASSERT(get_values1_1 != values1[1]);
     struct hashtable_data* values1_0 = hashtable->find(values1[0]->key);
     RX_ASSERT(values1_0 == values1[0]);
@@ -218,8 +218,8 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_alloc_alloc_temp_alloc_alloc_free
     RX_ASSERT(values2_0 != values2[0]);
     struct hashtable_data* values2_1 = hashtable->find(values2[1]->key);
     RX_ASSERT(values2_1 != values2[1]);
-    struct hashtable_data* node_key = hashtable->get(key1);
-    struct hashtable_data* nonexistent_key = hashtable->get(key);
+    struct hashtable_data* node_key = hashtable->value(hashtable->get(key1));
+    struct hashtable_data* nonexistent_key = hashtable->value(hashtable->get(key));
     RX_ASSERT(get_values1_0 != 0);
     RX_ASSERT(get_values1_1 != 0);
     RX_ASSERT(values1_0 != 0);
@@ -266,19 +266,19 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_set_get, .fixture = test_fixture)
     RX_ASSERT(temp != 0);
     RX_ASSERT(values[0] != 0);
     RX_ASSERT(values[1] != 0);
-    struct hashtable_data* key_value1 = hashtable->get(key1);
+    struct hashtable_data* key_value1 = hashtable->value(hashtable->get(key1));
     RX_ASSERT(key_value1 != 0);
     RX_ASSERT(strcmp(key_value1->value, "c") == 0);
     hashtable->set(key1, value);
-    struct hashtable_data* key_value2 = hashtable->get(key1);
+    struct hashtable_data* key_value2 = hashtable->value(hashtable->get(key1));
     RX_ASSERT(strcmp(key_value2->value, value) == 0);
     RX_ASSERT(key_value1 != 0);
     hashtable->set(key, value3);
-    struct hashtable_data* key_value3 = hashtable->get(key);
+    struct hashtable_data* key_value3 = hashtable->value(hashtable->get(key));
     RX_ASSERT(strcmp(key_value3->key, key) == 0);
     RX_ASSERT(strcmp(key_value3->value, value3) == 0);
     hashtable->set(key, value);
-    struct hashtable_data* key_value = hashtable->get(key);
+    struct hashtable_data* key_value = hashtable->value(hashtable->get(key));
     RX_ASSERT(strcmp(key_value->key, key) == 0);
     RX_ASSERT(strcmp(key_value->value, value) == 0);
     hashtable->free(temp);

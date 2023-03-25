@@ -1,6 +1,6 @@
 #include "common/alloc.h"
 #include "list-micro/data.h"
-#include "playground/hashtable/hashtable.h"
+#include "playground/hashtable/v2/hashtable_v2.h"
 #include "playground/pointer/pointer.h"
 
 #define DEFAULT_SIZE 0x100

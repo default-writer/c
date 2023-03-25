@@ -15,11 +15,13 @@ struct hashtable {
     struct hashtable_data* (*alloc)(char* key, char* value);
     void (*free)(struct hashtable_data* node);
     struct hashtable_data* (*find)(char* key);
-    struct hashtable_data* (*get)(char* key);
+    struct hashtable_data* (*value)(u32 index);
+    u32 (*get)(char* key);
     void (*set)(char* key, char* value);
     void (*setup)(u32 (*function)(char* source));
 };
 
 u32 murmurhash3(char* source);
+u32 artur_hash(char* source);
 
 #endif // _PLAYGROUND_HASHTABLE_H_
