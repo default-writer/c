@@ -50,7 +50,7 @@ static u32 hash_func(char* source) {
 static u32 default_hash_function(char* source) {
     u32 data = 0;
     if (source != 0) {
-        data = artur_hash(source);
+        data = murmurhash3(source);
     }
     return data;
 }
@@ -74,7 +74,6 @@ u32 artur_hash(char* source) {
             hash = (u32)(p4 + ((p3 << 2) + (p2 << 13) + (p1 << 3) + (p0 << 5)));
             ptr++;
         }
-        printf("  .#: 0x%016llx !  %16lx:  %16s\n", (u64)source, hash, source);
         data = hash;
     }
     return data;
