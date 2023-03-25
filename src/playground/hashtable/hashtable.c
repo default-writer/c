@@ -137,7 +137,9 @@ u32 murmurhash3(char* source) {
 }
 
 static void hashtable_init(u64 size) {
-    hashtable_size = size;
+    if (size > 0) {
+        hashtable_size = size;
+    }
     hashtable = _list_alloc(hashtable_size * sizeof(void*));
 }
 
@@ -146,7 +148,6 @@ static void hashtable_destroy(void) {
         hashtable_free(hashtable[i]);
     }
     _list_free(hashtable, hashtable_size * sizeof(void*));
-    hashtable_size = 0;
 }
 
 static struct hashtable_data* hashtable_extract_internal(struct hashtable_data* head, struct hashtable_data* ptr) {

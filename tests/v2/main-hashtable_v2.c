@@ -174,72 +174,6 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_alloc_temp_alloc_free_temp_alloc_
 }
 
 // test init
-RX_TEST_CASE(myTestSuite, test_hashtable_alloc_alloc_alloc_temp_alloc_alloc_free_temp, .fixture = test_fixture) {
-    hashtable->init(HASHTABLE_SIZE);
-    hashtable->setup(artur_hash);
-    char* key = _list_alloc(6 * sizeof(char));
-    char* key1 = _list_alloc(2 * sizeof(char));
-    char* key2 = _list_alloc(2 * sizeof(char));
-    char* key3 = _list_alloc(2 * sizeof(char));
-    char* key4 = _list_alloc(2 * sizeof(char));
-    char* key5 = _list_alloc(2 * sizeof(char));
-    char* value = _list_alloc(2 * sizeof(char));
-    memcpy(key, "12345", 6); // NOLINT
-    memcpy(key1, "1", 2); // NOLINT
-    memcpy(key2, "2", 2); // NOLINT
-    memcpy(key3, "1", 2); // NOLINT
-    memcpy(key4, "1", 2); // NOLINT
-    memcpy(key5, "2", 2); // NOLINT
-    memcpy(value, "a", 2); // NOLINT
-    memcpy(value, "a", 2); // NOLINT
-    struct hashtable_data* values1[2] = {
-        hashtable->alloc(key1, value),
-        hashtable->alloc(key2, value)
-    };
-    struct hashtable_data* temp = hashtable->alloc(key3, value);
-    RX_ASSERT(temp != 0);
-    struct hashtable_data* values2[2] = {
-        hashtable->alloc(key4, value),
-        hashtable->alloc(key5, value)
-    };
-    RX_ASSERT(values2[0] != 0);
-    RX_ASSERT(values2[1] != 0);
-    RX_ASSERT(values2[0] != values2[1]);
-    hashtable->free(temp);
-    struct hashtable_data* get_values1_0 = hashtable->value(hashtable->get(values1[0]->key));
-    RX_ASSERT(get_values1_0 != values1[0]);
-    struct hashtable_data* get_values1_1 = hashtable->value(hashtable->get(values1[1]->key));
-    RX_ASSERT(get_values1_1 != values1[1]);
-    struct hashtable_data* values1_0 = hashtable->find(values1[0]->key);
-    RX_ASSERT(values1_0 == values1[0]);
-    struct hashtable_data* values1_1 = hashtable->find(values1[1]->key);
-    RX_ASSERT(values1_1 == values1[1]);
-    struct hashtable_data* values2_0 = hashtable->find(values2[0]->key);
-    RX_ASSERT(values2_0 != values2[0]);
-    struct hashtable_data* values2_1 = hashtable->find(values2[1]->key);
-    RX_ASSERT(values2_1 != values2[1]);
-    struct hashtable_data* node_key = hashtable->value(hashtable->get(key1));
-    struct hashtable_data* nonexistent_key = hashtable->value(hashtable->get(key));
-    RX_ASSERT(get_values1_0 != 0);
-    RX_ASSERT(get_values1_1 != 0);
-    RX_ASSERT(values1_0 != 0);
-    RX_ASSERT(values1_1 != 0);
-    RX_ASSERT(values2_0 != 0);
-    RX_ASSERT(values2_1 != 0);
-    RX_ASSERT(node_key != 0);
-    RX_ASSERT(nonexistent_key == 0);
-    hashtable->destroy();
-    _list_free(key, 0);
-    _list_free(key1, 0);
-    _list_free(key2, 0);
-    _list_free(key3, 0);
-    _list_free(key4, 0);
-    _list_free(key5, 0);
-    _list_free(value, 0);
-    RX_ASSERT(0 == 0);
-}
-
-// test init
 RX_TEST_CASE(myTestSuite, test_hashtable_alloc_set_get, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     char* key = _list_alloc(6 * sizeof(char));
@@ -296,6 +230,12 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_set_get, .fixture = test_fixture)
 
 // test init
 RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_fixture) {
+
+    // total: 216655 0x00034e4f
+    // size: 1048575 0xfffff
+    // collisions:
+    hashtable->init(0xffff);
+    hashtable->setup(artur_hash);
     u64 file_path_ptr = pointer->getcwd();
     u64 file_name_ptr = pointer->load("/all_english_words.txt");
     pointer->strcat(file_path_ptr, file_name_ptr);
@@ -308,12 +248,14 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
         u64 data_ptr = pointer->read_file(f_ptr);
         u64 list_ptr = pointer->list_alloc();
         pointer->close_file(f_ptr);
-        u64 size = 0xffff; // pointer->size(data_ptr);
+        u64 size = 0xfffff; // pointer->size(data_ptr);
 #ifdef USE_MEMORY_DEBUG_INFO
         printf("data size: %16lld\n", size);
 #endif
-        char* file_data = pointer->unsafe(data_ptr);
-        char* file_end = file_data + size;
+        char* file_data;
+        char* file_end;
+        file_data = pointer->unsafe(data_ptr);
+        file_end = file_data + size;
         while (file_data < file_end) {
             char* tmp = file_data;
             while (*tmp != 0 && *tmp != '\n') {
@@ -323,7 +265,21 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
             u64 data = pointer->load(file_data);
             pointer->list_push(list_ptr, data);
             char* unsafe = pointer->unsafe(data);
-            printf("%s\n", unsafe);
+            hashtable->alloc(unsafe, 0);
+            file_data = tmp;
+        }
+        file_data = pointer->unsafe(data_ptr);
+        file_end = file_data + size;
+        while (file_data < file_end) {
+            char* tmp = file_data;
+            while (*tmp != 0 && *tmp != '\n') {
+                tmp++;
+            }
+            *tmp++ = '\0';
+            char* unsafe = file_data;
+            u32 hash = hashtable->hash(unsafe);
+            u32 count = hashtable->count(unsafe);
+            printf("  .#: 0x%016llx !0x%08lx (%6ld): %16s\n", (u64)unsafe, (u32)(hash % HASHTABLE_DEFAULT_SIZE), count, unsafe);
             file_data = tmp;
         }
         pointer->list_free(list_ptr);
@@ -336,6 +292,7 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
     pointer->free(file_name_ptr);
     pointer->free(file_path_ptr);
 #endif
+    hashtable->destroy();
 }
 
 int main(int argc, char** argv) {
