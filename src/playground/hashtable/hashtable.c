@@ -10,6 +10,7 @@
 static u64 lcg_state = 0;
 
 static struct hashtable_data* hashtable_extract_internal(struct hashtable_data* head, struct hashtable_data* ptr);
+static void hashtable_item_free_internal(struct hashtable_data* ptr);
 
 static struct hashtable_data** hashtable; /* pointer table */
 
@@ -31,7 +32,7 @@ static u64 hashtable_size = DEFAULT_SIZE;
 static u32 (*hash_function_ptr)(char* source) = 0;
 
 static void hashtable_setup(u32 (*function)(char* source)) {
-    if (hash_function_ptr != 0) {
+    if (function != 0) {
         hash_function_ptr = function;
     }
 }
@@ -48,23 +49,31 @@ static u32 hash_func(char* source) {
 static u32 default_hash_function(char* source) {
     u32 data = 0;
     if (source != 0) {
+        data = artur_hash(source);
+    }
+    return data;
+}
+
+/* hash: form hash value for string s */
+u32 artur_hash(char* source) {
+    u32 data = 0;
+    if (source != 0) {
         u32 hash = 0;
         char* ptr = source;
-        u32 p;
         while (*ptr != 0) {
-            p = hash;
-            u16 p0 = (u16)(p & 0xff);
-            u16 p1 = (u16)((p & 0xff00) >> 8);
-            u16 p2 = (u16)((p & 0xff0000) >> 16);
-            u16 p3 = (u16)((p & 0xff000000) >> 24);
-            u16 p4 = (u8)*ptr;
-            p3 = (u16)((p4 ^ p3) + (p2 | ~p4));
-            p2 = (u16)((p3 ^ p2) + (p1 | ~p3));
-            p1 = (u16)((p2 ^ p1) + (p0 | ~p2));
-            p0 = (u16)((p1 ^ p0) + (p3 | ~p1));
-            hash = (u32)(p4 + (p3 << 1) + (p2 << 3) + (p1 << 5) + (p0 << 7));
+            u16 p0 = (u16)*ptr;
+            u16 p1 = (u16)(p0 + hash);
+            u16 p2 = (u16)(((p1 + hash) & 0xffff0000) >> 16);
+            u16 p3 = (u16)((p2 + (hash & 0xffff0000)) >> 16);
+            u16 p4 = (u16)hash;
+            p3 = (u16)((p4 ^ p3 << 1) + (p2 << 2 | ~p1));
+            p2 = (u16)((p3 ^ p2 << 3) + (p1 << 4 | ~p0));
+            p1 = (u16)((p2 ^ p1 << 5) + (p0 << 6 | ~p3));
+            p0 = (u16)((p1 ^ p0 << 7) + (p3 << 8 | ~p4));
+            hash = (u32)(p4 + ((p3 << 2) + (p2 << 13) + (p1 << 3) + (p0 << 5)));
             ptr++;
         }
+        printf("  .#: 0x%016llx !  %16ld:  %16s\n", (u64)source, hash, source);
         data = hash % hashtable_size;
     }
     return data;
@@ -106,17 +115,11 @@ u32 murmurhash3(char* source) {
         switch (len) {
         case 3:
             hash ^= (u32)(buf[2] << 16); // NOLINT
-            FALL_THROUGH;
-            /* fall through */
         case 2:
             hash ^= (u32)(buf[1] << 8);
-            FALL_THROUGH;
-            /* fall through */
         case 1:
             hash ^= (u32)(buf[0]);
             hash *= m;
-            FALL_THROUGH;
-            /* fall through */
         default:
             break;
         };
@@ -157,14 +160,24 @@ static struct hashtable_data* hashtable_extract_internal(struct hashtable_data* 
 }
 
 static struct hashtable_data* hashtable_alloc(char* key, char* value) {
-    struct hashtable_data* node = _list_alloc(sizeof(struct hashtable_data));
-    update(&node->key, key);
-    update(&node->value, value);
     u32 hash = hash_func(key);
     struct hashtable_data* next = hashtable[hash];
+    struct hashtable_data* node = _list_alloc(sizeof(struct hashtable_data));
+    char* node_key = _list_alloc(strlen(key) + 1); /* +1 for ’\0’ */
+    char* node_value = _list_alloc(strlen(value) + 1); /* +1 for ’\0’ */
+    strcpy(node_key, key); // NOLINT
+    strcpy(node_value, value); // NOLINT
+    node->key = node_key;
+    node->value = node_value;
     node->next = next;
     hashtable[hash] = node;
     return node;
+}
+
+static void hashtable_item_free_internal(struct hashtable_data* ptr) {
+    _list_free(ptr->key, 0);
+    _list_free(ptr->value, 0);
+    _list_free(ptr, sizeof(struct hashtable_data));
 }
 
 static void hashtable_free(struct hashtable_data* node) {
@@ -177,18 +190,14 @@ static void hashtable_free(struct hashtable_data* node) {
                 if (hashtable[hash] != 0) {
                     struct hashtable_data* found = hashtable_extract_internal(hashtable[hash], ptr);
                     if (hashtable[hash] != found) {
-                        _list_free(ptr->key, 0);
-                        _list_free(ptr->value, 0);
-                        _list_free(ptr, sizeof(struct hashtable_data));
+                        hashtable_item_free_internal(ptr);
                         break;
                     } else {
                         hashtable[hash] = 0;
                     }
                 }
                 next = ptr->next;
-                _list_free(ptr->key, 0);
-                _list_free(ptr->value, 0);
-                _list_free(ptr, sizeof(struct hashtable_data));
+                hashtable_item_free_internal(ptr);
                 ptr = next;
             } while (next != 0);
         }

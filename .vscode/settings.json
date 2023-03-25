@@ -41,6 +41,7 @@
   "cmake.reconfigureOnChange": true,
   "DockerRun.DisableAutoGenerateConfig": true,
   "cSpell.words": [
+    "artur",
     "asan",
     "calloc",
     "callstack",

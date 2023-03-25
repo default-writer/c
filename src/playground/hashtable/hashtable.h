@@ -21,5 +21,6 @@ struct hashtable {
 };
 
 u32 murmurhash3(char* source);
+u32 artur_hash(char* source);
 
 #endif // _PLAYGROUND_HASHTABLE_H_
