@@ -28,7 +28,7 @@ static void hashtable_destroy(void);
 
 static u64 hashtable_size = DEFAULT_SIZE;
 
-static u32 (*hash_function_ptr)(char* source) = 0;
+static u32 (*hash_function_ptr)(char* source) = murmurhash3;
 
 static void hashtable_setup(u32 (*function)(char* source)) {
     if (hash_function_ptr != 0) {
@@ -84,7 +84,7 @@ u32 murmurhash3(char* source) {
         const u32 m = 0x5bd1e995;
         u32 hash = lcg_state ^ len;
 
-        u8* buf = (u8*)ptr;
+        u8* buf = (u8*)source;
 
         // Mix 4 bytes at a time into the hash.
         while (len >= 4) {
@@ -167,7 +167,7 @@ static struct hashtable_data* hashtable_alloc(char* key, char* value) {
     struct hashtable_data* node = _list_alloc(sizeof(struct hashtable_data));
     update(&node->key, key);
     update(&node->value, value);
-    u32 hash = hash_func(key);
+    u32 hash = hash_func(key) % hashtable_size;
     struct hashtable_data* next = hashtable[hash];
     node->next = next;
     hashtable[hash] = node;
@@ -180,7 +180,7 @@ static void hashtable_free(struct hashtable_data* node) {
         if (ptr != 0) {
             struct hashtable_data* next;
             do {
-                u32 hash = hash_func(ptr->key);
+                u32 hash = hash_func(ptr->key) % hashtable_size;
                 if (hashtable[hash] != 0) {
                     struct hashtable_data* found = hashtable_extract_internal(hashtable[hash], ptr);
                     if (hashtable[hash] != found) {
@@ -203,7 +203,7 @@ static void hashtable_free(struct hashtable_data* node) {
 }
 
 static struct hashtable_data* hashtable_find(char* key) {
-    struct hashtable_data* node = hashtable[hash_func(key)];
+    struct hashtable_data* node = hashtable[hash_func(key) % hashtable_size];
     while (node != 0) {
         if (node->next == 0) {
             break;
@@ -219,7 +219,7 @@ static struct hashtable_data* hashtable_find(char* key) {
 }
 
 static struct hashtable_data* hashtable_get(char* key) {
-    struct hashtable_data* node = hashtable[hash_func(key)];
+    struct hashtable_data* node = hashtable[hash_func(key) % hashtable_size];
 #ifdef USE_MEMORY_DEBUG_INFO
     if (node != 0) {
         printf("  <$: 0x%016llx !  %16s :  %16s\n", (u64)node, node->key, node->value);
@@ -229,7 +229,7 @@ static struct hashtable_data* hashtable_get(char* key) {
 }
 
 static void hashtable_set(char* key, char* value) {
-    struct hashtable_data* node = hashtable[hash_func(key)];
+    struct hashtable_data* node = hashtable[hash_func(key) % hashtable_size];
     if (node != 0) {
         update(&node->value, value);
     } else {
