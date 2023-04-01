@@ -39,9 +39,9 @@ static void hashtable_setup(u32 (*function)(char* source)) {
 /* hash: form hash value for string s */
 static u32 hash_func(char* source) {
     if (hash_function_ptr != 0) {
-        return hash_function_ptr(source) % hashtable_size;
+        return hash_function_ptr(source);
     }
-    return default_hash_function(source) % hashtable_size;
+    return default_hash_function(source);
 }
 
 /* hash: form hash value for string s */
@@ -69,7 +69,7 @@ u32 artur_hash(char* source) {
             p2 = (u16)((p3 ^ p2 << 3) + (p1 << 4 | ~p0));
             p1 = (u16)((p2 ^ p1 << 5) + (p0 << 6 | ~p3));
             p0 = (u16)((p1 ^ p0 << 7) + (p3 << 8 | ~p4));
-            hash = (u32)(p4 + 0x5a32b847 + ((p3 << 2) + (p2 << 13) + (p1 << 3) + (p0 << 5)));
+            hash = (u32)(p4 + 0x5a32b847 + (p3 << 2) + (p2 << 13) + (p1 << 3) + (p0 << 5));
             ptr++;
         }
         data = hash;
@@ -232,7 +232,7 @@ u32 hashtable_get(char* key) {
 }
 
 u32 hashtable_hash(char* key) {
-    u32 hash = hash_function_ptr(key);
+    u32 hash = hash_func(key) % hashtable_size;
 #ifdef USE_MEMORY_DEBUG_INFO
     struct hashtable_data* node = hashtable_value(hash);
     if (node != 0) {
