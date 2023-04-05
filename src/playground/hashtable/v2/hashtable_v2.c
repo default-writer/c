@@ -28,7 +28,7 @@ static void hashtable_destroy(void);
 
 static u64 hashtable_size = HASHTABLE_DEFAULT_SIZE;
 
-static u32 (*hash_function_ptr)(char* source) = murmurhash3;
+static u32 (*hash_function_ptr)(char* source) = 0;
 
 static void hashtable_setup(u32 (*function)(char* source)) {
     if (function != 0) {

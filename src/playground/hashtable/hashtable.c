@@ -20,7 +20,6 @@ static struct hashtable_data* hashtable_get(char* key);
 static void hashtable_set(char* key, char* value);
 static void hashtable_setup(u32 (*function)(char* source));
 static void update(char** prev, char* new);
-static u32 default_hash_function(char* source);
 static u32 hash_func(char* source);
 
 static void hashtable_init(u64 size);
@@ -38,36 +37,7 @@ static void hashtable_setup(u32 (*function)(char* source)) {
 
 /* hash: form hash value for string s */
 static u32 hash_func(char* source) {
-    if (hash_function_ptr != 0) {
-        return hash_function_ptr(source);
-    }
-    return default_hash_function(source);
-}
-
-/* hash: form hash value for string s */
-static u32 default_hash_function(char* source) {
-    u32 data = 0;
-    if (source != 0) {
-        u32 hash = 0;
-        char* ptr = source;
-        u32 p;
-        while (*ptr != 0) {
-            p = hash;
-            u16 p0 = (u16)(p & 0xff);
-            u16 p1 = (u16)((p & 0xff00) >> 8);
-            u16 p2 = (u16)((p & 0xff0000) >> 16);
-            u16 p3 = (u16)((p & 0xff000000) >> 24);
-            u16 p4 = (u8)*ptr;
-            p3 = (u16)((p4 ^ p3) + (p2 | ~p4));
-            p2 = (u16)((p3 ^ p2) + (p1 | ~p3));
-            p1 = (u16)((p2 ^ p1) + (p0 | ~p2));
-            p0 = (u16)((p1 ^ p0) + (p3 | ~p1));
-            hash = (u32)(p4 + (p3 << 1) + (p2 << 3) + (p1 << 5) + (p0 << 7));
-            ptr++;
-        }
-        data = hash % hashtable_size;
-    }
-    return data;
+    return hash_function_ptr(source);
 }
 
 /* hash: form hash value for string s */

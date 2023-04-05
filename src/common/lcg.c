@@ -12,10 +12,6 @@ static u32 lcg_parkmiller_state_internal(void) {
     return (u32)lcg_state;
 }
 
-u64 lcg_parkmiller_state() {
-    return lcg_parkmiller_state_internal();
-}
-
 u64 lcg_parkmiller_64(void) {
     return (u64)((lcg_parkmiller_state_internal() << 32) + lcg_parkmiller_state_internal());
 }

@@ -56,10 +56,14 @@ static void source2(void) {
     u64 f_ptr = pointer->open_file(file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
         u64 data_ptr = pointer->read_file(f_ptr);
+        u64 size = pointer->size(data_ptr);
+        if (size > 100) {
+            size = 100;
+        }
         u64 list_ptr = pointer->list_alloc();
         pointer->close_file(f_ptr);
         char* file_data = pointer->unsafe(data_ptr);
-        for (int i = 0; i < 100; i++) {
+        for (u64 i = 0; i < size; i++) {
             char* tmp = file_data;
             while (*tmp != 0 && *tmp != '\n') {
                 tmp++;
