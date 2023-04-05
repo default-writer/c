@@ -53,12 +53,16 @@
     "murmurhash",
     "NGREG",
     "NOSTACK",
+    "OAAT",
     "octa",
     "parkmiller",
     "Rexo",
     "sptr",
     "struct",
-    "ulong"
+    "ulong",
+    "Wsign",
+    "Wunknown",
+    "Wunused"
   ],
   "cSpell.files": [
     "**/*.c",
