@@ -48,28 +48,23 @@ static u32 hash_func(char* source) {
 static u32 default_hash_function(char* source) {
     u32 data = 0;
     if (source != 0) {
-        data = murmurhash3(source);
+        data = default_hash(source);
     }
     return data;
 }
 
 /* hash: form hash value for string s */
-u32 artur_hash(char* source) {
+u32 default_hash(char* source) {
+    // One-byte-at-a-time hash based on Murmur's mix
+    // Source: https://github.com/aappleby/smhasher/blob/master/src/Hashes.cpp
     u32 data = 0;
     if (source != 0) {
-        u32 hash = 0;
+        u32 hash = (u32)~0x5a32b847;
         char* ptr = source;
         while (*ptr != 0) {
-            u16 p0 = (u16)*ptr;
-            u16 p1 = (u16)(p0 + hash);
-            u16 p2 = (u16)(((p1 + hash) & 0xffff0000) >> 16);
-            u16 p3 = (u16)((p2 + (hash & 0xffff0000)) >> 16);
-            u16 p4 = (u16)hash;
-            p3 = (u16)((p4 ^ p3 << 1) + (p2 << 2 | ~p1));
-            p2 = (u16)((p3 ^ p2 << 3) + (p1 << 4 | ~p0));
-            p1 = (u16)((p2 ^ p1 << 5) + (p0 << 6 | ~p3));
-            p0 = (u16)((p1 ^ p0 << 7) + (p3 << 8 | ~p4));
-            hash = (u32)(p4 + 0x5a32b847 + (p3 << 2) + (p2 << 13) + (p1 << 3) + (p0 << 5));
+            hash ^= (u32)*ptr;
+            hash *= 0x5bd1e995;
+            hash ^= hash >> 15;
             ptr++;
         }
         data = hash;

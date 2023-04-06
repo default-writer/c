@@ -298,9 +298,9 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
 }
 
 // test init
-RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable_artur_hash, .fixture = test_fixture) {
+RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable_default_hash, .fixture = test_fixture) {
     hashtable->init(0xffff);
-    hashtable->setup(artur_hash);
+    hashtable->setup(default_hash);
     u64 file_path_ptr = pointer->getcwd();
     u64 file_name_ptr = pointer->load("/all_english_words.txt");
     pointer->strcat(file_path_ptr, file_name_ptr);

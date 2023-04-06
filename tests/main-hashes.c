@@ -103,7 +103,26 @@ uint32_t x17(const void* key, int len, uint32_t h) {
     return h ^ (h >> 16);
 }
 
-uint32_t apply_hash(int hash, const char* line) {
+/* hash: form hash value for string s */
+uint32_t default_hash(char* source) {
+    // One-byte-at-a-time hash based on Murmur's mix
+    // Source: https://github.com/aappleby/smhasher/blob/master/src/Hashes.cpp
+    uint32_t data = 0;
+    if (source != 0) {
+        uint32_t hash = ~0x5a32b847;
+        char* ptr = source;
+        while (*ptr != 0) {
+            hash ^= *ptr;
+            hash *= 0x5bd1e995;
+            hash ^= hash >> 15;
+            ptr++;
+        }
+        data = hash;
+    }
+    return data;
+}
+
+uint32_t apply_hash(int hash, char* line) {
     switch (hash) {
     case 1:
         return crc32b((const uint8_t*)line);
@@ -121,6 +140,9 @@ uint32_t apply_hash(int hash, const char* line) {
         return Coffin_hash(line);
     case 8:
         return x17(line, (uint32_t)strlen(line), SEED);
+
+    case 9:
+        return default_hash((char*)line);
     default:
         break;
     }
@@ -128,6 +150,9 @@ uint32_t apply_hash(int hash, const char* line) {
 }
 
 int main(int argc, char* argv[]) {
+    if (argc == 1) {
+        return 0;
+    }
     // Read arguments
     const int hash_choice = atoi(argv[1]);
     char const* const fn = argv[2];
