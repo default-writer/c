@@ -219,7 +219,7 @@ set(MAIN_HASHTABLE2_SOURCE tests/v2/main-hashtable_v2.c)
 set(MAIN_VM1_SOURCE tests/v1/main-vm1.c)
 set(MAIN_VM2_SOURCE tests/v2/main-vm2.c)
 set(MAIN_ZEN_SOURCE src/playground/zen/zen.c)
-set(MAIN_HASHES tests/main-hashes.c)
+set(MAIN_HASHES tests/test-hashes.c)
 
 include_directories(src)
 
@@ -273,7 +273,7 @@ add_executable(main-hashtable2 ${MAIN_HASHTABLE2_SOURCE})
 add_executable(main-vm1 ${MAIN_VM1_SOURCE})
 add_executable(main-vm2 ${MAIN_VM2_SOURCE})
 add_executable(main-zen ${MAIN_ZEN_SOURCE})
-add_executable(main-hashes ${MAIN_HASHES})
+add_executable(test-hashes ${MAIN_HASHES})
 
 target_link_libraries(hashtable1 PRIVATE list-lcg)
 target_link_libraries(hashtable2 PRIVATE list-lcg)

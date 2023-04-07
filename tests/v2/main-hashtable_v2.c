@@ -360,6 +360,69 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable_default_hash, .fi
     hashtable->destroy();
 }
 
+// test init
+RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable_murmurhash3_hash, .fixture = test_fixture) {
+    hashtable->init(0xffff);
+    hashtable->setup(murmurhash3);
+    u64 file_path_ptr = pointer->getcwd();
+    u64 file_name_ptr = pointer->load("/all_english_words.txt");
+    pointer->strcat(file_path_ptr, file_name_ptr);
+#ifndef USE_GC
+    pointer->free(file_name_ptr);
+#endif
+    u64 mode_ptr = pointer->load("rb");
+    u64 f_ptr = pointer->open_file(file_path_ptr, mode_ptr);
+    if (f_ptr != 0) {
+        u64 data_ptr = pointer->read_file(f_ptr);
+        u64 list_ptr = pointer->list_alloc();
+        pointer->close_file(f_ptr);
+        u64 size = 0xfffff; // pointer->size(data_ptr);
+#ifdef USE_MEMORY_DEBUG_INFO
+        printf("data size: %16lld\n", size);
+#endif
+        char* file_data;
+        char* file_end;
+        file_data = pointer->unsafe(data_ptr);
+        file_end = file_data + size;
+        while (file_data < file_end) {
+            char* tmp = file_data;
+            while (*tmp != 0 && *tmp != '\n') {
+                tmp++;
+            }
+            *tmp++ = '\0';
+            u64 data = pointer->load(file_data);
+            pointer->list_push(list_ptr, data);
+            char* unsafe = pointer->unsafe(data);
+            hashtable->alloc(unsafe, 0);
+            file_data = tmp;
+        }
+        file_data = pointer->unsafe(data_ptr);
+        file_end = file_data + size;
+        while (file_data < file_end) {
+            char* tmp = file_data;
+            while (*tmp != 0 && *tmp != '\n') {
+                tmp++;
+            }
+            *tmp++ = '\0';
+            char* unsafe = file_data;
+            u32 hash = hashtable->hash(unsafe);
+            u32 count = hashtable->count(unsafe);
+            printf("  .#: 0x%016llx !0x%08lx (%6ld): %16s\n", (u64)unsafe, (u32)(hash % HASHTABLE_DEFAULT_SIZE), count, unsafe);
+            file_data = tmp;
+        }
+        pointer->list_free(list_ptr);
+#ifndef USE_GC
+        pointer->free(data_ptr);
+#endif
+    }
+#ifndef USE_GC
+    pointer->free(mode_ptr);
+    pointer->free(file_name_ptr);
+    pointer->free(file_path_ptr);
+#endif
+    hashtable->destroy();
+}
+
 int main(int argc, char** argv) {
     CLEAN(argc)
     CLEAN(argv)
