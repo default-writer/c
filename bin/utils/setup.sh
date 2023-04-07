@@ -26,6 +26,12 @@ install="$1"
 
 case "${install}" in
 
+    "--configuration") # installs keyboard-configuration
+        update
+        DEBIAN_FRONTEND=noninteractive apt-get install -y keyboard-configuration
+        upgrade
+        ;;
+
     "--llvm") # installs llvm and llvm-cov
         update
         apt install -y llvm
