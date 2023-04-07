@@ -10,6 +10,7 @@ trap 'err_report $LINENO' ERR
 function update() {
     apt install -y --fix-broken
     apt update -y --fix-missing
+    DEBIAN_FRONTEND=noninteractive apt-get install -y keyboard-configuration
 }
 
 function upgrade() {
