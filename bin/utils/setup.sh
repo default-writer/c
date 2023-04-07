@@ -32,6 +32,7 @@ case "${install}" in
         dpkg --configure -a
         DEBIAN_FRONTEND=noninteractive apt-get install -y keyboard-configuration gettext-base
         update
+        apt -y install --no-install-recommends curl ca-certificates git build-essential lldb lcov cmake clangd g++ gcc gdb lcov ninja-build
         upgrade
         ;;
 
