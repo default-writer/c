@@ -4,8 +4,6 @@
 
 # Learn more from ready-to-use templates: https://www.gitpod.io/docs/introduction/getting-started/quickstart
 
-image: ubuntu:22.04
-
 tasks:
   - init: ./bin/utils/init.sh
     command: ./bin/test.sh --args
