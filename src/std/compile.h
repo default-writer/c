@@ -31,4 +31,4 @@
 #endif
 #endif
 
-#endif // _STD_COMPILE_H_
+#endif /* _STD_COMPILE_H_ */

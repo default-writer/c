@@ -8,7 +8,7 @@
 struct hashtable_data { /* table entry: */
     struct hashtable_data* next; /* next entry in chain */
     char* key; /* defined name */
-    // char* value; /* replacement text */
+    /* char* value; replacement text */
     void* value;
 };
 
@@ -29,4 +29,4 @@ struct hashtable {
 u32 default_hash(char* source);
 u32 murmurhash3(char* source);
 
-#endif // _PLAYGROUND_HASHTABLE_V2_H_
+#endif /* _PLAYGROUND_HASHTABLE_V2_H_ */

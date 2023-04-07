@@ -1,11 +1,11 @@
 #include "playground/list/v1/list.h"
 #include "common/alloc.h"
 
-#define MAX_MEMORY 0xffff // 64K bytes
+#define MAX_MEMORY 0xffff /* 64K bytes */
 
 /*private */
 
-// global allocated memory
+/* global allocated memory */
 static void** ptr = 0;
 static void* base = 0;
 

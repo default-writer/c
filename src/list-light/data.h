@@ -31,4 +31,4 @@ struct list {
 #endif
 };
 
-#endif // _LIST_LIGHT_H_
+#endif /* _LIST_LIGHT_H_ */

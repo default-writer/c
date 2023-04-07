@@ -12,4 +12,4 @@
 #define FALL_THROUGH ((void)0)
 #endif /* __GNUC__ >= 7 */
 
-#endif // _STD_MACROS_H_
+#endif /* _STD_MACROS_H_ */

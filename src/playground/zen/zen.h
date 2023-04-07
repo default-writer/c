@@ -3,4 +3,4 @@
 
 #include "std/common.h"
 
-#endif // _PLAYGROUND_ZEN_H_
+#endif /* _PLAYGROUND_ZEN_H_ */

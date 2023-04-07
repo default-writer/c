@@ -1,9 +1,9 @@
 #include "memory/api/v1/ref.h"
 #include "playground/memory/api/v2/memory.h"
 
-#define MAX_MEMORY 0xffff // 64K bytes
+#define MAX_MEMORY 0xffff /* 64K bytes */
 
-// offset for memory_ref structure
+/* offset for memory_ref structure */
 extern struct memory_ref_methods memory_ref_definition;
 
 static struct memory_ref_methods* ref = &memory_ref_definition;
@@ -39,7 +39,7 @@ static void* memory_alloc(u64 size) {
     return data;
 }
 
-// releases global memory
+/* releases global memory */
 static void memory_free(void* data) {
     ref->push(data);
 }

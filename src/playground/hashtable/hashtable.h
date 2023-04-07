@@ -22,4 +22,4 @@ struct hashtable {
 
 u32 murmurhash3(char* source);
 
-#endif // _PLAYGROUND_HASHTABLE_H_
+#endif /* _PLAYGROUND_HASHTABLE_H_ */

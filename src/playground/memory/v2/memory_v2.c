@@ -1,8 +1,8 @@
 #include "playground/memory/api/v1/memory.h"
 
-#define MAX_MEMORY 0xffff // 64K bytes
+#define MAX_MEMORY 0xffff /* 64K bytes */
 
-// global allocated memory
+/* global allocated memory */
 static void* memory = 0;
 static void** ptr = 0;
 
@@ -35,7 +35,7 @@ static void* memory_alloc(u64 size) {
     return tmp;
 }
 
-// releases global memory
+/* releases global memory */
 static void memory_free(void* data, u64 size) {
     CLEAN(data)
     --ptr;

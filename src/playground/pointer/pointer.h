@@ -4,11 +4,11 @@
 #include "std/common.h"
 
 enum type {
-    // value used for pointer type
+    /* value used for pointer type */
     TYPE_PTR = 0,
-    // value used for file type
+    /* value used for file type */
     TYPE_FILE = 1,
-    // value used for list type
+    /* value used for list type */
     TYPE_LIST = 2
 };
 
@@ -55,4 +55,4 @@ struct pointer_methods {
 void pointer_ctx_init(struct pointer_data** ctx, u64 size);
 void pointer_ctx_destroy(struct pointer_data** ctx);
 
-#endif // _PLAYGROUND_POINTER_H_
+#endif /* _PLAYGROUND_POINTER_H_ */

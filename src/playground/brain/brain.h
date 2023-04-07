@@ -3,4 +3,4 @@
 
 extern inline void source(void) __attribute__((always_inline));
 
-#endif // _PLAYGROUND_BRAIN_H_
+#endif /* _PLAYGROUND_BRAIN_H_ */

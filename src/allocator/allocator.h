@@ -7,4 +7,4 @@ void* _alloc(u64 size);
 void _free(void* ptr, u64 size);
 void* _realloc(void* ptr, u64 size);
 
-#endif // _ALLOCATOR_H_
+#endif /* _ALLOCATOR_H_ */

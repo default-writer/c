@@ -9,4 +9,4 @@ void* memory_list_pop(void);
 void memory_list_init(void);
 void memory_list_destroy(void);
 
-#endif // _PLAYGROUND_MEMORY_LIST_H_
+#endif /* _PLAYGROUND_MEMORY_LIST_H_ */

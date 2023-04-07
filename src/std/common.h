@@ -6,4 +6,4 @@
 #include "std/headers.h"
 #include "std/macros.h"
 
-#endif // _STD_COMMON_H_
+#endif /* _STD_COMMON_H_ */

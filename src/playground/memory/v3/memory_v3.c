@@ -1,8 +1,8 @@
 #include "playground/memory/api/v1/memory.h"
 
-#define MAX_MEMORY 0xffff // 64K bytes
+#define MAX_MEMORY 0xffff /* 64K bytes */
 
-// global allocated memory
+/* global allocated memory */
 static void* memory = 0;
 static void** ptr = 0;
 
@@ -49,7 +49,7 @@ static void* memory_alloc(u64 size) {
     return ptr;
 }
 
-// releases global memory
+/* releases global memory */
 static void memory_free(void* data, u64 size) {
     void** head = data;
     void** next = *(head - 1);
@@ -65,7 +65,7 @@ static void memory_free(void* data, u64 size) {
     printf("  0-: 0x%016llx !  %16lld\n", (u64)last, size);
 #endif
 #ifdef USE_MEMORY_CLEANUP
-    memset(head - 2, 0, (size + 3) * sizeof(void*)); // NOLINT
+    memset(head - 2, 0, (size + 3) * sizeof(void*)); /* NOLINT */
 #endif
     free(head - 2);
 }

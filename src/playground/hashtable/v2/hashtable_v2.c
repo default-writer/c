@@ -55,8 +55,8 @@ static u32 default_hash_function(char* source) {
 
 /* hash: form hash value for string s */
 u32 default_hash(char* source) {
-    // One-byte-at-a-time hash based on Murmur's mix
-    // Source: https://github.com/aappleby/smhasher/blob/master/src/Hashes.cpp
+    /* One-byte-at-a-time hash based on Murmur's mix */
+    /* Source: https://github.com/aappleby/smhasher/blob/master/src/Hashes.cpp */
     u32 data = 0;
     if (source != 0) {
         u32 hash = (u32)~0x5a32b847;
@@ -88,7 +88,7 @@ u32 murmurhash3(char* source) {
 
         u8* buf = (u8*)source;
 
-        // Mix 4 bytes at a time into the hash.
+        /* Mix 4 bytes at a time into the hash. */
         while (len >= 4) {
             u32 p0 = (u32)(*(buf + 0));
             u32 p1 = (u32)(*(buf + 1) << 8);
@@ -104,10 +104,10 @@ u32 murmurhash3(char* source) {
             len -= 4;
         }
 
-        // Handle the last few bytes of the input array.
+        /* Handle the last few bytes of the input array. */
         switch (len) {
         case 3:
-            hash ^= (u32)(*(buf + 2) << 16); // NOLINT
+            hash ^= (u32)(*(buf + 2) << 16); /* NOLINT */
         case 2:
             hash ^= (u32)(*(buf + 1) << 8);
         case 1:
@@ -117,7 +117,7 @@ u32 murmurhash3(char* source) {
             break;
         };
 
-        // Do a few final mixes of the hash.
+        /* Do a few final mixes of the hash. */
         hash ^= hash >> 13;
         hash *= m;
         hash ^= hash >> 15;
@@ -173,9 +173,9 @@ static struct hashtable_data* hashtable_alloc(char* key, void* value) {
     struct hashtable_data* next = hashtable[hash];
     struct hashtable_data* node = _list_alloc(sizeof(struct hashtable_data));
     char* node_key = _list_alloc(strlen(key) + 1); /* +1 for ’\0’ */
-    // char* node_value = _list_alloc(strlen(value) + 1); /* +1 for ’\0’ */
-    strcpy(node_key, key); // NOLINT
-    // strcpy(node_value, value); // NOLINT
+    /* char* node_value = _list_alloc(strlen(value) + 1); +1 for ’\0’ */
+    strcpy(node_key, key); /* NOLINT */
+    /* strcpy(node_value, value); // NOLINT */
     node->key = node_key;
     node->value = value;
     node->next = next;

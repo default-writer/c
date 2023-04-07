@@ -25,7 +25,7 @@ void _list_free(void* ptr, u64 size) {
         printf("   -: 0x%016llx !  %16lld\n", (u64)ptr, size);
 #endif
 #ifdef USE_MEMORY_CLEANUP
-        memset((void*)(u8*)ptr, 0, size); // NOLINT
+        memset((void*)(u8*)ptr, 0, size); /* NOLINT */
 #endif
 #ifdef USE_MEMORY_ALLOC
         memory_free(ptr, size);

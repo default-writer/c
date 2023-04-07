@@ -2,7 +2,7 @@
 #include "playground/list/v2/list.h"
 #include "rexo/include/rexo.h"
 
-#define DEFAULT_SIZE 0xffff // 64K bytes
+#define DEFAULT_SIZE 0xffff /* 64K bytes */
 
 #ifdef USE_MEMORY_ALLOC
 #include "playground/memory/memory.h"
@@ -27,7 +27,7 @@ typedef struct test_data {
 /* Initialize the data structure. Its allocation is handled by Rexo. */
 RX_SET_UP(test_set_up) {
     list_data = list->alloc(DEFAULT_SIZE);
-    // success
+    /* success */
     return RX_SUCCESS;
 }
 
@@ -38,7 +38,7 @@ RX_TEAR_DOWN(test_tear_down) {
 /* Define the fixture. */
 RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tear_down);
 
-// test context
+/* test context */
 RX_TEST_CASE(myTestSuite, test_context_enter_leave_v2, .fixture = test_fixture) {
     const struct class* context = &class_definition_v2;
     struct class_data* data = context->new (list_data);
@@ -47,7 +47,7 @@ RX_TEST_CASE(myTestSuite, test_context_enter_leave_v2, .fixture = test_fixture) 
     context->delete (data);
 }
 
-// test context
+/* test context */
 RX_TEST_CASE(myTestSuite, test_class_get_set_data_v2, .fixture = test_fixture) {
     const struct class* context = &class_definition_v2;
     struct class_data* data = context->new (list_data);
@@ -59,7 +59,7 @@ RX_TEST_CASE(myTestSuite, test_class_get_set_data_v2, .fixture = test_fixture) {
     context->delete (data);
 }
 
-// test context
+/* test context */
 RX_TEST_CASE(myTestSuite, test_class_push_pop_get_set_data_v2, .fixture = test_fixture) {
     const struct class* context = &class_definition_v2;
     struct class_data* data1 = context->new (list_data);

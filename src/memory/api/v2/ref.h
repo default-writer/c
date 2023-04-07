@@ -13,4 +13,4 @@ struct memory_ref_methods {
     void* (*peek)(void);
 };
 
-#endif // _MEMORY_REF_V2_H_
+#endif /* _MEMORY_REF_V2_H_ */

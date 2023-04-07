@@ -20,4 +20,4 @@ struct class {
     void (*set)(void* data);
 };
 
-#endif // _PLAYGROUND_CLASS_H_
+#endif /* _PLAYGROUND_CLASS_H_ */

@@ -166,12 +166,12 @@ void pointer_destroy(void) {
     pointer_gc();
     list->destroy(&base->gc);
 #endif
-    // if (ptr != 0) {
-    //     struct pointer* data_ptr = vm->free(&base->vm, ptr);
-    //     if (data_ptr != 0) {
-    //         pointer_free_internal(data_ptr);
-    //     }
-    // }
+    /* if (ptr != 0) { */
+    /*     struct pointer* data_ptr = vm->free(&base->vm, ptr); */
+    /*     if (data_ptr != 0) { */
+    /*         pointer_free_internal(data_ptr); */
+    /*     } */
+    /* } */
     list->destroy(&base->list);
     vm->destroy(&base->vm);
 }
@@ -197,7 +197,7 @@ static u64 pointer_copy(u64 ptr) {
         struct pointer* data_ptr = vm->read(&base->vm, ptr);
         if (data_ptr != 0 && data_ptr->size != 0 && data_ptr->type == TYPE_PTR) {
             struct pointer* copy_ptr = pointer_alloc_internal(data_ptr->size, data_ptr->type);
-            memcpy(copy_ptr->data, data_ptr->data, copy_ptr->size); // NOLINT
+            memcpy(copy_ptr->data, data_ptr->data, copy_ptr->size); /* NOLINT */
             data = vm->write(&base->vm, copy_ptr);
 #ifdef USE_GC
             list->push(&base->gc, (void*)data);
@@ -336,8 +336,8 @@ static void pointer_strcpy(u64 dest, u64 src) {
             }
         }
         char* data_dest = dest_ptr->data;
-        const char* data_src = src_ptr->data; // NOLINT
-        strcpy(data_dest, data_src); // NOLINT
+        const char* data_src = src_ptr->data; /* NOLINT */
+        strcpy(data_dest, data_src); /* NOLINT */
     }
 }
 
@@ -355,8 +355,8 @@ static void pointer_strcat(u64 dest, u64 src) {
             }
         }
         char* data_dest = dest_ptr->data;
-        const char* data_src = src_ptr->data; // NOLINT
-        strcat(data_dest, data_src); // NOLINT
+        const char* data_src = src_ptr->data; /* NOLINT */
+        strcat(data_dest, data_src); /* NOLINT */
     }
 }
 
@@ -392,7 +392,7 @@ static u64 pointer_load(const char* src_data) {
         u64 size = strlen(src_data) + 1;
         if (size != 0) {
             struct pointer* data_ptr = pointer_alloc_internal(size, TYPE_PTR);
-            memcpy(data_ptr->data, src_data, size); // NOLINT
+            memcpy(data_ptr->data, src_data, size); /* NOLINT */
             data = vm->write(&base->vm, data_ptr);
 #ifdef USE_GC
             list->push(&base->gc, (void*)data);
@@ -408,7 +408,7 @@ static u64 pointer_getcwd(void) {
     getcwd(cwd, sizeof(cwd));
     u64 size = strlen(cwd) + 1;
     char* data = _list_alloc(size);
-    strcpy(data, cwd); // NOLINT
+    strcpy(data, cwd); /* NOLINT */
     data_ptr = pointer_load(data);
     _list_free(data, size);
     return data_ptr;
@@ -421,7 +421,7 @@ static u64 pointer_open_file(u64 file_path, u64 mode) {
     if (file_path_ptr != 0 && mode_ptr != 0) {
         const char* file_path_data = file_path_ptr->data;
         const char* mode_data = mode_ptr->data;
-        FILE* file = fopen(file_path_data, mode_data); // NOLINT
+        FILE* file = fopen(file_path_data, mode_data); /* NOLINT */
         if (file != 0) {
             struct pointer* f_ptr = pointer_alloc_internal(sizeof(struct file_handler), TYPE_FILE);
             struct file_handler* handler = f_ptr->data;
@@ -446,7 +446,7 @@ static u64 pointer_read_file(u64 ptr) {
             struct file_handler* handler = file_ptr->data;
             FILE* file = handler->file;
             if (file != 0) {
-                fseek(file, 0, SEEK_END); // NOLINT
+                fseek(file, 0, SEEK_END); /* NOLINT */
                 u64 size = (u64)ftell(file);
                 fseek(file, 0, SEEK_SET);
                 u64 data_size = size + 1;

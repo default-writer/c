@@ -8,7 +8,7 @@ static const u64 memory_offset;
 
 static struct memory_ref* memory;
 
-// global allocated memory
+/* global allocated memory */
 static void** current = 0;
 
 static struct memory_ref* memory_ref_ref(void* data);
@@ -64,7 +64,7 @@ static void* memory_ref_alloc(u64 size) {
         _current->size = size;
         _current->prev = memory_ref_ptr(ref_ptr);
         ptr = ref_ptr->next;
-        current = ptr; // advance current ptr to the new dat
+        current = ptr; /* advance current ptr to the new dat */
     }
     return ptr;
 }
@@ -134,8 +134,8 @@ static const u64 memory_offset = sizeof(struct memory_ref) / sizeof(void*);
 const struct memory_ref_methods memory_ref_definition = {
     .init = memory_ref_init,
     .destroy = memory_ref_destroy,
-    // .ref = memory_ref_ref,
-    // .ptr = memory_ref_ptr,
+    /* .ref = memory_ref_ref, */
+    /* .ptr = memory_ref_ptr, */
     .size = memory_ref_size,
     .alloc = memory_ref_alloc,
     .free = memory_ref_free,
