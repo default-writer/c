@@ -14,6 +14,7 @@ pwd=$(pwd)
 "${pwd}/bin/utils/install.sh" --git
 "${pwd}/bin/utils/install.sh" --submodule-rexo
 "${pwd}/bin/utils/install.sh" --hooks
+"${pwd}/bin/utils/install.sh" --clangd
 
 sudo "${pwd}/bin/utils/setup.sh" --configuration
 sudo "${pwd}/bin/utils/setup.sh" --clang-format
