@@ -5,6 +5,7 @@
 # Learn more from ready-to-use templates: https://www.gitpod.io/docs/introduction/getting-started/quickstart
 
 tasks:
-  - init: ./bin/utils/init.sh
+  - before: ./bin/utils/init.sh
+  - init: ./bin/all.sh --all --clean --gc --valgrind
 
 

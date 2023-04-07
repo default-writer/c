@@ -266,8 +266,13 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
             pointer->put_char(data, unsafe[0]);
             u64 pattern_ptr = pointer->load("b");
             u64 last_match_ptr = pointer->match_last(data, pattern_ptr);
-            pointer->match_last(data, last_match_ptr);
+            u64 leak_ptr = pointer->match_last(data, last_match_ptr);
             hashtable->alloc(unsafe, 0);
+#ifndef USE_GC
+            pointer->free(pattern_ptr);
+            pointer->free(last_match_ptr);
+            pointer->free(leak_ptr);
+#endif
             file_data = tmp;
         }
         file_data = pointer->unsafe(data_ptr);
