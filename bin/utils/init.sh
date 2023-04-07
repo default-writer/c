@@ -11,14 +11,12 @@ uid=$(id -u)
 
 pwd=$(pwd)
 
-if [ ! "${uid}" -eq 0 ]; then
-    "${pwd}/bin/utils/install.sh" --configuration
-    "${pwd}/bin/utils/install.sh" --git
-    "${pwd}/bin/utils/install.sh" --submodule-rexo
-    "${pwd}/bin/utils/install.sh" --hooks
-fi
+"${pwd}/bin/utils/install.sh" --git
+"${pwd}/bin/utils/install.sh" --submodule-rexo
+"${pwd}/bin/utils/install.sh" --hooks
 
 if [ "${uid}" -eq 0 ]; then
+    sudo "${pwd}/bin/utils/setup.sh" --configuration
     sudo "${pwd}/bin/utils/setup.sh" --clang-format
     sudo "${pwd}/bin/utils/setup.sh" --cmake
 fi
