@@ -15,11 +15,9 @@ pwd=$(pwd)
 "${pwd}/bin/utils/install.sh" --submodule-rexo
 "${pwd}/bin/utils/install.sh" --hooks
 
-if [ "${uid}" -eq 0 ]; then
-    sudo "${pwd}/bin/utils/setup.sh" --configuration
-    sudo "${pwd}/bin/utils/setup.sh" --clang-format
-    sudo "${pwd}/bin/utils/setup.sh" --cmake
-fi
+sudo "${pwd}/bin/utils/setup.sh" --configuration
+sudo "${pwd}/bin/utils/setup.sh" --clang-format
+sudo "${pwd}/bin/utils/setup.sh" --cmake
 
 # "${pwd}/bin/utils/env.sh" --nvm
 # "${pwd}/bin/utils/nvm.sh"

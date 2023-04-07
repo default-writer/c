@@ -27,8 +27,11 @@ install="$1"
 case "${install}" in
 
     "--configuration") # installs keyboard-configuration
-        update
+        export DEBIAN_FRONTEND=noninteractive
+        set -a && eval "$(sudo tee --append /etc/environment <<<'DEBIAN_FRONTEND=noninteractive')" && set +a
+        dpkg --configure -a
         DEBIAN_FRONTEND=noninteractive apt-get install -y keyboard-configuration gettext-base
+        update
         upgrade
         ;;
 
@@ -133,9 +136,9 @@ case "${install}" in
         ;;
 
     "--cmake") # installs cmake
-        update
         export DEBIAN_FRONTEND=noninteractive
         set -a && eval "$(sudo tee --append /etc/environment <<<'DEBIAN_FRONTEND=noninteractive')" && set +a
+        update
         wget https://github.com/Kitware/CMake/releases/download/v3.25.3/cmake-3.25.3-linux-x86_64.sh -O /tmp/cmake-3.25.3-linux-x86_64.sh
         chmod +x /tmp/cmake-3.25.3-linux-x86_64.sh
         [ ! -d "${pwd}/cmake-3.25" ] && mkdir ${pwd}/cmake-3.25
