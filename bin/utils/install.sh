@@ -26,6 +26,10 @@ install="$1"
 
 case "${install}" in
 
+    "--configuration") # installs keyboard-configuration
+        DEBIAN_FRONTEND=noninteractive apt-get install -y keyboard-configuration gettext-base
+        ;;
+
     "--clangd") # installs clangd 15.0.6
         if [ ! -f "${pwd}/clangd/clangd_15.0.6/bin/clangd" ]; then
             [ ! -d "${pwd}/clangd" ] && mkdir "${pwd}/clangd"
