@@ -23,7 +23,7 @@ set(CONFIG_MEMORY_ALLOC OFF)
 
 set(STANDARD
     -save-temps
-    -std=gnu89
+    -std=gnu99
     -fgnu89-inline
 )
 
