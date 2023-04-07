@@ -9,19 +9,20 @@ trap 'err_report $LINENO' ERR
 
 uid=$(id -u)
 
-if [ "${uid}" -eq 0 ]; then
-    echo "Please run as user"
-    exit
-fi
-
 pwd=$(pwd)
 
-"${pwd}/bin/utils/install.sh" --configuration
-"${pwd}/bin/utils/install.sh" --git
-"${pwd}/bin/utils/install.sh" --submodule-rexo
-"${pwd}/bin/utils/install.sh" --hooks
-sudo "${pwd}/bin/utils/setup.sh" --clang-format
-sudo "${pwd}/bin/utils/setup.sh" --cmake
+if [ ! "${uid}" -eq 0 ]; then
+    "${pwd}/bin/utils/install.sh" --configuration
+    "${pwd}/bin/utils/install.sh" --git
+    "${pwd}/bin/utils/install.sh" --submodule-rexo
+    "${pwd}/bin/utils/install.sh" --hooks
+fi
+
+if [ "${uid}" -eq 0 ]; then
+    sudo "${pwd}/bin/utils/setup.sh" --clang-format
+    sudo "${pwd}/bin/utils/setup.sh" --cmake
+fi
+
 # "${pwd}/bin/utils/env.sh" --nvm
 # "${pwd}/bin/utils/nvm.sh"
 
