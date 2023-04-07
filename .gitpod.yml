@@ -4,7 +4,30 @@
 
 # Learn more from ready-to-use templates: https://www.gitpod.io/docs/introduction/getting-started/quickstart
 
-tasks:
-  - init: ./bin/utils/init.sh && ./bin/all.sh --all --clean --gc --valgrind
-
-
+vscode:
+  extensions:
+    - mhutchie.git-graph
+    - donjayamanne.githistory
+    - codezombiech.gitignore
+    - sonarsource.sonarlint-vscode
+    - andifin.testonsave
+    - tenninebt.vscode-koverage
+    - nateageek.memory-viewer
+    - visualstudioexptteam.vscodeintellicode
+    - twxs.cmake
+    - ryanluker.vscode-coverage-gutters
+    - beardedbear.beardedicons
+    - ms-vscode.cmake-tools
+    - ms-vscode.live-server
+    - llvm-vs-code-extensions.vscode-clangd
+    - markis.code-coverage
+    - streetsidesoftware.code-spell-checker
+    - dseight.disasexpl
+    - maziac.asm-code-lens
+    - ms-vscode.cpptools
+    - aslamanver.vsc-export
+    - anweber.statusbar-commands
+    - vadimcn.vscode-lldb
+    - jdsteinbach.custom-presentation-mode
+    - daylerees.rainglow
+    - bierner.github-markdown-preview
