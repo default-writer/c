@@ -26,21 +26,19 @@ install="$1"
 
 case "${install}" in
 
+    "--fix-dpkg") # fixes broken dpkg install
+        dpkg --configure -a
+        ;;
+
     "--rustc") # installs rustc
         export DEBIAN_FRONTEND=noninteractive
         set -a && eval "$(sudo tee --append /etc/environment <<<'DEBIAN_FRONTEND=noninteractive')" && set +a
         DEBIAN_FRONTEND=noninteractive apt-get install -y keyboard-configuration gettext-base
         update
-        curl --silent --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -o /tmp/rustp-init.sh
-        chmod +x /tmp/rustp-init.sh
-        /tmp/rustp-init.sh -y --default-toolchain stable
-        rm -f /tmp/rustp-init.sh
         apt install -y --only-upgrade gdm3 gir1.2-gdm-1.0 libgdm1 qemu-block-extra qemu-system-common qemu-system-data qemu-system-gui qemu-system-x86 qemu-utils
+        apt install -y cargo pkg-config fontconfig
+        apt install -y libfontconfig1-dev libfontconfig
         upgrade
-        ;;
-
-    "--fix-dpkg") # fixes broken dpkg install
-        dpkg --configure -a
         ;;
 
     "--configuration") # installs keyboard-configuration

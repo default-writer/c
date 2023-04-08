@@ -26,6 +26,17 @@ install="$1"
 
 case "${install}" in
 
+    "--rustc") # installs rustc
+        export DEBIAN_FRONTEND=noninteractive
+        set -a && eval "$(sudo tee --append /etc/environment <<<'DEBIAN_FRONTEND=noninteractive')" && set +a
+        curl --silent --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -o /tmp/rustp-init.sh
+        chmod +x /tmp/rustp-init.sh
+        /tmp/rustp-init.sh -y --default-toolchain stable
+        rm -f /tmp/rustp-init.sh
+        . $HOME/.cargo/env
+        cargo install slint-viewer
+        ;;
+
     "--clangd") # installs clangd 15.0.6
         if [ ! -f "${pwd}/clangd/clangd_15.0.6/bin/clangd" ]; then
             [ ! -d "${pwd}/clangd" ] && mkdir "${pwd}/clangd"
