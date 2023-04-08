@@ -38,14 +38,14 @@ RX_TEAR_DOWN(test_tear_down) {
 /* Define the fixture. */
 RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tear_down);
 
-// test init
+/* test init */
 RX_TEST_CASE(myTestSuite, test_hashtable_init_destroy, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     hashtable->destroy();
     RX_ASSERT(0 == 0);
 }
 
-// test init
+/* test init */
 RX_TEST_CASE(myTestSuite, test_hashtable_init_setup_destroy, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     hashtable->setup(murmurhash3);
@@ -53,13 +53,13 @@ RX_TEST_CASE(myTestSuite, test_hashtable_init_setup_destroy, .fixture = test_fix
     RX_ASSERT(0 == 0);
 }
 
-// test init
+/* test init */
 RX_TEST_CASE(myTestSuite, test_hashtable_alloc_free, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     char* key = _list_alloc(sizeof(char) + 1);
     char* value = _list_alloc(sizeof(char) + 1);
-    memcpy(key, "1", 2); // NOLINT
-    memcpy(value, "a", 2); // NOLINT
+    memcpy(key, "1", 2); /* NOLINT */
+    memcpy(value, "a", 2); /* NOLINT */
     struct hashtable_data* tmp = hashtable->alloc(key, value);
     hashtable->free(tmp);
     hashtable->destroy();
@@ -68,13 +68,13 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_free, .fixture = test_fixture) {
     RX_ASSERT(0 == 0);
 }
 
-// test init
+/* test init */
 RX_TEST_CASE(myTestSuite, test_hashtable_alloc_5, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     char* key = _list_alloc(5);
     char* value = _list_alloc(5);
-    memcpy(key, "1234", 3); // NOLINT
-    memcpy(value, "abcd", 3); // NOLINT
+    memcpy(key, "1234", 3); /* NOLINT */
+    memcpy(value, "abcd", 3); /* NOLINT */
     struct hashtable_data* tmp = hashtable->alloc(key, value);
     hashtable->free(tmp);
     hashtable->destroy();
@@ -83,13 +83,13 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_5, .fixture = test_fixture) {
     RX_ASSERT(0 == 0);
 }
 
-// test init
+/* test init */
 RX_TEST_CASE(myTestSuite, test_hashtable_alloc_4, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     char* key = _list_alloc(4);
     char* value = _list_alloc(4);
-    memcpy(key, "123", 3); // NOLINT
-    memcpy(value, "abc", 3); // NOLINT
+    memcpy(key, "123", 3); /* NOLINT */
+    memcpy(value, "abc", 3); /* NOLINT */
     struct hashtable_data* tmp = hashtable->alloc(key, value);
     hashtable->free(tmp);
     hashtable->destroy();
@@ -98,13 +98,13 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_4, .fixture = test_fixture) {
     RX_ASSERT(0 == 0);
 }
 
-// test init
+/* test init */
 RX_TEST_CASE(myTestSuite, test_hashtable_alloc_3, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     char* key = _list_alloc(3);
     char* value = _list_alloc(3);
-    memcpy(key, "12", 2); // NOLINT
-    memcpy(value, "ab", 2); // NOLINT
+    memcpy(key, "12", 2); /* NOLINT */
+    memcpy(value, "ab", 2); /* NOLINT */
     struct hashtable_data* tmp = hashtable->alloc(key, value);
     hashtable->free(tmp);
     hashtable->destroy();
@@ -113,13 +113,13 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_3, .fixture = test_fixture) {
     RX_ASSERT(0 == 0);
 }
 
-// test init
+/* test init */
 RX_TEST_CASE(myTestSuite, test_hashtable_alloc_2, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     char* key = _list_alloc(2);
     char* value = _list_alloc(2);
-    memcpy(key, "1", 2); // NOLINT
-    memcpy(value, "a", 2); // NOLINT
+    memcpy(key, "1", 2); /* NOLINT */
+    memcpy(value, "a", 2); /* NOLINT */
     hashtable->alloc(key, value);
     hashtable->destroy();
     _list_free(key, 0);
@@ -127,13 +127,13 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_2, .fixture = test_fixture) {
     RX_ASSERT(0 == 0);
 }
 
-// test init
+/* test init */
 RX_TEST_CASE(myTestSuite, test_hashtable_alloc_alloc, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     char* key = _list_alloc(sizeof(char) + 1);
     char* value = _list_alloc(sizeof(char) + 1);
-    memcpy(key, "1", 2); // NOLINT
-    memcpy(value, "a", 2); // NOLINT
+    memcpy(key, "1", 2); /* NOLINT */
+    memcpy(value, "a", 2); /* NOLINT */
     hashtable->alloc(key, value);
     hashtable->alloc(key, value);
     hashtable->destroy();
@@ -142,13 +142,13 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_alloc, .fixture = test_fixture) {
     RX_ASSERT(0 == 0);
 }
 
-// test init
+/* test init */
 RX_TEST_CASE(myTestSuite, test_hashtable_alloc_alloc_alloc, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     char* key = _list_alloc(sizeof(char) + 1);
     char* value = _list_alloc(sizeof(char) + 1);
-    memcpy(key, "1", 2); // NOLINT
-    memcpy(value, "a", 2); // NOLINT
+    memcpy(key, "1", 2); /* NOLINT */
+    memcpy(value, "a", 2); /* NOLINT */
     hashtable->alloc(key, value);
     hashtable->alloc(key, value);
     hashtable->alloc(key, value);
@@ -158,13 +158,13 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_alloc_alloc, .fixture = test_fixt
     RX_ASSERT(0 == 0);
 }
 
-// test init
+/* test init */
 RX_TEST_CASE(myTestSuite, test_hashtable_alloc_free_alloc, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     char* key = _list_alloc(sizeof(char) + 1);
     char* value = _list_alloc(sizeof(char) + 1);
-    memcpy(key, "1", 2); // NOLINT
-    memcpy(value, "a", 2); // NOLINT
+    memcpy(key, "1", 2); /* NOLINT */
+    memcpy(value, "a", 2); /* NOLINT */
     struct hashtable_data* temp = hashtable->alloc(key, value);
     hashtable->free(temp);
     hashtable->alloc(key, value);
@@ -174,13 +174,13 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_free_alloc, .fixture = test_fixtu
     RX_ASSERT(0 == 0);
 }
 
-// test init
+/* test init */
 RX_TEST_CASE(myTestSuite, test_hashtable_alloc_alloc_free, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     char* key = _list_alloc(sizeof(char) + 1);
     char* value = _list_alloc(sizeof(char) + 1);
-    memcpy(key, "1", 2); // NOLINT
-    memcpy(value, "a", 2); // NOLINT
+    memcpy(key, "1", 2); /* NOLINT */
+    memcpy(value, "a", 2); /* NOLINT */
     struct hashtable_data* temp = hashtable->alloc(key, value);
     hashtable->alloc(key, value);
     hashtable->free(temp);
@@ -190,13 +190,13 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_alloc_free, .fixture = test_fixtu
     RX_ASSERT(0 == 0);
 }
 
-// test init
+/* test init */
 RX_TEST_CASE(myTestSuite, test_hashtable_alloc_free_alloc_free, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     char* key = _list_alloc(sizeof(char) + 1);
     char* value = _list_alloc(sizeof(char) + 1);
-    memcpy(key, "1", 2); // NOLINT
-    memcpy(value, "a", 2); // NOLINT
+    memcpy(key, "1", 2); /* NOLINT */
+    memcpy(value, "a", 2); /* NOLINT */
     struct hashtable_data* temp = hashtable->alloc(key, value);
     hashtable->free(temp);
     temp = hashtable->alloc(key, value);
@@ -207,13 +207,13 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_free_alloc_free, .fixture = test_
     RX_ASSERT(0 == 0);
 }
 
-// test init
+/* test init */
 RX_TEST_CASE(myTestSuite, test_hashtable_alloc_alloc_temp_alloc_free_temp_alloc_alloc, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     char* key = _list_alloc(sizeof(char) + 1);
     char* value = _list_alloc(sizeof(char) + 1);
-    memcpy(key, "1", 2); // NOLINT
-    memcpy(value, "a", 2); // NOLINT
+    memcpy(key, "1", 2); /* NOLINT */
+    memcpy(value, "a", 2); /* NOLINT */
     hashtable->alloc(key, value);
     struct hashtable_data* temp = hashtable->alloc(key, value);
     hashtable->alloc(key, value);
@@ -226,7 +226,7 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_alloc_temp_alloc_free_temp_alloc_
     RX_ASSERT(0 == 0);
 }
 
-// test init
+/* test init */
 RX_TEST_CASE(myTestSuite, test_hashtable_alloc_alloc_alloc_temp_alloc_alloc_free_temp, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     char* key = _list_alloc(6 * sizeof(char));
@@ -236,14 +236,14 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_alloc_alloc_temp_alloc_alloc_free
     char* key4 = _list_alloc(2 * sizeof(char));
     char* key5 = _list_alloc(2 * sizeof(char));
     char* value = _list_alloc(2 * sizeof(char));
-    memcpy(key, "12345", 6); // NOLINT
-    memcpy(key1, "1", 2); // NOLINT
-    memcpy(key2, "2", 2); // NOLINT
-    memcpy(key3, "1", 2); // NOLINT
-    memcpy(key4, "1", 2); // NOLINT
-    memcpy(key5, "2", 2); // NOLINT
-    memcpy(value, "a", 2); // NOLINT
-    memcpy(value, "a", 2); // NOLINT
+    memcpy(key, "12345", 6); /* NOLINT */
+    memcpy(key1, "1", 2); /* NOLINT */
+    memcpy(key2, "2", 2); /* NOLINT */
+    memcpy(key3, "1", 2); /* NOLINT */
+    memcpy(key4, "1", 2); /* NOLINT */
+    memcpy(key5, "2", 2); /* NOLINT */
+    memcpy(value, "a", 2); /* NOLINT */
+    memcpy(value, "a", 2); /* NOLINT */
     struct hashtable_data* values1[2] = {
         hashtable->alloc(key1, value),
         hashtable->alloc(key2, value)
@@ -291,7 +291,7 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_alloc_alloc_temp_alloc_alloc_free
     RX_ASSERT(0 == 0);
 }
 
-// test init
+/* test init */
 RX_TEST_CASE(myTestSuite, test_hashtable_alloc_set_get, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     char* key = _list_alloc(6 * sizeof(char));
@@ -302,14 +302,14 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_set_get, .fixture = test_fixture)
     char* value2 = _list_alloc(2 * sizeof(char));
     char* value3 = _list_alloc(2 * sizeof(char));
     char* value = _list_alloc(5 * sizeof(char));
-    memcpy(key, "12345", 6); // NOLINT
-    memcpy(key1, "1", 2); // NOLINT
-    memcpy(key2, "1", 2); // NOLINT
-    memcpy(key3, "1", 2); // NOLINT
-    memcpy(value1, "a", 2); // NOLINT
-    memcpy(value2, "b", 2); // NOLINT
-    memcpy(value3, "c", 2); // NOLINT
-    memcpy(value, "abcd", 5); // NOLINT
+    memcpy(key, "12345", 6); /* NOLINT */
+    memcpy(key1, "1", 2); /* NOLINT */
+    memcpy(key2, "1", 2); /* NOLINT */
+    memcpy(key3, "1", 2); /* NOLINT */
+    memcpy(value1, "a", 2); /* NOLINT */
+    memcpy(value2, "b", 2); /* NOLINT */
+    memcpy(value3, "c", 2); /* NOLINT */
+    memcpy(value, "abcd", 5); /* NOLINT */
     struct hashtable_data* values[2] = {
         hashtable->alloc(key1, value1),
         hashtable->alloc(key2, value2)
@@ -346,7 +346,7 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_set_get, .fixture = test_fixture)
     RX_ASSERT(0 == 0);
 }
 
-// test init
+/* test init */
 RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_fixture) {
     u64 file_path_ptr = pointer->getcwd();
     u64 file_name_ptr = pointer->load("/all_english_words.txt");

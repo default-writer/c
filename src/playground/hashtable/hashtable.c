@@ -56,7 +56,7 @@ u32 murmurhash3(char* source) {
 
         u8* buf = (u8*)source;
 
-        // Mix 4 bytes at a time into the hash.
+        /* Mix 4 bytes at a time into the hash. */
         while (len >= 4) {
             u32 p0 = (u32)buf[0];
             u32 p1 = (u32)(buf[1] << 8);
@@ -72,10 +72,10 @@ u32 murmurhash3(char* source) {
             len -= 4;
         }
 
-        // Handle the last few bytes of the input array.
+        /* Handle the last few bytes of the input array. */
         switch (len) {
         case 3:
-            hash ^= (u32)(buf[2] << 16); // NOLINT
+            hash ^= (u32)(buf[2] << 16); /* NOLINT */
 #if !defined(__GNUC__)
             FALL_THROUGH;
 #endif
@@ -97,7 +97,7 @@ u32 murmurhash3(char* source) {
             break;
         };
 
-        // Do a few final mixes of the hash.
+        /* Do a few final mixes of the hash. */
         hash ^= hash >> 13;
         hash *= m;
         hash ^= hash >> 15;
@@ -219,7 +219,7 @@ static void update(char** prev, char* new) {
             *prev = 0;
         }
         char* value = _list_alloc(strlen(new) + 1); /* +1 for ’\0’ */
-        strcpy(value, new); // NOLINT
+        strcpy(value, new); /* NOLINT */
         *prev = value;
     }
 }

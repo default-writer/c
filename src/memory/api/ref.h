@@ -10,4 +10,4 @@ struct memory_ref {
     u64 size;
 };
 
-#endif // _MEMORY_REF_H_
+#endif /* _MEMORY_REF_H_ */

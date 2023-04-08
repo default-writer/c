@@ -15,4 +15,4 @@ struct vm {
     void (*memory_dump_ref)(struct vm_data* vm_ptr);
 };
 
-#endif // _PLAYGROUND_VIRTUAL_H_
+#endif /* _PLAYGROUND_VIRTUAL_H_ */

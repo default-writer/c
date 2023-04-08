@@ -11,4 +11,4 @@ struct list {
     void* (*peek)(void);
 };
 
-#endif // _PLAYGROUND_LIST_V1_H_
+#endif /* _PLAYGROUND_LIST_V1_H_ */

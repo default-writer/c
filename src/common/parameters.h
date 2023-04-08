@@ -8,4 +8,4 @@ struct list_parameters {
     u64 block_size;
 };
 
-#endif // _COMMON_PARAMETERS_H_
+#endif /* _COMMON_PARAMETERS_H_ */

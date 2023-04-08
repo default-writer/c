@@ -34,13 +34,13 @@ RX_TEAR_DOWN(test_tear_down) {
 /* Define the fixture. */
 RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tear_down);
 
-// test init
+/* test init */
 RX_TEST_CASE(myTestSuite, test_list_push_list_peek_list_pop, .fixture = test_fixture) {
     u64 list_ptr = pointer->list_alloc();
     const char* source = "Hello, world!";
     u64 size = strlen(source);
     char* dest = _list_alloc(size + 1);
-    memcpy(dest, source, size + 1); // NOLINT
+    memcpy(dest, source, size + 1); /* NOLINT */
     for (u64 i = 0; i < size; i++) {
         char* ptr = dest + i;
         char* tmp = ptr + 1;
@@ -69,12 +69,12 @@ RX_TEST_CASE(myTestSuite, test_list_push_list_peek_list_pop, .fixture = test_fix
     pointer->list_free(list_ptr);
 }
 
-// test init
+/* test init */
 RX_TEST_CASE(myTestSuite, test_list_peek_0, .fixture = test_fixture) {
     const char* source = "Hello, world! A very long string do not fit in 8 bytes.";
     u64 size = strlen(source);
     char* dest = _list_alloc(size + 1);
-    memcpy(dest, source, size + 1); // NOLINT
+    memcpy(dest, source, size + 1); /* NOLINT */
     for (u64 i = 0; i < size; i++) {
         char* ptr = dest + i;
         char* tmp = ptr + 1;

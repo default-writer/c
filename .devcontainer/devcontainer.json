@@ -150,7 +150,7 @@
 			}
 		],
 		"sonarlint.testFilePattern": "{**/test/**,**/*test*,**/*Test*,**/rexo/**}",
-		"sonarlint.pathToCompileCommands": "${workspaceFolder}/cmake/compile_commands.json"
+		"sonarlint.pathToCompileCommands": "${workspaceFolder}/coverage/compile_commands.json"
 	},
 	// C++ select language server:
 	// use either llvm-vs-code-extensions.vscode-clangd or ms-vscode.cpptools-extension-pack

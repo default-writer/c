@@ -13,4 +13,4 @@
 #include <ucontext.h>
 #include <unistd.h>
 
-#endif // _STD_HEADERS_H_
+#endif /* _STD_HEADERS_H_ */

@@ -24,7 +24,7 @@ typedef struct test_data {
 /* Initialize the data structure. Its allocation is handled by Rexo. */
 RX_SET_UP(test_set_up) {
     list->init();
-    // success
+    /* success */
     return RX_SUCCESS;
 }
 
@@ -35,26 +35,26 @@ RX_TEAR_DOWN(test_tear_down) {
 /* Define the fixture. */
 RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tear_down);
 
-// test context
+/* test context */
 RX_TEST_CASE(myTestSuite, test_list_push_v1, .fixture = test_fixture) {
-    // prepares the payload
+    /* prepares the payload */
     u8* payload = (void*)0xdeadbeef;
-    // pushes to the list multiple times
+    /* pushes to the list multiple times */
     list->push(payload);
     list->push(payload);
     list->push(payload);
     list->push(payload);
-    // pops from the list
+    /* pops from the list */
     list->pop();
     list->pop();
     list->pop();
-    // peeks from the list
+    /* peeks from the list */
     const void* head = list->peek();
-    // ensures data is added to the list
+    /* ensures data is added to the list */
     RX_ASSERT(head == payload);
 }
 
-// test context
+/* test context */
 RX_TEST_CASE(myTestSuite, test_context_enter_leave_v1, .fixture = test_fixture) {
     const struct class* context = &class_definition_v1;
     struct class_data* data = context->new ();
@@ -63,7 +63,7 @@ RX_TEST_CASE(myTestSuite, test_context_enter_leave_v1, .fixture = test_fixture) 
     context->delete (data);
 }
 
-// test context
+/* test context */
 RX_TEST_CASE(myTestSuite, test_class_get_set_data_v1, .fixture = test_fixture) {
     const struct class* context = &class_definition_v1;
     struct class_data* data = context->new ();
@@ -75,7 +75,7 @@ RX_TEST_CASE(myTestSuite, test_class_get_set_data_v1, .fixture = test_fixture) {
     context->delete (data);
 }
 
-// test context
+/* test context */
 RX_TEST_CASE(myTestSuite, test_class_push_pop_get_set_data_v1, .fixture = test_fixture) {
     const struct class* context = &class_definition_v1;
     struct class_data* data1 = context->new ();

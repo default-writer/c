@@ -7,4 +7,4 @@ void* _list_alloc(u64 size);
 void _list_free(void* ptr, u64 size);
 void* _list_realloc(void* ptr, u64 size);
 
-#endif // _COMMON_ALLOC_H_
+#endif /* _COMMON_ALLOC_H_ */

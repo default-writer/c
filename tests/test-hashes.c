@@ -22,7 +22,7 @@ uint32_t DJB2_hash(const uint8_t* str) {
 }
 
 uint32_t FNV(const void* key, int len, uint32_t h) {
-    // Source: https://github.com/aappleby/smhasher/blob/master/src/Hashes.cpp
+    /* Source: https://github.com/aappleby/smhasher/blob/master/src/Hashes.cpp */
     h ^= 2166136261UL;
     const uint8_t* data = (const uint8_t*)key;
     for (int i = 0; i < len; i++) {
@@ -33,8 +33,8 @@ uint32_t FNV(const void* key, int len, uint32_t h) {
 }
 
 uint32_t MurmurOAAT_32(const char* str, uint32_t h) {
-    // One-byte-at-a-time hash based on Murmur's mix
-    // Source: https://github.com/aappleby/smhasher/blob/master/src/Hashes.cpp
+    /* One-byte-at-a-time hash based on Murmur's mix */
+    /* Source: https://github.com/aappleby/smhasher/blob/master/src/Hashes.cpp */
     for (; *str; ++str) {
         h ^= *str;
         h *= 0x5bd1e995;
@@ -44,7 +44,7 @@ uint32_t MurmurOAAT_32(const char* str, uint32_t h) {
 }
 
 uint32_t KR_v2_hash(const char* s) {
-    // Source: https://stackoverflow.com/a/45641002/5407270
+    /* Source: https://stackoverflow.com/a/45641002/5407270 */
     uint32_t hashval = 0;
     for (hashval = 0; *s != '\0'; s++)
         hashval = *s + 31 * hashval;
@@ -64,7 +64,7 @@ uint32_t Jenkins_one_at_a_time_hash(const char* str, size_t len) {
 }
 
 uint32_t crc32b(const uint8_t* str) {
-    // Source: https://stackoverflow.com/a/21001712
+    /* Source: https://stackoverflow.com/a/21001712 */
     unsigned int byte, crc, mask;
     int i = 0, j;
     crc = 0xFFFFFFFF;
@@ -81,11 +81,11 @@ uint32_t crc32b(const uint8_t* str) {
 }
 
 inline uint32_t _rotl32(uint32_t x, int32_t bits) {
-    return x << bits | x >> (32 - bits); // C idiom: will be optimized to a single operation
+    return x << bits | x >> (32 - bits); /* C idiom: will be optimized to a single operation */
 }
 
 uint32_t Coffin_hash(char const* input) {
-    // Source: https://stackoverflow.com/a/7666668/5407270
+    /* Source: https://stackoverflow.com/a/7666668/5407270 */
     uint32_t result = 0x55555555;
     while (*input) {
         result ^= *input++;
@@ -95,7 +95,7 @@ uint32_t Coffin_hash(char const* input) {
 }
 
 uint32_t x17(const void* key, int len, uint32_t h) {
-    // Source: https://github.com/aappleby/smhasher/blob/master/src/Hashes.cpp
+    /* Source: https://github.com/aappleby/smhasher/blob/master/src/Hashes.cpp */
     const uint8_t* data = (const uint8_t*)key;
     for (int i = 0; i < len; ++i) {
         h = 17 * h + (data[i] - ' ');
@@ -105,8 +105,8 @@ uint32_t x17(const void* key, int len, uint32_t h) {
 
 /* hash: form hash value for string s */
 uint32_t default_hash(char* source) {
-    // One-byte-at-a-time hash based on Murmur's mix
-    // Source: https://github.com/aappleby/smhasher/blob/master/src/Hashes.cpp
+    /* One-byte-at-a-time hash based on Murmur's mix */
+    /* Source: https://github.com/aappleby/smhasher/blob/master/src/Hashes.cpp */
     uint32_t data = 0;
     if (source != 0) {
         uint32_t hash = ~0x5a32b847;
@@ -153,17 +153,17 @@ int main(int argc, char* argv[]) {
     if (argc == 1) {
         return 0;
     }
-    // Read arguments
+    /* Read arguments */
     const int hash_choice = atoi(argv[1]);
     char const* const fn = argv[2];
 
-    // Read file
+    /* Read file */
     FILE* f = fopen(fn, "r");
 
-    // Read file line by line, calculate hash
+    /* Read file line by line, calculate hash */
     char line[MAX_LINE];
     while (fgets(line, sizeof(line), f)) {
-        line[strcspn(line, "\n")] = '\0'; // strip newline
+        line[strcspn(line, "\n")] = '\0'; /* strip newline */
         uint32_t hash = apply_hash(hash_choice, line);
         printf("%08x\n", hash);
     }

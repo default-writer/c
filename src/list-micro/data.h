@@ -29,4 +29,4 @@ struct list {
 #endif
 };
 
-#endif // _LIST_MICRO_DATA_H_
+#endif /* _LIST_MICRO_DATA_H_ */

@@ -25,4 +25,4 @@ struct list {
 #endif
 };
 
-#endif // _LIST_ALLOC_DATA_H_
+#endif /* _LIST_ALLOC_DATA_H_ */

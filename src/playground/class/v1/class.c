@@ -44,7 +44,7 @@ static size_t _size(void) {
 
 /* allocates memory pointer */
 static struct class_data* _new(void) {
-    // returns class object
+    /* returns class object */
     return _list_alloc(_size());
 }
 
@@ -75,22 +75,22 @@ static void class_set_data(struct class_data* class, void* data) {
 }
 
 static void class_push(struct class_data* class) {
-    // pushes to the list
+    /* pushes to the list */
     list->push(&class_list_data, class);
 }
 
 static struct class_data* class_pop(void) {
-    // pops from the list
+    /* pops from the list */
     return list->pop(&class_list_data);
 }
 
 static void* class_get(void) {
-    // returns data
+    /* returns data */
     return class_get_data(list->peek(&class_list_data));
 }
 
 static void class_set(void* data) {
-    // updates the data
+    /* updates the data */
     class_set_data(list->peek(&class_list_data), data);
 }
 
@@ -99,7 +99,7 @@ static void class_set(void* data) {
 const struct class class_definition_v1 = {
     .new = class_new,
     .delete = class_delete,
-    // generic methods
+    /* generic methods */
     .push = class_push,
     .pop = class_pop,
     .get = class_get,

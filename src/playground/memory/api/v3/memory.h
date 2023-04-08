@@ -10,4 +10,4 @@ struct memory_allocator {
     void (*free)(void* data);
 };
 
-#endif // _PLAYGROUND_MEMORY_V2_H_
+#endif /* _PLAYGROUND_MEMORY_V2_H_ */

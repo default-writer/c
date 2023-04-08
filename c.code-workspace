@@ -149,7 +149,7 @@
             "workbench.colorTheme": "Yitzchok (rainglow)"
         },
         "sonarlint.testFilePattern": "{**/test/**,**/*test*,**/*Test*,**/rexo/**}",
-        "sonarlint.pathToCompileCommands": "${workspaceFolder}/cmake/compile_commands.json",
+        "sonarlint.pathToCompileCommands": "${workspaceFolder}/coverage/compile_commands.json",
         "editor.fontWeight": "normal",
         "window.zoomLevel": 2
     },

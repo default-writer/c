@@ -26,6 +26,18 @@ install="$1"
 
 case "${install}" in
 
+    "--configuration") # installs keyboard-configuration
+        export DEBIAN_FRONTEND=noninteractive
+        set -a && eval "$(sudo tee --append /etc/environment <<<'DEBIAN_FRONTEND=noninteractive')" && set +a
+        dpkg --configure -a
+        DEBIAN_FRONTEND=noninteractive apt-get install -y keyboard-configuration gettext-base
+        update
+        apt -y install --no-install-recommends curl ca-certificates git build-essential lldb lcov cmake clangd g++ gcc gdb lcov ninja-build
+        apt -y install --only-upgrade distro-info-data
+        upgrade
+        ;;
+
+
     "--llvm") # installs llvm and llvm-cov
         update
         apt install -y llvm
@@ -126,9 +138,9 @@ case "${install}" in
         ;;
 
     "--cmake") # installs cmake
-        update
         export DEBIAN_FRONTEND=noninteractive
         set -a && eval "$(sudo tee --append /etc/environment <<<'DEBIAN_FRONTEND=noninteractive')" && set +a
+        update
         wget https://github.com/Kitware/CMake/releases/download/v3.25.3/cmake-3.25.3-linux-x86_64.sh -O /tmp/cmake-3.25.3-linux-x86_64.sh
         chmod +x /tmp/cmake-3.25.3-linux-x86_64.sh
         [ ! -d "${pwd}/cmake-3.25" ] && mkdir ${pwd}/cmake-3.25

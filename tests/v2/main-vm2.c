@@ -98,4 +98,5 @@ int main(int argc, char** argv) {
     pointer->free(argv_ptr);
 #endif
     pointer->destroy();
+    return 0;
 }

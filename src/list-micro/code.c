@@ -11,7 +11,7 @@ static size_t _size(void) {
 
 /* allocates memory pointer */
 static struct list_data* _new(void) {
-    // returns list object
+    /* returns list object */
     return _list_alloc(_size());
 }
 
@@ -137,30 +137,30 @@ static void list_destroy(struct list_data** current) {
 
 #ifdef USE_MEMORY_DEBUG_INFO
 
-// prints head on current context (stack)
+/* prints head on current context (stack) */
 static void list_print_head(struct list_data** current) {
-    // get current context's head
+    /* get current context's head */
     struct list_data* ptr = *current;
-    // visualize item
+    /* visualize item */
     printf("   *: 0x%016llx >0x%016llx\n", (u64)ptr, (u64)list_data(ptr));
 }
 
-// prints all stack trace to output
+/* prints all stack trace to output */
 static void list_print(struct list_data** current) {
-    // sets the counter
+    /* sets the counter */
     int i = 0;
-    // assigns current's head pointer to the temporary
+    /* assigns current's head pointer to the temporary */
     struct list_data* tmp = *current;
     if (tmp != 0) {
-        // until we found root element (element with no previous element reference)
+        /* until we found root element (element with no previous element reference) */
         do {
-            // debug output of memory dump
+            /* debug output of memory dump */
             printf("%4d: 0x%016llx *0x%016llx\n", ++i, (u64)tmp, (u64)list_data(tmp));
-            // remember temporary's prior pointer value to temporary
+            /* remember temporary's prior pointer value to temporary */
             tmp = list_next(tmp);
         } while (tmp != 0 /*root*/);
     }
-    // stop on root element
+    /* stop on root element */
 }
 
 #endif
@@ -168,10 +168,10 @@ static void list_print(struct list_data** current) {
 /* public */
 
 const struct list list_micro_definition = {
-    // generic methods
+    /* generic methods */
     .init = list_init,
     .destroy = list_destroy,
-    // list methods
+    /* list methods */
     .push = list_push,
     .pop = list_pop,
     .peek = list_peek,

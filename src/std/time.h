@@ -25,4 +25,4 @@
 
 #define TIME_PRINT(s) printf("%0.3Lf\n", (long double)(TIME_VALUE(s)) / 1000.0);
 
-#endif // _STD_TIME_H_
+#endif /* _STD_TIME_H_ */

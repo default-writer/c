@@ -14,8 +14,8 @@ static struct list_data** cache;
 #endif
 
 struct vm_data {
-    struct pointer** sp; // stack pointer
-    struct pointer** bp; // base pointer
+    struct pointer** sp; /* stack pointer */
+    struct pointer** bp; /* base pointer */
     struct vm_data* prev;
     struct vm_data* next;
     u64 address_space;
@@ -119,7 +119,7 @@ static u64 vm_alloc_internal(struct vm_data** current) {
     *current = pointer;
     return address;
 }
-// #endif
+/* #endif */
 
 static u64 to_virtual_address_internal(struct vm_data* vm, struct pointer** ptr) {
     return (u64)(ptr - vm->bp) + vm->address_space + 1;

@@ -5,7 +5,31 @@
 # Learn more from ready-to-use templates: https://www.gitpod.io/docs/introduction/getting-started/quickstart
 
 tasks:
-  - before: ./bin/utils/init.sh
-  - init: ./bin/all.sh --all --clean --gc --valgrind
+  - init: ./bin/utils/init.sh
+    command: ./bin/test.sh --args
 
+github:
+  prebuilds:
+    master: true
+    branches: false
+    pullRequests: false
+    pullRequestsFromForks: false
+    addCheck: false
+    addComment: false
+    addBadge: false
 
+vscode:
+  extensions:
+    - mhutchie.git-graph
+    - donjayamanne.githistory
+    - codezombiech.gitignore
+    - sonarsource.sonarlint-vscode
+    - tenninebt.vscode-koverage
+    - twxs.cmake
+    - ryanluker.vscode-coverage-gutters
+    - ms-vscode.cmake-tools
+    - ms-vscode.live-server
+    - llvm-vs-code-extensions.vscode-clangd
+    - anweber.statusbar-commands
+    - vadimcn.vscode-lldb
+    - daylerees.rainglow

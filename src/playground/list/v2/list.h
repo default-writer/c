@@ -18,4 +18,4 @@ struct list {
     void* (*peek)(struct list_data* pointer);
 };
 
-#endif // _PLAYGROUND_LIST_V2_H_
+#endif /* _PLAYGROUND_LIST_V2_H_ */
