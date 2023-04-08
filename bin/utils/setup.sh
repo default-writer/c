@@ -26,14 +26,30 @@ install="$1"
 
 case "${install}" in
 
+    "--rustc") # installs rustc
+        export DEBIAN_FRONTEND=noninteractive
+        set -a && eval "$(sudo tee --append /etc/environment <<<'DEBIAN_FRONTEND=noninteractive')" && set +a
+        DEBIAN_FRONTEND=noninteractive apt-get install -y keyboard-configuration gettext-base
+        update
+        curl --silent --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -o /tmp/rustp-init.sh
+        chmod +x /tmp/rustp-init.sh
+        /tmp/rustp-init.sh -y --default-toolchain stable
+        rm -f /tmp/rustp-init.sh
+        apt install -y --only-upgrade gdm3 gir1.2-gdm-1.0 libgdm1 qemu-block-extra qemu-system-common qemu-system-data qemu-system-gui qemu-system-x86 qemu-utils
+        upgrade
+        ;;
+
+    "--fix-dpkg") # fixes broken dpkg install
+        dpkg --configure -a
+        ;;
+
     "--configuration") # installs keyboard-configuration
         export DEBIAN_FRONTEND=noninteractive
         set -a && eval "$(sudo tee --append /etc/environment <<<'DEBIAN_FRONTEND=noninteractive')" && set +a
-        dpkg --configure -a
         DEBIAN_FRONTEND=noninteractive apt-get install -y keyboard-configuration gettext-base
         update
-        apt -y install --no-install-recommends curl ca-certificates git build-essential lldb lcov cmake clangd g++ gcc gdb lcov ninja-build
-        apt -y install --only-upgrade distro-info-data
+        apt install -y --no-install-recommends curl ca-certificates git build-essential lldb lcov cmake clangd g++ gcc gdb lcov ninja-build
+        apt install -y --only-upgrade distro-info-data
         upgrade
         ;;
 
