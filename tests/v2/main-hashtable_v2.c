@@ -287,7 +287,7 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
             char* unsafe = file_data;
             u32 hash = hashtable->hash(unsafe);
             u32 count = hashtable->count(unsafe);
-            printf("  .#: 0x%016llx !0x%08lx (%6ld): %16s\n", (u64)unsafe, (u32)(hash % HASHTABLE_DEFAULT_SIZE), count, unsafe);
+            printf("  .#: 0x%016llx !0x%08lx (%6ld): %16s\n", (u64)unsafe, hash % HASHTABLE_DEFAULT_SIZE, count, unsafe);
             file_data = tmp;
         }
         pointer->list_free(list_ptr);
@@ -350,7 +350,7 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable_default_hash, .fi
             char* unsafe = file_data;
             u32 hash = hashtable->hash(unsafe);
             u32 count = hashtable->count(unsafe);
-            printf("  .#: 0x%016llx !0x%08lx (%6ld): %16s\n", (u64)unsafe, (u32)(hash % HASHTABLE_DEFAULT_SIZE), count, unsafe);
+            printf("  .#: 0x%016llx !0x%08lx (%6ld): %16s\n", (u64)unsafe, hash % HASHTABLE_DEFAULT_SIZE, count, unsafe);
             file_data = tmp;
         }
         pointer->list_free(list_ptr);
@@ -413,7 +413,7 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable_murmurhash3_hash,
             char* unsafe = file_data;
             u32 hash = hashtable->hash(unsafe);
             u32 count = hashtable->count(unsafe);
-            printf("  .#: 0x%016llx !0x%08lx (%6ld): %16s\n", (u64)unsafe, (u32)(hash % HASHTABLE_DEFAULT_SIZE), count, unsafe);
+            printf("  .#: 0x%016llx !0x%08lx (%6ld): %16s\n", (u64)unsafe, hash % HASHTABLE_DEFAULT_SIZE, count, unsafe);
             file_data = tmp;
         }
         pointer->list_free(list_ptr);
