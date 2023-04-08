@@ -1,0 +1,41 @@
+import { CheckBox, Button, ListView, LineEdit } from "std-widgets.slint";
+
+export struct TodoItem {
+    title: string,
+    checked: bool,
+}
+
+export component MainWindow {
+    callback todo_added(string);
+    property <[TodoItem]> todo_model;
+
+    GridLayout {
+        Row {
+            text_edit := LineEdit {
+                accepted(text) => { todo_added(text); }
+            }
+            Button {
+                text: "Add Todo";
+                clicked => {
+                    todo_added(text_edit.text);
+                }
+            }
+        }
+        list_view := ListView {
+            rowspan: 2;
+            row: 2;
+            for todo in todo_model: Rectangle {
+                height: 20px;
+                GridLayout {
+                    CheckBox {
+                        text: todo.title;
+                        checked: todo.checked;
+                        toggled => {
+                            todo.checked = self.checked;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

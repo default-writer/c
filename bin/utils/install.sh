@@ -33,8 +33,21 @@ case "${install}" in
         chmod +x /tmp/rustp-init.sh
         /tmp/rustp-init.sh -y --default-toolchain stable
         rm -f /tmp/rustp-init.sh
+        ;;
+    
+    "--slint-viwer") # installs slint-viewer
         . $HOME/.cargo/env
         cargo install slint-viewer
+        ;;
+
+    "--slint") # installs slint
+        [ ! -d "${pwd}/slint" ] && mkdir "${pwd}/slint"
+        wget "https://github.com/slint-ui/slint/releases/download/v1.0.0/Slint-cpp-1.0.0-Linux-x86_64.tar.gz" -qO "/tmp/slint.tar.gz"
+        [ -d "/tmp/Slint-cpp-1.0.0-Linux-x86_64" ] && rm -rf "/tmp/Slint-cpp-1.0.0-Linux-x86_64"
+        tar -xzvf "/tmp/slint.tar.gz" -C "/tmp/"
+        [ -d "${pwd}/slint/" ] && rm -rf "${pwd}/slint/"
+        mv -f "/tmp/Slint-cpp-1.0.0-Linux-x86_64/" "${pwd}/slint/"
+        rm -f "/tmp/slint.tar.gz"
         ;;
 
     "--clangd") # installs clangd 15.0.6

@@ -1,6 +1,7 @@
 -Isrc
 -Isrc/std
 -Isrc/common
+-Islint/include/slint
 -DCONFIG_MEMORY_DEBUG_INFO
 -DCONFIG_MEMORY_CLEANUP
 -DCODE_SANITIZER

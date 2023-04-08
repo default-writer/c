@@ -67,3 +67,6 @@ callgrind.out.*
 wget-log*
 cmake-3.25
 cmake-3.25/**/*
+CMakeFiles
+slint
+input.txt

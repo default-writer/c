@@ -2,10 +2,15 @@ cmake_minimum_required(VERSION 3.22.1)
 
 project(list VERSION 0.0.1 LANGUAGES C CXX)
 
+set(CMAKE_PREFIX_PATH ${CMAKE_CURRENT_SOURCE_DIR}/slint)
+set(LD_LIBRARY_PATH ${CMAKE_CURRENT_SOURCE_DIR}/slint/lib)
+
+find_package(Slint)
+
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -22,57 +27,57 @@ set(CONFIG_MEMORY_CLEANUP ON)
 set(CONFIG_MEMORY_ALLOC OFF)
 
 set(STANDARD
-    -save-temps
-    -std=gnu99
-    -fgnu89-inline
+    # -save-temps
+    # -std=gnu99
+    # -fgnu89-inline
 )
 
 set(INLINE 
-    -finline-functions-called-once
+    # -finline-functions-called-once
 )
 
 set(CLANGD
-    -fsanitize=bounds-strict
-    -static-libasan
+    # -fsanitize=bounds-strict
+    # -static-libasan
 )
 
 set(SANITIZE
-    -fsanitize=address,undefined,leak,pointer-compare,pointer-subtract,float-cast-overflow,float-divide-by-zero
-    -fsanitize-undefined-trap-on-error
-    -fno-sanitize-recover=all
+    # -fsanitize=address,undefined,leak,pointer-compare,pointer-subtract,float-cast-overflow,float-divide-by-zero
+    # -fsanitize-undefined-trap-on-error
+    # -fno-sanitize-recover=all
 )
 
 set(NO_SANITIZE
-    -fno-sanitize=all
+    # -fno-sanitize=all
 )
 
 set(OPTIONS
-    -Winline
-    -Wpedantic
-    -Werror
-    -Wall
-    -Wextra
-    -Waggregate-return
-    -Wcast-align
-    -Wcast-qual
-    -Wconversion
-    -Wfloat-equal
-    -Wpointer-arith
-    -Wshadow
-    -Wstrict-overflow=5
-    -Wswitch
-    -Wswitch-default
-    -Wundef
-    -Wunreachable-code
-    -Wwrite-strings
-    -Wformat-nonliteral
-    -Wno-implicit-fallthrough
+    # -Winline
+    # -Wpedantic
+    # -Werror
+    # -Wall
+    # -Wextra
+    # -Waggregate-return
+    # -Wcast-align
+    # -Wcast-qual
+    # -Wconversion
+    # -Wfloat-equal
+    # -Wpointer-arith
+    # -Wshadow
+    # -Wstrict-overflow=5
+    # -Wswitch
+    # -Wswitch-default
+    # -Wundef
+    # -Wunreachable-code
+    # -Wwrite-strings
+    # -Wformat-nonliteral
+    # -Wno-implicit-fallthrough
 )
 
 set(STRICT
-    -Wstrict-prototypes
-    -Wmissing-prototypes
-    -Wold-style-definition
+    # -Wstrict-prototypes
+    # -Wmissing-prototypes
+    # -Wold-style-definition
 )
 
 if(CONFIG_MEMORY_DEBUG_INFO)
@@ -220,6 +225,7 @@ set(MAIN_VM1_SOURCE tests/v1/main-vm1.c)
 set(MAIN_VM2_SOURCE tests/v2/main-vm2.c)
 set(MAIN_ZEN_SOURCE src/playground/zen/zen.c)
 set(MAIN_HASHES tests/test-hashes.c)
+set(MAIN_UI src/ui/my_application_ui.cpp)
 
 include_directories(src)
 
@@ -274,6 +280,7 @@ add_executable(main-vm1 ${MAIN_VM1_SOURCE})
 add_executable(main-vm2 ${MAIN_VM2_SOURCE})
 add_executable(main-zen ${MAIN_ZEN_SOURCE})
 add_executable(test-hashes ${MAIN_HASHES})
+add_executable(my_application ${MAIN_UI})
 
 target_link_libraries(hashtable1 PRIVATE list-lcg)
 target_link_libraries(hashtable2 PRIVATE list-lcg)
@@ -305,8 +312,15 @@ target_link_libraries(main-hashtable1 PRIVATE list-pointer1 list-micro vm-v1 has
 target_link_libraries(main-hashtable2 PRIVATE list-pointer2 list-micro hashtable2)
 target_link_libraries(main-vm1 PRIVATE list-pointer1 list-micro vm-v1)
 target_link_libraries(main-vm2 PRIVATE list-pointer2 list-micro)
+target_link_libraries(my_application PRIVATE Slint::Slint libslint_cpp.so)
 
-configure_file(all_english_words.txt ${CMAKE_BINARY_DIR}/all_english_words.txt COPYONLY)
+slint_target_sources(my_application src/ui/my_application_ui.slint)
+
+if (WIN32)
+    add_custom_command(TARGET my_application POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:my_application> $<TARGET_FILE_DIR:my_application> COMMAND_EXPAND_LISTS)
+endif()
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/all_english_words.txt ${CMAKE_BINARY_DIR}/all_english_words.txt COPYONLY)
 
 FILE(WRITE ${CMAKE_BINARY_DIR}/input.txt
     "fopen<\"input.txt\",\"rb\">f (? f==0 perror<\"file not found\" exit<1 : print<\"all ok\")"
@@ -315,7 +329,7 @@ FILE(WRITE ${CMAKE_BINARY_DIR}/input.txt
 if(TARGETS)
 
 get_property(target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
-list(FILTER target_names INCLUDE REGEX "^main-")
+list(FILTER target_names INCLUDE REGEX "^main-" "^test-" "^my_")
 string(REGEX REPLACE ";" " " target_names "${target_names}")
 
 FILE(WRITE ${CMAKE_BINARY_DIR}/targets.txt

@@ -140,6 +140,7 @@ ${cmake} \
     -DCMAKE_BUILD_TYPE:STRING=Debug \
     -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
     -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
+    -DCMAKE_PREFIX_PATH="${pwd}"\slint \
     $(cmake-options) \
     -S"${pwd}" \
     -B"${pwd}/build" \

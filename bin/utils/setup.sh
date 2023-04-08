@@ -32,7 +32,7 @@ case "${install}" in
 
     "--rustc") # installs rustc
         export DEBIAN_FRONTEND=noninteractive
-        set -a && eval "$(sudo tee --append /etc/environment <<<'DEBIAN_FRONTEND=noninteractive')" && set +a
+        set -a && eval "$(tee --append /etc/environment <<<'DEBIAN_FRONTEND=noninteractive')" && set +a
         DEBIAN_FRONTEND=noninteractive apt-get install -y keyboard-configuration gettext-base
         update
         apt install -y --only-upgrade gdm3 gir1.2-gdm-1.0 libgdm1 qemu-block-extra qemu-system-common qemu-system-data qemu-system-gui qemu-system-x86 qemu-utils
@@ -41,9 +41,16 @@ case "${install}" in
         upgrade
         ;;
 
+    "--slint-compiler") # installs slint-compiler
+        # update
+        export PATH=$PATH:"${pwd}/slint/bin/":"${pwd}/slint/include/":"${pwd}/lib/"
+        ln -s "${pwd}/slint/Slint-cpp-1.0.0-Linux-x86_64/bin/slint-compiler" "/usr/bin/slint-compiler"
+        # upgrade
+        ;;
+
     "--configuration") # installs keyboard-configuration
         export DEBIAN_FRONTEND=noninteractive
-        set -a && eval "$(sudo tee --append /etc/environment <<<'DEBIAN_FRONTEND=noninteractive')" && set +a
+        set -a && eval "$(tee --append /etc/environment <<<'DEBIAN_FRONTEND=noninteractive')" && set +a
         DEBIAN_FRONTEND=noninteractive apt-get install -y keyboard-configuration gettext-base
         update
         apt install -y --no-install-recommends curl ca-certificates git build-essential lldb lcov cmake clangd g++ gcc gdb lcov ninja-build
@@ -70,8 +77,8 @@ case "${install}" in
         update
         apt install -y apt-transport-https curl gnupg
         curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --batch --yes --dearmor >bazel-archive-keyring.gpg
-        sudo mv bazel-archive-keyring.gpg /usr/share/keyrings
-        echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8" | sudo tee /etc/apt/sources.list.d/bazel.list
+        mv bazel-archive-keyring.gpg /usr/share/keyrings
+        echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8" | tee /etc/apt/sources.list.d/bazel.list
         update
         apt install -y bazel
         upgrade
@@ -132,7 +139,7 @@ case "${install}" in
 
     "--clang-lldb-mi") # installs lldb-mi dependencies
         update
-        apt-get install -y libclang-dev liblldb-dev || sudo apt-get install libclang-6.0-dev liblldb-6.0-dev || sudo apt-get install libclang-4.0-dev liblldb-4.0-dev || sudo apt-get install libclang-3.8-dev liblldb-3.8-dev
+        apt-get install -y libclang-dev liblldb-dev || apt-get install libclang-6.0-dev liblldb-6.0-dev || apt-get install libclang-4.0-dev liblldb-4.0-dev || apt-get install libclang-3.8-dev liblldb-3.8-dev
         apt install python3-lldb-14
         ln -s /usr/lib/llvm-14/lib/python3.10/dist-packages/lldb/* /usr/lib/python3/dist-packages/lldb/
         upgrade
@@ -140,10 +147,10 @@ case "${install}" in
 
     "--clang-format") # installs clang-format
         update
-        sudo wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
+        wget -qO - https://apt.llvm.org/llvm-snapshot.gpg.key|apt-key add -
         build=$(echo $(lsb_release -a 2>&1 | tail -1 | sed  -e 's/\w*:\s*//g'))
         repository=$(echo deb http://apt.llvm.org/${build} llvm-toolchain-${build} main)
-        sudo add-apt-repository --yes "${repository}"
+        add-apt-repository --yes "${repository}"
         upgrade
         apt install -y clang-format
         apt install -y apport apport-gtk python3-apport python3-problem-report gnome-remote-desktop grub-common grub-pc grub-pc-bin grub2-common gstreamer1.0-pipewire  open-vm-tools open-vm-tools-desktop python3-software-properties software-properties-common software-properties-gtk libgbm1 libgl1-mesa-dri libglapi-mesa libglx-mesa0 mesa-va-drivers mesa-vulkan-drivers
@@ -153,12 +160,12 @@ case "${install}" in
 
     "--cmake") # installs cmake
         export DEBIAN_FRONTEND=noninteractive
-        set -a && eval "$(sudo tee --append /etc/environment <<<'DEBIAN_FRONTEND=noninteractive')" && set +a
+        set -a && eval "$(tee --append /etc/environment <<<'DEBIAN_FRONTEND=noninteractive')" && set +a
         update
-        wget https://github.com/Kitware/CMake/releases/download/v3.25.3/cmake-3.25.3-linux-x86_64.sh -O /tmp/cmake-3.25.3-linux-x86_64.sh
+        wget https://github.com/Kitware/CMake/releases/download/v3.25.3/cmake-3.25.3-linux-x86_64.sh -qO /tmp/cmake-3.25.3-linux-x86_64.sh
         chmod +x /tmp/cmake-3.25.3-linux-x86_64.sh
         [ ! -d "${pwd}/cmake-3.25" ] && mkdir ${pwd}/cmake-3.25
-        DEBIAN_FRONTEND=noninteractive sudo /tmp/cmake-3.25.3-linux-x86_64.sh --prefix=${pwd}/cmake-3.25 --skip-license
+        DEBIAN_FRONTEND=noninteractive /tmp/cmake-3.25.3-linux-x86_64.sh --prefix=${pwd}/cmake-3.25 --skip-license
         rm /tmp/cmake-3.25.3-linux-x86_64.sh
         apt install -y --no-install-recommends curl ca-certificates git build-essential lldb lcov cmake clangd clang-format g++ gcc gdb lcov ninja-build
         upgrade
