@@ -315,7 +315,7 @@ FILE(WRITE ${CMAKE_BINARY_DIR}/input.txt
 if(TARGETS)
 
 get_property(target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
-list(FILTER target_names INCLUDE REGEX "^main-" "^test-")
+list(FILTER target_names INCLUDE REGEX "^main-")
 string(REGEX REPLACE ";" " " target_names "${target_names}")
 
 FILE(WRITE ${CMAKE_BINARY_DIR}/targets.txt
