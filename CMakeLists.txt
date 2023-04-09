@@ -220,7 +220,7 @@ set(MAIN_VM1_SOURCE tests/v1/main-vm1.c)
 set(MAIN_VM2_SOURCE tests/v2/main-vm2.c)
 set(MAIN_ZEN_SOURCE src/playground/zen/zen.c)
 set(TEST_HASHES tests/test-hashes.c)
-set(GTK_EXPERIMENT ui/gtk-experiment.c)
+set(GTK_EXPERIMENT src/ui/gtk-experiment.c)
 
 include_directories(src)
 
@@ -277,13 +277,12 @@ add_executable(main-zen ${MAIN_ZEN_SOURCE})
 add_executable(test-hashes ${TEST_HASHES})
 add_executable(gtk-experiment ${GTK_EXPERIMENT})
 
-if(TARGET "gtk-experiment")
-    find_package(PkgConfig REQUIRED)
-    pkg_check_modules(GTK REQUIRED gtk4)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(GTK REQUIRED gtk4)
 
+if(TARGET "gtk-experiment")
     include_directories(${GTK_INCLUDE_DIRS})
     link_directories(${GTK_LIBRARY_DIRS})  
-     
     target_link_libraries(gtk-experiment STATIC gtk4)
 endif()
 
