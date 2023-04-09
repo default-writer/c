@@ -220,6 +220,7 @@ set(MAIN_VM1_SOURCE tests/v1/main-vm1.c)
 set(MAIN_VM2_SOURCE tests/v2/main-vm2.c)
 set(MAIN_ZEN_SOURCE src/playground/zen/zen.c)
 set(TEST_HASHES tests/test-hashes.c)
+set(GTK_EXPERIMENT ui/gtk-experiment.c)
 
 include_directories(src)
 
@@ -274,6 +275,7 @@ add_executable(main-vm1 ${MAIN_VM1_SOURCE})
 add_executable(main-vm2 ${MAIN_VM2_SOURCE})
 add_executable(main-zen ${MAIN_ZEN_SOURCE})
 add_executable(test-hashes ${TEST_HASHES})
+add_executable(gtk-experiment ${GTK_EXPERIMENT})
 
 target_link_libraries(hashtable1 PRIVATE list-lcg)
 target_link_libraries(hashtable2 PRIVATE list-lcg)
@@ -316,15 +318,18 @@ if(TARGETS)
 
 get_property(main_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
 get_property(test_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
+get_property(gtk_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
 
 list(FILTER main_target_names INCLUDE REGEX "^main-")
 list(FILTER test_target_names INCLUDE REGEX "^test-")
+list(FILTER gtk_target_names INCLUDE REGEX "^gtk-")
 
 string(REGEX REPLACE ";" " " main_target_names "${main_target_names}")
 string(REGEX REPLACE ";" " " test_target_names "${test_target_names}")
+string(REGEX REPLACE ";" " " gtk_target_names "${gtk_target_names}")
 
 FILE(WRITE ${CMAKE_BINARY_DIR}/targets.txt
-    "${main_target_names} ${test_target_names}"
+    "${main_target_names} ${test_target_names} ${gtk_target_names}"
 )
 
 endif()

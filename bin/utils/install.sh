@@ -27,8 +27,7 @@ install="$1"
 case "${install}" in
 
     "--rustc") # installs rustc
-        export DEBIAN_FRONTEND=noninteractive
-        set -a && eval "$(sudo tee --append /etc/environment <<<'DEBIAN_FRONTEND=noninteractive')" && set +a
+        DEBIAN_FRONTEND=noninteractive apt-get install -y keyboard-configuration gettext-base
         curl --silent --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -o /tmp/rustp-init.sh
         chmod +x /tmp/rustp-init.sh
         /tmp/rustp-init.sh -y --default-toolchain stable

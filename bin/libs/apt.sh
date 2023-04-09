@@ -10,6 +10,9 @@ trap 'err_report $LINENO' ERR
 function update() {
     apt install -y --fix-broken
     apt update -y --fix-missing
+    dpkg --configure -a
+    export DEBIAN_FRONTEND=noninteractive
+    set -a && eval "$(sudo tee --append /etc/environment <<<'DEBIAN_FRONTEND=noninteractive')" && set +a
 }
 
 function upgrade() {

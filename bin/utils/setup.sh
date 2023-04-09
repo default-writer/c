@@ -26,14 +26,11 @@ install="$1"
 
 case "${install}" in
 
-    "--fix-dpkg") # fixes broken dpkg install
-        dpkg --configure -a
+    "--gtk-4") # installs GTK 4
+        apt install -y libgtk-4-1 libgtk-4-dev
         ;;
 
     "--rustc") # installs rustc
-        export DEBIAN_FRONTEND=noninteractive
-        set -a && eval "$(sudo tee --append /etc/environment <<<'DEBIAN_FRONTEND=noninteractive')" && set +a
-        DEBIAN_FRONTEND=noninteractive apt-get install -y keyboard-configuration gettext-base
         update
         apt install -y --only-upgrade gdm3 gir1.2-gdm-1.0 libgdm1 qemu-block-extra qemu-system-common qemu-system-data qemu-system-gui qemu-system-x86 qemu-utils
         apt install -y cargo pkg-config fontconfig
@@ -42,10 +39,8 @@ case "${install}" in
         ;;
 
     "--configuration") # installs keyboard-configuration
-        export DEBIAN_FRONTEND=noninteractive
-        set -a && eval "$(sudo tee --append /etc/environment <<<'DEBIAN_FRONTEND=noninteractive')" && set +a
-        DEBIAN_FRONTEND=noninteractive apt-get install -y keyboard-configuration gettext-base
         update
+        DEBIAN_FRONTEND=noninteractive apt-get install -y keyboard-configuration gettext-base
         apt install -y --no-install-recommends curl ca-certificates git build-essential lldb lcov cmake clangd g++ gcc gdb lcov ninja-build
         apt install -y --only-upgrade distro-info-data
         upgrade
@@ -152,8 +147,6 @@ case "${install}" in
         ;;
 
     "--cmake") # installs cmake
-        export DEBIAN_FRONTEND=noninteractive
-        set -a && eval "$(sudo tee --append /etc/environment <<<'DEBIAN_FRONTEND=noninteractive')" && set +a
         update
         wget https://github.com/Kitware/CMake/releases/download/v3.25.3/cmake-3.25.3-linux-x86_64.sh -O /tmp/cmake-3.25.3-linux-x86_64.sh
         chmod +x /tmp/cmake-3.25.3-linux-x86_64.sh
