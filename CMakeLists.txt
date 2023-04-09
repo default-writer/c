@@ -48,7 +48,7 @@ set(NO_SANITIZE
 
 set(OPTIONS
     -Winline
-    -Wpedantic
+    # -Wpedantic
     -Werror
     -Wall
     -Wextra
@@ -67,6 +67,7 @@ set(OPTIONS
     -Wwrite-strings
     -Wformat-nonliteral
     -Wno-implicit-fallthrough
+    -Wno-unused-parameter
 )
 
 set(STRICT
@@ -277,13 +278,11 @@ add_executable(main-zen ${MAIN_ZEN_SOURCE})
 add_executable(test-hashes ${TEST_HASHES})
 add_executable(gtk-experiment ${GTK_EXPERIMENT})
 
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(GTK REQUIRED gtk4)
-
 if(TARGET "gtk-experiment")
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(GTK REQUIRED gtk4)
     include_directories(${GTK_INCLUDE_DIRS})
     link_directories(${GTK_LIBRARY_DIRS})  
-    target_link_libraries(gtk-experiment STATIC gtk4)
 endif()
 
 target_link_libraries(hashtable1 PRIVATE list-lcg)

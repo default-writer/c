@@ -28,7 +28,7 @@ case "${install}" in
 
     "--gtk4") # installs GTK 4
         update
-        apt install -y gnome-devel libgtk-4-1 libgtk2.0-dev libgtk-3-dev libgtk-4-dev
+        apt install -y gnome-devel glib2.0 libgtk-4-1 libgtk2.0-dev libgtk-3-dev libgtk-4-dev
         upgrade
         ;;
 
