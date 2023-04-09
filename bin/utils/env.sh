@@ -53,6 +53,14 @@ case "${install}" in
         grep -qxF '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"' $HOME/.bashrc || echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"' >> $HOME/.bashrc
         ;;
 
+    "--gtk") # installs GTK 4 environment variables in .bashrc
+        GTK_INCLUDE_DIRS=$(echo $(pkg-config --cflags gtk4))
+        GTK_LIBRARY_DIRS=$(echo $(pkg-config --libs gtk4))
+        grep -qxF '# gtk' $HOME/.bashrc || (tail -1 $HOME/.bashrc | grep -qxF '' || echo '' >> $HOME/.bashrc && echo '# gtk' >> $HOME/.bashrc)
+        grep -qxF 'export GTK_INCLUDE_DIRS="' $HOME/.bashrc || echo 'export GTK_INCLUDE_DIRS="' ${GTK_INCLUDE_DIRS} '"' >> $HOME/.bashrc
+        grep -qxF 'export GTK_LIBRARY_DIRS="' $HOME/.bashrc || echo 'export GTK_LIBRARY_DIRS="' ${GTK_LIBRARY_DIRS} '"' >> $HOME/.bashrc
+        ;;
+
     *)
         commands=$(cat $0 | sed -e 's/^[ \t]*//;' | sed -e '/^[ \t]*$/d' | sed -n -e 's/^"\(.*\)".*#/    \1:/p' | sed -n -e 's/: /:\n        /p')
         script="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"

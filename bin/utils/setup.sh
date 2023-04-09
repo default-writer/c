@@ -26,8 +26,10 @@ install="$1"
 
 case "${install}" in
 
-    "--gtk-4") # installs GTK 4
+    "--gtk4") # installs GTK 4
+        update
         apt install -y libgtk-4-1 libgtk-4-dev
+        upgrade
         ;;
 
     "--rustc") # installs rustc

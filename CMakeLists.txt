@@ -277,6 +277,16 @@ add_executable(main-zen ${MAIN_ZEN_SOURCE})
 add_executable(test-hashes ${TEST_HASHES})
 add_executable(gtk-experiment ${GTK_EXPERIMENT})
 
+if(TARGET "gtk-experiment")
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(GTK REQUIRED gtk4)
+
+    include_directories(${GTK_INCLUDE_DIRS})
+    link_directories(${GTK_LIBRARY_DIRS})  
+     
+    target_link_libraries(gtk-experiment STATIC gtk4)
+endif()
+
 target_link_libraries(hashtable1 PRIVATE list-lcg)
 target_link_libraries(hashtable2 PRIVATE list-lcg)
 target_link_libraries(list-alloc PRIVATE list-parameters)
