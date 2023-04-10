@@ -5,12 +5,17 @@
   },
   "configurations": [
     {
-      "name": "c89",
-      "includePath": ["${workspaceFolder}/src"],
-      "defines": [],
+      "name": "default",
+      "includePath": [
+        "${workspaceFolder}/src",
+        "${default}"
+      ],
+      "defines": [
+        "MAJOR_VERSION=1"
+      ],
       "compilerPath": "/usr/bin/gcc",
-      "cStandard": "c89",
-      "cppStandard": "gnu++14",
+      "cStandard": "gnu89",
+      "cppStandard": "gnu++98",
       "intelliSenseMode": "${default}",
       "compilerArgs": ["--coverage"],
       "browse": {
