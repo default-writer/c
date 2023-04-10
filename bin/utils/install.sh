@@ -40,7 +40,7 @@ case "${install}" in
         [ ! -d "${pwd}/.tools" ] && mkdir "${pwd}/.tools"
         wget https://github.com/clangd/clangd/releases/download/15.0.6/clangd-linux-15.0.6.zip -qO "/tmp/clangd-linux-15.0.6.zip"
         unzip -o -q "/tmp/clangd-linux-15.0.6.zip" -d "/tmp"
-        cp -a "/tmp/clangd_15.0.6/." "${pwd}/.tools/"
+        cp -a "/tmp/clangd_15.0.6/." "${pwd}/.tools/clangd_15.0.6"
         rm -rf "/tmp/clangd-linux-15.0.6"
         rm -f "/tmp/clangd-linux-15.0.6.zip"
         ;;
@@ -49,7 +49,7 @@ case "${install}" in
         [ ! -d "${pwd}/.tools" ] && mkdir "${pwd}/.tools"
         wget https://github.com/Kitware/CMake/releases/download/v3.25.3/cmake-3.25.3-linux-x86_64.sh -qO "/tmp/cmake-3.25.3-linux-x86_64.sh"
         chmod +x "/tmp/cmake-3.25.3-linux-x86_64.sh"
-        DEBIAN_FRONTEND=noninteractive /tmp/cmake-3.25.3-linux-x86_64.sh --prefix=${pwd}/.tools --skip-license
+        DEBIAN_FRONTEND=noninteractive /tmp/cmake-3.25.3-linux-x86_64.sh --prefix=${pwd}/.tools/cmake-3.25 --skip-license
         rm "/tmp/cmake-3.25.3-linux-x86_64.sh"
         ;;
 
