@@ -23,7 +23,7 @@ set(CONFIG_MEMORY_ALLOC OFF)
 
 set(STANDARD
     -save-temps
-    -std=gnu99
+    -std=gnu89
     -fgnu89-inline
 )
 
@@ -281,6 +281,14 @@ add_executable(gtk-experiment ${GTK_EXPERIMENT})
 if(TARGET "gtk-experiment")
     find_package(PkgConfig REQUIRED)
     pkg_check_modules(GTK REQUIRED gtk4)
+
+    include_directories(${GTK_INCLUDE_DIRS})
+    link_directories(${GTK_LIBRARY_DIRS})
+
+    target_link_libraries(gtk-experiment ${GTK_LIBRARIES})
+    target_include_directories(gtk-experiment PRIVATE ${GTK_INCLUDE_DIRS})
+    target_link_directories(gtk-experiment PRIVATE ${GTK_LIBRARY_DIRS})
+
     include_directories(${GTK_INCLUDE_DIRS})
     link_directories(${GTK_LIBRARY_DIRS})  
 endif()

@@ -64,6 +64,4 @@ src/rexo
 gh
 .~*
 callgrind.out.*
-wget-log*
-cmake-3.25
-cmake-3.25/**/*
+.tools
