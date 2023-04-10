@@ -149,7 +149,9 @@ for target in ${targets[@]}; do
     else
         ${cmake} --build "${pwd}/coverage" --target "${target}" || (echo ERROR: "${target}" && exit 1)
     fi
-    timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/coverage/${target}" 2>&1 >"${pwd}/coverage/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
+    case "${target}" in main-*)    
+        timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/coverage/${target}" 2>&1 >"${pwd}/coverage/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
+    esac
     lcov --capture --directory "${pwd}/coverage/" --output-file "${pwd}/coverage/${target}.lcov" &>/dev/null
     lcov --remove "${pwd}/coverage/${target}.lcov" "${pwd}/src/rexo/*" -o "${pwd}/coverage/${target}.lcov"
 done
