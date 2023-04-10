@@ -37,12 +37,20 @@ case "${install}" in
         ;;
 
     "--clangd") # installs clangd 15.0.6
-        if [ ! -f "${pwd}/clangd/clangd_15.0.6/bin/clangd" ]; then
-            [ ! -d "${pwd}/clangd" ] && mkdir "${pwd}/clangd"
-            curl --silent -L https://github.com/clangd/clangd/releases/download/15.0.6/clangd-linux-15.0.6.zip -o "${pwd}/clangd/clangd-linux-15.0.6.zip"
-            unzip -o -q "${pwd}/clangd/clangd-linux-15.0.6.zip" -d "${pwd}/clangd/"
-            rm -f "${pwd}/clangd/clangd-linux-15.0.6.zip"
-        fi
+        [ ! -d "${pwd}/.tools" ] && mkdir "${pwd}/.tools"
+        wget https://github.com/clangd/clangd/releases/download/15.0.6/clangd-linux-15.0.6.zip -qO "/tmp/clangd-linux-15.0.6.zip"
+        unzip -o -q "/tmp/clangd-linux-15.0.6.zip" -d "/tmp"
+        cp -a "/tmp/clangd_15.0.6/." "${pwd}/.tools/"
+        rm -rf "/tmp/clangd-linux-15.0.6"
+        rm -f "/tmp/clangd-linux-15.0.6.zip"
+        ;;
+
+    "--cmake") # installs cmake
+        [ ! -d "${pwd}/.tools" ] && mkdir "${pwd}/.tools"
+        wget https://github.com/Kitware/CMake/releases/download/v3.25.3/cmake-3.25.3-linux-x86_64.sh -qO "/tmp/cmake-3.25.3-linux-x86_64.sh"
+        chmod +x "/tmp/cmake-3.25.3-linux-x86_64.sh"
+        DEBIAN_FRONTEND=noninteractive /tmp/cmake-3.25.3-linux-x86_64.sh --prefix=${pwd}/.tools --skip-license
+        rm "/tmp/cmake-3.25.3-linux-x86_64.sh"
         ;;
 
     "--env") # installs env variables ('. ./install.sh env')

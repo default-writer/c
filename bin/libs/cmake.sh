@@ -9,7 +9,7 @@ trap 'err_report $LINENO' ERR
 
 function get-cmake() {
     local cmake=${cmake-cmake}
-    [ -d "${pwd}/cmake-3.25/bin" ] && cmake=${pwd}/cmake-3.25/bin/cmake || cmake=${cmake}
+    [ -d "${pwd}/.tools/cmake-3.25/bin" ] && cmake=${pwd}/.tools/cmake-3.25/bin/cmake || cmake=${cmake}
     echo ${cmake}
 }
 

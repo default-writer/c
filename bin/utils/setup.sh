@@ -150,11 +150,6 @@ case "${install}" in
 
     "--cmake") # installs cmake
         update
-        wget https://github.com/Kitware/CMake/releases/download/v3.25.3/cmake-3.25.3-linux-x86_64.sh -O /tmp/cmake-3.25.3-linux-x86_64.sh
-        chmod +x /tmp/cmake-3.25.3-linux-x86_64.sh
-        [ ! -d "${pwd}/cmake-3.25" ] && mkdir ${pwd}/cmake-3.25
-        DEBIAN_FRONTEND=noninteractive sudo /tmp/cmake-3.25.3-linux-x86_64.sh --prefix=${pwd}/cmake-3.25 --skip-license
-        rm /tmp/cmake-3.25.3-linux-x86_64.sh
         apt install -y --no-install-recommends curl ca-certificates git build-essential lldb lcov cmake clangd clang-format g++ gcc gdb lcov ninja-build
         upgrade
         ;;

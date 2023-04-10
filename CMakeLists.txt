@@ -23,7 +23,7 @@ set(CONFIG_MEMORY_ALLOC OFF)
 
 set(STANDARD
     -save-temps
-    -std=gnu99
+    -std=gnu89
     -fgnu89-inline
 )
 
@@ -147,8 +147,8 @@ if(CODE_COVERAGE)
             message(FATAL_ERROR "genhtml not found! Aborting...")
         endif()
 
-        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --coverage -fprofile-arcs -ftest-coverage")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage -fprofile-arcs -ftest-coverage")
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --coverage -ftest-coverage")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage -ftest-coverage")
     else()
         message(FATAL_ERROR "Code coverage requires Clang or GCC. Aborting.")
     endif()
@@ -156,7 +156,7 @@ if(CODE_COVERAGE)
         add_compile_options(-fprofile-instr-generate -fcoverage-mapping)
         add_link_options(-fprofile-instr-generate -fcoverage-mapping)
     elseif(CMAKE_C_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-        add_compile_options(-fprofile-arcs -ftest-coverage)
+        add_compile_options(-ftest-coverage)
         link_libraries(gcov)
     endif()
 endif()
@@ -281,6 +281,16 @@ add_executable(gtk-experiment ${GTK_EXPERIMENT})
 if(TARGET "gtk-experiment")
     find_package(PkgConfig REQUIRED)
     pkg_check_modules(GTK REQUIRED gtk4)
+
+    include_directories(${GTK_INCLUDE_DIRS})
+    link_directories(${GTK_LIBRARY_DIRS})
+    add_definitions(${GTK_CFLAGS_OTHER})
+
+    target_link_libraries(gtk-experiment ${GTK_LIBRARIES})
+    target_include_directories(gtk-experiment PRIVATE ${GTK_INCLUDE_DIRS})
+    target_link_directories(gtk-experiment PRIVATE ${GTK_LIBRARY_DIRS})
+    target_compile_options(gtk-experiment PRIVATE ${GTK_CFLAGS_OTHER})
+
     include_directories(${GTK_INCLUDE_DIRS})
     link_directories(${GTK_LIBRARY_DIRS})  
 endif()
