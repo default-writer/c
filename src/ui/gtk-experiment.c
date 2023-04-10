@@ -19,8 +19,7 @@ static void activate(GtkApplication* app, gpointer user_data) {
     gtk_window_present(GTK_WINDOW(window));
 }
 
-int main(int argc,
-    char** argv) {
+int main(int argc, char** argv) {
     GtkApplication* app;
     int status;
 
