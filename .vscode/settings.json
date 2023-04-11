@@ -209,13 +209,6 @@
   "C_Cpp.errorSquiggles": "disabled",
   "C_Cpp.intelliSenseEngine": "disabled",
   "C_Cpp.default.cStandard": "c89",
-  "C_Cpp.default.includePath": [
-    "/usr/include/gtk-4.0"
-  ],
-  "C_Cpp.default.systemIncludePath": [
-    "/usr/include",
-    "/usr/include/gtk-4.0"
-  ],
   "cmake.allowUnsupportedPresetsVersions": true,
   "cmake.debugConfig": {
     "MIMode": "gdb",
@@ -277,10 +270,6 @@
   "clang-format.style": "{BasedOnStyle: WebKit, IndentWidth: 4, BreakBeforeBraces: Attach}",
   "clang-format.language.c.enable": true,
   "clang-tidy.lintOnSave": true,
-  "clang-tidy.compilerArgs": [
-    "${GTK_INCLUDE_DIRS}",
-    "${GTK_LIBRARY_DIRS}"
-  ],
   "editor.formatOnSave": true,
   "editor.fontWeight": "normal",
   "editor.fontFamily": "'Ubuntu Mono', 'monospace', monospace",
