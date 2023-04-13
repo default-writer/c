@@ -150,7 +150,7 @@ case "${install}" in
 
     "--cmake") # installs cmake
         update
-        apt install -y --no-install-recommends curl ca-certificates git build-essential lldb lcov cmake clangd clang-format g++ gcc gdb lcov ninja-build
+        apt install -y --no-install-recommends curl ca-certificates git build-essential lldb lcov cmake clangd clang-format g++ gcc gdb lcov ninja-build bison
         upgrade
         ;;
 

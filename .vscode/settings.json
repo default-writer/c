@@ -288,8 +288,9 @@
     ]
   },
   "memory-view.showMemoryPanel": true,
-  "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
+  "editor.defaultFormatter": "ms-vscode.cpptools",
   "[c]": {
-    "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
-  }
+    "editor.defaultFormatter": "ms-vscode.cpptools"
+  },
+  "cmake.configureArgs": []
 }

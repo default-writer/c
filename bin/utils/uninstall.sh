@@ -39,12 +39,16 @@ case "${install}" in
         git config --global --unset pull.rebase
         ;;
 
-    "--submodule-rexo") # deinits git submodule rexo and cleans up rexo directories
-        submodule-uninstall ${pwd} src/rexo
+    "--submodule-rexo") # uninstalls git submodule rexo and cleans up rexo directories
+        submodule-uninstall ${pwd} .deps/rexo
         ;;
 
-    "--submodule-lldb-mi") # installs lldb-mi as git submodule
-        submodule-uninstall ${pwd} src/lldb-mi
+    "--submodule-vcpkg") # uninstalls rexo as git submodule
+        submodule-uninstall ${pwd} .deps/vcpkg
+        ;;
+
+    "--submodule-lldb-mi") # uninstalls lldb-mi as git submodule
+        submodule-uninstall ${pwd} .deps/lldb-mi
         ;;
 
     "--hooks") # removes prepare-commit-msg hook from .git

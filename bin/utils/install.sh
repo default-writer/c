@@ -85,11 +85,15 @@ case "${install}" in
         ;;
 
     "--submodule-rexo") # installs rexo as git submodule
-        submodule-install https://github.com/christophercrouzet/rexo.git src/rexo
+        submodule-install https://github.com/christophercrouzet/rexo.git .deps/rexo
+        ;;
+
+    "--submodule-vcpkg") # installs rexo as git submodule
+        submodule-install https://github.com/Microsoft/vcpkg.git .deps/vcpkg
         ;;
 
     "--submodule-lldb-mi") # installs lldb-mi as git submodule
-        submodule-install https://github.com/lldb-tools/lldb-mi.git src/lldb-mi
+        submodule-install https://github.com/lldb-tools/lldb-mi.git .deps/lldb-mi
         ;;
 
     "--hooks") # installs git hooks

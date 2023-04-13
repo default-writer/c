@@ -140,6 +140,7 @@ ${cmake} \
     -DCMAKE_BUILD_TYPE:STRING=Debug \
     -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
     -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
+    -DCMAKE_TOOLCHAIN_FILE="${pwd}/.deps/vcpkg/scripts/buildsystems/vcpkg.cmake" \
     $(cmake-options) \
     -S"${pwd}" \
     -B"${pwd}/build" \
