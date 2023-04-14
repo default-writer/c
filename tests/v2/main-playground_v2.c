@@ -1,6 +1,6 @@
 #include "playground/class/v2/class.h"
 #include "playground/list/v2/list.h"
-#include "rexo/include/rexo.h"
+#include <rexo/include/rexo.h>
 
 #define DEFAULT_SIZE 0xffff /* 64K bytes */
 

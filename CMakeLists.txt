@@ -223,6 +223,7 @@ set(MAIN_ZEN_SOURCE src/playground/zen/zen.c)
 set(TEST_HASHES tests/test-hashes.c)
 
 include_directories(src)
+include_directories(.deps)
 
 add_library(list-v1 STATIC ${LIB_LIST1_SOURCE})
 add_library(list-v2 STATIC ${LIB_LIST2_SOURCE})
