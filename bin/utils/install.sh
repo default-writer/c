@@ -38,18 +38,20 @@ case "${install}" in
 
     "--clangd") # installs clangd 15.0.6
         [ ! -d "${pwd}/.tools" ] && mkdir "${pwd}/.tools"
+        [ ! -d "${pwd}/.tools/clangd_15.0.6" ] && mkdir "${pwd}/.tools/clangd_15.0.6"
         wget https://github.com/clangd/clangd/releases/download/15.0.6/clangd-linux-15.0.6.zip -qO "/tmp/clangd-linux-15.0.6.zip"
         unzip -o -q "/tmp/clangd-linux-15.0.6.zip" -d "/tmp"
-        cp -a "/tmp/clangd_15.0.6/." "${pwd}/.tools/"
+        cp -r "/tmp/clangd_15.0.6/." "${pwd}/.tools/clangd_15.0.6"
         rm -rf "/tmp/clangd-linux-15.0.6"
         rm -f "/tmp/clangd-linux-15.0.6.zip"
         ;;
 
     "--cmake") # installs cmake
         [ ! -d "${pwd}/.tools" ] && mkdir "${pwd}/.tools"
+        [ ! -d "${pwd}/.tools/cmake-3.25" ] && mkdir "${pwd}/.tools/cmake-3.25"
         wget https://github.com/Kitware/CMake/releases/download/v3.25.3/cmake-3.25.3-linux-x86_64.sh -qO "/tmp/cmake-3.25.3-linux-x86_64.sh"
         chmod +x "/tmp/cmake-3.25.3-linux-x86_64.sh"
-        DEBIAN_FRONTEND=noninteractive /tmp/cmake-3.25.3-linux-x86_64.sh --prefix=${pwd}/.tools --skip-license
+        DEBIAN_FRONTEND=noninteractive /tmp/cmake-3.25.3-linux-x86_64.sh --prefix=${pwd}/.tools/cmake-3.25 --skip-license
         rm "/tmp/cmake-3.25.3-linux-x86_64.sh"
         ;;
 
@@ -83,11 +85,15 @@ case "${install}" in
         ;;
 
     "--submodule-rexo") # installs rexo as git submodule
-        submodule-install https://github.com/christophercrouzet/rexo.git src/rexo
+        submodule-install https://github.com/christophercrouzet/rexo.git .deps/rexo
+        ;;
+
+    "--submodule-vcpkg") # installs rexo as git submodule
+        submodule-install https://github.com/Microsoft/vcpkg.git .deps/vcpkg
         ;;
 
     "--submodule-lldb-mi") # installs lldb-mi as git submodule
-        submodule-install https://github.com/lldb-tools/lldb-mi.git src/lldb-mi
+        submodule-install https://github.com/lldb-tools/lldb-mi.git .deps/lldb-mi
         ;;
 
     "--hooks") # installs git hooks

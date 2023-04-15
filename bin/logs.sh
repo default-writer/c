@@ -143,7 +143,9 @@ for target in ${targets[@]}; do
     else
         ${cmake} --build "${pwd}/logs" --target "${target}" || (echo ERROR: "${target}" && exit 1)
     fi
-    timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/logs/${target}" 2>&1 >"${pwd}/out/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
+    case "${target}" in main-*)
+        timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/logs/${target}" 2>&1 >"${pwd}/out/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
+    esac
 done
 
 if [ "${silent}" == "--silent" ]; then

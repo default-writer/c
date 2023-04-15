@@ -2,7 +2,7 @@
 #include "common/lcg.h"
 #include "common/parameters.h"
 #include "list-alloc/data.h"
-#include "rexo/include/rexo.h"
+#include <rexo/include/rexo.h>
 
 /* defines N-element collection*/
 #define N_ELEMENTS 1024

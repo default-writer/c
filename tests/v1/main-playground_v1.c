@@ -1,6 +1,6 @@
 #include "playground/class/v1/class.h"
 #include "playground/list/v1/list.h"
-#include "rexo/include/rexo.h"
+#include <rexo/include/rexo.h>
 
 #ifdef USE_MEMORY_ALLOC
 #include "playground/memory/memory.h"

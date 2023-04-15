@@ -209,13 +209,6 @@
   "C_Cpp.errorSquiggles": "disabled",
   "C_Cpp.intelliSenseEngine": "disabled",
   "C_Cpp.default.cStandard": "c89",
-  "C_Cpp.default.includePath": [
-    "/usr/include/gtk-4.0"
-  ],
-  "C_Cpp.default.systemIncludePath": [
-    "/usr/include",
-    "/usr/include/gtk-4.0"
-  ],
   "cmake.allowUnsupportedPresetsVersions": true,
   "cmake.debugConfig": {
     "MIMode": "gdb",
@@ -269,7 +262,7 @@
     "ghs",
     "diab"
   ],
-  "clangd.path": "${workspaceFolder}/.tools/bin/clangd",
+  "clangd.path": "${workspaceFolder}/.tools/clangd_15.0.6/bin/clangd",
   "clangd.checkUpdates": true,
   "clangd.restartAfterCrash": true,
   "clangd.onConfigChanged": "restart",
@@ -277,10 +270,6 @@
   "clang-format.style": "{BasedOnStyle: WebKit, IndentWidth: 4, BreakBeforeBraces: Attach}",
   "clang-format.language.c.enable": true,
   "clang-tidy.lintOnSave": true,
-  "clang-tidy.compilerArgs": [
-    "${GTK_INCLUDE_DIRS}",
-    "${GTK_LIBRARY_DIRS}"
-  ],
   "editor.formatOnSave": true,
   "editor.fontWeight": "normal",
   "editor.fontFamily": "'Ubuntu Mono', 'monospace', monospace",
@@ -299,8 +288,9 @@
     ]
   },
   "memory-view.showMemoryPanel": true,
-  "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
+  "editor.defaultFormatter": "ms-vscode.cpptools",
   "[c]": {
-    "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
-  }
+    "editor.defaultFormatter": "ms-vscode.cpptools"
+  },
+  "cmake.configureArgs": []
 }

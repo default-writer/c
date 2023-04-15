@@ -1,5 +1,5 @@
 #include "list-light/data.h"
-#include "rexo/include/rexo.h"
+#include <rexo/include/rexo.h>
 
 extern const struct list list_light_definition;
 
