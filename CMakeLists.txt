@@ -13,11 +13,11 @@ option(CONFIG_MEMORY_DEBUG_INFO "Enables memory debug information")
 option(CONFIG_MEMORY_CLEANUP "Enables memory cleanup")
 option(CONFIG_MEMORY_ALLOC "Enables memory allocator")
 
-set(CONFIG_MEMORY_DEBUG_INFO OFF CACHE BOOL "Enable debug information?")
+set(CONFIG_MEMORY_DEBUG_INFO ON CACHE BOOL "Enable debug information?")
 set(CONFIG_MEMORY_CLEANUP ON CACHE BOOL "Enable memory cleanup?")
 set(CONFIG_MEMORY_ALLOC OFF CACHE BOOL "Enable memory allocator?")
 
-set(CONFIG_MEMORY_DEBUG_INFO OFF)
+set(CONFIG_MEMORY_DEBUG_INFO ON)
 set(CONFIG_MEMORY_CLEANUP ON)
 set(CONFIG_MEMORY_ALLOC OFF)
 
