@@ -186,6 +186,43 @@
                 }
             ],
             "miDebuggerPath": "/usr/bin/gdb"
+        },
+        {
+            "name": "(gdb) gtk-experiment",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/cmake/gtk-experiment",
+            "args": [
+                "--ui"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "launchCompleteCommand": "exec-run",
+            "linux": {
+                "name": "(gdb) gtk-experiment",
+                "miDebuggerPath": "/usr/bin/gdb",
+                "type": "cppdbg",
+                "request": "launch",
+                "program": "${workspaceFolder}/cmake/gtk-experiment",
+                "MIMode": "gdb"
+            },
+            "osx": {
+                "MIMode": "lldb",
+                "name": "(gdb) gtk-experiment",
+                "type": "cppdbg",
+                "request": "launch",
+                "program": "${workspaceFolder}/cmake/gtk-experiment"
+            },
+            "windows": {
+                "MIMode": "gdb",
+                "miDebuggerPath": "C:\\MinGw\\bin\\gdb.exe",
+                "name": "(gdb) gtk-experiment",
+                "type": "cppdbg",
+                "request": "launch",
+                "program": "${workspaceFolder}/cmake/gtk-experiment"
+            }
         }
     ]
 }

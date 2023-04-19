@@ -12,6 +12,9 @@
             "description": "Default build using Ninja generator",
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/cmake",
+            "environment": {
+                "GTK_PATH": null
+            },
             "cacheVariables": {
                 "CMAKE_C_COMPILER": "/usr/bin/gcc",
                 "CMAKE_CXX_COMPILER": "/usr/bin/g++",

@@ -219,6 +219,10 @@
         "text": "-enable-pretty-printing",
         "ignoreFailures": true
       }
+    ],
+    "cwd": "${workspaceRoot}/cmake",
+    "args": [
+      "--ui"
     ]
   },
   "cmake.autoSelectActiveFolder": true,
@@ -250,26 +254,30 @@
           "buildType": "RelWithDebInfo"
         }
       }
-    }
+    },
+    "cmake.default.buildDirectory": "${workspaceFolder}/cmake",
+    "cmake.cpptools.guessSourceFileConfigurations": true,
+    "cmake.enabledOutputParsers": [
+      "cmake",
+      "gcc",
+      "gnuld",
+      "msvc",
+      "ghs",
+      "diab"
+    ],
   },
-  "cmake.default.buildDirectory": "${workspaceFolder}/cmake",
-  "cmake.cpptools.guessSourceFileConfigurations": true,
-  "cmake.enabledOutputParsers": [
-    "cmake",
-    "gcc",
-    "gnuld",
-    "msvc",
-    "ghs",
-    "diab"
-  ],
   "clangd.path": "${workspaceFolder}/.tools/clangd_15.0.6/bin/clangd",
   "clangd.checkUpdates": true,
   "clangd.restartAfterCrash": true,
   "clangd.onConfigChanged": "restart",
   "clangd.detectExtensionConflicts": true,
+  "clangd.defaultProfile": "C++",
   "clang-format.style": "{BasedOnStyle: WebKit, IndentWidth: 4, BreakBeforeBraces: Attach}",
   "clang-format.language.c.enable": true,
   "clang-tidy.lintOnSave": true,
+  "clang-tidy.compilerArgs": [
+    "-I/usr/include/gtk-4.0"
+  ],
   "editor.formatOnSave": true,
   "editor.fontWeight": "normal",
   "editor.fontFamily": "'Ubuntu Mono', 'monospace', monospace",
@@ -292,5 +300,11 @@
   "[c]": {
     "editor.defaultFormatter": "ms-vscode.cpptools"
   },
-  "cmake.configureArgs": []
+  "cmake.configureArgs": [],
+  "terminal.integrated.env.linux": {
+    "GTK_PATH": ""
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  }
 }
