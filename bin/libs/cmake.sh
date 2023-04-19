@@ -48,6 +48,41 @@ function get-targets() {
     printf '%s\n' "${array[@]}"
 }
 
+function get-gtktargets() {
+    local array=()
+    local source=$0
+    local script="$(basename "$(test -L "${source}" && readlink "${source}" || echo "${source}")")"
+    local commands=$(echo $(cat ${source} | sed -e 's/^[ \t]*//;' | sed -e '/^[ \t]*$/d' | sed -n -e 's/^"--\(.*\)".*/\1/p') | sed -n -e 's/^\(.*\)\sall\s.*$/\1/p')
+    local targets=$(echo ${commands})
+
+    for target in ${targets[@]}; do
+        if [ "${target}" != "target" ]; then
+            array+=( "${target}" )
+        fi
+    done
+
+    [ ! -d "${pwd}/config" ] && mkdir "${pwd}/config"
+
+    exec 2>&1 >/dev/null
+
+    ${cmake} \
+        -DTARGETS:BOOL=ON \
+        -S"${pwd}" \
+        -B"${pwd}/config" \
+        -G "Ninja" 2>&1 >/dev/null
+
+    exec 1>&2 2>&-
+
+    if [ -f "${pwd}/config/gtktargets.txt" ]; then
+        gtktargets=$(cat "${pwd}/config/gtktargets.txt")
+        for target in ${gtktargets[@]}; do
+            array+=("${target}")
+        done
+    fi
+
+    printf '%s\n' "${array[@]}"
+}
+
 function get-options() {
     local opts=${@:1}
     for opt in ${opts[@]}; do
@@ -141,6 +176,7 @@ function cmake-valgrind-options() {
 }
 export -f get-cmake
 export -f get-targets
+export -f get-gtktargets
 export -f get-options
 export -f cmake-options
 export -f cmake-valgrind-options

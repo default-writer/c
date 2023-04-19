@@ -99,11 +99,11 @@ if [ "${silent}" == "--silent" ]; then
     exec 2>&1 >/dev/null
 fi
 
-[ ! -d "${pwd}/build" ] && mkdir "${pwd}/build"
+[ ! -d "${pwd}/gtk" ] && mkdir "${pwd}/gtk"
 
 if [ "${clean}" == "--clean" ]; then
-    rm -rf "${pwd}/build"
-    mkdir "${pwd}/build"
+    rm -rf "${pwd}/gtk"
+    mkdir "${pwd}/gtk"
 fi
 
 find "${pwd}" -type f -name "callgrind.out.*" -delete
@@ -111,9 +111,9 @@ find "${pwd}/src" -type f -name "*.s" -delete
 find "${pwd}/tests" -type f -name "*.s" -delete
 
 cmake=$(get-cmake)
-targets=( $(get-targets) )
+gtktargets=( $(get-gtktargets) )
 if [ "${target}" == "--target" ]; then
-    for target in ${targets[@]}; do
+    for target in ${gtktargets[@]}; do
         if [ "${target}" == "$2" ]; then 
             array=( ${target} )
             break
@@ -142,22 +142,22 @@ ${cmake} \
     -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
     $(cmake-options) \
     -S"${pwd}" \
-    -B"${pwd}/build" \
+    -B"${pwd}/gtk" \
     -G "Ninja" 2>&1 >/dev/null
 
 
-for target in ${targets[@]}; do
+for target in ${gtktargets[@]}; do
     if [ "${silent}" == "--silent" ]; then
-        ${cmake} --build "${pwd}/build" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
+        ${cmake} --build "${pwd}/gtk" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
     else
-        ${cmake} --build "${pwd}/build" --target "${target}" || (echo ERROR: "${target}" && exit 1)
+        ${cmake} --build "${pwd}/gtk" --target "${target}" || (echo ERROR: "${target}" && exit 1)
     fi
-    case "${target}" in main-*)
-        timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/build/${target}" 2>&1 >"${pwd}/build/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
+    case "${target}" in gtk-*)
+        timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/gtk/${target}" 2>&1 >"${pwd}/gtk/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
     esac
 done
 
-main=$(find "${pwd}/build" -type f -name "*.s" -exec echo {} \;)
+main=$(find "${pwd}/gtk" -type f -name "*.s" -exec echo {} \;)
 for i in $main; do
     path="${pwd}/$(echo $i | sed -n -e 's/^.*.dir\/\(.*\)$/\1/p')"
     cp "${i}" "${path}"
