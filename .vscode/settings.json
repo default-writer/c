@@ -301,9 +301,6 @@
     "editor.defaultFormatter": "ms-vscode.cpptools"
   },
   "cmake.configureArgs": [],
-  "terminal.integrated.env.linux": {
-    "GTK_PATH": ""
-  },
   "[jsonc]": {
     "editor.defaultFormatter": "vscode.json-language-features"
   }
