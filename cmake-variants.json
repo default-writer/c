@@ -1,0 +1,31 @@
+{
+    "buildType": {
+        "default": "debug",
+        "description": "The build type.",
+        "choices": {
+            "debug": {
+                "short": "Debug",
+                "long": "Disable optimizations - include debug information.",
+                "buildType": "Debug",
+                "settings": {
+                    "GC": "1"
+                }
+            },
+            "release": {
+                "short": "Release",
+                "long": "Optimize for speed - exclude debug information.",
+                "buildType": "Release"
+            },
+            "minsize": {
+                "short": "MinSizeRel",
+                "long": "Optimize for smallest binary size - exclude debug information.",
+                "buildType": "MinSizeRel"
+            },
+            "reldeb": {
+                "short": "RelWithDebInfo",
+                "long": "Optimize for speed - include debug information.",
+                "buildType": "RelWithDebInfo"
+            }
+        }
+    }
+}

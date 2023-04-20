@@ -236,7 +236,10 @@
         "debug": {
           "short": "Debug",
           "long": "Disable optimizations - include debug information.",
-          "buildType": "Debug"
+          "buildType": "Debug",
+          "settings": {
+            "GC": "1"
+          }
         },
         "release": {
           "short": "Release",
@@ -255,17 +258,17 @@
         }
       }
     },
-    "cmake.default.buildDirectory": "${workspaceFolder}/cmake",
-    "cmake.cpptools.guessSourceFileConfigurations": true,
-    "cmake.enabledOutputParsers": [
-      "cmake",
-      "gcc",
-      "gnuld",
-      "msvc",
-      "ghs",
-      "diab"
-    ],
   },
+  "cmake.default.buildDirectory": "${workspaceFolder}/cmake",
+  "cmake.cpptools.guessSourceFileConfigurations": true,
+  "cmake.enabledOutputParsers": [
+    "cmake",
+    "gcc",
+    "gnuld",
+    "msvc",
+    "ghs",
+    "diab"
+  ],
   "clangd.path": "${workspaceFolder}/.tools/clangd_15.0.6/bin/clangd",
   "clangd.checkUpdates": true,
   "clangd.restartAfterCrash": true,
@@ -315,5 +318,8 @@
     "**/config/**": true,
     "**/logs/**": true,
     "**/gtk/**": true
+  },
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
   }
 }
