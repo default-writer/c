@@ -3,8 +3,7 @@
     {
       "name": "Debug",
       "buildType": "Debug",
-      "buildDirectory": "cmake",
-      "args": ["--ui"]
+      "buildDirectory": "cmake"
     },
     {
       "name": "Release",

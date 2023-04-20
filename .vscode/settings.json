@@ -303,5 +303,17 @@
   "cmake.configureArgs": [],
   "[jsonc]": {
     "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/*/**": true,
+    "**/.hg/store/**": true,
+    "**/.deps/**": true,
+    "**/cmake/**": true,
+    "**/buils/**": true,
+    "**/config/**": true,
+    "**/logs/**": true,
+    "**/gtk/**": true
   }
 }
