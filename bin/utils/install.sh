@@ -26,6 +26,14 @@ install="$1"
 
 case "${install}" in
 
+    "--appwrite") # installs appwrite. appwrite is a self-hosted backend-as-a-service platform that provides developers with all the core APIs required to build any application.
+        docker run -it --rm \
+            --volume /var/run/docker.sock:/var/run/docker.sock \
+            --volume "$(pwd)"/appwrite:/usr/src/code/appwrite:rw \
+            --entrypoint="install" \
+            appwrite/appwrite:1.3.1
+        ;;
+
     "--rustc") # installs rustc
         DEBIAN_FRONTEND=noninteractive apt-get install -y keyboard-configuration gettext-base
         curl --silent --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -o /tmp/rustp-init.sh
