@@ -38,7 +38,7 @@ case "${install}" in
         upgrade
         ;;
 
-    "--virt-manger") # installs QEMU/KVM
+    "--virt-manger") # installs virt-manager
         update
         apt install -y virt-manager
         upgrade
