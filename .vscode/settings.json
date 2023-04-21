@@ -339,7 +339,7 @@
   "clangd.arguments": [
     "--compile-commands-dir=${workspaceFolder}/gtk",
     "-j=8",
-    "--limit-results",
+    "--limit-results=0",
     "--background-index",
     "--all-scopes-completion",
     "--log=info",
