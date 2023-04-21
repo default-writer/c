@@ -32,6 +32,12 @@ case "${install}" in
         upgrade
         ;;
 
+    "--qemu") # installs QEMU/KVM
+        update
+        apt install -y qemu-kvm libvirt-clients libvirt-daemon-system bridge-utils virtinst libvirt-daemon
+        upgrade
+        ;;
+
     "--rustc") # installs rustc
         update
         apt install -y --only-upgrade gdm3 gir1.2-gdm-1.0 libgdm1 qemu-block-extra qemu-system-common qemu-system-data qemu-system-gui qemu-system-x86 qemu-utils
