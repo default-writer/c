@@ -21,7 +21,8 @@ static void activate(GtkApplication* app, gpointer user_data) {
 
 int main(int argc, char** argv) {
     int status = 0;
-    if (argc > 1 && strcmp(argv[1], "--ui") == 0) {
+    char* ui_mode = getenv("UI_MODE");
+    if (ui_mode != 0 && strcmp(ui_mode, "--ui") == 0) {
         GtkApplication* app;
         app = gtk_application_new("org.gtk.example", G_APPLICATION_FLAGS_NONE);
         g_application_add_main_option (G_APPLICATION (app), "ui", 0, 0, G_OPTION_ARG_NONE, "Start GUI", NULL);

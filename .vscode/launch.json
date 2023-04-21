@@ -192,12 +192,14 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/cmake/gtk-experiment",
-            "args": [
-                "--ui"
-            ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
-            "environment": [],
+            "environment": [
+                {
+                    "name": "UI_MODE",
+                    "value": "--ui"
+                }
+            ],
             "externalConsole": false,
             "launchCompleteCommand": "exec-run",
             "linux": {

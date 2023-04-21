@@ -6,10 +6,7 @@
             "debug": {
                 "short": "Debug",
                 "long": "Disable optimizations - include debug information.",
-                "buildType": "Debug",
-                "settings": {
-                    "GC": "1"
-                }
+                "buildType": "Debug"
             },
             "release": {
                 "short": "Release",

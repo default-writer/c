@@ -220,15 +220,24 @@
         "ignoreFailures": true
       }
     ],
+    "console": "integratedTerminal",
     "cwd": "${workspaceRoot}/cmake",
-    "args": [
-      "--ui"
+    "environment": [
+      {
+        "name": "UI_MODE",
+        "value": "--ui"
+      }
     ]
   },
   "cmake.autoSelectActiveFolder": true,
   "cmake.default.generator": "Ninja",
   "cmake.buildBeforeRun": true,
   "cmake.defaultVariants": {
+    "settings": {
+      "communicationMode": "automatic",
+      "useCMakePresets": "auto",
+      "configureOnOpen": true
+    },
     "buildType": {
       "default": "debug",
       "description": "The build type.",
@@ -303,7 +312,6 @@
   "[c]": {
     "editor.defaultFormatter": "ms-vscode.cpptools"
   },
-  "cmake.configureArgs": [],
   "[jsonc]": {
     "editor.defaultFormatter": "vscode.json-language-features"
   },
@@ -321,5 +329,10 @@
   },
   "[json]": {
     "editor.defaultFormatter": "vscode.json-language-features"
-  }
+  },
+  "cmake.configureArgs": [
+    "CONFIG_MEMORY_DEBUG_INFO",
+    "CONFIG_MEMORY_CLEANUP",
+    "CODE_SANITIZER"
+  ]
 }
