@@ -38,6 +38,18 @@ case "${install}" in
         upgrade
         ;;
 
+    "--virt-manger") # installs QEMU/KVM
+        update
+        apt install -y virt-manager
+        upgrade
+        ;;
+
+    "--enable-libvirtd") # enables libvirtd
+        update
+        systemctl enable --now libvirtd
+        upgrade
+        ;;
+
     "--rustc") # installs rustc
         update
         apt install -y --only-upgrade gdm3 gir1.2-gdm-1.0 libgdm1 qemu-block-extra qemu-system-common qemu-system-data qemu-system-gui qemu-system-x86 qemu-utils
