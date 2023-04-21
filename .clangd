@@ -5,3 +5,4 @@ InlayHints:
 
 CompileFlags:
   Add: [-Wno-undefined-inline]
+  Compiler: clang
