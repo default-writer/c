@@ -13,6 +13,7 @@ pwd=$(pwd)
 
 "${pwd}/bin/utils/install.sh" --git
 "${pwd}/bin/utils/install.sh" --submodule-rexo
+"${pwd}/bin/utils/install.sh" --submodule-vcpkg
 "${pwd}/bin/utils/install.sh" --hooks
 "${pwd}/bin/utils/install.sh" --clangd
 "${pwd}/bin/utils/install.sh" --cmake
