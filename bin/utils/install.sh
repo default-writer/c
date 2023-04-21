@@ -34,6 +34,10 @@ case "${install}" in
             appwrite/appwrite:1.3.1
         ;;
 
+    "--appwrite-start") # starts appwrite docker
+        docker compose -f "${pwd}/appwrite/docker-compose.yml" up -d --remove-orphans --renew-anon-volumes
+        ;;
+
     "--rustc") # installs rustc
         DEBIAN_FRONTEND=noninteractive apt-get install -y keyboard-configuration gettext-base
         curl --silent --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -o /tmp/rustp-init.sh
