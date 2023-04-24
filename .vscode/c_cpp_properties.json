@@ -1,6 +1,9 @@
 {
   "env": {
-    "myDefaultIncludePath": ["${workspaceFolder}/src"],
+    "myDefaultIncludePath": [
+      "${workspaceFolder}",
+      "${workspaceFolder}/src"
+    ],
     "myCompilerPath": "/usr/bin/gcc"
   },
   "configurations": [
@@ -17,9 +20,13 @@
       "cStandard": "gnu89",
       "cppStandard": "gnu++98",
       "intelliSenseMode": "${default}",
-      "compilerArgs": ["--coverage"],
+      "compilerArgs": [
+        "--coverage"
+      ],
       "browse": {
-        "path": ["${workspaceFolder}/src"],
+        "path": [
+          "${workspaceFolder}/src"
+        ],
         "limitSymbolsToIncludedHeaders": true
       },
       "configurationProvider": "ms-vscode.cmake-tools",
