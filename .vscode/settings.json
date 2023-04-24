@@ -347,10 +347,6 @@
     "--clang-tidy",
     "--fallback-style=WebKit"
   ],
-  "cmake.additionalCompilerSearchDirs": [
-    "${env:GTK_INCLUDE_DIRS}",
-    "${env:GTK_LIBRARY_DIRS}"
-  ],
   "cmake.generator": "Ninja",
   "C_Cpp.default.cppStandard": "c++98",
   "C_Cpp.clang_format_fallbackStyle": "{BasedOnStyle: WebKit, IndentWidth: 4, BreakBeforeBraces: Attach}",
