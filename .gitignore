@@ -67,3 +67,4 @@ gh
 callgrind.out.*
 .tools
 appwrite/.env
+wget.log*
