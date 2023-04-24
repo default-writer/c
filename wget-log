@@ -1,0 +1,11 @@
+--2023-04-24 15:58:23--  https://apt.llvm.org/llvm-snapshot.gpg.key
+Resolving apt.llvm.org (apt.llvm.org)... 199.232.194.49, 199.232.198.49, 2a04:4e42:4c::561, ...
+Connecting to apt.llvm.org (apt.llvm.org)|199.232.194.49|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 3145 (3.1K) [application/octet-stream]
+Saving to: ‘STDOUT’
+
+-                                                         0%[                                                                                                                               ]       0  --.-KB/s               -                                                       100%[==============================================================================================================================>]   3.07K  --.-KB/s    in 0s      
+
+2023-04-24 15:58:24 (59.6 MB/s) - written to stdout [3145/3145]
+
