@@ -85,8 +85,8 @@ case "${install}" in
         update
         apt install -y apt-transport-https curl gnupg
         curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --batch --yes --dearmor >bazel-archive-keyring.gpg
-        sudo mv bazel-archive-keyring.gpg /usr/share/keyrings
-        echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8" | sudo tee /etc/apt/sources.list.d/bazel.list
+        mv bazel-archive-keyring.gpg /usr/share/keyrings
+        echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8" | tee /etc/apt/sources.list.d/bazel.list
         update
         apt install -y bazel
         upgrade
@@ -147,7 +147,7 @@ case "${install}" in
 
     "--clang-lldb-mi") # installs lldb-mi dependencies
         update
-        apt-get install -y libclang-dev liblldb-dev || sudo apt-get install libclang-6.0-dev liblldb-6.0-dev || sudo apt-get install libclang-4.0-dev liblldb-4.0-dev || sudo apt-get install libclang-3.8-dev liblldb-3.8-dev
+        apt-get install -y libclang-dev liblldb-dev || apt-get install libclang-6.0-dev liblldb-6.0-dev || apt-get install libclang-4.0-dev liblldb-4.0-dev || apt-get install libclang-3.8-dev liblldb-3.8-dev
         apt install python3-lldb-14
         ln -s /usr/lib/llvm-14/lib/python3.10/dist-packages/lldb/* /usr/lib/python3/dist-packages/lldb/
         upgrade
@@ -155,10 +155,10 @@ case "${install}" in
 
     "--clang-format") # installs clang-format
         update
-        sudo wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
+        wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
         build=$(echo $(lsb_release -a 2>&1 | tail -1 | sed  -e 's/\w*:\s*//g'))
         repository=$(echo deb http://apt.llvm.org/${build} llvm-toolchain-${build} main)
-        sudo add-apt-repository --yes "${repository}"
+        add-apt-repository --yes "${repository}"
         upgrade
         apt install -y clang-format
         apt install -y apport apport-gtk python3-apport python3-problem-report gnome-remote-desktop grub-common grub-pc grub-pc-bin grub2-common gstreamer1.0-pipewire  open-vm-tools open-vm-tools-desktop python3-software-properties software-properties-common software-properties-gtk libgbm1 libgl1-mesa-dri libglapi-mesa libglx-mesa0 mesa-va-drivers mesa-vulkan-drivers
