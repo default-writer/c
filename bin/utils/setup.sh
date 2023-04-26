@@ -61,7 +61,7 @@ case "${install}" in
     "--configuration") # installs keyboard-configuration
         update
         DEBIAN_FRONTEND=noninteractive apt-get install -y keyboard-configuration gettext-base
-        apt install -y --no-install-recommends curl ca-certificates git build-essential lldb lcov cmake clangd g++ gcc gdb lcov ninja-build
+        apt install -y --no-install-recommends curl ca-certificates git build-essential lldb lcov cmake clangd g++ gcc gdb lcov ninja-build pkg-config
         apt install -y --only-upgrade distro-info-data
         upgrade
         ;;

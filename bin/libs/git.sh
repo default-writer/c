@@ -8,6 +8,7 @@ err_report() {
 trap 'err_report $LINENO' ERR
 
 function submodule-install() {
+    [ -d $2 ] && rm -rf $2
     git submodule add -f $1 $2 # &>/dev/null || print
     git submodule init # || print
     git submodule update --recursive --remote # || print
@@ -15,6 +16,7 @@ function submodule-install() {
 }
 
 function submodule-uninstall() {
+    [ -d $2 ] && rm -rf $2
     git submodule deinit -f $2 &>/dev/null || print
     rm -rf .git/modules/$2 &>/dev/null || print
     git rm -f $2 &>/dev/null || print
