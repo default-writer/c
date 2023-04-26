@@ -28,13 +28,14 @@ case "${install}" in
 
     "--gtk4") # installs GTK 4
         update
-        apt install -y gnome-devel glib2.0 libgtk-4-1 libgtk2.0-dev libgtk-3-dev libgtk-4-dev
+        apt install -y gnome-devel libgtk-4-1 libgtk2.0-dev libgtk-3-dev libgtk-4-dev libglib2.0-dev
         upgrade
         ;;
 
     "--qemu") # installs QEMU/KVM
         update
         apt install -y qemu-kvm libvirt-clients libvirt-daemon-system bridge-utils virtinst libvirt-daemon
+        DEBIAN_FRONTEND=noninteractive apt install -y --only-upgrade qemu-block-extra qemu-system-common qemu-system-data qemu-system-gui qemu-system-x86 qemu-utils tzdata
         upgrade
         ;;
 
