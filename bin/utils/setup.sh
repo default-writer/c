@@ -112,7 +112,7 @@ case "${install}" in
 
     "--colordiff") # installs colordiff
         update
-        apt install -y git
+        apt install -y colordiff
         upgrade
         ;;
 
@@ -156,11 +156,11 @@ case "${install}" in
 
     "--clang-format") # installs clang-format
         update
-        wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
-        build=$(echo $(lsb_release -a 2>&1 | tail -1 | sed  -e 's/\w*:\s*//g'))
-        repository=$(echo deb http://apt.llvm.org/${build} llvm-toolchain-${build} main)
-        add-apt-repository --yes "${repository}"
-        upgrade
+        # wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
+        # build=$(echo $(lsb_release -a 2>&1 | tail -1 | sed  -e 's/\w*:\s*//g'))
+        # repository=$(echo deb http://apt.llvm.org/${build} llvm-toolchain-${build} main)
+        # add-apt-repository --yes "${repository}"
+        # upgrade
         apt install -y clang-format
         apt install -y apport apport-gtk python3-apport python3-problem-report gnome-remote-desktop grub-common grub-pc grub-pc-bin grub2-common gstreamer1.0-pipewire  open-vm-tools open-vm-tools-desktop python3-software-properties software-properties-common software-properties-gtk libgbm1 libgl1-mesa-dri libglapi-mesa libglx-mesa0 mesa-va-drivers mesa-vulkan-drivers
         apt install -y --only-upgrade apport apport-gtk python3-apport python3-problem-report gnome-remote-desktop grub-common grub-pc grub-pc-bin grub2-common gstreamer1.0-pipewire  open-vm-tools open-vm-tools-desktop python3-software-properties software-properties-common software-properties-gtk libgbm1 libgl1-mesa-dri libglapi-mesa libglx-mesa0 mesa-va-drivers mesa-vulkan-drivers

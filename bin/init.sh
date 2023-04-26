@@ -23,6 +23,7 @@ sudo "${pwd}/bin/utils/setup.sh" --configuration
 sudo "${pwd}/bin/utils/setup.sh" --clang-format
 sudo "${pwd}/bin/utils/setup.sh" --cmake
 sudo "${pwd}/bin/utils/setup.sh" --gtk4
+sudo "${pwd}/bin/utils/setup.sh" --llvm
 
 # "${pwd}/bin/utils/env.sh" --nvm
 # "${pwd}/bin/utils/nvm.sh"
