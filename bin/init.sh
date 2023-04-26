@@ -17,10 +17,12 @@ pwd=$(pwd)
 "${pwd}/bin/utils/install.sh" --hooks
 "${pwd}/bin/utils/install.sh" --clangd
 "${pwd}/bin/utils/install.sh" --cmake
+"${pwd}/bin/utils/install.sh" --git
 
 sudo "${pwd}/bin/utils/setup.sh" --configuration
 sudo "${pwd}/bin/utils/setup.sh" --clang-format
 sudo "${pwd}/bin/utils/setup.sh" --cmake
+sudo "${pwd}/bin/utils/setup.sh" --gtk4
 
 # "${pwd}/bin/utils/env.sh" --nvm
 # "${pwd}/bin/utils/nvm.sh"
