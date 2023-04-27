@@ -18,6 +18,7 @@ pwd=$(pwd)
 "${pwd}/bin/utils/install.sh" --clangd
 "${pwd}/bin/utils/install.sh" --cmake
 "${pwd}/bin/utils/install.sh" --git
+"${pwd}/bin/cleanup.sh" --all
 
 sudo "${pwd}/bin/utils/setup.sh" --configuration
 sudo "${pwd}/bin/utils/setup.sh" --clang-format
