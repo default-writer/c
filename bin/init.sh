@@ -12,13 +12,13 @@ uid=$(id -u)
 pwd=$(pwd)
 
 "${pwd}/bin/utils/install.sh" --git
-"${pwd}/bin/utils/install.sh" --submodule-rexo
-"${pwd}/bin/utils/install.sh" --submodule-vcpkg
 "${pwd}/bin/utils/install.sh" --hooks
+
+"${pwd}/bin/cleanup.sh" --all
 "${pwd}/bin/utils/install.sh" --clangd
 "${pwd}/bin/utils/install.sh" --cmake
-"${pwd}/bin/utils/install.sh" --git
-"${pwd}/bin/cleanup.sh" --all
+"${pwd}/bin/utils/install.sh" --submodule-rexo
+"${pwd}/bin/utils/install.sh" --submodule-vcpkg
 
 sudo "${pwd}/bin/utils/setup.sh" --configuration
 sudo "${pwd}/bin/utils/setup.sh" --clang-format
