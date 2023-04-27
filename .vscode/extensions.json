@@ -24,7 +24,6 @@
     "vadimcn.vscode-lldb",
     "jdsteinbach.custom-presentation-mode",
     "daylerees.rainglow",
-    "bierner.github-markdown-preview",
-    "github.codespaces"
+    "bierner.github-markdown-preview"
   ]
 }
