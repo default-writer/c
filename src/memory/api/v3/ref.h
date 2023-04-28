@@ -15,7 +15,7 @@ struct memory_ref_methods {
     void (*init)(u64 size);
     void (*destroy)(void);
     void* (*alloc)(u64 size);
-    void (*free)(void* data);
+    void (*free)(const void* data);
     void* (*pop)(void);
     void* (*peek)(void);
 };

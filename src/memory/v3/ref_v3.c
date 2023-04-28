@@ -17,7 +17,7 @@ struct memory_ref_ptr {
 static void* memory_ref_alloc(u64 size);
 static void memory_ref_init(u64 size);
 static void memory_ref_destroy(void);
-static void memory_ref_free(void* data);
+static void memory_ref_free(const void* data);
 
 static struct memory_ref* memory_alloc_internal(u64 size);
 static void memory_ref_free_internal(void* data);
@@ -102,10 +102,10 @@ static struct memory_ref* memory_alloc_internal(u64 size) {
     return ptr;
 }
 
-static void memory_ref_free(void* data) {
+static void memory_ref_free(const void* data) {
     if (data != 0) {
         struct memory_ref* ptr = memory_list_peek();
-        void* current = memory_ref_ptr_internal(ptr);
+        const void* current = memory_ref_ptr_internal(ptr);
         if (data == current) {
             ptr->size = ptr->address_space;
         }
