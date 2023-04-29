@@ -310,7 +310,7 @@
   "memory-view.showMemoryPanel": true,
   "editor.defaultFormatter": "ms-vscode.cpptools",
   "[c]": {
-    "editor.defaultFormatter": "ms-vscode.cpptools"
+    "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
   },
   "[jsonc]": {
     "editor.defaultFormatter": "vscode.json-language-features"
