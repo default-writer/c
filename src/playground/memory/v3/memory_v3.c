@@ -23,9 +23,9 @@ static void* alloc(void** next, void* prev, u64 size) {
     return tmp + 2;
 }
 
-static u64 offset(void* data) {
-    void** head = data;
-    void** next = *(head - 1);
+static u64 offset(const void* data) {
+    const void* const* head = data;
+    const void* const* next = *(head - 1);
     return (u64)(next - head);
 }
 
