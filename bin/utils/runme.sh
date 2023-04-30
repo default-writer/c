@@ -16,11 +16,13 @@ fi
 
 pwd=$(pwd)
 
+if [ -f "${pwd}/.args" ]; then args=$(cat "${pwd}/.args"); fi
+
 "${pwd}/bin/format.sh" --all
-"${pwd}/bin/cmake.sh" --all --clean --sanitize
-"${pwd}/bin/build.sh" --all --clean --sanitize
-"${pwd}/bin/logs.sh" --all --clean --sanitize
-"${pwd}/bin/coverage.sh" --all --clean --sanitize
+"${pwd}/bin/cmake.sh" $args
+"${pwd}/bin/build.sh" $args
+"${pwd}/bin/logs.sh" $args
+"${pwd}/bin/coverage.sh" $args
 
 [[ $SHLVL -gt 2 ]] || echo OK
 

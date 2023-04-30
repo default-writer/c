@@ -54,8 +54,12 @@ case "${install}" in
         format=("GNU")
         ;;
  
-    "--all") # Not a real style, but allows to use the .clang-format file from the parent directory
+    "--all") # Use the .clang-format file from the parent directory
         format=("InheritParentConfig")
+        ;;
+
+    "--help") # Use the .clang-format file from the parent directory
+        help
         ;;
 
     *)
