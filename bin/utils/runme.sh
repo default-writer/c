@@ -17,6 +17,7 @@ fi
 pwd=$(pwd)
 
 "${pwd}/bin/format.sh" --all
+"${pwd}/bin/cmake.sh" --all --clean --sanitize
 "${pwd}/bin/build.sh" --all --clean --sanitize
 "${pwd}/bin/logs.sh" --all --clean --sanitize
 "${pwd}/bin/coverage.sh" --all --clean --sanitize
