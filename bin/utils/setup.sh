@@ -66,6 +66,12 @@ case "${install}" in
         upgrade ${updgradeflags}
         ;;
 
+    "--npm") # installs npm
+        update ${updateflags}
+        apt install -y npm
+        upgrade ${updgradeflags}
+        ;;
+
     "--gtk4") # installs GTK 4
         update ${updateflags}
         apt install -y gnome-devel libgtk-4-1 libgtk2.0-dev libgtk-3-dev libgtk-4-dev libglib2.0-dev
