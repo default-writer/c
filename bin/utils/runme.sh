@@ -17,6 +17,8 @@ fi
 pwd=$(pwd)
 
 "${pwd}/bin/format.sh" --all
+"${pwd}/bin/build.sh" --all --clean --sanitize
+"${pwd}/bin/logs.sh" --all --clean --sanitize
 "${pwd}/bin/coverage.sh" --all --clean --sanitize
 
 [[ $SHLVL -gt 2 ]] || echo OK
