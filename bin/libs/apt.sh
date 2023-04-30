@@ -8,18 +8,41 @@ err_report() {
 trap 'err_report $LINENO' ERR
 
 function update() {
-    apt install -y --fix-broken
-    apt update -y --fix-missing
-    dpkg --configure -a
+    local opts=${@:1}
+    for opt in ${opts[@]}; do
+        case ${opt} in
+
+            "--no-update")
+                ;;
+
+            *)
+                apt install -y --fix-broken
+                apt update -y --fix-missing
+                dpkg --configure -a
+                ;;
+
+        esac
+    done
     export DEBIAN_FRONTEND=noninteractive
     set -a && eval "$(sudo tee --append /etc/environment <<<'DEBIAN_FRONTEND=noninteractive')" && set +a
 }
 
 function upgrade() {
-    update
-    apt upgrade -y
-    apt autoremove -y
-    apt full-upgrade -y
+    local opts=${@:1}
+    for opt in ${opts[@]}; do
+        case ${opt} in
+
+            "--no-upgrade")
+                ;;
+
+            *)
+                apt upgrade -y
+                apt autoremove -y
+                apt full-upgrade -y
+                ;;
+
+        esac
+    done
 }
 
 export -f update
