@@ -40,6 +40,7 @@ function upgrade() {
         case ${opt} in
 
             "--no-upgrade")
+                skip="--skip"            
                 ;;
 
             *)
