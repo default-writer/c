@@ -66,6 +66,16 @@ case "${install}" in
         upgrade ${updgradeflags}
         ;;
 
+    "--nodejs-ppa") # installs nodejs ppa
+        update ${updateflags}
+        curl -sL https://deb.nodesource.com/setup_18.x -o /tmp/nodesource_setup.sh
+        chmod +x /tmp/nodesource_setup.sh
+        bash /tmp/nodesource_setup.sh
+        rm -f /tmp/nodesource_setup.sh
+        apt install -y nodejs
+        upgrade ${updgradeflags}
+        ;;
+
     "--npm") # installs npm
         update ${updateflags}
         apt install -y npm
