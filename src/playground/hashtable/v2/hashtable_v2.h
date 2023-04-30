@@ -15,18 +15,18 @@ struct hashtable_data { /* table entry: */
 struct hashtable {
     void (*init)(u64 size);
     void (*destroy)(void);
-    struct hashtable_data* (*alloc)(char* key, void* value);
+    struct hashtable_data* (*alloc)(const char* key, void* value);
     void (*free)(struct hashtable_data* node);
-    struct hashtable_data* (*find)(char* key);
+    struct hashtable_data* (*find)(const char* key);
     struct hashtable_data* (*value)(u32 index);
-    u32 (*get)(char* key);
-    u32 (*hash)(char* key);
-    u32 (*count)(char* key);
-    void (*set)(char* key, void* value);
-    void (*setup)(u32 (*function)(char* source));
+    u32 (*get)(const char* key);
+    u32 (*hash)(const char* key);
+    u32 (*count)(const char* key);
+    void (*set)(const char* key, void* value);
+    void (*setup)(u32 (*function)(const char* source));
 };
 
-u32 default_hash(char* source);
-u32 murmurhash3(char* source);
+u32 default_hash(const char* source);
+u32 murmurhash3(const char* source);
 
 #endif /* _PLAYGROUND_HASHTABLE_V2_H_ */

@@ -1,8 +1,8 @@
-#include "playground/memory/api/v2/memory.h"
+#include "playground/memory/api/memory.h"
 
-extern const struct memory_allocator memory_allocator_v4;
+extern const struct memory_allocator_v2 memory_allocator_v4;
 
-void use(const struct memory_allocator* allocator) {
+void use(const struct memory_allocator_v2* allocator) {
     /* initializes memory pool */
     allocator->init();
     /* allocation size aligned to 8 byte boundaries (64-bit pointers) */

@@ -3,7 +3,7 @@
 
 #include "std/common.h"
 
-struct memory_allocator {
+struct memory_allocator_v2 {
     void (*init)(void);
     void (*destroy)(void);
     void* (*alloc)(u64 size);

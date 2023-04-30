@@ -1,41 +1,41 @@
-#include "playground/memory/api/v1/memory.h"
+#include "playground/memory/api/memory.h"
 
-extern const struct memory_allocator memory_allocator_v1;
-extern const struct memory_allocator memory_allocator_v2;
-extern const struct memory_allocator memory_allocator_v3;
+extern const union memory_allocator_api memory_allocator_v1;
+extern const union memory_allocator_api memory_allocator_v2;
+extern const union memory_allocator_api memory_allocator_v3;
 
-void use(const struct memory_allocator* allocator) {
+void use(const union memory_allocator_api* allocator) {
     /* initializes memory pool */
-    allocator->init();
+    allocator->v1.init();
     /* allocation size aligned to 8 byte boundaries (64-bit pointers) */
     u64 size = 2;
     /* allocates memory block */
-    void** ptr = allocator->alloc(size);
+    void** ptr = allocator->v1.alloc(size);
     for (u64 i = 0; i < size; i++) {
         *(ptr + i) = (void*)0xdeadbeefdeadbeef;
     }
     /* allocation size aligned to 8 byte boundaries (64-bit pointers) */
     u64 size2 = 3;
     /* allocates memory block */
-    void** ptr2 = allocator->alloc(size2);
+    void** ptr2 = allocator->v1.alloc(size2);
     for (u64 i = 0; i < size2; i++) {
         *(ptr2 + i) = (void*)0xdeadbeefdeadbeef;
     }
     /* allocation size aligned to 8 byte boundaries (64-bit pointers) */
     u64 size3 = 16;
     /* allocates memory block */
-    void** ptr3 = allocator->alloc(size3);
+    void** ptr3 = allocator->v1.alloc(size3);
     for (u64 i = 0; i < size3; i++) {
         *(ptr3 + i) = (void*)0xdeadbeefdeadbeef;
     }
     /* releases memory block */
-    allocator->free(ptr3, size3);
+    allocator->v1.free(ptr3, size3);
     /* releases memory block */
-    allocator->free(ptr2, size2);
+    allocator->v1.free(ptr2, size2);
     /* releases memory block */
-    allocator->free(ptr, size);
+    allocator->v1.free(ptr, size);
     /* destroys memory pool */
-    allocator->destroy();
+    allocator->v1.destroy();
 }
 
 int main(void) {

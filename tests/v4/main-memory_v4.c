@@ -1,9 +1,9 @@
 #include "common/lcg.h"
-#include "playground/memory/api/v3/memory.h"
+#include "playground/memory/api/memory.h"
 
-extern const struct memory_allocator memory_allocator_v6;
+extern const struct memory_allocator_v3 memory_allocator_v6;
 
-void use(const struct memory_allocator* allocator) {
+void use(const struct memory_allocator_v3* allocator) {
     u64 index = 21;
     /* initializes memory pool */
     allocator->init(index);

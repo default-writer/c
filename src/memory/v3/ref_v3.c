@@ -1,7 +1,6 @@
 #include "common/alloc.h"
 #include "memory/api/v3/ref.h"
 #include "playground/memory/list/v3/memory_list_v3.h"
-#include "std/macros.h"
 
 /* declaration */
 
@@ -66,7 +65,6 @@ static void memory_ref_init(u64 size) {
         memory_ptr->next->size = size;
         memory_ptr->next->address_space = size;
         memory_list_push(memory_ptr->next);
-        /* memory_alloc_internal(size); */
     }
 }
 

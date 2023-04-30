@@ -1,5 +1,5 @@
 #include "memory/api/v1/ref.h"
-#include "playground/memory/api/v2/memory.h"
+#include "playground/memory/api/memory.h"
 #include "playground/memory/list/v1/memory_list_v1.h"
 
 #define MAX_MEMORY 0xffff /* 64K bytes */
@@ -53,9 +53,9 @@ static void memory_free(void* data) {
 
 /* public */
 
-const struct memory_allocator memory_allocator_v4 = {
-    .init = memory_init,
-    .destroy = memory_destroy,
-    .alloc = memory_alloc,
-    .free = memory_free
+const union memory_allocator_api memory_allocator_v4 = {
+    .v2.init = memory_init,
+    .v2.destroy = memory_destroy,
+    .v2.alloc = memory_alloc,
+    .v2.free = memory_free
 };

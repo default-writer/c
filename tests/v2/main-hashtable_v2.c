@@ -3,8 +3,8 @@
 #include "playground/brain/brain.h"
 #include "playground/hashtable/v2/hashtable_v2.h"
 #include "playground/pointer/pointer.h"
+
 #include <rexo/include/rexo.h>
-#include "std/macros.h"
 
 #define HASHTABLE_SIZE 101
 #define DEFAULT_SIZE 0xffff
@@ -200,21 +200,21 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_set_get, .fixture = test_fixture)
     RX_ASSERT(temp != 0);
     RX_ASSERT(values[0] != 0);
     RX_ASSERT(values[1] != 0);
-    struct hashtable_data* data = hashtable->find(temp->key);
+    const struct hashtable_data* data = hashtable->find(temp->key);
     RX_ASSERT(data->value == value1);
-    struct hashtable_data* key_value1 = hashtable->value(hashtable->get(key1));
+    const struct hashtable_data* key_value1 = hashtable->value(hashtable->get(key1));
     RX_ASSERT(key_value1 != 0);
     RX_ASSERT(strcmp(key_value1->value, "c") == 0);
     hashtable->set(key1, value);
-    struct hashtable_data* key_value2 = hashtable->value(hashtable->get(key1));
+    const struct hashtable_data* key_value2 = hashtable->value(hashtable->get(key1));
     RX_ASSERT(strcmp(key_value2->value, value) == 0);
     RX_ASSERT(key_value1 != 0);
     hashtable->set(key, value3);
-    struct hashtable_data* key_value3 = hashtable->value(hashtable->get(key));
+    const struct hashtable_data* key_value3 = hashtable->value(hashtable->get(key));
     RX_ASSERT(strcmp(key_value3->key, key) == 0);
     RX_ASSERT(strcmp(key_value3->value, value3) == 0);
     hashtable->set(key, value);
-    struct hashtable_data* key_value = hashtable->value(hashtable->get(key));
+    const struct hashtable_data* key_value = hashtable->value(hashtable->get(key));
     RX_ASSERT(strcmp(key_value->key, key) == 0);
     RX_ASSERT(strcmp(key_value->value, value) == 0);
     hashtable->free(temp);
@@ -245,12 +245,12 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
         u64 data_ptr = pointer->read_file(f_ptr);
         u64 list_ptr = pointer->list_alloc();
         pointer->close_file(f_ptr);
-        u64 size = 0xfffff; /* pointer->size(data_ptr); */
+        u64 size = 0xfffff;
 #ifdef USE_MEMORY_DEBUG_INFO
         printf("data size: %16lld\n", size);
 #endif
         char* file_data;
-        char* file_end;
+        const char* file_end;
         file_data = pointer->unsafe(data_ptr);
         file_end = file_data + size;
         while (file_data < file_end) {
@@ -261,7 +261,7 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
             *tmp++ = '\0';
             u64 data = pointer->load(file_data);
             pointer->list_push(list_ptr, data);
-            char* unsafe = pointer->unsafe(data);
+            const char* unsafe = pointer->unsafe(data);
             pointer->printf(data);
             pointer->put_char(data, unsafe[0]);
             u64 pattern_ptr = pointer->load("b");
@@ -287,7 +287,7 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
             char* unsafe = file_data;
             u32 hash = hashtable->hash(unsafe);
             u32 count = hashtable->count(unsafe);
-            printf("  .#: 0x%016llx !0x%08lx (%6ld): %16s\n", (u64)unsafe, hash % HASHTABLE_DEFAULT_SIZE, count, unsafe);
+            printf("  .#: 0x%016llx !0x%08lx (%6ld): %18s\n", (u64)unsafe, hash % HASHTABLE_DEFAULT_SIZE, count, unsafe);
             file_data = tmp;
         }
         pointer->list_free(list_ptr);
@@ -319,12 +319,12 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable_default_hash, .fi
         u64 data_ptr = pointer->read_file(f_ptr);
         u64 list_ptr = pointer->list_alloc();
         pointer->close_file(f_ptr);
-        u64 size = 0xfffff; /* pointer->size(data_ptr); */
+        u64 size = 0xfffff;
 #ifdef USE_MEMORY_DEBUG_INFO
         printf("data size: %16lld\n", size);
 #endif
         char* file_data;
-        char* file_end;
+        const char* file_end;
         file_data = pointer->unsafe(data_ptr);
         file_end = file_data + size;
         while (file_data < file_end) {
@@ -335,7 +335,7 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable_default_hash, .fi
             *tmp++ = '\0';
             u64 data = pointer->load(file_data);
             pointer->list_push(list_ptr, data);
-            char* unsafe = pointer->unsafe(data);
+            const char* unsafe = pointer->unsafe(data);
             hashtable->alloc(unsafe, 0);
             file_data = tmp;
         }
@@ -350,7 +350,7 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable_default_hash, .fi
             char* unsafe = file_data;
             u32 hash = hashtable->hash(unsafe);
             u32 count = hashtable->count(unsafe);
-            printf("  .#: 0x%016llx !0x%08lx (%6ld): %16s\n", (u64)unsafe, hash % HASHTABLE_DEFAULT_SIZE, count, unsafe);
+            printf("  .#: 0x%016llx !0x%08lx (%6ld): %18s\n", (u64)unsafe, hash % HASHTABLE_DEFAULT_SIZE, count, unsafe);
             file_data = tmp;
         }
         pointer->list_free(list_ptr);
@@ -382,12 +382,12 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable_murmurhash3_hash,
         u64 data_ptr = pointer->read_file(f_ptr);
         u64 list_ptr = pointer->list_alloc();
         pointer->close_file(f_ptr);
-        u64 size = 0xfffff; /* pointer->size(data_ptr); */
+        u64 size = 0xfffff;
 #ifdef USE_MEMORY_DEBUG_INFO
         printf("data size: %16lld\n", size);
 #endif
         char* file_data;
-        char* file_end;
+        const char* file_end;
         file_data = pointer->unsafe(data_ptr);
         file_end = file_data + size;
         while (file_data < file_end) {
@@ -398,7 +398,7 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable_murmurhash3_hash,
             *tmp++ = '\0';
             u64 data = pointer->load(file_data);
             pointer->list_push(list_ptr, data);
-            char* unsafe = pointer->unsafe(data);
+            const char* unsafe = pointer->unsafe(data);
             hashtable->alloc(unsafe, 0);
             file_data = tmp;
         }
@@ -413,7 +413,7 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable_murmurhash3_hash,
             char* unsafe = file_data;
             u32 hash = hashtable->hash(unsafe);
             u32 count = hashtable->count(unsafe);
-            printf("  .#: 0x%016llx !0x%08lx (%6ld): %16s\n", (u64)unsafe, hash % HASHTABLE_DEFAULT_SIZE, count, unsafe);
+            printf("  .#: 0x%016llx !0x%08lx (%6ld): %18s\n", (u64)unsafe, hash % HASHTABLE_DEFAULT_SIZE, count, unsafe);
             file_data = tmp;
         }
         pointer->list_free(list_ptr);

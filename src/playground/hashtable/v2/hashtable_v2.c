@@ -3,7 +3,6 @@
 #include "common/lcg.h"
 #include "playground/list/v2/list.h"
 #include "playground/pointer/pointer.h"
-#include "std/macros.h"
 
 static u64 lcg_state = 0;
 
@@ -12,32 +11,32 @@ static void hashtable_item_free_internal(struct hashtable_data* ptr);
 
 static struct hashtable_data** hashtable; /* pointer table */
 
-static struct hashtable_data* hashtable_alloc(char* key, void* value);
+static struct hashtable_data* hashtable_alloc(const char* key, void* value);
 static void hashtable_free(struct hashtable_data* ptr);
-static struct hashtable_data* hashtable_find(char* key);
+static struct hashtable_data* hashtable_find(const char* key);
 static struct hashtable_data* hashtable_value(u32 index);
-static u32 hashtable_get(char* key);
-static u32 hashtable_hash(char* key);
-static void hashtable_set(char* key, void* value);
-static void hashtable_setup(u32 (*function)(char* source));
-static u32 default_hash_function(char* source);
-static u32 hash_func(char* source);
+static u32 hashtable_get(const char* key);
+static u32 hashtable_hash(const char* key);
+static void hashtable_set(const char* key, void* value);
+static void hashtable_setup(u32 (*function)(const char* source));
+static u32 default_hash_function(const char* source);
+static u32 hash_func(const char* source);
 
 static void hashtable_init(u64 size);
 static void hashtable_destroy(void);
 
 static u64 hashtable_size = HASHTABLE_DEFAULT_SIZE;
 
-static u32 (*hash_function_ptr)(char* source) = 0;
+static u32 (*hash_function_ptr)(const char* source) = 0;
 
-static void hashtable_setup(u32 (*function)(char* source)) {
+static void hashtable_setup(u32 (*function)(const char* source)) {
     if (function != 0) {
         hash_function_ptr = function;
     }
 }
 
 /* hash: form hash value for string s */
-static u32 hash_func(char* source) {
+static u32 hash_func(const char* source) {
     if (hash_function_ptr != 0) {
         return hash_function_ptr(source);
     }
@@ -45,7 +44,7 @@ static u32 hash_func(char* source) {
 }
 
 /* hash: form hash value for string s */
-static u32 default_hash_function(char* source) {
+static u32 default_hash_function(const char* source) {
     u32 data = 0;
     if (source != 0) {
         data = default_hash(source);
@@ -54,13 +53,13 @@ static u32 default_hash_function(char* source) {
 }
 
 /* hash: form hash value for string s */
-u32 default_hash(char* source) {
+u32 default_hash(const char* source) {
     /* One-byte-at-a-time hash based on Murmur's mix */
     /* Source: https://github.com/aappleby/smhasher/blob/master/src/Hashes.cpp */
     u32 data = 0;
     if (source != 0) {
         u32 hash = (u32)~0x5a32b847;
-        char* ptr = source;
+        const char* ptr = source;
         while (*ptr != 0) {
             hash ^= (u32)*ptr;
             hash *= 0x5bd1e995;
@@ -73,20 +72,20 @@ u32 default_hash(char* source) {
 }
 
 /* hash: form hash value for string s */
-u32 murmurhash3(char* source) {
+u32 murmurhash3(const char* source) {
     u32 data = 0;
     if (source != 0) {
         u32 len = 0;
-        u8* ptr = (u8*)source;
+        const u8* ptr = (const u8*)source;
         while (*ptr != 0) {
             ptr++;
         }
-        len = (u32)(ptr - (u8*)source);
+        len = (u32)(ptr - (const u8*)source);
 
         const u32 m = 0x5bd1e995;
         u32 hash = lcg_state ^ len;
 
-        u8* buf = (u8*)source;
+        const u8* buf = (const u8*)source;
 
         /* Mix 4 bytes at a time into the hash. */
         while (len >= 4) {
@@ -115,7 +114,7 @@ u32 murmurhash3(char* source) {
             hash *= m;
         default:
             break;
-        };
+        }
 
         /* Do a few final mixes of the hash. */
         hash ^= hash >> 13;
@@ -154,13 +153,11 @@ static void hashtable_free_internal(struct hashtable_data* ptr) {
             if (current != 0) {
                 current->next = node->next;
             }
-            if (hashtable[hash] != 0) {
-                if (hashtable[hash] != node) {
-                    hashtable_item_free_internal(node);
-                    break;
-                }
-                hashtable[hash] = 0;
+            if (hashtable[hash] != node) {
+                hashtable_item_free_internal(node);
+                break;
             }
+            hashtable[hash] = 0;
         }
         node = ptr->next;
         hashtable_item_free_internal(ptr);
@@ -168,14 +165,13 @@ static void hashtable_free_internal(struct hashtable_data* ptr) {
     } while (node != 0);
 }
 
-static struct hashtable_data* hashtable_alloc(char* key, void* value) {
+static struct hashtable_data* hashtable_alloc(const char* key, void* value) {
     u32 hash = hash_func(key) % hashtable_size;
     struct hashtable_data* next = hashtable[hash];
     struct hashtable_data* node = _list_alloc(sizeof(struct hashtable_data));
     char* node_key = _list_alloc(strlen(key) + 1); /* +1 for ’\0’ */
     /* char* node_value = _list_alloc(strlen(value) + 1); +1 for ’\0’ */
     strcpy(node_key, key); /* NOLINT */
-    /* strcpy(node_value, value); // NOLINT */
     node->key = node_key;
     node->value = value;
     node->next = next;
@@ -194,7 +190,7 @@ static void hashtable_free(struct hashtable_data* ptr) {
     }
 }
 
-static struct hashtable_data* hashtable_find(char* key) {
+static struct hashtable_data* hashtable_find(const char* key) {
     u32 hash = hashtable_get(key);
     struct hashtable_data* node = hashtable[hash];
     while (node != 0) {
@@ -215,7 +211,7 @@ static struct hashtable_data* hashtable_value(u32 hash) {
     return hashtable[hash % hashtable_size];
 }
 
-u32 hashtable_get(char* key) {
+static u32 hashtable_get(const char* key) {
     u32 hash = hash_func(key) % hashtable_size;
 #ifdef USE_MEMORY_DEBUG_INFO
     struct hashtable_data* node = hashtable[hash];
@@ -226,7 +222,7 @@ u32 hashtable_get(char* key) {
     return hash;
 }
 
-u32 hashtable_hash(char* key) {
+static u32 hashtable_hash(const char* key) {
     u32 hash = hash_func(key) % hashtable_size;
 #ifdef USE_MEMORY_DEBUG_INFO
     struct hashtable_data* node = hashtable_value(hash);
@@ -237,7 +233,7 @@ u32 hashtable_hash(char* key) {
     return hash;
 }
 
-u32 hashtable_count(char* key) {
+static u32 hashtable_count(const char* key) {
     u32 count = 0;
     u32 hash = hashtable_get(key);
     if (hashtable != 0) {
@@ -250,7 +246,7 @@ u32 hashtable_count(char* key) {
     return count;
 }
 
-static void hashtable_set(char* key, void* value) {
+static void hashtable_set(const char* key, void* value) {
     u32 hash = hash_func(key) % hashtable_size;
     struct hashtable_data* node = hashtable[hash];
     if (node != 0) {

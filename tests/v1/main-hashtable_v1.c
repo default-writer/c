@@ -4,7 +4,6 @@
 #include "playground/hashtable/hashtable.h"
 #include "playground/pointer/pointer.h"
 #include <rexo/include/rexo.h>
-#include "std/macros.h"
 
 #define HASHTABLE_SIZE 101
 #define DEFAULT_SIZE 0xffff
