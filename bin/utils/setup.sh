@@ -26,6 +26,12 @@ install="$1"
 
 case "${install}" in
 
+    "--nodejs") # installs nodejs
+        update
+        apt install -y nodejs
+        upgrade
+        ;;
+
     "--gtk4") # installs GTK 4
         update
         apt install -y gnome-devel libgtk-4-1 libgtk2.0-dev libgtk-3-dev libgtk-4-dev libglib2.0-dev
