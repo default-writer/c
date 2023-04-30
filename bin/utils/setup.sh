@@ -240,6 +240,7 @@ case "${install}" in
         apt update -y
         chmod a+r /etc/apt/keyrings/docker.gpg
         apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+        usermod -a -G sudo $USER
         if [ "$(cat /etc/group | grep -s '^docker:')" == "" ]; then
             groupadd docker
             usermod -aG docker $USER
