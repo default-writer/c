@@ -56,7 +56,6 @@ for opt in ${opts[@]}; do
             ;;
 
         *)
-            help
             ;;
 
     esac
