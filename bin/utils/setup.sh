@@ -240,7 +240,11 @@ case "${install}" in
         apt update -y
         chmod a+r /etc/apt/keyrings/docker.gpg
         apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+        if [ "$(cat /etc/group | grep -s '^docker:')" == "" ]; then
+            groupadd docker
+        fi
         usermod -aG docker $USER
+        newgrp docker
         chmod 666 /var/run/docker.sock
         upgrade ${updgradeflags}
         ;;
