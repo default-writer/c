@@ -25,8 +25,7 @@ sudo "${pwd}/bin/utils/setup.sh" --configuration --no-update --no-upgrade
 sudo "${pwd}/bin/utils/setup.sh" --clang-format --no-update --no-upgrade
 sudo "${pwd}/bin/utils/setup.sh" --cmake --no-update --no-upgrade
 sudo "${pwd}/bin/utils/setup.sh" --gtk4 --no-update --no-upgrade
-sudo "${pwd}/bin/utils/setup.sh" --nodejs --no-update --no-upgrade
-sudo "${pwd}/bin/utils/setup.sh" --npm --no-update --no-upgrade
+sudo "${pwd}/bin/utils/setup.sh" --nodejs-ppa --no-update --no-upgrade
 sudo "${pwd}/bin/utils/setup.sh" --upgrade
 
 "${pwd}/bin/utils/runme.sh"
