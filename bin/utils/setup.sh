@@ -52,6 +52,14 @@ done
 
 case "${install}" in
 
+    "--update") # runs system update
+        update
+        ;;
+
+    "--upgrade") # runs system upgrade
+        upgrade
+        ;;
+
     "--nodejs") # installs nodejs
         update ${updateflags}
         apt install -y nodejs
