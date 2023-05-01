@@ -26,11 +26,11 @@ opts=( "${@:2}" )
 ## Usage: ${script} <option> [optional]
 ## ${commands}
 
+updateflags="--update"
+updgradeflags="--upgrade"
+
 for opt in ${opts[@]}; do
     case ${opt} in
-
-        "")
-            ;;
 
         "--no-update") # [optional] skips system updates
             updateflags="--no-update"
@@ -53,11 +53,11 @@ done
 case "${install}" in
 
     "--update") # runs system update
-        update
+        update ${updateflags}
         ;;
 
     "--upgrade") # runs system upgrade
-        upgrade
+        upgrade ${updgradeflags}
         ;;
 
     "--nodejs") # installs nodejs
