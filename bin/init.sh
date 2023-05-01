@@ -11,7 +11,6 @@ uid=$(id -u)
 
 pwd=$(pwd)
 
-"${pwd}/bin/utils/install.sh" --git
 "${pwd}/bin/utils/install.sh" --hooks
 
 "${pwd}/bin/cleanup.sh" --all
