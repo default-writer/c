@@ -14,9 +14,6 @@ extern const struct list list_alloc_definition;
 /* list parameters definition */
 extern struct list_parameters list_parameters_definition;
 
-/* LCG Park-Miller function */
-/* extern u64 lcg_parkmiller(u32* state); */
-
 /* initializes the new context's head element */
 struct list_data* list_init(void);
 /* destroys the memory stack */
@@ -487,7 +484,7 @@ RX_TEST_CASE(myTestSuite, test_list_push_pop, .fixture = test_fixture) {
     /* pushes all pseudo-random values */
     /* pushes to the list multiple times */
     int i = 0;
-    /* u32 state = 3 * 5 * 7 * 11 * 13 * 19 * 23; */
+
     do {
         /* generates random values */
         void* _payload = (void*)lcg_parkmiller_32();
