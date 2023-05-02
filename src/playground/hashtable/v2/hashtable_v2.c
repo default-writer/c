@@ -213,23 +213,11 @@ static struct hashtable_data* hashtable_value(u32 hash) {
 
 static u32 hashtable_get(const char* key) {
     u32 hash = hash_func(key) % hashtable_size;
-#ifdef USE_MEMORY_DEBUG_INFO
-    struct hashtable_data* node = hashtable[hash];
-    if (node != 0) {
-        printf("  <$: 0x%016llx !  %16s : 0x%016llx\n", (u64)node, node->key, (u64)node->value);
-    }
-#endif
     return hash;
 }
 
 static u32 hashtable_hash(const char* key) {
     u32 hash = hash_func(key) % hashtable_size;
-#ifdef USE_MEMORY_DEBUG_INFO
-    struct hashtable_data* node = hashtable_value(hash);
-    if (node != 0) {
-        printf("  <#: 0x%016llx !  %16s : 0x%016llx\n", (u64)node, node->key, (u64)node->value);
-    }
-#endif
     return hash;
 }
 
