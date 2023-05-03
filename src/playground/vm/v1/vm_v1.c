@@ -58,7 +58,7 @@ static struct vm_data* vm_init_internal(u64 size, u64 address_space);
 static void** vm_read_internal(struct vm_data** current, u64 address);
 static u64 vm_alloc_internal(struct vm_data** current);
 static void* to_real_address_internal(struct vm_data* vm, u64 address);
-static u64 to_virtual_address_internal(struct vm_data* vm, struct pointer** ptr);
+static u64 to_virtual_address_internal(const struct vm_data* vm, struct pointer** ptr);
 #ifdef USE_MEMORY_DEBUG_INFO
 static void vm_enumerator_init_internal(struct vm_data* vm);
 static void vm_enumerator_destroy_internal(void);
@@ -119,9 +119,8 @@ static u64 vm_alloc_internal(struct vm_data** current) {
     *current = pointer;
     return address;
 }
-/* #endif */
 
-static u64 to_virtual_address_internal(struct vm_data* vm, struct pointer** ptr) {
+static u64 to_virtual_address_internal(const struct vm_data* vm, struct pointer** ptr) {
     return (u64)(ptr - vm->bp) + vm->address_space + 1;
 }
 
