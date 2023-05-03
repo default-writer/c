@@ -26,7 +26,7 @@ install="$1"
 
 case "${install}" in
 
-    "--clangd") # uninstalls clangd 15.0.6
+    "--clangd") # uninstalls clangd 16.0.2
         rm -rf "${pwd}/clangd"
         ;;
 
