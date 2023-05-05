@@ -66,6 +66,27 @@ case "${install}" in
         upgrade ${updgradeflags}
         ;;
 
+    "--dotnet") # installs dotnet
+        update ${updateflags}
+        curl -sL https://dot.net/v1/dotnet-install.sh -o /tmp/dotnet-install.sh
+        chmod +x /tmp/dotnet-install.sh
+        bash /tmp/dotnet-install.sh --version 6.0.408 --channel 6.0
+        bash /tmp/dotnet-install.sh --version 7.0.203 --channel 7.0
+        rm -f /tmp/dotnet-install.sh
+        upgrade ${updgradeflags}
+        ;;
+
+    "--powershell") # installs powershell
+        update ${updateflags}
+        apt install -y wget apt-transport-https software-properties-common
+        curl -sL "https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb" -o /tmp/packages-microsoft-prod.deb
+        dpkg -i /tmp/packages-microsoft-prod.deb
+        apt update -y
+        apt install -y powershell
+        rm -f /tmp/packages-microsoft-prod.deb
+        upgrade ${updgradeflags}
+        ;;
+
     "--nodejs-ppa") # installs nodejs ppa
         update ${updateflags}
         curl -sL https://deb.nodesource.com/setup_18.x -o /tmp/nodesource_setup.sh
@@ -209,11 +230,6 @@ case "${install}" in
 
     "--clang-format") # installs clang-format
         update ${updateflags}
-        # wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
-        # build=$(echo $(lsb_release -a 2>&1 | tail -1 | sed  -e 's/\w*:\s*//g'))
-        # repository=$(echo deb http://apt.llvm.org/${build} llvm-toolchain-${build} main)
-        # add-apt-repository --yes "${repository}"
-        # upgrade
         apt install -y clang-format
         apt install -y apport apport-gtk python3-apport python3-problem-report gnome-remote-desktop grub-common grub-pc grub-pc-bin grub2-common gstreamer1.0-pipewire  open-vm-tools open-vm-tools-desktop python3-software-properties software-properties-common software-properties-gtk libgbm1 libgl1-mesa-dri libglapi-mesa libglx-mesa0 mesa-va-drivers mesa-vulkan-drivers
         apt install -y --only-upgrade apport apport-gtk python3-apport python3-problem-report gnome-remote-desktop grub-common grub-pc grub-pc-bin grub2-common gstreamer1.0-pipewire  open-vm-tools open-vm-tools-desktop python3-software-properties software-properties-common software-properties-gtk libgbm1 libgl1-mesa-dri libglapi-mesa libglx-mesa0 mesa-va-drivers mesa-vulkan-drivers

@@ -61,6 +61,14 @@ case "${install}" in
         grep -qxF 'export GTK_LIBRARY_DIRS="' $HOME/.bashrc || echo 'export GTK_LIBRARY_DIRS="' ${GTK_LIBRARY_DIRS} '"' >> $HOME/.bashrc
         ;;
 
+    "--dotnet") # installs dotnet environment variables in .bashrc
+        DOTNET_ROOT=$HOME/.dotnet
+        DOTNET_PATH=$PATH:$HOME/.dotnet:$HOME/.dotnet/tools
+        grep -qxF '# dotnet 7' $HOME/.bashrc || (tail -1 $HOME/.bashrc | grep -qxF '' || echo '' >> $HOME/.bashrc && echo '# dotnet 7' >> $HOME/.bashrc)
+        grep -qxF 'export DOTNET_ROOT="' $HOME/.bashrc || echo 'export DOTNET_ROOT="' ${DOTNET_ROOT} '"' >> $HOME/.bashrc
+        grep -qxF 'export PATH="' $HOME/.bashrc || echo 'export PATH="' ${DOTNET_PATH} '"' >> $HOME/.bashrc
+        ;;
+
     *)
         commands=$(cat $0 | sed -e 's/^[ \t]*//;' | sed -e '/^[ \t]*$/d' | sed -n -e 's/^"\(.*\)".*#/    \1:/p' | sed -n -e 's/: /:\n        /p')
         script="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
