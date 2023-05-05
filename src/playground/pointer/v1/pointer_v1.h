@@ -1,5 +1,5 @@
-#ifndef _PLAYGROUND_POINTER_H_
-#define _PLAYGROUND_POINTER_H_
+#ifndef _PLAYGROUND_POINTER_V1_H_
+#define _PLAYGROUND_POINTER_V1_H_
 
 #include "std/common.h"
 
@@ -56,4 +56,4 @@ struct pointer_methods {
 void pointer_ctx_init(struct pointer_data** ctx, u64 size);
 void pointer_ctx_destroy(struct pointer_data** ctx);
 
-#endif /* _PLAYGROUND_POINTER_H_ */
+#endif /* _PLAYGROUND_POINTER_V1_H_ */

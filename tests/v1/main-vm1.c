@@ -2,7 +2,7 @@
 #include "list-micro/data.h"
 #include "playground/brain/brain.h"
 #include "playground/hashtable/hashtable.h"
-#include "playground/pointer/pointer.h"
+#include "playground/pointer/v1/pointer_v1.h"
 
 #define DEFAULT_SIZE 0x100
 

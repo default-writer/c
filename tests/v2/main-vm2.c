@@ -1,7 +1,7 @@
 #include "common/alloc.h"
 #include "list-micro/data.h"
 #include "playground/hashtable/v2/hashtable_v2.h"
-#include "playground/pointer/pointer.h"
+#include "playground/pointer/v2/pointer_v2.h"
 
 #define DEFAULT_SIZE 0x100
 
@@ -32,7 +32,8 @@ static void source1(void) {
     pointer->free(file_name_ptr);
 #endif
     u64 mode_ptr = pointer->load("rb");
-    u64 f_ptr = pointer->file_alloc(file_path_ptr, mode_ptr);
+    u64 f_ptr = pointer->file_alloc();
+    pointer->file_open(f_ptr, file_path_ptr, mode_ptr);
 #ifndef USE_GC
     pointer->free(file_path_ptr);
     pointer->free(mode_ptr);
@@ -53,7 +54,8 @@ static void source2(void) {
     pointer->free(file_name_ptr);
 #endif
     u64 mode_ptr = pointer->load("rb");
-    u64 f_ptr = pointer->file_alloc(file_path_ptr, mode_ptr);
+    u64 f_ptr = pointer->file_alloc();
+    pointer->file_open(f_ptr, file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
         u64 data_ptr = pointer->file_read(f_ptr);
         u64 size = pointer->size(data_ptr);

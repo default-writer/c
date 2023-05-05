@@ -2,7 +2,7 @@
 #include "list-micro/data.h"
 #include "playground/brain/brain.h"
 #include "playground/hashtable/v2/hashtable_v2.h"
-#include "playground/pointer/pointer.h"
+#include "playground/pointer/v2/pointer_v2.h"
 
 #include <rexo/include/rexo.h>
 
@@ -240,7 +240,8 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
     pointer->free(file_name_ptr);
 #endif
     u64 mode_ptr = pointer->load("rb");
-    u64 f_ptr = pointer->file_alloc(file_path_ptr, mode_ptr);
+    u64 f_ptr = pointer->file_alloc();
+    pointer->file_open(f_ptr, file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
         u64 data_ptr = pointer->file_read(f_ptr);
         u64 list_ptr = pointer->list_alloc();
@@ -336,7 +337,8 @@ RX_TEST_CASE(myTestSuite, test_improper_use_of_different_calls, .fixture = test_
     u64 file_name_ptr = pointer->load("/all_english_words.txt");
     pointer->strcat(file_path_ptr, file_name_ptr);
     u64 mode_ptr = pointer->load("rb");
-    u64 f_ptr = pointer->file_alloc(file_path_ptr, mode_ptr);
+    u64 f_ptr = pointer->file_alloc();
+    pointer->file_open(f_ptr, file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
         idx4 = pointer->file_read(file_name_ptr);
         idx5 = pointer->list_peek(file_name_ptr);
@@ -425,7 +427,8 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable_default_hash, .fi
     pointer->free(file_name_ptr);
 #endif
     u64 mode_ptr = pointer->load("rb");
-    u64 f_ptr = pointer->file_alloc(file_path_ptr, mode_ptr);
+    u64 f_ptr = pointer->file_alloc();
+    pointer->file_open(f_ptr, file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
         u64 data_ptr = pointer->file_read(f_ptr);
         u64 list_ptr = pointer->list_alloc();
@@ -488,7 +491,8 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable_murmurhash3_hash,
     pointer->free(file_name_ptr);
 #endif
     u64 mode_ptr = pointer->load("rb");
-    u64 f_ptr = pointer->file_alloc(file_path_ptr, mode_ptr);
+    u64 f_ptr = pointer->file_alloc();
+    pointer->file_open(f_ptr, file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
         u64 data_ptr = pointer->file_read(f_ptr);
         u64 list_ptr = pointer->list_alloc();

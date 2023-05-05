@@ -2,7 +2,7 @@
 #include "list-micro/data.h"
 #include "playground/brain/brain.h"
 #include "playground/hashtable/hashtable.h"
-#include "playground/pointer/pointer.h"
+#include "playground/pointer/v1/pointer_v1.h"
 #include <rexo/include/rexo.h>
 
 #define DEFAULT_SIZE 0x8
@@ -53,7 +53,7 @@ RX_TEST_CASE(myTestSuite, test_list_push_list_peek_list_pop, .fixture = test_fix
     char* buffer = _list_alloc(size + 1);
     for (u64 i = 0; i < size; i++) {
         u64 ch0 = pointer->list_peek(list_ptr);
-        char* data = pointer->unsafe(ch0);
+        const char* data = pointer->unsafe(ch0);
         *(buffer + i) = *data;
         u64 ch = pointer->list_pop(list_ptr);
 #ifdef USE_GC
@@ -86,7 +86,7 @@ RX_TEST_CASE(myTestSuite, test_list_peek_0, .fixture = test_fixture) {
     }
     char* buffer = _list_alloc(size + 1);
     for (u64 i = 0; i < size; i++) {
-        char* data = pointer->unsafe(i + 1);
+        const char* data = pointer->unsafe(i + 1);
         *(buffer + i) = *data;
 #ifndef USE_GC
         pointer->free(i + 1);

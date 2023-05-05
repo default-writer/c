@@ -1,6 +1,6 @@
 #include "common/alloc.h"
 #include "list-micro/data.h"
-#include "playground/pointer/pointer.h"
+#include "playground/pointer/v2/pointer_v2.h"
 #include "playground/vm/vm.h"
 
 /* list definition */

@@ -2,7 +2,7 @@
 #include "common/alloc.h"
 #include "common/lcg.h"
 #include "playground/list/v2/list.h"
-#include "playground/pointer/pointer.h"
+#include "playground/pointer/v2/pointer_v2.h"
 
 static u64 lcg_state = 0;
 

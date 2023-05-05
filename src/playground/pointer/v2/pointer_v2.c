@@ -1,6 +1,6 @@
+#include "playground/pointer/v2/pointer_v2.h"
 #include "common/alloc.h"
 #include "list-micro/data.h"
-#include "playground/pointer/pointer.h"
 #include "playground/vm/vm.h"
 
 #define DEFAULT_SIZE 0x100
@@ -62,7 +62,8 @@ static void pointer_strcat(u64 dest_ptr, u64 src_ptr);
 static u64 pointer_match_last(u64 src_ptr, u64 match_ptr);
 static u64 pointer_load(const char* data);
 static u64 pointer_getcwd(void);
-static u64 pointer_file_alloc(u64 file_path_ptr, u64 mode_ptr);
+static u64 pointer_file_alloc(void);
+static void pointer_file_open(u64 ptr, u64 file_path_ptr, u64 mode_ptr);
 static u64 pointer_file_read(u64 ptr);
 static void pointer_file_free(u64 ptr);
 static void pointer_printf(u64 ptr);
@@ -79,24 +80,29 @@ static void pointer_free_internal(u64 ptr);
 static void pointer_list_free_internal(struct list_data** current);
 static struct pointer* list_alloc_internal(void);
 
-typedef void (*internal_free)(struct pointer* ptr);
+typedef void (*internal_free)(const struct pointer* ptr);
 
-static void void_free_internal(struct pointer* ptr);
-static void file_close_internal(struct pointer* ptr);
-static void list_free_internal(struct pointer* ptr);
+static void void_free_internal(const struct pointer* ptr);
+static void ptr_free_internal(const struct pointer* ptr);
+static void file_free_internal(const struct pointer* ptr);
+static void list_free_internal(const struct pointer* ptr);
 
 static internal_free free_internal[] = {
     [TYPE_VOID] = void_free_internal,
-    [TYPE_PTR] = void_free_internal,
-    [TYPE_FILE] = file_close_internal,
+    [TYPE_PTR] = ptr_free_internal,
+    [TYPE_FILE] = file_free_internal,
     [TYPE_LIST] = list_free_internal,
 };
 
-static void void_free_internal(struct pointer* ptr) { /* NOLINT */
+static void void_free_internal(const struct pointer* ptr) {
     CLEAN(ptr)
 }
 
-static void file_close_internal(struct pointer* ptr) {
+static void ptr_free_internal(const struct pointer* ptr) {
+    CLEAN(ptr)
+}
+
+static void file_free_internal(const struct pointer* ptr) {
     struct file_handler* handler = ptr->data;
     if (handler->file != 0) {
         FILE* file = handler->file;
@@ -107,7 +113,7 @@ static void file_close_internal(struct pointer* ptr) {
     }
 }
 
-static void list_free_internal(struct pointer* ptr) {
+static void list_free_internal(const struct pointer* ptr) {
     struct list_handler* handler = ptr->data;
     if (handler->list != 0) {
         pointer_list_free_internal(&handler->list);
@@ -129,7 +135,7 @@ static struct pointer* pointer_alloc_internal(u64 size, enum type type) {
 }
 
 static void pointer_realloc_internal(struct pointer* ptr, u64 size) {
-    if (ptr != 0 && ptr->data != 0 && ptr->size != 0) {
+    if (ptr != 0) {
         ptr->data = _list_realloc(ptr->data, size);
         ptr->size = size;
     }
@@ -144,7 +150,7 @@ static void pointer_free_internal(u64 ptr) {
         free_internal[data_ptr->type](data_ptr);
     }
     data_ptr = vm->free(&base->vm, ptr);
-    if (data_ptr->data != 0 && data_ptr->size != 0) {
+    if (data_ptr->size != 0) {
         _list_free(data_ptr->data, data_ptr->size);
     }
 #ifdef USE_MEMORY_CLEANUP
@@ -476,28 +482,31 @@ static u64 pointer_getcwd(void) {
     return data_ptr;
 }
 
-static u64 pointer_file_alloc(u64 file_path, u64 mode) {
-    u64 data = 0;
+static u64 pointer_file_alloc() {
+    struct pointer* f_ptr = pointer_alloc_internal(sizeof(struct file_handler), TYPE_FILE);
+    u64 data = vm->write(&base->vm, f_ptr);
+#ifdef USE_GC
+    list->push(&base->gc, (void*)data);
+#endif
+    return data;
+}
+
+static void pointer_file_open(u64 ptr, u64 file_path, u64 mode) {
     struct pointer* file_path_ptr = vm->read(&base->vm, file_path);
     const struct pointer* mode_ptr = vm->read(&base->vm, mode);
     if (file_path_ptr != 0 && mode_ptr != 0) {
+        struct pointer* f_ptr = vm->read(&base->vm, ptr);
+        struct file_handler* handler = f_ptr->data;
         const char* file_path_data = file_path_ptr->data;
         const char* mode_data = mode_ptr->data;
         FILE* file = fopen(file_path_data, mode_data); /* NOLINT */
         if (file != 0) {
-            struct pointer* f_ptr = pointer_alloc_internal(sizeof(struct file_handler), TYPE_FILE);
-            struct file_handler* handler = f_ptr->data;
             handler->file = file;
 #ifdef USE_MEMORY_DEBUG_INFO
             handler->path = file_path_ptr->data;
 #endif
-            data = vm->write(&base->vm, f_ptr);
-#ifdef USE_GC
-            list->push(&base->gc, (void*)data);
-#endif
         }
     }
-    return data;
 }
 
 static u64 pointer_file_read(u64 ptr) {
@@ -579,6 +588,7 @@ const struct pointer_methods pointer_methods_definition = {
     .load = pointer_load,
     .getcwd = pointer_getcwd,
     .file_alloc = pointer_file_alloc,
+    .file_open = pointer_file_open,
     .file_read = pointer_file_read,
     .file_free = pointer_file_free,
     .printf = pointer_printf,
