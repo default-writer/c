@@ -155,7 +155,7 @@ int main(int argc, char* argv[]) {
     }
     /* Read arguments */
     const int hash_choice = atoi(argv[1]);
-    char const* const fn = argv[2];
+    const char* fn = argv[2];
 
     /* Read file */
     FILE* f = fopen(fn, "r");

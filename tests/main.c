@@ -177,9 +177,9 @@ RX_TEST_CASE(myTestSuite, test_standard_list_peek_does_not_changes_stack, .fixtu
     /* pushed to the list */
     list->push(ctx, tmp);
     /* gets the head pointer to the list */
-    struct list_data* ptr = *ctx;
+    const struct list_data* ptr = *ctx;
     /* peeks from the list */
-    struct list_data* head = list->peek(ctx);
+    const struct list_data* head = list->peek(ctx);
     /* ensures data is added to the list */
     RX_ASSERT(head != 0);
     /* ensures payload is on top of the stack */
@@ -194,7 +194,7 @@ RX_TEST_CASE(myTestSuite, test_empty_list_pop_equals_0, .fixture = test_fixture)
     /* declares pointer to list functions definitions */
     const struct list* list = &list_definition;
     /* pups out the current head element */
-    struct list_data* head = list->pop(&ctx);
+    const struct list_data* head = list->pop(&ctx);
     /* ensures head is not initialized */
     RX_ASSERT(head == 0);
 }
@@ -205,7 +205,7 @@ RX_TEST_CASE(myTestSuite, test_empty_list_peek_equals_0, .fixture = test_fixture
     /* declares pointer to list functions definitions */
     const struct list* list = &list_definition;
     /* peeks up the current head element */
-    struct list_data* head = list->peek(&ctx);
+    const struct list_data* head = list->peek(&ctx);
     /* ensures head is not initialized */
     RX_ASSERT(head == 0);
 }
@@ -238,7 +238,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_payload, .fixture = test_fixture) {
     /* pushes to the list */
     list->push(ctx, tmp);
     /* peeks from list */
-    struct list_data* head = list->peek(ctx);
+    const struct list_data* head = list->peek(ctx);
     /* ensures data is added to the list */
     RX_ASSERT(head->data == payload);
 }
@@ -275,7 +275,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture) 
     /* pops from the list */
     struct list_data* head = list->pop(ctx);
     /* retrieves the data from the top of the list */
-    void* head_payload = head->data;
+    const void* head_payload = head->data;
     /* releases memory allocated for the data */
     list->free(&head);
     /* ensures data is added to the list */
@@ -294,14 +294,14 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_and_prev_next_equals_0, .fixture = tes
     /* pushes to the list */
     list->push(ctx, tmp);
     /* peeks from the list */
-    struct list_data* head = list->peek(ctx);
+    const struct list_data* head = list->peek(ctx);
     /* ensures peek does data cleanup */
     RX_ASSERT(head->prev == 0);
     /* pops from the list */
     struct list_data* current = list->pop(ctx);
-    struct list_data* prev = current->next;
-    struct list_data* next = current->prev;
-    void* head_payload = current->data;
+    const struct list_data* prev = current->next;
+    const struct list_data* next = current->prev;
+    const void* head_payload = current->data;
     list->free(&current);
     /* ensures data is added to the list */
     RX_ASSERT(head_payload == payload);
@@ -338,7 +338,7 @@ RX_TEST_CASE(myTestSuite, test_list_peek_is_zero, .fixture = test_fixture) {
     /* declares pointer to list functions definitions */
     const struct list* list = &list_definition;
     /* peeks from the list */
-    struct list_data* head = list->peek(ctx);
+    const struct list_data* head = list->peek(ctx);
     /* ensures head is not initialized */
     RX_ASSERT(head == 0);
 }
@@ -350,7 +350,7 @@ RX_TEST_CASE(myTestSuite, test_list_pop_is_zero, .fixture = test_fixture) {
     /* declares pointer to list functions definitions */
     const struct list* list = &list_definition;
     /* pop from the list */
-    struct list_data* head = list->pop(ctx);
+    const struct list_data* head = list->pop(ctx);
     /* ensures head is not initialized */
     RX_ASSERT(head == 0);
 }

@@ -4,12 +4,13 @@
 #include "std/common.h"
 
 enum type {
+    TYPE_VOID = 0,
     /* value used for pointer type */
-    TYPE_PTR = 0,
+    TYPE_PTR = 1,
     /* value used for file type */
-    TYPE_FILE = 1,
+    TYPE_FILE = 2,
     /* value used for list type */
-    TYPE_LIST = 2
+    TYPE_LIST = 3
 };
 
 struct pointer {
@@ -38,9 +39,9 @@ struct pointer_methods {
     u64 (*match_last)(u64 src_ptr, u64 match_prt);
     u64 (*getcwd)(void);
     u64 (*load)(const char* data);
-    u64 (*open_file)(u64 file_path_ptr, u64 mode_ptr);
-    u64 (*read_file)(u64 ptr);
-    void (*close_file)(u64 ptr);
+    u64 (*file_alloc)(u64 file_path_ptr, u64 mode_ptr);
+    u64 (*file_read)(u64 ptr);
+    void (*file_free)(u64 ptr);
     void (*printf)(u64 ptr);
     void (*put_char)(u64 ptr, char value);
     char* (*unsafe)(u64 ptr);

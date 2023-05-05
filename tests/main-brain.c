@@ -192,11 +192,11 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_close_file, .fixture = test_fixtur
     pointer->free(file_name_ptr);
 #endif
     u64 mode_ptr = pointer->load("rb");
-    u64 f_ptr = pointer->open_file(file_path_ptr, mode_ptr);
-    u64 data_ptr = pointer->read_file(f_ptr);
+    u64 f_ptr = pointer->file_alloc(file_path_ptr, mode_ptr);
+    u64 data_ptr = pointer->file_read(f_ptr);
     RX_ASSERT(f_ptr == 0);
     RX_ASSERT(data_ptr == 0);
-    pointer->close_file(f_ptr);
+    pointer->file_free(f_ptr);
 #ifndef USE_GC
     pointer->free(data_ptr);
     pointer->free(mode_ptr);
@@ -214,11 +214,11 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
     pointer->free(file_name_ptr);
 #endif
     u64 mode_ptr = pointer->load("rb");
-    u64 f_ptr = pointer->open_file(file_path_ptr, mode_ptr);
+    u64 f_ptr = pointer->file_alloc(file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
-        u64 data_ptr = pointer->read_file(f_ptr);
+        u64 data_ptr = pointer->file_read(f_ptr);
         u64 list_ptr = pointer->list_alloc();
-        pointer->close_file(f_ptr);
+        pointer->file_free(f_ptr);
         char* file_data = pointer->unsafe(data_ptr);
         for (int i = 0; i < 100; i++) {
             char* tmp = file_data;
@@ -261,13 +261,13 @@ extern inline void source(void) {
     pointer->free(file_name_ptr);
 #endif
     u64 mode_ptr = pointer->load("rb");
-    u64 f_ptr = pointer->open_file(file_path_ptr, mode_ptr);
+    u64 f_ptr = pointer->file_alloc(file_path_ptr, mode_ptr);
 #ifndef USE_GC
     pointer->free(file_path_ptr);
     pointer->free(mode_ptr);
 #endif
-    u64 data_ptr = pointer->read_file(f_ptr);
-    pointer->close_file(f_ptr);
+    u64 data_ptr = pointer->file_read(f_ptr);
+    pointer->file_free(f_ptr);
     pointer->printf(data_ptr);
 #ifndef USE_GC
     pointer->free(data_ptr);
