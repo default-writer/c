@@ -43,6 +43,8 @@ static void source1(void) {
     pointer->printf(data_ptr);
 #ifndef USE_GC
     pointer->free(data_ptr);
+#else
+    pointer->gc();
 #endif
 }
 
@@ -86,6 +88,8 @@ static void source2(void) {
     pointer->free(mode_ptr);
     pointer->free(file_name_ptr);
     pointer->free(file_path_ptr);
+#else
+    pointer->gc();
 #endif
 }
 

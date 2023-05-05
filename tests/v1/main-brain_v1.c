@@ -50,6 +50,8 @@ RX_TEST_CASE(myTestSuite, test_load_empty, .fixture = test_fixture) {
     RX_ASSERT(empty_ptr != 0);
 #ifndef USE_GC
     pointer->free(empty_ptr);
+#else
+    pointer->gc();
 #endif
 }
 
@@ -60,6 +62,8 @@ RX_TEST_CASE(myTestSuite, test_print_load_empty, .fixture = test_fixture) {
     RX_ASSERT(empty_ptr != 0);
 #ifndef USE_GC
     pointer->free(empty_ptr);
+#else
+    pointer->gc();
 #endif
 }
 
@@ -73,6 +77,8 @@ RX_TEST_CASE(myTestSuite, test_load_copy, .fixture = test_fixture) {
 #ifndef USE_GC
     pointer->free(char_ptr);
     pointer->free(copy_ptr);
+#else
+    pointer->gc();
 #endif
 }
 
@@ -89,6 +95,8 @@ RX_TEST_CASE(myTestSuite, test_load_push_peek_pop, .fixture = test_fixture) {
     pointer->free(char_ptr);
     pointer->free(peek_ptr);
     pointer->free(pop_ptr);
+#else
+    pointer->gc();
 #endif
 }
 
@@ -98,6 +106,8 @@ RX_TEST_CASE(myTestSuite, test_load_free_free, .fixture = test_fixture) {
 #ifndef USE_GC
     pointer->free(char_ptr);
     pointer->free(char_ptr);
+#else
+    pointer->gc();
 #endif
 }
 
@@ -111,6 +121,8 @@ RX_TEST_CASE(myTestSuite, test_strcat_load_alloc, .fixture = test_fixture) {
 #ifndef USE_GC
     pointer->free(char_ptr);
     pointer->free(pattern_ptr);
+#else
+    pointer->gc();
 #endif
 }
 
@@ -124,6 +136,8 @@ RX_TEST_CASE(myTestSuite, test_strcat_alloc_load, .fixture = test_fixture) {
 #ifndef USE_GC
     pointer->free(zero_ptr);
     pointer->free(char_ptr);
+#else
+    pointer->gc();
 #endif
 }
 
@@ -141,6 +155,8 @@ RX_TEST_CASE(myTestSuite, test_strcat_load_alloc_alloc, .fixture = test_fixture)
     pointer->free(empty_ptr);
     pointer->free(pattern_ptr);
     pointer->free(char_ptr);
+#else
+    pointer->gc();
 #endif
 }
 
@@ -154,6 +170,8 @@ RX_TEST_CASE(myTestSuite, test_strcat_load_load, .fixture = test_fixture) {
 #ifndef USE_GC
     pointer->free(pattern_ptr);
     pointer->free(char_ptr);
+#else
+    pointer->gc();
 #endif
 }
 
@@ -167,6 +185,8 @@ RX_TEST_CASE(myTestSuite, test_strcpy_load_alloc, .fixture = test_fixture) {
 #ifndef USE_GC
     pointer->free(empty_ptr);
     pointer->free(pattern_ptr);
+#else
+    pointer->gc();
 #endif
 }
 
@@ -180,6 +200,8 @@ RX_TEST_CASE(myTestSuite, test_strcpy_load_load, .fixture = test_fixture) {
 #ifndef USE_GC
     pointer->free(pattern_ptr);
     pointer->free(char_ptr);
+#else
+    pointer->gc();
 #endif
 }
 
@@ -202,6 +224,8 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_close_file, .fixture = test_fixtur
     pointer->free(mode_ptr);
     pointer->free(file_name_ptr);
     pointer->free(file_path_ptr);
+#else
+    pointer->gc();
 #endif
 }
 
@@ -241,6 +265,8 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
     pointer->free(mode_ptr);
     pointer->free(file_name_ptr);
     pointer->free(file_path_ptr);
+#else
+    pointer->gc();
 #endif
 }
 
@@ -271,6 +297,8 @@ extern inline void source(void) {
     pointer->printf(data_ptr);
 #ifndef USE_GC
     pointer->free(data_ptr);
+#else
+    pointer->gc();
 #endif
 }
 

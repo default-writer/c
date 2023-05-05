@@ -43,6 +43,8 @@ extern inline void source(void) {
     pointer->printf(data_ptr);
 #ifndef USE_GC
     pointer->free(data_ptr);
+#else
+    pointer->gc();
 #endif
 }
 

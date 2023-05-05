@@ -300,6 +300,8 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
     pointer->free(mode_ptr);
     pointer->free(file_name_ptr);
     pointer->free(file_path_ptr);
+#else
+    pointer->gc();
 #endif
     hashtable->destroy();
 }
@@ -476,6 +478,8 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable_default_hash, .fi
     pointer->free(mode_ptr);
     pointer->free(file_name_ptr);
     pointer->free(file_path_ptr);
+#else
+    pointer->gc();
 #endif
     hashtable->destroy();
 }
@@ -540,6 +544,8 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable_murmurhash3_hash,
     pointer->free(mode_ptr);
     pointer->free(file_name_ptr);
     pointer->free(file_path_ptr);
+#else
+    pointer->gc();
 #endif
     hashtable->destroy();
 }
