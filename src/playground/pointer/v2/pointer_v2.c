@@ -73,14 +73,50 @@ static void pointer_gc(void);
 #endif
 
 /* internal */
-
 static struct pointer* pointer_alloc_internal(u64 size, enum type type);
 static void pointer_realloc_internal(struct pointer* ptr, u64 size);
-static void pointer_free_internal(struct pointer* ptr);
+static void pointer_free_internal(u64 ptr);
 static void pointer_list_free_internal(struct list_data** current);
 static struct pointer* list_alloc_internal(void);
-static void list_free_internal(struct pointer* ptr);
+
+typedef void (*internal_free)(struct pointer* ptr);
+
+static void void_free_internal(struct pointer* ptr);
 static void file_close_internal(struct pointer* ptr);
+static void list_free_internal(struct pointer* ptr);
+
+static internal_free free_internal[] = {
+    [TYPE_VOID] = void_free_internal,
+    [TYPE_PTR] = void_free_internal,
+    [TYPE_FILE] = file_close_internal,
+    [TYPE_LIST] = list_free_internal,
+};
+
+static void void_free_internal(struct pointer* ptr) { /* NOLINT */
+    CLEAN(ptr)
+}
+
+static void file_close_internal(struct pointer* ptr) {
+    struct file_handler* handler = ptr->data;
+    if (handler->file != 0) {
+        FILE* file = handler->file;
+        fclose(file);
+#ifdef USE_MEMORY_CLEANUP
+        handler->file = 0;
+#endif
+    }
+}
+
+static void list_free_internal(struct pointer* ptr) {
+    struct list_handler* handler = ptr->data;
+    if (handler->list != 0) {
+        pointer_list_free_internal(&handler->list);
+        list->destroy(&handler->list);
+#ifdef USE_MEMORY_CLEANUP
+        handler->list = 0;
+#endif
+    }
+}
 
 static struct pointer* pointer_alloc_internal(u64 size, enum type type) {
     struct pointer* ptr = _list_alloc(sizeof(struct pointer));
@@ -99,24 +135,29 @@ static void pointer_realloc_internal(struct pointer* ptr, u64 size) {
     }
 }
 
-static void pointer_free_internal(struct pointer* ptr) {
-    if (ptr != 0) {
-        if (ptr->data != 0 && ptr->size != 0) {
-            _list_free(ptr->data, ptr->size);
-        }
-#ifdef USE_MEMORY_CLEANUP
-        ptr->data = 0;
-        ptr->size = 0;
-#endif
-        _list_free(ptr, sizeof(struct pointer));
+static void pointer_free_internal(u64 ptr) {
+    struct pointer* data_ptr = vm->read(&base->vm, ptr);
+    if (data_ptr == 0) {
+        return;
     }
+    if (data_ptr->data != 0) {
+        free_internal[data_ptr->type](data_ptr);
+    }
+    data_ptr = vm->free(&base->vm, ptr);
+    if (data_ptr->data != 0 && data_ptr->size != 0) {
+        _list_free(data_ptr->data, data_ptr->size);
+    }
+#ifdef USE_MEMORY_CLEANUP
+    data_ptr->data = 0;
+    data_ptr->size = 0;
+#endif
+    _list_free(data_ptr, sizeof(struct pointer));
 }
 
 static void pointer_list_free_internal(struct list_data** current) {
     u64 ptr = 0;
     while ((ptr = (u64)list->pop(current)) != 0) {
-        struct pointer* data_ptr = vm->free(&base->vm, ptr);
-        pointer_free_internal(data_ptr);
+        pointer_free_internal(ptr);
     }
 }
 
@@ -125,22 +166,6 @@ static struct pointer* list_alloc_internal(void) {
     struct list_handler* handler = ptr->data;
     list->init(&handler->list);
     return ptr;
-}
-
-static void list_free_internal(struct pointer* ptr) {
-    if (ptr->data != 0 && ptr->size != 0) {
-        struct list_handler* handler = ptr->data;
-        pointer_list_free_internal(&handler->list);
-        list->destroy(&handler->list);
-    }
-}
-
-static void file_close_internal(struct pointer* ptr) {
-    struct file_handler* handler = ptr->data;
-    FILE* file = handler->file;
-    if (file != 0) {
-        fclose(file);
-    }
 }
 
 /* implementation*/
@@ -261,16 +286,7 @@ static u64 pointer_list_alloc(void) {
 
 static void pointer_list_free(u64 ptr) {
     if (ptr != 0) {
-        struct pointer* data_ptr = vm->read(&base->vm, ptr);
-        if (data_ptr == 0) {
-            return;
-        }
-        if (data_ptr->type != TYPE_LIST) {
-            return;
-        }
-        list_free_internal(data_ptr);
-        data_ptr = vm->free(&base->vm, ptr);
-        pointer_free_internal(data_ptr);
+        pointer_free_internal(ptr);
     }
 }
 
@@ -345,15 +361,7 @@ static u64 pointer_pointer_alloc(void) {
 #ifndef USE_GC
 static void pointer_pointer_free(u64 ptr) {
     if (ptr != 0) {
-        struct pointer* data_ptr = vm->read(&base->vm, ptr);
-        if (data_ptr == 0) {
-            return;
-        }
-        if (data_ptr->type != TYPE_PTR) {
-            return;
-        }
-        data_ptr = vm->free(&base->vm, ptr);
-        pointer_free_internal(data_ptr);
+        pointer_free_internal(ptr);
     }
 }
 #endif
@@ -522,16 +530,7 @@ static u64 pointer_file_read(u64 ptr) {
 
 static void pointer_file_free(u64 ptr) {
     if (ptr != 0) {
-        struct pointer* data_ptr = vm->read(&base->vm, ptr);
-        if (data_ptr == 0) {
-            return;
-        }
-        if (data_ptr->type != TYPE_FILE) {
-            return;
-        }
-        file_close_internal(data_ptr);
-        data_ptr = vm->free(&base->vm, ptr);
-        pointer_free_internal(data_ptr);
+        pointer_free_internal(ptr);
     }
 }
 
