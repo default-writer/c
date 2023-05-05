@@ -82,21 +82,16 @@ static struct pointer* list_alloc_internal(void);
 
 typedef void (*internal_free)(const struct pointer* ptr);
 
-static void void_free_internal(const struct pointer* ptr);
 static void ptr_free_internal(const struct pointer* ptr);
 static void file_free_internal(const struct pointer* ptr);
 static void list_free_internal(const struct pointer* ptr);
 
 static internal_free free_internal[] = {
-    [TYPE_VOID] = void_free_internal,
+    [TYPE_VOID] = ptr_free_internal,
     [TYPE_PTR] = ptr_free_internal,
     [TYPE_FILE] = file_free_internal,
     [TYPE_LIST] = list_free_internal,
 };
-
-static void void_free_internal(const struct pointer* ptr) {
-    CLEAN(ptr)
-}
 
 static void ptr_free_internal(const struct pointer* ptr) {
     CLEAN(ptr)
