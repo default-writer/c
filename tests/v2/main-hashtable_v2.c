@@ -320,6 +320,7 @@ RX_TEST_CASE(myTestSuite, test_list_push, .fixture = test_fixture) {
     pointer->list_push(list_ptr, mode_ptr);
 #ifndef USE_GC
     pointer->free(mode_ptr);
+    pointer->list_free(list_ptr);
 #else
     pointer->gc();
 #endif
