@@ -87,7 +87,7 @@ static void file_free_internal(const struct pointer* ptr);
 static void list_free_internal(const struct pointer* ptr);
 
 static internal_free free_internal[] = {
-    [TYPE_VOID] = ptr_free_internal,
+    [TYPE_VOID] = 0,
     [TYPE_PTR] = ptr_free_internal,
     [TYPE_FILE] = file_free_internal,
     [TYPE_LIST] = list_free_internal,
