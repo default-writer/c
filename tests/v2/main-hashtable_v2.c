@@ -329,6 +329,15 @@ RX_TEST_CASE(myTestSuite, test_improper_use_of_different_calls, .fixture = test_
         pointer->list_push(f_ptr, f_ptr);
         pointer->list_push(list_ptr, f_ptr);
         pointer->list_push(data_ptr, f_ptr);
+        pointer->list_peek(f_ptr);
+        pointer->list_peek(list_ptr);
+        pointer->list_peek(data_ptr);
+        pointer->list_pop(f_ptr);
+        pointer->list_pop(list_ptr);
+        pointer->list_pop(data_ptr);
+        pointer->file_read(f_ptr);
+        pointer->file_read(list_ptr);
+        pointer->file_read(data_ptr);
         pointer->list_free(data_ptr);
         pointer->list_push(f_ptr, data_ptr);
         pointer->list_push(list_ptr, data_ptr);
