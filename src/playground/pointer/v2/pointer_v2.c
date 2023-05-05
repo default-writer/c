@@ -80,13 +80,13 @@ static void pointer_free_internal(u64 ptr);
 static void pointer_list_free_internal(struct list_data** current);
 static struct pointer* list_alloc_internal(void);
 
-typedef void (*internal_free)(const struct pointer* ptr);
+typedef void (*call_internal)(const struct pointer* ptr);
 
 static void ptr_free_internal(const struct pointer* ptr);
 static void file_free_internal(const struct pointer* ptr);
 static void list_free_internal(const struct pointer* ptr);
 
-static internal_free free_internal[] = {
+static call_internal free_internal[] = {
     [TYPE_VOID] = 0,
     [TYPE_PTR] = ptr_free_internal,
     [TYPE_FILE] = file_free_internal,
