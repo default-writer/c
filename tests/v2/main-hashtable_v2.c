@@ -13,12 +13,15 @@
 
 extern const struct list list_micro_definition;
 extern struct hashtable hashtable_definition;
+
 extern struct pointer_methods pointer_methods_definition;
 extern struct pointer_list_methods pointer_list_methods_definition;
+extern struct pointer_file_methods pointer_file_methods_definition;
 
 const struct hashtable* hashtable = &hashtable_definition;
 const struct pointer_methods* pointer = &pointer_methods_definition;
 const struct pointer_list_methods* pointer_list = &pointer_list_methods_definition;
+const struct pointer_file_methods* pointer_file = &pointer_file_methods_definition;
 
 typedef struct test_data {
     struct pointer_data* ctx;
@@ -242,12 +245,12 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
     pointer->free(file_name_ptr);
 #endif
     u64 mode_ptr = pointer->load("rb");
-    u64 f_ptr = pointer->file_alloc();
-    pointer->file_open(f_ptr, file_path_ptr, mode_ptr);
+    u64 f_ptr = pointer_file->alloc();
+    pointer_file->open(f_ptr, file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
-        u64 data_ptr = pointer->file_read(f_ptr);
+        u64 data_ptr = pointer_file->read(f_ptr);
         u64 list_ptr = pointer_list->alloc();
-        pointer->file_free(f_ptr);
+        pointer_file->free(f_ptr);
         u64 size = 0xfffff;
 #ifdef USE_MEMORY_DEBUG_INFO
         printf("data size: %16lld\n", size);
@@ -342,20 +345,20 @@ RX_TEST_CASE(myTestSuite, test_improper_use_of_different_calls, .fixture = test_
     u64 file_name_ptr = pointer->load("/all_english_words.txt");
     pointer->strcat(file_path_ptr, file_name_ptr);
     u64 mode_ptr = pointer->load("rb");
-    u64 f_ptr = pointer->file_alloc();
-    pointer->file_open(f_ptr, file_path_ptr, mode_ptr);
+    u64 f_ptr = pointer_file->alloc();
+    pointer_file->open(f_ptr, file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
-        idx4 = pointer->file_read(file_name_ptr);
+        idx4 = pointer_file->read(file_name_ptr);
         idx5 = pointer_list->peek(file_name_ptr);
         idx6 = pointer_list->pop(file_name_ptr);
         pointer_list->push(file_name_ptr, f_ptr);
-        u64 data_ptr = pointer->file_read(f_ptr);
+        u64 data_ptr = pointer_file->read(f_ptr);
         u64 list_ptr = pointer_list->alloc();
         pointer_list->push(list_ptr, mode_ptr);
         idx3 = pointer->copy(list_ptr);
-        pointer->file_free(data_ptr);
-        pointer->file_free(list_ptr);
-        pointer->file_free(f_ptr);
+        pointer_file->free(data_ptr);
+        pointer_file->free(list_ptr);
+        pointer_file->free(f_ptr);
         pointer_list->push(f_ptr, f_ptr);
         pointer_list->push(list_ptr, f_ptr);
         pointer_list->push(data_ptr, f_ptr);
@@ -365,9 +368,9 @@ RX_TEST_CASE(myTestSuite, test_improper_use_of_different_calls, .fixture = test_
         pointer_list->pop(f_ptr);
         pointer_list->pop(list_ptr);
         pointer_list->pop(data_ptr);
-        pointer->file_read(f_ptr);
-        pointer->file_read(list_ptr);
-        pointer->file_read(data_ptr);
+        pointer_file->read(f_ptr);
+        pointer_file->read(list_ptr);
+        pointer_file->read(data_ptr);
         pointer_list->free(data_ptr);
         pointer_list->push(f_ptr, data_ptr);
         pointer_list->push(list_ptr, data_ptr);
@@ -382,8 +385,8 @@ RX_TEST_CASE(myTestSuite, test_improper_use_of_different_calls, .fixture = test_
         pointer->free(f_ptr);
 #endif
     }
-    pointer->file_free(f_ptr);
-    pointer->file_free(f_ptr);
+    pointer_file->free(f_ptr);
+    pointer_file->free(f_ptr);
     pointer_list->free(f_ptr);
 #ifndef USE_GC
     pointer->free(f_ptr);
@@ -432,12 +435,12 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable_default_hash, .fi
     pointer->free(file_name_ptr);
 #endif
     u64 mode_ptr = pointer->load("rb");
-    u64 f_ptr = pointer->file_alloc();
-    pointer->file_open(f_ptr, file_path_ptr, mode_ptr);
+    u64 f_ptr = pointer_file->alloc();
+    pointer_file->open(f_ptr, file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
-        u64 data_ptr = pointer->file_read(f_ptr);
+        u64 data_ptr = pointer_file->read(f_ptr);
         u64 list_ptr = pointer_list->alloc();
-        pointer->file_free(f_ptr);
+        pointer_file->free(f_ptr);
         u64 size = 0xfffff;
 #ifdef USE_MEMORY_DEBUG_INFO
         printf("data size: %16lld\n", size);
@@ -498,12 +501,12 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable_murmurhash3_hash,
     pointer->free(file_name_ptr);
 #endif
     u64 mode_ptr = pointer->load("rb");
-    u64 f_ptr = pointer->file_alloc();
-    pointer->file_open(f_ptr, file_path_ptr, mode_ptr);
+    u64 f_ptr = pointer_file->alloc();
+    pointer_file->open(f_ptr, file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
-        u64 data_ptr = pointer->file_read(f_ptr);
+        u64 data_ptr = pointer_file->read(f_ptr);
         u64 list_ptr = pointer_list->alloc();
-        pointer->file_free(f_ptr);
+        pointer_file->free(f_ptr);
         u64 size = 0xfffff;
 #ifdef USE_MEMORY_DEBUG_INFO
         printf("data size: %16lld\n", size);

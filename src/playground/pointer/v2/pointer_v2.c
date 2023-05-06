@@ -580,6 +580,13 @@ static void pointer_put_char(u64 ptr, char value) {
 
 /* public */
 
+const struct pointer_file_methods pointer_file_methods_definition = {
+    .alloc = pointer_file_alloc,
+    .open = pointer_file_open,
+    .read = pointer_file_read,
+    .free = pointer_file_free,
+};
+
 const struct pointer_list_methods pointer_list_methods_definition = {
     .alloc = pointer_list_alloc,
     .free = pointer_list_free,
@@ -601,10 +608,6 @@ const struct pointer_methods pointer_methods_definition = {
     .match_last = pointer_match_last,
     .load = pointer_load,
     .getcwd = pointer_getcwd,
-    .file_alloc = pointer_file_alloc,
-    .file_open = pointer_file_open,
-    .file_read = pointer_file_read,
-    .file_free = pointer_file_free,
     .printf = pointer_printf,
     .put_char = pointer_put_char,
     .unsafe = pointer_unsafe,
