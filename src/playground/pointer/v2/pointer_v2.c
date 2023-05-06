@@ -322,9 +322,6 @@ static void pointer_list_push(u64 ptr_list, u64 ptr) {
         }
         struct list_handler* handler = data_ptr->data;
         list->push(&handler->list, (void*)ptr);
-#ifdef USE_GC
-        list->push(&base->gc, (void*)ptr);
-#endif
     }
 }
 
