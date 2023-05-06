@@ -15,6 +15,7 @@ enum type {
 
 struct pointer {
     void* data;
+    u64 address;
     u64 size;
     enum type type;
 };
