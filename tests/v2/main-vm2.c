@@ -9,7 +9,10 @@
 extern const struct vm vm_definition;
 extern const struct list list_micro_definition;
 extern struct pointer_methods pointer_methods_definition;
+extern struct pointer_list_methods pointer_list_methods_definition;
+
 const struct pointer_methods* pointer = &pointer_methods_definition;
+const struct pointer_list_methods* pointer_list = &pointer_list_methods_definition;
 
 typedef struct test_data {
     struct pointer_data* ctx;
@@ -64,7 +67,7 @@ static void source2(void) {
         if (size > 100) {
             size = 100;
         }
-        u64 list_ptr = pointer->list_alloc();
+        u64 list_ptr = pointer_list->alloc();
         pointer->file_free(f_ptr);
         char* file_data = pointer->unsafe(data_ptr);
         for (u64 i = 0; i < size; i++) {
@@ -74,12 +77,12 @@ static void source2(void) {
             }
             *tmp++ = '\0';
             u64 data = pointer->load(file_data);
-            pointer->list_push(list_ptr, data);
+            pointer_list->push(list_ptr, data);
             char* unsafe = pointer->unsafe(data);
             printf("%s\n", unsafe);
             file_data = tmp;
         }
-        pointer->list_free(list_ptr);
+        pointer_list->free(list_ptr);
 #ifndef USE_GC
         pointer->free(data_ptr);
 #endif

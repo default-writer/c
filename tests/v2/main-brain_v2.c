@@ -11,7 +11,10 @@
 extern const struct vm vm_definition;
 extern const struct list list_micro_definition;
 extern struct pointer_methods pointer_methods_definition;
+extern struct pointer_list_methods pointer_list_methods_definition;
+
 const struct pointer_methods* pointer = &pointer_methods_definition;
+const struct pointer_list_methods* pointer_list = &pointer_list_methods_definition;
 
 typedef struct test_data {
     struct pointer_data* ctx;
@@ -242,7 +245,7 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
     pointer->file_open(f_ptr, file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
         u64 data_ptr = pointer->file_read(f_ptr);
-        u64 list_ptr = pointer->list_alloc();
+        u64 list_ptr = pointer_list->alloc();
         pointer->file_free(f_ptr);
         char* file_data = pointer->unsafe(data_ptr);
         for (int i = 0; i < 100; i++) {
@@ -252,12 +255,12 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
             }
             *tmp++ = '\0';
             u64 data = pointer->load(file_data);
-            pointer->list_push(list_ptr, data);
+            pointer_list->push(list_ptr, data);
             char* unsafe = pointer->unsafe(data);
             printf("%s\n", unsafe);
             file_data = tmp;
         }
-        pointer->list_free(list_ptr);
+        pointer_list->free(list_ptr);
 #ifndef USE_GC
         pointer->free(data_ptr);
 #endif

@@ -11,8 +11,10 @@
 extern const struct vm vm_definition;
 extern const struct list list_micro_definition;
 extern struct pointer_methods pointer_methods_definition;
+extern struct pointer_list_methods pointer_list_methods_definition;
 
 const struct pointer_methods* pointer = &pointer_methods_definition;
+const struct pointer_list_methods* pointer_list = &pointer_list_methods_definition;
 
 typedef struct test_data {
     struct pointer_data* ctx;
@@ -36,7 +38,7 @@ RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tea
 
 /* test init */
 RX_TEST_CASE(myTestSuite, test_list_push_list_peek_list_pop, .fixture = test_fixture) {
-    u64 list_ptr = pointer->list_alloc();
+    u64 list_ptr = pointer_list->alloc();
     const char* source = "Hello, world!";
     u64 size = strlen(source);
     char* dest = _list_alloc(size + 1);
@@ -48,14 +50,14 @@ RX_TEST_CASE(myTestSuite, test_list_push_list_peek_list_pop, .fixture = test_fix
         *tmp = 0;
         u64 data = pointer->load(ptr);
         *tmp = ch;
-        pointer->list_push(list_ptr, data);
+        pointer_list->push(list_ptr, data);
     }
     char* buffer = _list_alloc(size + 1);
     for (u64 i = 0; i < size; i++) {
-        u64 ch0 = pointer->list_peek(list_ptr);
+        u64 ch0 = pointer_list->peek(list_ptr);
         const char* data = pointer->unsafe(ch0);
         *(buffer + i) = *data;
-        u64 ch = pointer->list_pop(list_ptr);
+        u64 ch = pointer_list->pop(list_ptr);
 #ifdef USE_GC
         CLEAN(ch)
 #endif
@@ -66,7 +68,7 @@ RX_TEST_CASE(myTestSuite, test_list_push_list_peek_list_pop, .fixture = test_fix
     printf("%s\n", buffer);
     _list_free(buffer, 0);
     _list_free(dest, 0);
-    pointer->list_free(list_ptr);
+    pointer_list->free(list_ptr);
 }
 
 /* test init */
@@ -86,7 +88,7 @@ RX_TEST_CASE(myTestSuite, test_list_peek_0, .fixture = test_fixture) {
     }
     char* buffer = _list_alloc(size + 1);
     for (u64 i = 0; i < size; i++) {
-        char* data = pointer->unsafe(i + 1);
+        const char* data = pointer->unsafe(i + 1);
         *(buffer + i) = *data;
 #ifndef USE_GC
         pointer->free(i + 1);

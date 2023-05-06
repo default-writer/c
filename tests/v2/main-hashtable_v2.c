@@ -14,9 +14,11 @@
 extern const struct list list_micro_definition;
 extern struct hashtable hashtable_definition;
 extern struct pointer_methods pointer_methods_definition;
+extern struct pointer_list_methods pointer_list_methods_definition;
 
 const struct hashtable* hashtable = &hashtable_definition;
 const struct pointer_methods* pointer = &pointer_methods_definition;
+const struct pointer_list_methods* pointer_list = &pointer_list_methods_definition;
 
 typedef struct test_data {
     struct pointer_data* ctx;
@@ -244,7 +246,7 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
     pointer->file_open(f_ptr, file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
         u64 data_ptr = pointer->file_read(f_ptr);
-        u64 list_ptr = pointer->list_alloc();
+        u64 list_ptr = pointer_list->alloc();
         pointer->file_free(f_ptr);
         u64 size = 0xfffff;
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -261,7 +263,7 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
             }
             *tmp++ = '\0';
             u64 data = pointer->load(file_data);
-            pointer->list_push(list_ptr, data);
+            pointer_list->push(list_ptr, data);
             const char* unsafe = pointer->unsafe(data);
             pointer->printf(data);
             pointer->put_char(data, unsafe[0]);
@@ -291,7 +293,7 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
             printf("  .#: 0x%016llx !0x%08lx (%6ld): %18s\n", (u64)unsafe, hash % HASHTABLE_DEFAULT_SIZE, count, unsafe);
             file_data = tmp;
         }
-        pointer->list_free(list_ptr);
+        pointer_list->free(list_ptr);
 #ifndef USE_GC
         pointer->free(data_ptr);
 #endif
@@ -308,19 +310,19 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
 
 /* test init */
 RX_TEST_CASE(myTestSuite, test_list_free_list_free, .fixture = test_fixture) {
-    u64 list_ptr = pointer->list_alloc();
-    pointer->list_free(list_ptr);
-    pointer->list_free(list_ptr);
+    u64 list_ptr = pointer_list->alloc();
+    pointer_list->free(list_ptr);
+    pointer_list->free(list_ptr);
 }
 
 /* test init */
 RX_TEST_CASE(myTestSuite, test_list_push, .fixture = test_fixture) {
     u64 mode_ptr = pointer->load("rb");
-    u64 list_ptr = pointer->list_alloc();
-    pointer->list_push(list_ptr, mode_ptr);
+    u64 list_ptr = pointer_list->alloc();
+    pointer_list->push(list_ptr, mode_ptr);
 #ifndef USE_GC
     pointer->free(mode_ptr);
-    pointer->list_free(list_ptr);
+    pointer_list->free(list_ptr);
 #else
     pointer->gc();
 #endif
@@ -344,36 +346,36 @@ RX_TEST_CASE(myTestSuite, test_improper_use_of_different_calls, .fixture = test_
     pointer->file_open(f_ptr, file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
         idx4 = pointer->file_read(file_name_ptr);
-        idx5 = pointer->list_peek(file_name_ptr);
-        idx6 = pointer->list_pop(file_name_ptr);
-        pointer->list_push(file_name_ptr, f_ptr);
+        idx5 = pointer_list->peek(file_name_ptr);
+        idx6 = pointer_list->pop(file_name_ptr);
+        pointer_list->push(file_name_ptr, f_ptr);
         u64 data_ptr = pointer->file_read(f_ptr);
-        u64 list_ptr = pointer->list_alloc();
-        pointer->list_push(list_ptr, mode_ptr);
+        u64 list_ptr = pointer_list->alloc();
+        pointer_list->push(list_ptr, mode_ptr);
         idx3 = pointer->copy(list_ptr);
         pointer->file_free(data_ptr);
         pointer->file_free(list_ptr);
         pointer->file_free(f_ptr);
-        pointer->list_push(f_ptr, f_ptr);
-        pointer->list_push(list_ptr, f_ptr);
-        pointer->list_push(data_ptr, f_ptr);
-        pointer->list_peek(f_ptr);
-        pointer->list_peek(list_ptr);
-        pointer->list_peek(data_ptr);
-        pointer->list_pop(f_ptr);
-        pointer->list_pop(list_ptr);
-        pointer->list_pop(data_ptr);
+        pointer_list->push(f_ptr, f_ptr);
+        pointer_list->push(list_ptr, f_ptr);
+        pointer_list->push(data_ptr, f_ptr);
+        pointer_list->peek(f_ptr);
+        pointer_list->peek(list_ptr);
+        pointer_list->peek(data_ptr);
+        pointer_list->pop(f_ptr);
+        pointer_list->pop(list_ptr);
+        pointer_list->pop(data_ptr);
         pointer->file_read(f_ptr);
         pointer->file_read(list_ptr);
         pointer->file_read(data_ptr);
-        pointer->list_free(data_ptr);
-        pointer->list_push(f_ptr, data_ptr);
-        pointer->list_push(list_ptr, data_ptr);
-        pointer->list_push(data_ptr, data_ptr);
+        pointer_list->free(data_ptr);
+        pointer_list->push(f_ptr, data_ptr);
+        pointer_list->push(list_ptr, data_ptr);
+        pointer_list->push(data_ptr, data_ptr);
         idx1 = pointer->copy(list_ptr);
-        pointer->list_free(list_ptr);
+        pointer_list->free(list_ptr);
         idx2 = pointer->copy(list_ptr);
-        pointer->list_free(f_ptr);
+        pointer_list->free(f_ptr);
 #ifndef USE_GC
         pointer->free(data_ptr);
         pointer->free(list_ptr);
@@ -382,7 +384,7 @@ RX_TEST_CASE(myTestSuite, test_improper_use_of_different_calls, .fixture = test_
     }
     pointer->file_free(f_ptr);
     pointer->file_free(f_ptr);
-    pointer->list_free(f_ptr);
+    pointer_list->free(f_ptr);
 #ifndef USE_GC
     pointer->free(f_ptr);
     pointer->free(mode_ptr);
@@ -403,14 +405,14 @@ RX_TEST_CASE(myTestSuite, test_improper_use_of_different_calls, .fixture = test_
 
 /* test init */
 RX_TEST_CASE(myTestSuite, test_list_alloc_list_free, .fixture = test_fixture) {
-    u64 list_ptr = pointer->list_alloc();
+    u64 list_ptr = pointer_list->alloc();
     u64 size = pointer->size(list_ptr);
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("data size: %16lld\n", size);
 #endif
     u64 pattern_ptr = pointer->alloc();
-    pointer->list_free(pattern_ptr);
-    pointer->list_free(list_ptr);
+    pointer_list->free(pattern_ptr);
+    pointer_list->free(list_ptr);
 #ifndef USE_GC
     pointer->free(list_ptr);
     pointer->free(pattern_ptr);
@@ -434,7 +436,7 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable_default_hash, .fi
     pointer->file_open(f_ptr, file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
         u64 data_ptr = pointer->file_read(f_ptr);
-        u64 list_ptr = pointer->list_alloc();
+        u64 list_ptr = pointer_list->alloc();
         pointer->file_free(f_ptr);
         u64 size = 0xfffff;
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -451,7 +453,7 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable_default_hash, .fi
             }
             *tmp++ = '\0';
             u64 data = pointer->load(file_data);
-            pointer->list_push(list_ptr, data);
+            pointer_list->push(list_ptr, data);
             const char* unsafe = pointer->unsafe(data);
             hashtable->alloc(unsafe, 0);
             file_data = tmp;
@@ -470,7 +472,7 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable_default_hash, .fi
             printf("  .#: 0x%016llx !0x%08lx (%6ld): %18s\n", (u64)unsafe, hash % HASHTABLE_DEFAULT_SIZE, count, unsafe);
             file_data = tmp;
         }
-        pointer->list_free(list_ptr);
+        pointer_list->free(list_ptr);
 #ifndef USE_GC
         pointer->free(data_ptr);
 #endif
@@ -500,7 +502,7 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable_murmurhash3_hash,
     pointer->file_open(f_ptr, file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
         u64 data_ptr = pointer->file_read(f_ptr);
-        u64 list_ptr = pointer->list_alloc();
+        u64 list_ptr = pointer_list->alloc();
         pointer->file_free(f_ptr);
         u64 size = 0xfffff;
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -517,7 +519,7 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable_murmurhash3_hash,
             }
             *tmp++ = '\0';
             u64 data = pointer->load(file_data);
-            pointer->list_push(list_ptr, data);
+            pointer_list->push(list_ptr, data);
             const char* unsafe = pointer->unsafe(data);
             hashtable->alloc(unsafe, 0);
             file_data = tmp;
@@ -536,7 +538,7 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable_murmurhash3_hash,
             printf("  .#: 0x%016llx !0x%08lx (%6ld): %18s\n", (u64)unsafe, hash % HASHTABLE_DEFAULT_SIZE, count, unsafe);
             file_data = tmp;
         }
-        pointer->list_free(list_ptr);
+        pointer_list->free(list_ptr);
 #ifndef USE_GC
         pointer->free(data_ptr);
 #endif
