@@ -7,7 +7,7 @@
 #include <rexo/include/rexo.h>
 
 #define HASHTABLE_SIZE 101
-#define DEFAULT_SIZE 0xffff
+#define DEFAULT_SIZE 0xff
 
 /* list definition */
 
@@ -30,7 +30,7 @@ typedef struct test_data {
 RX_SET_UP(test_set_up) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct pointer_data** ctx = &rx->ctx;
-    pointer_ctx_init(ctx, DEFAULT_SIZE);
+    pointer_ctx_init(ctx, 1);
     return RX_SUCCESS;
 }
 
@@ -251,7 +251,7 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
         u64 data_ptr = pointer_file->read(f_ptr);
         u64 list_ptr = pointer_list->alloc();
         pointer_file->free(f_ptr);
-        u64 size = 0xfffff;
+        u64 size = 0xff;
 #ifdef USE_MEMORY_DEBUG_INFO
         printf("data size: %16lld\n", size);
 #endif
@@ -441,7 +441,7 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable_default_hash, .fi
         u64 data_ptr = pointer_file->read(f_ptr);
         u64 list_ptr = pointer_list->alloc();
         pointer_file->free(f_ptr);
-        u64 size = 0xfffff;
+        u64 size = 0xff;
 #ifdef USE_MEMORY_DEBUG_INFO
         printf("data size: %16lld\n", size);
 #endif
@@ -507,7 +507,7 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable_murmurhash3_hash,
         u64 data_ptr = pointer_file->read(f_ptr);
         u64 list_ptr = pointer_list->alloc();
         pointer_file->free(f_ptr);
-        u64 size = 0xfffff;
+        u64 size = 0xff;
 #ifdef USE_MEMORY_DEBUG_INFO
         printf("data size: %16lld\n", size);
 #endif

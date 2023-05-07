@@ -6,7 +6,7 @@
 #include <rexo/include/rexo.h>
 
 #define HASHTABLE_SIZE 101
-#define DEFAULT_SIZE 0xffff
+#define DEFAULT_SIZE 0xfff
 
 /* list definition */
 extern const struct vm vm_definition;

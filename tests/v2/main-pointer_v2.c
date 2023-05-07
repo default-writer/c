@@ -5,7 +5,7 @@
 #include "playground/pointer/v2/pointer_v2.h"
 #include <rexo/include/rexo.h>
 
-#define DEFAULT_SIZE 0x8
+#define DEFAULT_SIZE 0xff
 
 /* list definition */
 extern const struct vm vm_definition;
@@ -23,7 +23,7 @@ typedef struct test_data {
 RX_SET_UP(test_set_up) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct pointer_data** ctx = &rx->ctx;
-    pointer_ctx_init(ctx, 8);
+    pointer_ctx_init(ctx, DEFAULT_SIZE);
     return RX_SUCCESS;
 }
 

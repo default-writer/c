@@ -1,9 +1,9 @@
 #include "playground/pointer/v2/pointer_v2.h"
 #include "common/alloc.h"
 #include "list-micro/data.h"
-#include "playground/vm/vm.h"
+#include "playground/vm/v2/vm_v2.h"
 
-#define DEFAULT_SIZE 0x100
+#define DEFAULT_SIZE 0xff
 
 /* list definition */
 extern const struct vm vm_definition;
@@ -114,7 +114,7 @@ static struct pointer* file_alloc_internal() {
 
 static struct pointer* list_alloc_internal(void) {
     struct pointer* ptr = pointer_alloc_internal(sizeof(struct list_handler), TYPE_LIST);
-    struct list_handler* handler = ptr->data;
+    struct list_handler* handler = ptr->ptr;
     list->init(&handler->list);
     return ptr;
 }
@@ -124,7 +124,7 @@ static void ptr_free_internal(const struct pointer* ptr) {
 }
 
 static void file_free_internal(const struct pointer* ptr) {
-    struct file_handler* handler = ptr->data;
+    struct file_handler* handler = ptr->ptr;
     if (handler->file != 0) {
         FILE* file = handler->file;
         fclose(file);
@@ -135,7 +135,7 @@ static void file_free_internal(const struct pointer* ptr) {
 }
 
 static void list_free_internal(const struct pointer* ptr) {
-    struct list_handler* handler = ptr->data;
+    struct list_handler* handler = ptr->ptr;
     if (handler->list != 0) {
         pointer_list_free_internal(&handler->list);
         list->destroy(&handler->list);
@@ -148,7 +148,7 @@ static void list_free_internal(const struct pointer* ptr) {
 static struct pointer* pointer_alloc_internal(u64 size, enum type type) {
     struct pointer* ptr = _list_alloc(sizeof(struct pointer));
     if (size != 0) {
-        ptr->data = _list_alloc(size);
+        ptr->ptr = _list_alloc(size);
         ptr->size = size;
     }
     ptr->type = type;
@@ -162,7 +162,7 @@ static struct pointer* pointer_alloc_internal(u64 size, enum type type) {
 
 static void pointer_realloc_internal(struct pointer* ptr, u64 size) {
     if (ptr != 0) {
-        ptr->data = _list_realloc(ptr->data, size);
+        ptr->ptr = _list_realloc(ptr->ptr, size);
         ptr->size = size;
     }
 }
@@ -177,16 +177,18 @@ static void pointer_free(u64 ptr) {
     if (data_ptr == 0) {
         return;
     }
-    if (data_ptr->data != 0) {
+    if (data_ptr->ptr != 0) {
         free_internal[data_ptr->type](data_ptr);
     }
     data_ptr = vm->free(&base->vm, ptr);
     if (data_ptr->size != 0) {
-        _list_free(data_ptr->data, data_ptr->size);
+        _list_free(data_ptr->ptr, data_ptr->size);
     }
 #ifdef USE_MEMORY_CLEANUP
-    data_ptr->data = 0;
+    data_ptr->type = TYPE_VOID;
     data_ptr->size = 0;
+    data_ptr->address = 0;
+    data_ptr->ptr = 0;
 #endif
     _list_free(data_ptr, sizeof(struct pointer));
 }
@@ -219,7 +221,6 @@ void pointer_ctx_init(struct pointer_data** ctx, u64 size) {
 
 void pointer_ctx_destroy(struct pointer_data** ctx) {
 #ifdef USE_MEMORY_DEBUG_INFO
-    vm->memory_dump_ref(base->vm);
     vm->memory_dump(base->vm);
 #endif
     struct pointer_data* ptr = *ctx;
@@ -251,7 +252,6 @@ void pointer_init(u64 size) {
 
 void pointer_destroy(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
-    vm->memory_dump_ref(base->vm);
     vm->memory_dump(base->vm);
 #endif
 #ifdef USE_GC
@@ -288,7 +288,7 @@ static u64 pointer_pointer_copy(u64 ptr) {
     }
     if (data_ptr->size != 0) {
         struct pointer* copy_ptr = pointer_alloc_internal(data_ptr->size, data_ptr->type);
-        memcpy(copy_ptr->data, data_ptr->data, copy_ptr->size); /* NOLINT */
+        memcpy(copy_ptr->ptr, data_ptr->ptr, copy_ptr->size); /* NOLINT */
         data = copy_ptr->address;
     }
     return data;
@@ -321,7 +321,7 @@ static void pointer_list_push(u64 ptr_list, u64 ptr) {
         if (data_ptr->type != TYPE_LIST) {
             return;
         }
-        struct list_handler* handler = data_ptr->data;
+        struct list_handler* handler = data_ptr->ptr;
         list->push(&handler->list, (void*)ptr);
     }
 }
@@ -339,7 +339,7 @@ static u64 pointer_list_peek(u64 ptr) {
         return 0;
     }
     if (data_ptr->size != 0) {
-        struct list_handler* handler = data_ptr->data;
+        struct list_handler* handler = data_ptr->ptr;
         data = (u64)list->peek(&handler->list);
     }
     return data;
@@ -358,7 +358,7 @@ static u64 pointer_list_pop(u64 ptr) {
         return 0;
     }
     if (data_ptr->size != 0) {
-        struct list_handler* handler = data_ptr->data;
+        struct list_handler* handler = data_ptr->ptr;
         data = (u64)list->pop(&handler->list);
     }
     return data;
@@ -376,7 +376,7 @@ static char* pointer_unsafe(u64 ptr) {
     char* data = 0;
     if (ptr != 0) {
         struct pointer* data_ptr = vm->read(&base->vm, ptr);
-        data = data_ptr->data;
+        data = data_ptr->ptr;
     }
     return data;
 }
@@ -401,7 +401,7 @@ static void pointer_strcpy(u64 dest, u64 src) {
     }
     if (src_ptr->size != 0) {
         if (dest_ptr->size == 0) {
-            dest_ptr->data = _list_alloc(src_ptr->size);
+            dest_ptr->ptr = _list_alloc(src_ptr->size);
             dest_ptr->size = src_ptr->size;
         } else {
             u64 size = src_ptr->size + 1;
@@ -409,8 +409,8 @@ static void pointer_strcpy(u64 dest, u64 src) {
                 pointer_realloc_internal(dest_ptr, size);
             }
         }
-        char* data_dest = dest_ptr->data;
-        const char* data_src = src_ptr->data; /* NOLINT */
+        char* data_dest = dest_ptr->ptr;
+        const char* data_src = src_ptr->ptr; /* NOLINT */
         strcpy(data_dest, data_src); /* NOLINT */
     }
 }
@@ -426,7 +426,7 @@ static void pointer_strcat(u64 dest, u64 src) {
     }
     if (src_ptr->size != 0) {
         if (dest_ptr->size == 0) {
-            dest_ptr->data = _list_alloc(src_ptr->size);
+            dest_ptr->ptr = _list_alloc(src_ptr->size);
             dest_ptr->size = src_ptr->size;
         } else {
             u64 size = dest_ptr->size + src_ptr->size - 1;
@@ -434,8 +434,8 @@ static void pointer_strcat(u64 dest, u64 src) {
                 pointer_realloc_internal(dest_ptr, size);
             }
         }
-        char* data_dest = dest_ptr->data;
-        const char* data_src = src_ptr->data; /* NOLINT */
+        char* data_dest = dest_ptr->ptr;
+        const char* data_src = src_ptr->ptr; /* NOLINT */
         strcat(data_dest, data_src); /* NOLINT */
     }
 }
@@ -450,8 +450,8 @@ static u64 pointer_match_last(u64 src, u64 match) {
     if (match_ptr == 0) {
         return 0;
     }
-    const char* data_src = src_ptr->data;
-    const char* data_match = match_ptr->data;
+    const char* data_src = src_ptr->ptr;
+    const char* data_match = match_ptr->ptr;
     if (data_match == 0) {
         return 0;
     }
@@ -465,7 +465,7 @@ static u64 pointer_match_last(u64 src, u64 match) {
     }
     if (data_last != 0 && *data_match == 0) {
         struct pointer* last_match_ptr = pointer_alloc_internal(0, TYPE_PTR);
-        last_match_ptr->data = --data_last;
+        last_match_ptr->ptr = --data_last;
         data = last_match_ptr->address;
     }
     return data;
@@ -477,7 +477,7 @@ static u64 pointer_load(const char* src_data) {
         u64 size = strlen(src_data) + 1;
         if (size != 0) {
             struct pointer* data_ptr = pointer_alloc_internal(size, TYPE_PTR);
-            memcpy(data_ptr->data, src_data, size); /* NOLINT */
+            memcpy(data_ptr->ptr, src_data, size); /* NOLINT */
             data = data_ptr->address;
         }
     }
@@ -509,14 +509,14 @@ static void pointer_file_open(u64 ptr, u64 file_path, u64 mode) {
     const struct pointer* mode_ptr = vm->read(&base->vm, mode);
     if (file_path_ptr != 0 && mode_ptr != 0) {
         struct pointer* f_ptr = vm->read(&base->vm, ptr);
-        struct file_handler* handler = f_ptr->data;
-        const char* file_path_data = file_path_ptr->data;
-        const char* mode_data = mode_ptr->data;
+        struct file_handler* handler = f_ptr->ptr;
+        const char* file_path_data = file_path_ptr->ptr;
+        const char* mode_data = mode_ptr->ptr;
         FILE* file = fopen(file_path_data, mode_data); /* NOLINT */
         if (file != 0) {
             handler->file = file;
 #ifdef USE_MEMORY_DEBUG_INFO
-            handler->path = file_path_ptr->data;
+            handler->path = file_path_ptr->ptr;
 #endif
         }
     }
@@ -534,7 +534,7 @@ static u64 pointer_file_read(u64 ptr) {
     if (data_ptr->type != TYPE_FILE) {
         return 0;
     }
-    struct file_handler* handler = data_ptr->data;
+    struct file_handler* handler = data_ptr->ptr;
     FILE* file = handler->file;
     if (file != 0) {
         fseek(file, 0, SEEK_END); /* NOLINT */
@@ -542,7 +542,7 @@ static u64 pointer_file_read(u64 ptr) {
         fseek(file, 0, SEEK_SET);
         u64 data_size = size + 1;
         data_ptr = pointer_alloc_internal(data_size, TYPE_PTR);
-        fread(data_ptr->data, 1, size, handler->file);
+        fread(data_ptr->ptr, 1, size, handler->file);
         data = data_ptr->address;
     }
     return data;
@@ -557,9 +557,9 @@ static void pointer_file_free(u64 ptr) {
 static void pointer_printf(u64 ptr) {
     struct pointer* data_ptr = vm->read(&base->vm, ptr);
     if (data_ptr != 0) {
-        const char* data = data_ptr->data;
+        const char* data = data_ptr->ptr;
 #ifdef USE_MEMORY_DEBUG_INFO
-        void* ptr_data = data_ptr->data;
+        void* ptr_data = data_ptr->ptr;
         printf("   .: 0x%016llx >0x%016llx\n", (u64)data_ptr, (u64)ptr_data);
 #endif
         if (data != 0) {
@@ -571,7 +571,7 @@ static void pointer_printf(u64 ptr) {
 static void pointer_put_char(u64 ptr, char value) {
     struct pointer* data_ptr = vm->read(&base->vm, ptr);
     if (data_ptr != 0) {
-        char* data = data_ptr->data;
+        char* data = data_ptr->ptr;
         if (data != 0) {
             *data = value;
         }

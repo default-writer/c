@@ -1,6 +1,7 @@
 #ifndef _PLAYGROUND_POINTER_H_
 #define _PLAYGROUND_POINTER_H_
 
+#include "playground/vm/v2/vm_v2.h"
 #include "std/common.h"
 
 enum type {
@@ -14,10 +15,11 @@ enum type {
 };
 
 struct pointer {
-    void* data;
-    u64 address;
-    u64 size;
     enum type type;
+    u64 size;
+    u64 address;
+    u64 offset;
+    void* ptr;
 };
 
 struct pointer_data;

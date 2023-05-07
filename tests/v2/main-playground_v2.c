@@ -2,7 +2,7 @@
 #include "playground/list/v2/list.h"
 #include <rexo/include/rexo.h>
 
-#define DEFAULT_SIZE 0xffff /* 64K bytes */
+#define DEFAULT_SIZE 0xff /* 64K bytes */
 
 #ifdef USE_MEMORY_ALLOC
 #include "playground/memory/memory.h"

@@ -31,6 +31,10 @@
                 "CODE_SANITIZER": {
                     "type": "BOOL",
                     "value": "ON"
+                },
+                "GC": {
+                    "type": "BOOL",
+                    "value": "OFF"
                 }
             }
         }
