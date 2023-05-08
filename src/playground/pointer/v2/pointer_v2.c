@@ -84,12 +84,12 @@ static struct pointer* ptr_alloc_internal(void);
 static struct pointer* file_alloc_internal(void);
 static struct pointer* list_alloc_internal(void);
 
-typedef void (*call_free_internal)(const struct pointer* ptr);
+typedef void (*call_free_internal)(void*);
 typedef struct pointer* (*call_alloc_internal)(void);
 
-static void ptr_free_internal(const struct pointer* ptr);
-static void file_free_internal(const struct pointer* ptr);
-static void list_free_internal(const struct pointer* ptr);
+static void ptr_free_internal(void* ptr);
+static void file_free_internal(void* ptr);
+static void list_free_internal(void* ptr);
 
 static call_alloc_internal alloc_internal[] = {
     [TYPE_VOID] = 0,
@@ -119,13 +119,13 @@ static struct pointer* list_alloc_internal(void) {
     return ptr;
 }
 
-static void ptr_free_internal(const struct pointer* ptr) {
+static void ptr_free_internal(void* ptr) {
     CLEAN(ptr)
 }
 
-static void file_free_internal(const struct pointer* ptr) {
-    struct file_handler* handler = ptr->ptr;
-    if (handler->file != 0) {
+static void file_free_internal(void* ptr) {
+    struct file_handler* handler = ptr;
+    if (handler != 0 && handler->file != 0) {
         FILE* file = handler->file;
         fclose(file);
 #ifdef USE_MEMORY_CLEANUP
@@ -134,9 +134,9 @@ static void file_free_internal(const struct pointer* ptr) {
     }
 }
 
-static void list_free_internal(const struct pointer* ptr) {
-    struct list_handler* handler = ptr->ptr;
-    if (handler->list != 0) {
+static void list_free_internal(void* ptr) {
+    struct list_handler* handler = ptr;
+    if (handler != 0 && handler->list != 0) {
         pointer_list_free_internal(&handler->list);
         list->destroy(&handler->list);
 #ifdef USE_MEMORY_CLEANUP
@@ -173,23 +173,26 @@ static u64 pointer_alloc(enum type type) {
 }
 
 static void pointer_free(u64 ptr) {
-    struct pointer* data_ptr = vm->read(&base->vm, ptr);
+    struct pointer* data_ptr = vm->free(&base->vm, ptr);
     if (data_ptr == 0) {
         return;
     }
-    if (data_ptr->ptr != 0) {
-        free_internal[data_ptr->type](data_ptr);
+    if (data_ptr->ptr == 0) {
+        return;
     }
-    data_ptr = vm->free(&base->vm, ptr);
-    if (data_ptr->size != 0) {
-        _list_free(data_ptr->ptr, data_ptr->size);
-    }
+    void* any = data_ptr->ptr;
+    u64 size = data_ptr->size;
+    enum type type = data_ptr->type;
 #ifdef USE_MEMORY_CLEANUP
     data_ptr->type = TYPE_VOID;
     data_ptr->size = 0;
     data_ptr->address = 0;
     data_ptr->ptr = 0;
 #endif
+    free_internal[type](any);
+    if (any != 0 && size != 0) {
+        _list_free(any, size);
+    }
     _list_free(data_ptr, sizeof(struct pointer));
 }
 
@@ -455,7 +458,7 @@ static u64 pointer_match_last(u64 src, u64 match) {
     if (data_match == 0) {
         return 0;
     }
-    if (*data_match != 0) {
+    if (*data_match == 0) {
         return 0;
     }
     char* data_last = strrchr(data_src, *data_match);

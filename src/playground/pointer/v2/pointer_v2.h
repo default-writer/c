@@ -18,7 +18,6 @@ struct pointer {
     enum type type;
     u64 size;
     u64 address;
-    u64 offset;
     void* ptr;
 };
 

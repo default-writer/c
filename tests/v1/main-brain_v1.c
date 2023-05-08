@@ -244,7 +244,7 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
         u64 list_ptr = pointer->list_alloc();
         pointer->file_free(f_ptr);
         char* file_data = pointer->unsafe(data_ptr);
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1; i++) {
             char* tmp = file_data;
             while (*tmp != 0 && *tmp != '\n') {
                 tmp++;

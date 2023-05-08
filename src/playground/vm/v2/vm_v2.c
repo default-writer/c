@@ -30,7 +30,7 @@ struct vm_data {
 #ifdef USE_MEMORY_DEBUG_INFO
 struct vm_state {
     struct vm_data* vm;
-    struct pointer_info* ptr;
+    struct pointer_info* info;
 };
 
 struct vm_data_enumerator {
@@ -51,94 +51,80 @@ static void vm_memory_dump(struct vm_data* vm_ptr);
 static struct pointer* vm_free(struct vm_data** current, u64 address);
 static struct pointer* vm_read(struct vm_data** current, u64 address);
 static u64 vm_write(struct vm_data** current, struct pointer* value);
-#ifdef USE_MEMORY_DEBUG_INFO
-static struct pointer_info* vm_data_enumerator_next();
-#endif
 
 /* internal */
 
 static struct vm_data* vm_init_internal(u64 size, u64 address_space);
 static struct pointer_info* vm_read_internal(struct vm_data** current, u64 address);
-static u64 vm_alloc_internal(struct vm_data** current);
-static struct pointer_info* to_real_address_internal(struct vm_data* vm, u64 address);
-static u64 to_virtual_address_internal(const struct vm_data* vm, const struct pointer_info* ptr);
+static struct pointer_info* vm_alloc_internal(struct vm_data** current);
 #ifdef USE_MEMORY_DEBUG_INFO
 static void vm_enumerator_init_internal(struct vm_data* vm);
 static void vm_enumerator_destroy_internal(void);
+static struct pointer_info* vm_enumerator_next();
 #endif
 
 static struct vm_data* vm_init_internal(u64 size, u64 address_space) {
     struct vm_data* vm = _list_alloc(sizeof(struct vm_data));
     vm->bp = _list_alloc(size * sizeof(struct pointer_info));
-    vm->sp = vm->bp;
+    vm->sp = vm->bp; /* sp is beyond upper array boundary by 1 */
     vm->address_space = address_space;
     vm->size = size;
     return vm;
 }
 
 static struct pointer_info* vm_read_internal(struct vm_data** current, u64 address) {
-    struct pointer_info* ptr = 0;
+    struct pointer_info* info = 0;
     if (address != 0) {
         struct vm_data* pointer = *current;
         while (address <= pointer->address_space) {
             pointer = pointer->prev;
         }
-        ptr = to_real_address_internal(pointer, address);
+        info = pointer->bp + address - pointer->address_space - 1;
     }
-    return ptr;
+    return info;
 }
 
-static u64 vm_alloc_internal(struct vm_data** current) {
-    struct vm_data* pointer = *current;
-    u64 address = 0;
-    struct pointer_info* ptr;
+static struct pointer_info* vm_alloc_internal(struct vm_data** current) {
+    struct vm_data* pointer = 0;
+    struct pointer_info* info = 0;
 #ifndef USE_GC
-    ptr = list->pop(cache);
-    if (ptr == 0) {
+    info = list->pop(cache);
+    if (info == 0) {
 #endif
-        ptr = pointer->sp;
-        address = to_virtual_address_internal(pointer, ptr);
-        while (address > pointer->address_space + pointer->size) {
-            if (pointer->next == 0) {
+        pointer = *current;
+        while (pointer->sp == pointer->bp + pointer->size) { /* all memory slots utilized  */
+            if (pointer->next == 0) { /* current memory region processed */
                 pointer->next = vm_init_internal(pointer->size, pointer->address_space + pointer->size);
                 pointer->next->prev = pointer;
             }
             pointer = pointer->next;
         }
-        ptr = pointer->sp++;
-        address = to_virtual_address_internal(pointer, ptr);
+        info = pointer->sp++; /* get nex memory slot */
+        info->vm = pointer; /* associate with current memory region */
 #ifdef USE_MEMORY_DEBUG_INFO
-        printf("  >+: 0x%016llx >0x%016llx\n", (u64)ptr, address);
+        printf("  >+: 0x%016llx >0x%016llx\n", (u64)info, (u64)(pointer->address_space + pointer->sp - pointer->bp));
 #endif
 #ifndef USE_GC
     } else {
-        address = to_virtual_address_internal(pointer, ptr);
+        pointer = info->vm;
 #ifdef USE_MEMORY_DEBUG_INFO
-        printf("  >.: 0x%016llx >0x%016llx\n", (u64)ptr, address);
+        printf("  >.: 0x%016llx >0x%016llx\n", (u64)info, (u64)(pointer->address_space + pointer->sp - pointer->bp));
 #endif
     }
 #endif
     *current = pointer;
-    return address;
-}
-
-static u64 to_virtual_address_internal(const struct vm_data* vm, const struct pointer_info* ptr) {
-    return (u64)(ptr - vm->bp) + vm->address_space + 1;
-}
-
-static struct pointer_info* to_real_address_internal(struct vm_data* vm, u64 address) {
-    return vm->bp + address - vm->address_space - 1;
+    return info;
 }
 
 #ifdef USE_MEMORY_DEBUG_INFO
 static void vm_enumerator_init_internal(struct vm_data* vm) {
     state->vm = vm;
-    state->ptr = vm->bp;
+    state->info = vm->bp;
 }
 
 static void vm_enumerator_destroy_internal(void) {
     state->vm = 0;
-    state->ptr = 0;
+    state->info = 0;
 }
 #endif
 
@@ -178,11 +164,11 @@ static void vm_memory_dump(struct vm_data* vm_ptr) {
         vm_ptr = vm_ptr->prev;
     }
     vm_enumerator_init_internal(vm_ptr);
-    struct pointer_info* data_ptr = 0;
-    while ((data_ptr = vm_data_enumerator_next()) != 0) {
+    struct pointer_info* info = 0;
+    while ((info = vm_enumerator_next()) != 0) {
 #ifdef USE_MEMORY_DEBUG_INFO
-        if (data_ptr != 0 && data_ptr->ptr != 0) {
-            printf("   ^: 0x%016llx >0x%016llx\n", (u64)data_ptr, (u64)data_ptr->ptr);
+        if (info != 0 && info->ptr != 0) {
+            printf("   ^: 0x%016llx >0x%016llx\n", (u64)info, (u64)info->ptr);
         }
 #endif
     }
@@ -196,7 +182,7 @@ static struct pointer* vm_free(struct vm_data** current, u64 address) {
         struct pointer_info* info = vm_read_internal(current, address);
         if (info != 0) {
 #ifdef USE_MEMORY_DEBUG_INFO
-            printf("  >-: 0x%016llx >0x%016llx\n", (u64)info->ptr, address);
+            printf("  >-: 0x%016llx >0x%016llx\n", (u64)info, address);
 #endif
 #ifndef USE_GC
             list->push(cache, info);
@@ -220,38 +206,36 @@ static struct pointer* vm_read(struct vm_data** current, u64 address) {
 }
 
 static u64 vm_write(struct vm_data** current, struct pointer* value) {
-    u64 address = vm_alloc_internal(current);
-    if (address != 0) {
-        struct vm_data* pointer = *current;
-        struct pointer_info* info = to_real_address_internal(pointer, address);
-        if (info != 0) {
-            info->ptr = value;
-            info->vm = pointer;
-            value->offset = (u64)(pointer->sp - pointer->bp - 1);
-        }
+    u64 address = 0;
+    struct pointer_info* info = vm_alloc_internal(current);
+    if (info != 0) {
+        info->ptr = value;
+        address = info->vm->address_space + (u64)(info->vm->sp - info->vm->bp);
     }
     return address;
 }
 
 #ifdef USE_MEMORY_DEBUG_INFO
-static struct pointer_info* vm_data_enumerator_next() {
-    struct pointer_info* data = 0;
+static struct pointer_info* vm_enumerator_next() {
     struct vm_data* vm = state->vm;
-    struct pointer_info* ptr = state->ptr;
-    while (data == 0) {
-        if (ptr == vm->sp) {
-            if (vm->next == 0) {
-                break;
-            }
+    struct pointer_info* info = state->info;
+    struct pointer_info* ptr = 0;
+    if (vm != 0) {
+        ptr = info;
+        while (ptr + 1 == vm->sp && vm->next != 0) { /* end of route */
             vm = vm->next;
             ptr = vm->bp;
-            continue;
         }
-        data = ptr++;
+        if (ptr + 1 < vm->sp) {
+            ++ptr;
+        }
+        if (ptr == info) {
+            vm = vm->next;
+        }
+        state->vm = vm;
+        state->info = ptr;
     }
-    state->ptr = ptr;
-    state->vm = vm;
-    return data;
+    return ptr;
 }
 #endif
 
