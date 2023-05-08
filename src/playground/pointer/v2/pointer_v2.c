@@ -177,22 +177,18 @@ static void pointer_free(u64 ptr) {
     if (data_ptr == 0) {
         return;
     }
-    if (data_ptr->ptr == 0) {
-        return;
+    if (data_ptr->ptr != 0) {
+        free_internal[data_ptr->type](data_ptr->ptr);
     }
-    void* any = data_ptr->ptr;
-    u64 size = data_ptr->size;
-    enum type type = data_ptr->type;
+    if (data_ptr->size != 0) {
+        _list_free(data_ptr->ptr, data_ptr->size);
+    }
 #ifdef USE_MEMORY_CLEANUP
     data_ptr->type = TYPE_VOID;
     data_ptr->size = 0;
     data_ptr->address = 0;
     data_ptr->ptr = 0;
 #endif
-    free_internal[type](any);
-    if (any != 0 && size != 0) {
-        _list_free(any, size);
-    }
     _list_free(data_ptr, sizeof(struct pointer));
 }
 
