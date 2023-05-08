@@ -304,6 +304,21 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
 }
 
 /* test init */
+RX_TEST_CASE(myTestSuite, test_list_push, .fixture = test_fixture) {
+    // u64 mode_ptr = pointer->load("rb");
+    u64 list_ptr = pointer->list_alloc();
+    // pointer->list_push(list_ptr, mode_ptr);
+    // u64 m_ptr = pointer->list_pop(list_ptr);
+    pointer->list_free(list_ptr);
+#ifndef USE_GC
+    // pointer->free(mode_ptr);
+    // pointer->free(list_ptr);
+#else
+    pointer->gc();
+#endif
+}
+
+/* test init */
 RX_TEST_CASE(myTestSuite, test_list_free_list_free, .fixture = test_fixture) {
     u64 list_ptr = pointer->list_alloc();
     pointer->list_free(list_ptr);
