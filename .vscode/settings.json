@@ -1,7 +1,7 @@
 {
   "files.associations": {
     "*.h": "c",
-    "*.c": "c",
+    "*.c": "c"
   },
   "terminal.integrated.smoothScrolling": true,
   "terminal.integrated.cursorBlinking": true,
@@ -174,7 +174,7 @@
       "priority": 1003,
       "id": "statusbar.twitch.open",
       "command": "twitch.open"
-    },
+    }
   ],
   "window.zoomLevel": 0,
   "workbench.editor.enablePreview": true,
@@ -194,7 +194,7 @@
     "window.zoomLevel": 2
   },
   "presentation-mode.inactive": {
-    "window.zoomLevel": 0,
+    "window.zoomLevel": 0
   },
   "presentation-mode.configBackup": {
     "window.zoomLevel": "undefined"
@@ -266,7 +266,7 @@
           "buildType": "RelWithDebInfo"
         }
       }
-    },
+    }
   },
   "cmake.default.buildDirectory": "${workspaceFolder}/cmake",
   "cmake.cpptools.guessSourceFileConfigurations": true,
@@ -292,7 +292,6 @@
   ],
   "editor.formatOnSave": true,
   "editor.fontWeight": "normal",
-  "editor.fontFamily": "'Ubuntu Mono', 'monospace', monospace",
   "cmake.additionalKits": [
     "${workspaceFolder}/.vscode",
     "${workspaceFolder}"
@@ -351,5 +350,11 @@
   "C_Cpp.default.cppStandard": "c++98",
   "C_Cpp.clang_format_fallbackStyle": "{BasedOnStyle: WebKit, IndentWidth: 4, BreakBeforeBraces: Attach}",
   "C_Cpp.formatting": "clangFormat",
-  "C_Cpp.intelliSenseEngineFallback": "enabled"
+  "C_Cpp.intelliSenseEngineFallback": "enabled",
+  "terminal.integrated.enablePersistentSessions": true,
+  "terminal.integrated.persistentSessionReviveProcess": "onExitAndWindowClose",
+  "terminal.integrated.shellIntegration.history": 1000,
+  "editor.fontSize": 12,
+  "editor.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
+  "editor.fontLigatures": true
 }
