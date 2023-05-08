@@ -354,7 +354,7 @@
   "terminal.integrated.enablePersistentSessions": true,
   "terminal.integrated.persistentSessionReviveProcess": "onExitAndWindowClose",
   "terminal.integrated.shellIntegration.history": 1000,
-  "editor.fontSize": 14,
+  "editor.fontSize": 12,
   "editor.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
   "editor.fontLigatures": true
 }
