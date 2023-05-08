@@ -179,6 +179,7 @@
 		"aslamanver.vsc-export",
 		"anweber.statusbar-commands",
 		"vadimcn.vscode-lldb",
-		"bierner.github-markdown-preview"
+		"bierner.github-markdown-preview",
+		"letmaik.git-tree-compare"
 	]
 }
