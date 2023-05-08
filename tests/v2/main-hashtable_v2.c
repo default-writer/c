@@ -315,14 +315,25 @@ RX_TEST_CASE(myTestSuite, test_improper_use_of_different_calls, .fixture = test_
     u64 idx0 = 0;
     u64 idx1 = 0;
     u64 idx2 = 0;
+    u64 idx3 = 0;
+    u64 idx4 = 0;
+    u64 idx5 = 0;
+    u64 idx6 = 0;
+    u64 idx7 = 0;
     u64 file_path_ptr = pointer->getcwd();
     u64 file_name_ptr = pointer->load("/all_english_words.txt");
     pointer->strcat(file_path_ptr, file_name_ptr);
     u64 mode_ptr = pointer->load("rb");
     u64 f_ptr = pointer->file_alloc(file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
+        idx4 = pointer->file_read(file_name_ptr);
+        idx5 = pointer->list_peek(file_name_ptr);
+        idx6 = pointer->list_pop(file_name_ptr);
+        pointer->list_push(file_name_ptr, f_ptr);
         u64 data_ptr = pointer->file_read(f_ptr);
         u64 list_ptr = pointer->list_alloc();
+        pointer->list_push(list_ptr, mode_ptr);
+        idx3 = pointer->copy(list_ptr);
         pointer->file_free(data_ptr);
         pointer->file_free(list_ptr);
         pointer->file_free(f_ptr);
@@ -366,6 +377,11 @@ RX_TEST_CASE(myTestSuite, test_improper_use_of_different_calls, .fixture = test_
     RX_ASSERT(idx0 == 0);
     RX_ASSERT(idx1 == 0);
     RX_ASSERT(idx2 == 0);
+    RX_ASSERT(idx3 == 0);
+    RX_ASSERT(idx4 == 0);
+    RX_ASSERT(idx5 == 0);
+    RX_ASSERT(idx6 == 0);
+    RX_ASSERT(idx7 == 0);
 }
 
 /* test init */
