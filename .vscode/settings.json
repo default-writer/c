@@ -356,5 +356,11 @@
   "terminal.integrated.shellIntegration.history": 1000,
   "editor.fontSize": 12,
   "editor.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
-  "editor.fontLigatures": true
+  "editor.fontLigatures": true,
+  "debug.console.fontSize": 12,
+  "markdown.preview.fontSize": 12,
+  "terminal.integrated.fontSize": 12,
+  "interactiveSession.editor.fontSize": 12,
+  "scm.inputFontSize": 12,
+  "twitch.fontSize": "12px"
 }
