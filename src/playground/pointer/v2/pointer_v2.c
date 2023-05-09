@@ -115,6 +115,8 @@ static void pointer_free_internal(struct pointer* ptr) {
 static void pointer_list_free_internal(struct list_data** current) {
     u64 ptr = 0;
     while ((ptr = (u64)list->pop(current)) != 0) {
+        pointer_list_free(ptr);
+        pointer_file_free(ptr);
         struct pointer* data_ptr = vm->free(&base->vm, ptr);
         pointer_free_internal(data_ptr);
     }
