@@ -69,6 +69,7 @@ set(OPTIONS
     -Wformat-nonliteral
     -Wno-implicit-fallthrough
     -Wno-unused-parameter
+    -Wno-unused-variable
 )
 
 set(STRICT
