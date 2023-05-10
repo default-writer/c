@@ -7,7 +7,7 @@
 #include <rexo/include/rexo.h>
 
 #define HASHTABLE_SIZE 101
-#define DEFAULT_SIZE 0xff
+#define DEFAULT_SIZE 0xf1
 
 /* list definition */
 
