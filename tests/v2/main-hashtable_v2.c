@@ -7,7 +7,7 @@
 #include <rexo/include/rexo.h>
 
 #define HASHTABLE_SIZE 101
-#define DEFAULT_SIZE 0x1
+#define DEFAULT_SIZE 0xff
 
 /* list definition */
 
@@ -232,7 +232,7 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_set_get, .fixture = test_fixture)
 
 /* test init */
 RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_fixture) {
-    hashtable->init(0x3);
+    hashtable->init(0xff);
     u64 file_path_ptr = pointer->getcwd();
     u64 file_name_ptr = pointer->load("/all_english_words.txt");
     pointer->strcat(file_path_ptr, file_name_ptr);
