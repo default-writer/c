@@ -60,6 +60,12 @@ case "${install}" in
         upgrade ${updgradeflags}
         ;;
 
+    "--zip") # installs unzip
+        update ${updateflags}
+        apt install -y unzip
+        upgrade ${updgradeflags}
+        ;;
+
     "--nodejs") # installs nodejs
         update ${updateflags}
         apt install -y nodejs
