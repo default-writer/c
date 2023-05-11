@@ -25,6 +25,8 @@
     "jdsteinbach.custom-presentation-mode",
     "daylerees.rainglow",
     "bierner.github-markdown-preview",
-    "letmaik.git-tree-compare"
+    "letmaik.git-tree-compare",
+    "davidanson.vscode-markdownlint",
+    "github.vscode-pull-request-github"
   ]
 }
