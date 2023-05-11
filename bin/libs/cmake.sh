@@ -166,7 +166,7 @@ function cmake-valgrind-options() {
     local callgrind_options
 
     if [ "${valgrind}" == "--valgrind" ] && [ "${sanitize}" == "" ]; then
-        valgrind_options="valgrind"
+        valgrind_options="valgrind --leak-check=full"
         if [ "${callgrind}" == "--callgrind" ]; then
             callgrind_options=" --tool=callgrind"
         fi
