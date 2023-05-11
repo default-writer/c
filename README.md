@@ -9,6 +9,41 @@
 - coverage hot-reload
 - memory allocation playground
 - automatic garbage collection implementation (GC)
+- GTK GUI app demo ready to run on containerized environment
+
+## readme
+
+repo is ready to run on containers, WSL, remote hosts.
+
+### remote development
+
+run (as co-owner or contributor)
+
+- eval `ssh-agent -s`
+- git config --global user.name "$USER_NAME"
+- git config --global user.email "$USER_EMAIL"
+- git clone https://github.com/default-writer/c.git
+
+### containers
+
+run
+
+- ./bin/init.sh
+ 
+## GTK GUI app development:
+
+run
+
+- ./bin/gtkbuild.sh --target gtk-experiment --clean
+- UI_MODE=--ui ./gtk/gtk-experiment
+
+
+## shell scripting documentation
+
+- all shell (mostly bash) scripts located in ./bin folder
+- all shell scripts from ./bin and ./bin/utils/ can be used and run as self-documented scripts, with embedded help
+- all shell scripts knows how to execute as user or root (sudo)
+- all shell scripts have required command-line options and optional [] parameters
 
 ## history
 
