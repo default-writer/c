@@ -1,135 +1,135 @@
 {
-    "folders": [
-        {
-            "path": "."
-        }
-    ],
-    "settings": {
-        "terminal.integrated.defaultProfile.linux": "bash",
-        "terminal.integrated.profiles.linux": {
-            "bash": {
-                "path": "/bin/bash"
-            }
-        },
-        "testOnSave.enabled": true,
-        "testOnSave.languageId": "c",
-        "testOnSave.testCommand": "./bin/coverage.sh --all --clean --silent --sanitize --gc",
-        "koverage.coverageFileNames": [
-            "lcov.info"
-        ],
-        "coverage-gutters.coverageFileNames": [
-            "lcov.info"
-        ],
-        "coverage-gutters.coverageBaseDir": "coverage",
-        "coverage-gutters.showLineCoverage": true,
-        "coverage-gutters.showGutterCoverage": false,
-        "cSpell.checkOnlyEnabledFileTypes": true,
-        "cSpell.enableFiletypes": [
-            "c",
-            "!jsonc"
-        ],
-        "files.autoSave": "off",
-        "files.watcherInclude": [
-            "."
-        ],
-        "files.associations": {
-            "*.h": "c",
-            "*.c": "c"
-        },
-        "files.exclude": {},
-        "pdf-preview.default.scale": "page-width",
-        "clangd.onConfigChanged": "restart",
-        "clangd.checkUpdates": true,
-        "clangd.restartAfterCrash": true,
-        "cmake.configureOnStart": true,
-        "cmake.autoSelectActiveFolder": false,
-        "cmake.showConsoleAutomatically": true,
-        "cmake.sourceDirectory": "${workspaceFolder}/c",
-        "cmake.buildDirectory": "${workspaceFolder}/c/cmake",
-        "cmake.ignoreCMakeListsMissing": true,
-        "cmake.configureOnOpen": true,
-        "cmake.configureOnEdit": true,
-        "cmake.reconfigureOnChange": true,
-        "DockerRun.DisableAutoGenerateConfig": true,
-        "disasexpl.associations": {
-            "**/*.c": "${workspaceFolder}/${relativeFileDirname}/${fileBasenameNoExtension}.c.s",
-            "**/*.cpp": "${workspaceFolder}/${relativeFileDirname}/${fileBasenameNoExtension}.c.s"
-        },
-        "lldb.displayFormat": "auto",
-        "lldb.showDisassembly": "auto",
-        "lldb.dereferencePointers": true,
-        "lldb.consoleMode": "commands",
-        "statusbar_command.commands": [
-            {
-                "text": ".S",
-                "tooltip": "Show disassembly",
-                "alignment": "right",
-                "priority": 1000,
-                "id": "statusbar.disassembly",
-                "name": "disassembly",
-                "filterFileName": "^.*\\.[c|h]$",
-                "command": "disasexpl.show"
-            },
-            {
-                "text": ".P",
-                "tooltip": "Toggle presentation ON/OFF",
-                "alignment": "left",
-                "priority": 5,
-                "id": "statusbar.presentation",
-                "scriptEvents": [
-                    "vscode.workspace.onDidChangeConfiguration"
-                ],
-                "script": "statusBarItem.text = vscode.workspace.getConfiguration('window').get('zoomLevel') == '' ? '$(vm-active)' : '$(vm)'",
-                "command": "extension.customPresentationMode",
-            }
-        ],
-        "workbench.editor.enablePreview": false,
-        "workbench.colorTheme": "Yitzchok (rainglow)",
-        "workbench.colorCustomizations": {
-            "statusBar.background": "#a47b00",
-            "statusBar.foreground": "#fff"
-        },
-        "customPresentationMode.overrides": {
-            "window.zoomLevel": 1,
-            "workbench.colorTheme": "Yitzchok (rainglow)"
-        },
-        "sonarlint.testFilePattern": "{**/test/**,**/*test*,**/*Test*,**/rexo/**}",
-        "sonarlint.pathToCompileCommands": "${workspaceFolder}/cmake/compile_commands.json",
-        "editor.fontWeight": "normal",
-        "window.zoomLevel": 2
-    },
-    "extensions": {
-        "recommendations": [
-            "daylerees.rainglow",
-            "mhutchie.git-graph",
-            "donjayamanne.githistory",
-            "codezombiech.gitignore",
-            "sonarsource.sonarlint-vscode",
-            "andifin.testonsave",
-            "tenninebt.vscode-koverage",
-            "nateageek.memory-viewer",
-            "visualstudioexptteam.vscodeintellicode",
-            "twxs.cmake",
-            "ryanluker.vscode-coverage-gutters",
-            "beardedbear.beardedicons",
-            "ms-vscode.cmake-tools",
-            "ms-vscode.live-server",
-            "llvm-vs-code-extensions.vscode-clangd",
-            "markis.code-coverage",
-            "streetsidesoftware.code-spell-checker",
-            "dseight.disasexpl",
-            "maziac.asm-code-lens",
-            "ms-vscode.cpptools",
-            "aslamanver.vsc-export",
-            "anweber.statusbar-commands",
-            "vadimcn.vscode-lldb",
-            "jdsteinbach.custom-presentation-mode",
-            "bierner.github-markdown-preview",
-            "letmaik.git-tree-compare",
-            "DavidAnson.vscode-markdownlint",
-            "GitHub.vscode-pull-request-github",
-            "ms-vscode.hexeditor",
-            "trunk.io"
-        ]
+  "folders": [
+    {
+      "path": "."
     }
+  ],
+  "settings": {
+    "terminal.integrated.defaultProfile.linux": "bash",
+    "terminal.integrated.profiles.linux": {
+      "bash": {
+        "path": "/bin/bash"
+      }
+    },
+    "testOnSave.enabled": true,
+    "testOnSave.languageId": "c",
+    "testOnSave.testCommand": "./bin/coverage.sh --all --clean --silent --sanitize --gc",
+    "koverage.coverageFileNames": [
+      "lcov.info"
+    ],
+    "coverage-gutters.coverageFileNames": [
+      "lcov.info"
+    ],
+    "coverage-gutters.coverageBaseDir": "coverage",
+    "coverage-gutters.showLineCoverage": true,
+    "coverage-gutters.showGutterCoverage": false,
+    "cSpell.checkOnlyEnabledFileTypes": true,
+    "cSpell.enableFiletypes": [
+      "c",
+      "!jsonc"
+    ],
+    "files.autoSave": "off",
+    "files.watcherInclude": [
+      "."
+    ],
+    "files.associations": {
+      "*.h": "c",
+      "*.c": "c"
+    },
+    "files.exclude": {},
+    "pdf-preview.default.scale": "page-width",
+    "clangd.onConfigChanged": "restart",
+    "clangd.checkUpdates": true,
+    "clangd.restartAfterCrash": true,
+    "cmake.configureOnStart": true,
+    "cmake.autoSelectActiveFolder": false,
+    "cmake.showConsoleAutomatically": true,
+    "cmake.sourceDirectory": "${workspaceFolder}/c",
+    "cmake.buildDirectory": "${workspaceFolder}/c/cmake",
+    "cmake.ignoreCMakeListsMissing": true,
+    "cmake.configureOnOpen": true,
+    "cmake.configureOnEdit": true,
+    "cmake.reconfigureOnChange": true,
+    "DockerRun.DisableAutoGenerateConfig": true,
+    "disasexpl.associations": {
+      "**/*.c": "${workspaceFolder}/${relativeFileDirname}/${fileBasenameNoExtension}.c.s",
+      "**/*.cpp": "${workspaceFolder}/${relativeFileDirname}/${fileBasenameNoExtension}.c.s"
+    },
+    "lldb.displayFormat": "auto",
+    "lldb.showDisassembly": "auto",
+    "lldb.dereferencePointers": true,
+    "lldb.consoleMode": "commands",
+    "statusbar_command.commands": [
+      {
+        "text": ".S",
+        "tooltip": "Show disassembly",
+        "alignment": "right",
+        "priority": 1000,
+        "id": "statusbar.disassembly",
+        "name": "disassembly",
+        "filterFileName": "^.*\\.[c|h]$",
+        "command": "disasexpl.show"
+      },
+      {
+        "text": ".P",
+        "tooltip": "Toggle presentation ON/OFF",
+        "alignment": "left",
+        "priority": 5,
+        "id": "statusbar.presentation",
+        "scriptEvents": [
+          "vscode.workspace.onDidChangeConfiguration"
+        ],
+        "script": "statusBarItem.text = vscode.workspace.getConfiguration('window').get('zoomLevel') == '' ? '$(vm-active)' : '$(vm)'",
+        "command": "extension.customPresentationMode",
+      }
+    ],
+    "workbench.editor.enablePreview": false,
+    "workbench.colorTheme": "Yitzchok (rainglow)",
+    "workbench.colorCustomizations": {
+      "statusBar.background": "#a47b00",
+      "statusBar.foreground": "#fff"
+    },
+    "customPresentationMode.overrides": {
+      "window.zoomLevel": 1,
+      "workbench.colorTheme": "Yitzchok (rainglow)"
+    },
+    "sonarlint.testFilePattern": "{**/test/**,**/*test*,**/*Test*,**/rexo/**}",
+    "sonarlint.pathToCompileCommands": "${workspaceFolder}/cmake/compile_commands.json",
+    "editor.fontWeight": "normal",
+    "window.zoomLevel": 2
+  },
+  "extensions": {
+    "recommendations": [
+      "daylerees.rainglow",
+      "mhutchie.git-graph",
+      "donjayamanne.githistory",
+      "codezombiech.gitignore",
+      "sonarsource.sonarlint-vscode",
+      "andifin.testonsave",
+      "tenninebt.vscode-koverage",
+      "nateageek.memory-viewer",
+      "visualstudioexptteam.vscodeintellicode",
+      "twxs.cmake",
+      "ryanluker.vscode-coverage-gutters",
+      "beardedbear.beardedicons",
+      "ms-vscode.cmake-tools",
+      "ms-vscode.live-server",
+      "llvm-vs-code-extensions.vscode-clangd",
+      "markis.code-coverage",
+      "streetsidesoftware.code-spell-checker",
+      "dseight.disasexpl",
+      "maziac.asm-code-lens",
+      "ms-vscode.cpptools",
+      "aslamanver.vsc-export",
+      "anweber.statusbar-commands",
+      "vadimcn.vscode-lldb",
+      "jdsteinbach.custom-presentation-mode",
+      "bierner.github-markdown-preview",
+      "letmaik.git-tree-compare",
+      "DavidAnson.vscode-markdownlint",
+      "GitHub.vscode-pull-request-github",
+      "ms-vscode.hexeditor",
+      "trunk.io"
+    ]
+  }
 }

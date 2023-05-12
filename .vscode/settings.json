@@ -230,7 +230,7 @@
     "**/gtk/**": true
   },
   "[json]": {
-    "editor.defaultFormatter": "vscode.json-language-features"
+    "editor.defaultFormatter": "trunk.io"
   },
   "cmake.configureArgs": [
     "CONFIG_MEMORY_DEBUG_INFO",
@@ -269,5 +269,6 @@
   "customPresentationMode.backup": {
     "workbench.colorTheme": "Yitzchok (rainglow)",
     "editor.fontWeight": "normal"
-  }
+  },
+  "editor.tabSize": 2
 }
