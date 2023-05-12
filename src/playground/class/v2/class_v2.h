@@ -1,5 +1,5 @@
-#ifndef _PLAYGROUND_CLASS_V1_H_
-#define _PLAYGROUND_CLASS_V1_H_
+#ifndef _PLAYGROUND_CLASS_V2_H_
+#define _PLAYGROUND_CLASS_V2_H_
 
 #include "playground/list/v2/list_v2.h"
 
@@ -20,4 +20,4 @@ struct class {
     void (*set)(struct class_data* class, void* data);
 };
 
-#endif /* _PLAYGROUND_CLASS_V1_H_ */
+#endif /* _PLAYGROUND_CLASS_V2_H_ */
