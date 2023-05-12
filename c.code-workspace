@@ -5,15 +5,6 @@
         }
     ],
     "settings": {
-        "files.associations": {
-            "*.h": "c",
-            "*.c": "c"
-        },
-        "files.watcherInclude": [
-            "."
-        ],
-        "files.autoSave": "off",
-        "files.exclude": {},
         "terminal.integrated.defaultProfile.linux": "bash",
         "terminal.integrated.profiles.linux": {
             "bash": {
@@ -32,6 +23,20 @@
         "coverage-gutters.coverageBaseDir": "coverage",
         "coverage-gutters.showLineCoverage": true,
         "coverage-gutters.showGutterCoverage": false,
+        "cSpell.checkOnlyEnabledFileTypes": true,
+        "cSpell.enableFiletypes": [
+            "c",
+            "!json"
+        ],
+        "files.autoSave": "off",
+        "files.watcherInclude": [
+            "."
+        ],
+        "files.associations": {
+            "*.h": "c",
+            "*.c": "c"
+        },
+        "files.exclude": {},
         "pdf-preview.default.scale": "page-width",
         "clangd.onConfigChanged": "restart",
         "clangd.checkUpdates": true,

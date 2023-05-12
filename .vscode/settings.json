@@ -1,8 +1,4 @@
 {
-  "files.associations": {
-    "*.h": "c",
-    "*.c": "c"
-  },
   "terminal.integrated.smoothScrolling": true,
   "terminal.integrated.cursorBlinking": true,
   "terminal.integrated.enableFileLinks": "on",
@@ -15,19 +11,19 @@
   "testOnSave.enabled": true,
   "testOnSave.languageId": "c",
   "testOnSave.testCommand": "./bin/test.sh --args",
-  "koverage.coverageFileNames": [
-    "lcov.info"
-  ],
-  "coverage-gutters.coverageFileNames": [
-    "lcov.info"
-  ],
+  "koverage.coverageFileNames": ["lcov.info"],
+  "coverage-gutters.coverageFileNames": ["lcov.info"],
   "coverage-gutters.coverageBaseDir": "coverage",
   "coverage-gutters.showLineCoverage": true,
   "coverage-gutters.showGutterCoverage": false,
+  "cSpell.checkOnlyEnabledFileTypes": true,
+  "cSpell.enableFiletypes": ["c", "!json"],
   "files.autoSave": "off",
-  "files.watcherInclude": [
-    "."
-  ],
+  "files.associations": {
+    "*.h": "c",
+    "*.c": "c"
+  },
+  "files.watcherInclude": ["."],
   "files.exclude": {},
   "pdf-preview.default.scale": "page-width",
   "cmake.showConsoleAutomatically": true,
@@ -115,12 +111,8 @@
   "presentation-mode.configBackup": {
     "window.zoomLevel": "undefined"
   },
-  "grammarly.files.include": [
-    "**/*.md"
-  ],
-  "grammarly.files.exclude": [
-    "**/*.txt"
-  ],
+  "grammarly.files.include": ["**/*.md"],
+  "grammarly.files.exclude": ["**/*.txt"],
   "C_Cpp.dimInactiveRegions": true,
   "C_Cpp.errorSquiggles": "disabled",
   "C_Cpp.intelliSenseEngine": "disabled",
@@ -203,15 +195,10 @@
   "clang-format.style": "{BasedOnStyle: WebKit, IndentWidth: 4, BreakBeforeBraces: Attach}",
   "clang-format.language.c.enable": true,
   "clang-tidy.lintOnSave": true,
-  "clang-tidy.compilerArgs": [
-    "-I/usr/include/gtk-4.0"
-  ],
+  "clang-tidy.compilerArgs": ["-I/usr/include/gtk-4.0"],
   "editor.formatOnSave": true,
   "editor.fontWeight": "normal",
-  "cmake.additionalKits": [
-    "${workspaceFolder}/.vscode",
-    "${workspaceFolder}"
-  ],
+  "cmake.additionalKits": ["${workspaceFolder}/.vscode", "${workspaceFolder}"],
   "cmake.useCMakePresets": "always",
   "emeraldwalk.runonsave": {
     "commands": [
@@ -228,7 +215,7 @@
     "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
   },
   "[jsonc]": {
-    "editor.defaultFormatter": "vscode.json-language-features"
+    "editor.defaultFormatter": "trunk.io"
   },
   "files.watcherExclude": {
     "**/.git/objects/**": true,
