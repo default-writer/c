@@ -26,7 +26,7 @@
         "cSpell.checkOnlyEnabledFileTypes": true,
         "cSpell.enableFiletypes": [
             "c",
-            "!json"
+            "!jsonc"
         ],
         "files.autoSave": "off",
         "files.watcherInclude": [

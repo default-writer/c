@@ -17,7 +17,7 @@
   "coverage-gutters.showLineCoverage": true,
   "coverage-gutters.showGutterCoverage": false,
   "cSpell.checkOnlyEnabledFileTypes": true,
-  "cSpell.enableFiletypes": ["c", "!json"],
+  "cSpell.enableFiletypes": ["c", "!jsonc"],
   "files.autoSave": "off",
   "files.associations": {
     "*.h": "c",
