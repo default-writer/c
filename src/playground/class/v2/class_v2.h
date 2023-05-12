@@ -1,7 +1,7 @@
 #ifndef _PLAYGROUND_CLASS_V1_H_
 #define _PLAYGROUND_CLASS_V1_H_
 
-#include "playground/list/v2/list.h"
+#include "playground/list/v2/list_v2.h"
 
 struct class_data;
 

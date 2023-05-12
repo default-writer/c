@@ -3,12 +3,7 @@
 
 #include "std/common.h"
 
-struct list_data {
-    void** ptr;
-    void** base;
-    void** max;
-    u64 size;
-};
+struct list_data;
 
 struct list {
     struct list_data* (*alloc)(u64 size);

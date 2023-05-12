@@ -1,7 +1,13 @@
-#include "playground/list/v2/list.h"
+#include "playground/list/v2/list_v2.h"
 #include "common/alloc.h"
 
 /*private */
+struct list_data {
+    void** ptr;
+    void** base;
+    void** max;
+    u64 size;
+};
 
 static struct list_data* list_alloc(u64 size);
 static void list_free(struct list_data* pointer);
