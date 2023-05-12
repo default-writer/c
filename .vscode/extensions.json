@@ -27,6 +27,8 @@
     "bierner.github-markdown-preview",
     "letmaik.git-tree-compare",
     "davidanson.vscode-markdownlint",
-    "github.vscode-pull-request-github"
+    "github.vscode-pull-request-github",
+    "ms-vscode.hexeditor",
+    "trunk.io"
   ]
 }

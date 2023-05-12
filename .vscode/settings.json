@@ -40,90 +40,6 @@
   "cmake.statusbar.visibility": "compact",
   "cmake.reconfigureOnChange": true,
   "DockerRun.DisableAutoGenerateConfig": true,
-  "cSpell.words": [
-    "artur",
-    "asan",
-    "calloc",
-    "callstack",
-    "chatgpt",
-    "CLEAN",
-    "dlinfo",
-    "gpointer",
-    "gregs",
-    "Jaco",
-    "murmurhash",
-    "NGREG",
-    "NOSTACK",
-    "OAAT",
-    "octa",
-    "parkmiller",
-    "Rexo",
-    "sptr",
-    "struct",
-    "ulong",
-    "Wsign",
-    "Wunknown",
-    "Wunused"
-  ],
-  "cSpell.files": [
-    "**/*.c",
-    "**/*.md"
-  ],
-  "cSpell.enabledLanguageIds": [
-    "asciidoc",
-    "c",
-    "cpp",
-    "csharp",
-    "css",
-    "elixir",
-    "erlang",
-    "git-commit",
-    "go",
-    "graphql",
-    "handlebars",
-    "haskell",
-    "html",
-    "jade",
-    "java",
-    "javascript",
-    "javascriptreact",
-    "json",
-    "jsonc",
-    "jupyter",
-    "latex",
-    "less",
-    "markdown",
-    "php",
-    "plaintext",
-    "python",
-    "pug",
-    "restructuredtext",
-    "rust",
-    "scala",
-    "scss",
-    "scminput",
-    "swift",
-    "text",
-    "typescript",
-    "typescriptreact",
-    "vue",
-    "yaml",
-    "yml"
-  ],
-  "cSpell.enableFiletypes": [
-    "c",
-    "asciidoc"
-  ],
-  "cSpell.overrides": [
-    {
-      "filename": "**/{*.c,*.h}",
-      "languageId": "c"
-    },
-    {
-      "filename": "**/{*.md}",
-      "languageId": "asciidoc"
-    }
-  ],
   "disasexpl.associations": {
     "**/*.c": "${workspaceFolder}/${relativeFileDirname}/${fileBasenameNoExtension}.c.s",
     "**/*.cpp": "${workspaceFolder}/${relativeFileDirname}/${fileBasenameNoExtension}.c.s"
@@ -362,5 +278,9 @@
   "terminal.integrated.fontSize": 12,
   "interactiveSession.editor.fontSize": 12,
   "scm.inputFontSize": 12,
-  "twitch.fontSize": "12px"
+  "twitch.fontSize": "12px",
+  "customPresentationMode.backup": {
+    "workbench.colorTheme": "Yitzchok (rainglow)",
+    "editor.fontWeight": "normal"
+  }
 }
