@@ -1,4 +1,4 @@
-#include "playground/class/v2/class.h"
+#include "playground/class/v2/class_v2.h"
 #include "playground/list/v2/list.h"
 #include <rexo/include/rexo.h>
 

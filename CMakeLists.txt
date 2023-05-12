@@ -182,8 +182,8 @@ set(LIB_LIGHT_SOURCE src/list-light/code.c)
 set(LIB_MICRO_SOURCE src/list-micro/code.c)
 set(LIB_ALLOC_SOURCE src/list-alloc/code.c)
 set(LIB_EXPERIMENTAL_SOURCE src/list-experimental/code.c)
-set(LIB_PLAYGROUND1_SOURCE src/playground/class/v1/class.c)
-set(LIB_PLAYGROUND2_SOURCE src/playground/class/v2/class.c)
+set(LIB_PLAYGROUND1_SOURCE src/playground/class/v1/class_v1.c)
+set(LIB_PLAYGROUND2_SOURCE src/playground/class/v2/class_v2.c)
 set(LIB_MEMORY1_SOURCE
     src/playground/memory/v1/memory_v1.c 
     src/playground/memory/v2/memory_v2.c

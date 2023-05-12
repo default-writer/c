@@ -1,5 +1,5 @@
-#ifndef _PLAYGROUND_CLASS_H_
-#define _PLAYGROUND_CLASS_H_
+#ifndef _PLAYGROUND_CLASS_V2_H_
+#define _PLAYGROUND_CLASS_V2_H_
 
 #include "std/common.h"
 
@@ -20,4 +20,4 @@ struct class {
     void (*set)(void* data);
 };
 
-#endif /* _PLAYGROUND_CLASS_H_ */
+#endif /* _PLAYGROUND_CLASS_V2_H_ */
