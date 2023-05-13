@@ -122,7 +122,8 @@
         "DavidAnson.vscode-markdownlint",
         "GitHub.vscode-pull-request-github",
         "ms-vscode.hexeditor",
-        "trunk.io"
+        "trunk.io",
+        "ms-azuretools.vscode-docker"
       ]
     }
   }

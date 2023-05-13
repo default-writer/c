@@ -37,7 +37,6 @@ run
 - ./bin/gtkbuild.sh --target gtk-experiment --clean
 - UI_MODE=--ui ./gtk/gtk-experiment
 
-
 ## shell scripting documentation
 
 - all shell (mostly bash) scripts located in ./bin folder
