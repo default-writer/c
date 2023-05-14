@@ -1,12 +1,12 @@
-#include "memory/api/v2/ref.h"
+#include "memory/api/v3/ref_v3.h"
 #include "playground/memory/api/memory.h"
 
 #define MAX_MEMORY 0xfffffc /* 16777215 (0xffffff) octa-bytes or 134217720 bytes (128MB) */
 
 /* offset for memory_ref structure */
-extern struct memory_ref_methods memory_ref_definition;
+extern struct memory_ref_methods memory_ref_definition_v3;
 
-static struct memory_ref_methods* ref = &memory_ref_definition;
+static struct memory_ref_methods* ref = &memory_ref_definition_v3;
 
 /* api */
 

@@ -1,5 +1,5 @@
+#include "memory/api/v2/ref_v2.h"
 #include "common/alloc.h"
-#include "memory/api/v1/ref.h"
 #include "playground/memory/list/v2/memory_list_v2.h"
 
 /* declaration */
@@ -15,7 +15,7 @@ static struct memory_ref* memory_ref_ref(void* data);
 static void* memory_ref_ptr(struct memory_ref* data);
 static u64 memory_ref_size(void* data);
 static void* memory_ref_alloc(u64 size);
-static void memory_ref_init(void);
+static void memory_ref_init(u64 size);
 static void memory_ref_destroy(void);
 static void memory_ref_push(void* data);
 static void* memory_ref_pop(void);
@@ -44,7 +44,7 @@ static void* memory_ref_ptr(struct memory_ref* data) {
 static u64 memory_ref_size(void* data) {
     u64 size = 0;
     if (data != 0) {
-        struct memory_ref* ptr = memory_ref_ref(data);
+        const struct memory_ref* ptr = memory_ref_ref(data);
         size = ptr->size;
     }
     return size;
@@ -80,12 +80,12 @@ static void memory_ref_free(void* data) {
     }
 }
 
-static void memory_ref_init(void) {
+static void memory_ref_init(u64 size) {
     memory_list_init();
     memory = _list_alloc(sizeof(struct memory_ref));
     ++memory;
     current = (void*)memory;
-    current = memory_ref_alloc(0);
+    current = memory_ref_alloc(size);
 }
 
 static void memory_ref_destroy(void) {
@@ -131,7 +131,7 @@ static void* memory_ref_peek(void) {
 
 static const u64 memory_offset = sizeof(struct memory_ref) / sizeof(void*);
 
-const struct memory_ref_methods memory_ref_definition = {
+const struct memory_ref_methods memory_ref_definition_v2 = {
     .init = memory_ref_init,
     .destroy = memory_ref_destroy,
     /* .ref = memory_ref_ref, */

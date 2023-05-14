@@ -1,5 +1,5 @@
-#ifndef _MEMORY_REF_V3_H_
-#define _MEMORY_REF_V3_H_
+#ifndef _MEMORY_API_REF_V3_H_
+#define _MEMORY_API_REF_V3_H_
 
 #include "std/common.h"
 
@@ -15,9 +15,9 @@ struct memory_ref_methods {
     void (*init)(u64 size);
     void (*destroy)(void);
     void* (*alloc)(u64 size);
-    void (*free)(const void* data);
+    void (*free)(void* data);
     void* (*pop)(void);
     void* (*peek)(void);
 };
 
-#endif /* _MEMORY_REF_V3_H_ */
+#endif /* _MEMORY_API_REF_V3_H_ */

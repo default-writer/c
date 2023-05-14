@@ -5,7 +5,7 @@
 /* list definition */
 extern const struct list list_v2;
 /* class data definition */
-extern struct class_data class_data;
+// extern struct class_data class_data;
 
 /* class data */
 struct class_data {

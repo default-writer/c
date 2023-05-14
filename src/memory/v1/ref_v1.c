@@ -1,5 +1,5 @@
+#include "memory/api/v1/ref_v1.h"
 #include "common/alloc.h"
-#include "memory/api/v1/ref.h"
 
 /* declaration */
 
@@ -40,7 +40,7 @@ static void* memory_ref_ptr(struct memory_ref* data) {
 static u64 memory_ref_size(void* data) {
     u64 size = 0;
     if (data != 0) {
-        struct memory_ref* ptr = memory_ref_ref(data);
+        const struct memory_ref* ptr = memory_ref_ref(data);
         size = ptr->size;
     }
     return size;
@@ -97,7 +97,7 @@ static void memory_ref_destroy(void) {
 
 static const u64 memory_offset = sizeof(struct memory_ref) / sizeof(void*);
 
-const struct memory_ref_methods memory_ref_definition = {
+const struct memory_ref_methods memory_ref_definition_v1 = {
     .init = memory_ref_init,
     .destroy = memory_ref_destroy,
     /* .ref = memory_ref_ref, */

@@ -1,12 +1,12 @@
-#include "memory/api/v1/ref.h"
+#include "memory/api/v2/ref_v2.h"
 #include "playground/memory/api/memory.h"
 
 #define MAX_MEMORY 0xffff /* 64K bytes */
 
 /* offset for memory_ref structure */
-extern struct memory_ref_methods memory_ref_definition;
+extern struct memory_ref_methods memory_ref_definition_v2;
 
-static struct memory_ref_methods* ref = &memory_ref_definition;
+static struct memory_ref_methods* ref = &memory_ref_definition_v2;
 
 /* api */
 
@@ -20,7 +20,7 @@ static void memory_free(void* data);
 /* implementation */
 
 static void memory_init(void) {
-    ref->init();
+    ref->init(0);
 }
 
 static void memory_destroy(void) {

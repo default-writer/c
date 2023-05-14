@@ -1,5 +1,5 @@
-#ifndef _PLAYGROUND_MEMORY_V3_H_
-#define _PLAYGROUND_MEMORY_V3_H_
+#ifndef _MEMORY_API_V3_H_
+#define _MEMORY_API_V3_H_
 
 #include "std/common.h"
 
@@ -10,4 +10,4 @@ struct memory_allocator_v3 {
     void (*free)(void* data);
 };
 
-#endif /* _PLAYGROUND_MEMORY_V3_H_ */
+#endif /* _MEMORY_API_V3_H_ */

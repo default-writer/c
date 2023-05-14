@@ -1,5 +1,5 @@
-#ifndef _PLAYGROUND_HASHTABLE_V2_H_
-#define _PLAYGROUND_HASHTABLE_V2_H_
+#ifndef _HASHTABLE_V2_H_
+#define _HASHTABLE_V2_H_
 
 #define HASHTABLE_DEFAULT_SIZE 101
 
@@ -29,4 +29,4 @@ struct hashtable {
 u32 default_hash(const char* source);
 u32 murmurhash3(const char* source);
 
-#endif /* _PLAYGROUND_HASHTABLE_V2_H_ */
+#endif /* _HASHTABLE_V2_H_ */

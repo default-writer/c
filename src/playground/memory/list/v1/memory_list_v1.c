@@ -63,34 +63,14 @@ void memory_list_init(void) {
 }
 
 void* memory_list_peek(void) {
-    /* struct memory_ref* ptr */
-    /* void* data = _ptr(ptr); */
-    /* return data; */
     return list->peek(cache);
 }
 
 void memory_list_push(void* data) {
-    /* struct memory_ref* next = _ref(data); */
-    /* if (ptr != 0) { */
-    /*     struct memory_ref* prev = ptr->prev; */
-    /*     prev->next = next->prev; */
-    /* } */
     list->push(cache, data);
 }
 
 void* memory_list_pop(void) {
-    /* void* data = _ptr(ptr); */
-    /* if (ptr != 0) { */
-    /*     struct memory_ref* next = ptr->next; */
-    /*     struct memory_ref* prev = ptr->prev; */
-    /*     if (next != 0) { */
-    /*         next->prev = prev; */
-    /*     } */
-    /*     if (prev != 0) { */
-    /*         prev->next = next; */
-    /*     } */
-    /* } */
-    /* return data; */
     return list->pop(cache);
 }
 

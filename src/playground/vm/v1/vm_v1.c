@@ -226,6 +226,9 @@ static struct pointer* vm_read(struct vm_data** current, u64 address) {
     struct pointer* data = 0;
     if (address != 0) {
         void** ptr = vm_read_internal(current, address);
+#ifdef USE_MEMORY_DEBUG_INFO
+        printf("  >*: 0x%016llx >0x%016llx\n", (u64)ptr, address);
+#endif
         if (ptr != 0) {
             data = *ptr;
         }

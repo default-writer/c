@@ -1,5 +1,5 @@
-#ifndef _MEMORY_REF_H_
-#define _MEMORY_REF_H_
+#ifndef _MEMORY_API_COMMON_REF_H_
+#define _MEMORY_API_COMMON_REF_H_
 
 #include "std/common.h"
 
@@ -10,4 +10,4 @@ struct memory_ref {
     u64 size;
 };
 
-#endif /* _MEMORY_REF_H_ */
+#endif /* _MEMORY_API_COMMON_REF_H_ */

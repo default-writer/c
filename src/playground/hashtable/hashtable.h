@@ -1,5 +1,5 @@
-#ifndef _PLAYGROUND_HASHTABLE_H_
-#define _PLAYGROUND_HASHTABLE_H_
+#ifndef _HASHTABLE_H_
+#define _HASHTABLE_H_
 
 #include "std/common.h"
 
@@ -22,4 +22,4 @@ struct hashtable {
 
 u32 murmurhash3(const char* source);
 
-#endif /* _PLAYGROUND_HASHTABLE_H_ */
+#endif /* _HASHTABLE_H_ */

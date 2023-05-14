@@ -34,10 +34,6 @@ void memory_list_push(struct memory_ref* ptr) {
         tmp_ptr = tmp_ptr->cache;
     }
 #endif
-    /* if (ptr != 0) { */
-    /*     ptr->cache = *current; */
-    /* } */
-    /* *current = ptr; */
 }
 
 struct memory_ref* memory_list_pop(void) {

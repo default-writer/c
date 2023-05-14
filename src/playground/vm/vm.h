@@ -1,5 +1,5 @@
-#ifndef _PLAYGROUND_VIRTUAL_H_
-#define _PLAYGROUND_VIRTUAL_H_
+#ifndef _VIRTUAL_H_
+#define _VIRTUAL_H_
 
 #include "std/common.h"
 
@@ -15,4 +15,4 @@ struct vm {
     void (*memory_dump_ref)(struct vm_data* vm_ptr);
 };
 
-#endif /* _PLAYGROUND_VIRTUAL_H_ */
+#endif /* _VIRTUAL_H_ */

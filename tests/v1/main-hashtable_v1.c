@@ -3,6 +3,7 @@
 #include "playground/brain/brain.h"
 #include "playground/hashtable/hashtable.h"
 #include "playground/pointer/pointer.h"
+
 #include <rexo/include/rexo.h>
 
 #define HASHTABLE_SIZE 101

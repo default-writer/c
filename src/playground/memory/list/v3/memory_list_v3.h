@@ -1,7 +1,7 @@
-#ifndef _PLAYGROUND_MEMORY_LIST_H_
-#define _PLAYGROUND_MEMORY_LIST_H_
+#ifndef _MEMORY_API_V3_LIST_H_
+#define _MEMORY_API_V3_LIST_H_
 
-#include "memory/api/v3/ref.h"
+#include "memory/api/v3/ref_v3.h"
 #include "std/common.h"
 
 struct memory_ref* memory_list_peek(void);
@@ -10,4 +10,4 @@ struct memory_ref* memory_list_pop(void);
 void memory_list_init(void);
 void memory_list_destroy(void);
 
-#endif /* _PLAYGROUND_MEMORY_LIST_H_ */
+#endif /* _MEMORY_API_V3_LIST_H_ */
