@@ -54,7 +54,6 @@ RX_TEST_CASE(myTestSuite, test_list_push_v1, .fixture = test_fixture) {
     RX_ASSERT(head == payload);
 }
 
-/* test context */
 RX_TEST_CASE(myTestSuite, test_context_enter_leave_v1, .fixture = test_fixture) {
     const struct class* context = &class_definition_v1;
     struct class_data* data = context->new ();

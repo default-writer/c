@@ -39,6 +39,26 @@ RX_TEAR_DOWN(test_tear_down) {
 RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tear_down);
 
 /* test context */
+RX_TEST_CASE(myTestSuite, test_list_push_v1, .fixture = test_fixture) {
+    /* prepares the payload */
+    u8* payload = (void*)0xdeadbeef;
+    /* pushes to the list multiple times */
+    struct list_data* list_data_object = list->alloc(16);
+    list->push(list_data_object, payload);
+    list->push(list_data_object, payload);
+    list->push(list_data_object, payload);
+    list->push(list_data_object, payload);
+    /* pops from the list */
+    list->pop(list_data_object);
+    list->pop(list_data_object);
+    list->pop(list_data_object);
+    /* peeks from the list */
+    const void* head = list->peek(list_data_object);
+    list->free(list_data_object);
+    /* ensures data is added to the list */
+    RX_ASSERT(head == payload);
+}
+
 RX_TEST_CASE(myTestSuite, test_context_enter_leave_v2, .fixture = test_fixture) {
     const struct class* context = &class_definition_v2;
     struct class_data* data = context->new (list_data);
