@@ -10,6 +10,11 @@ extern const struct vm vm_definition;
 extern const struct list list_micro_definition;
 
 /* private */
+struct pointer {
+    void* data;
+    u64 size;
+    enum type type;
+};
 
 struct pointer_data {
     struct vm_data* vm;
@@ -66,6 +71,8 @@ static u64 pointer_file_alloc(u64 file_path_ptr, u64 mode_ptr);
 static u64 pointer_file_read(u64 ptr);
 static void pointer_file_free(u64 ptr);
 static void pointer_printf(u64 ptr);
+static void pointer_dump(struct pointer* ptr);
+static void pointer_dump_ref(struct pointer* ptr);
 static void pointer_put_char(u64 ptr, char value);
 
 #ifdef USE_GC
@@ -551,6 +558,19 @@ static void pointer_printf(u64 ptr) {
     }
 }
 
+#ifdef USE_MEMORY_DEBUG_INFO
+static void pointer_dump(struct pointer* ptr) {
+    if (ptr != 0 && ptr->data != 0) {
+        printf("   ^: 0x%016llx >0x%016llx\n", (u64)ptr, (u64)ptr->data);
+    }
+}
+static void pointer_dump_ref(struct pointer* ptr) {
+    if (ptr != 0 && ptr->data != 0) {
+        printf("   &: 0x%016llx >0x%016llx\n", (u64)ptr, (u64)ptr->data);
+    }
+}
+#endif
+
 static void pointer_put_char(u64 ptr, char value) {
     struct pointer* data_ptr = vm->read(&base->vm, ptr);
     if (data_ptr != 0) {
@@ -585,6 +605,10 @@ const struct pointer_methods pointer_methods_definition = {
     .file_read = pointer_file_read,
     .file_free = pointer_file_free,
     .printf = pointer_printf,
+#ifdef USE_MEMORY_DEBUG_INFO
+    .dump = pointer_dump,
+    .dump_ref = pointer_dump_ref,
+#endif
     .put_char = pointer_put_char,
     .unsafe = pointer_unsafe,
     .size = pointer_size,

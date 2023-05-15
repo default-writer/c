@@ -13,11 +13,7 @@ enum type {
     TYPE_LIST = 3
 };
 
-struct pointer {
-    void* data;
-    u64 size;
-    enum type type;
-};
+struct pointer;
 
 struct pointer_data;
 
@@ -46,6 +42,10 @@ struct pointer_methods {
     void (*put_char)(u64 ptr, char value);
     char* (*unsafe)(u64 ptr);
     u64 (*size)(u64 ptr);
+#ifdef USE_MEMORY_DEBUG_INFO
+    void (*dump)(struct pointer* ptr);
+    void (*dump_ref)(struct pointer* ptr);
+#endif
 #ifndef USE_GC
     void (*free)(u64 ptr);
 #else
