@@ -154,10 +154,10 @@ static void vm_memory_dump(struct vm_data* vm_ptr) {
         vm_ptr = vm_ptr->prev;
     }
     vm_enumerator_init_internal(vm_ptr);
-    struct pointer* data_ptr = 0;
-    while ((data_ptr = vm_data_enumerator_next()) != 0) {
+    struct pointer* ptr = 0;
+    while ((ptr = vm_data_enumerator_next()) != 0) {
 #ifdef USE_MEMORY_DEBUG_INFO
-        pointer->dump(data_ptr);
+        pointer->dump(ptr);
 #endif
     }
     vm_enumerator_destroy_internal();
@@ -168,10 +168,10 @@ static void vm_memory_dump_ref(struct vm_data* vm_ptr) {
         vm_ptr = vm_ptr->prev;
     }
     vm_enumerator_init_internal(vm_ptr);
-    struct pointer* data_ptr = 0;
-    while ((data_ptr = vm_data_enumerator_next_ref()) != 0) {
+    struct pointer* ptr = 0;
+    while ((ptr = vm_data_enumerator_next_ref()) != 0) {
 #ifdef USE_MEMORY_DEBUG_INFO
-        pointer->dump_ref(data_ptr);
+        pointer->dump_ref(ptr);
 #endif
     }
     vm_enumerator_destroy_internal();
