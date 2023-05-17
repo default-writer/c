@@ -1,3 +1,4 @@
+#include "common/alloc.h"
 #include "playground/memory/api/memory.h"
 
 #define MAX_MEMORY 0xffff /* 64K bytes */
@@ -13,13 +14,13 @@ static void memory_free(void* data, u64 size);
 
 static void memory_init(void) {
     ptr = &memory;
-    *ptr = calloc(1, MAX_MEMORY);
+    *ptr = _list_alloc(MAX_MEMORY);
     ptr = *ptr;
     *ptr = ptr + 1;
 }
 
 static void memory_destroy(void) {
-    free(memory);
+    _list_free(memory, MAX_MEMORY);
     memory = 0;
     ptr = 0;
 }

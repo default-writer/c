@@ -28,30 +28,25 @@ static const struct list* list = &list_micro_definition;
 static struct class_data* _new(void);
 /* deletes the class instance */
 static void _delete(struct class_data* ptr);
-/* returns class instance size */
-static size_t _size(void);
 
 /* proxy for the class function get_data() */
 static void* class_get(void);
 /* proxy for the class function set_data( void*)*/
 static void class_set(void* data);
 
-/* gets size of a memory block to allocate */
-static size_t _size(void) {
-    /* returns size of a memory block to allocate */
-    return sizeof(struct class_data);
-}
+/* size of a memory block to allocate */
+static const size_t _size = sizeof(struct class_data);
 
 /* allocates memory pointer */
 static struct class_data* _new(void) {
     /* returns class object */
-    return _list_alloc(_size());
+    return _list_alloc(_size);
 }
 
 /* releases memory pointer */
 static void _delete(struct class_data* class) {
     /* releases the pointer */
-    _list_free(class, _size());
+    _list_free(class, _size);
 }
 
 /* initializes the new context's head element */

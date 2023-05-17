@@ -4,6 +4,11 @@
 #include "playground/memory/memory.h"
 #endif
 
+#ifdef USE_MEMORY_DEBUG_INFO
+static u64 global_allocated = 0;
+static u64 global_freed = 0;
+#endif
+
 void* _list_alloc(u64 size) {
     void* ptr = 0;
     if (size != 0) {
@@ -13,7 +18,8 @@ void* _list_alloc(u64 size) {
         ptr = calloc(1, size);
 #endif
 #ifdef USE_MEMORY_DEBUG_INFO
-        printf("   +: 0x%016llx !  %16lld\n", (u64)ptr, size);
+        global_allocated += size;
+        printf("   +: 0x%016llx !  %16lld .  %16lld :  %16lld\n", (u64)ptr, size, global_freed, global_allocated);
 #endif
     }
     return ptr;
@@ -22,7 +28,8 @@ void* _list_alloc(u64 size) {
 void _list_free(void* ptr, u64 size) {
     if (ptr != 0) {
 #ifdef USE_MEMORY_DEBUG_INFO
-        printf("   -: 0x%016llx !  %16lld\n", (u64)ptr, size);
+        global_freed += size;
+        printf("   -: 0x%016llx !  %16lld .  %16lld :  %16lld\n", (u64)ptr, size, global_freed, global_allocated);
 #endif
 #ifdef USE_MEMORY_CLEANUP
         memset((void*)(u8*)ptr, 0, size); /* NOLINT */
@@ -35,10 +42,13 @@ void _list_free(void* ptr, u64 size) {
     }
 }
 
-void* _list_realloc(void* ptr, u64 size) {
+void* _list_realloc(void* ptr, u64 size, u64 new_size) {
     void* data = 0;
-    if (ptr != 0 && size != 0) {
-        data = realloc(ptr, size);
+    if (ptr != 0 && new_size > size) {
+#ifdef USE_MEMORY_DEBUG_INFO
+        global_allocated += new_size - size;
+#endif
+        data = realloc(ptr, new_size);
     }
     return data;
 }

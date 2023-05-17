@@ -9,18 +9,15 @@ extern const struct list_parameters list_parameters_definition;
 
 /* private */
 
-/* gets size of a memory block to allocate */
-static size_t _size(void) {
-    /* returns size of a memory block to allocate */
-    return sizeof(struct list_data);
-}
+/* size of a memory block to allocate */
+static const size_t _size = sizeof(struct list_data);
 
 /* allocates memory pointer */
 static struct list_data* _new(void) {
     /* declares pointer to list parameters definitions */
     const struct list_parameters* parameters = &list_parameters_definition;
     /* allocates memory */
-    struct list_data* ptr = _list_alloc(_size());
+    struct list_data* ptr = _list_alloc(_size);
     /* allocates nested memory pointer */
     ptr->data = _list_alloc(ALLOC_SIZE(parameters->block_size));
     /* sets the head */
@@ -36,7 +33,7 @@ static void _delete(struct list_data* ptr) {
     /* releases the nested memory pointer */
     _list_free(ptr->data, ALLOC_SIZE(parameters->block_size));
     /* releases the pointer */
-    _list_free(ptr, _size());
+    _list_free(ptr, _size);
 }
 
 /* gets chunk's next item. external code ensures ptr is not 0 */

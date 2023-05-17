@@ -64,8 +64,8 @@ RX_TEST_CASE(myTestSuite, test_list_push_list_peek_list_pop, .fixture = test_fix
 #endif
     }
     printf("%s\n", buffer);
-    _list_free(buffer, 0);
-    _list_free(dest, 0);
+    _list_free(buffer, size + 1);
+    _list_free(dest, size + 1);
     pointer->list_free(list_ptr);
 }
 
@@ -93,8 +93,8 @@ RX_TEST_CASE(myTestSuite, test_list_peek_0, .fixture = test_fixture) {
 #endif
     }
     printf("%s\n", buffer);
-    _list_free(buffer, 0);
-    _list_free(dest, 0);
+    _list_free(buffer, size + 1);
+    _list_free(dest, size + 1);
 }
 
 int main(int argc, char** argv) {

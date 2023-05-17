@@ -1,18 +1,20 @@
+#include "common/alloc.h"
 #include "playground/memory/api/memory.h"
 
-#define MAX_MEMORY 0xffff /* 64K bytes */
+#define DEFAULT_SIZE 0x0 /* 0 */
 
 /* global allocated memory */
 static void* memory = 0;
 static void** ptr = 0;
+static void* memory_alloc_internal(void** next, void* prev, u64 size);
 
 static void memory_init(void);
 static void memory_destroy(void);
 static void* memory_alloc(u64 size);
 static void memory_free(void* data, u64 size);
 
-static void* alloc(void** next, void* prev, u64 size) {
-    void** tmp = calloc(1, (size + 3) * sizeof(void*)); //
+static void* memory_alloc_internal(void** next, void* prev, u64 size) {
+    void** tmp = _list_alloc((size + 3) * sizeof(void*)); //
     next = *next;
     *next = tmp;
 
@@ -32,17 +34,17 @@ static u64 offset(const void* data) {
 static void memory_init(void) {
     ptr = &memory;
     *ptr = ptr;
-    ptr = alloc(ptr, 0, 0);
+    ptr = memory_alloc_internal(ptr, 0, DEFAULT_SIZE);
 }
 
 static void memory_destroy(void) {
-    free(memory);
+    _list_free(memory, (DEFAULT_SIZE + 3) * sizeof(void*));
     memory = 0;
     ptr = 0;
 }
 
 static void* memory_alloc(u64 size) {
-    ptr = alloc(ptr - 1, ptr, size);
+    ptr = memory_alloc_internal(ptr - 1, ptr, size);
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("  0+: 0x%016llx >0x%016llx\n", (u64)ptr, (u64)(*ptr));
 #endif
@@ -67,7 +69,7 @@ static void memory_free(void* data, u64 size) {
 #ifdef USE_MEMORY_CLEANUP
     memset(head - 2, 0, (size + 3) * sizeof(void*)); /* NOLINT */
 #endif
-    free(head - 2);
+    _list_free(head - 2, (size + 3) * sizeof(void*));
 }
 
 const union memory_allocator_api memory_allocator_v3 = {

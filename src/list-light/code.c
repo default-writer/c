@@ -3,22 +3,19 @@
 
 /* private */
 
-/* gets size of a memory block to allocate */
-static size_t _size(void) {
-    /* returns size of a memory block to allocate */
-    return sizeof(struct list_data);
-}
+/* size of a memory block to allocate */
+static const size_t _size = sizeof(struct list_data);
 
 /* allocates memory pointer */
 static struct list_data* _new(void) {
     /* returns list object */
-    return _list_alloc(_size());
+    return _list_alloc(_size);
 }
 
 /* releases memory pointer */
 static void _delete(struct list_data* ptr) {
     /* releases the pointer */
-    _list_free(ptr, _size());
+    _list_free(ptr, _size);
 }
 
 /* gets chunk's next item. external code ensures ptr is not 0 */

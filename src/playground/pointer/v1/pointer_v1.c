@@ -95,7 +95,7 @@ static struct pointer* pointer_alloc_internal(u64 size, enum type type) {
 
 static void pointer_realloc_internal(struct pointer* ptr, u64 size) {
     if (ptr != 0 && ptr->data != 0) {
-        ptr->data = _list_realloc(ptr->data, size);
+        ptr->data = _list_realloc(ptr->data, ptr->size, size);
         ptr->size = size;
     }
 }

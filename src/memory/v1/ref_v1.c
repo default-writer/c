@@ -3,7 +3,8 @@
 
 /* declaration */
 
-static const u64 memory_offset;
+/* size of a memory block to allocate */
+static const size_t _size = sizeof(struct memory_ref);
 
 static struct memory_ref* memory;
 
@@ -51,7 +52,7 @@ static void* memory_ref_alloc(u64 size) {
     void* ptr = 0;
     if (data != 0) {
         struct memory_ref* ref_ptr = memory_ref_ref(data);
-        struct memory_ref* tmp = _list_alloc((size + memory_offset) * sizeof(void*));
+        struct memory_ref* tmp = _list_alloc(_size + size * sizeof(void*));
         ref_ptr->next = memory_ref_ptr(tmp);
 #ifdef USE_MEMORY_DEBUG_INFO
         printf("  p.: 0x%016llx .0x%016llx .0x%016llx\n", (u64)data, (u64)ref_ptr->prev, (u64)ref_ptr->next);
@@ -67,9 +68,9 @@ static void* memory_ref_alloc(u64 size) {
 
 static void memory_ref_free(void* data) {
     if (data != 0) {
-        void** ptr = data;
-        u64 size = memory_ref_size(data);
-        _list_free(ptr - memory_offset, (size + memory_offset) * sizeof(void*));
+        u8* ptr = (u8*)data - _size;
+        u64 size = memory_ref_size(data) * sizeof(void*);
+        _list_free(ptr, size);
 #ifdef USE_MEMORY_DEBUG_INFO
         printf("  0-: 0x%016llx !  %16lld\n", (u64)data, size);
 #endif
@@ -77,7 +78,7 @@ static void memory_ref_free(void* data) {
 }
 
 static void memory_ref_init(void) {
-    memory = _list_alloc(sizeof(struct memory_ref));
+    memory = _list_alloc(_size);
     ++memory;
     current = (void*)memory;
     current = memory_ref_alloc(0);
@@ -85,8 +86,8 @@ static void memory_ref_init(void) {
 
 static void memory_ref_destroy(void) {
     --memory;
-    _list_free(memory_ref_ref(memory->next), sizeof(struct memory_ref));
-    _list_free(memory, sizeof(struct memory_ref));
+    _list_free(memory_ref_ref(memory->next), _size);
+    _list_free(memory, _size);
 #ifdef USE_MEMORY_CLEANUP
     memory = 0;
     current = 0;
@@ -94,8 +95,6 @@ static void memory_ref_destroy(void) {
 }
 
 /* public */
-
-static const u64 memory_offset = sizeof(struct memory_ref) / sizeof(void*);
 
 const struct memory_ref_methods memory_ref_definition_v1 = {
     .init = memory_ref_init,
