@@ -1,3 +1,4 @@
+#include "common/alloc.h"
 #include "playground/memory/api/memory.h"
 
 extern const union memory_allocator_api memory_allocator_v1;
@@ -42,5 +43,8 @@ int main(void) {
     use(&memory_allocator_v1);
     use(&memory_allocator_v2);
     use(&memory_allocator_v3);
+#ifdef USE_MEMORY_DEBUG_INFO
+    global_statistics();
+#endif
     return 0;
 }

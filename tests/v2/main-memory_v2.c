@@ -1,3 +1,4 @@
+#include "common/alloc.h"
 #include "playground/memory/api/memory.h"
 
 extern const struct memory_allocator_v2 memory_allocator_v4;
@@ -47,5 +48,8 @@ void use(const struct memory_allocator_v2* allocator) {
 
 int main(void) {
     use(&memory_allocator_v4);
+#ifdef USE_MEMORY_DEBUG_INFO
+    global_statistics();
+#endif
     return 0;
 }

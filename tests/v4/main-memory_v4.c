@@ -1,3 +1,4 @@
+#include "common/alloc.h"
 #include "common/lcg.h"
 #include "playground/memory/api/memory.h"
 
@@ -77,5 +78,8 @@ void use(const struct memory_allocator_v3* allocator) {
 
 int main(void) {
     use(&memory_allocator_v6);
+#ifdef USE_MEMORY_DEBUG_INFO
+    global_statistics();
+#endif
     return 0;
 }
