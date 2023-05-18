@@ -70,7 +70,7 @@ static void memory_ref_free(void* data) {
     if (data != 0) {
         u8* ptr = (u8*)data - _size;
         u64 size = memory_ref_size(data) * sizeof(void*);
-        _list_free(ptr, size);
+        _list_free(ptr, size + _size);
 #ifdef USE_MEMORY_DEBUG_INFO
         printf("  0-: 0x%016llx !  %16lld\n", (u64)data, size);
 #endif

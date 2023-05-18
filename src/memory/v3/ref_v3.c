@@ -53,7 +53,7 @@ static void* memory_ref_alloc(u64 size) {
 static void memory_ref_free_internal(void* data) {
     if (data != 0) {
         struct memory_ref* ptr = data;
-        _list_free(ptr, _size + ptr->size * sizeof(void*));
+        _list_free(ptr, _size + ptr->address_space * sizeof(void*));
     }
 }
 
