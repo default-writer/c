@@ -39,7 +39,7 @@ RX_TEST_CASE(myTestSuite, test_list_push_list_peek_list_pop, .fixture = test_fix
     u64 list_ptr = pointer->list_alloc();
     const char* source = "Hello, world!";
     u64 size = strlen(source) + 1;
-    char* dest = _list_alloc(size);
+    char* dest = global_alloc(size);
     memcpy(dest, source, size); /* NOLINT */
     for (u64 i = 0; i < size - 1; i++) {
         char* ptr = dest + i;
@@ -50,7 +50,7 @@ RX_TEST_CASE(myTestSuite, test_list_push_list_peek_list_pop, .fixture = test_fix
         *tmp = ch;
         pointer->list_push(list_ptr, data);
     }
-    char* buffer = _list_alloc(size);
+    char* buffer = global_alloc(size);
     for (u64 i = 0; i < size - 1; i++) {
         u64 ch0 = pointer->list_peek(list_ptr);
         const char* data = pointer->unsafe(ch0);
@@ -64,8 +64,8 @@ RX_TEST_CASE(myTestSuite, test_list_push_list_peek_list_pop, .fixture = test_fix
 #endif
     }
     printf("%s\n", buffer);
-    _list_free(buffer, size);
-    _list_free(dest, size);
+    global_free(buffer, size);
+    global_free(dest, size);
     pointer->list_free(list_ptr);
 }
 
@@ -73,7 +73,7 @@ RX_TEST_CASE(myTestSuite, test_list_push_list_peek_list_pop, .fixture = test_fix
 RX_TEST_CASE(myTestSuite, test_list_peek_0, .fixture = test_fixture) {
     const char* source = "Hello, world! A very long string do not fit in 8 bytes.";
     u64 size = strlen(source) + 1;
-    char* dest = _list_alloc(size);
+    char* dest = global_alloc(size);
     memcpy(dest, source, size); /* NOLINT */
     for (u64 i = 0; i < size - 1; i++) {
         char* ptr = dest + i;
@@ -84,7 +84,7 @@ RX_TEST_CASE(myTestSuite, test_list_peek_0, .fixture = test_fixture) {
         *tmp = ch;
         pointer->push(data);
     }
-    char* buffer = _list_alloc(size);
+    char* buffer = global_alloc(size);
     for (u64 i = 0; i < size - 1; i++) {
         const char* data = pointer->unsafe(i + 1);
         *(buffer + i) = *data;
@@ -93,8 +93,8 @@ RX_TEST_CASE(myTestSuite, test_list_peek_0, .fixture = test_fixture) {
 #endif
     }
     printf("%s\n", buffer);
-    _list_free(buffer, size);
-    _list_free(dest, size);
+    global_free(buffer, size);
+    global_free(dest, size);
 }
 
 int main(int argc, char** argv) {
@@ -113,5 +113,9 @@ int main(int argc, char** argv) {
     printf("---- rexo unit test code\n");
 #endif
     /* Execute the main function that runs the test cases found. */
-    return rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
+    int result = rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
+#ifdef USE_MEMORY_DEBUG_INFO
+    global_statistics();
+#endif
+    return result;
 }

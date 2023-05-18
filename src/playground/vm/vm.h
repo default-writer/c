@@ -11,8 +11,8 @@ struct vm {
     struct pointer* (*free)(struct vm_data** current, u64 address);
     struct pointer* (*read)(struct vm_data** current, u64 address);
     u64 (*write)(struct vm_data** current, struct pointer* value);
-    void (*memory_dump)(struct vm_data* vm_ptr);
-    void (*memory_dump_ref)(struct vm_data* vm_ptr);
+    void (*dump)(struct vm_data* vm_ptr);
+    void (*dump_ref)(struct vm_data* vm_ptr);
 };
 
 #endif /* _VIRTUAL_H_ */

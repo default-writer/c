@@ -291,5 +291,9 @@ int main(int argc, char** argv) {
     printf("---- rexo unit test code\n");
 #endif
     /* Execute the main function that runs the test cases found. */
-    return rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
+    int result = rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
+#ifdef USE_MEMORY_DEBUG_INFO
+    global_statistics();
+#endif
+    return result;
 }

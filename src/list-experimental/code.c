@@ -17,9 +17,9 @@ static struct list_data* _new(void) {
     /* declares pointer to list parameters definitions */
     const struct list_parameters* parameters = &list_parameters_definition;
     /* allocates memory */
-    struct list_data* ptr = _list_alloc(_size);
+    struct list_data* ptr = global_alloc(_size);
     /* allocates nested memory pointer */
-    ptr->data = _list_alloc(ALLOC_SIZE(parameters->block_size));
+    ptr->data = global_alloc(ALLOC_SIZE(parameters->block_size));
     /* sets the head */
     ptr->data[0] = ptr->data;
     /* returns list object */
@@ -31,9 +31,9 @@ static void _delete(struct list_data* ptr) {
     /* declares pointer to list parameters definitions */
     const struct list_parameters* parameters = &list_parameters_definition;
     /* releases the nested memory pointer */
-    _list_free(ptr->data, ALLOC_SIZE(parameters->block_size));
+    global_free(ptr->data, ALLOC_SIZE(parameters->block_size));
     /* releases the pointer */
-    _list_free(ptr, _size);
+    global_free(ptr, _size);
 }
 
 /* gets chunk's next item. external code ensures ptr is not 0 */

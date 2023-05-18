@@ -43,8 +43,8 @@ static struct vm_state* state = &vm_state;
 static void vm_init(struct vm_data** current, u64 size);
 static void vm_destroy(struct vm_data** current);
 #ifdef USE_MEMORY_DEBUG_INFO
-static void vm_memory_dump(struct vm_data* vm_ptr);
-static void vm_memory_dump_ref(struct vm_data* vm_ptr);
+static void vm_dump(struct vm_data* vm_ptr);
+static void vm_dump_ref(struct vm_data* vm_ptr);
 #endif
 static struct pointer* vm_free(struct vm_data** current, u64 address);
 static struct pointer* vm_read(struct vm_data** current, u64 address);
@@ -67,8 +67,8 @@ static void vm_enumerator_destroy_internal(void);
 #endif
 
 static struct vm_data* vm_init_internal(u64 size, u64 address_space) {
-    struct vm_data* vm = _list_alloc(sizeof(struct vm_data));
-    vm->bp = _list_alloc(size * sizeof(void*));
+    struct vm_data* vm = global_alloc(sizeof(struct vm_data));
+    vm->bp = global_alloc(size * sizeof(void*));
     vm->sp = vm->bp;
     vm->address_space = address_space;
     vm->size = size;
@@ -146,7 +146,7 @@ static void vm_enumerator_destroy_internal(void) {
 
 static void vm_init(struct vm_data** current, u64 size) {
 #ifndef USE_GC
-    cache = _list_alloc(sizeof(void*));
+    cache = global_alloc(sizeof(void*));
     list->init(cache);
 #endif
     *current = vm_init_internal(size, 0);
@@ -155,7 +155,7 @@ static void vm_init(struct vm_data** current, u64 size) {
 static void vm_destroy(struct vm_data** current) {
 #ifndef USE_GC
     list->destroy(cache);
-    _list_free(cache, sizeof(void*));
+    global_free(cache, sizeof(void*));
 #ifdef USE_MEMORY_CLEANUP
     cache = 0;
 #endif
@@ -166,14 +166,14 @@ static void vm_destroy(struct vm_data** current) {
     }
     while (vm != 0) {
         struct vm_data* next = vm->next;
-        _list_free(vm->bp, vm->size * sizeof(void*));
-        _list_free(vm, sizeof(struct vm_data));
+        global_free(vm->bp, vm->size * sizeof(void*));
+        global_free(vm, sizeof(struct vm_data));
         vm = next;
     }
 }
 
 #ifdef USE_MEMORY_DEBUG_INFO
-static void vm_memory_dump(struct vm_data* vm_ptr) {
+static void vm_dump(struct vm_data* vm_ptr) {
     while (vm_ptr->prev != 0) {
         vm_ptr = vm_ptr->prev;
     }
@@ -187,7 +187,7 @@ static void vm_memory_dump(struct vm_data* vm_ptr) {
     vm_enumerator_destroy_internal();
 }
 
-static void vm_memory_dump_ref(struct vm_data* vm_ptr) {
+static void vm_dump_ref(struct vm_data* vm_ptr) {
     while (vm_ptr->prev != 0) {
         vm_ptr = vm_ptr->prev;
     }
@@ -291,7 +291,7 @@ const struct vm vm_definition = {
     .read = vm_read,
     .write = vm_write,
 #ifdef USE_MEMORY_DEBUG_INFO
-    .memory_dump = vm_memory_dump,
-    .memory_dump_ref = vm_memory_dump_ref
+    .dump = vm_dump,
+    .dump_ref = vm_dump_ref
 #endif
 };

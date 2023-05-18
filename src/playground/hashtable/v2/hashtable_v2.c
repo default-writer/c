@@ -144,14 +144,14 @@ static void hashtable_init(u64 size) {
     if (size > 0) {
         hashtable_size = size;
     }
-    hashtable = _list_alloc(hashtable_size * sizeof(void*));
+    hashtable = global_alloc(hashtable_size * sizeof(void*));
 }
 
 static void hashtable_destroy(void) {
     for (u64 i = 0; i < hashtable_size; i++) {
         hashtable_free(hashtable[i]);
     }
-    _list_free(hashtable, hashtable_size * sizeof(void*));
+    global_free(hashtable, hashtable_size * sizeof(void*));
 }
 
 static void hashtable_free_internal(struct hashtable_data* ptr) {
@@ -186,12 +186,12 @@ static struct hashtable_data* hashtable_alloc(const char* key, void* value) {
         return hashtable[hash];
     }
     struct hashtable_data* next = hashtable[hash];
-    struct hashtable_data* node = _list_alloc(sizeof(struct hashtable_data));
+    struct hashtable_data* node = global_alloc(sizeof(struct hashtable_data));
     u64 size = strlen(key) + 1;
 #ifdef USE_MEMORY_DEBUG_INFO
     node->key_size = size;
 #endif
-    char* node_key = _list_alloc(size); /* +1 for ’\0’ */
+    char* node_key = global_alloc(size); /* +1 for ’\0’ */
     strcpy(node_key, key); /* NOLINT */
     node->key = node_key;
     node->value = value;
@@ -205,8 +205,8 @@ static void hashtable_item_free_internal(struct hashtable_data* ptr) {
 #ifdef USE_MEMORY_DEBUG_INFO
     size = ptr->key_size;
 #endif
-    _list_free(ptr->key, size);
-    _list_free(ptr, sizeof(struct hashtable_data));
+    global_free(ptr->key, size);
+    global_free(ptr, sizeof(struct hashtable_data));
 }
 
 static void hashtable_free(struct hashtable_data* ptr) {

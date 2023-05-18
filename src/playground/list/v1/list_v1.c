@@ -10,11 +10,11 @@ static void** ptr = 0;
 static void* base = 0;
 
 static void list_init(void) {
-    base = ptr = _list_alloc(MAX_MEMORY);
+    base = ptr = global_alloc(MAX_MEMORY);
 }
 
 static void list_destroy(void) {
-    _list_free(base, MAX_MEMORY);
+    global_free(base, MAX_MEMORY);
     ptr = 0;
     base = 0;
 }

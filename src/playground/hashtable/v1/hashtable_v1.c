@@ -145,14 +145,14 @@ static void hashtable_init(u64 size) {
     if (size > 0) {
         hashtable_size = size;
     }
-    hashtable = _list_alloc(hashtable_size * sizeof(void*));
+    hashtable = global_alloc(hashtable_size * sizeof(void*));
 }
 
 static void hashtable_destroy(void) {
     for (u64 i = 0; i < hashtable_size; i++) {
         hashtable_free(hashtable[i]);
     }
-    _list_free(hashtable, hashtable_size * sizeof(void*));
+    global_free(hashtable, hashtable_size * sizeof(void*));
 }
 
 static struct hashtable_data* hashtable_extract_internal(struct hashtable_data* head, const struct hashtable_data* ptr) {
@@ -169,7 +169,7 @@ static struct hashtable_data* hashtable_extract_internal(struct hashtable_data* 
 }
 
 static struct hashtable_data* hashtable_alloc(const char* key, const char* value) {
-    struct hashtable_data* node = _list_alloc(sizeof(struct hashtable_data));
+    struct hashtable_data* node = global_alloc(sizeof(struct hashtable_data));
     if (key != 0) {
         node->key_size = strlen(key) + 1;
     }
@@ -193,17 +193,17 @@ static void hashtable_free(struct hashtable_data* node) {
             u32 hash = hash_func(ptr->key) % hashtable_size;
             const struct hashtable_data* found = hashtable_extract_internal(hashtable[hash], ptr);
             if (hashtable[hash] != found) {
-                _list_free(ptr->key, ptr->key_size);
-                _list_free(ptr->value, ptr->value_size);
-                _list_free(ptr, sizeof(struct hashtable_data));
+                global_free(ptr->key, ptr->key_size);
+                global_free(ptr->value, ptr->value_size);
+                global_free(ptr, sizeof(struct hashtable_data));
                 break;
             } else {
                 hashtable[hash] = 0;
             }
             next = ptr->next;
-            _list_free(ptr->key, ptr->key_size);
-            _list_free(ptr->value, ptr->value_size);
-            _list_free(ptr, sizeof(struct hashtable_data));
+            global_free(ptr->key, ptr->key_size);
+            global_free(ptr->value, ptr->value_size);
+            global_free(ptr, sizeof(struct hashtable_data));
             ptr = next;
         } while (next != 0);
     }
@@ -276,11 +276,11 @@ static void hashtable_set(const char* key, const char* value) {
 static void update(char** prev, const char* new, u64 old_size, u64 new_size) {
     if (prev != 0) {
         if (*prev != 0) {
-            _list_free(*prev, old_size);
+            global_free(*prev, old_size);
             *prev = 0;
         }
         if (new != 0) {
-            char* value = _list_alloc(new_size); /* +1 for ’\0’ */
+            char* value = global_alloc(new_size); /* +1 for ’\0’ */
             strcpy(value, new); /* NOLINT */
             *prev = value;
         }

@@ -222,7 +222,7 @@ RX_TEST_CASE(myTestSuite, test_empty_list_peek_equals_0, .fixture = test_fixture
 }
 
 /* test alloc */
-RX_TEST_CASE(myTestSuite, test_list_alloc_count_eq_1, .fixture = test_fixture) {
+RX_TEST_CASE(myTestSuite, test_alloc_count_eq_1, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
     /* declares pointer to list functions definitions */
@@ -235,7 +235,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_count_eq_1, .fixture = test_fixture) {
     RX_ASSERT(*ctx != 0);
 }
 
-RX_TEST_CASE(myTestSuite, test_list_alloc_payload, .fixture = test_fixture) {
+RX_TEST_CASE(myTestSuite, test_alloc_payload, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
     /* declares pointer to list functions definitions */
@@ -250,7 +250,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_payload, .fixture = test_fixture) {
     RX_ASSERT(head == payload);
 }
 
-RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture) {
+RX_TEST_CASE(myTestSuite, test_alloc_pop_count_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
     /* declares pointer to list functions definitions */
@@ -265,7 +265,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture) 
     RX_ASSERT(head != 0);
 }
 
-RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture) {
+RX_TEST_CASE(myTestSuite, test_alloc_pop_payload, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
     /* declares pointer to list functions definitions */
@@ -305,7 +305,7 @@ RX_TEST_CASE(myTestSuite, test_list_pop_is_zero, .fixture = test_fixture) {
 }
 
 /* test push */
-RX_TEST_CASE(myTestSuite, test_list_alloc_1, .fixture = test_fixture) {
+RX_TEST_CASE(myTestSuite, test_alloc_1, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
     /* declares pointer to list functions definitions */
@@ -479,7 +479,7 @@ RX_TEST_CASE(myTestSuite, test_list_push_pop, .fixture = test_fixture) {
     /* prepares the payload */
     u8* payload = (void*)0xdeadbeef;
     /* record buffer has N items */
-    void** _recorded = _list_alloc(ALLOC_SIZE(N_ELEMENTS));
+    void** _recorded = global_alloc(ALLOC_SIZE(N_ELEMENTS));
     /* pushes all pseudo-random values */
     /* pushes to the list multiple times */
     int i = 0;
@@ -515,7 +515,7 @@ RX_TEST_CASE(myTestSuite, test_list_push_pop, .fixture = test_fixture) {
         i--;
     } while (i >= 0);
     /* releases memory allocated for the data */
-    _list_free(_recorded, ALLOC_SIZE(N_ELEMENTS));
+    global_free(_recorded, ALLOC_SIZE(N_ELEMENTS));
 }
 
 int main(void) {
@@ -533,5 +533,9 @@ int main(void) {
     printf("---- rexo unit test code\n");
 #endif
     /* Execute the main function that runs the test cases found. */
-    return rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
+    int result = rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
+#ifdef USE_MEMORY_DEBUG_INFO
+    global_statistics();
+#endif
+    return result;
 }

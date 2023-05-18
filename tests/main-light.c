@@ -1,3 +1,4 @@
+#include "common/alloc.h"
 #include "list-light/data.h"
 #include <rexo/include/rexo.h>
 
@@ -218,7 +219,7 @@ RX_TEST_CASE(myTestSuite, test_empty_list_peek_equals_0, .fixture = test_fixture
 }
 
 /* test alloc */
-RX_TEST_CASE(myTestSuite, test_list_alloc_count_eq_1, .fixture = test_fixture) {
+RX_TEST_CASE(myTestSuite, test_alloc_count_eq_1, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
     /* declares pointer to list functions definitions */
@@ -231,7 +232,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_count_eq_1, .fixture = test_fixture) {
     RX_ASSERT(*ctx != 0);
 }
 
-RX_TEST_CASE(myTestSuite, test_list_alloc_payload, .fixture = test_fixture) {
+RX_TEST_CASE(myTestSuite, test_alloc_payload, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
     /* declares pointer to list functions definitions */
@@ -246,7 +247,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_payload, .fixture = test_fixture) {
     RX_ASSERT(head == payload);
 }
 
-RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture) {
+RX_TEST_CASE(myTestSuite, test_alloc_pop_count_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
     /* declares pointer to list functions definitions */
@@ -261,7 +262,7 @@ RX_TEST_CASE(myTestSuite, test_list_alloc_pop_count_0, .fixture = test_fixture) 
     RX_ASSERT(head != 0);
 }
 
-RX_TEST_CASE(myTestSuite, test_list_alloc_pop_payload, .fixture = test_fixture) {
+RX_TEST_CASE(myTestSuite, test_alloc_pop_payload, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
     /* declares pointer to list functions definitions */
@@ -311,5 +312,9 @@ int main(void) {
     printf("---- rexo unit test code\n");
 #endif
     /* Execute the main function that runs the test cases found. */
-    return rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
+    int result = rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
+#ifdef USE_MEMORY_DEBUG_INFO
+    global_statistics();
+#endif
+    return result;
 }

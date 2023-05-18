@@ -16,8 +16,8 @@ static void* list_pop(struct list_data* pointer);
 static void* list_peek(struct list_data* pointer);
 
 static struct list_data* list_alloc(u64 size) {
-    struct list_data* ptr = _list_alloc(sizeof(struct list_data));
-    ptr->base = _list_alloc(size * sizeof(void*));
+    struct list_data* ptr = global_alloc(sizeof(struct list_data));
+    ptr->base = global_alloc(size * sizeof(void*));
     ptr->ptr = ptr->base;
     ptr->max = ptr->base + size;
     ptr->size = size;
@@ -25,11 +25,11 @@ static struct list_data* list_alloc(u64 size) {
 }
 
 static void list_free(struct list_data* pointer) {
-    _list_free(pointer->base, pointer->size * sizeof(void*));
+    global_free(pointer->base, pointer->size * sizeof(void*));
     pointer->base = 0;
     pointer->ptr = 0;
     pointer->max = 0;
-    _list_free(pointer, sizeof(struct list_data));
+    global_free(pointer, sizeof(struct list_data));
     pointer = 0;
 }
 

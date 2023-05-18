@@ -1,3 +1,4 @@
+#include "common/alloc.h"
 #include "playground/class/v2/class_v2.h"
 #include "playground/list/v2/list_v2.h"
 #include <rexo/include/rexo.h>
@@ -110,5 +111,9 @@ int main(void) {
     memory_destroy(void);
 #endif
     /* Execute the main function that runs the test cases found. */
-    return rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
+    int result = rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
+#ifdef USE_MEMORY_DEBUG_INFO
+    global_statistics();
+#endif
+    return result;
 }

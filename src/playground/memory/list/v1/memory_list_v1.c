@@ -58,7 +58,7 @@ static const struct list* list = &list_micro_definition;
 static struct list_data** cache;
 
 void memory_list_init(void) {
-    cache = _list_alloc(sizeof(void*));
+    cache = global_alloc(sizeof(void*));
     list->init(cache);
 }
 
@@ -76,7 +76,7 @@ void* memory_list_pop(void) {
 
 void memory_list_destroy(void) {
     list->destroy(cache);
-    _list_free(cache, sizeof(void*));
+    global_free(cache, sizeof(void*));
 #ifdef USE_MEMORY_CLEANUP
     cache = 0;
 #endif

@@ -14,12 +14,12 @@ static void memory_free(void* data, u64 size);
 
 static void memory_init(void) {
     ptr = &memory;
-    *ptr = _list_alloc(MAX_MEMORY);
+    *ptr = global_alloc(MAX_MEMORY);
     ptr = *ptr;
 }
 
 static void memory_destroy(void) {
-    _list_free(memory, MAX_MEMORY);
+    global_free(memory, MAX_MEMORY);
     memory = 0;
     ptr = 0;
 }

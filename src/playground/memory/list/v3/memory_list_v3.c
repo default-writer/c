@@ -5,7 +5,7 @@
 static struct memory_ref** current;
 
 void memory_list_init(void) {
-    current = _list_alloc(sizeof(void*));
+    current = global_alloc(sizeof(void*));
 }
 
 struct memory_ref* memory_list_peek(void) {
@@ -45,7 +45,7 @@ struct memory_ref* memory_list_pop(void) {
 }
 
 void memory_list_destroy(void) {
-    _list_free(current, sizeof(void*));
+    global_free(current, sizeof(void*));
 #ifdef USE_MEMORY_CLEANUP
     current = 0;
 #endif

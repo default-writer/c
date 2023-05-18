@@ -37,13 +37,13 @@ static const size_t _size = sizeof(struct class_data);
 /* allocates memory pointer */
 static struct class_data* _new(void) {
     /* returns class object */
-    return _list_alloc(_size);
+    return global_alloc(_size);
 }
 
 /* releases memory pointer */
 static void _delete(struct class_data* class) {
     /* releases the pointer */
-    _list_free(class, _size);
+    global_free(class, _size);
 }
 
 /* initializes the new context's head element */

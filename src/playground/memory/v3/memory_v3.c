@@ -14,7 +14,7 @@ static void* memory_alloc(u64 size);
 static void memory_free(void* data, u64 size);
 
 static void* memory_alloc_internal(void** next, void* prev, u64 size) {
-    void** tmp = _list_alloc((size + 3) * sizeof(void*)); //
+    void** tmp = global_alloc((size + 3) * sizeof(void*)); //
     next = *next;
     *next = tmp;
 
@@ -38,7 +38,7 @@ static void memory_init(void) {
 }
 
 static void memory_destroy(void) {
-    _list_free(memory, (DEFAULT_SIZE + 3) * sizeof(void*));
+    global_free(memory, (DEFAULT_SIZE + 3) * sizeof(void*));
     memory = 0;
     ptr = 0;
 }
@@ -69,7 +69,7 @@ static void memory_free(void* data, u64 size) {
 #ifdef USE_MEMORY_CLEANUP
     memset(head - 2, 0, (size + 3) * sizeof(void*)); /* NOLINT */
 #endif
-    _list_free(head - 2, (size + 3) * sizeof(void*));
+    global_free(head - 2, (size + 3) * sizeof(void*));
 }
 
 const union memory_allocator_api memory_allocator_v3 = {

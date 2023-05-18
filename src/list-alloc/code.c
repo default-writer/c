@@ -18,9 +18,9 @@ static struct list_data* _new(void) {
     /* declares pointer to list parameters definitions */
     const struct list_parameters* parameters = &list_parameters_definition;
     /* allocates memory */
-    struct list_data* ptr = _list_alloc(_size);
+    struct list_data* ptr = global_alloc(_size);
     /* allocates nested memory pointer */
-    ptr->data = _list_alloc(ALLOC_SIZE(parameters->block_size));
+    ptr->data = global_alloc(ALLOC_SIZE(parameters->block_size));
     /* sets the head */
     ptr->data[0] = ptr->data;
     /* sets the size */
@@ -32,9 +32,9 @@ static struct list_data* _new(void) {
 /* releases memory pointer */
 static void _delete(struct list_data* ptr) {
     /* releases the nested memory pointer */
-    _list_free(ptr->data, ptr->size);
+    global_free(ptr->data, ptr->size);
     /* releases the pointer */
-    _list_free(ptr, _size);
+    global_free(ptr, _size);
 }
 
 /* gets chunk's payload. external code ensures ptr is not 0 */
@@ -63,7 +63,7 @@ static void list_push(struct list_data** current, void* payload) {
         /* checks if current data pointer allocated all data */
         if (offset == ptr->size) {
             /* reallocates current data pointer to the new memory location */
-            ptr->data = _list_realloc(ptr->data, ptr->size, ptr->size + ALLOC_SIZE(parameters->block_size));
+            ptr->data = global_realloc(ptr->data, ptr->size, ptr->size + ALLOC_SIZE(parameters->block_size));
             /* updates the size of current data chunk */
             ptr->size += ALLOC_SIZE(parameters->block_size);
             /* updates current data pointer */
