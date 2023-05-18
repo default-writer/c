@@ -270,5 +270,6 @@
     "workbench.colorTheme": "Yitzchok (rainglow)",
     "editor.fontWeight": "normal"
   },
-  "editor.tabSize": 2
+  "editor.tabSize": 2,
+  "workbench.editorLargeFileConfirmation": 16
 }
