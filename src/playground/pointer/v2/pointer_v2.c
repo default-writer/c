@@ -84,7 +84,7 @@ static void pointer_gc(void);
 static struct pointer* pointer_alloc_internal(u64 size, enum type type);
 static void pointer_realloc_internal(struct pointer* ptr, u64 size);
 static void pointer_free_internal(struct pointer* ptr);
-static void pointer_list_free_internal(struct list_data** current);
+static void pointer_gc_internal(struct list_data** current);
 static struct pointer* list_alloc_internal(void);
 static void list_free_internal(struct pointer* ptr);
 static void file_close_internal(struct pointer* ptr);
@@ -119,7 +119,7 @@ static void pointer_free_internal(struct pointer* ptr) {
     }
 }
 
-static void pointer_list_free_internal(struct list_data** current) {
+static void pointer_gc_internal(struct list_data** current) {
     u64 ptr = 0;
     while ((ptr = (u64)list->pop(current)) != 0) {
         pointer_list_free(ptr);
@@ -139,7 +139,7 @@ static struct pointer* list_alloc_internal(void) {
 static void list_free_internal(struct pointer* ptr) {
     if (ptr->data != 0 && ptr->size != 0) {
         struct list_handler* handler = ptr->data;
-        pointer_list_free_internal(&handler->list);
+        pointer_gc_internal(&handler->list);
         list->destroy(&handler->list);
     }
 }
@@ -218,7 +218,7 @@ void pointer_destroy(void) {
 
 #ifdef USE_GC
 static void pointer_gc(void) {
-    pointer_list_free_internal(&base->gc);
+    pointer_gc_internal(&base->gc);
 }
 #endif
 
@@ -336,14 +336,9 @@ static u64 pointer_list_pop(u64 ptr) {
     return data;
 }
 
-static struct pointer* pointer_alloc(void) {
-    struct pointer* ptr = pointer_alloc_internal(0, TYPE_PTR);
-    return ptr;
-}
-
 static u64 pointer_pointer_alloc(void) {
     u64 data = 0;
-    struct pointer* ptr = pointer_alloc();
+    struct pointer* ptr = pointer_alloc_internal(0, TYPE_PTR);
     data = vm->write(&base->vm, ptr);
 #ifdef USE_GC
     list->push(&base->gc, (void*)data);

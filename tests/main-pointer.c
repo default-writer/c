@@ -1,7 +1,7 @@
 #include "common/alloc.h"
 #include "list-micro/data.h"
 #include "playground/brain/brain.h"
-#include "playground/hashtable/hashtable.h"
+#include "playground/hashtable/v2/hashtable_v2.h"
 #include "playground/pointer/pointer.h"
 #include <rexo/include/rexo.h>
 
@@ -38,10 +38,10 @@ RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tea
 RX_TEST_CASE(myTestSuite, test_list_push_list_peek_list_pop, .fixture = test_fixture) {
     u64 list_ptr = pointer->list_alloc();
     const char* source = "Hello, world!";
-    u64 size = strlen(source);
-    char* dest = _list_alloc(size + 1);
-    memcpy(dest, source, size + 1); /* NOLINT */
-    for (u64 i = 0; i < size; i++) {
+    u64 size = strlen(source) + 1;
+    char* dest = _list_alloc(size);
+    memcpy(dest, source, size); /* NOLINT */
+    for (u64 i = 0; i < size - 1; i++) {
         char* ptr = dest + i;
         char* tmp = ptr + 1;
         char ch = *tmp;
@@ -50,8 +50,8 @@ RX_TEST_CASE(myTestSuite, test_list_push_list_peek_list_pop, .fixture = test_fix
         *tmp = ch;
         pointer->list_push(list_ptr, data);
     }
-    char* buffer = _list_alloc(size + 1);
-    for (u64 i = 0; i < size; i++) {
+    char* buffer = _list_alloc(size);
+    for (u64 i = 0; i < size - 1; i++) {
         u64 ch0 = pointer->list_peek(list_ptr);
         const char* data = pointer->unsafe(ch0);
         *(buffer + i) = *data;
@@ -64,18 +64,18 @@ RX_TEST_CASE(myTestSuite, test_list_push_list_peek_list_pop, .fixture = test_fix
 #endif
     }
     printf("%s\n", buffer);
-    _list_free(buffer, size + 1);
-    _list_free(dest, size + 1);
+    _list_free(buffer, size);
+    _list_free(dest, size);
     pointer->list_free(list_ptr);
 }
 
 /* test init */
 RX_TEST_CASE(myTestSuite, test_list_peek_0, .fixture = test_fixture) {
     const char* source = "Hello, world! A very long string do not fit in 8 bytes.";
-    u64 size = strlen(source);
-    char* dest = _list_alloc(size + 1);
-    memcpy(dest, source, size + 1); /* NOLINT */
-    for (u64 i = 0; i < size; i++) {
+    u64 size = strlen(source) + 1;
+    char* dest = _list_alloc(size);
+    memcpy(dest, source, size); /* NOLINT */
+    for (u64 i = 0; i < size - 1; i++) {
         char* ptr = dest + i;
         char* tmp = ptr + 1;
         char ch = *tmp;
@@ -84,8 +84,8 @@ RX_TEST_CASE(myTestSuite, test_list_peek_0, .fixture = test_fixture) {
         *tmp = ch;
         pointer->push(data);
     }
-    char* buffer = _list_alloc(size + 1);
-    for (u64 i = 0; i < size; i++) {
+    char* buffer = _list_alloc(size);
+    for (u64 i = 0; i < size - 1; i++) {
         const char* data = pointer->unsafe(i + 1);
         *(buffer + i) = *data;
 #ifndef USE_GC
@@ -93,8 +93,8 @@ RX_TEST_CASE(myTestSuite, test_list_peek_0, .fixture = test_fixture) {
 #endif
     }
     printf("%s\n", buffer);
-    _list_free(buffer, size + 1);
-    _list_free(dest, size + 1);
+    _list_free(buffer, size);
+    _list_free(dest, size);
 }
 
 int main(int argc, char** argv) {

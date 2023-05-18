@@ -1,7 +1,7 @@
 #include "common/alloc.h"
 #include "list-micro/data.h"
 #include "playground/brain/brain.h"
-#include "playground/hashtable/hashtable.h"
+#include "playground/hashtable/v2/hashtable_v2.h"
 #include "playground/pointer/pointer.h"
 #include <rexo/include/rexo.h>
 

@@ -8,8 +8,10 @@
 struct hashtable_data { /* table entry: */
     struct hashtable_data* next; /* next entry in chain */
     char* key; /* defined name */
+    u64 key_size; /* key size */
     /* char* value; replacement text */
     void* value;
+    u64 value_size; /* value size */
 };
 
 struct hashtable {

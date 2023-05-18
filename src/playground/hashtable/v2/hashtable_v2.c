@@ -4,6 +4,10 @@
 #include "playground/list/v2/list_v2.h"
 #include "playground/pointer/pointer.h"
 
+/* public */
+u32 default_hash(const char* source);
+
+/* private */
 static u64 lcg_state = 0;
 
 static void hashtable_free_internal(struct hashtable_data* ptr);
@@ -107,11 +111,22 @@ u32 murmurhash3(const char* source) {
         switch (len) {
         case 3:
             hash ^= (u32)(*(buf + 2) << 16); /* NOLINT */
-        case 2:
+#if !defined(__GNUC__)
+            FALL_THROUGH;
+#endif
+        /* fall through */ case 2:
             hash ^= (u32)(*(buf + 1) << 8);
+#if !defined(__GNUC__)
+            FALL_THROUGH;
+#endif
+            /* fall through */
         case 1:
             hash ^= (u32)(*buf);
             hash *= m;
+#if !defined(__GNUC__)
+            FALL_THROUGH;
+#endif
+            /* fall through */
         default:
             break;
         }
@@ -167,10 +182,16 @@ static void hashtable_free_internal(struct hashtable_data* ptr) {
 
 static struct hashtable_data* hashtable_alloc(const char* key, void* value) {
     u32 hash = hash_func(key) % hashtable_size;
+    if (key == 0) {
+        return hashtable[hash];
+    }
     struct hashtable_data* next = hashtable[hash];
     struct hashtable_data* node = _list_alloc(sizeof(struct hashtable_data));
-    char* node_key = _list_alloc(strlen(key) + 1); /* +1 for ’\0’ */
-    /* char* node_value = _list_alloc(strlen(value) + 1); +1 for ’\0’ */
+    u64 size = strlen(key) + 1;
+#ifdef USE_MEMORY_DEBUG_INFO
+    node->key_size = size;
+#endif
+    char* node_key = _list_alloc(size); /* +1 for ’\0’ */
     strcpy(node_key, key); /* NOLINT */
     node->key = node_key;
     node->value = value;
@@ -180,7 +201,11 @@ static struct hashtable_data* hashtable_alloc(const char* key, void* value) {
 }
 
 static void hashtable_item_free_internal(struct hashtable_data* ptr) {
-    _list_free(ptr->key, 0);
+    u64 size = 0;
+#ifdef USE_MEMORY_DEBUG_INFO
+    size = ptr->key_size;
+#endif
+    _list_free(ptr->key, size);
     _list_free(ptr, sizeof(struct hashtable_data));
 }
 
@@ -251,7 +276,7 @@ static void hashtable_set(const char* key, void* value) {
 
 /* public */
 
-const struct hashtable hashtable_definition = {
+const struct hashtable hashtable_definition_v2 = {
     .init = hashtable_init,
     .destroy = hashtable_destroy,
     .alloc = hashtable_alloc,

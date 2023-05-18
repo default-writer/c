@@ -14,7 +14,7 @@ static void list_init(void) {
 }
 
 static void list_destroy(void) {
-    _list_free(base, 0);
+    _list_free(base, MAX_MEMORY);
     ptr = 0;
     base = 0;
 }
