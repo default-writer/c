@@ -456,7 +456,7 @@ RX_TEST_CASE(myTestSuite, test_list_push, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(myTestSuite, test_freeglobal_free, .fixture = test_fixture) {
+RX_TEST_CASE(myTestSuite, test_free, .fixture = test_fixture) {
     u64 list_ptr = pointer->list_alloc();
     pointer->list_free(list_ptr);
     pointer->list_free(list_ptr);
