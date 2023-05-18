@@ -43,7 +43,7 @@ static void* memory_ref_alloc(u64 size) {
     }
     ptr->size -= size;
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("  c.: 0x%016llx .0x%016llx >  %16lld !  %16lld\n", (u64)ptr, (u64)ptr->cache, ptr->address_space, ptr->size); /* NOLINT */
+    printf("  c.: %016llx . %016llx > %16lld ! %16lld\n", (u64)ptr, (u64)ptr->cache, ptr->address_space, ptr->size); /* NOLINT */
 #endif
     data = memory_ref_ptr_internal(ptr);
     data = (u64*)data + ptr->size;
@@ -92,7 +92,7 @@ static struct memory_ref* memory_alloc_internal(u64 size) {
     if (ptr != 0) {
         ptr->next = memory_ref_ptr_internal(next_ptr);
 #ifdef USE_MEMORY_DEBUG_INFO
-        printf("  p.: 0x%016llx .0x%016llx .0x%016llx\n", (u64)data, (u64)ptr->prev, (u64)ptr->next);
+        printf("  p.: %016llx . %016llx . %016llx\n", (u64)data, (u64)ptr->prev, (u64)ptr->next);
 #endif
     }
     ptr = next_ptr;

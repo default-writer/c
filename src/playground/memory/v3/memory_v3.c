@@ -46,7 +46,7 @@ static void memory_destroy(void) {
 static void* memory_alloc(u64 size) {
     ptr = memory_alloc_internal(ptr - 1, ptr, size);
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("  0+: 0x%016llx >0x%016llx\n", (u64)ptr, (u64)(*ptr));
+    printf("  0+: %016llx > %016llx\n", (u64)ptr, (u64)(*ptr));
 #endif
     return ptr;
 }
@@ -64,7 +64,7 @@ static void memory_free(void* data, u64 size) {
     CLEAN(size)
     size = offset(data);
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("  0-: 0x%016llx !  %16lld\n", (u64)last, size);
+    printf("  0-: %016llx ! %16lld\n", (u64)last, size);
 #endif
 #ifdef USE_MEMORY_CLEANUP
     memset(head - 2, 0, (size + 3) * sizeof(void*)); /* NOLINT */

@@ -174,7 +174,7 @@ static void list_print_head(struct list_data** current) {
     /* gets data pointer */
     void** data = ptr->data[0];
     /* prints data value */
-    printf("   *: 0x%016llx >0x%016llx\n", (u64)ptr->data[0], (u64)*data);
+    printf("   *: %016llx > %016llx\n", (u64)ptr->data[0], (u64)*data);
 }
 
 /* prints all stack trace to output */
@@ -192,7 +192,7 @@ static void list_print(struct list_data** current) {
             /* until we found root element (element with no previous element reference) */
             do {
                 /* debug output of memory dump */
-                printf("%4d: 0x%016llx *0x%016llx\n", ++i, (u64)data, (u64)*data);
+                printf("%4d: %016llx * %016llx\n", ++i, (u64)data, (u64)*data);
             } while (ptr->data != --data /*root*/);
             /* gets next data pointer */
             ptr = list_next(ptr);

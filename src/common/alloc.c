@@ -19,7 +19,7 @@ void* global_alloc(u64 size) {
 #endif
 #ifdef USE_MEMORY_DEBUG_INFO
         total_alloc += size;
-        printf("   +: 0x%016llx !  %16lld .   %16lld :  %16lld\n", (u64)ptr, size, total_free, total_alloc);
+        printf("   +: %016llx ! %16lld . %16lld : %16lld\n", (u64)ptr, size, total_free, total_alloc);
 #endif
     }
     return ptr;
@@ -29,7 +29,7 @@ void global_free(void* ptr, u64 size) {
     if (ptr != 0) {
 #ifdef USE_MEMORY_DEBUG_INFO
         total_free += size;
-        printf("   -: 0x%016llx !  %16lld .   %16lld :  %16lld\n", (u64)ptr, size, total_free, total_alloc);
+        printf("   -: %016llx ! %16lld . %16lld : %16lld\n", (u64)ptr, size, total_free, total_alloc);
 #endif
 #ifdef USE_MEMORY_CLEANUP
         memset((void*)(u8*)ptr, 0, size); /* NOLINT */
@@ -44,7 +44,7 @@ void global_free(void* ptr, u64 size) {
 
 #ifdef USE_MEMORY_DEBUG_INFO
 void global_statistics(void) {
-    printf("    .   %16lld :  %16lld\n", total_free, total_alloc);
+    printf("   !: %16lld : %16lld\n", total_free, total_alloc);
 }
 #endif
 

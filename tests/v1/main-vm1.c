@@ -56,5 +56,6 @@ int main(int argc, char** argv) {
     pointer->free(argv_ptr);
 #endif
     pointer->destroy();
+    global_statistics();
     return 0;
 }

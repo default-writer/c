@@ -30,7 +30,7 @@ void memory_list_push(struct memory_ref* ptr) {
 #ifdef USE_MEMORY_DEBUG_INFO
     struct memory_ref* tmp_ptr = *current;
     while (tmp_ptr != 0) {
-        printf("  c.: 0x%016llx .0x%016llx >  %16lld !  %16lld\n", (u64)tmp_ptr, (u64)tmp_ptr->cache, tmp_ptr->address_space, tmp_ptr->size); /* NOLINT */
+        printf("  c.: %016llx . %016llx > %16lld ! %16lld\n", (u64)tmp_ptr, (u64)tmp_ptr->cache, tmp_ptr->address_space, tmp_ptr->size); /* NOLINT */
         tmp_ptr = tmp_ptr->cache;
     }
 #endif

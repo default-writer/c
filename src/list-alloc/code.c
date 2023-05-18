@@ -131,7 +131,7 @@ static void list_print_head(struct list_data** current) {
     /* gets data pointer */
     void** data = ptr->data[0];
     /* prints data value */
-    printf("   *: 0x%016llx >0x%016llx\n", (u64)ptr->data[0], (u64)*data);
+    printf("   *: %016llx > %016llx\n", (u64)ptr->data[0], (u64)*data);
 }
 
 /* prints all stack trace to output */
@@ -147,7 +147,7 @@ static void list_print(struct list_data** current) {
         do {
             ++i;
             /* debug output of memory dump */
-            printf("%4d: 0x%016llx *0x%016llx\n", i, (u64)end, (u64)ptr->data[i]);
+            printf("%4d: %016llx * %016llx\n", i, (u64)end, (u64)ptr->data[i]);
             /* remember temporary's prior pointer value to temporary */
             end = ptr->data + i;
         } while (ptr->data[0] != end /*root*/);

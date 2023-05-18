@@ -527,7 +527,7 @@ static void pointer_printf(u64 ptr) {
     const char* data = data_ptr->data;
 #ifdef USE_MEMORY_DEBUG_INFO
     void* ptr_data = data_ptr->data;
-    printf("   .: 0x%016llx >0x%016llx\n", (u64)data_ptr, (u64)ptr_data);
+    printf("   .: %016llx > %016llx\n", (u64)data_ptr, (u64)ptr_data);
 #endif
     if (data != 0) {
         puts(data);
@@ -537,12 +537,12 @@ static void pointer_printf(u64 ptr) {
 #ifdef USE_MEMORY_DEBUG_INFO
 static void pointer_dump(struct pointer* ptr) {
     if (ptr != 0 && ptr->data != 0) {
-        printf("   ^: 0x%016llx >0x%016llx\n", (u64)ptr, (u64)ptr->data);
+        printf("   ^: %016llx > %016llx\n", (u64)ptr, (u64)ptr->data);
     }
 }
 static void pointer_dump_ref(struct pointer* ptr) {
     if (ptr != 0 && ptr->data != 0) {
-        printf("   &: 0x%016llx >0x%016llx\n", (u64)ptr, (u64)ptr->data);
+        printf("   &: %016llx > %016llx\n", (u64)ptr, (u64)ptr->data);
     }
 }
 #endif

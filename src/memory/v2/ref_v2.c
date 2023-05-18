@@ -59,7 +59,7 @@ static void* memory_ref_alloc(u64 size) {
         struct memory_ref* tmp = global_alloc(_size + size * sizeof(void*));
         ref_ptr->next = memory_ref_ptr(tmp);
 #ifdef USE_MEMORY_DEBUG_INFO
-        printf("  p.: 0x%016llx .0x%016llx .0x%016llx\n", (u64)data, (u64)ref_ptr->prev, (u64)ref_ptr->next);
+        printf("  p.: %016llx . %016llx . %016llx\n", (u64)data, (u64)ref_ptr->prev, (u64)ref_ptr->next);
 #endif
         struct memory_ref* _current = memory_ref_ref(ref_ptr->next);
         _current->size = size;
@@ -76,7 +76,7 @@ static void memory_ref_free(void* data) {
         u64 size = memory_ref_size(data) * sizeof(void*);
         global_free(ptr, size + _size);
 #ifdef USE_MEMORY_DEBUG_INFO
-        printf("  0-: 0x%016llx !  %16lld\n", (u64)data, size);
+        printf("  0-: %016llx ! %16lld\n", (u64)data, size);
 #endif
     }
 }
