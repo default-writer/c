@@ -522,7 +522,7 @@ RX_TEST_CASE(myTestSuite, test_improper_use_of_different_calls, .fixture = test_
 }
 
 /* test init */
-RX_TEST_CASE(myTestSuite, test_allocglobal_free, .fixture = test_fixture) {
+RX_TEST_CASE(myTestSuite, test_alloc_free, .fixture = test_fixture) {
     u64 list_ptr = pointer->list_alloc();
     u64 size = pointer->size(list_ptr);
 #ifdef USE_MEMORY_DEBUG_INFO
