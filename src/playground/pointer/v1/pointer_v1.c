@@ -53,8 +53,8 @@ static u64 pointer_peek(void);
 static u64 pointer_pop(void);
 static u64 pointer_alloc(void);
 static void pointer_free(u64 ptr);
-static u64 pointerglobal_alloc(void);
-static void pointerglobal_free(u64 ptr);
+static u64 pointer_list_alloc(void);
+static void pointer_list_free(u64 ptr);
 static void pointer_list_push(u64 ptr, u64 data_ptr);
 static u64 pointer_list_peek(u64 ptr);
 static u64 pointer_list_pop(u64 ptr);
@@ -184,7 +184,7 @@ void pointer_destroy(void) {
 static void pointer_gc_internal(struct list_data** current) {
     u64 ptr = 0;
     while ((ptr = (u64)list->pop(current)) != 0) {
-        pointerglobal_free(ptr);
+        pointer_list_free(ptr);
         pointer_close_file(ptr);
         struct pointer* data_ptr = vm->free(&base->vm, ptr);
         pointer_free_internal(data_ptr);
@@ -230,7 +230,7 @@ static u64 pointer_pop(void) {
     return (u64)list->pop(&base->list);
 }
 
-static u64 pointerglobal_alloc(void) {
+static u64 pointer_list_alloc(void) {
     u64 data = 0;
     struct pointer* ptr = pointer_alloc_internal(sizeof(struct list_handler), TYPE_LIST);
     struct list_handler* handler = ptr->data;
@@ -242,7 +242,7 @@ static u64 pointerglobal_alloc(void) {
     return data;
 }
 
-static void pointerglobal_free(u64 ptr) {
+static void pointer_list_free(u64 ptr) {
     if (ptr != 0) {
         struct pointer* list_ptr = vm->read(&base->vm, ptr);
         if (list_ptr == 0) {
@@ -562,8 +562,8 @@ static void pointer_put_char(u64 ptr, char value) {
 const struct pointer_methods pointer_methods_definition = {
     .init = pointer_init,
     .destroy = pointer_destroy,
-    .list_alloc = pointerglobal_alloc,
-    .list_free = pointerglobal_free,
+    .list_alloc = pointer_list_alloc,
+    .list_free = pointer_list_free,
     .list_peek = pointer_list_peek,
     .list_pop = pointer_list_pop,
     .list_push = pointer_list_push,
