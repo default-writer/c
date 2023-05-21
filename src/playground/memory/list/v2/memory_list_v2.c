@@ -1,11 +1,14 @@
 #include "memory_list_v2.h"
 #include "common/alloc.h"
 
+/* macros */
+#define PTR_SIZE sizeof(void*) /* size of a pointer */
+
 /* private */
 static struct memory_ref** current;
 
 void memory_list_init(void) {
-    current = global_alloc(sizeof(void*));
+    current = global_alloc(PTR_SIZE);
 }
 
 struct memory_ref* memory_list_peek(void) {
@@ -28,7 +31,7 @@ struct memory_ref* memory_list_pop(void) {
 }
 
 void memory_list_destroy(void) {
-    global_free(current, sizeof(void*));
+    global_free(current, PTR_SIZE);
 #ifdef USE_MEMORY_CLEANUP
     current = 0;
 #endif

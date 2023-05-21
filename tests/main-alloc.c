@@ -4,10 +4,10 @@
 #include "list-alloc/data.h"
 #include <rexo/include/rexo.h>
 
-/* defines N-element collection*/
-#define N_ELEMENTS 1024
-/* buffer size in bytes = size of 8 items */
-#define ALLOC_SIZE(n) ((n) + 1) * sizeof(void*)
+/* macros */
+#define N_ELEMENTS 1024 /* defines N-element collection*/
+#define PTR_SIZE sizeof(void*) /* size of a pointer */
+#define ALLOC_SIZE(n) (((n) + 1) * PTR_SIZE) /* buffer size in bytes = size of 8 items */
 
 /* list definition */
 extern const struct list list_alloc_definition;

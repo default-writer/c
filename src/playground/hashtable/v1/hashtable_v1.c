@@ -4,7 +4,10 @@
 #include "playground/list/v2/list_v2.h"
 #include "playground/pointer/pointer.h"
 
+/* macros */
 #define DEFAULT_SIZE 101
+#define PTR_SIZE sizeof(void*) /* size of a pointer */
+#define ALLOC_SIZE(size) (size * PTR_SIZE)
 
 /* public */
 u32 default_hash(const char* source);
@@ -145,14 +148,14 @@ static void hashtable_init(u64 size) {
     if (size > 0) {
         hashtable_size = size;
     }
-    hashtable = global_alloc(hashtable_size * sizeof(void*));
+    hashtable = global_alloc(ALLOC_SIZE(hashtable_size));
 }
 
 static void hashtable_destroy(void) {
     for (u64 i = 0; i < hashtable_size; i++) {
         hashtable_free(hashtable[i]);
     }
-    global_free(hashtable, hashtable_size * sizeof(void*));
+    global_free(hashtable, ALLOC_SIZE(hashtable_size));
 }
 
 static struct hashtable_data* hashtable_extract_internal(struct hashtable_data* head, const struct hashtable_data* ptr) {

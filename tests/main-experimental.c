@@ -4,17 +4,19 @@
 #include "list-experimental/data.h"
 #include <rexo/include/rexo.h>
 
-/* defines N-element collection*/
-#define N_ELEMENTS 1024
-/* buffer size in bytes = size of 8 items */
-#define ALLOC_SIZE(n) ((n) + 1) * sizeof(void*)
+/* macros */
+#define N_ELEMENTS 1024 /* defines N-element collection*/
+#define PTR_SIZE sizeof(void*) /* size of a pointer */
+#define ALLOC_SIZE(n) (((n) + 1) * PTR_SIZE) /* buffer size in bytes = size of 8 items */
 
 /* list definition */
 extern const struct list list_experimental_definition;
 /* list parameters definition */
 extern struct list_parameters list_parameters_definition;
 
+/* initializes the new context's head element */
 void list_init(struct list_data** current);
+/* destroys the memory stack */
 void list_destroy(struct list_data** current);
 
 /* allocates memory pointer for list object */

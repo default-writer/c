@@ -1,7 +1,10 @@
 #include "common/alloc.h"
 #include "playground/memory/api/memory.h"
 
+/* macros */
 #define DEFAULT_SIZE 0x0 /* 0 */
+#define PTR_SIZE sizeof(void*) /* size of a pointer */
+#define ALLOC_SIZE(size) ((size + 3) * PTR_SIZE)
 
 /* global allocated memory */
 static void* memory = 0;
@@ -14,7 +17,7 @@ static void* memory_alloc(u64 size);
 static void memory_free(void* data, u64 size);
 
 static void* memory_alloc_internal(void** next, void* prev, u64 size) {
-    void** tmp = global_alloc((size + 3) * sizeof(void*)); //
+    void** tmp = global_alloc(ALLOC_SIZE(size)); //
     next = *next;
     *next = tmp;
 
@@ -38,7 +41,7 @@ static void memory_init(void) {
 }
 
 static void memory_destroy(void) {
-    global_free(memory, (DEFAULT_SIZE + 3) * sizeof(void*));
+    global_free(memory, ALLOC_SIZE(DEFAULT_SIZE));
     memory = 0;
     ptr = 0;
 }
@@ -67,9 +70,9 @@ static void memory_free(void* data, u64 size) {
     printf("  0-: %016llx ! %16lld\n", (u64)last, size);
 #endif
 #ifdef USE_MEMORY_CLEANUP
-    memset(head - 2, 0, (size + 3) * sizeof(void*)); /* NOLINT */
+    memset(head - 2, 0, ALLOC_SIZE(size)); /* NOLINT */
 #endif
-    global_free(head - 2, (size + 3) * sizeof(void*));
+    global_free(head - 2, ALLOC_SIZE(size));
 }
 
 const union memory_allocator_api memory_allocator_v3 = {

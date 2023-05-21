@@ -50,6 +50,9 @@
 /* allocating blocks will move down on the allocation level and split (allocated lvl -> cached lvl-1) */
 /* freeing blocks will join the neighbour to the right and move up on the levels (freed lvl -> cached lvl+1) */
 
+/* macros */
+#define PTR_SIZE sizeof(void*) /* size of a pointer */
+
 /* list definition */
 extern const struct list list_micro_definition;
 
@@ -58,7 +61,7 @@ static const struct list* list = &list_micro_definition;
 static struct list_data** cache;
 
 void memory_list_init(void) {
-    cache = global_alloc(sizeof(void*));
+    cache = global_alloc(PTR_SIZE);
     list->init(cache);
 }
 
@@ -76,7 +79,7 @@ void* memory_list_pop(void) {
 
 void memory_list_destroy(void) {
     list->destroy(cache);
-    global_free(cache, sizeof(void*));
+    global_free(cache, PTR_SIZE);
 #ifdef USE_MEMORY_CLEANUP
     cache = 0;
 #endif

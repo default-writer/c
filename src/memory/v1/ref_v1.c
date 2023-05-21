@@ -1,10 +1,12 @@
 #include "memory/api/v1/ref_v1.h"
 #include "common/alloc.h"
 
-/* declaration */
+/* macros */
+#define PTR_SIZE sizeof(void*) /* size of a pointer */
+#define MEMORY_REF_SIZE sizeof(struct memory_ref)
+#define ALLOC_SIZE(size) (MEMORY_REF_SIZE + size * PTR_SIZE)
 
-/* size of a memory block to allocate */
-static const size_t _size = sizeof(struct memory_ref);
+/* declaration */
 
 static struct memory_ref* memory;
 
@@ -52,7 +54,7 @@ static void* memory_ref_alloc(u64 size) {
     void* ptr = 0;
     if (data != 0) {
         struct memory_ref* ref_ptr = memory_ref_ref(data);
-        struct memory_ref* tmp = global_alloc(_size + size * sizeof(void*));
+        struct memory_ref* tmp = global_alloc(ALLOC_SIZE(size));
         ref_ptr->next = memory_ref_ptr(tmp);
 #ifdef USE_MEMORY_DEBUG_INFO
         printf("  p.: %016llx . %016llx . %016llx\n", (u64)data, (u64)ref_ptr->prev, (u64)ref_ptr->next);
@@ -68,9 +70,9 @@ static void* memory_ref_alloc(u64 size) {
 
 static void memory_ref_free(void* data) {
     if (data != 0) {
-        u8* ptr = (u8*)data - _size;
-        u64 size = memory_ref_size(data) * sizeof(void*);
-        global_free(ptr, size + _size);
+        u8* ptr = (u8*)data - MEMORY_REF_SIZE;
+        u64 size = memory_ref_size(data);
+        global_free(ptr, ALLOC_SIZE(size));
 #ifdef USE_MEMORY_DEBUG_INFO
         printf("  0-: %016llx ! %16lld\n", (u64)data, size);
 #endif
@@ -78,7 +80,7 @@ static void memory_ref_free(void* data) {
 }
 
 static void memory_ref_init(void) {
-    memory = global_alloc(_size);
+    memory = global_alloc(MEMORY_REF_SIZE);
     ++memory;
     current = (void*)memory;
     current = memory_ref_alloc(0);
@@ -86,8 +88,8 @@ static void memory_ref_init(void) {
 
 static void memory_ref_destroy(void) {
     --memory;
-    global_free(memory_ref_ref(memory->next), _size);
-    global_free(memory, _size);
+    global_free(memory_ref_ref(memory->next), MEMORY_REF_SIZE);
+    global_free(memory, MEMORY_REF_SIZE);
 #ifdef USE_MEMORY_CLEANUP
     memory = 0;
     current = 0;

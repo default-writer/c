@@ -3,6 +3,12 @@
 #include "playground/pointer/pointer.h"
 #include "playground/vm/vm.h"
 
+/* macros */
+#define DEFAULT_SIZE 0x0 /* 0 */
+#define PTR_SIZE sizeof(void*) /* size of a pointer */
+#define VM_DATA_SIZE sizeof(struct vm_data)
+#define ALLOC_SIZE(size) (size * PTR_SIZE)
+
 /* list definition */
 
 /* private */
@@ -67,8 +73,8 @@ static void vm_enumerator_destroy_internal(void);
 #endif
 
 static struct vm_data* vm_init_internal(u64 size, u64 address_space) {
-    struct vm_data* vm = global_alloc(sizeof(struct vm_data));
-    vm->bp = global_alloc(size * sizeof(void*));
+    struct vm_data* vm = global_alloc(VM_DATA_SIZE);
+    vm->bp = global_alloc(ALLOC_SIZE(size));
     vm->sp = vm->bp;
     vm->address_space = address_space;
     vm->size = size;
@@ -146,7 +152,7 @@ static void vm_enumerator_destroy_internal(void) {
 
 static void vm_init(struct vm_data** current, u64 size) {
 #ifndef USE_GC
-    cache = global_alloc(sizeof(void*));
+    cache = global_alloc(PTR_SIZE);
     list->init(cache);
 #endif
     *current = vm_init_internal(size, 0);
@@ -155,7 +161,7 @@ static void vm_init(struct vm_data** current, u64 size) {
 static void vm_destroy(struct vm_data** current) {
 #ifndef USE_GC
     list->destroy(cache);
-    global_free(cache, sizeof(void*));
+    global_free(cache, PTR_SIZE);
 #ifdef USE_MEMORY_CLEANUP
     cache = 0;
 #endif
@@ -166,8 +172,8 @@ static void vm_destroy(struct vm_data** current) {
     }
     while (vm != 0) {
         struct vm_data* next = vm->next;
-        global_free(vm->bp, vm->size * sizeof(void*));
-        global_free(vm, sizeof(struct vm_data));
+        global_free(vm->bp, ALLOC_SIZE(vm->size));
+        global_free(vm, VM_DATA_SIZE);
         vm = next;
     }
 }

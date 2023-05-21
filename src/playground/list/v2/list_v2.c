@@ -1,6 +1,11 @@
 #include "playground/list/v2/list_v2.h"
 #include "common/alloc.h"
 
+/* macros */
+#define DEFAULT_SIZE 101
+#define PTR_SIZE sizeof(void*) /* size of a pointer */
+#define ALLOC_SIZE(size) (size * PTR_SIZE)
+
 /*private */
 struct list_data {
     void** ptr;
@@ -17,7 +22,7 @@ static void* list_peek(struct list_data* pointer);
 
 static struct list_data* list_alloc(u64 size) {
     struct list_data* ptr = global_alloc(sizeof(struct list_data));
-    ptr->base = global_alloc(size * sizeof(void*));
+    ptr->base = global_alloc(ALLOC_SIZE(size));
     ptr->ptr = ptr->base;
     ptr->max = ptr->base + size;
     ptr->size = size;
@@ -25,7 +30,7 @@ static struct list_data* list_alloc(u64 size) {
 }
 
 static void list_free(struct list_data* pointer) {
-    global_free(pointer->base, pointer->size * sizeof(void*));
+    global_free(pointer->base, ALLOC_SIZE(pointer->size));
     pointer->base = 0;
     pointer->ptr = 0;
     pointer->max = 0;
