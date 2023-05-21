@@ -430,6 +430,7 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
 /* test init */
 RX_TEST_CASE(myTestSuite, test_list_push, .fixture = test_fixture) {
     u64 list_ptr = pointer->list_alloc();
+    RX_ASSERT(list_ptr != 0);
 #ifndef USE_GC
     pointer->list_free(list_ptr);
 #else
@@ -522,6 +523,7 @@ RX_TEST_CASE(myTestSuite, test_improper_use_of_different_calls, .fixture = test_
 RX_TEST_CASE(myTestSuite, test_alloc_free, .fixture = test_fixture) {
     u64 list_ptr = pointer->list_alloc();
     u64 size = pointer->size(list_ptr);
+    RX_ASSERT(size == 8);
     u64 pattern_ptr = pointer->alloc();
     pointer->list_free(pattern_ptr);
     pointer->list_free(list_ptr);
