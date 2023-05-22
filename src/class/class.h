@@ -21,6 +21,11 @@ typedef const _class* class;
 
 struct object { };
 
+struct class {
+    object_typeinfo (*create)(typeinfo t);
+    void (*destroy)(object_typeinfo base);
+};
+
 struct typeinfo {
     const size_t size;
     const char* name;
@@ -29,11 +34,6 @@ struct typeinfo {
 struct object_typeinfo {
     const object ptr;
     const typeinfo typeinfo;
-};
-
-struct class {
-    object_typeinfo (*create)(typeinfo t);
-    void (*destroy)(object_typeinfo base);
 };
 
 #endif /* _CLASS_H_ */
