@@ -13,14 +13,17 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 option(CONFIG_MEMORY_DEBUG_INFO "Enables memory debug information")
 option(CONFIG_MEMORY_CLEANUP "Enables memory cleanup")
 option(CONFIG_MEMORY_ALLOC "Enables memory allocator")
+option(CONFIG_MEMCPY "Enables use of memcpy")
 
 set(CONFIG_MEMORY_DEBUG_INFO ON CACHE BOOL "Enable debug information?")
 set(CONFIG_MEMORY_CLEANUP ON CACHE BOOL "Enable memory cleanup?")
 set(CONFIG_MEMORY_ALLOC OFF CACHE BOOL "Enable memory allocator?")
+set(CONFIG_MEMCPY OFF CACHE BOOL "Enable use of memcpy?")
 
 set(CONFIG_MEMORY_DEBUG_INFO ON)
 set(CONFIG_MEMORY_CLEANUP ON)
 set(CONFIG_MEMORY_ALLOC OFF)
+set(CONFIG_MEMCPY OFF)
 
 set(STANDARD
     -save-temps
@@ -94,6 +97,12 @@ if(CONFIG_MEMORY_ALLOC)
     message(STATUS "Configure with memory allocator")
     add_compile_definitions(CONFIG_MEMORY_ALLOC)
     add_definitions(-DCONFIG_MEMORY_ALLOC)
+endif()
+
+if(CONFIG_MEMCPY)
+    message(STATUS "Configure with use of memcpy")
+    add_compile_definitions(CONFIG_MEMCPY)
+    add_definitions(-DCONFIG_MEMCPY)
 endif()
 
 if(CODE_SANITIZER)

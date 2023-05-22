@@ -28,6 +28,10 @@
           "type": "BOOL",
           "value": "OFF"
         },
+        "CONFIG_MEMCPY": {
+          "type": "BOOL",
+          "value": "OFF"
+        },
         "CODE_SANITIZER": {
           "type": "BOOL",
           "value": "ON"

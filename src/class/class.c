@@ -10,12 +10,27 @@ const _class class_methods = {
 };
 
 static object_typeinfo class_create(typeinfo t) {
-    object_typeinfo bp = global_alloc(sizeof(_object_typeinfo));
+    object_typeinfo bp;
+#ifndef USE_MEMCPY
+    typedef union {
+        _object_typeinfo typeinfo;
+        struct {
+            object ptr;
+            typeinfo typeinfo;
+        } set;
+    }* writeable_object_typeinfo;
+    writeable_object_typeinfo type = global_alloc(sizeof(_object_typeinfo));
+    type->set.ptr = global_alloc(t->size);
+    type->set.typeinfo = t;
+    bp = &type->typeinfo;
+#else
+    bp = global_alloc(sizeof(_object_typeinfo));
     _object_typeinfo ti = {
         .ptr = global_alloc(t->size),
         .typeinfo = t
     };
     memcpy(bp, &ti, sizeof(_object_typeinfo));
+#endif
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("creating type %s of size %ld (+ %ld)\n", t->name, t->size, sizeof(_object_typeinfo));
 #endif

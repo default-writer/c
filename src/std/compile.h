@@ -31,4 +31,10 @@
 #endif
 #endif
 
+#ifdef CONFIG_MEMCPY
+#if CONFIG_MEMCPY == 1
+#define USE_MEMCPY
+#endif
+#endif
+
 #endif /* _STD_COMPILE_H_ */
