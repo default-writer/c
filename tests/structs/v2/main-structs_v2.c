@@ -1,4 +1,5 @@
 #include "class/class.h"
+#include "common/alloc.h"
 
 extern const _class class_definition;
 
@@ -34,5 +35,8 @@ int main(void) {
 
     instance->destroy(class_object);
 
+#ifdef USE_MEMORY_DEBUG_INFO
+    global_statistics();
+#endif
     return 0;
 }

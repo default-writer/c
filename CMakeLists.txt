@@ -289,6 +289,7 @@ add_executable(main-structs2 ${TEST_STRUCTS2_SOURCE})
 
 target_link_libraries(hashtable1 PRIVATE list-lcg)
 target_link_libraries(hashtable2 PRIVATE list-lcg)
+target_link_libraries(list-class PRIVATE list-common)
 target_link_libraries(list-alloc PRIVATE list-parameters)
 target_link_libraries(list-pointer1 PRIVATE list-common)
 target_link_libraries(list-pointer2 PRIVATE list-common)
