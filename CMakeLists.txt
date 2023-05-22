@@ -203,6 +203,7 @@ set(LIB_MEMORY_LIST3_SOURCE src/playground/memory/list/v3/memory_list_v3.c)
 set(LIB_MEMORY_REF1_SOURCE src/memory/v1/ref_v1.c)
 set(LIB_MEMORY_REF2_SOURCE src/memory/v2/ref_v2.c)
 set(LIB_MEMORY_REF3_SOURCE src/memory/v3/ref_v3.c)
+set(LIB_CLASS_SOURCE src/class/class.c)
 
 set(MAIN_STANDARD_SOURCE tests/main.c ${LIB_STANDARD_SOURCE})
 set(MAIN_LIGHT_SOURCE tests/main-light.c ${LIB_LIGHT_SOURCE})
@@ -250,6 +251,7 @@ add_library(list-alloc STATIC ${LIB_ALLOC_SOURCE})
 add_library(list-experimental STATIC ${LIB_EXPERIMENTAL_SOURCE})
 add_library(list-class1 STATIC ${LIB_CLASS1_SOURCE})
 add_library(list-class2 STATIC ${LIB_CLASS2_SOURCE})
+add_library(list-class STATIC ${LIB_CLASS_SOURCE})
 add_library(list-brain STATIC ${LIB_BRAIN_SOURCE})
 add_library(list-pointer1 STATIC ${LIB_POINTER1_SOURCE})
 add_library(list-pointer2 STATIC ${LIB_POINTER2_SOURCE})
@@ -315,6 +317,7 @@ target_link_libraries(main-hashtable1 PRIVATE list-pointer1 list-micro vm-v1 has
 target_link_libraries(main-hashtable2 PRIVATE list-pointer2 list-micro hashtable2)
 target_link_libraries(main-vm1 PRIVATE list-pointer1 list-micro vm-v1)
 target_link_libraries(main-vm2 PRIVATE list-pointer2 list-micro)
+target_link_libraries(main-structs2 PRIVATE list-class)
 
 configure_file(all_english_words.txt ${CMAKE_BINARY_DIR}/all_english_words.txt COPYONLY)
 
