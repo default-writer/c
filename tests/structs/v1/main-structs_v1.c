@@ -30,14 +30,18 @@ const struct base base_methods = {
 };
 
 object base_create(const typeinfo t) {
+#ifdef USE_MEMORY_DEBUG_INFO
     printf("creating type %s of size %ld\n", t->name, t->size);
+#endif
     void* b = calloc(1, t->size);
     object _bz = b;
     return _bz;
 }
 
 void base_destroy(const object_typeinfo b) {
+#ifdef USE_MEMORY_DEBUG_INFO
     printf("deleting type %s of size %ld\n", b->typeinfo->name, b->typeinfo->size);
+#endif
     free(b->ptr);
 }
 
