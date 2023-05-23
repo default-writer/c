@@ -49,14 +49,15 @@ void base_destroy(const object_typeinfo b) {
 
 int main(void) {
 
-    typedef struct base_B _B;
+    typedef struct B _B;
     typedef _B* B;
 
-    struct base_A {
+    struct A {
         u64 counter_a;
     };
-    struct base_B {
-        struct base_A base;
+
+    struct B {
+        struct A base;
         u64 counter_b;
     };
 
