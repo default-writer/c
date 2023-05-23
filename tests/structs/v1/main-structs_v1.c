@@ -16,12 +16,16 @@ struct base {
 
 struct typeinfo {
     const size_t size;
+#ifdef USE_MEMORY_DEBUG_INFO
     const char* name;
+#endif
 };
 
 struct object_typeinfo {
     const object ptr;
+#ifdef USE_MEMORY_DEBUG_INFO
     const typeinfo typeinfo;
+#endif
 };
 
 const struct base base_methods = {
@@ -33,9 +37,7 @@ object base_create(const typeinfo t) {
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("creating type %s of size %ld\n", t->name, t->size);
 #endif
-    void* b = calloc(1, t->size);
-    object _bz = b;
-    return _bz;
+    return (object)calloc(1, t->size);
 }
 
 void base_destroy(const object_typeinfo b) {
@@ -47,8 +49,8 @@ void base_destroy(const object_typeinfo b) {
 
 int main(void) {
 
-    typedef struct base_B B_struct;
-    typedef struct base_B* B;
+    typedef struct base_B _B;
+    typedef _B* B;
 
     struct base_A {
         u64 counter_a;
@@ -59,8 +61,10 @@ int main(void) {
     };
 
     struct typeinfo b_info = {
-        .size = sizeof(B_struct),
+        .size = sizeof(_B),
+#ifdef USE_MEMORY_DEBUG_INFO
         .name = "B"
+#endif
     };
 
     const struct base* base = &base_methods;
@@ -71,7 +75,9 @@ int main(void) {
     printf("counter b: 0x%0llx\n", b->counter_b);
     const struct object_typeinfo bp = {
         .ptr = (object)b,
+#ifdef USE_MEMORY_DEBUG_INFO
         .typeinfo = &b_info
+#endif
     };
     base->destroy(&bp);
     return 0;
