@@ -1,3 +1,4 @@
+#include "common/alloc.h"
 #include "std/common.h"
 
 typedef struct object* object;
@@ -23,9 +24,7 @@ struct typeinfo {
 
 struct object_typeinfo {
     const object ptr;
-#ifdef USE_MEMORY_DEBUG_INFO
     const typeinfo typeinfo;
-#endif
 };
 
 const struct base base_methods = {
@@ -34,17 +33,18 @@ const struct base base_methods = {
 };
 
 object base_create(const typeinfo t) {
+    object obj = (object)global_alloc(t->size);
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("creating type %s of size %ld\n", t->name, t->size);
 #endif
-    return (object)calloc(1, t->size);
+    return obj;
 }
 
 void base_destroy(const object_typeinfo b) {
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("deleting type %s of size %ld\n", b->typeinfo->name, b->typeinfo->size);
 #endif
-    free(b->ptr);
+    global_free(b->ptr, b->typeinfo->size);
 }
 
 int main(void) {
@@ -69,16 +69,22 @@ int main(void) {
 
     const struct base* base = &base_methods;
     const B b = (B)base->create(&b_info);
+
     b->base.counter_a = 1;
     b->counter_b = 2;
+
     printf("counter a: 0x%0llx\n", b->base.counter_a);
     printf("counter b: 0x%0llx\n", b->counter_b);
+
     const struct object_typeinfo bp = {
         .ptr = (object)b,
 #ifdef USE_MEMORY_DEBUG_INFO
         .typeinfo = &b_info
 #endif
     };
+
     base->destroy(&bp);
+
+    global_statistics();
     return 0;
 }

@@ -327,6 +327,7 @@ target_link_libraries(main-hashtable1 PRIVATE list-pointer1 list-micro vm-v1 has
 target_link_libraries(main-hashtable2 PRIVATE list-pointer2 list-micro hashtable2)
 target_link_libraries(main-vm1 PRIVATE list-pointer1 list-micro vm-v1)
 target_link_libraries(main-vm2 PRIVATE list-pointer2 list-micro)
+target_link_libraries(main-structs1 PRIVATE list-common)
 target_link_libraries(main-structs2 PRIVATE list-class)
 
 configure_file(all_english_words.txt ${CMAKE_BINARY_DIR}/all_english_words.txt COPYONLY)
