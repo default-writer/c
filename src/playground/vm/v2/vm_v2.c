@@ -4,8 +4,9 @@
 #include "playground/vm/vm.h"
 
 /* macros */
-#define DEFAULT_SIZE 101
+#define DEFAULT_SIZE 0x0 /* 0 */
 #define PTR_SIZE sizeof(void*) /* size of a pointer */
+#define VM_DATA_SIZE sizeof(struct vm_data)
 #define ALLOC_SIZE(size) (size * PTR_SIZE)
 
 /* list definition */
@@ -24,7 +25,7 @@ struct vm_data {
     struct pointer** bp; /* base pointer */
     struct vm_data* prev;
     struct vm_data* next;
-    u64 address_space;
+    u64 offset;
     u64 size;
 };
 
@@ -60,7 +61,7 @@ static struct pointer* vm_data_enumerator_next_ref(void);
 
 /* internal */
 
-static struct vm_data* vm_init_internal(u64 size, u64 address_space);
+static struct vm_data* vm_init_internal(u64 size, u64 offset);
 static void** vm_read_internal(struct vm_data** current, u64 address);
 static u64 vm_alloc_internal(struct vm_data** current);
 static void* to_real_address_internal(struct vm_data* vm, u64 address);
@@ -70,11 +71,11 @@ static void vm_enumerator_init_internal(struct vm_data* vm);
 static void vm_enumerator_destroy_internal(void);
 #endif
 
-static struct vm_data* vm_init_internal(u64 size, u64 address_space) {
-    struct vm_data* vm = global_alloc(sizeof(struct vm_data));
+static struct vm_data* vm_init_internal(u64 size, u64 offset) {
+    struct vm_data* vm = global_alloc(VM_DATA_SIZE);
     vm->bp = global_alloc(ALLOC_SIZE(size));
     vm->sp = vm->bp;
-    vm->address_space = address_space;
+    vm->offset = offset;
     vm->size = size;
     return vm;
 }
@@ -83,8 +84,14 @@ static void** vm_read_internal(struct vm_data** current, u64 address) {
     void** ptr = 0;
     if (address != 0) {
         struct vm_data* vm = *current;
-        while (address <= vm->address_space) {
+        while (address <= vm->offset) {
             vm = vm->prev;
+        }
+        while (vm->next != 0 && (address > vm->offset + vm->size)) {
+            vm = vm->next;
+        }
+        if (address > vm->offset + vm->size) {
+            return 0;
         }
         ptr = to_real_address_internal(vm, address);
     }
@@ -97,9 +104,9 @@ static u64 vm_alloc_internal(struct vm_data** current) {
     struct pointer** ptr;
     ptr = vm->sp;
     address = to_virtual_address_internal(vm, ptr);
-    while (address > vm->address_space + vm->size) {
+    while (address > vm->offset + vm->size) {
         if (vm->next == 0) {
-            vm->next = vm_init_internal(vm->size, vm->address_space + vm->size);
+            vm->next = vm_init_internal(vm->size, vm->offset + vm->size);
             vm->next->prev = vm;
         }
         vm = vm->next;
@@ -115,11 +122,11 @@ static u64 vm_alloc_internal(struct vm_data** current) {
 }
 
 static u64 to_virtual_address_internal(const struct vm_data* vm, struct pointer** ptr) {
-    return (u64)(ptr - vm->bp) + vm->address_space + 1;
+    return ((u64)(ptr - vm->bp) + 1) + vm->offset;
 }
 
 static void* to_real_address_internal(struct vm_data* vm, u64 address) {
-    return vm->bp + address - vm->address_space - 1;
+    return vm->bp + (address - 1) - vm->offset;
 }
 
 #ifdef USE_MEMORY_DEBUG_INFO

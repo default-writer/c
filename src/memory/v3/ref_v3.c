@@ -46,7 +46,7 @@ static void* memory_ref_alloc(u64 size) {
     }
     ptr->size -= size;
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("  c.: %016llx . %016llx > %16lld ! %16lld\n", (u64)ptr, (u64)ptr->cache, ptr->address_space, ptr->size); /* NOLINT */
+    printf("  c.: %016llx . %016llx > %16lld ! %16lld\n", (u64)ptr, (u64)ptr->cache, ptr->offset, ptr->size); /* NOLINT */
 #endif
     data = memory_ref_ptr_internal(ptr);
     data = (u64*)data + ptr->size;
@@ -56,7 +56,7 @@ static void* memory_ref_alloc(u64 size) {
 static void memory_ref_free_internal(void* data) {
     if (data != 0) {
         struct memory_ref* ptr = data;
-        global_free(ptr, ALLOC_SIZE(ptr->address_space));
+        global_free(ptr, ALLOC_SIZE(ptr->offset));
     }
 }
 
@@ -66,7 +66,7 @@ static void memory_ref_init(u64 size) {
     if (size > 0) {
         memory_ptr->next = global_alloc(ALLOC_SIZE(size));
         memory_ptr->next->size = size;
-        memory_ptr->next->address_space = size;
+        memory_ptr->next->offset = size;
         memory_list_push(memory_ptr->next);
     }
 }
@@ -90,7 +90,7 @@ static struct memory_ref* memory_alloc_internal(u64 size) {
 #endif
     struct memory_ref* next_ptr = global_alloc(ALLOC_SIZE(size));
     next_ptr->size = size;
-    next_ptr->address_space = size;
+    next_ptr->offset = size;
     next_ptr->prev = memory_ref_ptr_internal(ptr);
     if (ptr != 0) {
         ptr->next = memory_ref_ptr_internal(next_ptr);
@@ -108,7 +108,7 @@ static void memory_ref_free(void* data) {
         struct memory_ref* ptr = memory_list_peek();
         const void* current = memory_ref_ptr_internal(ptr);
         if (data == current) {
-            ptr->size = ptr->address_space;
+            ptr->size = ptr->offset;
         }
     }
 }

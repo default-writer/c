@@ -158,7 +158,7 @@ RX_TEAR_DOWN(test_tear_down) {
 RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tear_down);
 
 /* test init */
-RX_TEST_CASE(myTestSuite, test_empty_list_count_equals_0, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_empty_list_count_equals_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
     /* ensures counter is initialized to 0 */
@@ -166,7 +166,7 @@ RX_TEST_CASE(myTestSuite, test_empty_list_count_equals_0, .fixture = test_fixtur
 }
 
 /* test peek */
-RX_TEST_CASE(myTestSuite, test_standard_list_peek_does_not_changes_stack, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_standard_list_peek_does_not_changes_stack, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
     /* declares pointer to list functions definitions */
@@ -190,7 +190,7 @@ RX_TEST_CASE(myTestSuite, test_standard_list_peek_does_not_changes_stack, .fixtu
 }
 
 /* test pop from 0 pointer */
-RX_TEST_CASE(myTestSuite, test_empty_list_pop_equals_0, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_empty_list_pop_equals_0, .fixture = test_fixture) {
     struct list_data* ctx = 0;
     /* declares pointer to list functions definitions */
     const struct list* list = &list_definition;
@@ -201,7 +201,7 @@ RX_TEST_CASE(myTestSuite, test_empty_list_pop_equals_0, .fixture = test_fixture)
 }
 
 /* test pop from 0 pointer */
-RX_TEST_CASE(myTestSuite, test_empty_list_peek_equals_0, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_empty_list_peek_equals_0, .fixture = test_fixture) {
     struct list_data* ctx = 0;
     /* declares pointer to list functions definitions */
     const struct list* list = &list_definition;
@@ -212,7 +212,7 @@ RX_TEST_CASE(myTestSuite, test_empty_list_peek_equals_0, .fixture = test_fixture
 }
 
 /* test alloc */
-RX_TEST_CASE(myTestSuite, test_alloc_count_eq_1, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_alloc_count_eq_1, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
     /* declares pointer to list functions definitions */
@@ -227,7 +227,7 @@ RX_TEST_CASE(myTestSuite, test_alloc_count_eq_1, .fixture = test_fixture) {
     RX_ASSERT(*ctx != 0);
 }
 
-RX_TEST_CASE(myTestSuite, test_alloc_payload, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_alloc_payload, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
     /* declares pointer to list functions definitions */
@@ -244,7 +244,7 @@ RX_TEST_CASE(myTestSuite, test_alloc_payload, .fixture = test_fixture) {
     RX_ASSERT(head->data == payload);
 }
 
-RX_TEST_CASE(myTestSuite, test_alloc_pop_count_0, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_alloc_pop_count_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
     /* declares pointer to list functions definitions */
@@ -262,7 +262,7 @@ RX_TEST_CASE(myTestSuite, test_alloc_pop_count_0, .fixture = test_fixture) {
     RX_ASSERT(head == 0);
 }
 
-RX_TEST_CASE(myTestSuite, test_alloc_pop_payload, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_alloc_pop_payload, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
     /* declares pointer to list functions definitions */
@@ -283,7 +283,7 @@ RX_TEST_CASE(myTestSuite, test_alloc_pop_payload, .fixture = test_fixture) {
     RX_ASSERT(head_payload == payload);
 }
 
-RX_TEST_CASE(myTestSuite, test_alloc_and_prev_next_equals_0, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_alloc_and_prev_next_equals_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
     /* declares pointer to list functions definitions */
@@ -314,7 +314,7 @@ RX_TEST_CASE(myTestSuite, test_alloc_and_prev_next_equals_0, .fixture = test_fix
 #endif
 }
 
-RX_TEST_CASE(myTestSuite, test_free_head, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_free_head, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
     /* declares pointer to list functions definitions */
@@ -333,7 +333,7 @@ RX_TEST_CASE(myTestSuite, test_free_head, .fixture = test_fixture) {
 }
 
 /* test peek */
-RX_TEST_CASE(myTestSuite, test_list_peek_is_zero, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_list_peek_is_zero, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
     /* declares pointer to list functions definitions */
@@ -345,7 +345,7 @@ RX_TEST_CASE(myTestSuite, test_list_peek_is_zero, .fixture = test_fixture) {
 }
 
 /* test pop */
-RX_TEST_CASE(myTestSuite, test_list_pop_is_zero, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_list_pop_is_zero, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
     /* declares pointer to list functions definitions */
