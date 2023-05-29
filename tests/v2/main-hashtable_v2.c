@@ -486,6 +486,8 @@ RX_TEST_CASE(myTestSuite, test_improper_use_of_different_calls, .fixture = test_
         idx3 = pointer->copy(list_ptr);
         pointer->file_free(data_ptr);
         pointer->file_free(list_ptr);
+        pointer->list_peek(list_ptr);
+        pointer->list_push(list_ptr, f_ptr);
         pointer->file_free(f_ptr);
         pointer->list_push(f_ptr, f_ptr);
         pointer->list_push(list_ptr, f_ptr);
@@ -514,6 +516,8 @@ RX_TEST_CASE(myTestSuite, test_improper_use_of_different_calls, .fixture = test_
 #endif
     }
     pointer->file_free(f_ptr);
+    pointer->list_peek(f_ptr);
+    pointer->list_push(f_ptr, f_ptr);
     pointer->file_free(f_ptr);
     pointer->list_free(f_ptr);
 #ifndef USE_GC
