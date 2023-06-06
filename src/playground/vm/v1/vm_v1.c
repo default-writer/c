@@ -88,12 +88,6 @@ static void** vm_read_internal(struct vm_data** current, u64 address) {
         while (address <= vm->offset) {
             vm = vm->prev;
         }
-        while (vm->next != 0 && (address > vm->offset + vm->size)) {
-            vm = vm->next;
-        }
-        if (address > vm->offset + vm->size) {
-            return 0;
-        }
         ptr = to_real_address_internal(vm, address);
     }
     return ptr;
