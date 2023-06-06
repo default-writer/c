@@ -39,14 +39,14 @@ RX_TEAR_DOWN(test_tear_down) {
 RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tear_down);
 
 /* test init */
-RX_TEST_CASE(myTestSuite, test_hashtable_init_destroy, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_hashtable_init_destroy, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     hashtable->destroy();
     RX_ASSERT(0 == 0);
 }
 
 /* test init */
-RX_TEST_CASE(myTestSuite, test_hashtable_init_setup_destroy, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_hashtable_init_setup_destroy, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     hashtable->setup(murmurhash3);
     hashtable->destroy();
@@ -54,7 +54,7 @@ RX_TEST_CASE(myTestSuite, test_hashtable_init_setup_destroy, .fixture = test_fix
 }
 
 /* test init */
-RX_TEST_CASE(myTestSuite, test_hashtable_alloc_free, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_hashtable_alloc_free, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     const u64 size = 2;
     char* key = global_alloc(size);
@@ -70,7 +70,7 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_free, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(myTestSuite, test_hashtable_alloc_0_free, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_hashtable_alloc_0_free, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     const u64 size = 5;
     char* value = global_alloc(size);
@@ -83,7 +83,7 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_0_free, .fixture = test_fixture) 
 }
 
 /* test init */
-RX_TEST_CASE(myTestSuite, test_hashtable_alloc_5, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_hashtable_alloc_5, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     const u64 size = 5;
     char* key = global_alloc(size);
@@ -99,7 +99,7 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_5, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(myTestSuite, test_hashtable_alloc_4, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_hashtable_alloc_4, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     const u64 size = 4;
     char* key = global_alloc(size);
@@ -115,7 +115,7 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_4, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(myTestSuite, test_hashtable_alloc_3, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_hashtable_alloc_3, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     const u64 size = 3;
     char* key = global_alloc(size);
@@ -131,7 +131,7 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_3, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(myTestSuite, test_hashtable_alloc_2, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_hashtable_alloc_2, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     const u64 size = 2;
     char* key = global_alloc(size);
@@ -146,7 +146,7 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_2, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(myTestSuite, test_hashtable_alloc_alloc, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_hashtable_alloc_alloc, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     const u64 size = 2;
     char* key = global_alloc(size);
@@ -162,7 +162,7 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_alloc, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(myTestSuite, test_hashtable_alloc_alloc_alloc, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_hashtable_alloc_alloc_alloc, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     const u64 size = 2;
     char* key = global_alloc(size);
@@ -179,7 +179,7 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_alloc_alloc, .fixture = test_fixt
 }
 
 /* test init */
-RX_TEST_CASE(myTestSuite, test_hashtable_alloc_free_alloc, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_hashtable_alloc_free_alloc, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     const u64 size = 2;
     char* key = global_alloc(size);
@@ -196,7 +196,7 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_free_alloc, .fixture = test_fixtu
 }
 
 /* test init */
-RX_TEST_CASE(myTestSuite, test_hashtable_alloc_alloc_free, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_hashtable_alloc_alloc_free, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     const u64 size = 2;
     char* key = global_alloc(size);
@@ -213,7 +213,7 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_alloc_free, .fixture = test_fixtu
 }
 
 /* test init */
-RX_TEST_CASE(myTestSuite, test_hashtable_alloc_free_alloc_free, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_hashtable_alloc_free_alloc_free, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     const u64 size = 2;
     char* key = global_alloc(size);
@@ -231,7 +231,7 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_free_alloc_free, .fixture = test_
 }
 
 /* test init */
-RX_TEST_CASE(myTestSuite, test_hashtable_alloc_alloc_temp_alloc_free_temp_alloc_alloc, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_hashtable_alloc_alloc_temp_alloc_free_temp_alloc_alloc, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     const u64 size = 2;
     char* key = global_alloc(size);
@@ -251,7 +251,7 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_alloc_temp_alloc_free_temp_alloc_
 }
 
 /* test init */
-RX_TEST_CASE(myTestSuite, test_hashtable_alloc_alloc_alloc_temp_alloc_alloc_free_temp, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_hashtable_alloc_alloc_alloc_temp_alloc_alloc_free_temp, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     char* key = global_alloc(6);
     char* key1 = global_alloc(2);
@@ -316,7 +316,7 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_alloc_alloc_temp_alloc_alloc_free
 }
 
 /* test init */
-RX_TEST_CASE(myTestSuite, test_hashtable_alloc_set_get, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_hashtable_alloc_set_get, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     char* key = global_alloc(6);
     char* key1 = global_alloc(2);
@@ -373,7 +373,7 @@ RX_TEST_CASE(myTestSuite, test_hashtable_alloc_set_get, .fixture = test_fixture)
 }
 
 /* test init */
-RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixture) {
     hashtable->init(0xff);
     u64 file_path_ptr = pointer->getcwd();
     u64 file_name_ptr = pointer->load("/all_english_words.txt");
@@ -443,7 +443,7 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable, .fixture = test_
 }
 
 /* test init */
-RX_TEST_CASE(myTestSuite, test_list_push, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_list_push, .fixture = test_fixture) {
     u64 list_ptr = pointer->list_alloc();
     RX_ASSERT(list_ptr != 0);
 #ifndef USE_GC
@@ -454,14 +454,14 @@ RX_TEST_CASE(myTestSuite, test_list_push, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(myTestSuite, test_free, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_free, .fixture = test_fixture) {
     u64 list_ptr = pointer->list_alloc();
     pointer->list_free(list_ptr);
     pointer->list_free(list_ptr);
 }
 
 /* test init */
-RX_TEST_CASE(myTestSuite, test_improper_use_of_different_calls, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_improper_use_of_different_calls, .fixture = test_fixture) {
     u64 idx0 = 0;
     u64 idx1 = 0;
     u64 idx2 = 0;
@@ -539,7 +539,7 @@ RX_TEST_CASE(myTestSuite, test_improper_use_of_different_calls, .fixture = test_
 }
 
 /* test init */
-RX_TEST_CASE(myTestSuite, test_alloc_free, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_alloc_free, .fixture = test_fixture) {
     u64 list_ptr = pointer->list_alloc();
     u64 size = pointer->size(list_ptr);
     RX_ASSERT(size == 8);
@@ -555,7 +555,7 @@ RX_TEST_CASE(myTestSuite, test_alloc_free, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable_default_hash, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable_default_hash, .fixture = test_fixture) {
     hashtable->init(0x3);
     hashtable->setup(default_hash);
     u64 file_path_ptr = pointer->getcwd();
@@ -615,7 +615,7 @@ RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable_default_hash, .fi
 }
 
 /* test init */
-RX_TEST_CASE(myTestSuite, test_load_open_file_unsafe_hashtable_murmurhash3_hash, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable_murmurhash3_hash, .fixture = test_fixture) {
     hashtable->init(0x3);
     hashtable->setup(murmurhash3);
     u64 file_path_ptr = pointer->getcwd();

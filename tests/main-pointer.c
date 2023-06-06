@@ -35,7 +35,7 @@ RX_TEAR_DOWN(test_tear_down) {
 RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tear_down);
 
 /* test init */
-RX_TEST_CASE(myTestSuite, test_list_push_list_peek_list_pop, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_list_push_list_peek_list_pop, .fixture = test_fixture) {
     u64 list_ptr = pointer->list_alloc();
     const char* source = "Hello, world!";
     u64 size = strlen(source) + 1;
@@ -70,7 +70,7 @@ RX_TEST_CASE(myTestSuite, test_list_push_list_peek_list_pop, .fixture = test_fix
 }
 
 /* test init */
-RX_TEST_CASE(myTestSuite, test_list_peek_0, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_list_peek_0, .fixture = test_fixture) {
     const char* source = "Hello, world! A very long string do not fit in 8 bytes.";
     u64 size = strlen(source) + 1;
     char* dest = global_alloc(size);
