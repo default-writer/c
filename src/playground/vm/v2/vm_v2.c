@@ -4,8 +4,9 @@
 #include "playground/vm/vm.h"
 
 /* macros */
-#define DEFAULT_SIZE 101
+#define DEFAULT_SIZE 0x0 /* 0 */
 #define PTR_SIZE sizeof(void*) /* size of a pointer */
+#define VM_DATA_SIZE sizeof(struct vm_data)
 #define ALLOC_SIZE(size) (size * PTR_SIZE)
 
 /* list definition */
@@ -71,7 +72,7 @@ static void vm_enumerator_destroy_internal(void);
 #endif
 
 static struct vm_data* vm_init_internal(u64 size, u64 offset) {
-    struct vm_data* vm = global_alloc(sizeof(struct vm_data));
+    struct vm_data* vm = global_alloc(VM_DATA_SIZE);
     vm->bp = global_alloc(ALLOC_SIZE(size));
     vm->sp = vm->bp;
     vm->offset = offset;
@@ -148,7 +149,7 @@ static void vm_destroy(struct vm_data** current) {
     while (vm != 0) {
         struct vm_data* next = vm->next;
         global_free(vm->bp, ALLOC_SIZE(vm->size));
-        global_free(vm, sizeof(struct vm_data));
+        global_free(vm, VM_DATA_SIZE);
         vm = next;
     }
 }
