@@ -17,7 +17,7 @@ struct memory_ref* memory_list_peek(void) {
 
 void memory_list_push(struct memory_ref* ptr) {
     struct memory_ref* current_ptr = *current;
-    while (current_ptr != 0 && current_ptr->address_space < ptr->address_space) {
+    while (current_ptr != 0 && current_ptr->offset < ptr->offset) {
         current_ptr = current_ptr->cache; /* get next element in a list */
     }
     if (ptr != 0) {
@@ -33,7 +33,7 @@ void memory_list_push(struct memory_ref* ptr) {
 #ifdef USE_MEMORY_DEBUG_INFO
     struct memory_ref* tmp_ptr = *current;
     while (tmp_ptr != 0) {
-        printf("  c.: %016llx . %016llx > %16lld ! %16lld\n", (u64)tmp_ptr, (u64)tmp_ptr->cache, tmp_ptr->address_space, tmp_ptr->size); /* NOLINT */
+        printf("  c.: %016llx . %016llx > %16lld ! %16lld\n", (u64)tmp_ptr, (u64)tmp_ptr->cache, tmp_ptr->offset, tmp_ptr->size); /* NOLINT */
         tmp_ptr = tmp_ptr->cache;
     }
 #endif
