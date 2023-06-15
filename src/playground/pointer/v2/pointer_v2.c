@@ -560,6 +560,7 @@ static void pointer_dump(struct pointer* ptr) {
         printf("   ^: %016llx > %016llx\n", (u64)ptr, (u64)ptr->data);
     }
 }
+
 static void pointer_dump_ref(void** ptr) {
     if (ptr != 0 && *ptr != 0) {
         printf("   &: %016llx > %016llx\n", (u64)ptr, (u64)*ptr);

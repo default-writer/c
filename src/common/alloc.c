@@ -48,13 +48,15 @@ void global_statistics(void) {
 }
 #endif
 
-void* global_realloc(void* ptr, u64 size, u64 new_size) {
-    void* data = 0;
+void* global_realloc(void* old_ptr, u64 size, u64 new_size) {
+    void* ptr = old_ptr;
     if (ptr != 0 && new_size > size) {
+        ptr = realloc(ptr, new_size);
 #ifdef USE_MEMORY_DEBUG_INFO
+        printf("   -: %016llx ! %16lld . %16lld : %16lld\n", (u64)old_ptr, size, total_free, total_alloc);
         total_alloc += new_size - size;
+        printf("   +: %016llx ! %16lld . %16lld : %16lld\n", (u64)ptr, size, total_free, total_alloc);
 #endif
-        data = realloc(ptr, new_size);
     }
-    return data;
+    return ptr;
 }
