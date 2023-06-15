@@ -10,7 +10,7 @@
   },
   "testOnSave.enabled": true,
   "testOnSave.languageId": "c",
-  "testOnSave.testCommand": "./bin/test.sh --args",
+  "testOnSave.testCommand": "./bin/test.sh --args --clean",
   "koverage.coverageFileNames": ["lcov.info"],
   "coverage-gutters.coverageFileNames": ["lcov.info"],
   "coverage-gutters.coverageBaseDir": "coverage",
