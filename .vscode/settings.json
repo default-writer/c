@@ -10,7 +10,7 @@
   },
   "testOnSave.enabled": true,
   "testOnSave.languageId": "c",
-  "testOnSave.testCommand": "./bin/test.sh --args",
+  "testOnSave.testCommand": "./bin/test.sh --args --clean",
   "koverage.coverageFileNames": ["lcov.info"],
   "coverage-gutters.coverageFileNames": ["lcov.info"],
   "coverage-gutters.coverageBaseDir": "coverage",
@@ -91,9 +91,29 @@
   "window.zoomLevel": 0,
   "workbench.editor.enablePreview": true,
   "workbench.colorTheme": "Yitzchok (rainglow)",
-  "workbench.colorCustomizations": {
-    "statusBar.background": "#a47b00",
-    "statusBar.foreground": "#fff"
+  "editor.tokenColorCustomizations": {
+    "textMateRules": [
+      {
+        "scope": "comment",
+        "settings": {
+          "foreground": "#70a870",
+          "fontStyle": "bold"
+        }
+      },
+      {
+        "scope": "comment.block",
+        "settings": {
+          "foreground": "#70a870"
+        }
+      },
+      {
+        "scope": "comment.line",
+        "settings": {
+          "foreground": "#70a870",
+          "fontStyle": "bold"
+        }
+      }
+    ]
   },
   "customPresentationMode.overrides": {
     "editor.fontWeight": "normal",

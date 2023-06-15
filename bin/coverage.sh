@@ -106,12 +106,16 @@ if [ "${clean}" == "--clean" ]; then
     mkdir "${pwd}/coverage"
 fi
 
+cmake=$(get-cmake)
+targets=( $(get-targets) )
+
+default=${target}
+
 for target in ${targets[@]}; do
     rm -f "${pwd}/coverage/${target}.lcov"
 done
 
-cmake=$(get-cmake)
-targets=( $(get-targets) )
+target=${default}
 if [ "${target}" == "--target" ]; then
     for target in ${targets[@]}; do
         if [ "${target}" == "$2" ]; then 

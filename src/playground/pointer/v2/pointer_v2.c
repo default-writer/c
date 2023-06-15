@@ -1,7 +1,7 @@
 #include "common/alloc.h"
 #include "list-micro/data.h"
 #include "playground/pointer/pointer.h"
-#include "playground/vm/vm.h"
+#include "playground/vm/v2/vm_v2.h"
 
 #define DEFAULT_SIZE 0x100
 
@@ -71,8 +71,10 @@ static u64 pointer_file_alloc(u64 file_path_ptr, u64 mode_ptr);
 static u64 pointer_file_read(u64 ptr);
 static void pointer_file_free(u64 ptr);
 static void pointer_printf(u64 ptr);
+#ifdef USE_MEMORY_DEBUG_INFO
 static void pointer_dump(struct pointer* ptr);
-static void pointer_dump_ref(struct pointer* ptr);
+static void pointer_dump_ref(void** ptr);
+#endif
 static void pointer_put_char(u64 ptr, char value);
 
 #ifdef USE_GC
@@ -206,7 +208,6 @@ void pointer_init(u64 size) {
 void pointer_destroy(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
     vm->dump_ref(base->vm);
-    vm->dump(base->vm);
 #endif
 #ifdef USE_GC
     pointer_gc();
@@ -559,9 +560,9 @@ static void pointer_dump(struct pointer* ptr) {
         printf("   ^: %016llx > %016llx\n", (u64)ptr, (u64)ptr->data);
     }
 }
-static void pointer_dump_ref(struct pointer* ptr) {
-    if (ptr != 0 && ptr->data != 0) {
-        printf("   &: %016llx > %016llx\n", (u64)ptr, (u64)ptr->data);
+static void pointer_dump_ref(void** ptr) {
+    if (ptr != 0) {
+        printf("   &: %016llx > %016llx\n", (u64)ptr, (u64)*ptr);
     }
 }
 #endif

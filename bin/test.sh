@@ -36,7 +36,7 @@ case "${install}" in
 
     "--args") # builds and runs with args from .args file
         if [ -f "${pwd}/.args" ]; then args=$(cat "${pwd}/.args"); fi
-        "${pwd}/bin/coverage.sh" $args
+        "${pwd}/bin/coverage.sh" $args ${opts[@]}
         ;;
 
     *)
