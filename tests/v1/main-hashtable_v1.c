@@ -42,7 +42,6 @@ RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tea
 RX_TEST_CASE(tests, test_1_hashtable_init_destroy, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     hashtable->destroy();
-    RX_ASSERT(0 == 0);
 }
 
 /* test init */
@@ -50,7 +49,6 @@ RX_TEST_CASE(tests, test_2_hashtable_init_setup_destroy, .fixture = test_fixture
     hashtable->init(HASHTABLE_SIZE);
     hashtable->setup(murmurhash3);
     hashtable->destroy();
-    RX_ASSERT(0 == 0);
 }
 
 /* test init */
@@ -66,7 +64,6 @@ RX_TEST_CASE(tests, test_3_hashtable_alloc_free, .fixture = test_fixture) {
     hashtable->destroy();
     global_free(key, size);
     global_free(value, size);
-    RX_ASSERT(0 == 0);
 }
 
 /* test init */
@@ -82,7 +79,6 @@ RX_TEST_CASE(tests, test_4_hashtable_alloc_5, .fixture = test_fixture) {
     hashtable->destroy();
     global_free(key, size);
     global_free(value, size);
-    RX_ASSERT(0 == 0);
 }
 
 /* test init */
@@ -98,7 +94,6 @@ RX_TEST_CASE(tests, test_5_hashtable_alloc_4, .fixture = test_fixture) {
     hashtable->destroy();
     global_free(key, size);
     global_free(value, size);
-    RX_ASSERT(0 == 0);
 }
 
 /* test init */
@@ -114,7 +109,6 @@ RX_TEST_CASE(tests, test_6_hashtable_alloc_3, .fixture = test_fixture) {
     hashtable->destroy();
     global_free(key, size);
     global_free(value, size);
-    RX_ASSERT(0 == 0);
 }
 
 /* test init */
@@ -130,7 +124,6 @@ RX_TEST_CASE(tests, test_7_hashtable_alloc_2, .fixture = test_fixture) {
     hashtable->destroy();
     global_free(key, size);
     global_free(value, size);
-    RX_ASSERT(0 == 0);
 }
 
 /* test init */
@@ -148,7 +141,6 @@ RX_TEST_CASE(tests, test_8_hashtable_alloc_alloc, .fixture = test_fixture) {
     hashtable->destroy();
     global_free(key, size);
     global_free(value, size);
-    RX_ASSERT(0 == 0);
 }
 
 /* test init */
@@ -168,7 +160,6 @@ RX_TEST_CASE(tests, test_9_hashtable_alloc_alloc_alloc, .fixture = test_fixture)
     hashtable->destroy();
     global_free(key, size);
     global_free(value, size);
-    RX_ASSERT(0 == 0);
 }
 
 /* test init */
@@ -186,7 +177,6 @@ RX_TEST_CASE(tests, test_10_hashtable_alloc_free_alloc, .fixture = test_fixture)
     hashtable->destroy();
     global_free(key, size);
     global_free(value, size);
-    RX_ASSERT(0 == 0);
 }
 
 /* test init */
@@ -204,7 +194,6 @@ RX_TEST_CASE(tests, test_11_hashtable_alloc_alloc_free, .fixture = test_fixture)
     hashtable->destroy();
     global_free(key, size);
     global_free(value, size);
-    RX_ASSERT(0 == 0);
 }
 
 /* test init */
@@ -222,7 +211,6 @@ RX_TEST_CASE(tests, test_12_hashtable_alloc_free_alloc_free, .fixture = test_fix
     hashtable->destroy();
     global_free(key, size);
     global_free(value, size);
-    RX_ASSERT(0 == 0);
 }
 
 /* test init */
@@ -246,7 +234,6 @@ RX_TEST_CASE(tests, test_13_hashtable_alloc_alloc_temp_alloc_free_temp_alloc_all
     hashtable->destroy();
     global_free(key, size);
     global_free(value, size);
-    RX_ASSERT(0 == 0);
 }
 
 /* test init */
@@ -311,7 +298,6 @@ RX_TEST_CASE(tests, test_14_hashtable_alloc_alloc_alloc_temp_alloc_alloc_free_te
     global_free(key4, 2);
     global_free(key5, 2);
     global_free(value, 2);
-    RX_ASSERT(0 == 0);
 }
 
 /* test init */
@@ -366,7 +352,6 @@ RX_TEST_CASE(tests, test_15_hashtable_alloc_set_get, .fixture = test_fixture) {
     global_free(value2, 2);
     global_free(value3, 2);
     global_free(value, 5);
-    RX_ASSERT(0 == 0);
 }
 
 /* test init */
@@ -675,6 +660,51 @@ RX_TEST_CASE(tests, test_22_load_open_file_unsafe_hashtable_murmurhash3_hash, .f
     pointer->free(file_name_ptr);
     pointer->free(file_path_ptr);
 #endif
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_23_hashtable_alloc_set_get_count, .fixture = test_fixture) {
+    hashtable->init(HASHTABLE_SIZE);
+    char* key1 = global_alloc(2);
+    char* key2 = global_alloc(2);
+    char* key3 = global_alloc(2);
+    char* value1 = global_alloc(2);
+    char* value2 = global_alloc(2);
+    char* value3 = global_alloc(2);
+    memcpy(key1, "1", 2); /* NOLINT */
+    memcpy(key2, "1", 2); /* NOLINT */
+    memcpy(key3, "1", 2); /* NOLINT */
+    memcpy(value1, "a", 2); /* NOLINT */
+    memcpy(value2, "b", 2); /* NOLINT */
+    memcpy(value3, "c", 2); /* NOLINT */
+    struct hashtable_data* values[3] = {
+        hashtable->alloc(key1, value1),
+        hashtable->alloc(key2, value2),
+        hashtable->alloc(key3, value3)
+    };
+    RX_ASSERT(values[0] != 0);
+    RX_ASSERT(values[1] != 0);
+    RX_ASSERT(values[2] != 0);
+    const struct hashtable_data* key_value1 = hashtable->get(key1);
+    RX_ASSERT(key_value1 != 0);
+    RX_ASSERT(strcmp(key_value1->value, value3) == 0);
+    hashtable->set(key1, value2);
+    const struct hashtable_data* key_value2 = hashtable->get(key1);
+    RX_ASSERT(key_value2 != 0);
+    RX_ASSERT(strcmp(key_value2->value, value2) == 0);
+    hashtable->set(key1, value1);
+    const struct hashtable_data* key_value3 = hashtable->get(key1);
+    RX_ASSERT(key_value3 != 0);
+    RX_ASSERT(strcmp(key_value3->value, value1) == 0);
+    u64 count = hashtable->count(key1);
+    RX_ASSERT(count == 3);
+    hashtable->destroy();
+    global_free(key1, 2);
+    global_free(key2, 2);
+    global_free(key3, 2);
+    global_free(value1, 2);
+    global_free(value2, 2);
+    global_free(value3, 2);
 }
 
 int main(int argc, char** argv) {

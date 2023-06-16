@@ -190,11 +190,9 @@ static void vm_destroy(struct vm_data** current) {
 #endif
 #endif
     struct vm_data* vm = *current;
-#ifndef USE_GC
     while (vm->prev != 0) {
         vm = vm->prev;
     }
-#endif
     while (vm != 0) {
         struct vm_data* next = vm->next;
         global_free(vm->bp, ALLOC_SIZE(vm->size));
@@ -207,11 +205,9 @@ static void vm_destroy(struct vm_data** current) {
 #ifdef USE_MEMORY_DEBUG_INFO
 static void vm_dump(struct vm_data** current) {
     struct vm_data* vm_ptr = *current;
-#ifndef USE_GC
     while (vm_ptr->prev != 0) {
         vm_ptr = vm_ptr->prev;
     }
-#endif
     vm_enumerator_init_internal(vm_ptr);
     struct pointer* ptr = 0;
     while ((ptr = vm_data_enumerator_next()) != 0) {
@@ -222,11 +218,9 @@ static void vm_dump(struct vm_data** current) {
 
 static void vm_dump_ref(struct vm_data** current) {
     struct vm_data* vm_ptr = *current;
-#ifndef USE_GC
     while (vm_ptr->prev != 0) {
         vm_ptr = vm_ptr->prev;
     }
-#endif
     vm_enumerator_init_internal(vm_ptr);
     void** ptr = 0;
     while ((ptr = vm_data_enumerator_next_ref()) != 0) {

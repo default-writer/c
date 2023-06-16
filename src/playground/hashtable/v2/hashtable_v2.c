@@ -9,6 +9,15 @@
 #define PTR_SIZE sizeof(void*) /* size of a pointer */
 #define ALLOC_SIZE(size) (size * PTR_SIZE)
 
+struct hashtable_data { /* table entry: */
+    struct hashtable_data* next; /* next entry in chain */
+    char* key; /* defined name */
+    u64 key_size; /* key size */
+    /* char* value; replacement text */
+    void* value;
+    u64 value_size; /* value size */
+};
+
 /* public */
 u32 default_hash(const char* source);
 
@@ -22,6 +31,8 @@ static struct hashtable_data** hashtable; /* pointer table */
 
 static struct hashtable_data* hashtable_alloc(const char* key, void* value);
 static void hashtable_free(struct hashtable_data* ptr);
+static const char* hashtable_key(const struct hashtable_data* ptr);
+static const void* hashtable_data(const struct hashtable_data* ptr);
 static struct hashtable_data* hashtable_find(const char* key);
 static struct hashtable_data* hashtable_value(u32 index);
 static u32 hashtable_get(const char* key);
@@ -220,6 +231,16 @@ static void hashtable_free(struct hashtable_data* ptr) {
     }
 }
 
+static const char* hashtable_key(const struct hashtable_data* ptr) {
+    const char* data = ptr != 0 ? ptr->key : 0;
+    return data;
+}
+
+static const void* hashtable_data(const struct hashtable_data* ptr) {
+    const void* data = ptr != 0 ? ptr->value : 0;
+    return data;
+}
+
 static struct hashtable_data* hashtable_find(const char* key) {
     u32 hash = hashtable_get(key);
     struct hashtable_data* node = hashtable[hash];
@@ -292,5 +313,7 @@ const struct hashtable hashtable_definition_v2 = {
     .count = hashtable_count,
     .value = hashtable_value,
     .set = hashtable_set,
-    .setup = hashtable_setup
+    .setup = hashtable_setup,
+    .key = hashtable_key,
+    .data = hashtable_data
 };

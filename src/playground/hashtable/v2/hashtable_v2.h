@@ -5,14 +5,7 @@
 
 #include "std/common.h"
 
-struct hashtable_data { /* table entry: */
-    struct hashtable_data* next; /* next entry in chain */
-    char* key; /* defined name */
-    u64 key_size; /* key size */
-    /* char* value; replacement text */
-    void* value;
-    u64 value_size; /* value size */
-};
+struct hashtable_data;
 
 struct hashtable {
     void (*init)(u64 size);
@@ -26,6 +19,8 @@ struct hashtable {
     u32 (*count)(const char* key);
     void (*set)(const char* key, void* value);
     void (*setup)(u32 (*function)(const char* source));
+    const char* (*key)(const struct hashtable_data* node);
+    const void* (*data)(const struct hashtable_data* node);
 };
 
 u32 default_hash(const char* source);
