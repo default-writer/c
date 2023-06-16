@@ -206,6 +206,18 @@ RX_TEST_CASE(tests, test_load_open_file_close_file, .fixture = test_fixture) {
 }
 
 /* test init */
+RX_TEST_CASE(tests, test_file_read_invalid_type, .fixture = test_fixture) {
+    u64 list_ptr = pointer->list_alloc();
+    u64 data_ptr = pointer->file_read(list_ptr);
+    pointer->list_free(data_ptr);
+    pointer->file_free(list_ptr);
+    pointer->list_free(list_ptr);
+#ifndef USE_GC
+    pointer->free(data_ptr);
+#endif
+}
+
+/* test init */
 RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixture) {
     u64 file_path_ptr = pointer->getcwd();
     u64 file_name_ptr = pointer->load("/all_english_words.txt");
