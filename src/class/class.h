@@ -8,16 +8,15 @@ struct class;
 struct typeinfo;
 struct object_typeinfo;
 
-typedef struct object _object;
-typedef struct typeinfo _typeinfo;
-typedef struct object_typeinfo _object_typeinfo;
+typedef struct object struct_object;
+typedef struct typeinfo struct_typeinfo;
+typedef struct object_typeinfo struct_object_typeinfo;
+typedef struct class struct_class;
 
-typedef _object* object;
-typedef _typeinfo* typeinfo;
-typedef _object_typeinfo* object_typeinfo;
-
-typedef struct class _class;
-typedef const _class* class;
+typedef struct_object* object;
+typedef struct_typeinfo* typeinfo;
+typedef struct_object_typeinfo* object_typeinfo;
+typedef struct_class* class;
 
 struct object { };
 

@@ -1,25 +1,27 @@
 #include "class/class.h"
 #include "common/alloc.h"
 
-extern const _class class_definition;
+extern struct_class class_definition;
 
 const class instance = &class_definition;
 
 int main(void) {
-    typedef struct B _B;
-    typedef _B* B;
+    typedef struct A struct_A;
+
+    typedef struct B struct_B;
+    typedef struct_B* B;
 
     struct A {
         u64 counter_a;
     };
 
     struct B {
-        struct A base;
+        struct_A base;
         u64 counter_b;
     };
 
-    _typeinfo b_typeinfo = {
-        .size = sizeof(_B),
+    struct_typeinfo b_typeinfo = {
+        .size = sizeof(struct_B),
         .name = "B"
     };
 

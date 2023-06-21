@@ -49,9 +49,9 @@ static void _delete(struct class_data* class) {
 /* initializes the new context's head element */
 static struct class_data* class_new(struct list_data* ptr) {
     /* creates emtpy data chunk */
-    struct class_data* _class = _new();
-    _class->list = ptr;
-    return _class;
+    struct class_data* struct_class = _new();
+    struct_class->list = ptr;
+    return struct_class;
 }
 
 /* destroys the memory stack */
