@@ -27,7 +27,9 @@ struct class {
 
 struct typeinfo {
     const size_t size;
+#ifdef USE_MEMORY_DEBUG_INFO
     const char* name;
+#endif
 };
 
 struct object_typeinfo {

@@ -22,7 +22,9 @@ int main(void) {
 
     struct_typeinfo b_typeinfo = {
         .size = sizeof(struct_B),
+#ifdef USE_MEMORY_DEBUG_INFO
         .name = "B"
+#endif
     };
 
     object_typeinfo class_object = instance->create(&b_typeinfo);
