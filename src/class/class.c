@@ -4,11 +4,6 @@
 static object_typeinfo class_create(typeinfo t);
 static void class_destroy(object_typeinfo b);
 
-const struct_class class_methods = {
-    .create = class_create,
-    .destroy = class_destroy
-};
-
 static object_typeinfo class_create(typeinfo t) {
     object_typeinfo bp;
 #ifndef USE_MEMCPY
