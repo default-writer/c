@@ -10,7 +10,7 @@
 typedef struct B {
     const A a;
     const u64 counter;
-} const *B, struct_B;
+} const* B;
 
 typedef struct interface_B struct_interface_B;
 typedef struct_interface_B* interface_B;

@@ -6,22 +6,19 @@ extern struct_class class_definition;
 const class instance = &class_definition;
 
 int main(void) {
-    typedef struct A struct_A;
-
-    typedef struct B struct_B;
-    typedef struct_B* B;
+    typedef struct B* B;
 
     struct A {
         u64 counter_a;
     };
 
     struct B {
-        struct_A base;
+        struct A base;
         u64 counter_b;
     };
 
     struct_typeinfo b_typeinfo = {
-        .size = sizeof(struct_B),
+        .size = sizeof(struct B),
 #ifdef USE_MEMORY_DEBUG_INFO
         .name = "B"
 #endif
