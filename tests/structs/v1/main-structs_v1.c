@@ -5,14 +5,14 @@ typedef struct object* object;
 typedef const struct typeinfo* typeinfo;
 typedef const struct object_typeinfo* object_typeinfo;
 
-object base_create(const typeinfo t);
-void base_destroy(const object_typeinfo b);
+object base_create(const typeinfo ti);
+void base_destroy(const object_typeinfo ptr);
 
 struct object { };
 
 struct base {
-    object (*create)(const typeinfo t);
-    void (*destroy)(const object_typeinfo base);
+    object (*create)(const typeinfo ti);
+    void (*destroy)(const object_typeinfo ptr);
 };
 
 struct typeinfo {
@@ -23,7 +23,7 @@ struct typeinfo {
 };
 
 struct object_typeinfo {
-    const object ptr;
+    const object object;
     const typeinfo typeinfo;
 };
 
@@ -40,11 +40,11 @@ object base_create(const typeinfo t) {
     return obj;
 }
 
-void base_destroy(const object_typeinfo b) {
+void base_destroy(const object_typeinfo ptr) {
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("deleting type %s of size %ld\n", b->typeinfo->name, b->typeinfo->size);
+    printf("deleting type %s of size %ld\n", ptr->typeinfo->name, ptr->typeinfo->size);
 #endif
-    global_free(b->ptr, b->typeinfo->size);
+    global_free(ptr->object, ptr->typeinfo->size);
 }
 
 int main(void) {
@@ -61,7 +61,7 @@ int main(void) {
         u64 counter_b;
     };
 
-    struct typeinfo b_info = {
+    struct typeinfo ti = {
         .size = sizeof(_B),
 #ifdef USE_MEMORY_DEBUG_INFO
         .name = "B"
@@ -69,7 +69,7 @@ int main(void) {
     };
 
     const struct base* base = &base_methods;
-    const B b = (B)base->create(&b_info);
+    const B b = (B)base->create(&ti);
 
     b->base.counter_a = 1;
     b->counter_b = 2;
@@ -77,14 +77,14 @@ int main(void) {
     printf("counter a: 0x%0llx\n", b->base.counter_a);
     printf("counter b: 0x%0llx\n", b->counter_b);
 
-    const struct object_typeinfo bp = {
-        .ptr = (object)b,
+    const struct object_typeinfo obj = {
+        .object = (object)b,
 #ifdef USE_MEMORY_DEBUG_INFO
-        .typeinfo = &b_info
+        .typeinfo = &ti
 #endif
     };
 
-    base->destroy(&bp);
+    base->destroy(&obj);
 
     global_statistics();
     return 0;

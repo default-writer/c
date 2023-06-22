@@ -1,43 +1,41 @@
 #include "class/class.h"
 #include "common/alloc.h"
 
-static object_typeinfo class_create(typeinfo t);
-static void class_destroy(object_typeinfo b);
+static object_typeinfo class_create(typeinfo ti);
+static void class_destroy(object_typeinfo ptr);
 
-static object_typeinfo class_create(typeinfo t) {
-    object_typeinfo bp;
+typedef struct writeable_object_typeinfo {
+    object object;
+    typeinfo typeinfo;
+}* writeable_object_typeinfo;
+
+static object_typeinfo class_create(typeinfo ti) {
+    object_typeinfo ptr;
 #ifndef USE_MEMCPY
-    typedef union {
-        struct_object_typeinfo typeinfo;
-        struct {
-            object ptr;
-            typeinfo typeinfo;
-        } set;
-    }* writeable_object_typeinfo;
     writeable_object_typeinfo type = global_alloc(sizeof(struct_object_typeinfo));
-    type->set.ptr = global_alloc(t->size);
-    type->set.typeinfo = t;
-    bp = &type->typeinfo;
+    type->object = global_alloc(ti->size);
+    type->typeinfo = ti;
+    ptr = (object_typeinfo)type;
 #else
-    bp = global_alloc(sizeof(_object_typeinfo));
-    struct_object_typeinfo ti = {
-        .ptr = global_alloc(t->size),
-        .typeinfo = t
+    ptr = global_alloc(sizeof(object_typeinfo));
+    struct_object_typeinfo object_ti = {
+        .object = global_alloc(t->size),
+        .typeinfo = ti
     };
-    memcpy(bp, &ti, sizeof(_object_typeinfo));
+    memcpy(ptr, &object_ti, sizeof(object_typeinfo));
 #endif
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("creating type %s of size %ld (+ %ld)\n", t->name, t->size, sizeof(struct_object_typeinfo));
+    printf("creating type %s of size %ld (+ %ld)\n", ti->name, ti->size, sizeof(struct_object_typeinfo));
 #endif
-    return bp;
+    return ptr;
 }
 
-static void class_destroy(object_typeinfo b) {
+static void class_destroy(object_typeinfo ptr) {
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("deleting type %s of size %ld (+ %ld)\n", b->typeinfo->name, b->typeinfo->size, sizeof(struct_object_typeinfo));
+    printf("deleting type %s of size %ld (+ %ld)\n", ptr->typeinfo->name, ptr->typeinfo->size, sizeof(struct_object_typeinfo));
 #endif
-    global_free(b->ptr, b->typeinfo->size);
-    global_free(b, sizeof(struct_object_typeinfo));
+    global_free(ptr->object, ptr->typeinfo->size);
+    global_free(ptr, sizeof(struct_object_typeinfo));
 }
 
 const struct_class class_definition = {

@@ -20,11 +20,6 @@ typedef struct_class* class;
 
 struct object { };
 
-struct class {
-    object_typeinfo (*create)(typeinfo t);
-    void (*destroy)(object_typeinfo base);
-};
-
 struct typeinfo {
     const size_t size;
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -32,8 +27,13 @@ struct typeinfo {
 #endif
 };
 
+struct class {
+    object_typeinfo (*create)(typeinfo ti);
+    void (*destroy)(object_typeinfo ptr);
+};
+
 struct object_typeinfo {
-    const object ptr;
+    const object object;
     const typeinfo typeinfo;
 };
 

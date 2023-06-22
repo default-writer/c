@@ -29,7 +29,7 @@ int main(void) {
 
     object_typeinfo class_object = instance->create(&b_typeinfo);
 
-    B b = (B)class_object->ptr;
+    B b = (B)class_object->object;
 
     b->base.counter_a = 1;
     b->counter_b = 2;
@@ -38,7 +38,6 @@ int main(void) {
     printf("counter b: 0x%0llx\n", b->counter_b);
 
     instance->destroy(class_object);
-
 #ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();
 #endif
