@@ -286,7 +286,7 @@ case "${install}" in
 
     "--gh-cli") # installs github cli
         update ${updateflags}
-        [ ! -d "${pwd}/gh" ] && mkdir "${pwd}/gh" ]
+        [ ! -d "${pwd}/gh" ] && mkdir "${pwd}/gh"
         curl -L "https://github.com/cli/cli/releases/download/v2.22.0/gh_2.22.0_linux_amd64.deb" -o "${pwd}/gh/gh_2.22.0_linux_amd64.deb"
         dpkg -i "${pwd}/gh/gh_2.22.0_linux_amd64.deb"
         ;;
