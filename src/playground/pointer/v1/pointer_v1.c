@@ -217,13 +217,12 @@ static u64 pointer_copy(u64 ptr) {
     if (data_ptr->type != TYPE_PTR) {
         return 0;
     }
-    u64 data = 0;
     if (data_ptr->size == 0) {
         return 0;
     }
     struct pointer* copy_ptr = pointer_alloc_internal(data_ptr->size, data_ptr->type);
     memcpy(copy_ptr->data, data_ptr->data, copy_ptr->size); /* NOLINT */
-    data = vm->write(&base->vm, copy_ptr);
+    u64 data = vm->write(&base->vm, copy_ptr);
 #ifdef USE_GC
     list->push(&base->gc, (void*)data);
 #endif
@@ -239,11 +238,10 @@ static u64 pointer_pop(void) {
 }
 
 static u64 pointer_list_alloc(void) {
-    u64 data = 0;
     struct pointer* ptr = pointer_alloc_internal(sizeof(struct list_handler), TYPE_LIST);
     struct list_handler* handler = ptr->data;
     list->init(&handler->list);
-    data = vm->write(&base->vm, ptr);
+    u64 data = vm->write(&base->vm, ptr);
 #ifdef USE_GC
     list->push(&base->gc, (void*)data);
 #endif
@@ -342,9 +340,8 @@ static u64 pointer_list_pop(u64 ptr) {
 }
 
 static u64 pointer_alloc(void) {
-    u64 data = 0;
     struct pointer* ptr = pointer_alloc_internal(0, TYPE_PTR);
-    data = vm->write(&base->vm, ptr);
+    u64 data = vm->write(&base->vm, ptr);
 #ifdef USE_GC
     list->push(&base->gc, (void*)data);
 #endif
@@ -476,10 +473,9 @@ static u64 pointer_match_last(u64 src, u64 match) {
     if (*data_match != 0) {
         return 0;
     }
-    u64 data = 0;
     struct pointer* last_match_ptr = pointer_alloc_internal(0, TYPE_PTR);
     last_match_ptr->data = --data_last;
-    data = vm->write(&base->vm, last_match_ptr);
+    u64 data = vm->write(&base->vm, last_match_ptr);
 #ifdef USE_GC
     list->push(&base->gc, (void*)data);
 #endif
