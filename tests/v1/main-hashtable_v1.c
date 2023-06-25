@@ -2,7 +2,7 @@
 #include "list-micro/data.h"
 #include "playground/brain/brain.h"
 #include "playground/hashtable/v1/hashtable_v1.h"
-#include "playground/pointer/pointer.h"
+#include "playground/pointer/v1/pointer_v1.h"
 
 #include <rexo/include/rexo.h>
 
