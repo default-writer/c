@@ -72,12 +72,20 @@ if [[ "${silent}" == "--silent" ]]; then
     exec 2>&1 >/dev/null
 fi
 
+echo =============================================================================
+echo -1/6------- building with garbage collector ---------------------------------
 "${pwd}/bin/build.sh" ${target} --gc --clean ${silent}
+echo -2/6------- building with garbage collector / with sanitizer ----------------
 "${pwd}/bin/build.sh" ${target} --gc --clean --sanitize ${silent}
+echo -3/6------- building with garbage collector / with valgrind -----------------
 "${pwd}/bin/build.sh" ${target} --gc --clean --valgrind ${silent}
+echo -4/6------- building without garbage collector ------------------------------
 "${pwd}/bin/build.sh" ${target} --clean ${silent}
+echo -5/6------- building without garbage collector / with sanitizer -------------
 "${pwd}/bin/build.sh" ${target} --clean --sanitize ${silent}
+echo -6/6------- building without garbage collector / with valgrind --------------
 "${pwd}/bin/build.sh" ${target} --clean --valgrind ${silent}
+echo =============================================================================
 
 if [ "${silent}" == "--silent" ]; then
     exec 1>&2 2>&-

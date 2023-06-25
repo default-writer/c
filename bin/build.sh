@@ -147,6 +147,8 @@ ${cmake} \
 
 
 for target in ${targets[@]}; do
+    echo Building target ${target}
+    echo Building with options $(cmake-options)
     if [ "${silent}" == "--silent" ]; then
         ${cmake} --build "${pwd}/build" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
     else

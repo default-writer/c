@@ -70,6 +70,44 @@ RX_TEST_CASE(tests, test_list_push_list_peek_list_pop, .fixture = test_fixture) 
 }
 
 /* test init */
+RX_TEST_CASE(tests, test_list_push_list_peek_list_pop_free, .fixture = test_fixture) {
+    u64 list_ptr = pointer->list_alloc();
+    const char* source = "Hello, world!";
+    u64 size = strlen(source) + 1;
+    char* dest = global_alloc(size);
+    memcpy(dest, source, size); /* NOLINT */
+    for (u64 i = 0; i < size - 1; i++) {
+        char* ptr = dest + i;
+        char* tmp = ptr + 1;
+        char ch = *tmp;
+        *tmp = 0;
+        u64 data = pointer->load(ptr);
+        *tmp = ch;
+        pointer->list_push(list_ptr, data);
+    }
+    char* buffer = global_alloc(size);
+    for (u64 i = 0; i < size - 1; i++) {
+        u64 ch0 = pointer->list_peek(list_ptr);
+        const char* data = pointer->unsafe(ch0);
+        *(buffer + i) = *data;
+        u64 ch = pointer->list_pop(list_ptr);
+#ifdef USE_GC
+        CLEAN(ch)
+#endif
+#ifndef USE_GC
+        pointer->free(ch);
+#endif
+    }
+#ifndef USE_GC
+    pointer->free(list_ptr);
+#endif
+    printf("%s\n", buffer);
+    global_free(buffer, size);
+    global_free(dest, size);
+    pointer->list_free(list_ptr);
+}
+
+/* test init */
 RX_TEST_CASE(tests, test_list_peek_0, .fixture = test_fixture) {
     const char* source = "Hello, world! A very long string do not fit in 8 bytes.";
     u64 size = strlen(source) + 1;
