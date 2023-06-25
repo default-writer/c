@@ -7,9 +7,15 @@
 
 /* list definition */
 extern const struct vm vm_definition;
-extern const struct list list_micro_definition;
-extern struct pointer_methods pointer_methods_definition;
-const struct pointer_methods* pointer = &pointer_methods_definition;
+
+extern const struct pointer_methods pointer_methods_definition;
+extern const struct list_methods list_methods_definition;
+extern const struct file_methods file_methods_definition;
+extern const struct memory_methods memory_methods_definition;
+static const struct pointer_methods* pointer = &pointer_methods_definition;
+static const struct list_methods* list = &list_methods_definition;
+static const struct file_methods* file = &file_methods_definition;
+static const struct memory_methods* memory = &memory_methods_definition;
 
 typedef struct test_data {
     struct pointer_data* ctx;
@@ -32,13 +38,13 @@ static void source1(void) {
     pointer->free(file_name_ptr);
 #endif
     u64 mode_ptr = pointer->load("rb");
-    u64 f_ptr = pointer->file_alloc(file_path_ptr, mode_ptr);
+    u64 f_ptr = file->file_alloc(file_path_ptr, mode_ptr);
 #ifndef USE_GC
     pointer->free(file_path_ptr);
     pointer->free(mode_ptr);
 #endif
-    u64 data_ptr = pointer->file_read(f_ptr);
-    pointer->file_free(f_ptr);
+    u64 data_ptr = file->file_read(f_ptr);
+    file->file_free(f_ptr);
     pointer->printf(data_ptr);
 #ifndef USE_GC
     pointer->free(data_ptr);
@@ -53,15 +59,15 @@ static void source2(void) {
     pointer->free(file_name_ptr);
 #endif
     u64 mode_ptr = pointer->load("rb");
-    u64 f_ptr = pointer->file_alloc(file_path_ptr, mode_ptr);
+    u64 f_ptr = file->file_alloc(file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
-        u64 data_ptr = pointer->file_read(f_ptr);
+        u64 data_ptr = file->file_read(f_ptr);
         u64 size = pointer->size(data_ptr);
         if (size > 100) {
             size = 100;
         }
-        u64 list_ptr = pointer->list_alloc();
-        pointer->file_free(f_ptr);
+        u64 list_ptr = list->list_alloc();
+        file->file_free(f_ptr);
         char* file_data = pointer->unsafe(data_ptr);
         for (u64 i = 0; i < size; i++) {
             char* tmp = file_data;
@@ -70,12 +76,12 @@ static void source2(void) {
             }
             *tmp++ = '\0';
             u64 data = pointer->load(file_data);
-            pointer->list_push(list_ptr, data);
+            list->list_push(list_ptr, data);
             char* unsafe = pointer->unsafe(data);
             printf("%s\n", unsafe);
             file_data = tmp;
         }
-        pointer->list_free(list_ptr);
+        list->list_free(list_ptr);
 #ifndef USE_GC
         pointer->free(data_ptr);
 #endif

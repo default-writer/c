@@ -9,9 +9,15 @@
 
 /* list definition */
 extern const struct vm vm_definition;
-extern const struct list list_micro_definition;
-extern struct pointer_methods pointer_methods_definition;
+
+extern const struct pointer_methods pointer_methods_definition;
+extern const struct list_methods list_methods_definition;
+extern const struct file_methods file_methods_definition;
+extern const struct memory_methods memory_methods_definition;
 const struct pointer_methods* pointer = &pointer_methods_definition;
+const struct list_methods* list = &list_methods_definition;
+const struct file_methods* file = &file_methods_definition;
+static const struct memory_methods* memory = &memory_methods_definition;
 
 typedef struct test_data {
     struct pointer_data* ctx;
@@ -192,11 +198,11 @@ RX_TEST_CASE(tests, test_load_open_file_close_file, .fixture = test_fixture) {
     pointer->free(file_name_ptr);
 #endif
     u64 mode_ptr = pointer->load("rb");
-    u64 f_ptr = pointer->file_alloc(file_path_ptr, mode_ptr);
-    u64 data_ptr = pointer->file_read(f_ptr);
+    u64 f_ptr = file->file_alloc(file_path_ptr, mode_ptr);
+    u64 data_ptr = file->file_read(f_ptr);
     RX_ASSERT(f_ptr == 0);
     RX_ASSERT(data_ptr == 0);
-    pointer->file_free(f_ptr);
+    file->file_free(f_ptr);
 #ifndef USE_GC
     pointer->free(data_ptr);
     pointer->free(mode_ptr);
@@ -207,11 +213,11 @@ RX_TEST_CASE(tests, test_load_open_file_close_file, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests, test_file_read_invalid_type, .fixture = test_fixture) {
-    u64 list_ptr = pointer->list_alloc();
-    u64 data_ptr = pointer->file_read(list_ptr);
-    pointer->list_free(data_ptr);
-    pointer->file_free(list_ptr);
-    pointer->list_free(list_ptr);
+    u64 list_ptr = list->list_alloc();
+    u64 data_ptr = file->file_read(list_ptr);
+    list->list_free(data_ptr);
+    file->file_free(list_ptr);
+    list->list_free(list_ptr);
 #ifndef USE_GC
     pointer->free(data_ptr);
 #endif
@@ -226,11 +232,11 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixtur
     pointer->free(file_name_ptr);
 #endif
     u64 mode_ptr = pointer->load("rb");
-    u64 f_ptr = pointer->file_alloc(file_path_ptr, mode_ptr);
+    u64 f_ptr = file->file_alloc(file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
-        u64 data_ptr = pointer->file_read(f_ptr);
-        u64 list_ptr = pointer->list_alloc();
-        pointer->file_free(f_ptr);
+        u64 data_ptr = file->file_read(f_ptr);
+        u64 list_ptr = list->list_alloc();
+        file->file_free(f_ptr);
         char* file_data = pointer->unsafe(data_ptr);
         for (int i = 0; i < 100; i++) {
             char* tmp = file_data;
@@ -239,12 +245,12 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixtur
             }
             *tmp++ = '\0';
             u64 data = pointer->load(file_data);
-            pointer->list_push(list_ptr, data);
+            list->list_push(list_ptr, data);
             char* unsafe = pointer->unsafe(data);
             printf("%s\n", unsafe);
             file_data = tmp;
         }
-        pointer->list_free(list_ptr);
+        list->list_free(list_ptr);
 #ifndef USE_GC
         pointer->free(data_ptr);
 #endif
@@ -273,13 +279,13 @@ extern inline void source1(void) {
     pointer->free(file_name_ptr);
 #endif
     u64 mode_ptr = pointer->load("rb");
-    u64 f_ptr = pointer->file_alloc(file_path_ptr, mode_ptr);
+    u64 f_ptr = file->file_alloc(file_path_ptr, mode_ptr);
 #ifndef USE_GC
     pointer->free(file_path_ptr);
     pointer->free(mode_ptr);
 #endif
-    u64 data_ptr = pointer->file_read(f_ptr);
-    pointer->file_free(f_ptr);
+    u64 data_ptr = file->file_read(f_ptr);
+    file->file_free(f_ptr);
     pointer->printf(data_ptr);
 #ifndef USE_GC
     pointer->free(data_ptr);
@@ -294,15 +300,15 @@ extern inline void source2(void) {
     pointer->free(file_name_ptr);
 #endif
     u64 mode_ptr = pointer->load("rb");
-    u64 f_ptr = pointer->file_alloc(file_path_ptr, mode_ptr);
+    u64 f_ptr = file->file_alloc(file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
-        u64 data_ptr = pointer->file_read(f_ptr);
+        u64 data_ptr = file->file_read(f_ptr);
         u64 size = pointer->size(data_ptr);
         if (size > 100) {
             size = 100;
         }
-        u64 list_ptr = pointer->list_alloc();
-        pointer->file_free(f_ptr);
+        u64 list_ptr = list->list_alloc();
+        file->file_free(f_ptr);
         char* file_data = pointer->unsafe(data_ptr);
         for (u64 i = 0; i < size; i++) {
             char* tmp = file_data;
@@ -311,12 +317,12 @@ extern inline void source2(void) {
             }
             *tmp++ = '\0';
             u64 data = pointer->load(file_data);
-            pointer->list_push(list_ptr, data);
+            list->list_push(list_ptr, data);
             char* unsafe = pointer->unsafe(data);
             printf("%s\n", unsafe);
             file_data = tmp;
         }
-        pointer->list_free(list_ptr);
+        list->list_free(list_ptr);
 #ifndef USE_GC
         pointer->free(data_ptr);
 #endif

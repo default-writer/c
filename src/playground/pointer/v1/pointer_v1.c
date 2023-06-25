@@ -674,14 +674,17 @@ static void pointer_put_char(u64 ptr, char value) {
 
 /* public */
 
-const struct pointer_methods pointer_methods_definition = {
-    .init = pointer_init,
-    .destroy = pointer_destroy,
+const struct list_methods list_methods_definition = {
     .list_alloc = pointer_list_alloc,
     .list_free = pointer_list_free,
     .list_peek = pointer_list_peek,
     .list_pop = pointer_list_pop,
-    .list_push = pointer_list_push,
+    .list_push = pointer_list_push
+};
+
+const struct pointer_methods pointer_methods_definition = {
+    .init = pointer_init,
+    .destroy = pointer_destroy,
     .alloc = pointer_alloc,
     .copy = pointer_copy,
     .peek = pointer_peek,

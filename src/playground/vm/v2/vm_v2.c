@@ -13,12 +13,14 @@
 
 /* private */
 
-#ifndef USE_GC
-extern const struct list list_micro_definition;
-static const struct list* list = &list_micro_definition;
-#endif
 extern const struct pointer_methods pointer_methods_definition;
+extern const struct list_methods list_methods_definition;
+extern const struct file_methods file_methods_definition;
+extern const struct memory_methods memory_methods_definition;
 static const struct pointer_methods* pointer = &pointer_methods_definition;
+static const struct list_methods* list = &list_methods_definition;
+static const struct file_methods* file = &file_methods_definition;
+static const struct memory_methods* memory = &memory_methods_definition;
 
 struct vm_data {
     struct pointer** sp; /* stack pointer */
@@ -167,7 +169,7 @@ static void vm_dump(struct vm_data* vm_ptr) {
     vm_enumerator_init_internal(vm_ptr);
     struct pointer* ptr = 0;
     while ((ptr = vm_data_enumerator_next()) != 0) {
-        pointer->dump(ptr);
+        memory->dump(ptr);
     }
     vm_enumerator_destroy_internal();
 }
@@ -179,7 +181,7 @@ static void vm_dump_ref(struct vm_data* vm_ptr) {
     vm_enumerator_init_internal(vm_ptr);
     void** ptr = 0;
     while ((ptr = vm_data_enumerator_next_ref()) != 0) {
-        pointer->dump_ref(ptr);
+        memory->dump_ref(ptr);
     }
     vm_enumerator_destroy_internal();
 }

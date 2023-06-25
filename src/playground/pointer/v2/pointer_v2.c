@@ -692,14 +692,30 @@ static void pointer_put_char(u64 ptr, char value) {
 
 /* public */
 
-const struct pointer_methods pointer_methods_definition = {
-    .init = pointer_init,
-    .destroy = pointer_destroy,
+const struct list_methods list_methods_definition = {
     .list_alloc = pointer_list_alloc,
     .list_free = pointer_list_free,
     .list_peek = pointer_list_peek,
     .list_pop = pointer_list_pop,
-    .list_push = pointer_list_push,
+    .list_push = pointer_list_push
+};
+
+const struct file_methods file_methods_definition = {
+    .file_alloc = pointer_file_alloc,
+    .file_read = pointer_file_read,
+    .file_free = pointer_file_free
+};
+
+#ifdef USE_MEMORY_DEBUG_INFO
+const struct memory_methods memory_methods_definition = {
+    .dump = pointer_dump,
+    .dump_ref = pointer_dump_ref
+};
+#endif
+
+const struct pointer_methods pointer_methods_definition = {
+    .init = pointer_init,
+    .destroy = pointer_destroy,
     .alloc = pointer_alloc,
     .copy = pointer_copy,
     .peek = pointer_peek,
@@ -710,14 +726,7 @@ const struct pointer_methods pointer_methods_definition = {
     .match_last = pointer_match_last,
     .load = pointer_load,
     .getcwd = pointer_getcwd,
-    .file_alloc = pointer_file_alloc,
-    .file_read = pointer_file_read,
-    .file_free = pointer_file_free,
     .printf = pointer_printf,
-#ifdef USE_MEMORY_DEBUG_INFO
-    .dump = pointer_dump,
-    .dump_ref = pointer_dump_ref,
-#endif
     .put_char = pointer_put_char,
     .unsafe = pointer_unsafe,
     .size = pointer_size,
