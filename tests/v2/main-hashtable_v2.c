@@ -418,7 +418,7 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixtur
     u64 f_ptr = file->file_alloc(file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
         u64 data_ptr = file->file_read(f_ptr);
-        u64 list_ptr = list->list_alloc();
+        u64 list_ptr = list->alloc();
         file->file_free(f_ptr);
         const u64 size = 0xfff;
         char* file_data;
@@ -432,7 +432,7 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixtur
             }
             *tmp++ = '\0';
             u64 data = pointer->load(file_data);
-            list->list_push(list_ptr, data);
+            list->push(list_ptr, data);
             const char* unsafe = pointer->unsafe(data);
             pointer->printf(data);
             pointer->put_char(data, unsafe[0]);
@@ -462,7 +462,7 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixtur
             printf("  .#: %016llx ! %08lx (%6ld): %16s\n", (u64)unsafe, hash % HASHTABLE_DEFAULT_SIZE, count, unsafe);
             file_data = tmp;
         }
-        list->list_free(list_ptr);
+        list->free(list_ptr);
 #ifndef USE_GC
         pointer->free(data_ptr);
 #endif
@@ -477,10 +477,10 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixtur
 
 /* test init */
 RX_TEST_CASE(tests, test_list_push, .fixture = test_fixture) {
-    u64 list_ptr = list->list_alloc();
+    u64 list_ptr = list->alloc();
     RX_ASSERT(list_ptr != 0);
 #ifndef USE_GC
-    list->list_free(list_ptr);
+    list->free(list_ptr);
 #else
     pointer->gc();
 #endif
@@ -488,9 +488,9 @@ RX_TEST_CASE(tests, test_list_push, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests, test_free, .fixture = test_fixture) {
-    u64 list_ptr = list->list_alloc();
-    list->list_free(list_ptr);
-    list->list_free(list_ptr);
+    u64 list_ptr = list->alloc();
+    list->free(list_ptr);
+    list->free(list_ptr);
 }
 
 /* test init */
@@ -510,60 +510,60 @@ RX_TEST_CASE(tests, test_improper_use_of_different_calls, .fixture = test_fixtur
     u64 f_ptr = file->file_alloc(file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
         idx4 = file->file_read(file_name_ptr);
-        idx5 = list->list_peek(file_name_ptr);
-        idx6 = list->list_pop(file_name_ptr);
-        list->list_push(file_name_ptr, f_ptr);
+        idx5 = list->peek(file_name_ptr);
+        idx6 = list->pop(file_name_ptr);
+        list->push(file_name_ptr, f_ptr);
         u64 data_ptr = file->file_read(f_ptr);
-        u64 list_ptr = list->list_alloc();
-        list->list_push(list_ptr, mode_ptr);
+        u64 list_ptr = list->alloc();
+        list->push(list_ptr, mode_ptr);
         idx3 = pointer->copy(list_ptr);
         file->file_free(data_ptr);
         file->file_free(list_ptr);
-        list->list_peek(list_ptr);
-        list->list_push(list_ptr, f_ptr);
+        list->peek(list_ptr);
+        list->push(list_ptr, f_ptr);
         file->file_free(f_ptr);
-        list->list_pop(0);
-        list->list_pop(1);
-        list->list_pop(2);
-        list->list_pop(3);
-        list->list_pop(4);
-        list->list_pop(5);
-        list->list_pop(6);
-        list->list_pop(7);
-        list->list_pop(8);
-        list->list_pop(9);
-        list->list_push(f_ptr, f_ptr);
-        list->list_push(list_ptr, f_ptr);
-        list->list_pop(0);
-        list->list_pop(1);
-        list->list_pop(2);
-        list->list_pop(3);
-        list->list_pop(4);
-        list->list_pop(5);
-        list->list_pop(6);
-        list->list_pop(7);
-        list->list_pop(8);
-        list->list_pop(9);
-        list->list_push(f_ptr, f_ptr);
-        list->list_push(list_ptr, f_ptr);
-        list->list_push(data_ptr, f_ptr);
-        list->list_peek(f_ptr);
-        list->list_peek(list_ptr);
-        list->list_peek(data_ptr);
-        list->list_pop(f_ptr);
-        list->list_pop(list_ptr);
-        list->list_pop(data_ptr);
+        list->pop(0);
+        list->pop(1);
+        list->pop(2);
+        list->pop(3);
+        list->pop(4);
+        list->pop(5);
+        list->pop(6);
+        list->pop(7);
+        list->pop(8);
+        list->pop(9);
+        list->push(f_ptr, f_ptr);
+        list->push(list_ptr, f_ptr);
+        list->pop(0);
+        list->pop(1);
+        list->pop(2);
+        list->pop(3);
+        list->pop(4);
+        list->pop(5);
+        list->pop(6);
+        list->pop(7);
+        list->pop(8);
+        list->pop(9);
+        list->push(f_ptr, f_ptr);
+        list->push(list_ptr, f_ptr);
+        list->push(data_ptr, f_ptr);
+        list->peek(f_ptr);
+        list->peek(list_ptr);
+        list->peek(data_ptr);
+        list->pop(f_ptr);
+        list->pop(list_ptr);
+        list->pop(data_ptr);
         file->file_read(f_ptr);
         file->file_read(list_ptr);
         file->file_read(data_ptr);
-        list->list_free(data_ptr);
-        list->list_push(f_ptr, data_ptr);
-        list->list_push(list_ptr, data_ptr);
-        list->list_push(data_ptr, data_ptr);
+        list->free(data_ptr);
+        list->push(f_ptr, data_ptr);
+        list->push(list_ptr, data_ptr);
+        list->push(data_ptr, data_ptr);
         idx1 = pointer->copy(list_ptr);
-        list->list_free(list_ptr);
+        list->free(list_ptr);
         idx2 = pointer->copy(list_ptr);
-        list->list_free(f_ptr);
+        list->free(f_ptr);
 #ifndef USE_GC
         pointer->free(data_ptr);
         pointer->free(list_ptr);
@@ -571,10 +571,10 @@ RX_TEST_CASE(tests, test_improper_use_of_different_calls, .fixture = test_fixtur
 #endif
     }
     file->file_free(f_ptr);
-    list->list_peek(f_ptr);
-    list->list_push(f_ptr, f_ptr);
+    list->peek(f_ptr);
+    list->push(f_ptr, f_ptr);
     file->file_free(f_ptr);
-    list->list_free(f_ptr);
+    list->free(f_ptr);
 #ifndef USE_GC
     pointer->free(f_ptr);
     pointer->free(mode_ptr);
@@ -595,12 +595,12 @@ RX_TEST_CASE(tests, test_improper_use_of_different_calls, .fixture = test_fixtur
 
 /* test init */
 RX_TEST_CASE(tests, test_alloc_free, .fixture = test_fixture) {
-    u64 list_ptr = list->list_alloc();
+    u64 list_ptr = list->alloc();
     u64 size = pointer->size(list_ptr);
     RX_ASSERT(size == 8);
     u64 pattern_ptr = pointer->alloc();
-    list->list_free(pattern_ptr);
-    list->list_free(list_ptr);
+    list->free(pattern_ptr);
+    list->free(list_ptr);
 #ifndef USE_GC
     pointer->free(list_ptr);
     pointer->free(pattern_ptr);
@@ -623,7 +623,7 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable_default_hash, .fixture 
     u64 f_ptr = file->file_alloc(file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
         u64 data_ptr = file->file_read(f_ptr);
-        u64 list_ptr = list->list_alloc();
+        u64 list_ptr = list->alloc();
         file->file_free(f_ptr);
         u64 size = 0xfff;
         char* file_data;
@@ -637,7 +637,7 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable_default_hash, .fixture 
             }
             *tmp++ = '\0';
             u64 data = pointer->load(file_data);
-            list->list_push(list_ptr, data);
+            list->push(list_ptr, data);
             const char* unsafe = pointer->unsafe(data);
             hashtable->alloc(unsafe, 0);
             file_data = tmp;
@@ -656,7 +656,7 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable_default_hash, .fixture 
             printf("  .#: %016llx ! %08lx (%6ld): %16s\n", (u64)unsafe, hash % HASHTABLE_DEFAULT_SIZE, count, unsafe);
             file_data = tmp;
         }
-        list->list_free(list_ptr);
+        list->free(list_ptr);
 #ifndef USE_GC
         pointer->free(data_ptr);
 #endif
@@ -683,7 +683,7 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable_murmurhash3_hash, .fixt
     u64 f_ptr = file->file_alloc(file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
         u64 data_ptr = file->file_read(f_ptr);
-        u64 list_ptr = list->list_alloc();
+        u64 list_ptr = list->alloc();
         file->file_free(f_ptr);
         const u64 size = 0xfff;
         char* file_data;
@@ -697,7 +697,7 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable_murmurhash3_hash, .fixt
             }
             *tmp++ = '\0';
             u64 data = pointer->load(file_data);
-            list->list_push(list_ptr, data);
+            list->push(list_ptr, data);
             const char* unsafe = pointer->unsafe(data);
             hashtable->alloc(unsafe, 0);
             file_data = tmp;
@@ -716,7 +716,7 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable_murmurhash3_hash, .fixt
             printf("  .#: %016llx ! %08lx (%6ld): %16s\n", (u64)unsafe, hash % HASHTABLE_DEFAULT_SIZE, count, unsafe);
             file_data = tmp;
         }
-        list->list_free(list_ptr);
+        list->free(list_ptr);
 #ifndef USE_GC
         pointer->free(data_ptr);
 #endif

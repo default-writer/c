@@ -671,11 +671,11 @@ static void pointer_put_char(u64 ptr, char value) {
 /* public */
 
 const struct list_methods list_methods_definition = {
-    .list_alloc = pointer_list_alloc,
-    .list_free = pointer_list_free,
-    .list_peek = pointer_list_peek,
-    .list_pop = pointer_list_pop,
-    .list_push = pointer_list_push
+    .alloc = pointer_list_alloc,
+    .free = pointer_list_free,
+    .peek = pointer_list_peek,
+    .pop = pointer_list_pop,
+    .push = pointer_list_push
 };
 
 const struct pointer_methods pointer_methods_definition = {

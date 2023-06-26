@@ -64,7 +64,7 @@ extern inline void source2(void) {
         if (size > 100) {
             size = 100;
         }
-        u64 list_ptr = list->list_alloc();
+        u64 list_ptr = list->alloc();
         pointer->file_free(f_ptr);
         char* file_data = pointer->unsafe(data_ptr);
         for (u64 i = 0; i < size; i++) {
@@ -74,12 +74,12 @@ extern inline void source2(void) {
             }
             *tmp++ = '\0';
             u64 data = pointer->load(file_data);
-            list->list_push(list_ptr, data);
+            list->push(list_ptr, data);
             char* unsafe = pointer->unsafe(data);
             printf("%s\n", unsafe);
             file_data = tmp;
         }
-        list->list_free(list_ptr);
+        list->free(list_ptr);
 #ifndef USE_GC
         pointer->free(data_ptr);
 #endif

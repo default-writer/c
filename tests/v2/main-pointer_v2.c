@@ -41,7 +41,7 @@ RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tea
 
 /* test init */
 RX_TEST_CASE(tests, test_list_push_list_peek_list_pop, .fixture = test_fixture) {
-    u64 list_ptr = list->list_alloc();
+    u64 list_ptr = list->alloc();
     const char* source = "Hello, world!";
     u64 size = strlen(source) + 1;
     char* dest = global_alloc(size);
@@ -53,14 +53,14 @@ RX_TEST_CASE(tests, test_list_push_list_peek_list_pop, .fixture = test_fixture) 
         *tmp = 0;
         u64 data = pointer->load(ptr);
         *tmp = ch;
-        list->list_push(list_ptr, data);
+        list->push(list_ptr, data);
     }
     char* buffer = global_alloc(size);
     for (u64 i = 0; i < size - 1; i++) {
-        u64 ch0 = list->list_peek(list_ptr);
+        u64 ch0 = list->peek(list_ptr);
         const char* data = pointer->unsafe(ch0);
         *(buffer + i) = *data;
-        u64 ch = list->list_pop(list_ptr);
+        u64 ch = list->pop(list_ptr);
 #ifdef USE_GC
         CLEAN(ch)
 #endif
@@ -71,12 +71,12 @@ RX_TEST_CASE(tests, test_list_push_list_peek_list_pop, .fixture = test_fixture) 
     printf("%s\n", buffer);
     global_free(buffer, size);
     global_free(dest, size);
-    list->list_free(list_ptr);
+    list->free(list_ptr);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_list_push_list_peek_list_pop_free, .fixture = test_fixture) {
-    u64 list_ptr = list->list_alloc();
+    u64 list_ptr = list->alloc();
     const char* source = "Hello, world!";
     u64 size = strlen(source) + 1;
     char* dest = global_alloc(size);
@@ -88,14 +88,14 @@ RX_TEST_CASE(tests, test_list_push_list_peek_list_pop_free, .fixture = test_fixt
         *tmp = 0;
         u64 data = pointer->load(ptr);
         *tmp = ch;
-        list->list_push(list_ptr, data);
+        list->push(list_ptr, data);
     }
     char* buffer = global_alloc(size);
     for (u64 i = 0; i < size - 1; i++) {
-        u64 ch0 = list->list_peek(list_ptr);
+        u64 ch0 = list->peek(list_ptr);
         const char* data = pointer->unsafe(ch0);
         *(buffer + i) = *data;
-        u64 ch = list->list_pop(list_ptr);
+        u64 ch = list->pop(list_ptr);
 #ifdef USE_GC
         CLEAN(ch)
 #endif
@@ -109,7 +109,7 @@ RX_TEST_CASE(tests, test_list_push_list_peek_list_pop_free, .fixture = test_fixt
     printf("%s\n", buffer);
     global_free(buffer, size);
     global_free(dest, size);
-    list->list_free(list_ptr);
+    list->free(list_ptr);
 }
 
 /* test init */

@@ -18,11 +18,11 @@ struct pointer;
 struct pointer_data;
 
 struct list_methods {
-    u64 (*list_alloc)(void);
-    void (*list_free)(u64);
-    u64 (*list_peek)(u64 list_ptr);
-    u64 (*list_pop)(u64 list_ptr);
-    void (*list_push)(u64 list_ptr, u64 ptr);
+    u64 (*alloc)(void);
+    void (*free)(u64);
+    u64 (*peek)(u64 list_ptr);
+    u64 (*pop)(u64 list_ptr);
+    void (*push)(u64 list_ptr, u64 ptr);
 };
 
 struct pointer_methods {
