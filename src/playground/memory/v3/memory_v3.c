@@ -70,7 +70,7 @@ static void memory_free(void* data, u64 size) {
     printf("  0-: %016llx ! %16lld\n", (u64)last, size);
 #endif
 #ifdef USE_MEMORY_CLEANUP
-    memset(head - 2, 0, ALLOC_SIZE(size)); /* NOLINT */
+    global_memset(head - 2, 0, ALLOC_SIZE(size)); /* NOLINT */
 #endif
     global_free(head - 2, ALLOC_SIZE(size));
 }
