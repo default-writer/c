@@ -20,15 +20,15 @@ extern const struct vm vm_definition;
 
 extern const struct hashtable hashtable_definition_v1;
 extern const struct pointer_methods pointer_methods_definition;
-extern const struct pointer_list_methods pointer_list_methods_definition;
-extern const struct pointer_file_methods pointer_file_methods_definition;
-extern const struct pointer_string_methods pointer_string_methods_definition;
+extern const struct list_methods list_methods_definition;
+extern const struct file_methods file_methods_definition;
+extern const struct string_methods string_methods_definition;
 
 static const struct hashtable* hashtable = &hashtable_definition_v1;
 static const struct pointer_methods* pointer = &pointer_methods_definition;
-static const struct pointer_list_methods* list = &pointer_list_methods_definition;
-static const struct pointer_file_methods* file = &pointer_file_methods_definition;
-static const struct pointer_string_methods* string = &pointer_string_methods_definition;
+static const struct list_methods* list = &list_methods_definition;
+static const struct file_methods* file = &file_methods_definition;
+static const struct string_methods* string = &string_methods_definition;
 
 typedef struct test_data {
     struct pointer_data* ctx;

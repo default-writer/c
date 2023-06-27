@@ -3,7 +3,7 @@
 
 #include "std/common.h"
 
-struct pointer_string_methods {
+struct string_methods {
     u64 (*alloc)(void);
     u64 (*copy)(u64 ptr);
     void (*strcpy)(u64 dest, u64 src);

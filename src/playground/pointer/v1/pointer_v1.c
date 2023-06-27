@@ -16,9 +16,9 @@ static struct list_data* vm_enumerator_state;
 /* extern definition */
 extern const struct vm vm_definition;
 extern const struct list list_micro_definition;
-extern void pointer_list_init(void);
-extern void pointer_file_init(void);
-extern void pointer_string_init(void);
+extern void list_init(void);
+extern void file_init(void);
+extern void string_init(void);
 
 /* definition */
 static struct pointer_data* base = &vm_pointer;
@@ -164,9 +164,9 @@ static void pointer_init_internal(struct pointer_data* ptr, u64 size) {
     vm->init(&ptr->vm, size);
     list->init(&ptr->list);
     list->init(&ptr->free);
-    pointer_list_init();
-    pointer_file_init();
-    pointer_string_init();
+    list_init();
+    file_init();
+    string_init();
 #ifdef USE_GC
     list->init(&ptr->gc);
 #endif

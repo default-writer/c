@@ -26,23 +26,23 @@ struct list_handler {
 
 /* api */
 
-static u64 pointer_string_alloc(void);
-static void pointer_string_free(u64 ptr);
-static u64 pointer_string_copy(u64 ptr);
-static void pointer_string_strcpy(u64 dest_ptr, u64 src_ptr);
-static void pointer_string_strcat(u64 dest_ptr, u64 src_ptr);
-static u64 pointer_string_match_last(u64 src_ptr, u64 match_ptr);
-static u64 pointer_string_load(const char* data);
-static u64 pointer_string_getcwd(void);
-static void pointer_string_printf(u64 ptr);
-static void pointer_string_put_char(u64 ptr, char value);
-static char* pointer_string_unsafe(u64 ptr);
+static u64 string_alloc(void);
+static void string_free(u64 ptr);
+static u64 string_copy(u64 ptr);
+static void string_strcpy(u64 dest_ptr, u64 src_ptr);
+static void string_strcat(u64 dest_ptr, u64 src_ptr);
+static u64 string_match_last(u64 src_ptr, u64 match_ptr);
+static u64 string_load(const char* data);
+static u64 string_getcwd(void);
+static void string_printf(u64 ptr);
+static void string_put_char(u64 ptr, char value);
+static char* string_unsafe(u64 ptr);
 
 /* internal */
 
 /* implementation*/
 
-static u64 pointer_string_alloc(void) {
+static u64 string_alloc(void) {
     struct pointer* ptr = pointer->alloc(0, TYPE_PTR);
     u64 data = vm->write(&base->vm, ptr);
 #ifdef USE_GC
@@ -51,7 +51,7 @@ static u64 pointer_string_alloc(void) {
     return data;
 }
 
-static void pointer_string_free(u64 ptr) {
+static void string_free(u64 ptr) {
     if (ptr == 0) {
         return;
     }
@@ -69,7 +69,7 @@ static void pointer_string_free(u64 ptr) {
     pointer->free(data_ptr);
 }
 
-static u64 pointer_string_copy(u64 ptr) {
+static u64 string_copy(u64 ptr) {
     if (ptr == 0) {
         return 0;
     }
@@ -92,7 +92,7 @@ static u64 pointer_string_copy(u64 ptr) {
     return data;
 }
 
-static void pointer_string_strcpy(u64 dest, u64 src) {
+static void string_strcpy(u64 dest, u64 src) {
     struct pointer* dest_ptr = vm->read(&base->vm, dest);
     if (dest_ptr == 0) {
         return;
@@ -124,7 +124,7 @@ static void pointer_string_strcpy(u64 dest, u64 src) {
     strcpy(data_dest, data_src); /* NOLINT */
 }
 
-static void pointer_string_strcat(u64 dest, u64 src) {
+static void string_strcat(u64 dest, u64 src) {
     struct pointer* dest_ptr = vm->read(&base->vm, dest);
     if (dest_ptr == 0) {
         return;
@@ -156,7 +156,7 @@ static void pointer_string_strcat(u64 dest, u64 src) {
     strcat(data_dest, data_src); /* NOLINT */
 }
 
-static u64 pointer_string_match_last(u64 src, u64 match) {
+static u64 string_match_last(u64 src, u64 match) {
     const struct pointer* src_ptr = vm->read(&base->vm, src);
     if (src_ptr == 0) {
         return 0;
@@ -202,7 +202,7 @@ static u64 pointer_string_match_last(u64 src, u64 match) {
     return data;
 }
 
-static u64 pointer_string_load(const char* src_data) {
+static u64 string_load(const char* src_data) {
     if (src_data == 0) {
         return 0;
     }
@@ -223,19 +223,19 @@ static u64 pointer_string_load(const char* src_data) {
     return data;
 }
 
-static u64 pointer_string_getcwd(void) {
+static u64 string_getcwd(void) {
     char cwd[PATH_MAX];
     u64 data_ptr;
     getcwd(cwd, sizeof(cwd));
     u64 size = strlen(cwd) + 1;
     char* data = global_alloc(size);
     strcpy(data, cwd); /* NOLINT */
-    data_ptr = pointer_string_load(data);
+    data_ptr = string_load(data);
     global_free(data, size);
     return data_ptr;
 }
 
-static void pointer_string_printf(u64 ptr) {
+static void string_printf(u64 ptr) {
     struct pointer* data_ptr = vm->read(&base->vm, ptr);
     if (data_ptr == 0) {
         return;
@@ -254,7 +254,7 @@ static void pointer_string_printf(u64 ptr) {
     puts(data);
 }
 
-static void pointer_string_put_char(u64 ptr, char value) {
+static void string_put_char(u64 ptr, char value) {
     struct pointer* data_ptr = vm->read(&base->vm, ptr);
     if (data_ptr == 0) {
         return;
@@ -269,7 +269,7 @@ static void pointer_string_put_char(u64 ptr, char value) {
     *data = value;
 }
 
-static char* pointer_string_unsafe(u64 ptr) {
+static char* string_unsafe(u64 ptr) {
     if (ptr == 0) {
         return 0;
     }
@@ -286,22 +286,22 @@ static char* pointer_string_unsafe(u64 ptr) {
 
 /* public */
 
-void pointer_string_init() {
-    pointer_vm_register_free(pointer_string_free);
+void string_init() {
+    pointer_vm_register_free(string_free);
 }
 
-const struct pointer_string_methods pointer_string_methods_definition = {
-    .alloc = pointer_string_alloc,
-    .copy = pointer_string_copy,
-    .strcpy = pointer_string_strcpy,
-    .strcat = pointer_string_strcat,
-    .match_last = pointer_string_match_last,
-    .load = pointer_string_load,
-    .getcwd = pointer_string_getcwd,
-    .printf = pointer_string_printf,
-    .put_char = pointer_string_put_char,
-    .unsafe = pointer_string_unsafe,
+const struct string_methods string_methods_definition = {
+    .alloc = string_alloc,
+    .copy = string_copy,
+    .strcpy = string_strcpy,
+    .strcat = string_strcat,
+    .match_last = string_match_last,
+    .load = string_load,
+    .getcwd = string_getcwd,
+    .printf = string_printf,
+    .put_char = string_put_char,
+    .unsafe = string_unsafe,
 #ifndef USE_GC
-    .free = pointer_string_free
+    .free = string_free
 #endif
 };

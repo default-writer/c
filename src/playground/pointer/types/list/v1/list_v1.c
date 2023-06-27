@@ -26,17 +26,17 @@ struct list_handler {
 
 /* api */
 
-static u64 pointer_list_alloc(void);
-static void pointer_list_free(u64 ptr);
-static void pointer_list_push(u64 ptr, u64 data_ptr);
-static u64 pointer_list_peek(u64 ptr);
-static u64 pointer_list_pop(u64 ptr);
+static u64 list_alloc(void);
+static void list_free(u64 ptr);
+static void list_push(u64 ptr, u64 data_ptr);
+static u64 list_peek(u64 ptr);
+static u64 list_pop(u64 ptr);
 
 /* internal */
 
 /* implementation*/
 
-static u64 pointer_list_alloc(void) {
+static u64 list_alloc(void) {
     struct pointer* ptr = pointer->alloc(sizeof(struct list_handler), TYPE_LIST);
     struct list_handler* handler = ptr->data;
     list->init(&handler->list);
@@ -47,7 +47,7 @@ static u64 pointer_list_alloc(void) {
     return data;
 }
 
-static void pointer_list_free(u64 ptr) {
+static void list_free(u64 ptr) {
     if (ptr == 0) {
         return;
     }
@@ -76,7 +76,7 @@ static void pointer_list_free(u64 ptr) {
     pointer->free(data_ptr);
 }
 
-static void pointer_list_push(u64 ptr_list, u64 ptr) {
+static void list_push(u64 ptr_list, u64 ptr) {
     if (ptr_list == 0) {
         return;
     }
@@ -100,7 +100,7 @@ static void pointer_list_push(u64 ptr_list, u64 ptr) {
 #endif
 }
 
-static u64 pointer_list_peek(u64 ptr) {
+static u64 list_peek(u64 ptr) {
     if (ptr == 0) {
         return 0;
     }
@@ -119,7 +119,7 @@ static u64 pointer_list_peek(u64 ptr) {
     return data;
 }
 
-static u64 pointer_list_pop(u64 ptr) {
+static u64 list_pop(u64 ptr) {
     if (ptr == 0) {
         return 0;
     }
@@ -140,14 +140,14 @@ static u64 pointer_list_pop(u64 ptr) {
 
 /* public */
 
-void pointer_list_init() {
-    pointer_vm_register_free(pointer_list_free);
+void list_init() {
+    pointer_vm_register_free(list_free);
 }
 
-const struct pointer_list_methods pointer_list_methods_definition = {
-    .alloc = pointer_list_alloc,
-    .free = pointer_list_free,
-    .push = pointer_list_push,
-    .peek = pointer_list_peek,
-    .pop = pointer_list_pop
+const struct list_methods list_methods_definition = {
+    .alloc = list_alloc,
+    .free = list_free,
+    .push = list_push,
+    .peek = list_peek,
+    .pop = list_pop
 };

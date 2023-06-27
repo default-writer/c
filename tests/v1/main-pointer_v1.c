@@ -17,12 +17,12 @@ extern void pointer_ctx_destroy(struct pointer_data** ctx);
 extern const struct vm vm_definition;
 
 extern const struct pointer_methods pointer_methods_definition;
-extern const struct pointer_list_methods pointer_list_methods_definition;
-extern const struct pointer_string_methods pointer_string_methods_definition;
+extern const struct list_methods list_methods_definition;
+extern const struct string_methods string_methods_definition;
 
 static const struct pointer_methods* pointer = &pointer_methods_definition;
-static const struct pointer_list_methods* list = &pointer_list_methods_definition;
-static const struct pointer_string_methods* string = &pointer_string_methods_definition;
+static const struct list_methods* list = &list_methods_definition;
+static const struct string_methods* string = &string_methods_definition;
 
 typedef struct test_data {
     struct pointer_data* ctx;

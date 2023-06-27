@@ -28,15 +28,15 @@ struct file_handler {
 };
 
 /* api */
-static u64 pointer_file_alloc(u64 file_path_ptr, u64 mode_ptr);
-static u64 pointer_file_read(u64 ptr);
-static void pointer_file_free(u64 ptr);
+static u64 file_alloc(u64 file_path_ptr, u64 mode_ptr);
+static u64 file_read(u64 ptr);
+static void file_free(u64 ptr);
 
 /* internal */
 
 /* implementation*/
 
-static u64 pointer_file_alloc(u64 file_path, u64 mode) {
+static u64 file_alloc(u64 file_path, u64 mode) {
     if (file_path == 0) {
         return 0;
     }
@@ -80,7 +80,7 @@ static u64 pointer_file_alloc(u64 file_path, u64 mode) {
     return data;
 }
 
-static u64 pointer_file_read(u64 ptr) {
+static u64 file_read(u64 ptr) {
     if (ptr == 0) {
         return 0;
     }
@@ -112,7 +112,7 @@ static u64 pointer_file_read(u64 ptr) {
     return data;
 }
 
-static void pointer_file_free(u64 ptr) {
+static void file_free(u64 ptr) {
     if (ptr == 0) {
         return;
     }
@@ -141,12 +141,12 @@ static void pointer_file_free(u64 ptr) {
 
 /* public */
 
-void pointer_file_init() {
-    pointer_vm_register_free(pointer_file_free);
+void file_init() {
+    pointer_vm_register_free(file_free);
 }
 
-const struct pointer_file_methods pointer_file_methods_definition = {
-    .alloc = pointer_file_alloc,
-    .read = pointer_file_read,
-    .free = pointer_file_free,
+const struct file_methods file_methods_definition = {
+    .alloc = file_alloc,
+    .read = file_read,
+    .free = file_free,
 };

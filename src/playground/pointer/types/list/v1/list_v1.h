@@ -3,7 +3,7 @@
 
 #include "std/common.h"
 
-struct pointer_list_methods {
+struct list_methods {
     u64 (*alloc)(void);
     void (*free)(u64);
     u64 (*peek)(u64 list_ptr);
