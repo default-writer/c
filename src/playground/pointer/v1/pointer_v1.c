@@ -13,16 +13,14 @@ struct pointer_data vm_pointer;
 /*private data */
 static struct list_data* vm_enumerator_state;
 
-/* type definition */
-typedef void (*function)(u64 args);
-
-/* list definition */
+/* extern definition */
 extern const struct vm vm_definition;
 extern const struct list list_micro_definition;
+extern void pointer_list_init(void);
+extern void pointer_file_init(void);
 
+/* definition */
 static struct pointer_data* base = &vm_pointer;
-
-/* list definition */
 static const struct vm* vm = &vm_definition;
 static const struct list* list = &list_micro_definition;
 
@@ -41,8 +39,7 @@ void pointer_init(u64 size);
 void pointer_destroy(void);
 
 /* api */
-
-static void pointer_vm_register_free(function free);
+void pointer_vm_register_free(function free);
 
 static struct pointer* pointer_vm_alloc(u64 size, enum type type);
 static void pointer_vm_realloc(struct pointer* ptr, u64 size);
@@ -114,7 +111,7 @@ static void pointer_vm_enumerator_destroy_internal(void) {
     vm_enumerator_state = 0;
 }
 
-static void pointer_vm_register_free(function free) {
+void pointer_vm_register_free(function free) {
     pointer_vm_register_free_internal(&base->free, free);
 }
 
@@ -174,6 +171,8 @@ static void pointer_init_internal(struct pointer_data* ptr, u64 size) {
     vm->init(&ptr->vm, size);
     list->init(&ptr->list);
     list->init(&ptr->free);
+    pointer_list_init();
+    pointer_file_init();
     pointer_vm_register_free_internal(&ptr->free, pointer_free);
 #ifdef USE_GC
     list->init(&ptr->gc);
@@ -513,7 +512,6 @@ static void pointer_put_char(u64 ptr, char value) {
 /* public */
 
 const struct pointer_vm_methods vm_methods_definition = {
-    .register_free = pointer_vm_register_free,
     .alloc = pointer_vm_alloc,
     .realloc = pointer_vm_realloc,
     .free = pointer_vm_free,

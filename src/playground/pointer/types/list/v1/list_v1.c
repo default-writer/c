@@ -10,6 +10,7 @@
 extern const struct vm vm_definition;
 extern const struct list list_micro_definition;
 extern const struct pointer_vm_methods vm_methods_definition;
+extern void pointer_vm_register_free(function function);
 
 extern struct pointer_data vm_pointer;
 static struct pointer_data* base = &vm_pointer;
@@ -36,7 +37,6 @@ static u64 pointer_list_pop(u64 ptr);
 /* implementation*/
 
 static u64 pointer_list_alloc(void) {
-    pointer->register_free(pointer_list_free);
     struct pointer* ptr = pointer->alloc(sizeof(struct list_handler), TYPE_LIST);
     struct list_handler* handler = ptr->data;
     list->init(&handler->list);
@@ -139,6 +139,10 @@ static u64 pointer_list_pop(u64 ptr) {
 }
 
 /* public */
+
+void pointer_list_init() {
+    pointer_vm_register_free(pointer_list_free);
+}
 
 const struct pointer_list_methods pointer_list_methods_definition = {
     .alloc = pointer_list_alloc,

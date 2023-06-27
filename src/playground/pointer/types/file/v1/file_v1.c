@@ -10,6 +10,7 @@
 extern const struct vm vm_definition;
 extern const struct list list_micro_definition;
 extern const struct pointer_vm_methods vm_methods_definition;
+extern void pointer_vm_register_free(function function);
 
 extern struct pointer_data vm_pointer;
 static struct pointer_data* base = &vm_pointer;
@@ -139,6 +140,10 @@ static void pointer_file_free(u64 ptr) {
 }
 
 /* public */
+
+void pointer_file_init() {
+    pointer_vm_register_free(pointer_file_free);
+}
 
 const struct pointer_file_methods pointer_file_methods_definition = {
     .alloc = pointer_file_alloc,

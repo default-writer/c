@@ -17,4 +17,7 @@ struct vm {
 #endif
 };
 
+/* type definition */
+typedef void (*function)(u64 args);
+
 #endif /* _VIRTUAL_H_ */

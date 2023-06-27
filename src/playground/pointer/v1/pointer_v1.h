@@ -35,7 +35,6 @@ struct pointer_data {
 };
 
 struct pointer_vm_methods {
-    void (*register_free)(void (*free)(u64 ptr));
     struct pointer* (*alloc)(u64 size, enum type type);
     void (*realloc)(struct pointer* ptr, u64 size);
     void (*free)(struct pointer* ptr);
