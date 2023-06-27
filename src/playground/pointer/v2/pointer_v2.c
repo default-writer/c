@@ -5,7 +5,7 @@
 
 #define DEFAULT_SIZE 0x100
 
-/* list definition */
+/* definition */
 extern const struct vm vm_definition;
 extern const struct list list_micro_definition;
 
@@ -27,7 +27,7 @@ struct pointer_data {
 static struct pointer_data pointer;
 static struct pointer_data* base = &pointer;
 
-/* list definition */
+/* definition */
 static const struct vm* vm = &vm_definition;
 static const struct list* list = &list_micro_definition;
 

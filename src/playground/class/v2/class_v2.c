@@ -2,7 +2,7 @@
 #include "common/alloc.h"
 #include "playground/list/v2/list_v2.h"
 
-/* list definition */
+/* definition */
 extern const struct list list_v2;
 /* class data definition */
 // extern struct class_data class_data;
@@ -18,7 +18,7 @@ struct class_data {
 
 /* private */
 
-/* list definition */
+/* definition */
 static const struct list* list = &list_v2;
 
 /* creates the class instance */

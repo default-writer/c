@@ -206,7 +206,8 @@ set(LIB_MEMORY4_SOURCE
 set(LIB_BRAIN_SOURCE src/playground/brain/brain.c)
 set(LIB_TYPES1_SOURCE 
     src/playground/pointer/types/list/v1/list_v1.c
-    src/playground/pointer/types/file/v1/file_v1.c)
+    src/playground/pointer/types/file/v1/file_v1.c
+    src/playground/pointer/types/string/v1/string_v1.c)
 set(LIB_POINTER1_SOURCE src/playground/pointer/v1/pointer_v1.c)
 set(LIB_POINTER2_SOURCE src/playground/pointer/v2/pointer_v2.c)
 set(LIB_MEMORY_LIST1_SOURCE src/playground/memory/list/v1/memory_list_v1.c)

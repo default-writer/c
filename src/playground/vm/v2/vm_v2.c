@@ -9,7 +9,7 @@
 #define VM_DATA_SIZE sizeof(struct vm_data)
 #define ALLOC_SIZE(size) (size * PTR_SIZE)
 
-/* list definition */
+/* definition */
 
 /* private */
 
@@ -17,6 +17,7 @@ extern const struct pointer_methods pointer_methods_definition;
 extern const struct list_methods list_methods_definition;
 extern const struct file_methods file_methods_definition;
 extern const struct memory_methods memory_methods_definition;
+
 static const struct pointer_methods* pointer = &pointer_methods_definition;
 static const struct list_methods* list = &list_methods_definition;
 static const struct file_methods* file = &file_methods_definition;

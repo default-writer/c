@@ -9,7 +9,7 @@
 #define HASHTABLE_SIZE 101
 #define DEFAULT_SIZE 0x1
 
-/* list definition */
+/* definition */
 
 extern struct hashtable hashtable_definition_v2;
 static const struct hashtable* hashtable = &hashtable_definition_v2;

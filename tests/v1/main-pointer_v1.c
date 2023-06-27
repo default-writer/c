@@ -4,6 +4,7 @@
 #include "playground/hashtable/v1/hashtable_v1.h"
 #include "playground/pointer/types/file/v1/file_v1.h"
 #include "playground/pointer/types/list/v1/list_v1.h"
+#include "playground/pointer/types/string/v1/string_v1.h"
 #include "playground/pointer/v1/pointer_v1.h"
 #include <rexo/include/rexo.h>
 
@@ -15,11 +16,13 @@ extern void pointer_ctx_destroy(struct pointer_data** ctx);
 
 extern const struct vm vm_definition;
 
-extern struct pointer_methods pointer_methods_definition;
-extern struct pointer_list_methods pointer_list_methods_definition;
+extern const struct pointer_methods pointer_methods_definition;
+extern const struct pointer_list_methods pointer_list_methods_definition;
+extern const struct pointer_string_methods pointer_string_methods_definition;
 
-const struct pointer_methods* pointer = &pointer_methods_definition;
-const struct pointer_list_methods* list = &pointer_list_methods_definition;
+static const struct pointer_methods* pointer = &pointer_methods_definition;
+static const struct pointer_list_methods* list = &pointer_list_methods_definition;
+static const struct pointer_string_methods* string = &pointer_string_methods_definition;
 
 typedef struct test_data {
     struct pointer_data* ctx;
@@ -53,21 +56,21 @@ RX_TEST_CASE(tests, test_list_push_list_peek_list_pop, .fixture = test_fixture) 
         char* tmp = ptr + 1;
         char ch = *tmp;
         *tmp = 0;
-        u64 data = pointer->load(ptr);
+        u64 data = string->load(ptr);
         *tmp = ch;
         list->push(list_ptr, data);
     }
     char* buffer = global_alloc(size);
     for (u64 i = 0; i < size - 1; i++) {
         u64 ch0 = list->peek(list_ptr);
-        const char* data = pointer->unsafe(ch0);
+        const char* data = string->unsafe(ch0);
         *(buffer + i) = *data;
         u64 ch = list->pop(list_ptr);
 #ifdef USE_GC
         CLEAN(ch)
 #endif
 #ifndef USE_GC
-        pointer->free(ch);
+        string->free(ch);
 #endif
     }
     printf("%s\n", buffer);
@@ -88,25 +91,25 @@ RX_TEST_CASE(tests, test_list_push_list_peek_list_pop_free, .fixture = test_fixt
         char* tmp = ptr + 1;
         char ch = *tmp;
         *tmp = 0;
-        u64 data = pointer->load(ptr);
+        u64 data = string->load(ptr);
         *tmp = ch;
         list->push(list_ptr, data);
     }
     char* buffer = global_alloc(size);
     for (u64 i = 0; i < size - 1; i++) {
         u64 ch0 = list->peek(list_ptr);
-        const char* data = pointer->unsafe(ch0);
+        const char* data = string->unsafe(ch0);
         *(buffer + i) = *data;
         u64 ch = list->pop(list_ptr);
 #ifdef USE_GC
         CLEAN(ch)
 #endif
 #ifndef USE_GC
-        pointer->free(ch);
+        string->free(ch);
 #endif
     }
 #ifndef USE_GC
-    pointer->free(list_ptr);
+    string->free(list_ptr);
 #endif
     printf("%s\n", buffer);
     global_free(buffer, size);
@@ -125,16 +128,16 @@ RX_TEST_CASE(tests, test_list_peek_0, .fixture = test_fixture) {
         char* tmp = ptr + 1;
         char ch = *tmp;
         *tmp = 0;
-        u64 data = pointer->load(ptr);
+        u64 data = string->load(ptr);
         *tmp = ch;
         pointer->push(data);
     }
     char* buffer = global_alloc(size);
     for (u64 i = 0; i < size - 1; i++) {
-        const char* data = pointer->unsafe(i + 1);
+        const char* data = string->unsafe(i + 1);
         *(buffer + i) = *data;
 #ifndef USE_GC
-        pointer->free(i + 1);
+        string->free(i + 1);
 #endif
     }
     printf("%s\n", buffer);
@@ -148,10 +151,10 @@ int main(int argc, char** argv) {
     printf("---- acceptance test code\n");
 #endif
     pointer->init(DEFAULT_SIZE);
-    u64 argv_ptr = pointer->load(argv[0]);
+    u64 argv_ptr = string->load(argv[0]);
     pointer->push(argv_ptr);
 #ifndef USE_GC
-    pointer->free(argv_ptr);
+    string->free(argv_ptr);
 #endif
     pointer->destroy();
 #ifdef USE_MEMORY_DEBUG_INFO

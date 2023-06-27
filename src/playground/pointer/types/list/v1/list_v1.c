@@ -6,7 +6,7 @@
 
 #define DEFAULT_SIZE 0x100
 
-/* list definition */
+/* definition */
 extern const struct vm vm_definition;
 extern const struct list list_micro_definition;
 extern const struct pointer_vm_methods vm_methods_definition;
@@ -15,7 +15,7 @@ extern void pointer_vm_register_free(function function);
 extern struct pointer_data vm_pointer;
 static struct pointer_data* base = &vm_pointer;
 
-/* list definition */
+/* definition */
 static const struct vm* vm = &vm_definition;
 static const struct list* list = &list_micro_definition;
 static const struct pointer_vm_methods* pointer = &vm_methods_definition;

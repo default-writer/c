@@ -53,10 +53,10 @@
 /* macros */
 #define PTR_SIZE sizeof(void*) /* size of a pointer */
 
-/* list definition */
+/* definition */
 extern const struct list list_micro_definition;
 
-/* list definition */
+/* definition */
 static const struct list* list = &list_micro_definition;
 static struct list_data** cache;
 

@@ -9,7 +9,7 @@
 #define PTR_SIZE sizeof(void*) /* size of a pointer */
 #define ALLOC_SIZE(n) (((n) + 1) * PTR_SIZE) /* buffer size in bytes = size of 8 items */
 
-/* list definition */
+/* definition */
 extern const struct list list_experimental_definition;
 /* list parameters definition */
 extern struct list_parameters list_parameters_definition;

@@ -7,13 +7,15 @@
 
 #define DEFAULT_SIZE 0x8
 
-/* list definition */
+/* definition */
 extern const struct vm vm_definition;
 extern const struct list list_micro_definition;
+
 extern const struct pointer_methods pointer_methods_definition;
 extern const struct list_methods list_methods_definition;
 extern const struct file_methods file_methods_definition;
 extern const struct memory_methods memory_methods_definition;
+
 static const struct pointer_methods* pointer = &pointer_methods_definition;
 static const struct list_methods* list = &list_methods_definition;
 static const struct file_methods* file = &file_methods_definition;

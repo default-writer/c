@@ -9,12 +9,12 @@
 
 /* externally visible class definition API */
 extern const struct class class_definition_v1;
-/* list definition */
+/* definition */
 extern const struct list list_v1;
 /* externally visible class data definition API */
 extern struct class_data class_data;
 
-/* list definition */
+/* definition */
 static const struct list* list = &list_v1;
 
 /* Data structure to use at the core of our fixture. */

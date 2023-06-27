@@ -2,7 +2,7 @@
 #include "common/alloc.h"
 #include "list-micro/data.h"
 
-/* list definition */
+/* definition */
 extern const struct list list_micro_definition;
 /* class data definition */
 extern struct class_data class_data;
@@ -21,7 +21,7 @@ static struct list_data list_data;
 /* class data list reference */
 static struct list_data* class_list_data = &list_data;
 
-/* list definition */
+/* definition */
 static const struct list* list = &list_micro_definition;
 
 /* creates the class instance */

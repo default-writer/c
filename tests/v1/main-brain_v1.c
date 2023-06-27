@@ -4,6 +4,7 @@
 #include "playground/hashtable/v1/hashtable_v1.h"
 #include "playground/pointer/types/file/v1/file_v1.h"
 #include "playground/pointer/types/list/v1/list_v1.h"
+#include "playground/pointer/types/string/v1/string_v1.h"
 #include "playground/pointer/v1/pointer_v1.h"
 
 #include <rexo/include/rexo.h>
@@ -16,13 +17,15 @@ extern void pointer_ctx_destroy(struct pointer_data** ctx);
 
 extern const struct vm vm_definition;
 
-extern struct pointer_methods pointer_methods_definition;
-extern struct pointer_list_methods pointer_list_methods_definition;
-extern struct pointer_file_methods pointer_file_methods_definition;
+extern const struct pointer_methods pointer_methods_definition;
+extern const struct pointer_list_methods pointer_list_methods_definition;
+extern const struct pointer_file_methods pointer_file_methods_definition;
+extern const struct pointer_string_methods pointer_string_methods_definition;
 
 const struct pointer_methods* pointer = &pointer_methods_definition;
 const struct pointer_list_methods* list = &pointer_list_methods_definition;
 const struct pointer_file_methods* file = &pointer_file_methods_definition;
+const struct pointer_string_methods* string = &pointer_string_methods_definition;
 
 typedef struct test_data {
     struct pointer_data* ctx;
@@ -46,50 +49,50 @@ RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tea
 
 /* test init */
 RX_TEST_CASE(tests, test_print_0, .fixture = test_fixture) {
-    pointer->printf(0);
+    string->printf(0);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_load_0, .fixture = test_fixture) {
-    u64 empty_ptr = pointer->load(0);
+    u64 empty_ptr = string->load(0);
     RX_ASSERT(empty_ptr == 0);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_load_empty, .fixture = test_fixture) {
-    u64 empty_ptr = pointer->load("");
+    u64 empty_ptr = string->load("");
     RX_ASSERT(empty_ptr != 0);
 #ifndef USE_GC
-    pointer->free(empty_ptr);
+    string->free(empty_ptr);
 #endif
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_print_load_empty, .fixture = test_fixture) {
-    u64 empty_ptr = pointer->load("");
-    pointer->printf(empty_ptr);
+    u64 empty_ptr = string->load("");
+    string->printf(empty_ptr);
     RX_ASSERT(empty_ptr != 0);
 #ifndef USE_GC
-    pointer->free(empty_ptr);
+    string->free(empty_ptr);
 #endif
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_load_copy, .fixture = test_fixture) {
-    u64 char_ptr = pointer->load("/");
-    u64 copy_ptr = pointer->copy(char_ptr);
+    u64 char_ptr = string->load("/");
+    u64 copy_ptr = string->copy(char_ptr);
     RX_ASSERT(char_ptr != 0);
     RX_ASSERT(copy_ptr != 0);
     RX_ASSERT(char_ptr != copy_ptr);
 #ifndef USE_GC
-    pointer->free(char_ptr);
-    pointer->free(copy_ptr);
+    string->free(char_ptr);
+    string->free(copy_ptr);
 #endif
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_load_push_peek_pop, .fixture = test_fixture) {
-    u64 char_ptr = pointer->load("/");
+    u64 char_ptr = string->load("/");
     pointer->push(char_ptr);
     u64 peek_ptr = pointer->peek();
     u64 pop_ptr = pointer->pop();
@@ -97,122 +100,122 @@ RX_TEST_CASE(tests, test_load_push_peek_pop, .fixture = test_fixture) {
     RX_ASSERT(peek_ptr != 0);
     RX_ASSERT(pop_ptr != 0);
 #ifndef USE_GC
-    pointer->free(char_ptr);
-    pointer->free(peek_ptr);
-    pointer->free(pop_ptr);
+    string->free(char_ptr);
+    string->free(peek_ptr);
+    string->free(pop_ptr);
 #endif
 }
 
 RX_TEST_CASE(tests, test_load_free_free, .fixture = test_fixture) {
-    u64 char_ptr = pointer->load("/");
+    u64 char_ptr = string->load("/");
     RX_ASSERT(char_ptr != 0);
 #ifndef USE_GC
-    pointer->free(char_ptr);
-    pointer->free(char_ptr);
+    string->free(char_ptr);
+    string->free(char_ptr);
 #endif
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_strcat_load_alloc, .fixture = test_fixture) {
-    u64 char_ptr = pointer->load("/");
-    u64 pattern_ptr = pointer->alloc();
-    pointer->strcat(pattern_ptr, char_ptr);
+    u64 char_ptr = string->load("/");
+    u64 pattern_ptr = string->alloc();
+    string->strcat(pattern_ptr, char_ptr);
     RX_ASSERT(char_ptr != 0);
     RX_ASSERT(pattern_ptr != 0);
 #ifndef USE_GC
-    pointer->free(char_ptr);
-    pointer->free(pattern_ptr);
+    string->free(char_ptr);
+    string->free(pattern_ptr);
 #endif
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_strcat_alloc_load, .fixture = test_fixture) {
-    u64 zero_ptr = pointer->alloc();
-    u64 char_ptr = pointer->load("/");
-    pointer->strcat(zero_ptr, char_ptr);
+    u64 zero_ptr = string->alloc();
+    u64 char_ptr = string->load("/");
+    string->strcat(zero_ptr, char_ptr);
     RX_ASSERT(zero_ptr != 0);
     RX_ASSERT(char_ptr != 0);
 #ifndef USE_GC
-    pointer->free(zero_ptr);
-    pointer->free(char_ptr);
+    string->free(zero_ptr);
+    string->free(char_ptr);
 #endif
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_strcat_load_alloc_alloc, .fixture = test_fixture) {
-    u64 char_ptr = pointer->load("/");
-    u64 pattern_ptr = pointer->alloc();
-    u64 empty_ptr = pointer->alloc();
-    pointer->strcat(pattern_ptr, char_ptr);
-    pointer->strcpy(empty_ptr, pattern_ptr);
+    u64 char_ptr = string->load("/");
+    u64 pattern_ptr = string->alloc();
+    u64 empty_ptr = string->alloc();
+    string->strcat(pattern_ptr, char_ptr);
+    string->strcpy(empty_ptr, pattern_ptr);
     RX_ASSERT(char_ptr != 0);
     RX_ASSERT(pattern_ptr != 0);
     RX_ASSERT(empty_ptr != 0);
 #ifndef USE_GC
-    pointer->free(empty_ptr);
-    pointer->free(pattern_ptr);
-    pointer->free(char_ptr);
+    string->free(empty_ptr);
+    string->free(pattern_ptr);
+    string->free(char_ptr);
 #endif
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_strcat_load_load, .fixture = test_fixture) {
-    u64 char_ptr = pointer->load("/");
-    u64 pattern_ptr = pointer->load("*");
-    pointer->strcat(pattern_ptr, char_ptr);
+    u64 char_ptr = string->load("/");
+    u64 pattern_ptr = string->load("*");
+    string->strcat(pattern_ptr, char_ptr);
     RX_ASSERT(pattern_ptr != 0);
     RX_ASSERT(char_ptr != 0);
 #ifndef USE_GC
-    pointer->free(pattern_ptr);
-    pointer->free(char_ptr);
+    string->free(pattern_ptr);
+    string->free(char_ptr);
 #endif
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_strcpy_load_alloc, .fixture = test_fixture) {
-    u64 pattern_ptr = pointer->load("/");
-    u64 empty_ptr = pointer->alloc();
-    pointer->strcpy(empty_ptr, pattern_ptr);
+    u64 pattern_ptr = string->load("/");
+    u64 empty_ptr = string->alloc();
+    string->strcpy(empty_ptr, pattern_ptr);
     RX_ASSERT(pattern_ptr != 0);
     RX_ASSERT(empty_ptr != 0);
 #ifndef USE_GC
-    pointer->free(empty_ptr);
-    pointer->free(pattern_ptr);
+    string->free(empty_ptr);
+    string->free(pattern_ptr);
 #endif
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_strcpy_load_load, .fixture = test_fixture) {
-    u64 char_ptr = pointer->load("/input.txt");
-    u64 pattern_ptr = pointer->load("*");
-    pointer->strcpy(pattern_ptr, char_ptr);
+    u64 char_ptr = string->load("/input.txt");
+    u64 pattern_ptr = string->load("*");
+    string->strcpy(pattern_ptr, char_ptr);
     RX_ASSERT(pattern_ptr != 0);
     RX_ASSERT(char_ptr != 0);
 #ifndef USE_GC
-    pointer->free(pattern_ptr);
-    pointer->free(char_ptr);
+    string->free(pattern_ptr);
+    string->free(char_ptr);
 #endif
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_load_open_file_close_file, .fixture = test_fixture) {
-    u64 file_path_ptr = pointer->getcwd();
-    u64 file_name_ptr = pointer->load("/nonexistent.txt");
-    pointer->strcat(file_path_ptr, file_name_ptr);
+    u64 file_path_ptr = string->getcwd();
+    u64 file_name_ptr = string->load("/nonexistent.txt");
+    string->strcat(file_path_ptr, file_name_ptr);
 #ifndef USE_GC
-    pointer->free(file_name_ptr);
+    string->free(file_name_ptr);
 #endif
-    u64 mode_ptr = pointer->load("rb");
+    u64 mode_ptr = string->load("rb");
     u64 f_ptr = file->alloc(file_path_ptr, mode_ptr);
     u64 data_ptr = file->read(f_ptr);
     RX_ASSERT(f_ptr == 0);
     RX_ASSERT(data_ptr == 0);
     file->free(f_ptr);
 #ifndef USE_GC
-    pointer->free(data_ptr);
-    pointer->free(mode_ptr);
-    pointer->free(file_name_ptr);
-    pointer->free(file_path_ptr);
+    string->free(data_ptr);
+    string->free(mode_ptr);
+    string->free(file_name_ptr);
+    string->free(file_path_ptr);
 #endif
 }
 
@@ -224,87 +227,87 @@ RX_TEST_CASE(tests, test_file_read_invalid_type, .fixture = test_fixture) {
     file->free(list_ptr);
     list->free(list_ptr);
 #ifndef USE_GC
-    pointer->free(data_ptr);
+    string->free(data_ptr);
 #endif
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixture) {
-    u64 file_path_ptr = pointer->getcwd();
-    u64 file_name_ptr = pointer->load("/all_english_words.txt");
-    pointer->strcat(file_path_ptr, file_name_ptr);
+    u64 file_path_ptr = string->getcwd();
+    u64 file_name_ptr = string->load("/all_english_words.txt");
+    string->strcat(file_path_ptr, file_name_ptr);
 #ifndef USE_GC
-    pointer->free(file_name_ptr);
+    string->free(file_name_ptr);
 #endif
-    u64 mode_ptr = pointer->load("rb");
+    u64 mode_ptr = string->load("rb");
     u64 f_ptr = file->alloc(file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
         u64 data_ptr = file->read(f_ptr);
         u64 list_ptr = list->alloc();
         file->free(f_ptr);
-        char* file_data = pointer->unsafe(data_ptr);
+        char* file_data = string->unsafe(data_ptr);
         for (int i = 0; i < 100; i++) {
             char* tmp = file_data;
             while (*tmp != 0 && *tmp != '\n') {
                 tmp++;
             }
             *tmp++ = '\0';
-            u64 data = pointer->load(file_data);
+            u64 data = string->load(file_data);
             list->push(list_ptr, data);
-            char* unsafe = pointer->unsafe(data);
+            char* unsafe = string->unsafe(data);
             printf("%s\n", unsafe);
             file_data = tmp;
         }
         list->free(list_ptr);
 #ifndef USE_GC
-        pointer->free(data_ptr);
+        string->free(data_ptr);
 #endif
     }
 #ifndef USE_GC
-    pointer->free(mode_ptr);
-    pointer->free(file_name_ptr);
-    pointer->free(file_path_ptr);
+    string->free(mode_ptr);
+    string->free(file_name_ptr);
+    string->free(file_path_ptr);
 #endif
 }
 
 extern inline void source1(void) {
     u64 file_path_ptr = pointer->pop();
-    u64 file_name_ptr = pointer->load("/input.txt");
-    u64 pattern_ptr = pointer->load("/");
-    u64 last_match_ptr = pointer->match_last(file_path_ptr, pattern_ptr);
+    u64 file_name_ptr = string->load("/input.txt");
+    u64 pattern_ptr = string->load("/");
+    u64 last_match_ptr = string->match_last(file_path_ptr, pattern_ptr);
 #ifndef USE_GC
-    pointer->free(pattern_ptr);
+    string->free(pattern_ptr);
 #endif
-    pointer->put_char(last_match_ptr, '\0');
+    string->put_char(last_match_ptr, '\0');
 #ifndef USE_GC
-    pointer->free(last_match_ptr);
+    string->free(last_match_ptr);
 #endif
-    pointer->strcat(file_path_ptr, file_name_ptr);
+    string->strcat(file_path_ptr, file_name_ptr);
 #ifndef USE_GC
-    pointer->free(file_name_ptr);
+    string->free(file_name_ptr);
 #endif
-    u64 mode_ptr = pointer->load("rb");
+    u64 mode_ptr = string->load("rb");
     u64 f_ptr = file->alloc(file_path_ptr, mode_ptr);
 #ifndef USE_GC
-    pointer->free(file_path_ptr);
-    pointer->free(mode_ptr);
+    string->free(file_path_ptr);
+    string->free(mode_ptr);
 #endif
     u64 data_ptr = file->read(f_ptr);
     file->free(f_ptr);
-    pointer->printf(data_ptr);
+    string->printf(data_ptr);
 #ifndef USE_GC
-    pointer->free(data_ptr);
+    string->free(data_ptr);
 #endif
 }
 
 extern inline void source2(void) {
-    u64 file_path_ptr = pointer->getcwd();
-    u64 file_name_ptr = pointer->load("/all_english_words.txt");
-    pointer->strcat(file_path_ptr, file_name_ptr);
+    u64 file_path_ptr = string->getcwd();
+    u64 file_name_ptr = string->load("/all_english_words.txt");
+    string->strcat(file_path_ptr, file_name_ptr);
 #ifndef USE_GC
-    pointer->free(file_name_ptr);
+    string->free(file_name_ptr);
 #endif
-    u64 mode_ptr = pointer->load("rb");
+    u64 mode_ptr = string->load("rb");
     u64 f_ptr = file->alloc(file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
         u64 data_ptr = file->read(f_ptr);
@@ -314,28 +317,28 @@ extern inline void source2(void) {
         }
         u64 list_ptr = list->alloc();
         file->free(f_ptr);
-        char* file_data = pointer->unsafe(data_ptr);
+        char* file_data = string->unsafe(data_ptr);
         for (u64 i = 0; i < size; i++) {
             char* tmp = file_data;
             while (*tmp != 0 && *tmp != '\n') {
                 tmp++;
             }
             *tmp++ = '\0';
-            u64 data = pointer->load(file_data);
+            u64 data = string->load(file_data);
             list->push(list_ptr, data);
-            char* unsafe = pointer->unsafe(data);
+            char* unsafe = string->unsafe(data);
             printf("%s\n", unsafe);
             file_data = tmp;
         }
         list->free(list_ptr);
 #ifndef USE_GC
-        pointer->free(data_ptr);
+        string->free(data_ptr);
 #endif
     }
 #ifndef USE_GC
-    pointer->free(mode_ptr);
-    pointer->free(file_name_ptr);
-    pointer->free(file_path_ptr);
+    string->free(mode_ptr);
+    string->free(file_name_ptr);
+    string->free(file_path_ptr);
 #endif
 }
 
@@ -345,12 +348,12 @@ int main(int argc, char** argv) {
     printf("---- acceptance test code\n");
 #endif
     pointer->init(DEFAULT_SIZE);
-    u64 argv_ptr = pointer->load(argv[0]);
+    u64 argv_ptr = string->load(argv[0]);
     pointer->push(argv_ptr);
     source1();
     source2();
 #ifndef USE_GC
-    pointer->free(argv_ptr);
+    string->free(argv_ptr);
 #endif
     pointer->destroy();
 #ifdef USE_MEMORY_DEBUG_INFO

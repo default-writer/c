@@ -11,12 +11,12 @@
 
 /* externally visible class definition API */
 extern const struct class class_definition_v2;
-/* list definition */
+/* definition */
 extern const struct list list_v2;
 /* externally visible class data definition API */
 extern struct class_data class_data;
 
-/* list definition */
+/* definition */
 static const struct list* list = &list_v2;
 static struct list_data* list_data;
 
