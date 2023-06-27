@@ -97,8 +97,14 @@ static void pointer_string_strcpy(u64 dest, u64 src) {
     if (dest_ptr == 0) {
         return;
     }
+    if (dest_ptr->type != TYPE_PTR) {
+        return;
+    }
     const struct pointer* src_ptr = vm->read(&base->vm, src);
     if (src_ptr == 0) {
+        return;
+    }
+    if (src_ptr->type != TYPE_PTR) {
         return;
     }
     if (src_ptr->size == 0) {
@@ -123,8 +129,14 @@ static void pointer_string_strcat(u64 dest, u64 src) {
     if (dest_ptr == 0) {
         return;
     }
+    if (dest_ptr->type != TYPE_PTR) {
+        return;
+    }
     const struct pointer* src_ptr = vm->read(&base->vm, src);
     if (src_ptr == 0) {
+        return;
+    }
+    if (src_ptr->type != TYPE_PTR) {
         return;
     }
     if (src_ptr->size == 0) {
@@ -149,8 +161,14 @@ static u64 pointer_string_match_last(u64 src, u64 match) {
     if (src_ptr == 0) {
         return 0;
     }
+    if (src_ptr->type != TYPE_PTR) {
+        return 0;
+    }
     const struct pointer* match_ptr = vm->read(&base->vm, match);
     if (match_ptr == 0) {
+        return 0;
+    }
+    if (match_ptr->type != TYPE_PTR) {
         return 0;
     }
     const char* data_src = src_ptr->data;
@@ -222,6 +240,9 @@ static void pointer_string_printf(u64 ptr) {
     if (data_ptr == 0) {
         return;
     }
+    if (data_ptr->type != TYPE_PTR) {
+        return;
+    }
     const char* data = data_ptr->data;
     if (data == 0) {
         return;
@@ -238,6 +259,9 @@ static void pointer_string_put_char(u64 ptr, char value) {
     if (data_ptr == 0) {
         return;
     }
+    if (data_ptr->type != TYPE_PTR) {
+        return;
+    }
     char* data = data_ptr->data;
     if (data == 0) {
         return;
@@ -251,6 +275,9 @@ static char* pointer_string_unsafe(u64 ptr) {
     }
     struct pointer* data_ptr = vm->read(&base->vm, ptr);
     if (data_ptr == 0) {
+        return 0;
+    }
+    if (data_ptr->type != TYPE_PTR) {
         return 0;
     }
     char* data = data_ptr->data;
