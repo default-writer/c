@@ -69,7 +69,4 @@ struct pointer_methods {
 #endif
 };
 
-void pointer_ctx_init(struct pointer_data** ctx, u64 size);
-void pointer_ctx_destroy(struct pointer_data** ctx);
-
 #endif /* _POINTER_H_ */

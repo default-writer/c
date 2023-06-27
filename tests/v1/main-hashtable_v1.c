@@ -11,7 +11,10 @@
 #define HASHTABLE_SIZE 101
 #define DEFAULT_SIZE 0x100
 
-/* list definition */
+/* definition */
+extern void pointer_ctx_init(struct pointer_data** ctx, u64 size);
+extern void pointer_ctx_destroy(struct pointer_data** ctx);
+
 extern const struct vm vm_definition;
 
 extern struct hashtable hashtable_definition_v1;

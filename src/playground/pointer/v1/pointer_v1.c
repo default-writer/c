@@ -35,11 +35,13 @@ struct list_handler {
     struct list_data* list;
 };
 
-void pointer_init(u64 size);
-void pointer_destroy(void);
+static void pointer_init(u64 size);
+static void pointer_destroy(void);
 
 /* api */
 void pointer_vm_register_free(function free);
+void pointer_ctx_init(struct pointer_data** ctx, u64 size);
+void pointer_ctx_destroy(struct pointer_data** ctx);
 
 static struct pointer* pointer_vm_alloc(u64 size, enum type type);
 static void pointer_vm_realloc(struct pointer* ptr, u64 size);
@@ -225,11 +227,11 @@ void pointer_ctx_destroy(struct pointer_data** ctx) {
     global_free(*ctx, POINTER_DATA_SIZE);
 }
 
-void pointer_init(u64 size) {
+static void pointer_init(u64 size) {
     pointer_init_internal(base, size);
 }
 
-void pointer_destroy(void) {
+static void pointer_destroy(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
     vm->dump_ref(&base->vm);
     vm->dump(&base->vm);
