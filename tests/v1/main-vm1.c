@@ -2,6 +2,8 @@
 #include "list-micro/data.h"
 #include "playground/brain/brain.h"
 #include "playground/hashtable/v1/hashtable_v1.h"
+#include "playground/pointer/types/file/v1/file_v1.h"
+#include "playground/pointer/types/list/v1/list_v1.h"
 #include "playground/pointer/v1/pointer_v1.h"
 
 #define DEFAULT_SIZE 0x100
@@ -10,10 +12,12 @@
 extern const struct vm vm_definition;
 
 extern struct pointer_methods pointer_methods_definition;
-extern struct list_methods list_methods_definition;
+extern struct pointer_list_methods pointer_list_methods_definition;
+extern struct pointer_file_methods pointer_file_methods_definition;
 
 const struct pointer_methods* pointer = &pointer_methods_definition;
-const struct list_methods* list = &list_methods_definition;
+const struct pointer_list_methods* list = &pointer_list_methods_definition;
+const struct pointer_file_methods* file = &pointer_file_methods_definition;
 
 typedef struct test_data {
     struct pointer_data* ctx;
@@ -36,13 +40,13 @@ extern inline void source1(void) {
     pointer->free(file_name_ptr);
 #endif
     u64 mode_ptr = pointer->load("rb");
-    u64 f_ptr = pointer->file_alloc(file_path_ptr, mode_ptr);
+    u64 f_ptr = file->alloc(file_path_ptr, mode_ptr);
 #ifndef USE_GC
     pointer->free(file_path_ptr);
     pointer->free(mode_ptr);
 #endif
-    u64 data_ptr = pointer->file_read(f_ptr);
-    pointer->file_free(f_ptr);
+    u64 data_ptr = file->read(f_ptr);
+    file->free(f_ptr);
     pointer->printf(data_ptr);
 #ifndef USE_GC
     pointer->free(data_ptr);
@@ -57,15 +61,15 @@ extern inline void source2(void) {
     pointer->free(file_name_ptr);
 #endif
     u64 mode_ptr = pointer->load("rb");
-    u64 f_ptr = pointer->file_alloc(file_path_ptr, mode_ptr);
+    u64 f_ptr = file->alloc(file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
-        u64 data_ptr = pointer->file_read(f_ptr);
+        u64 data_ptr = file->read(f_ptr);
         u64 size = pointer->size(data_ptr);
         if (size > 100) {
             size = 100;
         }
         u64 list_ptr = list->alloc();
-        pointer->file_free(f_ptr);
+        file->free(f_ptr);
         char* file_data = pointer->unsafe(data_ptr);
         for (u64 i = 0; i < size; i++) {
             char* tmp = file_data;

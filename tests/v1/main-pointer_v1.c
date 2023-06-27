@@ -2,6 +2,8 @@
 #include "list-micro/data.h"
 #include "playground/brain/brain.h"
 #include "playground/hashtable/v1/hashtable_v1.h"
+#include "playground/pointer/types/file/v1/file_v1.h"
+#include "playground/pointer/types/list/v1/list_v1.h"
 #include "playground/pointer/v1/pointer_v1.h"
 #include <rexo/include/rexo.h>
 
@@ -11,10 +13,10 @@
 extern const struct vm vm_definition;
 
 extern struct pointer_methods pointer_methods_definition;
-extern struct list_methods list_methods_definition;
+extern struct pointer_list_methods pointer_list_methods_definition;
 
 const struct pointer_methods* pointer = &pointer_methods_definition;
-const struct list_methods* list = &list_methods_definition;
+const struct pointer_list_methods* list = &pointer_list_methods_definition;
 
 typedef struct test_data {
     struct pointer_data* ctx;

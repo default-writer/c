@@ -13,16 +13,33 @@ enum type {
     TYPE_LIST = 3
 };
 
-struct pointer;
+struct list_data;
 
-struct pointer_data;
+/* private */
+struct pointer {
+#ifndef USE_GC
+    struct vm_data* vm;
+#endif
+    void* data;
+    u64 size;
+    enum type type;
+};
 
-struct list_methods {
-    u64 (*alloc)(void);
-    void (*free)(u64);
-    u64 (*peek)(u64 list_ptr);
-    u64 (*pop)(u64 list_ptr);
-    void (*push)(u64 list_ptr, u64 ptr);
+struct pointer_data {
+    struct vm_data* vm;
+    struct list_data* list;
+    struct list_data* free;
+#ifdef USE_GC
+    struct list_data* gc;
+#endif
+};
+
+struct pointer_vm_methods {
+    void (*register_free)(void (*free)(u64 ptr));
+    struct pointer* (*alloc)(u64 size, enum type type);
+    void (*realloc)(struct pointer* ptr, u64 size);
+    void (*free)(struct pointer* ptr);
+    void (*cleanup)(struct list_data** current);
 };
 
 struct pointer_methods {
@@ -38,9 +55,6 @@ struct pointer_methods {
     u64 (*match_last)(u64 src_ptr, u64 match_prt);
     u64 (*getcwd)(void);
     u64 (*load)(const char* data);
-    u64 (*file_alloc)(u64 file_path_ptr, u64 mode_ptr);
-    u64 (*file_read)(u64 ptr);
-    void (*file_free)(u64 ptr);
     void (*printf)(u64 ptr);
     void (*put_char)(u64 ptr, char value);
     char* (*unsafe)(u64 ptr);
