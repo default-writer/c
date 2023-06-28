@@ -155,9 +155,9 @@ for target in ${targets[@]}; do
     fi
     case "${target}" in main-*)    
         timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/coverage/${target}" 2>&1 >"${pwd}/coverage/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
+        lcov --capture --directory "${pwd}/coverage/" --output-file "${pwd}/coverage/${target}.lcov" &>/dev/null
+        lcov --remove "${pwd}/coverage/${target}.lcov" "${pwd}/.deps/*" -o "${pwd}/coverage/${target}.lcov"
     esac
-    lcov --capture --directory "${pwd}/coverage/" --output-file "${pwd}/coverage/${target}.lcov" &>/dev/null
-    lcov --remove "${pwd}/coverage/${target}.lcov" "${pwd}/.deps/*" -o "${pwd}/coverage/${target}.lcov"
 done
 
 find "${pwd}/coverage" -type f -name "*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
