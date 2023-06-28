@@ -481,6 +481,8 @@ RX_TEST_CASE(tests, test_19_improper_use_of_different_calls, .fixture = test_fix
         list->push(list_ptr, mode_ptr);
         idx3 = string->copy(list_ptr);
         virtual->free(data_ptr);
+        virtual->free(list_ptr);
+        virtual->free(mode_ptr);
         file->free(list_ptr);
         list->peek(list_ptr);
         list->push(list_ptr, f_ptr);
