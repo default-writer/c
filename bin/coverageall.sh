@@ -130,8 +130,8 @@ export LCOV_PATH=$(which lcov)
 export GENHTML_PATH==$(which genhtml)
 export MAKEFLAGS=-j8
 
-coverage=( "*.gcda" "*.gcno")
-for f in "${coverage}"; do
+coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" )
+for f in ${coverage}; do
     find "${pwd}/coverage" -type f -name "${f}" -delete
 done
 
@@ -143,7 +143,7 @@ ${cmake} \
     -DLCOV_PATH=${LCOV_PATH} \
     -DGENHTML_PATH=${GENHTML_PATH} \
     -DCODE_COVERAGE:BOOL=TRUE \
-    -DGC:BOOL=TRUE \
+    -DGC:BOOL=FALSE \
     $(cmake-coverage-options) \
     -S"${pwd}" \
     -B"${pwd}/coverage" \
@@ -165,7 +165,7 @@ for target in ${targets[@]}; do
 done
 
 coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" )
-for f in "${coverage}"; do
+for f in ${coverage}; do
     find "${pwd}/coverage" -type f -name "${f}" -delete
 done
 
@@ -177,7 +177,7 @@ ${cmake} \
     -DLCOV_PATH=${LCOV_PATH} \
     -DGENHTML_PATH=${GENHTML_PATH} \
     -DCODE_COVERAGE:BOOL=TRUE \
-    -DGC:BOOL=FALSE \
+    -DGC:BOOL=TRUE \
     $(cmake-coverage-options) \
     -S"${pwd}" \
     -B"${pwd}/coverage" \
@@ -200,8 +200,8 @@ done
 
 find "${pwd}/coverage" -type f -name "*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
 
-coverage=( "*.gcda" "*.gcno")
-for f in "${coverage}"; do
+coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" )
+for f in ${coverage}; do
     find "${pwd}/coverage" -type f -name "${f}" -delete
 done
 

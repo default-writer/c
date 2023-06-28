@@ -204,10 +204,6 @@ set(LIB_MEMORY3_SOURCE
 set(LIB_MEMORY4_SOURCE
     src/playground/memory/v6/memory_v6.c)
 set(LIB_BRAIN_SOURCE src/playground/brain/brain.c)
-set(LIB_TYPES1_SOURCE 
-    src/playground/pointer/types/list/v1/list_v1.c
-    src/playground/pointer/types/file/v1/file_v1.c
-    src/playground/pointer/types/string/v1/string_v1.c)
 set(LIB_POINTER1_SOURCE src/playground/pointer/v1/pointer_v1.c)
 set(LIB_POINTER2_SOURCE src/playground/pointer/v2/pointer_v2.c)
 set(LIB_MEMORY_LIST1_SOURCE src/playground/memory/list/v1/memory_list_v1.c)
@@ -217,6 +213,13 @@ set(LIB_MEMORY_REF1_SOURCE src/memory/v1/ref_v1.c)
 set(LIB_MEMORY_REF2_SOURCE src/memory/v2/ref_v2.c)
 set(LIB_MEMORY_REF3_SOURCE src/memory/v3/ref_v3.c)
 set(LIB_CLASS_SOURCE src/class/class.c)
+set(LIB_STD_LIST1_SOURCE src/playground/pointer/types/list/v1/list_v1.c)
+set(LIB_STD_FILE1_SOURCE src/playground/pointer/types/file/v1/file_v1.c)
+set(LIB_STD_STRING1_SOURCE src/playground/pointer/types/string/v1/string_v1.c)
+set(LIB_STD1_SOURCE
+    src/playground/pointer/types/list/v1/list_v1.c
+    src/playground/pointer/types/file/v1/file_v1.c
+    src/playground/pointer/types/string/v1/string_v1.c)
 
 set(MAIN_STANDARD_SOURCE tests/main.c ${LIB_STANDARD_SOURCE})
 set(MAIN_LIGHT_SOURCE tests/main-light.c ${LIB_LIGHT_SOURCE})
@@ -271,7 +274,6 @@ add_library(list-class2 STATIC ${LIB_CLASS2_SOURCE})
 add_library(list-class STATIC ${LIB_CLASS_SOURCE})
 add_library(list-brain STATIC ${LIB_BRAIN_SOURCE})
 add_library(list-pointer1 STATIC ${LIB_POINTER1_SOURCE})
-add_library(list-types1 STATIC ${LIB_TYPES1_SOURCE})
 add_library(list-pointer2 STATIC ${LIB_POINTER2_SOURCE})
 add_library(memory-list1 STATIC ${LIB_MEMORY_LIST1_SOURCE})
 add_library(memory-list2 STATIC ${LIB_MEMORY_LIST2_SOURCE})
@@ -280,6 +282,10 @@ add_library(memory-ref1 STATIC ${LIB_MEMORY_REF1_SOURCE})
 add_library(memory-ref2 STATIC ${LIB_MEMORY_REF2_SOURCE})
 add_library(memory-ref3 STATIC ${LIB_MEMORY_REF3_SOURCE})
 add_library(structs-v3 STATIC ${TEST_STRUCTS3_LIB_SOURCE})
+add_library(std-types1 STATIC ${LIB_STD1_SOURCE})
+add_library(std-list1 SHARED ${LIB_STD_LIST1_SOURCE})
+add_library(std-file1 SHARED ${LIB_STD_FILE1_SOURCE})
+add_library(std-string1 SHARED ${LIB_STD_STRING1_SOURCE})
 
 add_executable(main-default ${MAIN_STANDARD_SOURCE})
 add_executable(main-light ${MAIN_LIGHT_SOURCE})
@@ -315,7 +321,7 @@ target_link_libraries(list-memory3 PRIVATE list-common)
 target_link_libraries(list-memory4 PRIVATE list-common)
 target_link_libraries(list-class PRIVATE list-common)
 target_link_libraries(list-alloc PRIVATE list-parameters)
-target_link_libraries(list-pointer1 PRIVATE list-common list-types1)
+target_link_libraries(list-pointer1 PRIVATE list-common std-types1)
 target_link_libraries(list-pointer2 PRIVATE list-common)
 target_link_libraries(list-experimental PRIVATE list-parameters)
 target_link_libraries(memory-ref1 PRIVATE memory-list1 list-micro list-common)
@@ -383,20 +389,23 @@ endif()
 
 if(TARGETS)
 
+get_property(std_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
 get_property(main_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
 get_property(test_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
 get_property(gtk_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
 
+list(FILTER std_target_names INCLUDE REGEX "^std-")
 list(FILTER main_target_names INCLUDE REGEX "^main-")
 list(FILTER test_target_names INCLUDE REGEX "^test-")
 list(FILTER gtk_target_names INCLUDE REGEX "^gtk-")
 
+string(REGEX REPLACE ";" " " std_target_names "${std_target_names}")
 string(REGEX REPLACE ";" " " main_target_names "${main_target_names}")
 string(REGEX REPLACE ";" " " test_target_names "${test_target_names}")
 string(REGEX REPLACE ";" " " gtk_target_names "${gtk_target_names}")
 
 FILE(WRITE ${CMAKE_BINARY_DIR}/targets.txt
-    "${main_target_names} ${test_target_names}"
+    "${std_target_names} ${main_target_names} ${test_target_names}"
 )
 
 FILE(WRITE ${CMAKE_BINARY_DIR}/gtktargets.txt

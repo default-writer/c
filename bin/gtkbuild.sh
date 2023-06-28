@@ -129,7 +129,7 @@ fi
 [ ! -d "${pwd}/coverage" ] && mkdir "${pwd}/coverage"
 
 coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" )
-for f in "${coverage}"; do
+for f in ${coverage}; do
     find "${pwd}/coverage" -type f -name "${f}" -delete
 done
 
