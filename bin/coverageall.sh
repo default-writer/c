@@ -107,9 +107,7 @@ targets=( $(get-targets) )
 
 default=${target}
 
-for target in ${targets[@]}; do
-    rm -f "${pwd}/coverage/${target}.lcov"
-done
+find "${pwd}/coverage" -type f -name "*.lcov" -delete
 
 target=${default}
 if [ "${target}" == "--target" ]; then
@@ -143,7 +141,7 @@ ${cmake} \
     -DLCOV_PATH=${LCOV_PATH} \
     -DGENHTML_PATH=${GENHTML_PATH} \
     -DCODE_COVERAGE:BOOL=TRUE \
-    -DGC:BOOL=FALSE \
+    -DGC:BOOL=TRUE \
     $(cmake-coverage-options) \
     -S"${pwd}" \
     -B"${pwd}/coverage" \
@@ -159,9 +157,9 @@ for target in ${targets[@]}; do
     fi
     case "${target}" in main-*)    
         timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/coverage/${target}" 2>&1 >"${pwd}/coverage/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
+        lcov --capture --directory "${pwd}/coverage/" --output-file "${pwd}/coverage/${target}-gc.lcov" &>/dev/null
+        lcov --remove "${pwd}/coverage/${target}-gc.lcov" "${pwd}/.deps/*" -o "${pwd}/coverage/${target}-gc.lcov"
     esac
-    lcov --capture --directory "${pwd}/coverage/" --output-file "${pwd}/coverage/${target}-gc.lcov" &>/dev/null
-    lcov --remove "${pwd}/coverage/${target}-gc.lcov" "${pwd}/.deps/*" -o "${pwd}/coverage/${target}-gc.lcov"
 done
 
 coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" )
@@ -177,7 +175,7 @@ ${cmake} \
     -DLCOV_PATH=${LCOV_PATH} \
     -DGENHTML_PATH=${GENHTML_PATH} \
     -DCODE_COVERAGE:BOOL=TRUE \
-    -DGC:BOOL=TRUE \
+    -DGC:BOOL=FALSE \
     $(cmake-coverage-options) \
     -S"${pwd}" \
     -B"${pwd}/coverage" \
@@ -193,21 +191,18 @@ for target in ${targets[@]}; do
     fi
     case "${target}" in main-*)    
         timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/coverage/${target}" 2>&1 >"${pwd}/coverage/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
+        lcov --capture --directory "${pwd}/coverage/" --output-file "${pwd}/coverage/${target}-main.lcov" &>/dev/null
+        lcov --remove "${pwd}/coverage/${target}-main.lcov" "${pwd}/.deps/*" -o "${pwd}/coverage/${target}-main.lcov"
     esac
-    lcov --capture --directory "${pwd}/coverage/" --output-file "${pwd}/coverage/${target}-main.lcov" &>/dev/null
-    lcov --remove "${pwd}/coverage/${target}-main.lcov" "${pwd}/.deps/*" -o "${pwd}/coverage/${target}-main.lcov"
 done
 
 find "${pwd}/coverage" -type f -name "*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
 
+find "${pwd}/coverage" -type f -name "*.lcov" ! -name "lcov.info" -delete
+
 coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" )
 for f in ${coverage}; do
     find "${pwd}/coverage" -type f -name "${f}" -delete
-done
-
-for target in ${targets[@]}; do
-    rm -f "${pwd}/coverage/${target}-gc.lcov"
-    rm -f "${pwd}/coverage/${target}-main.lcov"
 done
 
 if [ "${silent}" == "--silent" ]; then

@@ -111,9 +111,7 @@ targets=( $(get-targets) )
 
 default=${target}
 
-for target in ${targets[@]}; do
-    rm -f "${pwd}/coverage/${target}.lcov"
-done
+find "${pwd}/coverage" -type f -name "*.lcov" -delete
 
 target=${default}
 if [ "${target}" == "--target" ]; then
@@ -164,9 +162,7 @@ done
 
 find "${pwd}/coverage" -type f -name "*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
 
-for target in ${targets[@]}; do
-    rm -f "${pwd}/coverage/${target}.lcov"
-done
+find "${pwd}/coverage" -type f -name "*.lcov" ! -name "lcov.info" -delete
 
 if [ "${silent}" == "--silent" ]; then
     exec 1>&2 2>&-

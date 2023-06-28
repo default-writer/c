@@ -47,8 +47,14 @@ static u64 file_alloc(u64 file_path, u64 mode) {
     if (file_path_ptr == 0) {
         return 0;
     }
+    if (file_path_ptr->type != TYPE_PTR) {
+        return 0;
+    }
     const struct pointer* mode_ptr = vm->read(&base->vm, mode);
     if (mode_ptr == 0) {
+        return 0;
+    }
+    if (mode_ptr->type != TYPE_PTR) {
         return 0;
     }
     const char* file_path_data = file_path_ptr->data;
