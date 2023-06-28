@@ -35,7 +35,6 @@ struct file_handler {
 static u64 file_alloc(u64 file_path_ptr, u64 mode_ptr);
 static u64 file_read(u64 ptr);
 static void file_free(u64 ptr);
-static u8* file_unsafe(u64 ptr);
 
 /* internal */
 
@@ -150,21 +149,6 @@ static void file_free(u64 ptr) {
     pointer->free(data_ptr);
 }
 
-static u8* file_unsafe(u64 ptr) {
-    if (ptr == 0) {
-        return 0;
-    }
-    struct pointer* data_ptr = vm->read(&base->vm, ptr);
-    if (data_ptr == 0) {
-        return 0;
-    }
-    if (data_ptr->type != TYPE_PTR) {
-        return 0;
-    }
-    u8* data = data_ptr->data;
-    return data;
-}
-
 /* public */
 
 void file_init() {
@@ -174,6 +158,5 @@ void file_init() {
 const struct file_methods file_methods_definition = {
     .alloc = file_alloc,
     .read = file_read,
-    .free = file_free,
-    .unsafe = file_unsafe
+    .free = file_free
 };

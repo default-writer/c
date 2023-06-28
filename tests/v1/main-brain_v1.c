@@ -245,7 +245,7 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixtur
         u64 data_ptr = file->read(f_ptr);
         u64 list_ptr = list->alloc();
         file->free(f_ptr);
-        u8* file_data = file->unsafe(data_ptr);
+        u8* file_data = virtual->unsafe(data_ptr);
         for (int i = 0; i < 100; i++) {
             u8* tmp = file_data;
             while (*tmp != 0 && *tmp != '\n') {
@@ -313,7 +313,7 @@ extern inline void source2(void) {
         }
         u64 list_ptr = list->alloc();
         file->free(f_ptr);
-        u8* file_data = file->unsafe(data_ptr);
+        u8* file_data = virtual->unsafe(data_ptr);
         for (u64 i = 0; i < size; i++) {
             u8* tmp = file_data;
             while (*tmp != 0 && *tmp != '\n') {
