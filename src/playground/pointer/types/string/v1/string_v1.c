@@ -43,7 +43,7 @@ static char* string_unsafe(u64 ptr);
 /* implementation*/
 
 static u64 string_alloc(void) {
-    struct pointer* ptr = pointer->alloc(0, TYPE_PTR);
+    struct pointer* ptr = pointer->alloc(0, TYPE_STRING);
     u64 data = vm->write(&base->vm, ptr);
 #ifdef USE_GC
     list->push(&base->gc, (void*)data);
@@ -59,7 +59,7 @@ static void string_free(u64 ptr) {
     if (data_ptr == 0) {
         return;
     }
-    if (data_ptr->type != TYPE_PTR) {
+    if (data_ptr->type != TYPE_STRING) {
         return;
     }
     data_ptr = vm->free(&base->vm, ptr);
@@ -77,7 +77,7 @@ static u64 string_copy(u64 ptr) {
     if (data_ptr == 0) {
         return 0;
     }
-    if (data_ptr->type != TYPE_PTR) {
+    if (data_ptr->type != TYPE_STRING) {
         return 0;
     }
     if (data_ptr->size == 0) {
@@ -97,14 +97,14 @@ static void string_strcpy(u64 dest, u64 src) {
     if (dest_ptr == 0) {
         return;
     }
-    if (dest_ptr->type != TYPE_PTR) {
+    if (dest_ptr->type != TYPE_STRING) {
         return;
     }
     const struct pointer* src_ptr = vm->read(&base->vm, src);
     if (src_ptr == 0) {
         return;
     }
-    if (src_ptr->type != TYPE_PTR) {
+    if (src_ptr->type != TYPE_STRING) {
         return;
     }
     if (src_ptr->size == 0) {
@@ -129,14 +129,14 @@ static void string_strcat(u64 dest, u64 src) {
     if (dest_ptr == 0) {
         return;
     }
-    if (dest_ptr->type != TYPE_PTR) {
+    if (dest_ptr->type != TYPE_STRING) {
         return;
     }
     const struct pointer* src_ptr = vm->read(&base->vm, src);
     if (src_ptr == 0) {
         return;
     }
-    if (src_ptr->type != TYPE_PTR) {
+    if (src_ptr->type != TYPE_STRING) {
         return;
     }
     if (src_ptr->size == 0) {
@@ -161,14 +161,14 @@ static u64 string_match_last(u64 src, u64 match) {
     if (src_ptr == 0) {
         return 0;
     }
-    if (src_ptr->type != TYPE_PTR) {
+    if (src_ptr->type != TYPE_STRING) {
         return 0;
     }
     const struct pointer* match_ptr = vm->read(&base->vm, match);
     if (match_ptr == 0) {
         return 0;
     }
-    if (match_ptr->type != TYPE_PTR) {
+    if (match_ptr->type != TYPE_STRING) {
         return 0;
     }
     const char* data_src = src_ptr->data;
@@ -193,7 +193,7 @@ static u64 string_match_last(u64 src, u64 match) {
     if (*data_match != 0) {
         return 0;
     }
-    struct pointer* last_match_ptr = pointer->alloc(0, TYPE_PTR);
+    struct pointer* last_match_ptr = pointer->alloc(0, TYPE_STRING);
     last_match_ptr->data = --data_last;
     u64 data = vm->write(&base->vm, last_match_ptr);
 #ifdef USE_GC
@@ -211,7 +211,7 @@ static u64 string_load(const char* src_data) {
         return 0;
     }
     struct vm_data** current = &base->vm;
-    struct pointer* data_ptr = pointer->alloc(size, TYPE_PTR);
+    struct pointer* data_ptr = pointer->alloc(size, TYPE_STRING);
     memcpy(data_ptr->data, src_data, size); /* NOLINT */
     u64 data = vm->write(current, data_ptr);
 #ifndef USE_GC
@@ -240,7 +240,7 @@ static void string_printf(u64 ptr) {
     if (data_ptr == 0) {
         return;
     }
-    if (data_ptr->type != TYPE_PTR) {
+    if (data_ptr->type != TYPE_STRING) {
         return;
     }
     const char* data = data_ptr->data;
@@ -259,7 +259,7 @@ static void string_put_char(u64 ptr, char value) {
     if (data_ptr == 0) {
         return;
     }
-    if (data_ptr->type != TYPE_PTR) {
+    if (data_ptr->type != TYPE_STRING) {
         return;
     }
     char* data = data_ptr->data;
@@ -277,7 +277,7 @@ static char* string_unsafe(u64 ptr) {
     if (data_ptr == 0) {
         return 0;
     }
-    if (data_ptr->type != TYPE_PTR) {
+    if (data_ptr->type != TYPE_STRING) {
         return 0;
     }
     char* data = data_ptr->data;

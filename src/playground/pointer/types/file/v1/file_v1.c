@@ -31,6 +31,7 @@ struct file_handler {
 static u64 file_alloc(u64 file_path_ptr, u64 mode_ptr);
 static u64 file_read(u64 ptr);
 static void file_free(u64 ptr);
+static u8* file_unsafe(u64 ptr);
 
 /* internal */
 
@@ -47,14 +48,14 @@ static u64 file_alloc(u64 file_path, u64 mode) {
     if (file_path_ptr == 0) {
         return 0;
     }
-    if (file_path_ptr->type != TYPE_PTR) {
+    if (file_path_ptr->type != TYPE_STRING) {
         return 0;
     }
     const struct pointer* mode_ptr = vm->read(&base->vm, mode);
     if (mode_ptr == 0) {
         return 0;
     }
-    if (mode_ptr->type != TYPE_PTR) {
+    if (mode_ptr->type != TYPE_STRING) {
         return 0;
     }
     const char* file_path_data = file_path_ptr->data;
@@ -109,7 +110,7 @@ static u64 file_read(u64 ptr) {
     u64 size = (u64)ftell(file);
     fseek(file, 0, SEEK_SET);
     u64 data_size = size + 1;
-    data_ptr = pointer->alloc(data_size, TYPE_PTR);
+    data_ptr = pointer->alloc(data_size, TYPE_FILE);
     fread(data_ptr->data, 1, size, handler->file);
     u64 data = vm->write(&base->vm, data_ptr);
 #ifdef USE_GC
@@ -145,6 +146,21 @@ static void file_free(u64 ptr) {
     pointer->free(data_ptr);
 }
 
+static u8* file_unsafe(u64 ptr) {
+    if (ptr == 0) {
+        return 0;
+    }
+    struct pointer* data_ptr = vm->read(&base->vm, ptr);
+    if (data_ptr == 0) {
+        return 0;
+    }
+    if (data_ptr->type != TYPE_FILE) {
+        return 0;
+    }
+    u8* data = data_ptr->data;
+    return data;
+}
+
 /* public */
 
 void file_init() {
@@ -155,4 +171,5 @@ const struct file_methods file_methods_definition = {
     .alloc = file_alloc,
     .read = file_read,
     .free = file_free,
+    .unsafe = file_unsafe
 };

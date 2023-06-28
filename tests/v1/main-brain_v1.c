@@ -245,14 +245,14 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixtur
         u64 data_ptr = file->read(f_ptr);
         u64 list_ptr = list->alloc();
         file->free(f_ptr);
-        char* file_data = string->unsafe(data_ptr);
+        u8* file_data = file->unsafe(data_ptr);
         for (int i = 0; i < 100; i++) {
-            char* tmp = file_data;
+            u8* tmp = file_data;
             while (*tmp != 0 && *tmp != '\n') {
                 tmp++;
             }
             *tmp++ = '\0';
-            u64 data = string->load(file_data);
+            u64 data = string->load((char*)file_data);
             list->push(list_ptr, data);
             char* unsafe = string->unsafe(data);
             printf("%s\n", unsafe);
@@ -317,14 +317,14 @@ extern inline void source2(void) {
         }
         u64 list_ptr = list->alloc();
         file->free(f_ptr);
-        char* file_data = string->unsafe(data_ptr);
+        u8* file_data = file->unsafe(data_ptr);
         for (u64 i = 0; i < size; i++) {
-            char* tmp = file_data;
+            u8* tmp = file_data;
             while (*tmp != 0 && *tmp != '\n') {
                 tmp++;
             }
             *tmp++ = '\0';
-            u64 data = string->load(file_data);
+            u64 data = string->load((char*)file_data);
             list->push(list_ptr, data);
             char* unsafe = string->unsafe(data);
             printf("%s\n", unsafe);

@@ -4,9 +4,12 @@
 #include "std/common.h"
 
 enum type {
+    /* value used for void type */
     TYPE_VOID = 0,
     /* value used for pointer type */
     TYPE_PTR = 1,
+    /* value used for string type */
+    TYPE_STRING = 1,
     /* value used for file type */
     TYPE_FILE = 2,
     /* value used for list type */

@@ -132,18 +132,23 @@ RX_TEST_CASE(tests, test_list_push_0_list_peek_0_list_pop_0_list_free_0, .fixtur
     list->pop(str1);
     const char* data1 = string->unsafe(list_ptr);
     const char* data2 = string->unsafe(0);
+    file->alloc(list_ptr, 0);
+    file->alloc(list_ptr, str1);
+    file->alloc(str1, list_ptr);
     file->free(list_ptr);
     file->free(0);
     u64 s1 = file->alloc(str1, 0);
-    u64 s2 = file->alloc(0, 0);
-    u64 s3 = file->read(0);
-    u64 s4 = file->read(list_ptr);
+    u64 s2 = file->alloc(str1, list_ptr);
+    u64 s3 = file->alloc(0, 0);
+    u64 s4 = file->read(0);
+    u64 s5 = file->read(list_ptr);
     RX_ASSERT(data1 == 0);
     RX_ASSERT(data2 == 0);
     RX_ASSERT(s1 == 0);
     RX_ASSERT(s2 == 0);
     RX_ASSERT(s3 == 0);
     RX_ASSERT(s4 == 0);
+    RX_ASSERT(s5 == 0);
 #ifndef USE_GC
     string->free(0);
     string->free(list_ptr);
