@@ -5,6 +5,7 @@
 #include "playground/pointer/types/file/v1/file_v1.h"
 #include "playground/pointer/types/list/v1/list_v1.h"
 #include "playground/pointer/types/string/v1/string_v1.h"
+#include "playground/pointer/types/virtual/v1/virtual_v1.h"
 #include "playground/pointer/v1/pointer_v1.h"
 
 #include <rexo/include/rexo.h>
@@ -23,12 +24,14 @@ extern const struct pointer_methods pointer_methods_definition;
 extern const struct list_methods list_methods_definition;
 extern const struct file_methods file_methods_definition;
 extern const struct string_methods string_methods_definition;
+extern const struct virtual_methods virtual_methods_definition;
 
 static const struct hashtable* hashtable = &hashtable_definition_v1;
 static const struct pointer_methods* pointer = &pointer_methods_definition;
 static const struct list_methods* list = &list_methods_definition;
 static const struct file_methods* file = &file_methods_definition;
 static const struct string_methods* string = &string_methods_definition;
+static const struct virtual_methods* virtual = &virtual_methods_definition;
 
 typedef struct test_data {
     struct pointer_data* ctx;
@@ -384,7 +387,7 @@ RX_TEST_CASE(tests, test_16_load_open_file_unsafe_hashtable, .fixture = test_fix
         const u64 size = 0xfff;
         char* file_data;
         const char* file_end;
-        file_data = string->unsafe(data_ptr);
+        file_data = (char*)virtual->unsafe(data_ptr);
         file_end = file_data + size;
         while (file_data < file_end) {
             char* tmp = file_data;
@@ -410,7 +413,7 @@ RX_TEST_CASE(tests, test_16_load_open_file_unsafe_hashtable, .fixture = test_fix
 #endif
             file_data = tmp;
         }
-        file_data = string->unsafe(data_ptr);
+        file_data = (char*)virtual->unsafe(data_ptr);
         file_end = file_data + size;
         while (file_data < file_end) {
             char* tmp = file_data;
@@ -425,9 +428,7 @@ RX_TEST_CASE(tests, test_16_load_open_file_unsafe_hashtable, .fixture = test_fix
             file_data = tmp;
         }
         list->free(list_ptr);
-#ifndef USE_GC
-        string->free(data_ptr);
-#endif
+        virtual->free(data_ptr);
     }
 #ifndef USE_GC
     string->free(mode_ptr);
@@ -479,7 +480,7 @@ RX_TEST_CASE(tests, test_19_improper_use_of_different_calls, .fixture = test_fix
         u64 list_ptr = list->alloc();
         list->push(list_ptr, mode_ptr);
         idx3 = string->copy(list_ptr);
-        file->free(data_ptr);
+        virtual->free(data_ptr);
         file->free(list_ptr);
         list->peek(list_ptr);
         list->push(list_ptr, f_ptr);
@@ -518,7 +519,13 @@ RX_TEST_CASE(tests, test_19_improper_use_of_different_calls, .fixture = test_fix
         file->read(f_ptr);
         file->read(list_ptr);
         file->read(data_ptr);
-        list->free(data_ptr);
+#ifndef USE_GC
+        string->free(f_ptr);
+        string->free(list_ptr);
+        string->free(data_ptr);
+#endif
+        list->free(f_ptr);
+        virtual->free(data_ptr);
         list->push(f_ptr, data_ptr);
         list->push(list_ptr, data_ptr);
         list->push(data_ptr, data_ptr);
@@ -526,8 +533,8 @@ RX_TEST_CASE(tests, test_19_improper_use_of_different_calls, .fixture = test_fix
         list->free(list_ptr);
         idx2 = string->copy(list_ptr);
         list->free(f_ptr);
+        virtual->free(data_ptr);
 #ifndef USE_GC
-        string->free(data_ptr);
         string->free(list_ptr);
         string->free(f_ptr);
 #endif
@@ -590,7 +597,7 @@ RX_TEST_CASE(tests, test_21_load_open_file_unsafe_hashtable_default_hash, .fixtu
         const u64 size = 0xfff;
         char* file_data;
         const char* file_end;
-        file_data = string->unsafe(data_ptr);
+        file_data = (char*)virtual->unsafe(data_ptr);
         file_end = file_data + size;
         while (file_data < file_end) {
             char* tmp = file_data;
@@ -605,7 +612,7 @@ RX_TEST_CASE(tests, test_21_load_open_file_unsafe_hashtable_default_hash, .fixtu
             hashtable->free(unsafe_tmp);
             file_data = tmp;
         }
-        file_data = string->unsafe(data_ptr);
+        file_data = (char*)virtual->unsafe(data_ptr);
         file_end = file_data + size;
         while (file_data < file_end) {
             char* tmp = file_data;
@@ -620,9 +627,7 @@ RX_TEST_CASE(tests, test_21_load_open_file_unsafe_hashtable_default_hash, .fixtu
             file_data = tmp;
         }
         list->free(list_ptr);
-#ifndef USE_GC
-        string->free(data_ptr);
-#endif
+        virtual->free(data_ptr);
     }
 #ifndef USE_GC
     string->free(mode_ptr);
@@ -648,7 +653,7 @@ RX_TEST_CASE(tests, test_22_load_open_file_unsafe_hashtable_murmurhash3_hash, .f
         file->free(f_ptr);
         u64 size = pointer->size(data_ptr);
         CLEAN(size)
-        char* file_data = string->unsafe(data_ptr);
+        char* file_data = (char*)virtual->unsafe(data_ptr);
         const char* file_end = file_data + 0xffff;
         while (file_data < file_end) {
             char* tmp = file_data;
@@ -663,9 +668,7 @@ RX_TEST_CASE(tests, test_22_load_open_file_unsafe_hashtable_murmurhash3_hash, .f
             file_data = tmp;
         }
         list->free(list_ptr);
-#ifndef USE_GC
-        string->free(data_ptr);
-#endif
+        virtual->free(data_ptr);
     }
 #ifndef USE_GC
     string->free(mode_ptr);

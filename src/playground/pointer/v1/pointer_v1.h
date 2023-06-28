@@ -9,11 +9,11 @@ enum type {
     /* value used for pointer type */
     TYPE_PTR = 1,
     /* value used for string type */
-    TYPE_STRING = 1,
+    TYPE_STRING = 2,
     /* value used for file type */
-    TYPE_FILE = 2,
+    TYPE_FILE = 3,
     /* value used for list type */
-    TYPE_LIST = 3
+    TYPE_LIST = 4
 };
 
 struct list_data;

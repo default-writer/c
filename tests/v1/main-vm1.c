@@ -5,6 +5,7 @@
 #include "playground/pointer/types/file/v1/file_v1.h"
 #include "playground/pointer/types/list/v1/list_v1.h"
 #include "playground/pointer/types/string/v1/string_v1.h"
+#include "playground/pointer/types/virtual/v1/virtual_v1.h"
 #include "playground/pointer/v1/pointer_v1.h"
 
 #define DEFAULT_SIZE 0x100
@@ -16,11 +17,13 @@ extern const struct pointer_methods pointer_methods_definition;
 extern const struct list_methods list_methods_definition;
 extern const struct file_methods file_methods_definition;
 extern const struct string_methods string_methods_definition;
+extern const struct virtual_methods virtual_methods_definition;
 
 const struct pointer_methods* pointer = &pointer_methods_definition;
 const struct list_methods* list = &list_methods_definition;
 const struct file_methods* file = &file_methods_definition;
 const struct string_methods* string = &string_methods_definition;
+const struct virtual_methods* virtual = &virtual_methods_definition;
 
 typedef struct test_data {
     struct pointer_data* ctx;
@@ -51,9 +54,7 @@ extern inline void source1(void) {
     u64 data_ptr = file->read(f_ptr);
     file->free(f_ptr);
     string->printf(data_ptr);
-#ifndef USE_GC
-    string->free(data_ptr);
-#endif
+    virtual->free(data_ptr);
 }
 
 extern inline void source2(void) {
@@ -73,7 +74,7 @@ extern inline void source2(void) {
         }
         u64 list_ptr = list->alloc();
         file->free(f_ptr);
-        char* file_data = string->unsafe(data_ptr);
+        char* file_data = (char*)virtual->unsafe(data_ptr);
         for (u64 i = 0; i < size; i++) {
             char* tmp = file_data;
             while (*tmp != 0 && *tmp != '\n') {
@@ -87,9 +88,7 @@ extern inline void source2(void) {
             file_data = tmp;
         }
         list->free(list_ptr);
-#ifndef USE_GC
-        string->free(data_ptr);
-#endif
+        virtual->free(data_ptr);
     }
 #ifndef USE_GC
     string->free(mode_ptr);

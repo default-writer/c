@@ -1,24 +1,28 @@
 #include "playground/pointer/types/file/v1/file_v1.h"
 #include "common/alloc.h"
 #include "list-micro/data.h"
+#include "playground/pointer/types/virtual/v1/virtual_v1.h"
 #include "playground/pointer/v1/pointer_v1.h"
 #include "playground/vm/v1/vm_v1.h"
 
 #define DEFAULT_SIZE 0x100
 
 /* definition */
-extern const struct vm vm_definition;
-extern const struct list list_micro_definition;
-extern const struct pointer_vm_methods vm_methods_definition;
 extern void pointer_vm_register_free(function function);
 
 extern struct pointer_data vm_pointer;
 static struct pointer_data* base = &vm_pointer;
 
 /* definition */
+extern const struct vm vm_definition;
+extern const struct list list_micro_definition;
+extern const struct pointer_vm_methods vm_methods_definition;
+extern const struct virtual_methods virtual_methods_definition;
+
 static const struct vm* vm = &vm_definition;
 static const struct list* list = &list_micro_definition;
 static const struct pointer_vm_methods* pointer = &vm_methods_definition;
+static const struct virtual_methods* virtual = &virtual_methods_definition;
 
 struct file_handler {
     FILE* file;
@@ -110,13 +114,13 @@ static u64 file_read(u64 ptr) {
     u64 size = (u64)ftell(file);
     fseek(file, 0, SEEK_SET);
     u64 data_size = size + 1;
-    data_ptr = pointer->alloc(data_size, TYPE_FILE);
-    fread(data_ptr->data, 1, size, handler->file);
-    u64 data = vm->write(&base->vm, data_ptr);
+    u64 void_data = virtual->alloc(data_size);
+    void* file_data = virtual->unsafe(void_data);
+    fread(file_data, 1, size, handler->file);
 #ifdef USE_GC
-    list->push(&base->gc, (void*)data);
+    list->push(&base->gc, (void*)void_data);
 #endif
-    return data;
+    return void_data;
 }
 
 static void file_free(u64 ptr) {
@@ -154,7 +158,7 @@ static u8* file_unsafe(u64 ptr) {
     if (data_ptr == 0) {
         return 0;
     }
-    if (data_ptr->type != TYPE_FILE) {
+    if (data_ptr->type != TYPE_PTR) {
         return 0;
     }
     u8* data = data_ptr->data;

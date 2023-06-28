@@ -5,6 +5,7 @@
 #include "playground/pointer/types/file/v1/file_v1.h"
 #include "playground/pointer/types/list/v1/list_v1.h"
 #include "playground/pointer/types/string/v1/string_v1.h"
+#include "playground/pointer/types/virtual/v1/virtual_v1.h"
 #include "playground/pointer/v1/pointer_v1.h"
 
 #include <rexo/include/rexo.h>
@@ -21,11 +22,13 @@ extern const struct pointer_methods pointer_methods_definition;
 extern const struct list_methods list_methods_definition;
 extern const struct file_methods file_methods_definition;
 extern const struct string_methods string_methods_definition;
+extern const struct virtual_methods virtual_methods_definition;
 
 const struct pointer_methods* pointer = &pointer_methods_definition;
 const struct list_methods* list = &list_methods_definition;
 const struct file_methods* file = &file_methods_definition;
 const struct string_methods* string = &string_methods_definition;
+const struct virtual_methods* virtual = &virtual_methods_definition;
 
 typedef struct test_data {
     struct pointer_data* ctx;
@@ -211,8 +214,8 @@ RX_TEST_CASE(tests, test_load_open_file_close_file, .fixture = test_fixture) {
     RX_ASSERT(f_ptr == 0);
     RX_ASSERT(data_ptr == 0);
     file->free(f_ptr);
+    virtual->free(data_ptr);
 #ifndef USE_GC
-    string->free(data_ptr);
     string->free(mode_ptr);
     string->free(file_name_ptr);
     string->free(file_path_ptr);
@@ -223,12 +226,9 @@ RX_TEST_CASE(tests, test_load_open_file_close_file, .fixture = test_fixture) {
 RX_TEST_CASE(tests, test_file_read_invalid_type, .fixture = test_fixture) {
     u64 list_ptr = list->alloc();
     u64 data_ptr = file->read(list_ptr);
-    list->free(data_ptr);
+    virtual->free(data_ptr);
     file->free(list_ptr);
     list->free(list_ptr);
-#ifndef USE_GC
-    string->free(data_ptr);
-#endif
 }
 
 /* test init */
@@ -259,9 +259,7 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixtur
             file_data = tmp;
         }
         list->free(list_ptr);
-#ifndef USE_GC
-        string->free(data_ptr);
-#endif
+        virtual->free(data_ptr);
     }
 #ifndef USE_GC
     string->free(mode_ptr);
@@ -295,9 +293,7 @@ extern inline void source1(void) {
     u64 data_ptr = file->read(f_ptr);
     file->free(f_ptr);
     string->printf(data_ptr);
-#ifndef USE_GC
-    string->free(data_ptr);
-#endif
+    virtual->free(data_ptr);
 }
 
 extern inline void source2(void) {
@@ -331,9 +327,7 @@ extern inline void source2(void) {
             file_data = tmp;
         }
         list->free(list_ptr);
-#ifndef USE_GC
-        string->free(data_ptr);
-#endif
+        virtual->free(data_ptr);
     }
 #ifndef USE_GC
     string->free(mode_ptr);
