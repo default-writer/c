@@ -5,6 +5,7 @@
 #include "playground/pointer/types/file/v1/file_v1.h"
 #include "playground/pointer/types/list/v1/list_v1.h"
 #include "playground/pointer/types/string/v1/string_v1.h"
+#include "playground/pointer/types/virtual/v1/virtual_v1.h"
 #include "playground/pointer/v1/pointer_v1.h"
 #include <rexo/include/rexo.h>
 
@@ -20,11 +21,13 @@ extern const struct pointer_methods pointer_methods_definition;
 extern const struct list_methods list_methods_definition;
 extern const struct string_methods string_methods_definition;
 extern const struct file_methods file_methods_definition;
+extern const struct virtual_methods virtual_methods_definition;
 
 static const struct pointer_methods* pointer = &pointer_methods_definition;
 static const struct list_methods* list = &list_methods_definition;
 static const struct string_methods* string = &string_methods_definition;
 static const struct file_methods* file = &file_methods_definition;
+static const struct virtual_methods* virtual = &virtual_methods_definition;
 
 typedef struct test_data {
     struct pointer_data* ctx;
@@ -141,7 +144,11 @@ RX_TEST_CASE(tests, test_list_push_0_list_peek_0_list_pop_0_list_free_0, .fixtur
     u64 s2 = file->alloc(str1, list_ptr);
     u64 s3 = file->alloc(0, 0);
     u64 s4 = file->read(0);
-    u64 s5 = file->read(list_ptr);
+    u64 s5 = file->read(s1);
+    u64 s6 = file->read(list_ptr);
+    virtual->unsafe(0);
+    virtual->unsafe(str1);
+    virtual->unsafe(list_ptr);
     RX_ASSERT(data1 == 0);
     RX_ASSERT(data2 == 0);
     RX_ASSERT(s1 == 0);
@@ -149,6 +156,7 @@ RX_TEST_CASE(tests, test_list_push_0_list_peek_0_list_pop_0_list_free_0, .fixtur
     RX_ASSERT(s3 == 0);
     RX_ASSERT(s4 == 0);
     RX_ASSERT(s5 == 0);
+    RX_ASSERT(s6 == 0);
 #ifndef USE_GC
     string->free(0);
     string->free(list_ptr);

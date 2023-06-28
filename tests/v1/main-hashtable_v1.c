@@ -387,7 +387,7 @@ RX_TEST_CASE(tests, test_16_load_open_file_unsafe_hashtable, .fixture = test_fix
         const u64 size = 0xfff;
         char* file_data;
         const char* file_end;
-        file_data = (char*)virtual->unsafe(data_ptr);
+        file_data = virtual->unsafe(data_ptr);
         file_end = file_data + size;
         while (file_data < file_end) {
             char* tmp = file_data;
@@ -413,7 +413,7 @@ RX_TEST_CASE(tests, test_16_load_open_file_unsafe_hashtable, .fixture = test_fix
 #endif
             file_data = tmp;
         }
-        file_data = (char*)virtual->unsafe(data_ptr);
+        file_data = virtual->unsafe(data_ptr);
         file_end = file_data + size;
         while (file_data < file_end) {
             char* tmp = file_data;
@@ -597,7 +597,7 @@ RX_TEST_CASE(tests, test_21_load_open_file_unsafe_hashtable_default_hash, .fixtu
         const u64 size = 0xfff;
         char* file_data;
         const char* file_end;
-        file_data = (char*)virtual->unsafe(data_ptr);
+        file_data = virtual->unsafe(data_ptr);
         file_end = file_data + size;
         while (file_data < file_end) {
             char* tmp = file_data;
@@ -612,7 +612,7 @@ RX_TEST_CASE(tests, test_21_load_open_file_unsafe_hashtable_default_hash, .fixtu
             hashtable->free(unsafe_tmp);
             file_data = tmp;
         }
-        file_data = (char*)virtual->unsafe(data_ptr);
+        file_data = virtual->unsafe(data_ptr);
         file_end = file_data + size;
         while (file_data < file_end) {
             char* tmp = file_data;
@@ -653,7 +653,7 @@ RX_TEST_CASE(tests, test_22_load_open_file_unsafe_hashtable_murmurhash3_hash, .f
         file->free(f_ptr);
         u64 size = pointer->size(data_ptr);
         CLEAN(size)
-        char* file_data = (char*)virtual->unsafe(data_ptr);
+        char* file_data = virtual->unsafe(data_ptr);
         const char* file_end = file_data + 0xffff;
         while (file_data < file_end) {
             char* tmp = file_data;

@@ -74,7 +74,7 @@ extern inline void source2(void) {
         }
         u64 list_ptr = list->alloc();
         file->free(f_ptr);
-        char* file_data = (char*)virtual->unsafe(data_ptr);
+        char* file_data = virtual->unsafe(data_ptr);
         for (u64 i = 0; i < size; i++) {
             char* tmp = file_data;
             while (*tmp != 0 && *tmp != '\n') {
