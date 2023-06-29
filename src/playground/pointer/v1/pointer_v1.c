@@ -211,8 +211,8 @@ void pointer_ctx_init(struct pointer_data** ctx, u64 size) {
 
 void pointer_ctx_destroy(struct pointer_data** ctx) {
 #ifdef USE_MEMORY_DEBUG_INFO
-    vm->dump_ref(&base->vm);
-    vm->dump(&base->vm);
+    vm->dump_ref(base->vm);
+    vm->dump(base->vm);
 #endif
 #ifdef USE_GC
     pointer_gc();
@@ -227,8 +227,8 @@ static void pointer_init(u64 size) {
 
 static void pointer_destroy(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
-    vm->dump_ref(&base->vm);
-    vm->dump(&base->vm);
+    vm->dump_ref(base->vm);
+    vm->dump(base->vm);
 #endif
 #ifdef USE_GC
     pointer_gc();
@@ -260,7 +260,7 @@ static u64 pointer_size(u64 ptr) {
     if (ptr == 0) {
         return 0;
     }
-    const struct pointer* data_ptr = vm->read(&base->vm, ptr);
+    const struct pointer* data_ptr = vm->read(base->vm, ptr);
     if (data_ptr == 0) {
         return 0;
     }

@@ -20,9 +20,7 @@ struct list_data;
 
 /* private */
 struct pointer {
-#ifndef USE_GC
     struct vm_data* vm;
-#endif
     void* data;
     u64 size;
     enum type type;

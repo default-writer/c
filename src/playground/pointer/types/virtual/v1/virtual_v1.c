@@ -31,7 +31,7 @@ static void* virtual_unsafe(u64 ptr);
 
 static u64 virtual_alloc(u64 size) {
     struct pointer* f_ptr = pointer->alloc(size, TYPE_PTR);
-    u64 data = vm->write(&base->vm, f_ptr);
+    u64 data = vm->write(base->vm, f_ptr);
 #ifdef USE_GC
     list->push(&base->gc, (void*)data);
 #endif
@@ -42,14 +42,14 @@ static void virtual_free(u64 ptr) {
     if (ptr == 0) {
         return;
     }
-    struct pointer* data_ptr = vm->read(&base->vm, ptr);
+    struct pointer* data_ptr = vm->read(base->vm, ptr);
     if (data_ptr == 0) {
         return;
     }
     if (data_ptr->type != TYPE_PTR) {
         return;
     }
-    data_ptr = vm->free(&base->vm, ptr);
+    data_ptr = vm->free(base->vm, ptr);
     if (data_ptr == 0) {
         return;
     }
@@ -60,7 +60,7 @@ static void* virtual_unsafe(u64 ptr) {
     if (ptr == 0) {
         return 0;
     }
-    struct pointer* data_ptr = vm->read(&base->vm, ptr);
+    struct pointer* data_ptr = vm->read(base->vm, ptr);
     if (data_ptr == 0) {
         return 0;
     }

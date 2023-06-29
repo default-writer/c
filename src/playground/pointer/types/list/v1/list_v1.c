@@ -40,7 +40,7 @@ static u64 list_alloc(void) {
     struct pointer* ptr = pointer->alloc(sizeof(struct list_handler), TYPE_LIST);
     struct list_handler* handler = ptr->data;
     list->init(&handler->list);
-    u64 data = vm->write(&base->vm, ptr);
+    u64 data = vm->write(base->vm, ptr);
 #ifdef USE_GC
     list->push(&base->gc, (void*)data);
 #endif
@@ -51,14 +51,14 @@ static void list_free(u64 ptr) {
     if (ptr == 0) {
         return;
     }
-    struct pointer* data_ptr = vm->read(&base->vm, ptr);
+    struct pointer* data_ptr = vm->read(base->vm, ptr);
     if (data_ptr == 0) {
         return;
     }
     if (data_ptr->type != TYPE_LIST) {
         return;
     }
-    data_ptr = vm->free(&base->vm, ptr);
+    data_ptr = vm->free(base->vm, ptr);
     if (data_ptr == 0) {
         return;
     }
@@ -83,7 +83,7 @@ static void list_push(u64 ptr_list, u64 ptr) {
     if (ptr == 0) {
         return;
     }
-    struct pointer* data_ptr = vm->read(&base->vm, ptr_list);
+    struct pointer* data_ptr = vm->read(base->vm, ptr_list);
     if (data_ptr == 0) {
         return;
     }
@@ -104,7 +104,7 @@ static u64 list_peek(u64 ptr) {
     if (ptr == 0) {
         return 0;
     }
-    struct pointer* data_ptr = vm->read(&base->vm, ptr);
+    struct pointer* data_ptr = vm->read(base->vm, ptr);
     if (data_ptr == 0) {
         return 0;
     }
@@ -123,7 +123,7 @@ static u64 list_pop(u64 ptr) {
     if (ptr == 0) {
         return 0;
     }
-    struct pointer* data_ptr = vm->read(&base->vm, ptr);
+    struct pointer* data_ptr = vm->read(base->vm, ptr);
     if (data_ptr == 0) {
         return 0;
     }
