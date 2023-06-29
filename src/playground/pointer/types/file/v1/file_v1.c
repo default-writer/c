@@ -1,7 +1,7 @@
 #include "playground/pointer/types/file/v1/file_v1.h"
 #include "common/alloc.h"
 #include "list-micro/data.h"
-#include "playground/pointer/types/virtual/v1/virtual_v1.h"
+#include "playground/pointer/types/data/v1/data_v1.h"
 #include "playground/pointer/v1/pointer_v1.h"
 #include "playground/vm/v1/vm_v1.h"
 
@@ -17,12 +17,12 @@ static struct pointer_data* base = &vm_pointer;
 extern const struct vm vm_definition;
 extern const struct list list_micro_definition;
 extern const struct pointer_vm_methods vm_methods_definition;
-extern const struct virtual_methods virtual_methods_definition;
+extern const struct data_methods data_methods_definition;
 
 static const struct vm* vm = &vm_definition;
 static const struct list* list = &list_micro_definition;
 static const struct pointer_vm_methods* pointer = &vm_methods_definition;
-static const struct virtual_methods* virtual = &virtual_methods_definition;
+static const struct data_methods* data = &data_methods_definition;
 
 struct file_handler {
     FILE* file;
@@ -33,7 +33,7 @@ struct file_handler {
 
 /* api */
 static u64 file_alloc(u64 file_path_ptr, u64 mode_ptr);
-static u64 file_read(u64 ptr);
+static u64 file_data(u64 ptr);
 static void file_free(u64 ptr);
 
 /* internal */
@@ -83,14 +83,14 @@ static u64 file_alloc(u64 file_path, u64 mode) {
 #ifdef USE_MEMORY_DEBUG_INFO
     handler->path = file_path_ptr->data;
 #endif
-    u64 data = vm->write(base->vm, f_ptr);
+    u64 data_ptr = vm->write(base->vm, f_ptr);
 #ifdef USE_GC
-    list->push(&base->gc, (void*)data);
+    list->push(&base->gc, (void*)data_ptr);
 #endif
-    return data;
+    return data_ptr;
 }
 
-static u64 file_read(u64 ptr) {
+static u64 file_data(u64 ptr) {
     if (ptr == 0) {
         return 0;
     }
@@ -113,13 +113,13 @@ static u64 file_read(u64 ptr) {
     u64 size = (u64)ftell(file);
     fseek(file, 0, SEEK_SET);
     u64 data_size = size + 1;
-    u64 void_data = virtual->alloc(data_size);
-    void* file_data = virtual->unsafe(void_data);
+    u64 virtual_data = data->alloc(data_size);
+    void* file_data = data->unsafe(virtual_data);
     fread(file_data, 1, size, handler->file);
 #ifdef USE_GC
-    list->push(&base->gc, (void*)void_data);
+    list->push(&base->gc, (void*)virtual_data);
 #endif
-    return void_data;
+    return virtual_data;
 }
 
 static void file_free(u64 ptr) {
@@ -157,6 +157,6 @@ void file_init() {
 
 const struct file_methods file_methods_definition = {
     .alloc = file_alloc,
-    .read = file_read,
+    .data = file_data,
     .free = file_free
 };

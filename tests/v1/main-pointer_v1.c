@@ -2,10 +2,10 @@
 #include "list-micro/data.h"
 #include "playground/brain/brain.h"
 #include "playground/hashtable/v1/hashtable_v1.h"
+#include "playground/pointer/types/data/v1/data_v1.h"
 #include "playground/pointer/types/file/v1/file_v1.h"
 #include "playground/pointer/types/list/v1/list_v1.h"
 #include "playground/pointer/types/string/v1/string_v1.h"
-#include "playground/pointer/types/virtual/v1/virtual_v1.h"
 #include "playground/pointer/v1/pointer_v1.h"
 #include <rexo/include/rexo.h>
 
@@ -21,13 +21,13 @@ extern const struct pointer_methods pointer_methods_definition;
 extern const struct list_methods list_methods_definition;
 extern const struct string_methods string_methods_definition;
 extern const struct file_methods file_methods_definition;
-extern const struct virtual_methods virtual_methods_definition;
+extern const struct data_methods data_methods_definition;
 
 static const struct pointer_methods* pointer = &pointer_methods_definition;
 static const struct list_methods* list = &list_methods_definition;
 static const struct string_methods* string = &string_methods_definition;
 static const struct file_methods* file = &file_methods_definition;
-static const struct virtual_methods* virtual = &virtual_methods_definition;
+static const struct data_methods* data = &data_methods_definition;
 
 typedef struct test_data {
     struct pointer_data* ctx;
@@ -61,15 +61,15 @@ RX_TEST_CASE(tests, test_list_push_list_peek_list_pop, .fixture = test_fixture) 
         char* tmp = ptr + 1;
         char ch = *tmp;
         *tmp = 0;
-        u64 data = string->load(ptr);
+        u64 string_ptr = string->load(ptr);
         *tmp = ch;
-        list->push(list_ptr, data);
+        list->push(list_ptr, string_ptr);
     }
     char* buffer = global_alloc(size);
     for (u64 i = 0; i < size - 1; i++) {
         u64 ch0 = list->peek(list_ptr);
-        const char* data = string->unsafe(ch0);
-        *(buffer + i) = *data;
+        const char* string_ptr = string->unsafe(ch0);
+        *(buffer + i) = *string_ptr;
         u64 ch = list->pop(list_ptr);
 #ifdef USE_GC
         CLEAN(ch)
@@ -96,15 +96,15 @@ RX_TEST_CASE(tests, test_list_push_list_peek_list_pop_free, .fixture = test_fixt
         char* tmp = ptr + 1;
         char ch = *tmp;
         *tmp = 0;
-        u64 data = string->load(ptr);
+        u64 string_ptr = string->load(ptr);
         *tmp = ch;
-        list->push(list_ptr, data);
+        list->push(list_ptr, string_ptr);
     }
     char* buffer = global_alloc(size);
     for (u64 i = 0; i < size - 1; i++) {
         u64 ch0 = list->peek(list_ptr);
-        const char* data = string->unsafe(ch0);
-        *(buffer + i) = *data;
+        const char* string_ptr = string->unsafe(ch0);
+        *(buffer + i) = *string_ptr;
         u64 ch = list->pop(list_ptr);
 #ifdef USE_GC
         CLEAN(ch)
@@ -143,12 +143,12 @@ RX_TEST_CASE(tests, test_list_push_0_list_peek_0_list_pop_0_list_free_0, .fixtur
     u64 s1 = file->alloc(str1, 0);
     u64 s2 = file->alloc(str1, list_ptr);
     u64 s3 = file->alloc(0, 0);
-    u64 s4 = file->read(0);
-    u64 s5 = file->read(s1);
-    u64 s6 = file->read(list_ptr);
-    virtual->unsafe(0);
-    virtual->unsafe(str1);
-    virtual->unsafe(list_ptr);
+    u64 s4 = file->data(0);
+    u64 s5 = file->data(s1);
+    u64 s6 = file->data(list_ptr);
+    data->unsafe(0);
+    data->unsafe(str1);
+    data->unsafe(list_ptr);
     RX_ASSERT(data1 == 0);
     RX_ASSERT(data2 == 0);
     RX_ASSERT(s1 == 0);
@@ -176,14 +176,14 @@ RX_TEST_CASE(tests, test_list_peek_0, .fixture = test_fixture) {
         char* tmp = ptr + 1;
         char ch = *tmp;
         *tmp = 0;
-        u64 data = string->load(ptr);
+        u64 string_ptr = string->load(ptr);
         *tmp = ch;
-        pointer->push(data);
+        pointer->push(string_ptr);
     }
     char* buffer = global_alloc(size);
     for (u64 i = 0; i < size - 1; i++) {
-        const char* data = string->unsafe(i + 1);
-        *(buffer + i) = *data;
+        const char* string_ptr = string->unsafe(i + 1);
+        *(buffer + i) = *string_ptr;
 #ifndef USE_GC
         string->free(i + 1);
 #endif

@@ -2,10 +2,10 @@
 #include "list-micro/data.h"
 #include "playground/brain/brain.h"
 #include "playground/hashtable/v1/hashtable_v1.h"
+#include "playground/pointer/types/data/v1/data_v1.h"
 #include "playground/pointer/types/file/v1/file_v1.h"
 #include "playground/pointer/types/list/v1/list_v1.h"
 #include "playground/pointer/types/string/v1/string_v1.h"
-#include "playground/pointer/types/virtual/v1/virtual_v1.h"
 #include "playground/pointer/v1/pointer_v1.h"
 
 #define DEFAULT_SIZE 0x100
@@ -17,13 +17,13 @@ extern const struct pointer_methods pointer_methods_definition;
 extern const struct list_methods list_methods_definition;
 extern const struct file_methods file_methods_definition;
 extern const struct string_methods string_methods_definition;
-extern const struct virtual_methods virtual_methods_definition;
+extern const struct data_methods data_methods_definition;
 
 const struct pointer_methods* pointer = &pointer_methods_definition;
 const struct list_methods* list = &list_methods_definition;
 const struct file_methods* file = &file_methods_definition;
 const struct string_methods* string = &string_methods_definition;
-const struct virtual_methods* virtual = &virtual_methods_definition;
+const struct data_methods* data = &data_methods_definition;
 
 typedef struct test_data {
     struct pointer_data* ctx;
@@ -51,10 +51,10 @@ extern inline void source1(void) {
     string->free(file_path_ptr);
     string->free(mode_ptr);
 #endif
-    u64 data_ptr = file->read(f_ptr);
+    u64 data_ptr = file->data(f_ptr);
     file->free(f_ptr);
     string->printf(data_ptr);
-    virtual->free(data_ptr);
+    data->free(data_ptr);
 }
 
 extern inline void source2(void) {
@@ -67,28 +67,28 @@ extern inline void source2(void) {
     u64 mode_ptr = string->load("rb");
     u64 f_ptr = file->alloc(file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
-        u64 data_ptr = file->read(f_ptr);
+        u64 data_ptr = file->data(f_ptr);
         u64 size = pointer->size(data_ptr);
         if (size > 100) {
             size = 100;
         }
         u64 list_ptr = list->alloc();
         file->free(f_ptr);
-        char* file_data = virtual->unsafe(data_ptr);
+        char* file_data = data->unsafe(data_ptr);
         for (u64 i = 0; i < size; i++) {
             char* tmp = file_data;
             while (*tmp != 0 && *tmp != '\n') {
                 tmp++;
             }
             *tmp++ = '\0';
-            u64 data = string->load(file_data);
-            list->push(list_ptr, data);
-            char* unsafe = string->unsafe(data);
+            u64 string_ptr = string->load(file_data);
+            list->push(list_ptr, string_ptr);
+            char* unsafe = string->unsafe(string_ptr);
             printf("%s\n", unsafe);
             file_data = tmp;
         }
         list->free(list_ptr);
-        virtual->free(data_ptr);
+        data->free(data_ptr);
     }
 #ifndef USE_GC
     string->free(mode_ptr);

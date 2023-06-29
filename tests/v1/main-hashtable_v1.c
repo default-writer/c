@@ -2,10 +2,10 @@
 #include "list-micro/data.h"
 #include "playground/brain/brain.h"
 #include "playground/hashtable/v1/hashtable_v1.h"
+#include "playground/pointer/types/data/v1/data_v1.h"
 #include "playground/pointer/types/file/v1/file_v1.h"
 #include "playground/pointer/types/list/v1/list_v1.h"
 #include "playground/pointer/types/string/v1/string_v1.h"
-#include "playground/pointer/types/virtual/v1/virtual_v1.h"
 #include "playground/pointer/v1/pointer_v1.h"
 
 #include <rexo/include/rexo.h>
@@ -24,14 +24,14 @@ extern const struct pointer_methods pointer_methods_definition;
 extern const struct list_methods list_methods_definition;
 extern const struct file_methods file_methods_definition;
 extern const struct string_methods string_methods_definition;
-extern const struct virtual_methods virtual_methods_definition;
+extern const struct data_methods data_methods_definition;
 
 static const struct hashtable* hashtable = &hashtable_definition_v1;
 static const struct pointer_methods* pointer = &pointer_methods_definition;
 static const struct list_methods* list = &list_methods_definition;
 static const struct file_methods* file = &file_methods_definition;
 static const struct string_methods* string = &string_methods_definition;
-static const struct virtual_methods* virtual = &virtual_methods_definition;
+static const struct data_methods* data = &data_methods_definition;
 
 typedef struct test_data {
     struct pointer_data* ctx;
@@ -381,13 +381,13 @@ RX_TEST_CASE(tests, test_16_load_open_file_unsafe_hashtable, .fixture = test_fix
     u64 mode_ptr = string->load("rb");
     u64 f_ptr = file->alloc(file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
-        u64 data_ptr = file->read(f_ptr);
+        u64 data_ptr = file->data(f_ptr);
         u64 list_ptr = list->alloc();
         file->free(f_ptr);
         const u64 size = 0xfff;
         char* file_data;
         const char* file_end;
-        file_data = virtual->unsafe(data_ptr);
+        file_data = data->unsafe(data_ptr);
         file_end = file_data + size;
         while (file_data < file_end) {
             char* tmp = file_data;
@@ -395,14 +395,14 @@ RX_TEST_CASE(tests, test_16_load_open_file_unsafe_hashtable, .fixture = test_fix
                 tmp++;
             }
             *tmp++ = '\0';
-            u64 data = string->load(file_data);
-            list->push(list_ptr, data);
-            const char* unsafe = string->unsafe(data);
-            string->printf(data);
-            string->put_char(data, unsafe[0]);
+            u64 string_ptr = string->load(file_data);
+            list->push(list_ptr, string_ptr);
+            const char* unsafe = string->unsafe(string_ptr);
+            string->printf(string_ptr);
+            string->put_char(string_ptr, unsafe[0]);
             u64 pattern_ptr = string->load("b");
-            u64 last_match_ptr = string->match_last(data, pattern_ptr);
-            u64 leak_ptr = string->match_last(data, last_match_ptr);
+            u64 last_match_ptr = string->match_last(string_ptr, pattern_ptr);
+            u64 leak_ptr = string->match_last(string_ptr, last_match_ptr);
             string->printf(leak_ptr);
             struct hashtable_data* unsafe_tmp = hashtable->alloc(unsafe, 0);
             hashtable->free(unsafe_tmp);
@@ -413,7 +413,7 @@ RX_TEST_CASE(tests, test_16_load_open_file_unsafe_hashtable, .fixture = test_fix
 #endif
             file_data = tmp;
         }
-        file_data = virtual->unsafe(data_ptr);
+        file_data = data->unsafe(data_ptr);
         file_end = file_data + size;
         while (file_data < file_end) {
             char* tmp = file_data;
@@ -428,7 +428,7 @@ RX_TEST_CASE(tests, test_16_load_open_file_unsafe_hashtable, .fixture = test_fix
             file_data = tmp;
         }
         list->free(list_ptr);
-        virtual->free(data_ptr);
+        data->free(data_ptr);
     }
 #ifndef USE_GC
     string->free(mode_ptr);
@@ -472,17 +472,17 @@ RX_TEST_CASE(tests, test_19_improper_use_of_different_calls, .fixture = test_fix
     u64 mode_ptr = string->load("rb");
     u64 f_ptr = file->alloc(file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
-        idx4 = file->read(file_name_ptr);
+        idx4 = file->data(file_name_ptr);
         idx5 = list->peek(file_name_ptr);
         idx6 = list->pop(file_name_ptr);
         list->push(file_name_ptr, f_ptr);
-        u64 data_ptr = file->read(f_ptr);
+        u64 data_ptr = file->data(f_ptr);
         u64 list_ptr = list->alloc();
         list->push(list_ptr, mode_ptr);
         idx3 = string->copy(list_ptr);
-        virtual->free(data_ptr);
-        virtual->free(list_ptr);
-        virtual->free(mode_ptr);
+        data->free(data_ptr);
+        data->free(list_ptr);
+        data->free(mode_ptr);
         file->free(list_ptr);
         list->peek(list_ptr);
         list->push(list_ptr, f_ptr);
@@ -518,16 +518,16 @@ RX_TEST_CASE(tests, test_19_improper_use_of_different_calls, .fixture = test_fix
         list->pop(f_ptr);
         list->pop(list_ptr);
         list->pop(data_ptr);
-        file->read(f_ptr);
-        file->read(list_ptr);
-        file->read(data_ptr);
+        file->data(f_ptr);
+        file->data(list_ptr);
+        file->data(data_ptr);
 #ifndef USE_GC
         string->free(f_ptr);
         string->free(list_ptr);
         string->free(data_ptr);
 #endif
         list->free(f_ptr);
-        virtual->free(data_ptr);
+        data->free(data_ptr);
         list->push(f_ptr, data_ptr);
         list->push(list_ptr, data_ptr);
         list->push(data_ptr, data_ptr);
@@ -535,7 +535,7 @@ RX_TEST_CASE(tests, test_19_improper_use_of_different_calls, .fixture = test_fix
         list->free(list_ptr);
         idx2 = string->copy(list_ptr);
         list->free(f_ptr);
-        virtual->free(data_ptr);
+        data->free(data_ptr);
 #ifndef USE_GC
         string->free(list_ptr);
         string->free(f_ptr);
@@ -593,13 +593,13 @@ RX_TEST_CASE(tests, test_21_load_open_file_unsafe_hashtable_default_hash, .fixtu
     u64 mode_ptr = string->load("rb");
     u64 f_ptr = file->alloc(file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
-        u64 data_ptr = file->read(f_ptr);
+        u64 data_ptr = file->data(f_ptr);
         u64 list_ptr = list->alloc();
         file->free(f_ptr);
         const u64 size = 0xfff;
         char* file_data;
         const char* file_end;
-        file_data = virtual->unsafe(data_ptr);
+        file_data = data->unsafe(data_ptr);
         file_end = file_data + size;
         while (file_data < file_end) {
             char* tmp = file_data;
@@ -607,14 +607,14 @@ RX_TEST_CASE(tests, test_21_load_open_file_unsafe_hashtable_default_hash, .fixtu
                 tmp++;
             }
             *tmp++ = '\0';
-            u64 data = string->load(file_data);
-            list->push(list_ptr, data);
-            const char* unsafe = string->unsafe(data);
+            u64 string_ptr = string->load(file_data);
+            list->push(list_ptr, string_ptr);
+            const char* unsafe = string->unsafe(string_ptr);
             struct hashtable_data* unsafe_tmp = hashtable->alloc(unsafe, 0);
             hashtable->free(unsafe_tmp);
             file_data = tmp;
         }
-        file_data = virtual->unsafe(data_ptr);
+        file_data = data->unsafe(data_ptr);
         file_end = file_data + size;
         while (file_data < file_end) {
             char* tmp = file_data;
@@ -629,7 +629,7 @@ RX_TEST_CASE(tests, test_21_load_open_file_unsafe_hashtable_default_hash, .fixtu
             file_data = tmp;
         }
         list->free(list_ptr);
-        virtual->free(data_ptr);
+        data->free(data_ptr);
     }
 #ifndef USE_GC
     string->free(mode_ptr);
@@ -650,12 +650,12 @@ RX_TEST_CASE(tests, test_22_load_open_file_unsafe_hashtable_murmurhash3_hash, .f
     u64 mode_ptr = string->load("rb");
     u64 f_ptr = file->alloc(file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
-        u64 data_ptr = file->read(f_ptr);
+        u64 data_ptr = file->data(f_ptr);
         u64 list_ptr = list->alloc();
         file->free(f_ptr);
         u64 size = pointer->size(data_ptr);
         CLEAN(size)
-        char* file_data = virtual->unsafe(data_ptr);
+        char* file_data = data->unsafe(data_ptr);
         const char* file_end = file_data + 0xffff;
         while (file_data < file_end) {
             char* tmp = file_data;
@@ -663,14 +663,14 @@ RX_TEST_CASE(tests, test_22_load_open_file_unsafe_hashtable_murmurhash3_hash, .f
                 tmp++;
             }
             *tmp++ = '\0';
-            u64 data = string->load(file_data);
-            list->push(list_ptr, data);
-            char* unsafe = string->unsafe(data);
+            u64 string_ptr = string->load(file_data);
+            list->push(list_ptr, string_ptr);
+            char* unsafe = string->unsafe(string_ptr);
             printf("%s\n", unsafe);
             file_data = tmp;
         }
         list->free(list_ptr);
-        virtual->free(data_ptr);
+        data->free(data_ptr);
     }
 #ifndef USE_GC
     string->free(mode_ptr);

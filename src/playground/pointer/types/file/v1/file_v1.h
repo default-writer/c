@@ -5,7 +5,7 @@
 
 struct file_methods {
     u64 (*alloc)(u64 file_path_ptr, u64 mode_ptr);
-    u64 (*read)(u64 ptr);
+    u64 (*data)(u64 ptr);
     void (*free)(u64 ptr);
 };
 

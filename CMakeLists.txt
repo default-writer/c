@@ -213,12 +213,12 @@ set(LIB_MEMORY_REF1_SOURCE src/memory/v1/ref_v1.c)
 set(LIB_MEMORY_REF2_SOURCE src/memory/v2/ref_v2.c)
 set(LIB_MEMORY_REF3_SOURCE src/memory/v3/ref_v3.c)
 set(LIB_CLASS_SOURCE src/class/class.c)
-set(LIB_STD_PTR1_SOURCE src/playground/pointer/types/virtual/v1/virtual_v1.c)
+set(LIB_STD_PTR1_SOURCE src/playground/pointer/types/data/v1/data_v1.c)
 set(LIB_STD_LIST1_SOURCE src/playground/pointer/types/list/v1/list_v1.c)
 set(LIB_STD_FILE1_SOURCE src/playground/pointer/types/file/v1/file_v1.c)
 set(LIB_STD_STRING1_SOURCE src/playground/pointer/types/string/v1/string_v1.c)
 set(LIB_STD1_SOURCE
-    src/playground/pointer/types/virtual/v1/virtual_v1.c
+    src/playground/pointer/types/data/v1/data_v1.c
     src/playground/pointer/types/list/v1/list_v1.c
     src/playground/pointer/types/file/v1/file_v1.c
     src/playground/pointer/types/string/v1/string_v1.c)
