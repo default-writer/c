@@ -417,6 +417,9 @@ static char* pointer_unsafe(u64 ptr) {
     if (data_ptr == 0) {
         return 0;
     }
+    if (data_ptr->type != TYPE_PTR) {
+        return 0;
+    }
     char* data = data_ptr->data;
     return data;
 }
