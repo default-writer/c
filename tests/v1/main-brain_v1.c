@@ -132,6 +132,188 @@ RX_TEST_CASE(tests, test_strcat_load_alloc, .fixture = test_fixture) {
 }
 
 /* test init */
+RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
+    u64 string_ptr = string->load("a");
+    u64 zero_ptr = string->alloc();
+    u64 data_ptr = data->alloc(1);
+    u64 list_ptr = list->alloc();
+    u64 empty_ptr = string->load("\0");
+
+    u64 null_ptr = 0;
+    u64 data_ptr1 = string->copy(null_ptr);
+    u64 data_ptr2 = string->copy(zero_ptr);
+    u64 data_ptr3 = string->copy(string_ptr);
+
+    string->printf(string_ptr);
+    string->printf(zero_ptr);
+    string->printf(data_ptr);
+    string->printf(list_ptr);
+    string->printf(empty_ptr);
+    string->printf(null_ptr);
+
+    string->put_char(string_ptr, 'a');
+    string->put_char(zero_ptr, 'a');
+    string->put_char(data_ptr, 'a');
+    string->put_char(list_ptr, 'a');
+    string->put_char(empty_ptr, 'a');
+    string->put_char(null_ptr, 'a');
+
+    string->put_char(string_ptr, '\0');
+    string->put_char(zero_ptr, '\0');
+    string->put_char(data_ptr, '\0');
+    string->put_char(list_ptr, '\0');
+    string->put_char(empty_ptr, '\0');
+    string->put_char(null_ptr, '\0');
+
+    string->strcpy(string_ptr, string_ptr);
+    string->strcpy(string_ptr, zero_ptr);
+    string->strcpy(zero_ptr, string_ptr);
+    string->strcpy(data_ptr, null_ptr);
+    string->strcpy(list_ptr, null_ptr);
+    string->strcpy(string_ptr, data_ptr);
+    string->strcpy(string_ptr, empty_ptr);
+    string->strcpy(data_ptr, null_ptr);
+    string->strcpy(list_ptr, string_ptr);
+    string->strcpy(data_ptr, null_ptr);
+    string->strcpy(list_ptr, null_ptr);
+    string->strcpy(string_ptr, data_ptr);
+    string->strcpy(data_ptr, null_ptr);
+    string->strcpy(list_ptr, string_ptr);
+    string->strcpy(null_ptr, null_ptr);
+    string->strcpy(string_ptr, null_ptr);
+
+    string->strcat(string_ptr, string_ptr);
+    string->strcat(string_ptr, zero_ptr);
+    string->strcat(zero_ptr, string_ptr);
+    string->strcat(data_ptr, null_ptr);
+    string->strcat(list_ptr, null_ptr);
+    string->strcat(string_ptr, data_ptr);
+    string->strcat(string_ptr, empty_ptr);
+    string->strcat(data_ptr, null_ptr);
+    string->strcat(list_ptr, string_ptr);
+    string->strcat(data_ptr, null_ptr);
+    string->strcat(list_ptr, null_ptr);
+    string->strcat(string_ptr, data_ptr);
+    string->strcat(data_ptr, null_ptr);
+    string->strcat(list_ptr, string_ptr);
+    string->strcat(null_ptr, null_ptr);
+    string->strcat(string_ptr, null_ptr);
+
+    string->match_last(string_ptr, string_ptr);
+    string->match_last(data_ptr, null_ptr);
+    string->match_last(list_ptr, null_ptr);
+    string->match_last(string_ptr, data_ptr);
+    string->match_last(string_ptr, empty_ptr);
+    string->match_last(data_ptr, null_ptr);
+    string->match_last(list_ptr, string_ptr);
+    string->match_last(data_ptr, null_ptr);
+    string->match_last(list_ptr, null_ptr);
+    string->match_last(string_ptr, data_ptr);
+    string->match_last(data_ptr, null_ptr);
+    string->match_last(list_ptr, string_ptr);
+    string->match_last(null_ptr, null_ptr);
+    string->match_last(string_ptr, null_ptr);
+    string->match_last(string_ptr, string_ptr);
+    string->match_last(string_ptr, zero_ptr);
+    string->match_last(data_ptr, zero_ptr);
+    string->match_last(list_ptr, zero_ptr);
+    string->match_last(string_ptr, data_ptr);
+    string->match_last(zero_ptr, zero_ptr);
+    string->match_last(zero_ptr, data_ptr);
+    string->match_last(zero_ptr, list_ptr);
+    string->match_last(zero_ptr, string_ptr);
+    string->match_last(empty_ptr, empty_ptr);
+    string->match_last(empty_ptr, string_ptr);
+    string->match_last(empty_ptr, zero_ptr);
+
+    string->match_last(null_ptr, null_ptr);
+    string->match_last(null_ptr, empty_ptr);
+    string->match_last(null_ptr, string_ptr);
+    string->match_last(null_ptr, data_ptr);
+    string->match_last(null_ptr, list_ptr);
+
+    string->match_last(empty_ptr, null_ptr);
+    string->match_last(empty_ptr, empty_ptr);
+    string->match_last(empty_ptr, string_ptr);
+    string->match_last(empty_ptr, data_ptr);
+    string->match_last(empty_ptr, list_ptr);
+
+    string->match_last(string_ptr, null_ptr);
+    string->match_last(string_ptr, empty_ptr);
+    string->match_last(string_ptr, string_ptr);
+    string->match_last(string_ptr, data_ptr);
+    string->match_last(string_ptr, list_ptr);
+
+    string->match_last(data_ptr, null_ptr);
+    string->match_last(data_ptr, empty_ptr);
+    string->match_last(data_ptr, string_ptr);
+    string->match_last(data_ptr, data_ptr);
+    string->match_last(data_ptr, list_ptr);
+
+    string->match_last(list_ptr, null_ptr);
+    string->match_last(list_ptr, empty_ptr);
+    string->match_last(list_ptr, string_ptr);
+    string->match_last(list_ptr, data_ptr);
+    string->match_last(list_ptr, list_ptr);
+
+    string->unsafe(null_ptr);
+    string->unsafe(empty_ptr);
+    string->unsafe(string_ptr);
+    string->unsafe(data_ptr);
+    string->unsafe(list_ptr);
+
+    file->alloc(string_ptr, string_ptr);
+    file->alloc(data_ptr, null_ptr);
+    file->alloc(list_ptr, null_ptr);
+    file->alloc(string_ptr, data_ptr);
+    file->alloc(string_ptr, empty_ptr);
+    file->alloc(data_ptr, null_ptr);
+    file->alloc(list_ptr, string_ptr);
+    file->alloc(data_ptr, null_ptr);
+    file->alloc(list_ptr, null_ptr);
+    file->alloc(string_ptr, data_ptr);
+    file->alloc(data_ptr, null_ptr);
+    file->alloc(list_ptr, string_ptr);
+    file->alloc(null_ptr, null_ptr);
+    file->alloc(string_ptr, null_ptr);
+
+    RX_ASSERT(string_ptr != 0);
+    RX_ASSERT(data_ptr1 == 0);
+    RX_ASSERT(data_ptr2 == 0);
+    RX_ASSERT(data_ptr3 != 0);
+#ifndef USE_GC
+    string->free(null_ptr);
+    string->free(zero_ptr);
+    string->free(string_ptr);
+    string->free(data_ptr3);
+    string->free(list_ptr);
+    string->free(empty_ptr);
+    string->free(data_ptr);
+    string->free(string_ptr);
+    string->free(data_ptr3);
+    string->free(empty_ptr);
+    string->free(data_ptr);
+#endif
+    data->free(zero_ptr);
+    data->free(data_ptr);
+    data->free(data_ptr3);
+    data->free(empty_ptr);
+    data->free(null_ptr);
+    data->free(data_ptr);
+    data->free(list_ptr);
+    data->free(data_ptr);
+    data->free(data_ptr3);
+    list->free(zero_ptr);
+    list->free(data_ptr);
+    list->free(empty_ptr);
+    list->free(null_ptr);
+    list->free(data_ptr);
+    list->free(list_ptr);
+    list->free(data_ptr);
+    list->free(list_ptr);
+}
+
+/* test init */
 RX_TEST_CASE(tests, test_strcat_alloc_load, .fixture = test_fixture) {
     u64 zero_ptr = string->alloc();
     u64 char_ptr = string->load("/");

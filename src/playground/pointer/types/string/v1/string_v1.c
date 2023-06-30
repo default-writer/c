@@ -93,6 +93,9 @@ static u64 string_copy(u64 ptr) {
 }
 
 static void string_strcpy(u64 dest, u64 src) {
+    if (src == dest) {
+        return;
+    }
     struct pointer* dest_ptr = vm->read(base->vm, dest);
     if (dest_ptr == 0) {
         return;
@@ -125,6 +128,9 @@ static void string_strcpy(u64 dest, u64 src) {
 }
 
 static void string_strcat(u64 dest, u64 src) {
+    if (src == dest) {
+        return;
+    }
     struct pointer* dest_ptr = vm->read(base->vm, dest);
     if (dest_ptr == 0) {
         return;
