@@ -299,7 +299,5 @@ const struct string_methods string_methods_definition = {
     .printf = string_printf,
     .put_char = string_put_char,
     .unsafe = string_unsafe,
-#ifndef USE_GC
     .free = string_free
-#endif
 };

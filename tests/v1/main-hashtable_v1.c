@@ -375,9 +375,7 @@ RX_TEST_CASE(tests, test_16_load_open_file_unsafe_hashtable, .fixture = test_fix
     u64 file_path_ptr = string->getcwd();
     u64 file_name_ptr = string->load("/all_english_words.txt");
     string->strcat(file_path_ptr, file_name_ptr);
-#ifndef USE_GC
     string->free(file_name_ptr);
-#endif
     u64 mode_ptr = string->load("rb");
     u64 f_ptr = file->alloc(file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
@@ -406,11 +404,9 @@ RX_TEST_CASE(tests, test_16_load_open_file_unsafe_hashtable, .fixture = test_fix
             string->printf(leak_ptr);
             struct hashtable_data* unsafe_tmp = hashtable->alloc(unsafe, 0);
             hashtable->free(unsafe_tmp);
-#ifndef USE_GC
             string->free(pattern_ptr);
             string->free(last_match_ptr);
             string->free(leak_ptr);
-#endif
             file_data = tmp;
         }
         file_data = data->unsafe(data_ptr);
@@ -430,11 +426,9 @@ RX_TEST_CASE(tests, test_16_load_open_file_unsafe_hashtable, .fixture = test_fix
         list->free(list_ptr);
         data->free(data_ptr);
     }
-#ifndef USE_GC
     string->free(mode_ptr);
     string->free(file_name_ptr);
     string->free(file_path_ptr);
-#endif
     hashtable->destroy();
 }
 
@@ -521,11 +515,9 @@ RX_TEST_CASE(tests, test_19_improper_use_of_different_calls, .fixture = test_fix
         file->data(f_ptr);
         file->data(list_ptr);
         file->data(data_ptr);
-#ifndef USE_GC
         string->free(f_ptr);
         string->free(list_ptr);
         string->free(data_ptr);
-#endif
         list->free(f_ptr);
         data->free(data_ptr);
         list->push(f_ptr, data_ptr);
@@ -536,22 +528,19 @@ RX_TEST_CASE(tests, test_19_improper_use_of_different_calls, .fixture = test_fix
         idx2 = string->copy(list_ptr);
         list->free(f_ptr);
         data->free(data_ptr);
-#ifndef USE_GC
         string->free(list_ptr);
         string->free(f_ptr);
-#endif
     }
     file->free(f_ptr);
     list->peek(f_ptr);
     list->push(f_ptr, f_ptr);
     file->free(f_ptr);
     list->free(f_ptr);
-#ifndef USE_GC
     string->free(f_ptr);
     string->free(mode_ptr);
     string->free(file_name_ptr);
     string->free(file_path_ptr);
-#else
+#ifdef USE_GC
     pointer->gc();
 #endif
     RX_ASSERT(idx0 == 0);
@@ -572,10 +561,9 @@ RX_TEST_CASE(tests, test_20_alloc_free, .fixture = test_fixture) {
     u64 pattern_ptr = string->alloc();
     list->free(pattern_ptr);
     list->free(list_ptr);
-#ifndef USE_GC
     string->free(list_ptr);
     string->free(pattern_ptr);
-#else
+#ifdef USE_GC
     pointer->gc();
 #endif
 }
@@ -587,9 +575,7 @@ RX_TEST_CASE(tests, test_21_load_open_file_unsafe_hashtable_default_hash, .fixtu
     u64 file_path_ptr = string->getcwd();
     u64 file_name_ptr = string->load("/all_english_words.txt");
     string->strcat(file_path_ptr, file_name_ptr);
-#ifndef USE_GC
     string->free(file_name_ptr);
-#endif
     u64 mode_ptr = string->load("rb");
     u64 f_ptr = file->alloc(file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
@@ -631,11 +617,9 @@ RX_TEST_CASE(tests, test_21_load_open_file_unsafe_hashtable_default_hash, .fixtu
         list->free(list_ptr);
         data->free(data_ptr);
     }
-#ifndef USE_GC
     string->free(mode_ptr);
     string->free(file_name_ptr);
     string->free(file_path_ptr);
-#endif
     hashtable->destroy();
 }
 
@@ -644,9 +628,7 @@ RX_TEST_CASE(tests, test_22_load_open_file_unsafe_hashtable_murmurhash3_hash, .f
     u64 file_path_ptr = string->getcwd();
     u64 file_name_ptr = string->load("/all_english_words.txt");
     string->strcat(file_path_ptr, file_name_ptr);
-#ifndef USE_GC
     string->free(file_name_ptr);
-#endif
     u64 mode_ptr = string->load("rb");
     u64 f_ptr = file->alloc(file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
@@ -672,11 +654,9 @@ RX_TEST_CASE(tests, test_22_load_open_file_unsafe_hashtable_murmurhash3_hash, .f
         list->free(list_ptr);
         data->free(data_ptr);
     }
-#ifndef USE_GC
     string->free(mode_ptr);
     string->free(file_name_ptr);
     string->free(file_path_ptr);
-#endif
 }
 
 /* test init */

@@ -34,23 +34,15 @@ extern inline void source1(void) {
     u64 file_name_ptr = string->load("/input.txt");
     u64 pattern_ptr = string->load("/");
     u64 last_match_ptr = string->match_last(file_path_ptr, pattern_ptr);
-#ifndef USE_GC
     string->free(pattern_ptr);
-#endif
     string->put_char(last_match_ptr, '\0');
-#ifndef USE_GC
     string->free(last_match_ptr);
-#endif
     string->strcat(file_path_ptr, file_name_ptr);
-#ifndef USE_GC
     string->free(file_name_ptr);
-#endif
     u64 mode_ptr = string->load("rb");
     u64 f_ptr = file->alloc(file_path_ptr, mode_ptr);
-#ifndef USE_GC
     string->free(file_path_ptr);
     string->free(mode_ptr);
-#endif
     u64 data_ptr = file->data(f_ptr);
     file->free(f_ptr);
     string->printf(data_ptr);
@@ -61,9 +53,7 @@ extern inline void source2(void) {
     u64 file_path_ptr = string->getcwd();
     u64 file_name_ptr = string->load("/all_english_words.txt");
     string->strcat(file_path_ptr, file_name_ptr);
-#ifndef USE_GC
     string->free(file_name_ptr);
-#endif
     u64 mode_ptr = string->load("rb");
     u64 f_ptr = file->alloc(file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
@@ -90,11 +80,9 @@ extern inline void source2(void) {
         list->free(list_ptr);
         data->free(data_ptr);
     }
-#ifndef USE_GC
     string->free(mode_ptr);
     string->free(file_name_ptr);
     string->free(file_path_ptr);
-#endif
 }
 
 int main(int argc, char** argv) {
@@ -104,9 +92,7 @@ int main(int argc, char** argv) {
     pointer->push(argv_ptr);
     source1();
     source2();
-#ifndef USE_GC
     string->free(argv_ptr);
-#endif
     pointer->destroy();
     global_statistics();
     return 0;

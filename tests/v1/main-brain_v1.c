@@ -65,9 +65,7 @@ RX_TEST_CASE(tests, test_load_0, .fixture = test_fixture) {
 RX_TEST_CASE(tests, test_load_empty, .fixture = test_fixture) {
     u64 empty_ptr = string->load("");
     RX_ASSERT(empty_ptr != 0);
-#ifndef USE_GC
     string->free(empty_ptr);
-#endif
 }
 
 /* test init */
@@ -75,9 +73,7 @@ RX_TEST_CASE(tests, test_print_load_empty, .fixture = test_fixture) {
     u64 empty_ptr = string->load("");
     string->printf(empty_ptr);
     RX_ASSERT(empty_ptr != 0);
-#ifndef USE_GC
     string->free(empty_ptr);
-#endif
 }
 
 /* test init */
@@ -87,10 +83,8 @@ RX_TEST_CASE(tests, test_load_copy, .fixture = test_fixture) {
     RX_ASSERT(char_ptr != 0);
     RX_ASSERT(copy_ptr != 0);
     RX_ASSERT(char_ptr != copy_ptr);
-#ifndef USE_GC
     string->free(char_ptr);
     string->free(copy_ptr);
-#endif
 }
 
 /* test init */
@@ -102,20 +96,16 @@ RX_TEST_CASE(tests, test_load_push_peek_pop, .fixture = test_fixture) {
     RX_ASSERT(char_ptr != 0);
     RX_ASSERT(peek_ptr != 0);
     RX_ASSERT(pop_ptr != 0);
-#ifndef USE_GC
     string->free(char_ptr);
     string->free(peek_ptr);
     string->free(pop_ptr);
-#endif
 }
 
 RX_TEST_CASE(tests, test_load_free_free, .fixture = test_fixture) {
     u64 char_ptr = string->load("/");
     RX_ASSERT(char_ptr != 0);
-#ifndef USE_GC
     string->free(char_ptr);
     string->free(char_ptr);
-#endif
 }
 
 /* test init */
@@ -125,10 +115,8 @@ RX_TEST_CASE(tests, test_strcat_load_alloc, .fixture = test_fixture) {
     string->strcat(pattern_ptr, char_ptr);
     RX_ASSERT(char_ptr != 0);
     RX_ASSERT(pattern_ptr != 0);
-#ifndef USE_GC
     string->free(char_ptr);
     string->free(pattern_ptr);
-#endif
 }
 
 /* test init */
@@ -307,7 +295,6 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     RX_ASSERT(data_ptr3 != 0);
     RX_ASSERT(data_ptr4 == 0);
 
-#ifndef USE_GC
     string->free(null_ptr);
     string->free(zero_ptr);
     string->free(string_ptr);
@@ -319,7 +306,7 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     string->free(data_ptr3);
     string->free(empty_ptr);
     string->free(data_ptr);
-#endif
+
     data->free(zero_ptr);
     data->free(data_ptr);
     data->free(data_ptr3);
@@ -348,10 +335,8 @@ RX_TEST_CASE(tests, test_strcat_alloc_load, .fixture = test_fixture) {
     string->strcat(zero_ptr, char_ptr);
     RX_ASSERT(zero_ptr != 0);
     RX_ASSERT(char_ptr != 0);
-#ifndef USE_GC
     string->free(zero_ptr);
     string->free(char_ptr);
-#endif
 }
 
 /* test init */
@@ -364,11 +349,9 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_alloc, .fixture = test_fixture) {
     RX_ASSERT(char_ptr != 0);
     RX_ASSERT(pattern_ptr != 0);
     RX_ASSERT(empty_ptr != 0);
-#ifndef USE_GC
     string->free(empty_ptr);
     string->free(pattern_ptr);
     string->free(char_ptr);
-#endif
 }
 
 /* test init */
@@ -378,10 +361,8 @@ RX_TEST_CASE(tests, test_strcat_load_load, .fixture = test_fixture) {
     string->strcat(pattern_ptr, char_ptr);
     RX_ASSERT(pattern_ptr != 0);
     RX_ASSERT(char_ptr != 0);
-#ifndef USE_GC
     string->free(pattern_ptr);
     string->free(char_ptr);
-#endif
 }
 
 /* test init */
@@ -391,10 +372,8 @@ RX_TEST_CASE(tests, test_strcpy_load_alloc, .fixture = test_fixture) {
     string->strcpy(empty_ptr, pattern_ptr);
     RX_ASSERT(pattern_ptr != 0);
     RX_ASSERT(empty_ptr != 0);
-#ifndef USE_GC
     string->free(empty_ptr);
     string->free(pattern_ptr);
-#endif
 }
 
 /* test init */
@@ -404,10 +383,8 @@ RX_TEST_CASE(tests, test_strcpy_load_load, .fixture = test_fixture) {
     string->strcpy(pattern_ptr, char_ptr);
     RX_ASSERT(pattern_ptr != 0);
     RX_ASSERT(char_ptr != 0);
-#ifndef USE_GC
     string->free(pattern_ptr);
     string->free(char_ptr);
-#endif
 }
 
 /* test init */
@@ -415,9 +392,7 @@ RX_TEST_CASE(tests, test_load_open_file_close_file, .fixture = test_fixture) {
     u64 file_path_ptr = string->getcwd();
     u64 file_name_ptr = string->load("/nonexistent.txt");
     string->strcat(file_path_ptr, file_name_ptr);
-#ifndef USE_GC
     string->free(file_name_ptr);
-#endif
     u64 mode_ptr = string->load("rb");
     u64 f_ptr = file->alloc(file_path_ptr, mode_ptr);
     u64 data_ptr = file->data(f_ptr);
@@ -425,11 +400,9 @@ RX_TEST_CASE(tests, test_load_open_file_close_file, .fixture = test_fixture) {
     RX_ASSERT(data_ptr == 0);
     file->free(f_ptr);
     data->free(data_ptr);
-#ifndef USE_GC
     string->free(mode_ptr);
     string->free(file_name_ptr);
     string->free(file_path_ptr);
-#endif
 }
 
 /* test init */
@@ -442,13 +415,33 @@ RX_TEST_CASE(tests, test_file_read_invalid_type, .fixture = test_fixture) {
 }
 
 /* test init */
+RX_TEST_CASE(tests, test_load_open_match_last_unsafe_free, .fixture = test_fixture) {
+    u64 file_path_ptr = string->getcwd();
+    u64 file_name_ptr = string->load("/all_english_words.txt//");
+    string->strcat(file_path_ptr, file_name_ptr);
+    u64 pattern_ptr = string->load("//");
+    u64 last_match_ptr = string->match_last(file_path_ptr, pattern_ptr);
+    string->free(pattern_ptr);
+    string->put_char(last_match_ptr, '\0');
+    string->free(last_match_ptr);
+    string->strcat(file_path_ptr, file_name_ptr);
+    string->free(file_name_ptr);
+    u64 mode_ptr = string->load("rb");
+    u64 f_ptr = file->alloc(file_path_ptr, mode_ptr);
+    string->free(file_path_ptr);
+    string->free(mode_ptr);
+    u64 data_ptr = file->data(f_ptr);
+    file->free(f_ptr);
+    string->printf(data_ptr);
+    data->free(data_ptr);
+}
+
+/* test init */
 RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixture) {
     u64 file_path_ptr = string->getcwd();
     u64 file_name_ptr = string->load("/all_english_words.txt");
     string->strcat(file_path_ptr, file_name_ptr);
-#ifndef USE_GC
     string->free(file_name_ptr);
-#endif
     u64 mode_ptr = string->load("rb");
     u64 f_ptr = file->alloc(file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
@@ -471,11 +464,9 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixtur
         list->free(list_ptr);
         data->free(data_ptr);
     }
-#ifndef USE_GC
     string->free(mode_ptr);
     string->free(file_name_ptr);
     string->free(file_path_ptr);
-#endif
 }
 
 extern inline void source1(void) {
@@ -483,23 +474,15 @@ extern inline void source1(void) {
     u64 file_name_ptr = string->load("/input.txt");
     u64 pattern_ptr = string->load("/");
     u64 last_match_ptr = string->match_last(file_path_ptr, pattern_ptr);
-#ifndef USE_GC
     string->free(pattern_ptr);
-#endif
     string->put_char(last_match_ptr, '\0');
-#ifndef USE_GC
     string->free(last_match_ptr);
-#endif
     string->strcat(file_path_ptr, file_name_ptr);
-#ifndef USE_GC
     string->free(file_name_ptr);
-#endif
     u64 mode_ptr = string->load("rb");
     u64 f_ptr = file->alloc(file_path_ptr, mode_ptr);
-#ifndef USE_GC
     string->free(file_path_ptr);
     string->free(mode_ptr);
-#endif
     u64 data_ptr = file->data(f_ptr);
     file->free(f_ptr);
     string->printf(data_ptr);
@@ -510,9 +493,7 @@ extern inline void source2(void) {
     u64 file_path_ptr = string->getcwd();
     u64 file_name_ptr = string->load("/all_english_words.txt");
     string->strcat(file_path_ptr, file_name_ptr);
-#ifndef USE_GC
     string->free(file_name_ptr);
-#endif
     u64 mode_ptr = string->load("rb");
     u64 f_ptr = file->alloc(file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
@@ -539,11 +520,9 @@ extern inline void source2(void) {
         list->free(list_ptr);
         data->free(data_ptr);
     }
-#ifndef USE_GC
     string->free(mode_ptr);
     string->free(file_name_ptr);
     string->free(file_path_ptr);
-#endif
 }
 
 int main(int argc, char** argv) {
@@ -556,9 +535,7 @@ int main(int argc, char** argv) {
     pointer->push(argv_ptr);
     source1();
     source2();
-#ifndef USE_GC
     string->free(argv_ptr);
-#endif
     pointer->destroy();
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- rexo unit test code\n");

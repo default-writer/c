@@ -71,12 +71,7 @@ RX_TEST_CASE(tests, test_list_push_list_peek_list_pop, .fixture = test_fixture) 
         const char* string_ptr = string->unsafe(ch0);
         *(buffer + i) = *string_ptr;
         u64 ch = list->pop(list_ptr);
-#ifdef USE_GC
-        CLEAN(ch)
-#endif
-#ifndef USE_GC
         string->free(ch);
-#endif
     }
     printf("%s\n", buffer);
     global_free(buffer, size);
@@ -106,16 +101,9 @@ RX_TEST_CASE(tests, test_list_push_list_peek_list_pop_free, .fixture = test_fixt
         const char* string_ptr = string->unsafe(ch0);
         *(buffer + i) = *string_ptr;
         u64 ch = list->pop(list_ptr);
-#ifdef USE_GC
-        CLEAN(ch)
-#endif
-#ifndef USE_GC
         string->free(ch);
-#endif
     }
-#ifndef USE_GC
     string->free(list_ptr);
-#endif
     printf("%s\n", buffer);
     global_free(buffer, size);
     global_free(dest, size);
@@ -157,11 +145,9 @@ RX_TEST_CASE(tests, test_list_push_0_list_peek_0_list_pop_0_list_free_0, .fixtur
     RX_ASSERT(s4 == 0);
     RX_ASSERT(s5 == 0);
     RX_ASSERT(s6 == 0);
-#ifndef USE_GC
     string->free(0);
     string->free(list_ptr);
     string->free(str1);
-#endif
     list->free(list_ptr);
 }
 
@@ -184,9 +170,7 @@ RX_TEST_CASE(tests, test_list_peek_0, .fixture = test_fixture) {
     for (u64 i = 0; i < size - 1; i++) {
         const char* string_ptr = string->unsafe(i + 1);
         *(buffer + i) = *string_ptr;
-#ifndef USE_GC
         string->free(i + 1);
-#endif
     }
     printf("%s\n", buffer);
     global_free(buffer, size);
@@ -201,9 +185,7 @@ int main(int argc, char** argv) {
     pointer->init(DEFAULT_SIZE);
     u64 argv_ptr = string->load(argv[0]);
     pointer->push(argv_ptr);
-#ifndef USE_GC
     string->free(argv_ptr);
-#endif
     pointer->destroy();
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- rexo unit test code\n");

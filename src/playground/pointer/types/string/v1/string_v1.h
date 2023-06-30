@@ -14,9 +14,7 @@ struct string_methods {
     void (*printf)(u64 ptr);
     void (*put_char)(u64 ptr, char value);
     char* (*unsafe)(u64 ptr);
-#ifndef USE_GC
     void (*free)(u64 ptr);
-#endif
 };
 
 #endif /* _POINTER_TYPES_STRING_H_ */
