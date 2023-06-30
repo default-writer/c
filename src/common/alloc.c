@@ -85,8 +85,6 @@ void* global_memset(void* dest, u8 c, size_t count) {
     u8* dest_ptr1 = (u8*)&dest_ptr8[block_idx];
     for (block_idx = 0; block_idx < bytes_left; block_idx++)
         dest_ptr1[block_idx] = (u8)c_ull;
-#ifdef USE_MEMORY_DEBUG_INFO
-    printf("  0>: %016llx ! %16lld . %16lld : %16lld\n", (u64)dest, (u64)count, total_free, total_alloc);
-#endif
+
     return dest;
 }
