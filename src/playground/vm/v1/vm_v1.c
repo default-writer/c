@@ -69,10 +69,8 @@ static void* vm_data_enumerator_next_ref(void);
 
 /* internal */
 
-static void* to_real_address_internal(const struct vm_data* current, u64 address);
-
 static struct vm_data* vm_init_internal(u64 size, u64 offset);
-static void** vm_read_internal(const struct vm_data* current, u64 address);
+static struct pointer** vm_read_internal(const struct vm_data* current, u64 address);
 static struct pointer** vm_alloc_internal(struct vm_data* current, u64* address, struct vm_data** target);
 #ifdef USE_MEMORY_DEBUG_INFO
 static void vm_enumerator_init_internal(struct vm_data* current);
@@ -88,14 +86,16 @@ static struct vm_data* vm_init_internal(u64 size, u64 offset) {
     return vm;
 }
 
-static void** vm_read_internal(const struct vm_data* current, u64 address) {
-    void** ptr = 0;
-    if (address != 0) {
-        const struct vm_data* vm = current;
-        if (vm != 0) {
-            ptr = to_real_address_internal(vm, address);
+static struct pointer** vm_read_internal(const struct vm_data* current, u64 address) {
+    struct pointer** ptr = 0;
+    const struct vm_data* vm = current;
+    do {
+        if (address > vm->offset && address <= vm->offset + vm->size) {
+            ptr = vm->bp + address - vm->offset - 1;
+            break;
         }
-    }
+        vm = vm->next;
+    } while (vm != 0);
     return ptr;
 }
 
@@ -128,24 +128,6 @@ static struct pointer** vm_alloc_internal(struct vm_data* current, u64* address,
     *target = vm;
     *address = (u64)(ptr - vm->bp) + vm->offset + 1;
     return ptr;
-}
-
-static void* to_real_address_internal(const struct vm_data* current, u64 address) {
-    const struct vm_data* vm = current;
-    void* data = 0;
-    if (address > vm->offset && address <= vm->offset + vm->size) {
-        data = vm->bp + address - vm->offset - 1;
-    } else {
-        vm = vm->next;
-        while (vm != 0) {
-            if (address > vm->offset && address <= vm->offset + vm->size) {
-                data = vm->bp + address - vm->offset - 1;
-                break;
-            }
-            vm = vm->next;
-        }
-    }
-    return data;
 }
 
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -228,7 +210,7 @@ static struct pointer* vm_free(const struct vm_data* current, u64 address) {
     const struct vm_data* vm = current;
     struct pointer* data = 0;
     if (address != 0) {
-        struct pointer** ptr = (struct pointer**)vm_read_internal(vm, address);
+        struct pointer** ptr = vm_read_internal(vm, address);
         if (ptr != 0) {
 #ifndef USE_GC
             struct vm_pointer* vm_ptr = global_alloc(VM_POINTER_SIZE);
@@ -250,7 +232,7 @@ static struct pointer* vm_read(const struct vm_data* current, u64 address) {
     const struct vm_data* vm = current;
     struct pointer* data = 0;
     if (address != 0) {
-        void** ptr = vm_read_internal(vm, address);
+        struct pointer** ptr = vm_read_internal(vm, address);
         if (ptr != 0) {
             data = *ptr;
 #ifdef USE_MEMORY_DEBUG_INFO
