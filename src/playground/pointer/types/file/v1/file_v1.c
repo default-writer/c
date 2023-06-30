@@ -142,10 +142,8 @@ static void file_free(u64 ptr) {
         fclose(file);
         handler->file = 0;
     }
+    // ptr is already a valid address because of previous vm->read check
     data_ptr = vm->free(base->vm, ptr);
-    if (data_ptr == 0) {
-        return;
-    }
     pointer->free(data_ptr);
 }
 

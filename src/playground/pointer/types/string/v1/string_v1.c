@@ -62,10 +62,8 @@ static void string_free(u64 ptr) {
     if (data_ptr->type != TYPE_STRING) {
         return;
     }
+    // ptr is already a valid address because of previous vm->read check
     data_ptr = vm->free(base->vm, ptr);
-    if (data_ptr == 0) {
-        return;
-    }
     pointer->free(data_ptr);
 }
 
@@ -213,9 +211,6 @@ static u64 string_load(const char* src_data) {
         return 0;
     }
     u64 size = strlen(src_data) + 1;
-    if (size == 0) {
-        return 0;
-    }
     struct vm_data* current = base->vm;
     struct pointer* data_ptr = pointer->alloc(size, TYPE_STRING);
     memcpy(data_ptr->data, src_data, size); /* NOLINT */

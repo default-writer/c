@@ -58,13 +58,8 @@ static void list_free(u64 ptr) {
     if (data_ptr->type != TYPE_LIST) {
         return;
     }
+    // ptr is already a valid address because of previous vm->read check
     data_ptr = vm->free(base->vm, ptr);
-    if (data_ptr == 0) {
-        return;
-    }
-    if (data_ptr->data == 0) {
-        return;
-    }
     struct list_handler* handler = data_ptr->data;
     pointer->cleanup(&handler->list);
     list->destroy(&handler->list);

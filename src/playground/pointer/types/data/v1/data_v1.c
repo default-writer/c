@@ -49,10 +49,8 @@ static void data_free(u64 ptr) {
     if (data_ptr->type != TYPE_PTR) {
         return;
     }
+    // ptr is already a valid address because of previous vm->read check
     data_ptr = vm->free(base->vm, ptr);
-    if (data_ptr == 0) {
-        return;
-    }
     pointer->free(data_ptr);
 }
 

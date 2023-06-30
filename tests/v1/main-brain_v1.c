@@ -140,9 +140,12 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     u64 empty_ptr = string->load("\0");
 
     u64 null_ptr = 0;
+    u64 none_ptr = 0xfffffffff;
+
     u64 data_ptr1 = string->copy(null_ptr);
     u64 data_ptr2 = string->copy(zero_ptr);
     u64 data_ptr3 = string->copy(string_ptr);
+    u64 data_ptr4 = string->copy(none_ptr);
 
     string->printf(string_ptr);
     string->printf(zero_ptr);
@@ -150,6 +153,7 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     string->printf(list_ptr);
     string->printf(empty_ptr);
     string->printf(null_ptr);
+    string->printf(none_ptr);
 
     string->put_char(string_ptr, 'a');
     string->put_char(zero_ptr, 'a');
@@ -157,6 +161,7 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     string->put_char(list_ptr, 'a');
     string->put_char(empty_ptr, 'a');
     string->put_char(null_ptr, 'a');
+    string->put_char(none_ptr, 'a');
 
     string->put_char(string_ptr, '\0');
     string->put_char(zero_ptr, '\0');
@@ -164,6 +169,7 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     string->put_char(list_ptr, '\0');
     string->put_char(empty_ptr, '\0');
     string->put_char(null_ptr, '\0');
+    string->put_char(none_ptr, '\0');
 
     string->strcpy(string_ptr, string_ptr);
     string->strcpy(string_ptr, zero_ptr);
@@ -181,6 +187,8 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     string->strcpy(list_ptr, string_ptr);
     string->strcpy(null_ptr, null_ptr);
     string->strcpy(string_ptr, null_ptr);
+    string->strcpy(string_ptr, none_ptr);
+    string->strcpy(none_ptr, string_ptr);
 
     string->strcat(string_ptr, string_ptr);
     string->strcat(string_ptr, zero_ptr);
@@ -198,6 +206,8 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     string->strcat(list_ptr, string_ptr);
     string->strcat(null_ptr, null_ptr);
     string->strcat(string_ptr, null_ptr);
+    string->strcat(string_ptr, none_ptr);
+    string->strcat(none_ptr, string_ptr);
 
     string->match_last(string_ptr, string_ptr);
     string->match_last(data_ptr, null_ptr);
@@ -231,36 +241,35 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     string->match_last(null_ptr, string_ptr);
     string->match_last(null_ptr, data_ptr);
     string->match_last(null_ptr, list_ptr);
-
     string->match_last(empty_ptr, null_ptr);
     string->match_last(empty_ptr, empty_ptr);
     string->match_last(empty_ptr, string_ptr);
     string->match_last(empty_ptr, data_ptr);
     string->match_last(empty_ptr, list_ptr);
-
     string->match_last(string_ptr, null_ptr);
     string->match_last(string_ptr, empty_ptr);
     string->match_last(string_ptr, string_ptr);
     string->match_last(string_ptr, data_ptr);
     string->match_last(string_ptr, list_ptr);
-
     string->match_last(data_ptr, null_ptr);
     string->match_last(data_ptr, empty_ptr);
     string->match_last(data_ptr, string_ptr);
     string->match_last(data_ptr, data_ptr);
     string->match_last(data_ptr, list_ptr);
-
     string->match_last(list_ptr, null_ptr);
     string->match_last(list_ptr, empty_ptr);
     string->match_last(list_ptr, string_ptr);
     string->match_last(list_ptr, data_ptr);
     string->match_last(list_ptr, list_ptr);
+    string->match_last(string_ptr, none_ptr);
+    string->match_last(none_ptr, string_ptr);
 
     string->unsafe(null_ptr);
     string->unsafe(empty_ptr);
     string->unsafe(string_ptr);
     string->unsafe(data_ptr);
     string->unsafe(list_ptr);
+    string->unsafe(none_ptr);
 
     file->alloc(string_ptr, string_ptr);
     file->alloc(data_ptr, null_ptr);
@@ -276,11 +285,28 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     file->alloc(list_ptr, string_ptr);
     file->alloc(null_ptr, null_ptr);
     file->alloc(string_ptr, null_ptr);
+    file->alloc(string_ptr, none_ptr);
+    file->alloc(none_ptr, string_ptr);
+
+    const u64* data_unsafe_ptr1 = data->unsafe(empty_ptr);
+    const u64* data_unsafe_ptr2 = data->unsafe(null_ptr);
+    const u64* data_unsafe_ptr3 = data->unsafe(string_ptr);
+    const u64* data_unsafe_ptr4 = data->unsafe(list_ptr);
+    const u64* data_unsafe_ptr5 = data->unsafe(none_ptr);
+
+    RX_ASSERT(data_unsafe_ptr1 == 0);
+    RX_ASSERT(data_unsafe_ptr2 == 0);
+    RX_ASSERT(data_unsafe_ptr3 == 0);
+    RX_ASSERT(data_unsafe_ptr4 == 0);
+    RX_ASSERT(data_unsafe_ptr5 == 0);
 
     RX_ASSERT(string_ptr != 0);
     RX_ASSERT(data_ptr1 == 0);
     RX_ASSERT(data_ptr2 == 0);
     RX_ASSERT(data_ptr3 != 0);
+    RX_ASSERT(data_ptr3 != 0);
+    RX_ASSERT(data_ptr4 == 0);
+
 #ifndef USE_GC
     string->free(null_ptr);
     string->free(zero_ptr);
@@ -303,6 +329,7 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     data->free(list_ptr);
     data->free(data_ptr);
     data->free(data_ptr3);
+    data->free(none_ptr);
     list->free(zero_ptr);
     list->free(data_ptr);
     list->free(empty_ptr);
@@ -311,6 +338,7 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     list->free(list_ptr);
     list->free(data_ptr);
     list->free(list_ptr);
+    list->free(none_ptr);
 }
 
 /* test init */
