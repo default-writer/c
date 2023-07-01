@@ -75,10 +75,6 @@ static u64 file_alloc(u64 file_path, u64 mode) {
     }
     struct pointer* f_ptr = pointer->alloc(sizeof(struct file_handler), TYPE_FILE);
     struct file_handler* handler = f_ptr->data;
-    if (handler == 0) {
-        fclose(file);
-        return 0;
-    }
     handler->file = file;
 #ifdef USE_MEMORY_DEBUG_INFO
     handler->path = file_path_ptr->data;
