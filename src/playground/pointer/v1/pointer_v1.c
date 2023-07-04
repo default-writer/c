@@ -163,7 +163,7 @@ static void pointer_vm_cleanup(struct list_data** current) {
 /* implementation*/
 
 static void pointer_init_internal(struct pointer_data* ptr, u64 size) {
-    vm->init(&ptr->vm, size);
+    vm->init(size);
     list->init(&ptr->list);
     list->init(&ptr->free);
     data_init();
@@ -181,11 +181,10 @@ static void pointer_destroy_internal(struct pointer_data* ptr) {
 #endif
     list->destroy(&ptr->list);
     list->destroy(&ptr->free);
-    vm->destroy(&ptr->vm);
+    vm->destroy();
 }
 
 static void copy_internal(struct pointer_data* dest, struct pointer_data* src) {
-    dest->vm = src->vm;
     dest->list = src->list;
     dest->free = src->free;
 #ifdef USE_GC
@@ -211,8 +210,8 @@ void pointer_ctx_init(struct pointer_data** ctx, u64 size) {
 
 void pointer_ctx_destroy(struct pointer_data** ctx) {
 #ifdef USE_MEMORY_DEBUG_INFO
-    vm->dump_ref(base->vm);
-    vm->dump(base->vm);
+    vm->dump_ref();
+    vm->dump();
 #endif
 #ifdef USE_GC
     pointer_gc();
@@ -227,8 +226,8 @@ static void pointer_init(u64 size) {
 
 static void pointer_destroy(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
-    vm->dump_ref(base->vm);
-    vm->dump(base->vm);
+    vm->dump_ref();
+    vm->dump();
 #endif
 #ifdef USE_GC
     pointer_gc();
@@ -260,7 +259,7 @@ static u64 pointer_size(u64 ptr) {
     if (ptr == 0) {
         return 0;
     }
-    const struct pointer* data_ptr = vm->read(base->vm, ptr);
+    const struct pointer* data_ptr = vm->read(ptr);
     if (data_ptr == 0) {
         return 0;
     }

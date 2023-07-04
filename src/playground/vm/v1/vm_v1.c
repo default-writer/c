@@ -25,6 +25,9 @@ extern const struct list list_micro_definition;
 static const struct list* list = &list_micro_definition;
 static struct list_data** cache;
 #endif
+static struct vm_data* vm_data;
+static struct vm_data* first = 0;
+static struct vm_data* last = 0;
 extern const struct pointer_methods pointer_methods_definition;
 static const struct pointer_methods* pointer = &pointer_methods_definition;
 
@@ -53,15 +56,15 @@ static struct vm_state* state = &vm_state;
 
 /* api */
 
-static void vm_init(struct vm_data** current, u64 size);
-static void vm_destroy(struct vm_data** current);
+static void vm_init(u64 size);
+static void vm_destroy(void);
 #ifdef USE_MEMORY_DEBUG_INFO
-static void vm_dump(struct vm_data* current);
-static void vm_dump_ref(struct vm_data* current);
+static void vm_dump(void);
+static void vm_dump_ref(void);
 #endif
-static struct pointer* vm_free(const struct vm_data* current, u64 address);
-static struct pointer* vm_read(const struct vm_data* current, u64 address);
-static u64 vm_write(struct vm_data* current, struct pointer* data);
+static struct pointer* vm_free(u64 address);
+static struct pointer* vm_read(u64 address);
+static u64 vm_write(struct pointer* data);
 #ifdef USE_MEMORY_DEBUG_INFO
 static struct pointer* vm_data_enumerator_next(void);
 static void* vm_data_enumerator_next_ref(void);
@@ -70,10 +73,10 @@ static void* vm_data_enumerator_next_ref(void);
 /* internal */
 
 static struct vm_data* vm_init_internal(u64 size, u64 offset);
-static struct pointer** vm_read_internal(const struct vm_data* current, u64 address);
-static struct pointer** vm_alloc_internal(struct vm_data* current, u64* address, struct vm_data** target);
+static struct pointer** vm_read_internal(u64 address);
+static struct pointer** vm_alloc_internal(u64* address, struct vm_data** target);
 #ifdef USE_MEMORY_DEBUG_INFO
-static void vm_enumerator_init_internal(struct vm_data* current);
+static void vm_enumerator_init_internal(void);
 static void vm_enumerator_destroy_internal(void);
 #endif
 
@@ -86,9 +89,9 @@ static struct vm_data* vm_init_internal(u64 size, u64 offset) {
     return vm;
 }
 
-static struct pointer** vm_read_internal(const struct vm_data* current, u64 address) {
+static struct pointer** vm_read_internal(u64 address) {
     struct pointer** ptr = 0;
-    const struct vm_data* vm = current;
+    const struct vm_data* vm = first;
     do {
         if (address > vm->offset && address <= vm->offset + vm->size) {
             ptr = vm->bp + address - vm->offset - 1;
@@ -99,8 +102,8 @@ static struct pointer** vm_read_internal(const struct vm_data* current, u64 addr
     return ptr;
 }
 
-static struct pointer** vm_alloc_internal(struct vm_data* current, u64* address, struct vm_data** target) {
-    struct vm_data* vm = current;
+static struct pointer** vm_alloc_internal(u64* address, struct vm_data** target) {
+    struct vm_data* vm = last;
     struct pointer** ptr = 0;
 #ifndef USE_GC
     struct vm_pointer* vm_ptr = list->pop(cache);
@@ -111,14 +114,12 @@ static struct pointer** vm_alloc_internal(struct vm_data* current, u64* address,
     }
     if (ptr == 0) {
 #endif
-        while (vm->next != 0) {
-            vm = vm->next;
-        }
         if ((u64)(vm->sp - vm->bp) == vm->size) {
             struct vm_data* prev = vm;
             vm = vm_init_internal(vm->size, vm->offset + vm->size);
             vm->prev = prev;
             prev->next = vm;
+            last = vm;
         }
         ptr = vm->sp;
         ++vm->sp;
@@ -131,15 +132,10 @@ static struct pointer** vm_alloc_internal(struct vm_data* current, u64* address,
 }
 
 #ifdef USE_MEMORY_DEBUG_INFO
-static void vm_enumerator_init_internal(struct vm_data* current) {
-    struct vm_data* vm = current;
-    if (vm != 0) {
-        while (vm->prev != 0) {
-            vm = vm->prev;
-        }
-        state->vm = vm;
-        state->ptr = vm->bp;
-    }
+static void vm_enumerator_init_internal(void) {
+    struct vm_data* vm = first;
+    state->vm = vm;
+    state->ptr = vm->bp;
 }
 
 static void vm_enumerator_destroy_internal(void) {
@@ -150,15 +146,17 @@ static void vm_enumerator_destroy_internal(void) {
 
 /* implementation */
 
-static void vm_init(struct vm_data** current, u64 size) {
+static void vm_init(u64 size) {
 #ifndef USE_GC
     cache = global_alloc(PTR_SIZE);
     list->init(cache);
 #endif
-    *current = vm_init_internal(size, 0);
+    vm_data = vm_init_internal(size, 0);
+    first = vm_data;
+    last = vm_data;
 }
 
-static void vm_destroy(struct vm_data** current) {
+static void vm_destroy(void) {
 #ifndef USE_GC
     struct vm_pointer* vm_ptr = 0;
     while ((vm_ptr = list->pop(cache)) != 0) {
@@ -170,47 +168,41 @@ static void vm_destroy(struct vm_data** current) {
     cache = 0;
 #endif
 #endif
-    struct vm_data* vm = *current;
-    while (vm->prev != 0) {
-        vm = vm->prev;
-    }
+    struct vm_data* vm = first;
     while (vm != 0) {
         struct vm_data* next = vm->next;
         global_free(vm->bp, ALLOC_SIZE(vm->size));
         global_free(vm, VM_DATA_SIZE);
         vm = next;
     }
+    first = 0;
+    last = 0;
 }
 
 #ifdef USE_MEMORY_DEBUG_INFO
-static void vm_dump(struct vm_data* current) {
-    if (current != 0) {
-        vm_enumerator_init_internal(current);
-        struct pointer* ptr = 0;
-        while ((ptr = vm_data_enumerator_next()) != 0) {
-            pointer->dump(ptr);
-        }
-        vm_enumerator_destroy_internal();
+static void vm_dump(void) {
+    vm_enumerator_init_internal();
+    struct pointer* ptr = 0;
+    while ((ptr = vm_data_enumerator_next()) != 0) {
+        pointer->dump(ptr);
     }
+    vm_enumerator_destroy_internal();
 }
 
-static void vm_dump_ref(struct vm_data* current) {
-    if (current != 0) {
-        vm_enumerator_init_internal(current);
-        void** ptr = 0;
-        while ((ptr = vm_data_enumerator_next_ref()) != 0) {
-            pointer->dump_ref(ptr);
-        }
-        vm_enumerator_destroy_internal();
+static void vm_dump_ref(void) {
+    vm_enumerator_init_internal();
+    void** ptr = 0;
+    while ((ptr = vm_data_enumerator_next_ref()) != 0) {
+        pointer->dump_ref(ptr);
     }
+    vm_enumerator_destroy_internal();
 }
 #endif
 
-static struct pointer* vm_free(const struct vm_data* current, u64 address) {
-    const struct vm_data* vm = current;
+static struct pointer* vm_free(u64 address) {
     struct pointer* data = 0;
     if (address != 0) {
-        struct pointer** ptr = vm_read_internal(vm, address);
+        struct pointer** ptr = vm_read_internal(address);
         if (ptr != 0) {
 #ifndef USE_GC
             struct vm_pointer* vm_ptr = global_alloc(VM_POINTER_SIZE);
@@ -228,11 +220,10 @@ static struct pointer* vm_free(const struct vm_data* current, u64 address) {
     return data;
 }
 
-static struct pointer* vm_read(const struct vm_data* current, u64 address) {
-    const struct vm_data* vm = current;
+static struct pointer* vm_read(u64 address) {
     struct pointer* data = 0;
     if (address != 0) {
-        struct pointer** ptr = vm_read_internal(vm, address);
+        struct pointer** ptr = vm_read_internal(address);
         if (ptr != 0) {
             data = *ptr;
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -243,11 +234,10 @@ static struct pointer* vm_read(const struct vm_data* current, u64 address) {
     return data;
 }
 
-static u64 vm_write(struct vm_data* current, struct pointer* data) {
-    struct vm_data* vm = current;
+static u64 vm_write(struct pointer* data) {
     u64 address = 0;
     struct vm_data* target = 0;
-    struct pointer** ptr = vm_alloc_internal(vm, &address, &target);
+    struct pointer** ptr = vm_alloc_internal(&address, &target);
     if (ptr != 0) {
         *ptr = data;
         data->vm = target;

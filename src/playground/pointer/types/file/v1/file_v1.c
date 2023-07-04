@@ -47,14 +47,14 @@ static u64 file_alloc(u64 file_path, u64 mode) {
     if (mode == 0) {
         return 0;
     }
-    struct pointer* file_path_ptr = vm->read(base->vm, file_path);
+    struct pointer* file_path_ptr = vm->read(file_path);
     if (file_path_ptr == 0) {
         return 0;
     }
     if (file_path_ptr->type != TYPE_STRING) {
         return 0;
     }
-    const struct pointer* mode_ptr = vm->read(base->vm, mode);
+    const struct pointer* mode_ptr = vm->read(mode);
     if (mode_ptr == 0) {
         return 0;
     }
@@ -79,7 +79,7 @@ static u64 file_alloc(u64 file_path, u64 mode) {
 #ifdef USE_MEMORY_DEBUG_INFO
     handler->path = file_path_ptr->data;
 #endif
-    u64 data_ptr = vm->write(base->vm, f_ptr);
+    u64 data_ptr = vm->write(f_ptr);
 #ifdef USE_GC
     list->push(&base->gc, (void*)data_ptr);
 #endif
@@ -90,7 +90,7 @@ static u64 file_data(u64 ptr) {
     if (ptr == 0) {
         return 0;
     }
-    struct pointer* data_ptr = vm->read(base->vm, ptr);
+    struct pointer* data_ptr = vm->read(ptr);
     if (data_ptr == 0) {
         return 0;
     }
@@ -122,7 +122,7 @@ static void file_free(u64 ptr) {
     if (ptr == 0) {
         return;
     }
-    struct pointer* data_ptr = vm->read(base->vm, ptr);
+    struct pointer* data_ptr = vm->read(ptr);
     if (data_ptr == 0) {
         return;
     }
@@ -139,7 +139,7 @@ static void file_free(u64 ptr) {
         handler->file = 0;
     }
     // ptr is already a valid address because of previous vm->read check
-    data_ptr = vm->free(base->vm, ptr);
+    data_ptr = vm->free(ptr);
     pointer->free(data_ptr);
 }
 

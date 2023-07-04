@@ -6,14 +6,14 @@
 struct vm_data;
 
 struct vm {
-    void (*init)(struct vm_data** current, u64 size);
-    void (*destroy)(struct vm_data** current);
-    struct pointer* (*free)(const struct vm_data* current, u64 address);
-    struct pointer* (*read)(const struct vm_data* current, u64 address);
-    u64 (*write)(struct vm_data* current, struct pointer* value);
+    void (*init)(u64 size);
+    void (*destroy)(void);
+    struct pointer* (*free)(u64 address);
+    struct pointer* (*read)(u64 address);
+    u64 (*write)(struct pointer* value);
 #ifdef USE_MEMORY_DEBUG_INFO
-    void (*dump)(struct vm_data* current);
-    void (*dump_ref)(struct vm_data* current);
+    void (*dump)(void);
+    void (*dump_ref)(void);
 #endif
 };
 
