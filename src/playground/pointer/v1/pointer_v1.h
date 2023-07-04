@@ -27,7 +27,6 @@ struct pointer {
 };
 
 struct pointer_data {
-    struct vm_data* vm;
     struct list_data* list;
     struct list_data* free;
 #ifdef USE_GC
