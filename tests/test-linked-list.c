@@ -15,15 +15,12 @@ typedef struct test_data {
 
 /* private */
 
-static struct linked_list* new_list(void);
-static void delete_list(struct linked_list** ctx);
-
 /* Initialize the data structure. Its allocation is handled by Rexo. */
 RX_SET_UP(test_set_up) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct linked_list** ctx = &rx->ctx;
     /* initialize list */
-    *ctx = new_list();
+    *ctx = list->new ();
     return RX_SUCCESS;
 }
 
@@ -33,7 +30,7 @@ RX_TEAR_DOWN(test_tear_down) {
     /* gets the current memory pointer */
     struct linked_list* ptr = *ctx;
     /* cleans up */
-    delete_list(&ptr);
+    list->delete (ptr);
 }
 
 /* Define the fixture. */
@@ -61,19 +58,6 @@ RX_TEST_CASE(tests, test_0, .fixture = test_fixture) {
         RX_ASSERT(node->data == node->next);
         node = node->next;
     }
-}
-
-/* allocates memory pointer for list object */
-static struct linked_list* new_list(void) {
-    /* returns list object */
-    return calloc(1, sizeof(struct linked_list));
-}
-
-/* releases memory pointer for list object */
-static void delete_list(struct linked_list** ctx) {
-    list->delete (*ctx);
-    /* cleans up */
-    *ctx = 0;
 }
 
 int main(void) {
