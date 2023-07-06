@@ -1,15 +1,27 @@
 #ifndef _STL_LINKED_LIST_H_
 #define _STL_LINKED_LIST_H_
 
-struct linked_list {
-    struct linked_list* next;
-    void* data;
-};
+#include "std/common.h"
+
+struct linked_list;
+struct linked_list_node;
+struct linked_list_enumerator;
 
 struct linked_list_methods {
     struct linked_list* (*new)(void);
-    void (*delete)(struct linked_list* head);
-    struct linked_list* (*reverse_list)(struct linked_list* head);
+    void (*delete)(struct linked_list** list);
+    void (*reverse_list)(struct linked_list* list);
+    void (*append_head)(struct linked_list* list, void* data);
+    void (*append_tail)(struct linked_list* list, void* data);
+    u64 (*count)(struct linked_list* list);
+    void* (*data)(struct linked_list_node* list);
+    struct linked_list_node* (*next)(struct linked_list_node* list);
+};
+
+struct linked_list_enumerator_methods {
+    struct linked_list_enumerator* (*new)(struct linked_list* list);
+    void (*delete)(struct linked_list_enumerator** enumerator);
+    struct linked_list_node* (*next)(struct linked_list_enumerator* enumerator);
 };
 
 #endif /* _STL_LINKED_LIST_H_ */

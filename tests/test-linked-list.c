@@ -4,7 +4,9 @@
 
 /* definition */
 extern const struct linked_list_methods linked_list_methods_definition;
+extern const struct linked_list_enumerator_methods linked_list_enumerator_methods_definition;
 static const struct linked_list_methods* list = &linked_list_methods_definition;
+static const struct linked_list_enumerator_methods* enumerator = &linked_list_enumerator_methods_definition;
 
 /* Data structure to use at the core of our fixture. */
 typedef struct test_data {
@@ -30,7 +32,7 @@ RX_TEAR_DOWN(test_tear_down) {
     /* gets the current memory pointer */
     struct linked_list* ptr = *ctx;
     /* cleans up */
-    list->delete (ptr);
+    list->delete (&ptr);
 }
 
 /* Define the fixture. */
@@ -39,25 +41,200 @@ RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tea
 /* test init */
 RX_TEST_CASE(tests, test_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct linked_list** ctx = &rx->ctx;
-    struct linked_list* node;
+    struct linked_list* ctx = rx->ctx;
 
-    node = *ctx;
-    for (int i = 0; i < 10; i++) {
-        struct linked_list* new_item = list->new ();
-        new_item->data = node;
-        node->next = new_item;
-        node = node->next;
+    u64 i = 0;
+
+    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
+    struct linked_list_node* node = 0;
+    while ((node = enumerator->next(list_enumerator)) != 0) {
+        i++;
+    }
+    enumerator->delete (&list_enumerator);
+
+    RX_ASSERT(i == 0);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_0_reverse, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct linked_list* ctx = rx->ctx;
+
+    list->reverse_list(ctx);
+
+    u64 i = 0;
+
+    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
+    struct linked_list_node* node = 0;
+    while ((node = enumerator->next(list_enumerator)) != 0) {
+        i++;
+    }
+    enumerator->delete (&list_enumerator);
+
+    RX_ASSERT(i == 0);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_1, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct linked_list* ctx = rx->ctx;
+
+    for (u64 i = 0; i < 1; i++) {
+        list->append_head(ctx, (void*)(i + 1));
     }
 
-    /* assign to ctx cause overwise it will be a memory leak */
-    *ctx = list->reverse_list(*ctx);
+    u64 i = 0;
 
-    node = *ctx;
-    for (int i = 0; i < 10; i++) {
-        RX_ASSERT(node->data == node->next);
-        node = node->next;
+    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
+    struct linked_list_node* node = 0;
+    while ((node = enumerator->next(list_enumerator)) != 0) {
+        RX_ASSERT((u64)list->data(node) == (1 - i));
+        i++;
     }
+    enumerator->delete (&list_enumerator);
+
+    RX_ASSERT(i == 1);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_1_reverse, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct linked_list* ctx = rx->ctx;
+
+    for (u64 i = 0; i < 1; i++) {
+        list->append_head(ctx, (void*)(i + 1));
+    }
+
+    list->reverse_list(ctx);
+
+    u64 i = 0;
+
+    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
+    struct linked_list_node* node = 0;
+    while ((node = enumerator->next(list_enumerator)) != 0) {
+        RX_ASSERT((u64)list->data(node) == (i + 1));
+        i++;
+    }
+    enumerator->delete (&list_enumerator);
+
+    RX_ASSERT(i == 1);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_2, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct linked_list* ctx = rx->ctx;
+
+    for (u64 i = 0; i < 2; i++) {
+        list->append_head(ctx, (void*)(i + 1));
+    }
+
+    u64 i = 0;
+
+    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
+    struct linked_list_node* node = 0;
+    while ((node = enumerator->next(list_enumerator)) != 0) {
+        RX_ASSERT((u64)list->data(node) == (2 - i));
+        i++;
+    }
+    enumerator->delete (&list_enumerator);
+
+    RX_ASSERT(i == 2);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_2_reverse, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct linked_list* ctx = rx->ctx;
+
+    for (u64 i = 0; i < 2; i++) {
+        list->append_head(ctx, (void*)(i + 1));
+    }
+
+    list->reverse_list(ctx);
+
+    u64 i = 0;
+
+    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
+    struct linked_list_node* node = 0;
+    while ((node = enumerator->next(list_enumerator)) != 0) {
+        RX_ASSERT((u64)list->data(node) == (i + 1));
+        i++;
+    }
+    enumerator->delete (&list_enumerator);
+
+    RX_ASSERT(i == 2);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_10, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct linked_list* ctx = rx->ctx;
+
+    for (u64 i = 0; i < 10; i++) {
+        list->append_head(ctx, (void*)(i + 1));
+    }
+
+    u64 i = 0;
+
+    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
+    struct linked_list_node* node = 0;
+    while ((node = enumerator->next(list_enumerator)) != 0) {
+        RX_ASSERT((u64)list->data(node) == (10 - i));
+        i++;
+    }
+    enumerator->delete (&list_enumerator);
+
+    RX_ASSERT(i == 10);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_10_reverse, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct linked_list* ctx = rx->ctx;
+
+    for (u64 i = 0; i < 10; i++) {
+        list->append_head(ctx, (void*)(i + 1));
+    }
+
+    list->reverse_list(ctx);
+
+    u64 i = 0;
+
+    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
+    struct linked_list_node* node = 0;
+    while ((node = enumerator->next(list_enumerator)) != 0) {
+        RX_ASSERT((u64)list->data(node) == (i + 1));
+        i++;
+    }
+    enumerator->delete (&list_enumerator);
+
+    RX_ASSERT(i == 10);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_10_reverse_reverse, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct linked_list* ctx = rx->ctx;
+
+    for (u64 i = 0; i < 10; i++) {
+        list->append_head(ctx, (void*)(i + 1));
+    }
+
+    list->reverse_list(ctx);
+    list->reverse_list(ctx);
+
+    u64 i = 0;
+
+    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
+    struct linked_list_node* node = 0;
+    while ((node = enumerator->next(list_enumerator)) != 0) {
+        RX_ASSERT((u64)list->data(node) == (10 - i));
+        i++;
+    }
+    enumerator->delete (&list_enumerator);
+
+    RX_ASSERT(i == 10);
 }
 
 int main(void) {
