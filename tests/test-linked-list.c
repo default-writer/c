@@ -39,6 +39,69 @@ RX_TEAR_DOWN(test_tear_down) {
 RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tear_down);
 
 /* test init */
+RX_TEST_CASE(tests, test_enumerator_new_0, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+
+    struct linked_list_enumerator* list_enumerator = enumerator->new (0);
+
+    RX_ASSERT(list_enumerator == 0);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_append_head_0, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+
+    struct linked_list* ctx = rx->ctx;
+
+    list->append_head(ctx, 0);
+
+    u64 count = list->count(ctx);
+
+    RX_ASSERT(count == 0);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_count_0, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+
+    u64 count = list->count(0);
+
+    RX_ASSERT(count == 0);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_data_0, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+
+    void* data = list->data(0);
+
+    RX_ASSERT(data == 0);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_data, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct linked_list* ctx = rx->ctx;
+
+    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
+    struct linked_list_node* node = enumerator->next(list_enumerator);
+
+    RX_ASSERT(node == 0);
+
+    enumerator->delete (&list_enumerator);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_count, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct linked_list* ctx = rx->ctx;
+
+    u64 count = list->count(ctx);
+
+    RX_ASSERT(count == 0);
+}
+
+/* test init */
 RX_TEST_CASE(tests, test_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct linked_list* ctx = rx->ctx;

@@ -117,10 +117,16 @@ static u64 linked_list_count(struct linked_list* list) {
 }
 
 static void* linked_list_data(struct linked_list_node* node) {
+    if (node == 0) {
+        return 0;
+    }
     return node->data;
 }
 
 static struct linked_list_node* linked_list_next(struct linked_list_node* node) {
+    if (node == 0) {
+        return 0;
+    }
     return node->next;
 }
 
