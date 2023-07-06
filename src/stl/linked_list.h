@@ -16,12 +16,8 @@ struct linked_list_methods {
     u64 (*count)(struct linked_list* list);
     void* (*data)(struct linked_list_node* list);
     struct linked_list_node* (*next)(struct linked_list_node* list);
-};
-
-struct linked_list_enumerator_methods {
-    struct linked_list_enumerator* (*new)(struct linked_list* list);
-    void (*delete)(struct linked_list_enumerator** enumerator);
-    struct linked_list_node* (*next)(struct linked_list_enumerator* enumerator);
+    struct linked_list_node* (*head)(struct linked_list* list);
+    struct linked_list_node* (*tail)(struct linked_list* list);
 };
 
 #endif /* _STL_LINKED_LIST_H_ */

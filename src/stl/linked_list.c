@@ -13,24 +13,17 @@ struct linked_list {
     u64 count;
 };
 
-struct linked_list_enumerator {
-    struct linked_list* list;
-    struct linked_list_node* current;
-};
-
 /* private */
 static struct linked_list* linked_list_new(void);
 static void linked_list_delete(struct linked_list** list);
 static void linked_list_reverse_list(struct linked_list* list);
 static void linked_list_append_head(struct linked_list* list, void* data);
 static void linked_list_append_tail(struct linked_list* list, void* data);
+static struct linked_list_node* linked_list_head(struct linked_list* list);
+static struct linked_list_node* linked_list_tail(struct linked_list* list);
 static u64 linked_list_count(struct linked_list* list);
 static void* linked_list_data(struct linked_list_node* node);
 static struct linked_list_node* linked_list_next(struct linked_list_node* node);
-
-static struct linked_list_enumerator* linked_list_enumerator_new(struct linked_list* list);
-static void linked_list_enumerator_delete(struct linked_list_enumerator** enumerator);
-static struct linked_list_node* linked_list_enumerator_next(struct linked_list_enumerator*);
 
 /* implementation */
 static struct linked_list* linked_list_new(void) {
@@ -109,6 +102,20 @@ static void linked_list_append_tail(struct linked_list* list, void* data) {
     list->count++;
 }
 
+static struct linked_list_node* linked_list_head(struct linked_list* list) {
+    if (list == 0) {
+        return 0;
+    }
+    return list->head;
+}
+
+static struct linked_list_node* linked_list_tail(struct linked_list* list) {
+    if (list == 0) {
+        return 0;
+    }
+    return list->tail;
+}
+
 static u64 linked_list_count(struct linked_list* list) {
     if (list == 0) {
         return 0;
@@ -130,39 +137,7 @@ static struct linked_list_node* linked_list_next(struct linked_list_node* node) 
     return node->next;
 }
 
-static struct linked_list_enumerator* linked_list_enumerator_new(struct linked_list* list) {
-    if (list == 0) {
-        return 0;
-    }
-    struct linked_list_enumerator* enumerator = calloc(1, sizeof(struct linked_list_enumerator));
-    enumerator->list = list;
-    enumerator->current = list->head;
-    return enumerator;
-}
-
-static void linked_list_enumerator_delete(struct linked_list_enumerator** enumerator) {
-    if (enumerator == 0) {
-        return;
-    }
-    struct linked_list_enumerator* ptr = *enumerator;
-    free(ptr);
-    *enumerator = 0;
-}
-
-static struct linked_list_node* linked_list_enumerator_next(struct linked_list_enumerator* enumerator) {
-    if (enumerator == 0) {
-        return 0;
-    }
-    if (enumerator->current == 0) {
-        return 0;
-    }
-    struct linked_list_node* node = enumerator->current;
-    enumerator->current = node->next;
-    return node;
-}
-
 /* public */
-
 const struct linked_list_methods linked_list_methods_definition = {
     /* generic methods */
     .new = linked_list_new,
@@ -172,11 +147,7 @@ const struct linked_list_methods linked_list_methods_definition = {
     .reverse_list = linked_list_reverse_list,
     .count = linked_list_count,
     .data = linked_list_data,
-    .next = linked_list_next
-};
-
-const struct linked_list_enumerator_methods linked_list_enumerator_methods_definition = {
-    .new = linked_list_enumerator_new,
-    .delete = linked_list_enumerator_delete,
-    .next = linked_list_enumerator_next
+    .next = linked_list_next,
+    .head = linked_list_head,
+    .tail = linked_list_tail
 };

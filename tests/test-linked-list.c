@@ -1,5 +1,6 @@
 
 #include "stl/linked_list.h"
+#include "stl/linked_list_enumerator.h"
 #include <rexo/include/rexo.h>
 
 /* definition */
@@ -99,6 +100,26 @@ RX_TEST_CASE(tests, test_list_count, .fixture = test_fixture) {
     u64 count = list->count(ctx);
 
     RX_ASSERT(count == 0);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_head, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct linked_list* ctx = rx->ctx;
+
+    struct linked_list_node* node = list->head(ctx);
+
+    RX_ASSERT(node == 0);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_tail, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct linked_list* ctx = rx->ctx;
+
+    struct linked_list_node* node = list->tail(ctx);
+
+    RX_ASSERT(node == 0);
 }
 
 /* test init */

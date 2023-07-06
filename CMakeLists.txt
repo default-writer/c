@@ -223,7 +223,8 @@ set(LIB_STD1_SOURCE
     src/playground/pointer/types/file/v1/file_v1.c
     src/playground/pointer/types/string/v1/string_v1.c)
 set(LIB_LINKED_LIST_SOURCE
-    src/stl/linked_list.c)
+    src/stl/linked_list.c
+    src/stl/linked_list_enumerator.c)
 set(MAIN_STANDARD_SOURCE tests/main.c ${LIB_STANDARD_SOURCE})
 set(MAIN_LIGHT_SOURCE tests/main-light.c ${LIB_LIGHT_SOURCE})
 set(MAIN_MICRO_SOURCE tests/main-micro.c ${LIB_MICRO_SOURCE})
