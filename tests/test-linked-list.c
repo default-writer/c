@@ -65,8 +65,7 @@ RX_TEST_CASE(tests, test_0_reverse, .fixture = test_fixture) {
     u64 i = 0;
 
     struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
-    struct linked_list_node* node = 0;
-    while ((node = enumerator->next(list_enumerator)) != 0) {
+    while (enumerator->next(list_enumerator) != 0) {
         i++;
     }
     enumerator->delete (&list_enumerator);
