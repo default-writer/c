@@ -94,7 +94,9 @@ static void linked_list_append_tail(struct linked_list* list, void* data) {
     struct linked_list_node* tail = list->tail;
     struct linked_list_node* node = calloc(1, sizeof(struct linked_list_node));
     node->data = data;
-    tail->next = node;
+    if (tail != 0) {
+        tail->next = node;
+    }
     list->tail = node;
     if (list->head == 0) {
         list->head = node;
