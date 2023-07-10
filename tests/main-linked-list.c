@@ -781,6 +781,94 @@ RX_TEST_CASE(tests, test_list_1234_reverse_until_3, .fixture = test_fixture) {
     RX_ASSERT(list->tail(ctx) == head);
 }
 
+static struct linked_list_node* context = 0;
+
+static u64 match_function(struct linked_list_node* current) {
+    return current == context;
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_1234_reverse_until_match_3, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct linked_list* ctx = rx->ctx;
+
+    list->append_head(ctx, (void*)(4));
+    list->append_head(ctx, (void*)(3));
+
+    const struct linked_list_node* tail = list->head(ctx);
+
+    list->append_head(ctx, (void*)(2));
+    list->append_head(ctx, (void*)(1));
+
+    const struct linked_list_node* head = list->tail(ctx);
+
+    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
+    struct linked_list_node* node = enumerator->find(list_enumerator, (void*)3);
+    context = node;
+
+    enumerator->delete (&list_enumerator);
+
+    list->reverse_until_match(ctx, match_function);
+
+    RX_ASSERT(list->head(ctx) == tail);
+    RX_ASSERT(list->tail(ctx) == head);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_reverse_until_match_0, .fixture = test_fixture) {
+    list->reverse_until_match(0, 0);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_reverse_until_match_function_0, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct linked_list* ctx = rx->ctx;
+
+    list->reverse_until_match(ctx, 0);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_reverse_until_match, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct linked_list* ctx = rx->ctx;
+
+    const struct linked_list_node* tail = list->head(ctx);
+    const struct linked_list_node* head = list->tail(ctx);
+
+    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
+    struct linked_list_node* node = enumerator->find(list_enumerator, (void*)3);
+    context = node;
+
+    enumerator->delete (&list_enumerator);
+
+    list->reverse_until_match(ctx, match_function);
+
+    RX_ASSERT(list->head(ctx) == tail);
+    RX_ASSERT(list->tail(ctx) == head);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_1234_reverse_until_match_function_1, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct linked_list* ctx = rx->ctx;
+
+    list->append_head(ctx, (void*)(1));
+
+    const struct linked_list_node* tail = list->head(ctx);
+    const struct linked_list_node* head = list->tail(ctx);
+
+    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
+    struct linked_list_node* node = enumerator->find(list_enumerator, (void*)1);
+    context = node;
+
+    enumerator->delete (&list_enumerator);
+
+    list->reverse_until_match(ctx, match_function);
+
+    RX_ASSERT(list->head(ctx) == tail);
+    RX_ASSERT(list->tail(ctx) == head);
+}
+
 /* test init */
 RX_TEST_CASE(tests, test_list_1234_reverse_until_2, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
