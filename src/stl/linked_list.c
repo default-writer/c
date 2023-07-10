@@ -162,9 +162,7 @@ static void linked_list_reverse_until_match(struct linked_list* list, linked_lis
         prev->next = tmp;
         if (match(current)) {
             tail->next = current->next;
-            while (tail->next) {
-                tail = tail->next;
-            }
+            tail = list->tail;
             break;
         }
     }
