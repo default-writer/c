@@ -16,7 +16,11 @@ struct linked_list {
 /* private */
 static struct linked_list* linked_list_new(void);
 static void linked_list_delete(struct linked_list** list);
-static void linked_list_reverse_list(struct linked_list* list);
+static void linked_list_reverse(struct linked_list* list);
+#ifdef USE_MEMORY_DEBUG_INFO
+static void linked_list_print(struct linked_list* list);
+#endif
+static void linked_list_reverse_until(struct linked_list* list, struct linked_list_node* node);
 static void linked_list_append_head(struct linked_list* list, void* data);
 static void linked_list_append_tail(struct linked_list* list, void* data);
 static struct linked_list_node* linked_list_head(struct linked_list* list);
@@ -37,8 +41,9 @@ static void linked_list_delete(struct linked_list** list) {
     }
     struct linked_list* ptr = *list;
     struct linked_list_node* node = ptr->head;
-    while (node != 0) {
-        struct linked_list_node* next = node->next;
+    struct linked_list_node* next = 0;
+    while (node) {
+        next = node->next;
         free(node);
         node = next;
     }
@@ -49,22 +54,99 @@ static void linked_list_delete(struct linked_list** list) {
     *list = 0;
 }
 
-static void linked_list_reverse_list(struct linked_list* list) {
+static void linked_list_reverse(struct linked_list* list) {
     if (list == 0) {
         return;
     }
     struct linked_list_node* current = list->head;
+
+    if (current == 0) {
+        return;
+    }
+#ifdef USE_MEMORY_DEBUG_INFO
+    linked_list_print(list);
+#endif
     struct linked_list_node* prev = 0;
     struct linked_list_node* tmp = 0;
-    while (current) {
+    struct linked_list_node* tail = list->head;
+    while (current->next) {
         tmp = prev;
         prev = current;
         current = current->next;
         prev->next = tmp;
     }
-    list->tail = list->head;
-    list->head = prev;
+    if (current) {
+        current->next = prev;
+    }
+    list->tail = tail;
+    list->head = current;
+#ifdef USE_MEMORY_DEBUG_INFO
+    linked_list_print(list);
+#endif
 }
+
+static void linked_list_reverse_until(struct linked_list* list, struct linked_list_node* node) {
+    if (list == 0) {
+        return;
+    }
+    if (node == 0) {
+        return;
+    }
+    struct linked_list_node* current = list->head;
+    if (current == 0) {
+        return;
+    }
+    if (current == node) {
+#ifdef USE_MEMORY_DEBUG_INFO
+        linked_list_print(list);
+#endif
+        return;
+    }
+#ifdef USE_MEMORY_DEBUG_INFO
+    linked_list_print(list);
+#endif
+    struct linked_list_node* tmp = 0;
+    struct linked_list_node* prev = 0;
+    struct linked_list_node* tail = list->head;
+    while (current->next) {
+        tmp = prev;
+        prev = current;
+        current = current->next;
+        prev->next = tmp;
+        if (current == node) {
+            tail->next = current->next;
+            while (tail->next) {
+                tail = tail->next;
+            }
+            break;
+        }
+    }
+    if (current) {
+        current->next = prev;
+    }
+    list->tail = tail;
+    list->head = current;
+#ifdef USE_MEMORY_DEBUG_INFO
+    linked_list_print(list);
+#endif
+}
+
+#ifdef USE_MEMORY_DEBUG_INFO
+static void linked_list_print(struct linked_list* list) {
+    struct linked_list_node* head = list->head;
+    struct linked_list_node* tail = list->tail;
+    struct linked_list_node* current = head;
+    printf("[");
+    while (current) {
+        printf("%lld", (u64)current->data);
+        current = current->next;
+        if (current) {
+            printf(",");
+        }
+    }
+    printf("] (%lld : %lld)\n", head ? (u64)head->data : 0, tail ? (u64)tail->data : 0);
+}
+#endif
 
 static void linked_list_append_head(struct linked_list* list, void* data) {
     if (list == 0) {
@@ -94,7 +176,7 @@ static void linked_list_append_tail(struct linked_list* list, void* data) {
     struct linked_list_node* tail = list->tail;
     struct linked_list_node* node = calloc(1, sizeof(struct linked_list_node));
     node->data = data;
-    if (tail != 0) {
+    if (tail) {
         tail->next = node;
     }
     list->tail = node;
@@ -146,7 +228,8 @@ const struct linked_list_methods linked_list_methods_definition = {
     .delete = linked_list_delete,
     .append_head = linked_list_append_head,
     .append_tail = linked_list_append_tail,
-    .reverse_list = linked_list_reverse_list,
+    .reverse = linked_list_reverse,
+    .reverse_until = linked_list_reverse_until,
     .count = linked_list_count,
     .data = linked_list_data,
     .next = linked_list_next,
