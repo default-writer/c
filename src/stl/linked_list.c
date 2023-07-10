@@ -65,8 +65,8 @@ static void linked_list_reverse(struct linked_list* list) {
 
     struct linked_list_node* current = list->head;
 
+    struct linked_list_node* tmp;
     struct linked_list_node* prev = 0;
-    struct linked_list_node* tmp = 0;
     struct linked_list_node* tail = current;
 
     while (current->next) {
