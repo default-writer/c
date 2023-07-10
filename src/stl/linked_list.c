@@ -87,46 +87,39 @@ static void linked_list_reverse(struct linked_list* list) {
 }
 
 static void linked_list_reverse_until(struct linked_list* list, struct linked_list_node* node) {
-    if (list == 0) {
+    if (!list || !node || !list->head || list->head == node)
         return;
-    }
-    if (node == 0) {
-        return;
-    }
-    struct linked_list_node* current = list->head;
-    if (current == 0) {
-        return;
-    }
-    if (current == node) {
-#ifdef USE_MEMORY_DEBUG_INFO
-        linked_list_print(list);
-#endif
-        return;
-    }
+
 #ifdef USE_MEMORY_DEBUG_INFO
     linked_list_print(list);
 #endif
-    struct linked_list_node* tmp = 0;
+
+    struct linked_list_node* current = list->head;
+
+    struct linked_list_node* tmp;
     struct linked_list_node* prev = 0;
-    struct linked_list_node* tail = list->head;
+    struct linked_list_node* tail = current;
+
     while (current->next) {
         tmp = prev;
         prev = current;
         current = current->next;
         prev->next = tmp;
         if (current == node) {
-            if (current->next != 0) {
+            if (current->next) {
                 tail->next = current->next;
                 tail = list->tail;
             }
             break;
         }
     }
-    if (current) {
+
+    if (current)
         current->next = prev;
-    }
+
     list->tail = tail;
     list->head = current;
+
 #ifdef USE_MEMORY_DEBUG_INFO
     linked_list_print(list);
 #endif
