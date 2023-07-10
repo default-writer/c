@@ -115,9 +115,9 @@ static void linked_list_reverse_until(struct linked_list* list, struct linked_li
         current = current->next;
         prev->next = tmp;
         if (current == node) {
-            tail->next = current->next;
-            while (tail->next) {
-                tail = tail->next;
+            if (current->next != 0) {
+                tail->next = current->next;
+                tail = list->tail;
             }
             break;
         }
@@ -161,8 +161,10 @@ static void linked_list_reverse_until_match(struct linked_list* list, linked_lis
         current = current->next;
         prev->next = tmp;
         if (match(current)) {
-            tail->next = current->next;
-            tail = list->tail;
+            if (current->next != 0) {
+                tail->next = current->next;
+                tail = list->tail;
+            }
             break;
         }
     }
