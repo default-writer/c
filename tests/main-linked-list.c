@@ -1069,7 +1069,7 @@ RX_TEST_CASE(tests, test_list_enumerator_find, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_list_enumerator_find_empty_list, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_list_enumerator_find_list, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct linked_list* ctx = rx->ctx;
 
@@ -1093,6 +1093,7 @@ RX_TEST_CASE(tests, test_list_enumerator_find_0, .fixture = test_fixture) {
 
     RX_ASSERT(0 == node);
 }
+
 int main(void) {
     /* Execute the main function that runs the test cases found. */
     int result = rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;

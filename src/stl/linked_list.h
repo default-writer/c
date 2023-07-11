@@ -15,8 +15,8 @@ struct linked_list_methods {
     void (*reverse)(struct linked_list* list);
     void (*reverse_until)(struct linked_list* list, struct linked_list_node* node);
     void (*reverse_until_match)(struct linked_list* list, linked_list_node_match_function match);
-    void (*append_head)(struct linked_list* list, void* data);
-    void (*append_tail)(struct linked_list* list, void* data);
+    struct linked_list_node* (*append_head)(struct linked_list* list, void* data);
+    struct linked_list_node* (*append_tail)(struct linked_list* list, void* data);
     u64 (*count)(struct linked_list* list);
     void* (*data)(struct linked_list_node* list);
     struct linked_list_node* (*next)(struct linked_list_node* node);
