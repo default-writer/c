@@ -44,6 +44,10 @@ static void linked_list_enumerator_delete(struct linked_list_enumerator** enumer
 }
 
 static void linked_list_enumerator_reverse(struct linked_list_enumerator* enumerator) {
+    if (!enumerator) {
+        return;
+    }
+
     struct linked_list* ptr = enumerator->list;
     if (!ptr || !list->head(ptr))
         return;
@@ -69,7 +73,6 @@ static void linked_list_enumerator_reverse(struct linked_list_enumerator* enumer
         list->set_next(current, prev);
     }
 
-    list->set_next(tail, 0);
     list->set(ptr, current, tail);
 
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -120,18 +123,20 @@ static struct linked_list_node* linked_list_enumerator_find_prev(struct linked_l
 
 #ifdef USE_MEMORY_DEBUG_INFO
 static void linked_list_print(struct linked_list* ptr) {
-    struct linked_list_node* head = list->head(ptr);
-    struct linked_list_node* tail = list->tail(ptr);
-    struct linked_list_node* current = head;
-    printf("[");
-    while (current) {
-        printf("%lld", (u64)list->data(current));
-        current = list->next(current);
-        if (current) {
-            printf(",");
+    if (ptr) {
+        struct linked_list_node* head = list->head(ptr);
+        struct linked_list_node* tail = list->tail(ptr);
+        struct linked_list_node* current = head;
+        printf("[");
+        while (current) {
+            printf("%lld", (u64)list->data(current));
+            current = list->next(current);
+            if (current) {
+                printf(",");
+            }
         }
+        printf("] (%lld : %lld)\n", head ? (u64)list->data(head) : 0, tail ? (u64)list->data(tail) : 0);
     }
-    printf("] (%lld : %lld)\n", head ? (u64)list->data(head) : 0, tail ? (u64)list->data(tail) : 0);
 }
 #endif
 

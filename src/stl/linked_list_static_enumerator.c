@@ -41,6 +41,10 @@ static void linked_list_enumerator_destroy(void) {
 }
 
 static void linked_list_enumerator_reverse(void) {
+    if (!enumerator->list) {
+        return;
+    }
+
     struct linked_list* ptr = enumerator->list;
     if (!ptr || !list->head(ptr))
         return;
@@ -66,7 +70,6 @@ static void linked_list_enumerator_reverse(void) {
         list->set_next(current, prev);
     }
 
-    list->set_next(tail, 0);
     list->set(ptr, current, tail);
 
 #ifdef USE_MEMORY_DEBUG_INFO
