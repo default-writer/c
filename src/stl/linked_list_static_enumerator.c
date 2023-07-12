@@ -1,10 +1,10 @@
-#include "stl/linked_list_enumerator.h"
+#include "stl/linked_list_static_enumerator.h"
 #include "list/data.h"
 #include "stdlib.h"
 #include "stl/linked_list.h"
 
 /* public */
-struct linked_list_enumerator {
+struct linked_list_enumerator_data {
     struct linked_list* list;
     struct linked_list_node* current;
 };
@@ -12,38 +12,35 @@ struct linked_list_enumerator {
 /* definition */
 extern const struct linked_list_methods linked_list_methods_definition;
 static const struct linked_list_methods* list = &linked_list_methods_definition;
+static struct linked_list_enumerator_data static_linked_list_enumerator_data;
+static struct linked_list_enumerator_data* enumerator = &static_linked_list_enumerator_data;
 
 /* private */
-static struct linked_list_enumerator* linked_list_enumerator_new(struct linked_list* list);
-static void linked_list_enumerator_delete(struct linked_list_enumerator** enumerator);
-static void linked_list_enumerator_reverse(struct linked_list_enumerator* enumerator);
-static struct linked_list_node* linked_list_enumerator_next(struct linked_list_enumerator* enumerator);
-static struct linked_list_node* linked_list_enumerator_find(struct linked_list_enumerator* enumerator, void* data);
+static void linked_list_enumerator_init(struct linked_list* list);
+static void linked_list_enumerator_destroy(void);
+static struct linked_list_node* linked_list_enumerator_next(void);
+static struct linked_list_node* linked_list_enumerator_find(void* data);
+static void linked_list_enumerator_reverse(void);
+static struct linked_list_node* linked_list_enumerator_find_prev(void* data);
 #ifdef USE_MEMORY_DEBUG_INFO
 static void linked_list_print(struct linked_list* ptr);
 #endif
 
 /* implementation */
-static struct linked_list_enumerator* linked_list_enumerator_new(struct linked_list* ptr) {
+static void linked_list_enumerator_init(struct linked_list* ptr) {
     if (!ptr) {
-        return 0;
-    }
-    struct linked_list_enumerator* enumerator = calloc(1, sizeof(struct linked_list_enumerator));
-    enumerator->list = ptr;
-    enumerator->current = list->head(ptr);
-    return enumerator;
-}
-
-static void linked_list_enumerator_delete(struct linked_list_enumerator** enumerator) {
-    if (!enumerator) {
         return;
     }
-    struct linked_list_enumerator* ptr = *enumerator;
-    free(ptr);
-    *enumerator = 0;
+    enumerator->list = ptr;
+    enumerator->current = list->head(ptr);
 }
 
-static void linked_list_enumerator_reverse(struct linked_list_enumerator* enumerator) {
+static void linked_list_enumerator_destroy(void) {
+    enumerator->list = 0;
+    enumerator->current = 0;
+}
+
+static void linked_list_enumerator_reverse(void) {
     struct linked_list* ptr = enumerator->list;
     if (!ptr || !list->head(ptr))
         return;
@@ -77,8 +74,8 @@ static void linked_list_enumerator_reverse(struct linked_list_enumerator* enumer
 #endif
 }
 
-static struct linked_list_node* linked_list_enumerator_next(struct linked_list_enumerator* enumerator) {
-    if (!enumerator || !enumerator->current) {
+static struct linked_list_node* linked_list_enumerator_next(void) {
+    if (!enumerator->current) {
         return 0;
     }
     struct linked_list_node* node = enumerator->current;
@@ -86,8 +83,8 @@ static struct linked_list_node* linked_list_enumerator_next(struct linked_list_e
     return node;
 }
 
-static struct linked_list_node* linked_list_enumerator_find(struct linked_list_enumerator* enumerator, void* data) {
-    if (!enumerator || !enumerator->current || !data) {
+static struct linked_list_node* linked_list_enumerator_find(void* data) {
+    if (!enumerator->current || !data) {
         return 0;
     }
     struct linked_list_node* node = enumerator->current;
@@ -101,7 +98,7 @@ static struct linked_list_node* linked_list_enumerator_find(struct linked_list_e
     return node;
 }
 
-static struct linked_list_node* linked_list_enumerator_find_prev(struct linked_list_enumerator* enumerator, void* data) {
+static struct linked_list_node* linked_list_enumerator_find_prev(void* data) {
     if (!enumerator || !enumerator->current || !data) {
         return 0;
     }
@@ -136,9 +133,9 @@ static void linked_list_print(struct linked_list* ptr) {
 #endif
 
 /* public */
-const struct linked_list_enumerator_methods linked_list_enumerator_methods_definition = {
-    .new = linked_list_enumerator_new,
-    .delete = linked_list_enumerator_delete,
+const struct linked_list_static_enumerator_methods linked_list_static_enumerator_methods_definition = {
+    .init = linked_list_enumerator_init,
+    .destroy = linked_list_enumerator_destroy,
     .reverse = linked_list_enumerator_reverse,
     .next = linked_list_enumerator_next,
     .find = linked_list_enumerator_find,

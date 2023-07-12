@@ -17,9 +17,7 @@ struct linked_list {
 static struct linked_list* linked_list_new(void);
 static void linked_list_delete(struct linked_list** list);
 static void linked_list_reverse(struct linked_list* list);
-#ifdef USE_MEMORY_DEBUG_INFO
-static void linked_list_print(struct linked_list* list);
-#endif
+
 static void linked_list_reverse_until(struct linked_list* list, struct linked_list_node* node);
 static void linked_list_reverse_until_match(struct linked_list* list, linked_list_node_match_function match);
 static struct linked_list_node* linked_list_append_head(struct linked_list* list, void* data);
@@ -29,6 +27,11 @@ static struct linked_list_node* linked_list_tail(struct linked_list* list);
 static u64 linked_list_count(struct linked_list* list);
 static void* linked_list_data(struct linked_list_node* node);
 static struct linked_list_node* linked_list_next(struct linked_list_node* node);
+static void linked_list_set_next(struct linked_list_node* node, struct linked_list_node* value);
+static void linked_list_set(struct linked_list* list, struct linked_list_node* head, struct linked_list_node* tail);
+#ifdef USE_MEMORY_DEBUG_INFO
+static void linked_list_print(struct linked_list* list);
+#endif
 
 /* implementation */
 static struct linked_list* linked_list_new(void) {
@@ -89,7 +92,7 @@ static void linked_list_reverse(struct linked_list* list) {
 }
 
 static void linked_list_reverse_until(struct linked_list* list, struct linked_list_node* node) {
-    if (!list || !node || !list->head || list->head == node)
+    if (!list || !node || !list->head)
         return;
 
     struct linked_list_node* current = list->head;
@@ -272,6 +275,21 @@ static struct linked_list_node* linked_list_next(struct linked_list_node* node) 
     return node->next;
 }
 
+static void linked_list_set_next(struct linked_list_node* node, struct linked_list_node* value) {
+    if (!node || node == value) {
+        return;
+    }
+    node->next = value;
+}
+
+static void linked_list_set(struct linked_list* list, struct linked_list_node* head, struct linked_list_node* tail) {
+    if (!list || !head || !tail) {
+        return;
+    }
+    list->head = head;
+    list->tail = tail;
+}
+
 /* public */
 const struct linked_list_methods linked_list_methods_definition = {
     /* generic methods */
@@ -286,5 +304,7 @@ const struct linked_list_methods linked_list_methods_definition = {
     .data = linked_list_data,
     .next = linked_list_next,
     .head = linked_list_head,
-    .tail = linked_list_tail
+    .tail = linked_list_tail,
+    .set_next = linked_list_set_next,
+    .set = linked_list_set,
 };

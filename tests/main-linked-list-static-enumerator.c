@@ -1,13 +1,12 @@
-
 #include "stl/linked_list.h"
-#include "stl/linked_list_enumerator.h"
+#include "stl/linked_list_static_enumerator.h"
 #include <rexo/include/rexo.h>
 
 /* definition */
 extern const struct linked_list_methods linked_list_methods_definition;
-extern const struct linked_list_enumerator_methods linked_list_enumerator_methods_definition;
+extern const struct linked_list_static_enumerator_methods linked_list_static_enumerator_methods_definition;
 static const struct linked_list_methods* list = &linked_list_methods_definition;
-static const struct linked_list_enumerator_methods* enumerator = &linked_list_enumerator_methods_definition;
+static const struct linked_list_static_enumerator_methods* enumerator = &linked_list_static_enumerator_methods_definition;
 
 /* Data structure to use at the core of our fixture. */
 typedef struct test_data {
@@ -41,9 +40,9 @@ RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tea
 
 /* test init */
 RX_TEST_CASE(tests, test_list_enumerator_new_0, .fixture = test_fixture) {
-    const struct linked_list_enumerator* list_enumerator = enumerator->new (0);
+    enumerator->init(0);
 
-    RX_ASSERT(list_enumerator == 0);
+    RX_ASSERT(enumerator->next() == 0);
 }
 
 RX_TEST_CASE(tests, test_list_new_0, .fixture = test_fixture) {
@@ -72,12 +71,12 @@ RX_TEST_CASE(tests, test_list_data, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct linked_list* ctx = rx->ctx;
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
-    const struct linked_list_node* node = enumerator->next(list_enumerator);
+    enumerator->init(ctx);
+    const struct linked_list_node* node = enumerator->next();
 
     RX_ASSERT(node == 0);
 
-    enumerator->delete (&list_enumerator);
+    enumerator->destroy();
 }
 
 /* test init */
@@ -117,10 +116,10 @@ RX_TEST_CASE(tests, test_list_0, .fixture = test_fixture) {
 
     u64 i = 0;
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
-    RX_ASSERT(enumerator->next(list_enumerator) == 0);
+    enumerator->init(ctx);
+    RX_ASSERT(enumerator->next() == 0);
 
-    enumerator->delete (&list_enumerator);
+    enumerator->destroy();
 
     RX_ASSERT(i == 0);
 }
@@ -134,10 +133,10 @@ RX_TEST_CASE(tests, test_list_0_reverse, .fixture = test_fixture) {
 
     u64 i = 0;
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
-    RX_ASSERT(enumerator->next(list_enumerator) == 0);
+    enumerator->init(ctx);
+    RX_ASSERT(enumerator->next() == 0);
 
-    enumerator->delete (&list_enumerator);
+    enumerator->destroy();
 
     RX_ASSERT(i == 0);
 }
@@ -170,13 +169,13 @@ RX_TEST_CASE(tests, test_list_1, .fixture = test_fixture) {
 
     u64 i = 0;
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
+    enumerator->init(ctx);
     struct linked_list_node* node = 0;
-    while ((node = enumerator->next(list_enumerator)) != 0) {
+    while ((node = enumerator->next()) != 0) {
         RX_ASSERT((u64)list->data(node) == (1 - i));
         i++;
     }
-    enumerator->delete (&list_enumerator);
+    enumerator->destroy();
 
     RX_ASSERT(i == 1);
 }
@@ -194,13 +193,13 @@ RX_TEST_CASE(tests, test_list_1_reverse, .fixture = test_fixture) {
 
     u64 i = 0;
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
+    enumerator->init(ctx);
     struct linked_list_node* node = 0;
-    while ((node = enumerator->next(list_enumerator)) != 0) {
+    while ((node = enumerator->next()) != 0) {
         RX_ASSERT((u64)list->data(node) == (i + 1));
         i++;
     }
-    enumerator->delete (&list_enumerator);
+    enumerator->destroy();
 
     RX_ASSERT(i == 1);
 }
@@ -215,16 +214,16 @@ RX_TEST_CASE(tests, test_list_12_reverse, .fixture = test_fixture) {
 
     list->reverse(ctx);
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
+    enumerator->init(ctx);
     struct linked_list_node* node = 0;
 
-    node = enumerator->next(list_enumerator);
+    node = enumerator->next();
     RX_ASSERT((u64)list->data(node) == 2);
 
-    node = enumerator->next(list_enumerator);
+    node = enumerator->next();
     RX_ASSERT((u64)list->data(node) == 1);
 
-    enumerator->delete (&list_enumerator);
+    enumerator->destroy();
 }
 
 /* test init */
@@ -238,19 +237,19 @@ RX_TEST_CASE(tests, test_list_123_reverse, .fixture = test_fixture) {
 
     list->reverse(ctx);
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
+    enumerator->init(ctx);
     struct linked_list_node* node = 0;
 
-    node = enumerator->next(list_enumerator);
+    node = enumerator->next();
     RX_ASSERT((u64)list->data(node) == 3);
 
-    node = enumerator->next(list_enumerator);
+    node = enumerator->next();
     RX_ASSERT((u64)list->data(node) == 2);
 
-    node = enumerator->next(list_enumerator);
+    node = enumerator->next();
     RX_ASSERT((u64)list->data(node) == 1);
 
-    enumerator->delete (&list_enumerator);
+    enumerator->destroy();
 }
 
 /* test init */
@@ -266,13 +265,13 @@ RX_TEST_CASE(tests, test_list_21_reverse, .fixture = test_fixture) {
 
     u64 i = 0;
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
+    enumerator->init(ctx);
     struct linked_list_node* node = 0;
-    while ((node = enumerator->next(list_enumerator)) != 0) {
+    while ((node = enumerator->next()) != 0) {
         RX_ASSERT((u64)list->data(node) == (i + 1));
         i++;
     }
-    enumerator->delete (&list_enumerator);
+    enumerator->destroy();
 
     RX_ASSERT(i == 2);
 }
@@ -290,13 +289,13 @@ RX_TEST_CASE(tests, test_list_321_reverse, .fixture = test_fixture) {
 
     u64 i = 0;
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
+    enumerator->init(ctx);
     struct linked_list_node* node = 0;
-    while ((node = enumerator->next(list_enumerator)) != 0) {
+    while ((node = enumerator->next()) != 0) {
         RX_ASSERT((u64)list->data(node) == (i + 1));
         i++;
     }
-    enumerator->delete (&list_enumerator);
+    enumerator->destroy();
 
     RX_ASSERT(i == 3);
 }
@@ -312,13 +311,13 @@ RX_TEST_CASE(tests, test_list_10, .fixture = test_fixture) {
 
     u64 i = 0;
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
+    enumerator->init(ctx);
     struct linked_list_node* node = 0;
-    while ((node = enumerator->next(list_enumerator)) != 0) {
+    while ((node = enumerator->next()) != 0) {
         RX_ASSERT((u64)list->data(node) == (10 - i));
         i++;
     }
-    enumerator->delete (&list_enumerator);
+    enumerator->destroy();
 
     RX_ASSERT(i == 10);
 }
@@ -340,15 +339,15 @@ RX_TEST_CASE(tests, test_list_append_tail_10, .fixture = test_fixture) {
 
     const struct linked_list_node* head = list->head(ctx);
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
+    enumerator->init(ctx);
     struct linked_list_node* node = 0;
 
     i = 0;
-    while ((node = enumerator->next(list_enumerator)) != 0) {
+    while ((node = enumerator->next()) != 0) {
         RX_ASSERT((u64)list->data(node) == (i + 1));
         i++;
     }
-    enumerator->delete (&list_enumerator);
+    enumerator->destroy();
 
     RX_ASSERT(i == 10);
 
@@ -373,15 +372,15 @@ RX_TEST_CASE(tests, test_list_append_head_10, .fixture = test_fixture) {
 
     const struct linked_list_node* head = list->tail(ctx);
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
+    enumerator->init(ctx);
     struct linked_list_node* node = 0;
 
     i = 0;
-    while ((node = enumerator->next(list_enumerator)) != 0) {
+    while ((node = enumerator->next()) != 0) {
         RX_ASSERT((u64)list->data(node) == (10 - i));
         i++;
     }
-    enumerator->delete (&list_enumerator);
+    enumerator->destroy();
 
     RX_ASSERT(i == 10);
 
@@ -405,13 +404,13 @@ RX_TEST_CASE(tests, test_list_10_reverse, .fixture = test_fixture) {
 
     u64 i = 0;
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
+    enumerator->init(ctx);
     struct linked_list_node* node = 0;
-    while ((node = enumerator->next(list_enumerator)) != 0) {
+    while ((node = enumerator->next()) != 0) {
         RX_ASSERT((u64)list->data(node) == (i + 1));
         i++;
     }
-    enumerator->delete (&list_enumerator);
+    enumerator->destroy();
 
     RX_ASSERT(i == 10);
 
@@ -436,13 +435,13 @@ RX_TEST_CASE(tests, test_list_10_reverse_reverse, .fixture = test_fixture) {
 
     u64 i = 0;
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
+    enumerator->init(ctx);
     struct linked_list_node* node = 0;
-    while ((node = enumerator->next(list_enumerator)) != 0) {
+    while ((node = enumerator->next()) != 0) {
         RX_ASSERT((u64)list->data(node) == (10 - i));
         i++;
     }
-    enumerator->delete (&list_enumerator);
+    enumerator->destroy();
 
     RX_ASSERT(i == 10);
 
@@ -452,14 +451,14 @@ RX_TEST_CASE(tests, test_list_10_reverse_reverse, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests, test_list_enumerator_delete, .fixture = test_fixture) {
-    enumerator->delete (0);
+    enumerator->destroy();
 
     RX_ASSERT(0 == 0);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_list_enumerator_next, .fixture = test_fixture) {
-    const void* result = enumerator->next(0);
+    const void* result = enumerator->next();
 
     RX_ASSERT(result == 0);
 }
@@ -594,9 +593,9 @@ RX_TEST_CASE(tests, test_list_1_reverse_until_1, .fixture = test_fixture) {
 
     list->append_head(ctx, (void*)(1));
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
-    struct linked_list_node* node = enumerator->find(list_enumerator, (void*)1);
-    enumerator->delete (&list_enumerator);
+    enumerator->init(ctx);
+    struct linked_list_node* node = enumerator->find((void*)1);
+    enumerator->destroy();
 
     const struct linked_list_node* head = list->head(ctx);
     const struct linked_list_node* tail = list->tail(ctx);
@@ -615,9 +614,9 @@ RX_TEST_CASE(tests, test_list_12_reverse_until_1, .fixture = test_fixture) {
     list->append_head(ctx, (void*)(2));
     list->append_head(ctx, (void*)(1));
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
-    struct linked_list_node* node = enumerator->find(list_enumerator, (void*)1);
-    enumerator->delete (&list_enumerator);
+    enumerator->init(ctx);
+    struct linked_list_node* node = enumerator->find((void*)1);
+    enumerator->destroy();
 
     const struct linked_list_node* head = list->head(ctx);
     const struct linked_list_node* tail = list->tail(ctx);
@@ -636,9 +635,9 @@ RX_TEST_CASE(tests, test_list_12_reverse_until_2, .fixture = test_fixture) {
     list->append_head(ctx, (void*)(2));
     list->append_head(ctx, (void*)(1));
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
-    struct linked_list_node* node = enumerator->find(list_enumerator, (void*)2);
-    enumerator->delete (&list_enumerator);
+    enumerator->init(ctx);
+    struct linked_list_node* node = enumerator->find((void*)2);
+    enumerator->destroy();
 
     const struct linked_list_node* head = list->head(ctx);
     const struct linked_list_node* tail = list->tail(ctx);
@@ -655,9 +654,9 @@ RX_TEST_CASE(tests, test_list_1_reverse_until_2, .fixture = test_fixture) {
 
     list->append_head(list_new, (void*)(1));
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (list_new);
-    struct linked_list_node* another_list_node = enumerator->find(list_enumerator, (void*)1);
-    enumerator->delete (&list_enumerator);
+    enumerator->init(list_new);
+    struct linked_list_node* another_list_node = enumerator->find((void*)1);
+    enumerator->destroy();
 
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct linked_list* ctx = rx->ctx;
@@ -686,9 +685,9 @@ RX_TEST_CASE(tests, test_list_123_reverse_until_1, .fixture = test_fixture) {
     list->append_head(ctx, (void*)(2));
     list->append_head(ctx, (void*)(1));
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
-    struct linked_list_node* node = enumerator->find(list_enumerator, (void*)1);
-    enumerator->delete (&list_enumerator);
+    enumerator->init(ctx);
+    struct linked_list_node* node = enumerator->find((void*)1);
+    enumerator->destroy();
 
     list->reverse_until(ctx, node);
 
@@ -709,9 +708,9 @@ RX_TEST_CASE(tests, test_list_123_reverse_until_2, .fixture = test_fixture) {
 
     const struct linked_list_node* head = list->tail(ctx);
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
-    struct linked_list_node* node = enumerator->find(list_enumerator, (void*)2);
-    enumerator->delete (&list_enumerator);
+    enumerator->init(ctx);
+    struct linked_list_node* node = enumerator->find((void*)2);
+    enumerator->destroy();
 
     list->reverse_until(ctx, node);
 
@@ -728,9 +727,9 @@ RX_TEST_CASE(tests, test_list_123_reverse_until_3, .fixture = test_fixture) {
     list->append_head(ctx, (void*)(2));
     list->append_head(ctx, (void*)(1));
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
-    struct linked_list_node* node = enumerator->find(list_enumerator, (void*)3);
-    enumerator->delete (&list_enumerator);
+    enumerator->init(ctx);
+    struct linked_list_node* node = enumerator->find((void*)3);
+    enumerator->destroy();
 
     list->reverse_until(ctx, node);
 
@@ -747,9 +746,9 @@ RX_TEST_CASE(tests, test_list_1234_reverse_until_4, .fixture = test_fixture) {
     list->append_head(ctx, (void*)(2));
     list->append_head(ctx, (void*)(1));
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
-    struct linked_list_node* node = enumerator->find(list_enumerator, (void*)4);
-    enumerator->delete (&list_enumerator);
+    enumerator->init(ctx);
+    struct linked_list_node* node = enumerator->find((void*)4);
+    enumerator->destroy();
 
     list->reverse_until(ctx, node);
 
@@ -771,9 +770,9 @@ RX_TEST_CASE(tests, test_list_1234_reverse_until_3, .fixture = test_fixture) {
 
     const struct linked_list_node* head = list->tail(ctx);
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
-    struct linked_list_node* node = enumerator->find(list_enumerator, (void*)3);
-    enumerator->delete (&list_enumerator);
+    enumerator->init(ctx);
+    struct linked_list_node* node = enumerator->find((void*)3);
+    enumerator->destroy();
 
     list->reverse_until(ctx, node);
 
@@ -802,11 +801,11 @@ RX_TEST_CASE(tests, test_list_1234_reverse_until_match_3, .fixture = test_fixtur
 
     const struct linked_list_node* head = list->tail(ctx);
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
-    struct linked_list_node* node = enumerator->find(list_enumerator, (void*)3);
+    enumerator->init(ctx);
+    struct linked_list_node* node = enumerator->find((void*)3);
     context = node;
 
-    enumerator->delete (&list_enumerator);
+    enumerator->destroy();
 
     list->reverse_until_match(ctx, match_function);
 
@@ -835,11 +834,11 @@ RX_TEST_CASE(tests, test_list_reverse_until_match, .fixture = test_fixture) {
     const struct linked_list_node* tail = list->head(ctx);
     const struct linked_list_node* head = list->tail(ctx);
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
-    struct linked_list_node* node = enumerator->find(list_enumerator, (void*)3);
+    enumerator->init(ctx);
+    struct linked_list_node* node = enumerator->find((void*)3);
     context = node;
 
-    enumerator->delete (&list_enumerator);
+    enumerator->destroy();
 
     list->reverse_until_match(ctx, match_function);
 
@@ -857,11 +856,11 @@ RX_TEST_CASE(tests, test_list_1234_reverse_until_match_function_1, .fixture = te
     const struct linked_list_node* tail = list->head(ctx);
     const struct linked_list_node* head = list->tail(ctx);
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
-    struct linked_list_node* node = enumerator->find(list_enumerator, (void*)1);
+    enumerator->init(ctx);
+    struct linked_list_node* node = enumerator->find((void*)1);
     context = node;
 
-    enumerator->delete (&list_enumerator);
+    enumerator->destroy();
 
     list->reverse_until_match(ctx, match_function);
 
@@ -879,9 +878,9 @@ RX_TEST_CASE(tests, test_list_1234_reverse_until_2, .fixture = test_fixture) {
     list->append_head(ctx, (void*)(2));
     list->append_head(ctx, (void*)(1));
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
-    struct linked_list_node* node = enumerator->find(list_enumerator, (void*)2);
-    enumerator->delete (&list_enumerator);
+    enumerator->init(ctx);
+    struct linked_list_node* node = enumerator->find((void*)2);
+    enumerator->destroy();
 
     list->reverse_until(ctx, node);
 
@@ -898,9 +897,9 @@ RX_TEST_CASE(tests, test_list_1234_reverse_until_1, .fixture = test_fixture) {
     list->append_head(ctx, (void*)(2));
     list->append_head(ctx, (void*)(1));
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
-    struct linked_list_node* node = enumerator->find(list_enumerator, (void*)1);
-    enumerator->delete (&list_enumerator);
+    enumerator->init(ctx);
+    struct linked_list_node* node = enumerator->find((void*)1);
+    enumerator->destroy();
 
     list->reverse_until(ctx, node);
 
@@ -918,9 +917,9 @@ RX_TEST_CASE(tests, test_list_12345_reverse_until_5, .fixture = test_fixture) {
     list->append_head(ctx, (void*)(2));
     list->append_head(ctx, (void*)(1));
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
-    struct linked_list_node* node = enumerator->find(list_enumerator, (void*)5);
-    enumerator->delete (&list_enumerator);
+    enumerator->init(ctx);
+    struct linked_list_node* node = enumerator->find((void*)5);
+    enumerator->destroy();
 
     list->reverse_until(ctx, node);
 
@@ -938,10 +937,10 @@ RX_TEST_CASE(tests, test_list_12345_enumerator_reverse, .fixture = test_fixture)
     list->append_head(ctx, (void*)(2));
     list->append_head(ctx, (void*)(1));
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
-    const struct linked_list_node* node = enumerator->find(list_enumerator, (void*)5);
-    enumerator->reverse(list_enumerator);
-    enumerator->delete (&list_enumerator);
+    enumerator->init(ctx);
+    const struct linked_list_node* node = enumerator->find((void*)5);
+    enumerator->reverse();
+    enumerator->destroy();
 
     RX_ASSERT(list->head(ctx) == node);
 }
@@ -957,9 +956,9 @@ RX_TEST_CASE(tests, test_list_12345_reverse_until_4, .fixture = test_fixture) {
     list->append_head(ctx, (void*)(2));
     list->append_head(ctx, (void*)(1));
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
-    struct linked_list_node* node = enumerator->find(list_enumerator, (void*)4);
-    enumerator->delete (&list_enumerator);
+    enumerator->init(ctx);
+    struct linked_list_node* node = enumerator->find((void*)4);
+    enumerator->destroy();
 
     list->reverse_until(ctx, node);
 
@@ -977,9 +976,9 @@ RX_TEST_CASE(tests, test_list_12345_reverse_until_3, .fixture = test_fixture) {
     list->append_head(ctx, (void*)(2));
     list->append_head(ctx, (void*)(1));
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
-    struct linked_list_node* node = enumerator->find(list_enumerator, (void*)3);
-    enumerator->delete (&list_enumerator);
+    enumerator->init(ctx);
+    struct linked_list_node* node = enumerator->find((void*)3);
+    enumerator->destroy();
 
     list->reverse_until(ctx, node);
 
@@ -997,9 +996,9 @@ RX_TEST_CASE(tests, test_list_12345_reverse_until_2, .fixture = test_fixture) {
     list->append_head(ctx, (void*)(2));
     list->append_head(ctx, (void*)(1));
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
-    struct linked_list_node* node = enumerator->find(list_enumerator, (void*)2);
-    enumerator->delete (&list_enumerator);
+    enumerator->init(ctx);
+    struct linked_list_node* node = enumerator->find((void*)2);
+    enumerator->destroy();
 
     list->reverse_until(ctx, node);
 
@@ -1017,9 +1016,9 @@ RX_TEST_CASE(tests, test_list_12345_reverse_until_1, .fixture = test_fixture) {
     list->append_head(ctx, (void*)(2));
     list->append_head(ctx, (void*)(1));
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
-    struct linked_list_node* node = enumerator->find(list_enumerator, (void*)1);
-    enumerator->delete (&list_enumerator);
+    enumerator->init(ctx);
+    struct linked_list_node* node = enumerator->find((void*)1);
+    enumerator->destroy();
 
     list->reverse_until(ctx, node);
 
@@ -1032,9 +1031,9 @@ RX_TEST_CASE(tests, test_list_reverse_until_4, .fixture = test_fixture) {
 
     list->append_head(list_new, (void*)(4));
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (list_new);
-    struct linked_list_node* node = enumerator->find(list_enumerator, (void*)4);
-    enumerator->delete (&list_enumerator);
+    enumerator->init(list_new);
+    struct linked_list_node* node = enumerator->find((void*)4);
+    enumerator->destroy();
 
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct linked_list* ctx = rx->ctx;
@@ -1051,9 +1050,8 @@ RX_TEST_CASE(tests, test_list_123_reverse_until_out_4, .fixture = test_fixture) 
     struct linked_list* list_new = list->new ();
 
     list->append_head(list_new, (void*)(4));
-    struct linked_list_enumerator* list_enumerator_new = enumerator->new (list_new);
-    struct linked_list_node* another_list_node = enumerator->find(list_enumerator_new, (void*)4);
-    enumerator->delete (&list_enumerator_new);
+
+    struct linked_list_node* another_list_node = (struct linked_list_node*)4;
 
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct linked_list* ctx = rx->ctx;
@@ -1080,9 +1078,9 @@ RX_TEST_CASE(tests, test_list_enumerator_find, .fixture = test_fixture) {
     list->append_head(ctx, (void*)(2));
     list->append_head(ctx, (void*)(1));
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
-    const struct linked_list_node* node = enumerator->find(0, (void*)0);
-    enumerator->delete (&list_enumerator);
+    enumerator->init(ctx);
+    const struct linked_list_node* node = enumerator->find((void*)0);
+    enumerator->destroy();
 
     RX_ASSERT(0 == node);
 }
@@ -1092,9 +1090,9 @@ RX_TEST_CASE(tests, test_list_enumerator_find_list, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct linked_list* ctx = rx->ctx;
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
-    const struct linked_list_node* node = enumerator->find(list_enumerator, (void*)0);
-    enumerator->delete (&list_enumerator);
+    enumerator->init(ctx);
+    const struct linked_list_node* node = enumerator->find((void*)0);
+    enumerator->destroy();
 
     RX_ASSERT(0 == node);
 }
@@ -1106,9 +1104,9 @@ RX_TEST_CASE(tests, test_list_enumerator_find_0, .fixture = test_fixture) {
 
     list->append_head(ctx, (void*)(1));
 
-    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
-    const struct linked_list_node* node = enumerator->find(list_enumerator, (void*)0);
-    enumerator->delete (&list_enumerator);
+    enumerator->init(ctx);
+    const struct linked_list_node* node = enumerator->find((void*)0);
+    enumerator->destroy();
 
     RX_ASSERT(0 == node);
 }

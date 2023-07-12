@@ -5,7 +5,6 @@
 
 struct linked_list;
 struct linked_list_node;
-struct linked_list_enumerator;
 
 typedef u64 (*linked_list_node_match_function)(struct linked_list_node* current);
 
@@ -22,6 +21,8 @@ struct linked_list_methods {
     struct linked_list_node* (*next)(struct linked_list_node* node);
     struct linked_list_node* (*head)(struct linked_list* list);
     struct linked_list_node* (*tail)(struct linked_list* list);
+    void (*set_next)(struct linked_list_node* node, struct linked_list_node* value);
+    void (*set)(struct linked_list* list, struct linked_list_node* head, struct linked_list_node* tail);
 };
 
 #endif /* _STL_LINKED_LIST_H_ */

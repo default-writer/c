@@ -224,7 +224,8 @@ set(LIB_STD1_SOURCE
     src/playground/pointer/types/string/v1/string_v1.c)
 set(LIB_LINKED_LIST_SOURCE
     src/stl/linked_list.c
-    src/stl/linked_list_enumerator.c)
+    src/stl/linked_list_enumerator.c
+    src/stl/linked_list_static_enumerator.c)
 set(MAIN_STANDARD_SOURCE tests/main.c ${LIB_STANDARD_SOURCE})
 set(MAIN_LIGHT_SOURCE tests/main-light.c ${LIB_LIGHT_SOURCE})
 set(MAIN_MICRO_SOURCE tests/main-micro.c ${LIB_MICRO_SOURCE})
@@ -248,6 +249,7 @@ set(MAIN_ZEN_SOURCE src/playground/zen/zen.c)
 set(GTK_EXPERIMENT src/ui/gtk-experiment.c)
 set(TEST_HASHES_SOURCE tests/test-hashes.c)
 set(TEST_LINKED_LIST_SOURCE tests/main-linked-list.c)
+set(TEST_LINKED_LIST_STATIC_ENUMERATOR_SOURCE tests/main-linked-list-static-enumerator.c)
 set(TEST_STRUCTS1_SOURCE tests/structs/v1/main-structs_v1.c)
 set(TEST_STRUCTS2_SOURCE tests/structs/v2/main-structs_v2.c)
 set(TEST_STRUCTS3_SOURCE tests/structs/v3/main-structs_v3.c)
@@ -317,6 +319,7 @@ add_executable(main-zen ${MAIN_ZEN_SOURCE})
 add_executable(gtk-experiment ${GTK_EXPERIMENT})
 add_executable(test-hashes ${TEST_HASHES_SOURCE})
 add_executable(main-linked-list ${TEST_LINKED_LIST_SOURCE})
+add_executable(main-linked-list-static-enumerator ${TEST_LINKED_LIST_STATIC_ENUMERATOR_SOURCE})
 add_executable(main-structs1 ${TEST_STRUCTS1_SOURCE})
 add_executable(main-structs2 ${TEST_STRUCTS2_SOURCE})
 add_executable(main-structs3 ${TEST_STRUCTS3_SOURCE})
@@ -361,6 +364,7 @@ target_link_libraries(main-structs2 PRIVATE list-class)
 target_link_libraries(main-structs3 PRIVATE structs-v3)
 target_link_libraries(structs-v3 PRIVATE list-class)
 target_link_libraries(main-linked-list PRIVATE stl-linked-list)
+target_link_libraries(main-linked-list-static-enumerator PRIVATE stl-linked-list)
 
 configure_file(all_english_words.txt ${CMAKE_BINARY_DIR}/all_english_words.txt COPYONLY)
 
