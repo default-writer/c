@@ -8,9 +8,13 @@
       "path": "/bin/bash"
     }
   },
-  "testOnSave.enabled": true,
-  "testOnSave.languageId": "c",
-  "testOnSave.testCommand": "./bin/test.sh --args --clean",
+  "fileTestOnSave.enabled": true,
+  "fileTestOnSave.languageId": "c",
+  "fileTestOnSave.testCommands": [
+    {
+      "c": "./bin/coverage.sh --target ${fileBasenameNoExtension} --gc --sanitize --clean"
+    }
+  ],
   "koverage.coverageFileNames": ["lcov.info"],
   "coverage-gutters.coverageFileNames": ["lcov.info"],
   "coverage-gutters.coverageBaseDir": "coverage",
