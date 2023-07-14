@@ -1018,6 +1018,16 @@ RX_TEST_CASE(tests, test_list_enumerator_reverse, .fixture = test_fixture) {
 }
 
 /* test init */
+RX_TEST_CASE(tests, test_list_enumerator_reverse_null, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct linked_list* ctx = rx->ctx;
+
+    enumerator->reverse();
+
+    RX_ASSERT(list->head(ctx) == 0);
+}
+
+/* test init */
 RX_TEST_CASE(tests, test_list_enumerator_reverse_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct linked_list* ctx = rx->ctx;

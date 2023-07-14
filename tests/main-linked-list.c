@@ -1011,7 +1011,7 @@ RX_TEST_CASE(tests, test_list_enumerator_reverse, .fixture = test_fixture) {
     struct linked_list* ctx = rx->ctx;
 
     struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
-    enumerator->reverse(0);
+    enumerator->reverse(list_enumerator);
     enumerator->delete (&list_enumerator);
 
     RX_ASSERT(list->head(ctx) == 0);
