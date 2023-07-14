@@ -8,9 +8,9 @@
       "path": "/bin/bash"
     }
   },
-  "fileTestOnSave.enabled": true,
-  "fileTestOnSave.languageId": "c",
-  "fileTestOnSave.testCommands": [
+  "testFilesOnSave.enabled": true,
+  "testFilesOnSave.languageId": "c",
+  "testFilesOnSave.testCommands": [
     {
       "c": "./bin/coverage.sh --target ${fileBasenameNoExtension} --gc --sanitize --clean"
     }
