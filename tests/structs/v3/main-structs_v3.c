@@ -6,11 +6,23 @@
 extern struct_interface_B interface_B_definition;
 static const interface_B instance_interface_B = &interface_B_definition;
 
+static void INIT init() {
+#ifdef USE_MEMORY_DEBUG_INFO
+    global_statistics();
+#endif
+}
+
+static void DESTROY destroy() {
+#ifdef USE_MEMORY_DEBUG_INFO
+    global_statistics();
+#endif
+}
+
 int main(void) {
     object_typeinfo ptr = instance_interface_B->initialize();
     instance_interface_B->print(ptr);
     instance_interface_B->finalize(ptr);
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifndef ATTRIBUTE
     global_statistics();
 #endif
     return 0;

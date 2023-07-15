@@ -519,6 +519,18 @@ RX_TEST_CASE(tests, test_list_push_pop, .fixture = test_fixture) {
     global_free(_recorded, ALLOC_SIZE(N_ELEMENTS));
 }
 
+static void INIT init() {
+#ifdef USE_MEMORY_DEBUG_INFO
+    global_statistics();
+#endif
+}
+
+static void DESTROY destroy() {
+#ifdef USE_MEMORY_DEBUG_INFO
+    global_statistics();
+#endif
+}
+
 int main(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- acceptance test code\n");
@@ -535,7 +547,7 @@ int main(void) {
 #endif
     /* Execute the main function that runs the test cases found. */
     int result = rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifndef ATTRIBUTE
     global_statistics();
 #endif
     return result;

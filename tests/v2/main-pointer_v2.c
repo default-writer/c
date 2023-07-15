@@ -142,6 +142,18 @@ RX_TEST_CASE(tests, test_list_peek_0, .fixture = test_fixture) {
     global_free(dest, size);
 }
 
+static void INIT init() {
+#ifdef USE_MEMORY_DEBUG_INFO
+    global_statistics();
+#endif
+}
+
+static void DESTROY destroy() {
+#ifdef USE_MEMORY_DEBUG_INFO
+    global_statistics();
+#endif
+}
+
 int main(int argc, char** argv) {
     CLEAN(argc)
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -159,7 +171,7 @@ int main(int argc, char** argv) {
 #endif
     /* Execute the main function that runs the test cases found. */
     int result = rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifndef ATTRIBUTE
     global_statistics();
 #endif
     return result;

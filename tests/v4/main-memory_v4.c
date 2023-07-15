@@ -76,9 +76,21 @@ void use(const struct memory_allocator_v3* allocator) {
     allocator->destroy();
 }
 
+static void INIT init() {
+#ifdef USE_MEMORY_DEBUG_INFO
+    global_statistics();
+#endif
+}
+
+static void DESTROY destroy() {
+#ifdef USE_MEMORY_DEBUG_INFO
+    global_statistics();
+#endif
+}
+
 int main(void) {
     use(&memory_allocator_v6);
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifndef ATTRIBUTE
     global_statistics();
 #endif
     return 0;

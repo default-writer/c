@@ -5,6 +5,18 @@ extern struct_class class_definition;
 
 const class instance = &class_definition;
 
+static void INIT init() {
+#ifdef USE_MEMORY_DEBUG_INFO
+    global_statistics();
+#endif
+}
+
+static void DESTROY destroy() {
+#ifdef USE_MEMORY_DEBUG_INFO
+    global_statistics();
+#endif
+}
+
 int main(void) {
     typedef struct B* B;
 
@@ -35,7 +47,7 @@ int main(void) {
     printf("counter b: 0x%0llx\n", b->counter_b);
 
     instance->destroy(class_object);
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifndef ATTRIBUTE
     global_statistics();
 #endif
     return 0;
