@@ -781,6 +781,95 @@ RX_TEST_CASE(tests, test_list_1234_reverse_until_3, .fixture = test_fixture) {
     RX_ASSERT(list->tail(ctx) == head);
 }
 
+/* test init */
+RX_TEST_CASE(tests, test_list_set_next_2, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct linked_list* ctx = rx->ctx;
+
+    list->append_tail(ctx, (void*)(2));
+    list->append_tail(ctx, (void*)(1));
+
+    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
+    struct linked_list_node* node = enumerator->find(list_enumerator, (void*)2);
+    struct linked_list_node* node_prev = enumerator->find_prev(list_enumerator, (void*)2);
+    list->set_next(node, node_prev);
+    enumerator->delete (&list_enumerator);
+
+    RX_ASSERT(list->next(node) == node_prev);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_set_next_0, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct linked_list* ctx = rx->ctx;
+
+    list->append_tail(ctx, (void*)(2));
+    list->append_tail(ctx, (void*)(1));
+
+    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
+    struct linked_list_node* node = enumerator->find(list_enumerator, (void*)2);
+    const struct linked_list_node* node_prev = enumerator->find_prev(list_enumerator, (void*)2);
+    list->set_next(0, 0);
+    enumerator->delete (&list_enumerator);
+
+    RX_ASSERT(list->next(node) == node_prev);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_set_next_node, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct linked_list* ctx = rx->ctx;
+
+    list->append_tail(ctx, (void*)(2));
+    list->append_tail(ctx, (void*)(1));
+
+    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
+    struct linked_list_node* node = enumerator->find(list_enumerator, (void*)2);
+    struct linked_list_node* node_prev = enumerator->find_prev(list_enumerator, (void*)2);
+    list->set_next(0, node_prev);
+    enumerator->delete (&list_enumerator);
+
+    RX_ASSERT(list->next(node) == node_prev);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_set, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct linked_list* ctx = rx->ctx;
+
+    list->append_tail(ctx, (void*)(2));
+    list->append_tail(ctx, (void*)(1));
+
+    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
+    struct linked_list_node* node = enumerator->find(list_enumerator, (void*)2);
+    struct linked_list_node* node_prev = enumerator->find_prev(list_enumerator, (void*)2);
+    list->set(ctx, node, node_prev);
+    enumerator->delete (&list_enumerator);
+
+    RX_ASSERT(list->head(ctx) == node);
+    RX_ASSERT(list->tail(ctx) == node_prev);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_set_0, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct linked_list* ctx = rx->ctx;
+
+    list->append_tail(ctx, (void*)(2));
+    list->append_tail(ctx, (void*)(1));
+
+    struct linked_list_enumerator* list_enumerator = enumerator->new (ctx);
+    struct linked_list_node* node = enumerator->find(list_enumerator, (void*)2);
+    struct linked_list_node* node_prev = enumerator->find_prev(list_enumerator, (void*)2);
+    list->set(ctx, node_prev, 0);
+    list->set(ctx, 0, node);
+    list->set(0, node_prev, node);
+    enumerator->delete (&list_enumerator);
+
+    RX_ASSERT(list->head(ctx) == node);
+    RX_ASSERT(list->tail(ctx) == node_prev);
+}
+
 static struct linked_list_node* context = 0;
 
 static u64 match_function(struct linked_list_node* current) {
