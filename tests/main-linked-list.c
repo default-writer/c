@@ -1,4 +1,3 @@
-
 #include "stl/linked_list.h"
 #include "stl/linked_list_enumerator.h"
 #include <rexo/include/rexo.h>
