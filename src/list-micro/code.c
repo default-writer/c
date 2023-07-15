@@ -2,6 +2,18 @@
 #include "list-micro/data.h"
 
 /* private */
+static struct list_data* list_next(struct list_data* ptr);
+static void* list_data(struct list_data* ptr);
+static void list_delete(struct list_data* ptr);
+static void list_push(struct list_data** current, void* payload);
+static void* list_pop(struct list_data** current);
+static void* list_peek(struct list_data** current);
+static void list_init(struct list_data** current);
+static void list_destroy(struct list_data** current);
+#ifdef USE_MEMORY_DEBUG_INFO
+static void list_print_head(struct list_data** current);
+static void list_print(struct list_data** current);
+#endif
 
 /* size of a memory block to allocate */
 static const size_t _size = sizeof(struct list_data);

@@ -6,26 +6,25 @@
 
 #define DEFAULT_SIZE 0x100
 
+/* api */
+const struct string_methods string_methods_definition;
+void string_init();
+
 /* definition */
+extern void pointer_vm_register_type(const struct vm_type* type);
+extern struct pointer_data vm_pointer;
 extern const struct vm vm_definition;
 extern const struct list list_micro_definition;
 extern const struct pointer_vm_methods vm_methods_definition;
-extern void pointer_vm_register_free(function function);
-
-extern struct pointer_data vm_pointer;
-static struct pointer_data* base = &vm_pointer;
 
 /* definition */
 static const struct vm* vm = &vm_definition;
 static const struct list* list = &list_micro_definition;
 static const struct pointer_vm_methods* pointer = &vm_methods_definition;
+static struct pointer_data* base = &vm_pointer;
+static const struct vm_type type_definition;
 
-struct list_handler {
-    struct list_data* list;
-};
-
-/* api */
-
+/* internal */
 static u64 string_alloc(void);
 static void string_free(u64 ptr);
 static u64 string_copy(u64 ptr);
@@ -38,9 +37,11 @@ static void string_printf(u64 ptr);
 static void string_put_char(u64 ptr, char value);
 static char* string_unsafe(u64 ptr);
 
-/* internal */
-
 /* implementation*/
+
+struct list_handler {
+    struct list_data* list;
+};
 
 static u64 string_alloc(void) {
     struct pointer* ptr = pointer->alloc(0, TYPE_STRING);
@@ -281,12 +282,16 @@ static char* string_unsafe(u64 ptr) {
     return data;
 }
 
-/* public */
+static const struct vm_type type_definition = {
+    .free = string_free
+};
 
-void string_init() {
-    pointer_vm_register_free(string_free);
+static void INIT init() {
+    const struct vm_type* type = &type_definition;
+    pointer_vm_register_type(type);
 }
 
+/* public */
 const struct string_methods string_methods_definition = {
     .alloc = string_alloc,
     .copy = string_copy,
@@ -300,3 +305,9 @@ const struct string_methods string_methods_definition = {
     .unsafe = string_unsafe,
     .free = string_free
 };
+
+#ifndef ATTRIBUTE
+void string_init() {
+    init();
+}
+#endif

@@ -1,5 +1,5 @@
-#ifndef _POINTER_H_
-#define _POINTER_H_
+#ifndef _POINTER_V2_H_
+#define _POINTER_V2_H_
 
 #include "std/common.h"
 
@@ -65,4 +65,4 @@ struct pointer_methods {
 void pointer_ctx_init(struct pointer_data** ctx, u64 size);
 void pointer_ctx_destroy(struct pointer_data** ctx);
 
-#endif /* _POINTER_H_ */
+#endif /* _POINTER_V2_H_ */

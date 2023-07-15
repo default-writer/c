@@ -6,7 +6,7 @@
 #define PTR_SIZE sizeof(void*) /* size of a pointer */
 #define ALLOC_SIZE(size) (size * PTR_SIZE)
 
-/*private */
+/* private */
 struct list_data {
     void** ptr;
     void** base;

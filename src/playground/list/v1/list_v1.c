@@ -3,7 +3,7 @@
 
 #define MAX_MEMORY 0xffff /* 64K bytes */
 
-/*private */
+/* private */
 
 /* global allocated memory */
 static void** ptr = 0;

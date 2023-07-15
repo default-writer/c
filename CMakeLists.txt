@@ -217,11 +217,13 @@ set(LIB_STD_PTR1_SOURCE src/playground/pointer/types/data/v1/data_v1.c)
 set(LIB_STD_LIST1_SOURCE src/playground/pointer/types/list/v1/list_v1.c)
 set(LIB_STD_FILE1_SOURCE src/playground/pointer/types/file/v1/file_v1.c)
 set(LIB_STD_STRING1_SOURCE src/playground/pointer/types/string/v1/string_v1.c)
+set(LIB_STD_OBJECT1_SOURCE src/playground/pointer/types/object/v1/object_v1.c)
 set(LIB_STD1_SOURCE
     src/playground/pointer/types/data/v1/data_v1.c
     src/playground/pointer/types/list/v1/list_v1.c
     src/playground/pointer/types/file/v1/file_v1.c
-    src/playground/pointer/types/string/v1/string_v1.c)
+    src/playground/pointer/types/string/v1/string_v1.c
+    src/playground/pointer/types/object/v1/object_v1.c)
 set(LIB_LINKED_LIST_SOURCE
     src/stl/linked_list.c
     src/stl/linked_list_enumerator.c
@@ -294,6 +296,7 @@ add_library(std-types1 STATIC ${LIB_STD1_SOURCE})
 add_library(std-list1 SHARED ${LIB_STD_LIST1_SOURCE})
 add_library(std-file1 SHARED ${LIB_STD_FILE1_SOURCE})
 add_library(std-string1 SHARED ${LIB_STD_STRING1_SOURCE})
+add_library(std-object1 SHARED ${LIB_STD_OBJECT1_SOURCE})
 add_library(std-ptr1 SHARED ${LIB_STD_PTR1_SOURCE})
 
 add_executable(main-default ${MAIN_STANDARD_SOURCE})

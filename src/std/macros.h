@@ -6,9 +6,14 @@
         ptr = 0;    \
     }
 
-#if defined(__GNUC__) && __GNUC__ >= 7
+#if defined(__GNUC__)
 #define FALL_THROUGH __attribute__((fallthrough))
+#define ATTRIBUTE
+#define INIT __attribute__((constructor))
+#define DESTROY __attribute__((destructor))
 #else
+#define INIT
+#define DESTROY
 #define FALL_THROUGH ((void)0)
 #endif /* __GNUC__ >= 7 */
 

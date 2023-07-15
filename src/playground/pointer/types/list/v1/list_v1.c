@@ -6,35 +6,35 @@
 
 #define DEFAULT_SIZE 0x100
 
+/* api */
+const struct list_methods list_methods_definition;
+void list_init();
+
 /* definition */
+extern void pointer_vm_register_type(const struct vm_type* type);
+extern struct pointer_data vm_pointer;
 extern const struct vm vm_definition;
 extern const struct list list_micro_definition;
 extern const struct pointer_vm_methods vm_methods_definition;
-extern void pointer_vm_register_free(function function);
-
-extern struct pointer_data vm_pointer;
-static struct pointer_data* base = &vm_pointer;
 
 /* definition */
 static const struct vm* vm = &vm_definition;
 static const struct list* list = &list_micro_definition;
 static const struct pointer_vm_methods* pointer = &vm_methods_definition;
+static struct pointer_data* base = &vm_pointer;
+static const struct vm_type type_definition;
 
-struct list_handler {
-    struct list_data* list;
-};
-
-/* api */
-
+/* internal */
 static u64 list_alloc(void);
 static void list_free(u64 ptr);
 static void list_push(u64 ptr, u64 data_ptr);
 static u64 list_peek(u64 ptr);
 static u64 list_pop(u64 ptr);
 
-/* internal */
-
 /* implementation*/
+struct list_handler {
+    struct list_data* list;
+};
 
 static u64 list_alloc(void) {
     struct pointer* ptr = pointer->alloc(sizeof(struct list_handler), TYPE_LIST);
@@ -133,12 +133,16 @@ static u64 list_pop(u64 ptr) {
     return data;
 }
 
-/* public */
+static const struct vm_type type_definition = {
+    .free = list_free
+};
 
-void list_init() {
-    pointer_vm_register_free(list_free);
+static void INIT init() {
+    const struct vm_type* type = &type_definition;
+    pointer_vm_register_type(type);
 }
 
+/* public */
 const struct list_methods list_methods_definition = {
     .alloc = list_alloc,
     .free = list_free,
@@ -146,3 +150,9 @@ const struct list_methods list_methods_definition = {
     .peek = list_peek,
     .pop = list_pop
 };
+
+#ifndef ATTRIBUTE
+void list_init() {
+    init();
+}
+#endif

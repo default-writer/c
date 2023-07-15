@@ -7,11 +7,18 @@
 #define POINTER_SIZE sizeof(struct pointer)
 #define POINTER_DATA_SIZE sizeof(struct pointer_data)
 
-/* public data */
+/* public */
+void pointer_vm_register_type(struct vm_type* type);
+
+/* private */
+struct vm_types {
+    struct vm_types* next;
+    struct vm_type* type;
+};
 struct pointer_data vm_pointer;
 
-/*private data */
-static struct list_data* vm_enumerator_state;
+static struct vm_types types_definition;
+static struct vm_types* types = &types_definition;
 
 /* extern definition */
 extern const struct vm vm_definition;
@@ -21,28 +28,18 @@ extern void data_init(void);
 extern void list_init(void);
 extern void file_init(void);
 extern void string_init(void);
+extern void object_init(void);
 
 /* definition */
 static struct pointer_data* base = &vm_pointer;
 static const struct vm* vm = &vm_definition;
 static const struct list* list = &list_micro_definition;
 
-struct file_handler {
-    FILE* file;
-#ifdef USE_MEMORY_DEBUG_INFO
-    char* path;
-#endif
-};
-
-struct list_handler {
-    struct list_data* list;
-};
-
 static void pointer_init(u64 size);
 static void pointer_destroy(void);
 
 /* api */
-void pointer_vm_register_free(function free);
+void pointer_vm_register_type(struct vm_type* type);
 void pointer_ctx_init(struct pointer_data** ctx, u64 size);
 void pointer_ctx_destroy(struct pointer_data** ctx);
 
@@ -66,52 +63,45 @@ static void pointer_gc(void);
 #endif
 
 /* internal */
+struct file_handler {
+    FILE* file;
+#ifdef USE_MEMORY_DEBUG_INFO
+    char* path;
+#endif
+};
+
+struct list_handler {
+    struct list_data* list;
+};
+
 static void pointer_init_internal(struct pointer_data* ptr, u64 size);
 static void pointer_destroy_internal(struct pointer_data* ptr);
 static void pointer_ctx_init_internal(struct pointer_data* ptr, u64 size);
 static void pointer_ctx_destroy_internal(struct pointer_data* ptr);
 
 /* free */
-static void pointer_vm_register_free_internal(struct list_data** current, function free);
+static void vm_types_init(struct vm_type* type);
+static void vm_types_destroy(void);
 static void pointer_free_internal(u64 ptr);
 
-/* enumerator */
-static void pointer_vm_enumerator_init_internal(struct list_data** current);
-static function pointer_vm_enumerator_next(void);
-static void pointer_vm_enumerator_destroy_internal(void);
-
 /* internal */
-static void pointer_vm_enumerator_init_internal(struct list_data** current) {
-    vm_enumerator_state = *current;
+void pointer_vm_register_type(struct vm_type* type) {
+    vm_types_init(type);
 }
 
-static function pointer_vm_enumerator_next(void) {
-    function free = 0;
-    struct list_data* current = vm_enumerator_state;
-    if (current == 0) {
-        return 0;
+static void vm_types_init(struct vm_type* type) {
+    struct vm_types* next = global_alloc(sizeof(struct vm_types));
+    next->type = type;
+    next->next = types;
+    types = next;
+}
+
+static void DESTROY vm_types_destroy() {
+    while (types->next != 0) {
+        struct vm_types* prev = types->next;
+        global_free(types, sizeof(struct vm_types));
+        types = prev;
     }
-    vm_enumerator_state = current->next;
-    while (current->data == 0) {
-        current = current->next;
-        if (current == 0) {
-            return 0;
-        }
-    }
-    free = current->data;
-    return free;
-}
-
-static void pointer_vm_enumerator_destroy_internal(void) {
-    vm_enumerator_state = 0;
-}
-
-void pointer_vm_register_free(function free) {
-    pointer_vm_register_free_internal(&base->free, free);
-}
-
-static void pointer_vm_register_free_internal(struct list_data** current, function free) {
-    list->push(current, free);
 }
 
 static struct pointer* pointer_vm_alloc(u64 size, enum type type) {
@@ -145,12 +135,11 @@ static void pointer_vm_free(struct pointer* ptr) {
 }
 
 static void pointer_free_internal(u64 ptr) {
-    pointer_vm_enumerator_init_internal(&base->free);
-    function free;
-    while ((free = pointer_vm_enumerator_next()) != 0) {
-        free(ptr);
+    struct vm_types* current = types;
+    while (current->next != 0) {
+        current->type->free(ptr);
+        current = current->next;
     }
-    pointer_vm_enumerator_destroy_internal();
 }
 
 static void pointer_vm_cleanup(struct list_data** current) {
@@ -161,15 +150,16 @@ static void pointer_vm_cleanup(struct list_data** current) {
 }
 
 /* implementation*/
-
 static void pointer_init_internal(struct pointer_data* ptr, u64 size) {
     vm->init(size);
     list->init(&ptr->list);
-    list->init(&ptr->free);
+#ifndef ATTRIBUTE
     data_init();
     list_init();
     file_init();
     string_init();
+    object_init();
+#endif
 #ifdef USE_GC
     list->init(&ptr->gc);
 #endif
@@ -180,13 +170,14 @@ static void pointer_destroy_internal(struct pointer_data* ptr) {
     list->destroy(&ptr->gc);
 #endif
     list->destroy(&ptr->list);
-    list->destroy(&ptr->free);
     vm->destroy();
+#ifndef ATTRIBUTE
+    vm_types_destroy();
+#endif
 }
 
 static void copy_internal(struct pointer_data* dest, struct pointer_data* src) {
     dest->list = src->list;
-    dest->free = src->free;
 #ifdef USE_GC
     /* gc */
     dest->gc = src->gc;

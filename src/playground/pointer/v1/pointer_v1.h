@@ -1,5 +1,5 @@
-#ifndef _POINTER_H_
-#define _POINTER_H_
+#ifndef _POINTER_V1_H_
+#define _POINTER_V1_H_
 
 #include "std/common.h"
 
@@ -13,7 +13,9 @@ enum type {
     /* value used for file type */
     TYPE_FILE = 3,
     /* value used for list type */
-    TYPE_LIST = 4
+    TYPE_LIST = 4,
+    /* value used for object type */
+    TYPE_OBJECT = 4,
 };
 
 struct list_data;
@@ -28,7 +30,6 @@ struct pointer {
 
 struct pointer_data {
     struct list_data* list;
-    struct list_data* free;
 #ifdef USE_GC
     struct list_data* gc;
 #endif
@@ -57,4 +58,4 @@ struct pointer_methods {
 #endif
 };
 
-#endif /* _POINTER_H_ */
+#endif /* _POINTER_V1_H_ */
