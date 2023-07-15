@@ -59,9 +59,12 @@ static void DESTROY destroy() {
 }
 
 int main(void) {
+#ifndef ATTRIBUTE
+    init();
+#endif
     use(&memory_allocator_v5);
 #ifndef ATTRIBUTE
-    global_statistics();
+    destroy();
 #endif
     return 0;
 }

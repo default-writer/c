@@ -113,6 +113,9 @@ static void DESTROY destroy() {
 }
 
 int main(void) {
+#ifndef ATTRIBUTE
+    init();
+#endif
 #ifdef USE_MEMORY_ALLOC
     memory_init(void);
     memory_destroy(void);
@@ -120,7 +123,7 @@ int main(void) {
     /* Execute the main function that runs the test cases found. */
     int result = rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
 #ifndef ATTRIBUTE
-    global_statistics();
+    destroy();
 #endif
     return result;
 }

@@ -19,11 +19,14 @@ static void DESTROY destroy() {
 }
 
 int main(void) {
+#ifndef ATTRIBUTE
+    init();
+#endif
     object_typeinfo ptr = instance_interface_B->initialize();
     instance_interface_B->print(ptr);
     instance_interface_B->finalize(ptr);
 #ifndef ATTRIBUTE
-    global_statistics();
+    destroy();
 #endif
     return 0;
 }

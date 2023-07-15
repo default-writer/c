@@ -18,6 +18,9 @@ static void DESTROY destroy() {
 }
 
 int main(void) {
+#ifndef ATTRIBUTE
+    init();
+#endif
     typedef struct B* B;
 
     struct A {
@@ -48,7 +51,7 @@ int main(void) {
 
     instance->destroy(class_object);
 #ifndef ATTRIBUTE
-    global_statistics();
+    destroy();
 #endif
     return 0;
 }
