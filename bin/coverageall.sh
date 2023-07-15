@@ -64,10 +64,6 @@ for opt in ${opts[@]}; do
             mocks="--mocks"
             ;;
 
-        "--gc") # [optional] builds with garbage collector
-            gc="--gc"
-            ;;
-
         "--silent") # [optional] suppress verbose output
             silent="--silent"
             ;;
@@ -99,10 +95,16 @@ if [ "${silent}" == "--silent" ]; then
     exec 2>&1 >/dev/null
 fi
 
+[ ! -d "${pwd}/coverage_v1" ] && mkdir "${pwd}/coverage_v1"
+[ ! -d "${pwd}/coverage_v2" ] && mkdir "${pwd}/coverage_v2"
 [ ! -d "${pwd}/coverage" ] && mkdir "${pwd}/coverage"
 
 if [ "${clean}" == "--clean" ]; then
+    rm -rf "${pwd}/coverage_v1"
+    rm -rf "${pwd}/coverage_v2"
     rm -rf "${pwd}/coverage"
+    mkdir "${pwd}/coverage_v1"
+    mkdir "${pwd}/coverage_v2"
     mkdir "${pwd}/coverage"
 fi
 
@@ -111,6 +113,8 @@ targets=( $(get-targets) )
 
 default=${target}
 
+find "${pwd}/coverage_v1" -type f -name "*.lcov" -delete
+find "${pwd}/coverage_v2" -type f -name "*.lcov" -delete
 find "${pwd}/coverage" -type f -name "*.lcov" -delete
 
 target=${default}
@@ -134,79 +138,80 @@ export MAKEFLAGS=-j8
 
 coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" )
 for f in ${coverage}; do
-    find "${pwd}/coverage" -type f -name "${f}" -delete
+    find "${pwd}/coverage_v1" -type f -name "${f}" -delete
 done
 
-if [ "${gc}" == "--gc" ]; then
-    ${cmake} \
-        -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
-        -DCMAKE_BUILD_TYPE:STRING=Debug \
-        -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
-        -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
-        -DLCOV_PATH=${LCOV_PATH} \
-        -DGENHTML_PATH=${GENHTML_PATH} \
-        -DCODE_COVERAGE:BOOL=TRUE \
-        -DGC:BOOL=TRUE \
-        $(cmake-coverage-options) \
-        -S"${pwd}" \
-        -B"${pwd}/coverage" \
-        -G "Ninja" 2>&1 >/dev/null
-
-    for target in ${targets[@]}; do
-        echo Building target ${target}
-        echo Building with options $(cmake-coverage-options) -DGC:BOOL=TRUE
-        if [ "${silent}" == "--silent" ]; then
-            ${cmake} --build "${pwd}/coverage" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
-        else
-            ${cmake} --build "${pwd}/coverage" --target "${target}" || (echo ERROR: "${target}" && exit 1)
-        fi
-        case "${target}" in main-*)    
-            timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/coverage/${target}" 2>&1 >"${pwd}/coverage/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
-            lcov --capture --directory "${pwd}/coverage/" --output-file "${pwd}/coverage/${target}-gc.lcov" &>/dev/null
-            lcov --remove "${pwd}/coverage/${target}-gc.lcov" "${pwd}/.deps/*" -o "${pwd}/coverage/${target}-gc.lcov"
-        esac
-    done
-fi
-
-if [ "${gc}" == "" ]; then
-    ${cmake} \
-        -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
-        -DCMAKE_BUILD_TYPE:STRING=Debug \
-        -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
-        -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
-        -DLCOV_PATH=${LCOV_PATH} \
-        -DGENHTML_PATH=${GENHTML_PATH} \
-        -DCODE_COVERAGE:BOOL=TRUE \
-        -DGC:BOOL=FALSE \
-        $(cmake-coverage-options) \
-        -S"${pwd}" \
-        -B"${pwd}/coverage" \
-        -G "Ninja" 2>&1 >/dev/null
-
-    for target in ${targets[@]}; do
-        echo Building target ${target}
-        echo Building with options $(cmake-coverage-options) -DGC:BOOL=FALSE
-        if [ "${silent}" == "--silent" ]; then
-            ${cmake} --build "${pwd}/coverage" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
-        else
-            ${cmake} --build "${pwd}/coverage" --target "${target}" || (echo ERROR: "${target}" && exit 1)
-        fi
-        case "${target}" in main-*)    
-            timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/coverage/${target}" 2>&1 >"${pwd}/coverage/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
-            lcov --capture --directory "${pwd}/coverage/" --output-file "${pwd}/coverage/${target}-main.lcov" &>/dev/null
-            lcov --remove "${pwd}/coverage/${target}-main.lcov" "${pwd}/.deps/*" -o "${pwd}/coverage/${target}-main.lcov"
-        esac
-    done
-fi
-
-find "${pwd}/coverage" -type f -name "*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
-
-find "${pwd}/coverage" -type f -name "*.lcov" ! -name "lcov.info" -delete
+${cmake} \
+    -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
+    -DCMAKE_BUILD_TYPE:STRING=Debug \
+    -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
+    -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
+    -DLCOV_PATH=${LCOV_PATH} \
+    -DGENHTML_PATH=${GENHTML_PATH} \
+    -DCODE_COVERAGE:BOOL=TRUE \
+    -DGC:BOOL=FALSE \
+    $(cmake-coverage-options) \
+    -S"${pwd}" \
+    -B"${pwd}/coverage_v1" \
+    -G "Ninja" 2>&1 >/dev/null
 
 coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" )
 for f in ${coverage}; do
-    find "${pwd}/coverage" -type f -name "${f}" -delete
+    find "${pwd}/coverage_v1" -type f -name "${f}" -delete
 done
+
+for target in ${targets[@]}; do
+    echo Building target ${target}
+    echo Building with options $(cmake-coverage-options) -DGC:BOOL=FALSE
+    if [ "${silent}" == "--silent" ]; then
+        ${cmake} --build "${pwd}/coverage_v1" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
+    else
+        ${cmake} --build "${pwd}/coverage_v1" --target "${target}" || (echo ERROR: "${target}" && exit 1)
+    fi
+    case "${target}" in main-*)    
+        timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/coverage_v1/${target}" 2>&1 >"${pwd}/coverage/log-${target}_v1.txt" || (echo ERROR: "${target}" && exit 1)
+        lcov --capture --directory "${pwd}/coverage_v1/" --output-file "${pwd}/coverage/${target}_v1.lcov" &>/dev/null
+        lcov --remove "${pwd}/coverage/${target}_v1.lcov" "${pwd}/.deps/*" -o "${pwd}/coverage/${target}_v1.lcov"
+    esac
+done
+
+coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" )
+for f in ${coverage}; do
+    find "${pwd}/coverage_v2" -type f -name "${f}" -delete
+done
+
+${cmake} \
+    -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
+    -DCMAKE_BUILD_TYPE:STRING=Debug \
+    -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
+    -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
+    -DLCOV_PATH=${LCOV_PATH} \
+    -DGENHTML_PATH=${GENHTML_PATH} \
+    -DCODE_COVERAGE:BOOL=TRUE \
+    -DGC:BOOL=TRUE \
+    $(cmake-coverage-options) \
+    -S"${pwd}" \
+    -B"${pwd}/coverage_v2" \
+    -G "Ninja" 2>&1 >/dev/null
+
+for target in ${targets[@]}; do
+    echo Building target ${target}
+    echo Building with options $(cmake-coverage-options) -DGC:BOOL=FALSE
+    if [ "${silent}" == "--silent" ]; then
+        ${cmake} --build "${pwd}/coverage_v2" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
+    else
+        ${cmake} --build "${pwd}/coverage_v2" --target "${target}" || (echo ERROR: "${target}" && exit 1)
+    fi
+    case "${target}" in main-*)    
+        timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/coverage_v2/${target}" 2>&1 >"${pwd}/coverage/log-${target}_v2.txt" || (echo ERROR: "${target}" && exit 1)
+        lcov --capture --directory "${pwd}/coverage_v2/" --output-file "${pwd}/coverage/${target}_v2.lcov" &>/dev/null
+        lcov --remove "${pwd}/coverage/${target}_v2.lcov" "${pwd}/.deps/*" -o "${pwd}/coverage/${target}_v2.lcov"
+    esac
+done
+
+find "${pwd}/coverage" -type f -name "*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
+find "${pwd}/coverage" -type f -name "*.lcov" ! -name "lcov.info" -delete
+
 
 if [ "${silent}" == "--silent" ]; then
     exec 1>&2 2>&-

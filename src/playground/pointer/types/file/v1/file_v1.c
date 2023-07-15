@@ -97,13 +97,7 @@ static u64 file_data(u64 ptr) {
         return 0;
     }
     struct file_handler* handler = data_ptr->data;
-    if (handler == 0) {
-        return 0;
-    }
     FILE* file = handler->file;
-    if (file == 0) {
-        return 0;
-    }
     fseek(file, 0, SEEK_END); /* NOLINT */
     u64 size = (u64)ftell(file);
     fseek(file, 0, SEEK_SET);
@@ -129,12 +123,8 @@ static void file_free(u64 ptr) {
         return;
     }
     struct file_handler* handler = data_ptr->data;
-    if (handler == 0) {
-        return;
-    }
-    FILE* file = handler->file;
-    if (file != 0) {
-        fclose(file);
+    if (handler->file != 0) {
+        fclose(handler->file);
         handler->file = 0;
     }
     // ptr is already a valid address because of previous vm->read check

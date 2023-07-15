@@ -164,7 +164,7 @@ function cmake-options() {
 function cmake-coverage-options() {
     local sanitize_options
     local mocks_options
-    local gc_options
+    local debug_options
 
     if [ "${sanitize}" == "--sanitize" ] && [ "${valgrind}" == "" ]; then
         sanitize_options=-DCODE_SANITIZER:BOOL=TRUE
