@@ -13,7 +13,6 @@ if [ "${uid}" -eq 0 ]; then
     echo "Please run as user"
     exit
 fi
-echo $0 $1 $2 $3
 
 pwd=$(pwd)
 
@@ -55,13 +54,42 @@ for opt in ${opts[@]}; do
             clean="--clean"
             ;;
 
+        "--sanitize") # [optional] builds using sanitizer
+            sanitize="--sanitize"
+            ;;
+
+        "--mocks") # [optional] builds with mocks
+            mocks="--mocks"
+            ;;
+
+        "--gc") # [optional] builds with garbage collector
+            gc="--gc"
+            ;;
+
         "--silent") # [optional] suppress verbose output
             silent="--silent"
+            ;;
+
+        "--valgrind") # [optional] runs using valgrind (disables --sanitize on build)
+            valgrind="--valgrind"
+            ;;
+
+        "--callgrind") # [optional] runs using valgrind with tool callgrind (disables --sanitize on build)
+            callgrind="--callgrind"
+            ;;
+
+        "--debug") # [optional] runs using debug memory debug info
+            debug="--debug"
+            ;;
+
+        "--help") # shows command desctiption
+            help
             ;;
 
         *)
             help
             ;;
+
     esac
 done
 
@@ -79,9 +107,6 @@ fi
 cmake=$(get-cmake)
 targets=( $(get-targets) )
 
-#!/bin/bash
-
-target=${target#./}
 found_target_base=false
 sources=$(find "${pwd}/config" -type f -name "sources.txt")
 for source in ${sources[@]}; do
@@ -89,16 +114,17 @@ for source in ${sources[@]}; do
     while IFS= read -r line; do
         if [[ "${target}" == "--target ${line}" ]]; then
             found_target_base=true
+            target_base=$(basename $(dirname "${source}"))
             break
         fi
     done <  $source
 done
 
 if [[ "$found_target_base" = true ]]; then
-    linked_targets=$(get-cmake-targets ${target_base})
-    for linked_target in $linked_targets; do
+    linked_targets=$(get-linked-targets ${target_base})
+    for linked_target in ${linked_targets[@]}; do
         if [[ " ${targets[*]} " == *" ${linked_target} "* ]]; then
-            ${pwd}/bin/coverageall.sh --target ${linked_target} ${opts}
+            ${pwd}/bin/coverageall.sh --target ${linked_target} ${opts[@]}
         fi
     done
 else

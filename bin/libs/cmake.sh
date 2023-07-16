@@ -48,16 +48,23 @@ function get-targets() {
     printf '%s\n' "${array[@]}"
 }
 
-function search_target_link_libraries() {
-    echo $1
-    if [[ ! "$1" == "" ]]; then
-        search_target_link_libraries $(sed -n "s/target_link_libraries(\([^ ]*\) .*$1.*)/\1/p" CMakeLists.txt)
+function search() {
+    local target=$1
+    if [[ ! "${target}" == "" ]]; then
+        target=$(sed -n "s/target_link_libraries(\([^ ]*\) .*${target}.*)/\1/p" CMakeLists.txt)
+        if [[ ! "${target}" == "" ]]; then
+            printf '%s\n' "${target}"
+            search ${target}
+        fi
     fi
 }
 
-function get-cmake-targets() {
+function get-linked-targets() {
     local target=$1
-    search_target_link_libraries ${target}
+    if [[ ! "${target}" == "" ]]; then
+        printf '%s\n' "${target}"
+        search ${target}
+    fi
 }
 
 
@@ -209,7 +216,7 @@ function cmake-valgrind-options() {
 }
 export -f get-cmake
 export -f get-targets
-export -f get-cmake-targets
+export -f get-linked-targets
 export -f get-gtktargets
 export -f get-options
 export -f cmake-options
