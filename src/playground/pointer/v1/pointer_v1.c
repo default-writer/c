@@ -78,6 +78,7 @@ static void pointer_init_internal(struct pointer_data* ptr, u64 size);
 static void pointer_destroy_internal(struct pointer_data* ptr);
 static void pointer_ctx_init_internal(struct pointer_data* ptr, u64 size);
 static void pointer_ctx_destroy_internal(struct pointer_data* ptr);
+static void copy_internal(struct pointer_data* dest, struct pointer_data* src);
 
 /* free */
 static void vm_types_init(struct vm_type* type);
