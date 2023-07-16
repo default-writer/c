@@ -112,6 +112,7 @@ static void string_strcpy(u64 dest, u64 src) {
     if (src_ptr->size == 0) {
         return;
     }
+    const char* data_src = src_ptr->data; /* NOLINT */
     if (dest_ptr->size == 0) {
         dest_ptr->data = global_alloc(src_ptr->size);
         dest_ptr->size = src_ptr->size;
@@ -122,7 +123,6 @@ static void string_strcpy(u64 dest, u64 src) {
         }
     }
     char* data_dest = dest_ptr->data;
-    const char* data_src = src_ptr->data; /* NOLINT */
     strcpy(data_dest, data_src); /* NOLINT */
 }
 
@@ -147,6 +147,7 @@ static void string_strcat(u64 dest, u64 src) {
     if (src_ptr->size == 0) {
         return;
     }
+    const char* data_src = src_ptr->data; /* NOLINT */
     if (dest_ptr->size == 0) {
         dest_ptr->data = global_alloc(src_ptr->size);
         dest_ptr->size = src_ptr->size;
@@ -157,7 +158,6 @@ static void string_strcat(u64 dest, u64 src) {
         }
     }
     char* data_dest = dest_ptr->data;
-    const char* data_src = src_ptr->data; /* NOLINT */
     strcat(data_dest, data_src); /* NOLINT */
 }
 
@@ -177,16 +177,7 @@ static u64 string_match_last(u64 src, u64 match) {
         return 0;
     }
     const char* data_src = src_ptr->data;
-    if (data_src == 0) {
-        return 0;
-    }
     const char* data_match = match_ptr->data;
-    if (data_match == 0) {
-        return 0;
-    }
-    if (*data_match == 0) {
-        return 0;
-    }
     char* data_last = strrchr(data_src, *data_match);
     while (data_last != 0 && *data_last != 0 && *data_match != 0 && *data_last == *data_match) {
         data_last++;
@@ -209,6 +200,9 @@ static u64 string_match_last(u64 src, u64 match) {
 
 static u64 string_load(const char* src_data) {
     if (src_data == 0) {
+        return 0;
+    }
+    if (*src_data == 0) {
         return 0;
     }
     u64 size = strlen(src_data) + 1;
@@ -262,6 +256,9 @@ static void string_put_char(u64 ptr, char value) {
     }
     char* data = data_ptr->data;
     if (data == 0) {
+        return;
+    }
+    if (value == 0) {
         return;
     }
     *data = value;

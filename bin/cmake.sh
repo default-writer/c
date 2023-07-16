@@ -143,7 +143,7 @@ for target in ${targets[@]}; do
     else
         ${cmake} --build "${pwd}/cmake" --target "${target}" || (echo ERROR: "${target}" && exit 1)
     fi
-    case "${target}" in main-*)    
+    case "${target}" in main-*)
         timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/cmake/${target}" 2>&1 >"${pwd}/logs/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
     esac
 done

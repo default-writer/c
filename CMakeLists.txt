@@ -213,12 +213,12 @@ set(LIB_MEMORY_REF1_SOURCE src/memory/v1/ref_v1.c)
 set(LIB_MEMORY_REF2_SOURCE src/memory/v2/ref_v2.c)
 set(LIB_MEMORY_REF3_SOURCE src/memory/v3/ref_v3.c)
 set(LIB_CLASS_SOURCE src/class/class.c)
-set(LIB_STD_PTR1_SOURCE src/playground/pointer/types/data/v1/data_v1.c)
+set(LIB_STD_DATA1_SOURCE src/playground/pointer/types/data/v1/data_v1.c)
 set(LIB_STD_LIST1_SOURCE src/playground/pointer/types/list/v1/list_v1.c)
 set(LIB_STD_FILE1_SOURCE src/playground/pointer/types/file/v1/file_v1.c)
 set(LIB_STD_STRING1_SOURCE src/playground/pointer/types/string/v1/string_v1.c)
 set(LIB_STD_OBJECT1_SOURCE src/playground/pointer/types/object/v1/object_v1.c)
-set(LIB_STD1_SOURCE
+set(LIB_STD_TYPES1_SOURCE
     src/playground/pointer/types/data/v1/data_v1.c
     src/playground/pointer/types/list/v1/list_v1.c
     src/playground/pointer/types/file/v1/file_v1.c
@@ -292,12 +292,12 @@ add_library(memory-ref2 STATIC ${LIB_MEMORY_REF2_SOURCE})
 add_library(memory-ref3 STATIC ${LIB_MEMORY_REF3_SOURCE})
 add_library(structs-v3 STATIC ${TEST_STRUCTS3_LIB_SOURCE})
 add_library(stl-linked-list STATIC ${LIB_LINKED_LIST_SOURCE})
-add_library(std-types1 STATIC ${LIB_STD1_SOURCE})
+add_library(std-types1 STATIC ${LIB_STD_TYPES1_SOURCE})
 add_library(std-list1 SHARED ${LIB_STD_LIST1_SOURCE})
 add_library(std-file1 SHARED ${LIB_STD_FILE1_SOURCE})
 add_library(std-string1 SHARED ${LIB_STD_STRING1_SOURCE})
+add_library(std-data1 SHARED ${LIB_STD_DATA1_SOURCE})
 add_library(std-object1 SHARED ${LIB_STD_OBJECT1_SOURCE})
-add_library(std-ptr1 SHARED ${LIB_STD_PTR1_SOURCE})
 
 add_executable(main-default ${MAIN_STANDARD_SOURCE})
 add_executable(main-light ${MAIN_LIGHT_SOURCE})
@@ -428,5 +428,22 @@ FILE(WRITE ${CMAKE_BINARY_DIR}/gtktargets.txt
     "${gtk_target_names}"
 )
 
-endif()
+get_property(target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
+foreach(target_name ${target_names})
+    get_target_property(TARGET_SOURCES ${target_name} SOURCES)
+    set(output_dir "${CMAKE_BINARY_DIR}/${target_name}")
+    file(MAKE_DIRECTORY ${output_dir})
 
+    file(WRITE ${output_dir}/sources.txt "")
+    foreach(source_file ${TARGET_SOURCES})
+        file(APPEND ${output_dir}/sources.txt "${source_file}\n")
+    endforeach()
+endforeach()
+
+file(GLOB_RECURSE SOURCE_FILES "src/*.c" "src/*.h")
+file(WRITE ${CMAKE_BINARY_DIR}/sources.txt "")
+foreach(source_file ${SOURCE_FILES})
+    file(APPEND ${CMAKE_BINARY_DIR}/sources.txt "${source_file}\n")
+endforeach()
+
+endif()

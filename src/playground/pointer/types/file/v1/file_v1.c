@@ -61,13 +61,7 @@ static u64 file_alloc(u64 file_path, u64 mode) {
         return 0;
     }
     const char* file_path_data = file_path_ptr->data;
-    if (file_path_data == 0) {
-        return 0;
-    }
     const char* mode_data = mode_ptr->data;
-    if (mode_data == 0) {
-        return 0;
-    }
     FILE* file = fopen(file_path_data, mode_data); /* NOLINT */
     if (file == 0) {
         return 0;

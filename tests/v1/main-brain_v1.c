@@ -64,7 +64,7 @@ RX_TEST_CASE(tests, test_load_0, .fixture = test_fixture) {
 /* test init */
 RX_TEST_CASE(tests, test_load_empty, .fixture = test_fixture) {
     u64 empty_ptr = string->load("");
-    RX_ASSERT(empty_ptr != 0);
+    RX_ASSERT(empty_ptr == 0);
     string->free(empty_ptr);
 }
 
@@ -72,7 +72,7 @@ RX_TEST_CASE(tests, test_load_empty, .fixture = test_fixture) {
 RX_TEST_CASE(tests, test_print_load_empty, .fixture = test_fixture) {
     u64 empty_ptr = string->load("");
     string->printf(empty_ptr);
-    RX_ASSERT(empty_ptr != 0);
+    RX_ASSERT(empty_ptr == 0);
     string->free(empty_ptr);
 }
 
@@ -120,8 +120,19 @@ RX_TEST_CASE(tests, test_strcat_load_alloc, .fixture = test_fixture) {
 }
 
 /* test init */
+RX_TEST_CASE(tests, test_strcat_alloc_alloc, .fixture = test_fixture) {
+    u64 char_ptr = string->alloc();
+    u64 pattern_ptr = string->alloc();
+    string->strcat(pattern_ptr, char_ptr);
+    RX_ASSERT(char_ptr != 0);
+    RX_ASSERT(pattern_ptr != 0);
+    string->free(char_ptr);
+    string->free(pattern_ptr);
+}
+
+/* test init */
 RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
-    u64 string_ptr = string->load("a");
+    u64 string_ptr = string->load("/all_english_words.txt");
     u64 zero_ptr = string->alloc();
     u64 data_ptr = data->alloc(1);
     u64 list_ptr = list->alloc();
@@ -159,6 +170,7 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     string->put_char(null_ptr, '\0');
     string->put_char(none_ptr, '\0');
 
+    string->put_char(string_ptr, '/');
     string->strcpy(string_ptr, string_ptr);
     string->strcpy(string_ptr, zero_ptr);
     string->strcpy(zero_ptr, string_ptr);
@@ -259,6 +271,13 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     string->unsafe(list_ptr);
     string->unsafe(none_ptr);
 
+    file->alloc(zero_ptr, zero_ptr);
+    file->alloc(string_ptr, zero_ptr);
+    file->alloc(data_ptr, zero_ptr);
+    file->alloc(list_ptr, zero_ptr);
+    file->alloc(zero_ptr, string_ptr);
+    file->alloc(zero_ptr, data_ptr);
+    file->alloc(zero_ptr, list_ptr);
     file->alloc(string_ptr, string_ptr);
     file->alloc(data_ptr, null_ptr);
     file->alloc(list_ptr, null_ptr);
