@@ -1,7 +1,7 @@
 #include "common/alloc.h"
 #include "playground/class/v2/class_v2.h"
 #include "playground/list/v2/list_v2.h"
-#include <rexo/include/rexo.h>
+#include "rexo/include/rexo.h"
 
 #define DEFAULT_SIZE 0xffff /* 64K bytes */
 

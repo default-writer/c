@@ -8,7 +8,7 @@
 #include "playground/pointer/types/string/v1/string_v1.h"
 #include "playground/pointer/v1/pointer_v1.h"
 
-#include <rexo/include/rexo.h>
+#include "rexo/include/rexo.h"
 
 #define HASHTABLE_SIZE 101
 #define DEFAULT_SIZE 0x100

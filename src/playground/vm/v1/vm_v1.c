@@ -211,7 +211,7 @@ static struct pointer* vm_free(u64 address) {
             list->push(cache, vm_ptr);
 #endif
             data = *ptr;
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef VM_DEBUG_INFO
             printf("  >-: %016llx : %016llx > %016llx\n", address, (u64)data, (u64)ptr);
 #endif
             *ptr = 0;
@@ -226,7 +226,7 @@ static struct pointer* vm_read(u64 address) {
         struct pointer** ptr = vm_read_internal(address);
         if (ptr != 0) {
             data = *ptr;
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef VM_DEBUG_INFO
             printf("  <v: %016llx : %016llx > %016llx\n", address, (u64)data, (u64)ptr);
 #endif
         }
@@ -241,7 +241,7 @@ static u64 vm_write(struct pointer* data) {
     if (ptr != 0) {
         *ptr = data;
         data->vm = target;
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef VM_DEBUG_INFO
         printf("  >v: %016llx : %016llx > %016llx\n", address, (u64)data, (u64)ptr);
 #endif
     }

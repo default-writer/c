@@ -4,7 +4,7 @@
 #include "playground/hashtable/v2/hashtable_v2.h"
 #include "playground/pointer/v2/pointer_v2.h"
 
-#include <rexo/include/rexo.h>
+#include "rexo/include/rexo.h"
 
 #define HASHTABLE_SIZE 101
 #define DEFAULT_SIZE 0x1

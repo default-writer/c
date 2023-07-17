@@ -24,14 +24,6 @@ static struct list_data* list_next(struct list_data* ptr) {
     return ptr->next;
 }
 
-#ifdef USE_MEMORY_DEBUG_INFO
-/* gets chunk's payload. external code ensures ptr is not 0 */
-static void* list_data(struct list_data* ptr) {
-    /* external code ensures prt is not 0 */
-    return ptr->data;
-}
-#endif
-
 /* deletes the data pointer */
 static void list_delete(struct list_data* ptr) {
     /* releases the pointer */
@@ -165,7 +157,7 @@ static void list_destroy(struct list_data** current) {
     }
 }
 
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef VM_DEBUG_INFO
 
 /* prints head on current context (stack) */
 static void list_print_head(struct list_data** current) {
@@ -207,7 +199,7 @@ const struct list list_definition = {
     .push = list_push,
     .pop = list_pop,
     .peek = list_peek,
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef VM_DEBUG_INFO
     .print_head = list_print_head,
     .print = list_print
 #endif

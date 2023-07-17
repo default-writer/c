@@ -1,10 +1,7 @@
-#include "src/list-micro/list-micro.h"
+#include "src/list/list.h"
 
-extern const struct test_suite list_micro_test_suite_definition;
-static const struct test_suite* list_micro_tests = &list_micro_test_suite_definition;
-
-extern const struct test_suite list_alloc_test_suite_definition;
-static const struct test_suite* list_alloc_tests = &list_alloc_test_suite_definition;
+extern const struct test_suite list_test_suite_definition;
+static const struct test_suite* list_tests = &list_test_suite_definition;
 
 static void INIT init() {
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -25,8 +22,7 @@ int main(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- acceptance test code\n");
 #endif
-    list_alloc_tests->run();
-    list_micro_tests->run();
+    list_tests->run();
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- rexo unit test code\n");
 #endif
