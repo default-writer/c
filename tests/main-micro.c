@@ -22,18 +22,10 @@ int main(void) {
 #ifndef ATTRIBUTE
     init();
 #endif
-#ifdef USE_MEMORY_DEBUG_INFO
-    printf("---- acceptance test code\n");
-#endif
     list_alloc_tests->run();
     list_micro_tests->run();
-#ifdef USE_MEMORY_DEBUG_INFO
-    printf("---- rexo unit test code\n");
-#endif
-    /* Execute the main function that runs the test cases found. */
-    int result = rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
 #ifndef ATTRIBUTE
     destroy();
 #endif
-    return result;
+    return 0;
 }

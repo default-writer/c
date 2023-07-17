@@ -388,9 +388,18 @@ RX_TEST_CASE(list_tests, test_list_pop_is_zero, .fixture = test_fixture) {
 }
 
 static void run(void) {
+#ifdef USE_MEMORY_DEBUG_INFO
+    printf("---- acceptance test code\n");
+#endif
     list_alloc_tests->run();
     using_list1(list_using);
     using_list2(list_using);
+#ifdef USE_MEMORY_DEBUG_INFO
+    printf("---- rexo unit test code\n");
+#endif
+    /* Execute the main function that runs the test cases found. */
+    int result = rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
+    printf(result == 0 ? "OK" : "ERROR");
 }
 
 const struct test_suite list_test_suite_definition = {

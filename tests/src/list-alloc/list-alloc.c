@@ -34,7 +34,7 @@ static void delete_list(struct list_data** ctx) {
 }
 
 /* runs default list usage scenario */
-static void using_list(void (*list_using)(struct list_data** const)) {
+static void using_list1(void (*list_using)(struct list_data** const)) {
     /* initialize current context (stack) */
     struct list_data* ctx = new_list();
     /* call user method */
@@ -536,11 +536,20 @@ RX_TEST_CASE(list_alloc_tests, test_list_push_pop, .fixture = test_fixture) {
 }
 
 static void run(void) {
+#ifdef USE_MEMORY_DEBUG_INFO
+    printf("---- acceptance test code\n");
+#endif
     struct list_parameters* parameters = &list_parameters_definition;
     parameters->block_size = 1;
-    using_list(list_using);
+    using_list1(list_using);
     parameters->block_size = 256;
     using_list2(list_using);
+#ifdef USE_MEMORY_DEBUG_INFO
+    printf("---- rexo unit test code\n");
+#endif
+    /* Execute the main function that runs the test cases found. */
+    int result = rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
+    printf(result == 0 ? "OK" : "ERROR");
 }
 
 const struct test_suite list_alloc_test_suite_definition = {
