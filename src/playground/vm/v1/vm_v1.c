@@ -58,14 +58,14 @@ static struct vm_state* state = &vm_state;
 
 static void vm_init(u64 size);
 static void vm_destroy(void);
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef VM_DEBUG_INFO
 static void vm_dump(void);
 static void vm_dump_ref(void);
 #endif
 static struct pointer* vm_free(u64 address);
 static struct pointer* vm_read(u64 address);
 static u64 vm_write(struct pointer* data);
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef VM_DEBUG_INFO
 static struct pointer* vm_data_enumerator_next(void);
 static void* vm_data_enumerator_next_ref(void);
 #endif
@@ -75,7 +75,7 @@ static void* vm_data_enumerator_next_ref(void);
 static struct vm_data* vm_init_internal(u64 size, u64 offset);
 static struct pointer** vm_read_internal(u64 address);
 static struct pointer** vm_alloc_internal(u64* address, struct vm_data** target);
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef VM_DEBUG_INFO
 static void vm_enumerator_init_internal(void);
 static void vm_enumerator_destroy_internal(void);
 #endif
@@ -131,7 +131,7 @@ static struct pointer** vm_alloc_internal(u64* address, struct vm_data** target)
     return ptr;
 }
 
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef VM_DEBUG_INFO
 static void vm_enumerator_init_internal(void) {
     struct vm_data* vm = first;
     state->vm = vm;
@@ -179,7 +179,7 @@ static void vm_destroy(void) {
     last = 0;
 }
 
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef VM_DEBUG_INFO
 static void vm_dump(void) {
     vm_enumerator_init_internal();
     struct pointer* ptr = 0;
@@ -248,7 +248,7 @@ static u64 vm_write(struct pointer* data) {
     return address;
 }
 
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef VM_DEBUG_INFO
 static struct pointer* vm_data_enumerator_next(void) {
     struct pointer* data = 0;
     struct vm_data* vm = state->vm;
@@ -292,7 +292,7 @@ const struct vm vm_definition = {
     .free = vm_free,
     .read = vm_read,
     .write = vm_write,
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef VM_DEBUG_INFO
     .dump = vm_dump,
     .dump_ref = vm_dump_ref
 #endif

@@ -49,7 +49,7 @@ struct pointer_methods {
     void (*push)(u64 ptr);
     u64 (*pop)(void);
     u64 (*size)(u64 ptr);
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef VM_DEBUG_INFO
     void (*dump)(struct pointer* ptr);
     void (*dump_ref)(void** ptr);
 #endif

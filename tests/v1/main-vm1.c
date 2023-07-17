@@ -8,6 +8,14 @@
 #include "playground/pointer/types/string/v1/string_v1.h"
 #include "playground/pointer/v1/pointer_v1.h"
 
+#include "../tests/src/test.h"
+
+extern const struct test_suite list_micro_test_suite_definition;
+static const struct test_suite* list_micro_tests = &list_micro_test_suite_definition;
+
+extern const struct test_suite list_alloc_test_suite_definition;
+static const struct test_suite* list_alloc_tests = &list_alloc_test_suite_definition;
+
 #define DEFAULT_SIZE 0x100
 
 /* definition */
@@ -101,6 +109,8 @@ int main(int argc, char** argv) {
 #ifndef ATTRIBUTE
     init();
 #endif
+    list_alloc_tests->run();
+    list_micro_tests->run();
     CLEAN(argc)
     pointer->init(DEFAULT_SIZE);
     u64 argv_ptr = string->load(argv[0]);

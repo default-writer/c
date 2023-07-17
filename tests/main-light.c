@@ -2,6 +2,14 @@
 #include "list-light/data.h"
 #include "rexo/include/rexo.h"
 
+#include "../tests/src/test.h"
+
+extern const struct test_suite list_micro_test_suite_definition;
+static const struct test_suite* list_micro_tests = &list_micro_test_suite_definition;
+
+extern const struct test_suite list_alloc_test_suite_definition;
+static const struct test_suite* list_alloc_tests = &list_alloc_test_suite_definition;
+
 extern const struct list list_light_definition;
 
 /* allocates memory pointer for list object */
@@ -26,7 +34,7 @@ static void delete_list(struct list_data** ctx) {
 }
 
 /* runs default list usage scenario */
-static void using_list(void (*list_using)(struct list_data** const)) {
+static void using_list1(void (*list_using)(struct list_data** const)) {
     /* initialize current context (stack) */
     struct list_data* ctx = new_list();
     /* call user method */
@@ -320,8 +328,10 @@ int main(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- acceptance test code\n");
 #endif
+    list_alloc_tests->run();
+    list_micro_tests->run();
     /* some messy code */
-    using_list(list_using);
+    using_list1(list_using);
     using_list2(list_using);
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- rexo unit test code\n");

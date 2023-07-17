@@ -53,7 +53,7 @@ static u64 pointer_peek(void);
 static u64 pointer_pop(void);
 static u64 pointer_size(u64 ptr);
 
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef VM_DEBUG_INFO
 static void pointer_dump(struct pointer* ptr);
 static void pointer_dump_ref(void** ptr);
 #endif
@@ -201,7 +201,7 @@ void pointer_ctx_init(struct pointer_data** ctx, u64 size) {
 }
 
 void pointer_ctx_destroy(struct pointer_data** ctx) {
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef VM_DEBUG_INFO
     vm->dump_ref();
     vm->dump();
 #endif
@@ -217,7 +217,7 @@ static void pointer_init(u64 size) {
 }
 
 static void pointer_destroy(void) {
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef VM_DEBUG_INFO
     vm->dump_ref();
     vm->dump();
 #endif
@@ -259,7 +259,7 @@ static u64 pointer_size(u64 ptr) {
     return size;
 }
 
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef VM_DEBUG_INFO
 static void pointer_dump(struct pointer* ptr) {
     if (ptr == 0) {
         return;
@@ -296,7 +296,7 @@ const struct pointer_methods pointer_methods_definition = {
     .peek = pointer_peek,
     .push = pointer_push,
     .pop = pointer_pop,
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef VM_DEBUG_INFO
     .dump = pointer_dump,
     .dump_ref = pointer_dump_ref,
 #endif
