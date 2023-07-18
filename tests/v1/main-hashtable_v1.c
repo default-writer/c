@@ -554,6 +554,26 @@ RX_TEST_CASE(tests, test_19_improper_use_of_different_calls, .fixture = test_fix
 }
 
 /* test init */
+RX_TEST_CASE(tests, test_alloc_free, .fixture = test_fixture) {
+    u64 list_ptr = list->alloc();
+    u64 pattern_ptr = string->alloc();
+    u64 list_size = pointer->size(list_ptr);
+    u64 ptr_size = pointer->size(pattern_ptr);
+    u64 null_size = pointer->size(0);
+    list->free(pattern_ptr);
+    list->free(list_ptr);
+#ifndef USE_GC
+    list->free(list_ptr);
+    string->free(pattern_ptr);
+#else
+    pointer->gc();
+#endif
+    RX_ASSERT(list_size == 8);
+    RX_ASSERT(ptr_size == 0);
+    RX_ASSERT(null_size == 0);
+}
+
+/* test init */
 RX_TEST_CASE(tests, test_20_alloc_free, .fixture = test_fixture) {
     u64 list_ptr = list->alloc();
     u64 size = pointer->size(list_ptr);
