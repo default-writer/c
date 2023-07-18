@@ -4,7 +4,7 @@
 #include "rexo/include/rexo.h"
 
 struct test_suite {
-    void (*run)(void);
+    int (*run)(void);
 };
 
 #endif /* _TESTS_COMMON_H_ */

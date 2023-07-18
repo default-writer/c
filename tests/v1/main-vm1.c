@@ -109,8 +109,8 @@ int main(int argc, char** argv) {
 #ifndef ATTRIBUTE
     init();
 #endif
-    list_alloc_tests->run();
-    list_micro_tests->run();
+    int result_alloc = list_alloc_tests->run();
+    int result_micro = list_micro_tests->run();
     CLEAN(argc)
     pointer->init(DEFAULT_SIZE);
     u64 argv_ptr = string->load(argv[0]);
@@ -122,5 +122,5 @@ int main(int argc, char** argv) {
 #ifndef ATTRIBUTE
     destroy();
 #endif
-    return 0;
+    return result_alloc | result_micro;
 }

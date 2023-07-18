@@ -328,8 +328,8 @@ int main(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- acceptance test code\n");
 #endif
-    list_alloc_tests->run();
-    list_micro_tests->run();
+    int result_alloc = list_alloc_tests->run();
+    int result_micro = list_micro_tests->run();
     /* some messy code */
     using_list1(list_using);
     using_list2(list_using);
@@ -341,5 +341,5 @@ int main(void) {
 #ifndef ATTRIBUTE
     destroy();
 #endif
-    return result;
+    return result_alloc | result_micro | result;
 }

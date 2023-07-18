@@ -534,7 +534,7 @@ RX_TEST_CASE(list_alloc_tests, test_list_push_pop, .fixture = test_fixture) {
     global_free(_recorded, ALLOC_SIZE(N_ELEMENTS));
 }
 
-static void run(void) {
+static int run(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- acceptance test code\n");
 #endif
@@ -548,7 +548,7 @@ static void run(void) {
 #endif
     /* Execute the main function that runs the test cases found. */
     int result = rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
-    printf(result == 0 ? "OK" : "ERROR");
+    return result;
 }
 
 const struct test_suite list_alloc_test_suite_definition = {

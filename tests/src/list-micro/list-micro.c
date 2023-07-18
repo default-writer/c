@@ -299,7 +299,7 @@ RX_TEST_CASE(list_micro_tests, test_list_pop_is_zero, .fixture = test_fixture) {
     RX_ASSERT(head == 0);
 }
 
-static void run(void) {
+static int run(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- acceptance test code\n");
 #endif
@@ -310,7 +310,7 @@ static void run(void) {
 #endif
     /* Execute the main function that runs the test cases found. */
     int result = rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
-    printf(result == 0 ? "OK" : "ERROR");
+    return result;
 }
 
 const struct test_suite list_micro_test_suite_definition = {

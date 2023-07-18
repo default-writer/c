@@ -2,9 +2,6 @@
 
 extern const struct list list_definition;
 
-extern const struct test_suite list_alloc_test_suite_definition;
-static const struct test_suite* list_alloc_tests = &list_alloc_test_suite_definition;
-
 /* allocates memory pointer for list object */
 static struct list_data* new_list(void) {
     /* declares pointer to list functions definitions */
@@ -387,11 +384,10 @@ RX_TEST_CASE(list_tests, test_list_pop_is_zero, .fixture = test_fixture) {
     RX_ASSERT(head == 0);
 }
 
-static void run(void) {
+static int run(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- acceptance test code\n");
 #endif
-    list_alloc_tests->run();
     using_list1(list_using);
     using_list2(list_using);
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -399,7 +395,7 @@ static void run(void) {
 #endif
     /* Execute the main function that runs the test cases found. */
     int result = rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
-    printf(result == 0 ? "OK" : "ERROR");
+    return result;
 }
 
 const struct test_suite list_test_suite_definition = {

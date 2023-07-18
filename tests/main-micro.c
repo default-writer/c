@@ -22,10 +22,10 @@ int main(void) {
 #ifndef ATTRIBUTE
     init();
 #endif
-    list_alloc_tests->run();
-    list_micro_tests->run();
+    int result_alloc = list_alloc_tests->run();
+    int result = list_micro_tests->run();
 #ifndef ATTRIBUTE
     destroy();
 #endif
-    return 0;
+    return result_alloc | result;
 }
