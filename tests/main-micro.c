@@ -1,10 +1,10 @@
 #include "src/list-micro/list-micro.h"
 
-extern const struct test_suite list_micro_test_suite_definition;
-static const struct test_suite* list_micro_tests = &list_micro_test_suite_definition;
-
 extern const struct test_suite list_alloc_test_suite_definition;
 static const struct test_suite* list_alloc_tests = &list_alloc_test_suite_definition;
+
+extern const struct test_suite list_micro_test_suite_definition;
+static const struct test_suite* list_micro_tests = &list_micro_test_suite_definition;
 
 static void INIT init() {
 #ifdef USE_MEMORY_DEBUG_INFO
