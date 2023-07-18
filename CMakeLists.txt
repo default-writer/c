@@ -231,11 +231,12 @@ set(LIB_LINKED_LIST_SOURCE
 set(TESTS_SRC_LIST tests/src/list/list.c)
 set(TESTS_SRC_LIST_MICRO tests/src/list-micro/list-micro.c)
 set(TESTS_SRC_LIST_ALLOC tests/src/list-alloc/list-alloc.c)
+set(TESTS_SRC_LIST_EXPERIMENTAL tests/src/list-experimental/list-experimental.c)
 set(MAIN_STANDARD_SOURCE tests/main-default.c)
 set(MAIN_LIGHT_SOURCE tests/main-light.c ${LIB_LIGHT_SOURCE})
 set(MAIN_MICRO_SOURCE tests/main-micro.c)
 set(MAIN_ALLOC_SOURCE tests/main-alloc.c)
-set(MAIN_EXPERIMENTAL_SOURCE tests/main-experimental.c ${LIB_EXPERIMENTAL_SOURCE})
+set(MAIN_EXPERIMENTAL_SOURCE tests/main-experimental.c)
 set(MAIN_PLAYGROUND1_SOURCE tests/v1/main-playground_v1.c ${LIB_CLASS1_SOURCE})
 set(MAIN_PLAYGROUND2_SOURCE tests/v2/main-playground_v2.c ${LIB_CLASS2_SOURCE})
 set(MAIN_MEMORY1_SOURCE tests/v1/main-memory_v1.c ${LIB_MEMORY1_SOURCE})
@@ -264,9 +265,10 @@ include_directories(.deps)
 include_directories(src)
 
 add_library(tests STATIC
+    ${TESTS_SRC_LIST}
     ${TESTS_SRC_LIST_ALLOC}
-    ${TESTS_SRC_LIST_MICRO}
-    ${TESTS_SRC_LIST})
+    ${TESTS_SRC_LIST_EXPERIMENTAL}
+    ${TESTS_SRC_LIST_MICRO})
 add_library(list-v1 STATIC ${LIB_LIST1_SOURCE})
 add_library(list-v2 STATIC ${LIB_LIST2_SOURCE})
 add_library(vm-v1 STATIC ${LIB_VM1_SOURCE})
@@ -350,13 +352,13 @@ target_link_libraries(memory-ref2 PRIVATE memory-list2 list-micro list-common)
 target_link_libraries(memory-ref3 PRIVATE memory-list3 list-micro list-common)
 target_link_libraries(list-pointer2 PRIVATE vm-v2)
 
-target_link_libraries(tests PRIVATE list-parameters)
+target_link_libraries(tests PRIVATE list-alloc list-parameters)
 
 target_link_libraries(main-default PRIVATE tests list-common list-alloc list-v1 list-default)
 target_link_libraries(main-light PRIVATE tests list-common list-alloc  list-micro list-light)
 target_link_libraries(main-micro PRIVATE tests list-common list-alloc list-micro)
 target_link_libraries(main-alloc PRIVATE tests list-common list-alloc list-lcg list-parameters)
-target_link_libraries(main-experimental PRIVATE list-experimental list-lcg list-parameters list-common)
+target_link_libraries(main-experimental PRIVATE tests list-common list-experimental list-lcg list-parameters)
 target_link_libraries(main-playground1 PRIVATE list-class1 list-micro list-common list-v1)
 target_link_libraries(main-playground2 PRIVATE list-class2 list-micro list-common list-v2)
 target_link_libraries(main-memory1 PRIVATE list-memory1)

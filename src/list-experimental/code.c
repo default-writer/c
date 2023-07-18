@@ -206,7 +206,7 @@ static void list_print(struct list_data** current) {
 /* public */
 
 /* initializes the new context's head element */
-void list_init(struct list_data** current) {
+void list_experimental_init(struct list_data** current) {
     const struct list_data* tmp = *current;
     /* checks if pointer is null */
     if (tmp == 0) {
@@ -216,7 +216,7 @@ void list_init(struct list_data** current) {
 }
 
 /* destroys the memory stack */
-void list_destroy(struct list_data** current) {
+void list_experimental_destroy(struct list_data** current) {
     /* gets the current memory pointer */
     struct list_data* tmp = *current;
     /* checks if pointer is not null */
