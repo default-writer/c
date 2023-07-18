@@ -85,9 +85,6 @@ static void list_push(u64 ptr_list, u64 ptr) {
     if (data_ptr->type != TYPE_LIST) {
         return;
     }
-    if (data_ptr->data == 0) {
-        return;
-    }
     struct list_handler* handler = data_ptr->data;
     list->push(&handler->list, (void*)ptr);
 #ifdef USE_GC
@@ -106,9 +103,6 @@ static u64 list_peek(u64 ptr) {
     if (data_ptr->type != TYPE_LIST) {
         return 0;
     }
-    if (data_ptr->data == 0) {
-        return 0;
-    }
     struct list_handler* handler = data_ptr->data;
     u64 data = (u64)list->peek(&handler->list);
     return data;
@@ -123,9 +117,6 @@ static u64 list_pop(u64 ptr) {
         return 0;
     }
     if (data_ptr->type != TYPE_LIST) {
-        return 0;
-    }
-    if (data_ptr->data == 0) {
         return 0;
     }
     struct list_handler* handler = data_ptr->data;
