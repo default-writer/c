@@ -28,6 +28,7 @@ static const struct vm_type type_definition;
 static u64 data_alloc(u64 size);
 static void data_free(u64 ptr);
 static void* data_unsafe(u64 ptr);
+static u64 data_size(u64 ptr);
 
 /* implementation*/
 static u64 data_alloc(u64 size) {
@@ -70,6 +71,18 @@ static void* data_unsafe(u64 ptr) {
     return data;
 }
 
+static u64 data_size(u64 ptr) {
+    if (ptr == 0) {
+        return 0;
+    }
+    const struct pointer* data_ptr = vm->read(ptr);
+    if (data_ptr == 0) {
+        return 0;
+    }
+    u64 size = data_ptr->size;
+    return size;
+}
+
 static const struct vm_type type_definition = {
     .free = data_free
 };
@@ -83,7 +96,8 @@ static void INIT init() {
 const struct data_methods data_methods_definition = {
     .alloc = data_alloc,
     .free = data_free,
-    .unsafe = data_unsafe
+    .unsafe = data_unsafe,
+    .size = data_size
 };
 
 #ifndef ATTRIBUTE

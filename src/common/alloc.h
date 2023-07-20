@@ -11,4 +11,13 @@ void* global_memset(void* dest, u8 c, size_t count);
 void global_statistics(void);
 #endif
 
+struct memory_info {
+    u64 used_memory;
+    u64 free_memory;
+    u64 maximum_used;
+    u64 allocated_memory;
+};
+
+const struct memory_info* global_memory_info(void);
+
 #endif /* _COMMON_ALLOC_H_ */

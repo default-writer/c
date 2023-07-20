@@ -15,7 +15,7 @@ enum type {
     /* value used for list type */
     TYPE_LIST = 4,
     /* value used for object type */
-    TYPE_OBJECT = 4,
+    TYPE_OBJECT = 5,
 };
 
 struct list_data;
@@ -48,7 +48,6 @@ struct pointer_methods {
     u64 (*peek)(void);
     void (*push)(u64 ptr);
     u64 (*pop)(void);
-    u64 (*size)(u64 ptr);
 #ifdef VM_DEBUG_INFO
     void (*dump)(struct pointer* ptr);
     void (*dump_ref)(void** ptr);

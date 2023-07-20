@@ -5,6 +5,7 @@
 
 struct string_methods {
     u64 (*alloc)(void);
+    void (*free)(u64 ptr);
     u64 (*copy)(u64 ptr);
     void (*strcpy)(u64 dest, u64 src);
     void (*strcat)(u64 dest, u64 src);
@@ -14,7 +15,7 @@ struct string_methods {
     void (*printf)(u64 ptr);
     void (*put_char)(u64 ptr, char value);
     char* (*unsafe)(u64 ptr);
-    void (*free)(u64 ptr);
+    u64 (*size)(u64 ptr);
 };
 
 #endif /* _POINTER_TYPES_STRING_H_ */

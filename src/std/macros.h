@@ -21,4 +21,6 @@
 #undef VM_DEBUG_INFO
 #endif
 
+#define RXP_DEBUG_TESTS
+
 #endif /* _STD_MACROS_H_ */

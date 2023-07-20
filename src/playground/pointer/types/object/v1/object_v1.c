@@ -25,14 +25,18 @@ static struct pointer_data* base = &vm_pointer;
 static const struct vm_type type_definition;
 
 /* internal */
-static u64 object_alloc(void);
-static u64 object_load(const char* data);
-static char* object_unsafe(u64 ptr);
+static u64 object_alloc(u64 size);
 static void object_free(u64 ptr);
+static u64 object_load(const void* data, u64 size);
+static void* object_unsafe(u64 ptr);
+static u64 object_size(u64 ptr);
 
 /* implementation*/
-static u64 object_alloc(void) {
-    struct pointer* ptr = pointer->alloc(0, TYPE_OBJECT);
+static u64 object_alloc(u64 size) {
+    if (size == 0) {
+        return 0;
+    }
+    struct pointer* ptr = pointer->alloc(size, TYPE_OBJECT);
     u64 data = vm->write(ptr);
 #ifdef USE_GC
     list->push(&base->gc, (void*)data);
@@ -56,11 +60,13 @@ static void object_free(u64 ptr) {
     pointer->free(data_ptr);
 }
 
-static u64 object_load(const char* src_data) {
+static u64 object_load(const void* src_data, u64 size) {
     if (src_data == 0) {
         return 0;
     }
-    u64 size = strlen(src_data) + 1;
+    if (size == 0) {
+        return 0;
+    }
     struct pointer* data_ptr = pointer->alloc(size, TYPE_OBJECT);
     memcpy(data_ptr->data, src_data, size); /* NOLINT */
     u64 data = vm->write(data_ptr);
@@ -70,7 +76,7 @@ static u64 object_load(const char* src_data) {
     return data;
 }
 
-static char* object_unsafe(u64 ptr) {
+static void* object_unsafe(u64 ptr) {
     if (ptr == 0) {
         return 0;
     }
@@ -85,6 +91,18 @@ static char* object_unsafe(u64 ptr) {
     return data;
 }
 
+static u64 object_size(u64 ptr) {
+    if (ptr == 0) {
+        return 0;
+    }
+    const struct pointer* data_ptr = vm->read(ptr);
+    if (data_ptr == 0) {
+        return 0;
+    }
+    u64 size = data_ptr->size;
+    return size;
+}
+
 static const struct vm_type type_definition = {
     .free = object_free
 };
@@ -97,9 +115,10 @@ static void INIT init() {
 /* public */
 const struct object_methods object_methods_definition = {
     .alloc = object_alloc,
+    .free = object_free,
     .load = object_load,
     .unsafe = object_unsafe,
-    .free = object_free
+    .size = object_size
 };
 
 #ifndef ATTRIBUTE

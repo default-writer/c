@@ -51,7 +51,6 @@ static void pointer_vm_cleanup(struct list_data** current);
 static void pointer_push(u64 ptr);
 static u64 pointer_peek(void);
 static u64 pointer_pop(void);
-static u64 pointer_size(u64 ptr);
 
 #ifdef VM_DEBUG_INFO
 static void pointer_dump(struct pointer* ptr);
@@ -247,18 +246,6 @@ static u64 pointer_pop(void) {
     return (u64)list->pop(&base->list);
 }
 
-static u64 pointer_size(u64 ptr) {
-    if (ptr == 0) {
-        return 0;
-    }
-    const struct pointer* data_ptr = vm->read(ptr);
-    if (data_ptr == 0) {
-        return 0;
-    }
-    u64 size = data_ptr->size;
-    return size;
-}
-
 #ifdef VM_DEBUG_INFO
 static void pointer_dump(struct pointer* ptr) {
     if (ptr == 0) {
@@ -300,7 +287,6 @@ const struct pointer_methods pointer_methods_definition = {
     .dump = pointer_dump,
     .dump_ref = pointer_dump_ref,
 #endif
-    .size = pointer_size,
 #ifdef USE_GC
     .gc = pointer_gc
 #endif

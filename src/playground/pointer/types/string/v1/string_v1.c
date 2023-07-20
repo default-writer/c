@@ -36,6 +36,7 @@ static u64 string_getcwd(void);
 static void string_printf(u64 ptr);
 static void string_put_char(u64 ptr, char value);
 static char* string_unsafe(u64 ptr);
+static u64 string_size(u64 ptr);
 
 /* implementation*/
 
@@ -279,6 +280,18 @@ static char* string_unsafe(u64 ptr) {
     return data;
 }
 
+static u64 string_size(u64 ptr) {
+    if (ptr == 0) {
+        return 0;
+    }
+    const struct pointer* data_ptr = vm->read(ptr);
+    if (data_ptr == 0) {
+        return 0;
+    }
+    u64 size = data_ptr->size;
+    return size;
+}
+
 static const struct vm_type type_definition = {
     .free = string_free
 };
@@ -291,6 +304,7 @@ static void INIT init() {
 /* public */
 const struct string_methods string_methods_definition = {
     .alloc = string_alloc,
+    .free = string_free,
     .copy = string_copy,
     .strcpy = string_strcpy,
     .strcat = string_strcat,
@@ -300,7 +314,7 @@ const struct string_methods string_methods_definition = {
     .printf = string_printf,
     .put_char = string_put_char,
     .unsafe = string_unsafe,
-    .free = string_free
+    .size = string_size
 };
 
 #ifndef ATTRIBUTE

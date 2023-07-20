@@ -124,6 +124,18 @@ static u64 list_pop(u64 ptr) {
     return data;
 }
 
+static u64 list_size(u64 ptr) {
+    if (ptr == 0) {
+        return 0;
+    }
+    const struct pointer* data_ptr = vm->read(ptr);
+    if (data_ptr == 0) {
+        return 0;
+    }
+    u64 size = data_ptr->size;
+    return size;
+}
+
 static const struct vm_type type_definition = {
     .free = list_free
 };
@@ -139,7 +151,8 @@ const struct list_methods list_methods_definition = {
     .free = list_free,
     .push = list_push,
     .peek = list_peek,
-    .pop = list_pop
+    .pop = list_pop,
+    .size = list_size
 };
 
 #ifndef ATTRIBUTE

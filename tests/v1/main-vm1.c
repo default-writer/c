@@ -66,7 +66,7 @@ extern inline void source2(void) {
     u64 f_ptr = file->alloc(file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
         u64 data_ptr = file->data(f_ptr);
-        u64 size = pointer->size(data_ptr);
+        u64 size = data->size(data_ptr);
         if (size > 100) {
             size = 100;
         }

@@ -200,22 +200,23 @@ static void vm_dump_ref(void) {
 #endif
 
 static struct pointer* vm_free(u64 address) {
+    if (!address) {
+        return 0;
+    }
     struct pointer* data = 0;
-    if (address != 0) {
-        struct pointer** ptr = vm_read_internal(address);
-        if (ptr != 0) {
+    struct pointer** ptr = vm_read_internal(address);
+    if (ptr != 0) {
+        data = *ptr;
 #ifndef USE_GC
-            struct vm_pointer* vm_ptr = global_alloc(VM_POINTER_SIZE);
-            vm_ptr->ptr = ptr;
-            vm_ptr->vm = (*ptr)->vm;
-            list->push(cache, vm_ptr);
+        struct vm_pointer* vm_ptr = global_alloc(VM_POINTER_SIZE);
+        vm_ptr->ptr = ptr;
+        vm_ptr->vm = data->vm;
+        list->push(cache, vm_ptr);
 #endif
-            data = *ptr;
 #ifdef VM_DEBUG_INFO
-            printf("  >-: %016llx : %016llx > %016llx\n", address, (u64)data, (u64)ptr);
+        printf("  >-: %016llx ! %016llx > %016llx\n", address, (u64)data, (u64)ptr);
 #endif
-            *ptr = 0;
-        }
+        *ptr = 0;
     }
     return data;
 }
@@ -227,7 +228,7 @@ static struct pointer* vm_read(u64 address) {
         if (ptr != 0) {
             data = *ptr;
 #ifdef VM_DEBUG_INFO
-            printf("  <v: %016llx : %016llx > %016llx\n", address, (u64)data, (u64)ptr);
+            printf("  <v: %016llx ! %016llx > %016llx\n", address, (u64)data, (u64)ptr);
 #endif
         }
     }
@@ -238,13 +239,11 @@ static u64 vm_write(struct pointer* data) {
     u64 address = 0;
     struct vm_data* target = 0;
     struct pointer** ptr = vm_alloc_internal(&address, &target);
-    if (ptr != 0) {
-        *ptr = data;
-        data->vm = target;
+    *ptr = data;
+    data->vm = target;
 #ifdef VM_DEBUG_INFO
-        printf("  >v: %016llx : %016llx > %016llx\n", address, (u64)data, (u64)ptr);
+    printf("  >v: %016llx ! %016llx > %016llx\n", address, (u64)data, (u64)ptr);
 #endif
-    }
     return address;
 }
 

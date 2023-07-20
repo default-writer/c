@@ -4,10 +4,20 @@
 #include "playground/memory/memory.h"
 #endif
 
-#ifdef USE_MEMORY_DEBUG_INFO
 static u64 total_alloc = 0;
+static u64 maximum_used = 0;
 static u64 total_free = 0;
-#endif
+
+static struct memory_info memory_info;
+const struct memory_info* base = &memory_info;
+
+const struct memory_info* global_memory_info(void) {
+    memory_info.used_memory = total_alloc - total_free;
+    memory_info.maximum_used = memory_info.used_memory > memory_info.maximum_used ? memory_info.used_memory : memory_info.maximum_used;
+    memory_info.free_memory = total_free;
+    memory_info.allocated_memory = total_alloc;
+    return base;
+}
 
 void* global_alloc(u64 size) {
     void* ptr = 0;
@@ -19,7 +29,8 @@ void* global_alloc(u64 size) {
 #endif
 #ifdef USE_MEMORY_DEBUG_INFO
         total_alloc += size;
-        printf("   +: %016llx ! %16lld . %16lld : %16lld\n", (u64)ptr, size, total_free, total_alloc);
+        const struct memory_info* memory = global_memory_info();
+        printf("   +: %016llx ! %16lld . %16lld : %16lld : %16lld : %16lld\n", (u64)ptr, size, memory->maximum_used, memory->used_memory, memory->free_memory, memory->allocated_memory);
 #endif
     }
     return ptr;
@@ -32,7 +43,8 @@ void global_free(void* ptr, u64 size) {
 #endif
 #ifdef USE_MEMORY_DEBUG_INFO
         total_free += size;
-        printf("   -: %016llx ! %16lld . %16lld : %16lld\n", (u64)ptr, size, total_free, total_alloc);
+        const struct memory_info* memory = global_memory_info();
+        printf("   -: %016llx ! %16lld . %16lld : %16lld : %16lld : %16lld\n", (u64)ptr, size, memory->maximum_used, memory->used_memory, memory->free_memory, memory->allocated_memory);
 #endif
 #ifdef USE_MEMORY_ALLOC
         memory_free(ptr, size);
@@ -44,7 +56,8 @@ void global_free(void* ptr, u64 size) {
 
 #ifdef USE_MEMORY_DEBUG_INFO
 void global_statistics(void) {
-    printf("   !: %16lld : %16lld\n", total_free, total_alloc);
+    const struct memory_info* memory = global_memory_info();
+    printf("   .: %16s ! %16lld . %16lld : %16lld : %16lld : %16lld\n", "", (u64)0, memory->maximum_used, memory->used_memory, memory->free_memory, memory->allocated_memory);
 }
 #endif
 
@@ -53,9 +66,10 @@ void* global_realloc(void* old_ptr, u64 size, u64 new_size) {
     if (ptr != 0 && new_size > size) {
         ptr = realloc(ptr, new_size);
 #ifdef USE_MEMORY_DEBUG_INFO
-        printf("   -: %016llx ! %16lld . %16lld : %16lld\n", (u64)old_ptr, size, total_free, total_alloc);
+        const struct memory_info* memory = global_memory_info();
+        printf("   -: %016llx ! %16lld . %16lld : %16lld : %16lld : %16lld\n", (u64)ptr, size, memory->maximum_used, memory->used_memory, memory->free_memory, memory->allocated_memory);
         total_alloc += new_size - size;
-        printf("   +: %016llx ! %16lld . %16lld : %16lld\n", (u64)ptr, size, total_free, total_alloc);
+        printf("   +: %016llx ! %16lld . %16lld : %16lld : %16lld : %16lld\n", (u64)ptr, size, memory->maximum_used, memory->used_memory, memory->free_memory, memory->allocated_memory);
 #endif
     }
     return ptr;

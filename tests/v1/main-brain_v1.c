@@ -5,6 +5,7 @@
 #include "playground/pointer/types/data/v1/data_v1.h"
 #include "playground/pointer/types/file/v1/file_v1.h"
 #include "playground/pointer/types/list/v1/list_v1.h"
+#include "playground/pointer/types/object/v1/object_v1.h"
 #include "playground/pointer/types/string/v1/string_v1.h"
 #include "playground/pointer/v1/pointer_v1.h"
 
@@ -23,12 +24,14 @@ extern const struct list_methods list_methods_definition;
 extern const struct file_methods file_methods_definition;
 extern const struct string_methods string_methods_definition;
 extern const struct data_methods data_methods_definition;
+extern const struct object_methods object_methods_definition;
 
 const struct pointer_methods* pointer = &pointer_methods_definition;
 const struct list_methods* list = &list_methods_definition;
 const struct file_methods* file = &file_methods_definition;
 const struct string_methods* string = &string_methods_definition;
 const struct data_methods* data = &data_methods_definition;
+const struct object_methods* object = &object_methods_definition;
 
 typedef struct test_data {
     struct pointer_data* ctx;
@@ -117,6 +120,188 @@ RX_TEST_CASE(tests, test_strcat_load_alloc, .fixture = test_fixture) {
     RX_ASSERT(pattern_ptr != 0);
     string->free(char_ptr);
     string->free(pattern_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_string_size, .fixture = test_fixture) {
+    u64 char_ptr = string->load("/");
+    u64 pattern_ptr = string->alloc();
+    u64 string_size = data->size(pattern_ptr);
+    RX_ASSERT(string_size == 0);
+    RX_ASSERT(char_ptr != 0);
+    RX_ASSERT(pattern_ptr != 0);
+    string->free(char_ptr);
+    string->free(pattern_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_pointer_size_0, .fixture = test_fixture) {
+    u64 char_ptr = string->load("/");
+    u64 pattern_ptr = string->alloc();
+    u64 string_size = string->size(0);
+    RX_ASSERT(string_size == 0);
+    RX_ASSERT(char_ptr != 0);
+    RX_ASSERT(pattern_ptr != 0);
+    string->free(char_ptr);
+    string->free(pattern_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_pointer_size_empty, .fixture = test_fixture) {
+    u64 char_ptr = string->load(" ");
+    u64 pattern_ptr = string->alloc();
+    u64 string_size = string->size(char_ptr);
+    RX_ASSERT(string_size == 2);
+    RX_ASSERT(char_ptr != 0);
+    RX_ASSERT(pattern_ptr != 0);
+    string->free(char_ptr);
+    string->free(pattern_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_pointer_size_object, .fixture = test_fixture) {
+    u64 object_ptr = object->alloc(1);
+    u64 pattern_ptr = string->alloc();
+    u64 object_size = object->size(object_ptr);
+    RX_ASSERT(object_size == 1);
+    RX_ASSERT(object_ptr != 0);
+    RX_ASSERT(pattern_ptr != 0);
+    string->free(object_ptr);
+    string->free(pattern_ptr);
+    object->free(object_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_object_0, .fixture = test_fixture) {
+    u64 object_ptr = object->alloc(0);
+    u64 pattern_ptr = string->alloc();
+    u64 object_size = object->size(object_ptr);
+    RX_ASSERT(object_size == 0);
+    RX_ASSERT(object_ptr == 0);
+    RX_ASSERT(pattern_ptr != 0);
+    string->free(object_ptr);
+    string->free(pattern_ptr);
+    object->free(object_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_object_alloc_0, .fixture = test_fixture) {
+    u64 object_ptr = object->alloc(0);
+    u64 pattern_ptr = string->alloc();
+    u64 object_size = object->size(object_ptr);
+    RX_ASSERT(object_size == 0);
+    RX_ASSERT(object_ptr == 0);
+    RX_ASSERT(pattern_ptr != 0);
+    string->free(object_ptr);
+    string->free(pattern_ptr);
+    object->free(object_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_object_load_0, .fixture = test_fixture) {
+    u64 object_ptr = object->load(0, 0x01234567);
+    u64 pattern_ptr = string->alloc();
+    u64 object_size = object->size(object_ptr);
+    RX_ASSERT(object_size == 0);
+    RX_ASSERT(object_ptr == 0);
+    RX_ASSERT(pattern_ptr != 0);
+    string->free(object_ptr);
+    string->free(pattern_ptr);
+    object->free(object_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_object_load_string_0, .fixture = test_fixture) {
+    const char* test_data = "Hello, world!";
+    const void* ptr = (const void*)test_data;
+    u64 object_ptr = object->load(ptr, 0);
+    u64 pattern_ptr = string->alloc();
+    u64 object_size = object->size(object_ptr);
+    RX_ASSERT(object_size == 0);
+    RX_ASSERT(object_ptr == 0);
+    RX_ASSERT(pattern_ptr != 0);
+    string->free(object_ptr);
+    string->free(pattern_ptr);
+    object->free(object_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_object_load_string, .fixture = test_fixture) {
+    const char* test_data = "Hello, world!";
+    const void* ptr = (const void*)test_data;
+    u64 object_ptr = object->load(ptr, strlen(ptr));
+    u64 pattern_ptr = string->alloc();
+    u64 object_size = object->size(object_ptr);
+    RX_ASSERT(object_size == strlen(ptr));
+    RX_ASSERT(object_ptr != 0);
+    RX_ASSERT(pattern_ptr != 0);
+    string->free(object_ptr);
+    string->free(pattern_ptr);
+    object->free(object_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_object_load_string_unsafe_alloc_0, .fixture = test_fixture) {
+    u64 object_ptr = object->alloc(0);
+    u64 pattern_ptr = string->alloc();
+    u64 object_size = object->size(object_ptr);
+    const char* ch = (char*)object->unsafe(object_ptr);
+    RX_ASSERT(ch == 0);
+    RX_ASSERT(object_size == 0);
+    RX_ASSERT(object_ptr == 0);
+    RX_ASSERT(pattern_ptr != 0);
+    string->free(object_ptr);
+    string->free(pattern_ptr);
+    object->free(object_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_object_load_string_unsafe_string, .fixture = test_fixture) {
+    u64 object_ptr = object->alloc(0);
+    u64 pattern_ptr = string->alloc();
+    u64 object_size = object->size(object_ptr);
+    const char* ch = (char*)object->unsafe(pattern_ptr);
+    RX_ASSERT(ch == 0);
+    RX_ASSERT(object_size == 0);
+    RX_ASSERT(object_ptr == 0);
+    RX_ASSERT(pattern_ptr != 0);
+    string->free(object_ptr);
+    string->free(pattern_ptr);
+    object->free(object_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_object_load_string_unsafe_0, .fixture = test_fixture) {
+    const char* test_data = "Hello, world!";
+    const void* ptr = (const void*)test_data;
+    u64 object_ptr = object->load(ptr, strlen(ptr));
+    u64 pattern_ptr = string->alloc();
+    u64 object_size = object->size(object_ptr);
+    const char* ch = (char*)object->unsafe(0);
+    RX_ASSERT(ch == 0);
+    RX_ASSERT(object_size == strlen(ptr));
+    RX_ASSERT(object_ptr != 0);
+    RX_ASSERT(pattern_ptr != 0);
+    string->free(object_ptr);
+    string->free(pattern_ptr);
+    object->free(object_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_object_load_string_unsafe, .fixture = test_fixture) {
+    const char* test_data = "Hello, world!";
+    const void* ptr = (const void*)test_data;
+    u64 object_ptr = object->load(ptr, strlen(ptr));
+    u64 pattern_ptr = string->alloc();
+    u64 object_size = object->size(object_ptr);
+    char* ch = (char*)object->unsafe(object_ptr);
+    *ch = 'Z';
+    RX_ASSERT(object_size == strlen(ptr));
+    RX_ASSERT(object_ptr != 0);
+    RX_ASSERT(pattern_ptr != 0);
+    string->free(object_ptr);
+    string->free(pattern_ptr);
+    object->free(object_ptr);
 }
 
 /* test init */
@@ -314,6 +499,10 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     RX_ASSERT(data_ptr3 != 0);
     RX_ASSERT(data_ptr4 == 0);
 
+    u64 undefined_ptr = string->copy(list_ptr);
+
+    RX_ASSERT(undefined_ptr == 0);
+
     string->free(null_ptr);
     string->free(zero_ptr);
     string->free(string_ptr);
@@ -488,6 +677,16 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixtur
     string->free(file_path_ptr);
 }
 
+RX_TEST_CASE(tests, test_load_load_match_last, .fixture = test_fixture) {
+    u64 str_ptr = string->load("Hello, world!");
+    u64 ch_ptr = string->load("z");
+    u64 last_match_ptr = string->match_last(str_ptr, ch_ptr);
+    string->free(last_match_ptr);
+    string->free(str_ptr);
+    string->free(ch_ptr);
+    RX_ASSERT(last_match_ptr == 0);
+}
+
 extern inline void source1(void) {
     u64 file_path_ptr = pointer->pop();
     u64 file_name_ptr = string->load("/input.txt");
@@ -517,7 +716,7 @@ extern inline void source2(void) {
     u64 f_ptr = file->alloc(file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
         u64 data_ptr = file->data(f_ptr);
-        u64 size = pointer->size(data_ptr);
+        u64 size = data->size(data_ptr);
         if (size > 100) {
             size = 100;
         }
