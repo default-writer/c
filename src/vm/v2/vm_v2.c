@@ -1,4 +1,4 @@
-#include "playground/vm/v2/vm_v2.h"
+#include "vm/v2/vm_v2.h"
 #include "common/alloc.h"
 #include "list-micro/data.h"
 #include "playground/pointer/v2/pointer_v2.h"

@@ -1,7 +1,7 @@
 #include "playground/pointer/v1/pointer_v1.h"
 #include "common/alloc.h"
 #include "list-micro/data.h"
-#include "playground/vm/v1/vm_v1.h"
+#include "vm/v1/vm_v1.h"
 
 #define DEFAULT_SIZE 0x100
 #define POINTER_SIZE sizeof(struct pointer)
