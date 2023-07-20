@@ -1,7 +1,7 @@
 #ifndef _POINTER_TYPES_FILE_H_
 #define _POINTER_TYPES_FILE_H_
 
-#include "playground/pointer/types/data/v1/data_v1.h"
+#include "pointer/types/data/v1/data_v1.h"
 #include "std/common.h"
 
 struct file_methods {

@@ -2,12 +2,12 @@
 #include "list-micro/data.h"
 #include "playground/brain/brain.h"
 #include "playground/hashtable/v1/hashtable_v1.h"
-#include "playground/pointer/types/data/v1/data_v1.h"
-#include "playground/pointer/types/file/v1/file_v1.h"
-#include "playground/pointer/types/list/v1/list_v1.h"
-#include "playground/pointer/types/object/v1/object_v1.h"
-#include "playground/pointer/types/string/v1/string_v1.h"
-#include "playground/pointer/v1/pointer_v1.h"
+#include "pointer/types/data/v1/data_v1.h"
+#include "pointer/types/file/v1/file_v1.h"
+#include "pointer/types/list/v1/list_v1.h"
+#include "pointer/types/object/v1/object_v1.h"
+#include "pointer/types/string/v1/string_v1.h"
+#include "pointer/v1/pointer_v1.h"
 
 #include "rexo/include/rexo.h"
 

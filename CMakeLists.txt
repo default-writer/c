@@ -204,8 +204,8 @@ set(LIB_MEMORY3_SOURCE
 set(LIB_MEMORY4_SOURCE
     src/playground/memory/v6/memory_v6.c)
 set(LIB_BRAIN_SOURCE src/playground/brain/brain.c)
-set(LIB_POINTER1_SOURCE src/playground/pointer/v1/pointer_v1.c)
-set(LIB_POINTER2_SOURCE src/playground/pointer/v2/pointer_v2.c)
+set(LIB_POINTER1_SOURCE src/pointer/v1/pointer_v1.c)
+set(LIB_POINTER2_SOURCE src/pointer/v2/pointer_v2.c)
 set(LIB_MEMORY_LIST1_SOURCE src/playground/memory/list/v1/memory_list_v1.c)
 set(LIB_MEMORY_LIST2_SOURCE src/playground/memory/list/v2/memory_list_v2.c)
 set(LIB_MEMORY_LIST3_SOURCE src/playground/memory/list/v3/memory_list_v3.c)
@@ -213,17 +213,17 @@ set(LIB_MEMORY_REF1_SOURCE src/memory/v1/ref_v1.c)
 set(LIB_MEMORY_REF2_SOURCE src/memory/v2/ref_v2.c)
 set(LIB_MEMORY_REF3_SOURCE src/memory/v3/ref_v3.c)
 set(LIB_CLASS_SOURCE src/class/class.c)
-set(LIB_STD_DATA1_SOURCE src/playground/pointer/types/data/v1/data_v1.c)
-set(LIB_STD_LIST1_SOURCE src/playground/pointer/types/list/v1/list_v1.c)
-set(LIB_STD_FILE1_SOURCE src/playground/pointer/types/file/v1/file_v1.c)
-set(LIB_STD_STRING1_SOURCE src/playground/pointer/types/string/v1/string_v1.c)
-set(LIB_STD_OBJECT1_SOURCE src/playground/pointer/types/object/v1/object_v1.c)
+set(LIB_STD_DATA1_SOURCE src/pointer/types/data/v1/data_v1.c)
+set(LIB_STD_LIST1_SOURCE src/pointer/types/list/v1/list_v1.c)
+set(LIB_STD_FILE1_SOURCE src/pointer/types/file/v1/file_v1.c)
+set(LIB_STD_STRING1_SOURCE src/pointer/types/string/v1/string_v1.c)
+set(LIB_STD_OBJECT1_SOURCE src/pointer/types/object/v1/object_v1.c)
 set(LIB_STD_TYPES1_SOURCE
-    src/playground/pointer/types/data/v1/data_v1.c
-    src/playground/pointer/types/list/v1/list_v1.c
-    src/playground/pointer/types/file/v1/file_v1.c
-    src/playground/pointer/types/string/v1/string_v1.c
-    src/playground/pointer/types/object/v1/object_v1.c)
+    src/pointer/types/data/v1/data_v1.c
+    src/pointer/types/list/v1/list_v1.c
+    src/pointer/types/file/v1/file_v1.c
+    src/pointer/types/string/v1/string_v1.c
+    src/pointer/types/object/v1/object_v1.c)
 set(LIB_LINKED_LIST_SOURCE
     src/stl/linked_list.c
     src/stl/linked_list_enumerator.c

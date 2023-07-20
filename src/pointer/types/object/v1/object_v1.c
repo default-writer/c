@@ -1,7 +1,7 @@
-#include "playground/pointer/types/object/v1/object_v1.h"
+#include "pointer/types/object/v1/object_v1.h"
 #include "common/alloc.h"
 #include "list-micro/data.h"
-#include "playground/pointer/v1/pointer_v1.h"
+#include "pointer/v1/pointer_v1.h"
 #include "vm/v1/vm_v1.h"
 
 #define DEFAULT_SIZE 0x100

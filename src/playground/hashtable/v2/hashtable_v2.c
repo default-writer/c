@@ -2,7 +2,7 @@
 #include "common/alloc.h"
 #include "common/lcg.h"
 #include "playground/list/v2/list_v2.h"
-#include "playground/pointer/v2/pointer_v2.h"
+#include "pointer/v2/pointer_v2.h"
 
 /* macros */
 #define DEFAULT_SIZE 101
