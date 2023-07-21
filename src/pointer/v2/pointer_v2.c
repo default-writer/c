@@ -6,7 +6,7 @@
 #define DEFAULT_SIZE 0x100
 
 /* definition */
-extern const struct vm vm_definition;
+extern const struct vm_methods vm_methods_definition;
 extern const struct list list_micro_definition;
 
 /* private */
@@ -28,7 +28,7 @@ static struct pointer_data pointer;
 static struct pointer_data* base = &pointer;
 
 /* definition */
-static const struct vm* vm = &vm_definition;
+static const struct vm_methods* vm = &vm_methods_definition;
 static const struct list* list = &list_micro_definition;
 
 struct file_handler {

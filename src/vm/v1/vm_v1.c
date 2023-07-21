@@ -4,7 +4,7 @@
 #include "pointer/v1/pointer_v1.h"
 
 /* macros */
-#define DEFAULT_SIZE 0x0 /* 0 */
+#define DEFAULT_SIZE 0x8 /* 8 */
 #define PTR_SIZE sizeof(void*) /* size of a pointer */
 #define VM_DATA_SIZE sizeof(struct vm_data)
 #define ALLOC_SIZE(size) (size * PTR_SIZE)
@@ -26,8 +26,14 @@ static const struct list* list = &list_micro_definition;
 static struct list_data** cache;
 #endif
 static struct vm_data* vm_data;
-static struct vm_data* first = 0;
-static struct vm_data* last = 0;
+static struct vm_data* head = 0;
+static struct vm_data* tail = 0;
+
+struct vm {
+    struct vm_data* head;
+    struct vm_data* tail;
+};
+
 extern const struct pointer_methods pointer_methods_definition;
 static const struct pointer_methods* pointer = &pointer_methods_definition;
 
@@ -56,8 +62,8 @@ static struct vm_state* state = &vm_state;
 
 /* api */
 
-static void vm_init(u64 size);
-static void vm_destroy(void);
+static struct vm* vm_init(u64 size);
+static void vm_destroy(struct vm**);
 #ifdef VM_DEBUG_INFO
 static void vm_dump(void);
 static void vm_dump_ref(void);
@@ -91,7 +97,7 @@ static struct vm_data* vm_init_internal(u64 size, u64 offset) {
 
 static struct pointer** vm_read_internal(u64 address) {
     struct pointer** ptr = 0;
-    const struct vm_data* vm = first;
+    const struct vm_data* vm = head;
     do {
         if (address > vm->offset && address <= vm->offset + vm->size) {
             ptr = vm->bp + address - vm->offset - 1;
@@ -103,7 +109,7 @@ static struct pointer** vm_read_internal(u64 address) {
 }
 
 static struct pointer** vm_alloc_internal(u64* address, struct vm_data** target) {
-    struct vm_data* vm = last;
+    struct vm_data* vm = tail;
     struct pointer** ptr = 0;
 #ifndef USE_GC
     struct vm_pointer* vm_ptr = list->pop(cache);
@@ -119,7 +125,7 @@ static struct pointer** vm_alloc_internal(u64* address, struct vm_data** target)
             vm = vm_init_internal(vm->size, vm->offset + vm->size);
             vm->prev = prev;
             prev->next = vm;
-            last = vm;
+            tail = vm;
         }
         ptr = vm->sp;
         ++vm->sp;
@@ -133,7 +139,7 @@ static struct pointer** vm_alloc_internal(u64* address, struct vm_data** target)
 
 #ifdef VM_DEBUG_INFO
 static void vm_enumerator_init_internal(void) {
-    struct vm_data* vm = first;
+    struct vm_data* vm = head;
     state->vm = vm;
     state->ptr = vm->bp;
 }
@@ -146,17 +152,28 @@ static void vm_enumerator_destroy_internal(void) {
 
 /* implementation */
 
-static void vm_init(u64 size) {
+static struct vm* vm_init(u64 size) {
 #ifndef USE_GC
     cache = global_alloc(PTR_SIZE);
     list->init(cache);
 #endif
-    vm_data = vm_init_internal(size, 0);
-    first = vm_data;
-    last = vm_data;
+    vm_data = vm_init_internal(size == 0 ? DEFAULT_SIZE : size, 0);
+    head = vm_data;
+    tail = vm_data;
+    struct vm* vm = global_alloc(sizeof(struct vm));
+    vm->head = vm_data;
+    vm->tail = vm_data;
+    return vm;
 }
 
-static void vm_destroy(void) {
+static void vm_destroy(struct vm** ptr) {
+    if (ptr != 0 && *ptr != 0) {
+        struct vm* current = *ptr;
+        head = current->head;
+        tail = current->tail;
+        global_free(current, sizeof(struct vm));
+        *ptr = 0;
+    }
 #ifndef USE_GC
     struct vm_pointer* vm_ptr = 0;
     while ((vm_ptr = list->pop(cache)) != 0) {
@@ -168,15 +185,15 @@ static void vm_destroy(void) {
     cache = 0;
 #endif
 #endif
-    struct vm_data* vm = first;
+    struct vm_data* vm = head;
     while (vm != 0) {
         struct vm_data* next = vm->next;
         global_free(vm->bp, ALLOC_SIZE(vm->size));
         global_free(vm, VM_DATA_SIZE);
         vm = next;
     }
-    first = 0;
-    last = 0;
+    head = 0;
+    tail = 0;
 }
 
 #ifdef VM_DEBUG_INFO
@@ -236,6 +253,9 @@ static struct pointer* vm_read(u64 address) {
 }
 
 static u64 vm_write(struct pointer* data) {
+    if (!data) {
+        return 0;
+    }
     u64 address = 0;
     struct vm_data* target = 0;
     struct pointer** ptr = vm_alloc_internal(&address, &target);
@@ -285,7 +305,7 @@ static void* vm_data_enumerator_next_ref(void) {
 
 /* public */
 
-const struct vm vm_definition = {
+const struct vm_methods vm_methods_definition = {
     .init = vm_init,
     .destroy = vm_destroy,
     .free = vm_free,

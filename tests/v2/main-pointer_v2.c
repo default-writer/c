@@ -8,7 +8,7 @@
 #define DEFAULT_SIZE 0x8
 
 /* definition */
-extern const struct vm vm_definition;
+extern const struct vm_methods vm_methods_definition;
 extern const struct list list_micro_definition;
 
 extern const struct pointer_methods pointer_methods_definition;

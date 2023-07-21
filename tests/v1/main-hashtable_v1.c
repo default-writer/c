@@ -18,7 +18,7 @@
 extern void pointer_ctx_init(struct pointer_data** ctx, u64 size);
 extern void pointer_ctx_destroy(struct pointer_data** ctx);
 
-extern const struct vm vm_definition;
+extern const struct vm_methods vm_methods_definition;
 
 extern const struct hashtable hashtable_definition_v1;
 extern const struct pointer_methods pointer_methods_definition;

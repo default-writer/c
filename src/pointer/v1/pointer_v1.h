@@ -18,6 +18,7 @@ enum type {
     TYPE_OBJECT = 5,
 };
 
+struct vm_data;
 struct list_data;
 
 /* private */

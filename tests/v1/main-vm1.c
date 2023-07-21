@@ -10,6 +10,9 @@
 
 #include "../tests/src/test.h"
 
+extern const struct test_suite vm_v1_test_suite_definition;
+static const struct test_suite* vm_v1_tests = &vm_v1_test_suite_definition;
+
 extern const struct test_suite list_micro_test_suite_definition;
 static const struct test_suite* list_micro_tests = &list_micro_test_suite_definition;
 
@@ -19,7 +22,7 @@ static const struct test_suite* list_alloc_tests = &list_alloc_test_suite_defini
 #define DEFAULT_SIZE 0x100
 
 /* definition */
-extern const struct vm vm_definition;
+extern const struct vm_methods vm_methods_definition;
 
 extern const struct pointer_methods pointer_methods_definition;
 extern const struct list_methods list_methods_definition;
@@ -109,8 +112,9 @@ int main(int argc, char** argv) {
 #ifndef ATTRIBUTE
     init();
 #endif
-    int result_alloc = list_alloc_tests->run();
-    int result_micro = list_micro_tests->run();
+    int alloc = list_alloc_tests->run();
+    int micro = list_micro_tests->run();
+    int vm_v1 = vm_v1_tests->run();
     CLEAN(argc)
     pointer->init(DEFAULT_SIZE);
     u64 argv_ptr = string->load(argv[0]);
@@ -122,5 +126,5 @@ int main(int argc, char** argv) {
 #ifndef ATTRIBUTE
     destroy();
 #endif
-    return result_alloc | result_micro;
+    return alloc | micro | vm_v1;
 }

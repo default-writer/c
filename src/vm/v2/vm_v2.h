@@ -5,7 +5,7 @@
 
 struct vm_data;
 
-struct vm {
+struct vm_methods {
     void (*init)(struct vm_data** current, u64 size);
     void (*destroy)(struct vm_data** current);
     struct pointer* (*free)(struct vm_data** current, u64 address);

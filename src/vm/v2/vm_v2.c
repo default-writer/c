@@ -270,7 +270,7 @@ static void** vm_data_enumerator_next_ref(void) {
 
 /* public */
 
-const struct vm vm_definition = {
+const struct vm_methods vm_methods_definition = {
     .init = vm_init,
     .destroy = vm_destroy,
     .free = vm_free,

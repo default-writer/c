@@ -13,14 +13,14 @@ void data_init();
 /* definition */
 extern void pointer_vm_register_type(const struct vm_type* type);
 extern struct pointer_data vm_pointer;
-extern const struct vm vm_definition;
+extern const struct vm_methods vm_methods_definition;
 extern const struct list list_micro_definition;
-extern const struct pointer_vm_methods vm_methods_definition;
+extern const struct pointer_vm_methods pointer_vm_methods_definition;
 
 /* definition */
-static const struct vm* vm = &vm_definition;
+static const struct vm_methods* vm = &vm_methods_definition;
 static const struct list* list = &list_micro_definition;
-static const struct pointer_vm_methods* pointer = &vm_methods_definition;
+static const struct pointer_vm_methods* pointer = &pointer_vm_methods_definition;
 static struct pointer_data* base = &vm_pointer;
 static const struct vm_type type_definition;
 

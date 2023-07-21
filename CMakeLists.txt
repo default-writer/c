@@ -228,10 +228,26 @@ set(LIB_LINKED_LIST_SOURCE
     src/stl/linked_list.c
     src/stl/linked_list_enumerator.c
     src/stl/linked_list_static_enumerator.c)
+
+# test
+set(TEST_HASHES_SOURCE tests/test-hashes.c)
+set(TEST_LINKED_LIST_SOURCE tests/main-linked-list.c)
+set(TEST_LINKED_LIST_STATIC_ENUMERATOR_SOURCE tests/main-linked-list-static-enumerator.c)
+set(TEST_STRUCTS1_SOURCE tests/structs/v1/main-structs_v1.c)
+set(TEST_STRUCTS2_SOURCE tests/structs/v2/main-structs_v2.c)
+set(TEST_STRUCTS3_SOURCE tests/structs/v3/main-structs_v3.c)
+set(TEST_STRUCTS3_LIB_SOURCE tests/structs/v3/A.c tests/structs/v3/B.c)
+
 set(TESTS_SRC_LIST tests/src/list/list.c)
 set(TESTS_SRC_LIST_MICRO tests/src/list-micro/list-micro.c)
 set(TESTS_SRC_LIST_ALLOC tests/src/list-alloc/list-alloc.c)
 set(TESTS_SRC_LIST_EXPERIMENTAL tests/src/list-experimental/list-experimental.c)
+set(TESTS_SRC_VM_V1 tests/src/vm/vm_v1.c)
+
+# gtk
+set(GTK_EXPERIMENT src/ui/gtk-experiment.c)
+
+# main
 set(MAIN_STANDARD_SOURCE tests/main-default.c)
 set(MAIN_LIGHT_SOURCE tests/main-light.c ${LIB_LIGHT_SOURCE})
 set(MAIN_MICRO_SOURCE tests/main-micro.c)
@@ -252,23 +268,21 @@ set(MAIN_HASHTABLE2_SOURCE tests/v2/main-hashtable_v2.c)
 set(MAIN_VM1_SOURCE tests/v1/main-vm1.c)
 set(MAIN_VM2_SOURCE tests/v2/main-vm2.c)
 set(MAIN_ZEN_SOURCE src/playground/zen/zen.c)
-set(GTK_EXPERIMENT src/ui/gtk-experiment.c)
-set(TEST_HASHES_SOURCE tests/test-hashes.c)
-set(TEST_LINKED_LIST_SOURCE tests/main-linked-list.c)
-set(TEST_LINKED_LIST_STATIC_ENUMERATOR_SOURCE tests/main-linked-list-static-enumerator.c)
-set(TEST_STRUCTS1_SOURCE tests/structs/v1/main-structs_v1.c)
-set(TEST_STRUCTS2_SOURCE tests/structs/v2/main-structs_v2.c)
-set(TEST_STRUCTS3_SOURCE tests/structs/v3/main-structs_v3.c)
-set(TEST_STRUCTS3_LIB_SOURCE tests/structs/v3/A.c tests/structs/v3/B.c)
+set(MAIN_TESTS_VM1_SOURCE tests/v1/main-tests-vm1.c)
+
 
 include_directories(.deps)
 include_directories(src)
 
+# test
 add_library(tests STATIC
     ${TESTS_SRC_LIST}
     ${TESTS_SRC_LIST_ALLOC}
     ${TESTS_SRC_LIST_EXPERIMENTAL}
     ${TESTS_SRC_LIST_MICRO})
+add_library(tests-vm-v1 STATIC ${TESTS_SRC_VM_V1})
+
+# all
 add_library(list-v1 STATIC ${LIB_LIST1_SOURCE})
 add_library(list-v2 STATIC ${LIB_LIST2_SOURCE})
 add_library(vm-v1 STATIC ${LIB_VM1_SOURCE})
@@ -308,6 +322,13 @@ add_library(std-string1 SHARED ${LIB_STD_STRING1_SOURCE})
 add_library(std-data1 SHARED ${LIB_STD_DATA1_SOURCE})
 add_library(std-object1 SHARED ${LIB_STD_OBJECT1_SOURCE})
 
+# test
+add_executable(test-hashes ${TEST_HASHES_SOURCE})
+
+# gtk
+add_executable(gtk-experiment ${GTK_EXPERIMENT})
+
+# main 
 add_executable(main-default ${MAIN_STANDARD_SOURCE})
 add_executable(main-light ${MAIN_LIGHT_SOURCE})
 add_executable(main-micro ${MAIN_MICRO_SOURCE})
@@ -328,14 +349,16 @@ add_executable(main-hashtable2 ${MAIN_HASHTABLE2_SOURCE})
 add_executable(main-vm1 ${MAIN_VM1_SOURCE})
 add_executable(main-vm2 ${MAIN_VM2_SOURCE})
 add_executable(main-zen ${MAIN_ZEN_SOURCE})
-add_executable(gtk-experiment ${GTK_EXPERIMENT})
-add_executable(test-hashes ${TEST_HASHES_SOURCE})
 add_executable(main-linked-list ${TEST_LINKED_LIST_SOURCE})
 add_executable(main-linked-list-static-enumerator ${TEST_LINKED_LIST_STATIC_ENUMERATOR_SOURCE})
 add_executable(main-structs1 ${TEST_STRUCTS1_SOURCE})
 add_executable(main-structs2 ${TEST_STRUCTS2_SOURCE})
 add_executable(main-structs3 ${TEST_STRUCTS3_SOURCE})
+add_executable(main-tests-vm1 ${MAIN_TESTS_VM1_SOURCE})
 
+# links
+
+# all
 target_link_libraries(hashtable1 PRIVATE list-lcg)
 target_link_libraries(hashtable2 PRIVATE list-lcg)
 target_link_libraries(list-memory1 PRIVATE list-common)
@@ -344,16 +367,20 @@ target_link_libraries(list-memory3 PRIVATE list-common)
 target_link_libraries(list-memory4 PRIVATE list-common)
 target_link_libraries(list-class PRIVATE list-common)
 target_link_libraries(list-alloc PRIVATE list-parameters)
-target_link_libraries(list-pointer1 PRIVATE list-common std-types1)
+target_link_libraries(list-pointer1 PRIVATE list-common list-micro std-types1)
 target_link_libraries(list-pointer2 PRIVATE list-common)
 target_link_libraries(list-experimental PRIVATE list-parameters)
 target_link_libraries(memory-ref1 PRIVATE memory-list1 list-micro list-common)
 target_link_libraries(memory-ref2 PRIVATE memory-list2 list-micro list-common)
 target_link_libraries(memory-ref3 PRIVATE memory-list3 list-micro list-common)
 target_link_libraries(list-pointer2 PRIVATE vm-v2)
+target_link_libraries(structs-v3 PRIVATE list-class)
 
+# test
 target_link_libraries(tests PRIVATE list-alloc list-parameters)
+target_link_libraries(tests-vm-v1 PRIVATE list-common list-micro list-pointer1)
 
+# main
 target_link_libraries(main-default PRIVATE tests list-common list-alloc list-v1 list-default)
 target_link_libraries(main-light PRIVATE tests list-common list-alloc  list-micro list-light)
 target_link_libraries(main-micro PRIVATE tests list-common list-alloc list-micro)
@@ -371,14 +398,14 @@ target_link_libraries(main-pointer1 PRIVATE list-pointer1 list-micro vm-v1)
 target_link_libraries(main-pointer2 PRIVATE list-pointer2 list-micro)
 target_link_libraries(main-hashtable1 PRIVATE list-pointer1 list-micro vm-v1 hashtable1)
 target_link_libraries(main-hashtable2 PRIVATE list-pointer2 list-micro hashtable2)
-target_link_libraries(main-vm1 PRIVATE tests list-common list-alloc list-micro list-light list-pointer1 vm-v1)
+target_link_libraries(main-vm1 PRIVATE tests tests-vm-v1 list-alloc list-light vm-v1)
 target_link_libraries(main-vm2 PRIVATE list-pointer2 list-micro)
 target_link_libraries(main-structs1 PRIVATE list-common)
 target_link_libraries(main-structs2 PRIVATE list-class)
 target_link_libraries(main-structs3 PRIVATE structs-v3)
-target_link_libraries(structs-v3 PRIVATE list-class)
 target_link_libraries(main-linked-list PRIVATE stl-linked-list)
 target_link_libraries(main-linked-list-static-enumerator PRIVATE stl-linked-list)
+target_link_libraries(main-tests-vm1 PRIVATE list-micro list-pointer1 tests-vm-v1 vm-v1)
 
 configure_file(all_english_words.txt ${CMAKE_BINARY_DIR}/all_english_words.txt COPYONLY)
 

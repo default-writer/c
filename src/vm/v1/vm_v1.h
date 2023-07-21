@@ -3,15 +3,16 @@
 
 #include "std/common.h"
 
+struct vm;
 struct vm_data;
 
-struct vm {
-    void (*init)(u64 size);
-    void (*destroy)(void);
+struct vm_methods {
+    struct vm* (*init)(u64 size);
+    void (*destroy)(struct vm**);
     struct pointer* (*free)(u64 address);
     struct pointer* (*read)(u64 address);
     u64 (*write)(struct pointer* value);
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef VM_DEBUG_INFO
     void (*dump)(void);
     void (*dump_ref)(void);
 #endif

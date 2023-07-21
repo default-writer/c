@@ -20,8 +20,8 @@ struct pointer_data vm_pointer;
 static struct vm_types types_definition;
 static struct vm_types* types = &types_definition;
 
-/* extern definition */
-extern const struct vm vm_definition;
+/* definition */
+extern const struct vm_methods vm_methods_definition;
 extern const struct list list_micro_definition;
 
 extern void data_init(void);
@@ -32,8 +32,9 @@ extern void object_init(void);
 
 /* definition */
 static struct pointer_data* base = &vm_pointer;
-static const struct vm* vm = &vm_definition;
+static const struct vm_methods* vm = &vm_methods_definition;
 static const struct list* list = &list_micro_definition;
+static struct vm* vm_ptr;
 
 static void pointer_init(u64 size);
 static void pointer_destroy(void);
@@ -151,7 +152,7 @@ static void pointer_vm_cleanup(struct list_data** current) {
 
 /* implementation*/
 static void pointer_init_internal(struct pointer_data* ptr, u64 size) {
-    vm->init(size);
+    vm_ptr = vm->init(size);
     list->init(&ptr->list);
 #ifndef ATTRIBUTE
     data_init();
@@ -170,7 +171,7 @@ static void pointer_destroy_internal(struct pointer_data* ptr) {
     list->destroy(&ptr->gc);
 #endif
     list->destroy(&ptr->list);
-    vm->destroy();
+    vm->destroy(&vm_ptr);
 #ifndef ATTRIBUTE
     vm_types_destroy();
 #endif
@@ -270,7 +271,7 @@ static void pointer_dump_ref(void** ptr) {
 
 /* public */
 
-const struct pointer_vm_methods vm_methods_definition = {
+const struct pointer_vm_methods pointer_vm_methods_definition = {
     .alloc = pointer_vm_alloc,
     .realloc = pointer_vm_realloc,
     .free = pointer_vm_free,

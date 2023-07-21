@@ -1,6 +1,5 @@
 #include "common/alloc.h"
 #include "list-light/data.h"
-#include "rexo/include/rexo.h"
 
 #include "../tests/src/test.h"
 

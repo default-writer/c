@@ -281,7 +281,6 @@
   "terminal.integrated.enablePersistentSessions": true,
   "terminal.integrated.persistentSessionReviveProcess": "onExitAndWindowClose",
   "terminal.integrated.shellIntegration.history": 1000,
-  "editor.fontSize": 12,
   "editor.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
   "editor.fontLigatures": true,
   "debug.console.fontSize": 12,
@@ -297,5 +296,6 @@
   "workbench.editorLargeFileConfirmation": 16,
   "terminal.integrated.tabStopWidth": 8,
   "editor.tabSize": 4,
-  "editor.indentSize": "tabSize"
+  "editor.indentSize": "tabSize",
+  "editor.fontSize": 12
 }
