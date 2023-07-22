@@ -68,9 +68,9 @@ static void vm_destroy(struct vm**);
 static void vm_dump(void);
 static void vm_dump_ref(void);
 #endif
+static u64 vm_alloc(struct pointer* data);
 static struct pointer* vm_free(u64 address);
-static struct pointer* vm_read(u64 address);
-static u64 vm_write(struct pointer* data);
+static struct pointer* vm_read(u64 address, u64 typeid);
 #ifdef VM_DEBUG_INFO
 static struct pointer* vm_data_enumerator_next(void);
 static void* vm_data_enumerator_next_ref(void);
@@ -238,21 +238,29 @@ static struct pointer* vm_free(u64 address) {
     return data;
 }
 
-static struct pointer* vm_read(u64 address) {
-    struct pointer* data = 0;
-    if (address != 0) {
-        struct pointer** ptr = vm_read_internal(address);
-        if (ptr != 0) {
-            data = *ptr;
-#ifdef VM_DEBUG_INFO
-            printf("  <v: %016llx ! %016llx > %016llx\n", address, (u64)data, (u64)ptr);
-#endif
-        }
+static struct pointer* vm_read(u64 address, u64 typeid) {
+    if (!address) {
+        return 0;
     }
+    struct pointer** ptr = vm_read_internal(address);
+    struct pointer* data = 0;
+    if (ptr == 0) {
+        return 0;
+    }
+    data = *ptr;
+    if (data == 0) {
+        return 0;
+    }
+    if (data->type != typeid) {
+        return 0;
+    }
+#ifdef VM_DEBUG_INFO
+    printf("  <v: %016llx ! %016llx > %016llx\n", address, (u64)data, (u64)ptr);
+#endif
     return data;
 }
 
-static u64 vm_write(struct pointer* data) {
+static u64 vm_alloc(struct pointer* data) {
     if (!data) {
         return 0;
     }
@@ -261,6 +269,7 @@ static u64 vm_write(struct pointer* data) {
     struct pointer** ptr = vm_alloc_internal(&address, &target);
     *ptr = data;
     data->vm = target;
+    data->address = address;
 #ifdef VM_DEBUG_INFO
     printf("  >v: %016llx ! %016llx > %016llx\n", address, (u64)data, (u64)ptr);
 #endif
@@ -308,9 +317,9 @@ static void* vm_data_enumerator_next_ref(void) {
 const struct vm_methods vm_methods_definition = {
     .init = vm_init,
     .destroy = vm_destroy,
+    .alloc = vm_alloc,
     .free = vm_free,
     .read = vm_read,
-    .write = vm_write,
 #ifdef VM_DEBUG_INFO
     .dump = vm_dump,
     .dump_ref = vm_dump_ref

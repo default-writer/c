@@ -20,51 +20,38 @@ extern const struct pointer_vm_methods pointer_vm_methods_definition;
 /* definition */
 static const struct vm_methods* vm = &vm_methods_definition;
 static const struct list* list = &list_micro_definition;
-static const struct pointer_vm_methods* pointer = &pointer_vm_methods_definition;
+static const struct pointer_vm_methods* virtual = &pointer_vm_methods_definition;
 static struct pointer_data* base = &vm_pointer;
 static const struct vm_type type_definition;
 
 /* internal */
 static u64 data_alloc(u64 size);
-static void data_free(u64 ptr);
+static u64 data_free(u64 ptr);
 static void* data_unsafe(u64 ptr);
 static u64 data_size(u64 ptr);
 
 /* implementation*/
 static u64 data_alloc(u64 size) {
-    struct pointer* f_ptr = pointer->alloc(size, TYPE_PTR);
-    u64 data = vm->write(f_ptr);
+    struct pointer* f_ptr = virtual->alloc(size, TYPE_PTR);
+    u64 data = vm->alloc(f_ptr);
 #ifdef USE_GC
     list->push(&base->gc, (void*)data);
 #endif
     return data;
 }
 
-static void data_free(u64 ptr) {
-    if (ptr == 0) {
-        return;
-    }
-    struct pointer* data_ptr = vm->read(ptr);
+static u64 data_free(u64 ptr) {
+    struct pointer* data_ptr = vm->read(ptr, TYPE_PTR);
     if (data_ptr == 0) {
-        return;
+        return 0;
     }
-    if (data_ptr->type != TYPE_PTR) {
-        return;
-    }
-    // ptr is already a valid address because of previous vm->read check
-    data_ptr = vm->free(ptr);
-    pointer->free(data_ptr);
+    virtual->free(data_ptr);
+    return TYPE_PTR;
 }
 
 static void* data_unsafe(u64 ptr) {
-    if (ptr == 0) {
-        return 0;
-    }
-    struct pointer* data_ptr = vm->read(ptr);
+    struct pointer* data_ptr = vm->read(ptr, TYPE_PTR);
     if (data_ptr == 0) {
-        return 0;
-    }
-    if (data_ptr->type != TYPE_PTR) {
         return 0;
     }
     void* data = data_ptr->data;
@@ -72,10 +59,7 @@ static void* data_unsafe(u64 ptr) {
 }
 
 static u64 data_size(u64 ptr) {
-    if (ptr == 0) {
-        return 0;
-    }
-    const struct pointer* data_ptr = vm->read(ptr);
+    struct pointer* data_ptr = vm->read(ptr, TYPE_PTR);
     if (data_ptr == 0) {
         return 0;
     }
@@ -84,7 +68,8 @@ static u64 data_size(u64 ptr) {
 }
 
 static const struct vm_type type_definition = {
-    .free = data_free
+    .free = data_free,
+    .typeid = TYPE_PTR
 };
 
 static void INIT init() {

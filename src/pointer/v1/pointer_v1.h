@@ -26,6 +26,7 @@ struct pointer {
     struct vm_data* vm;
     void* data;
     u64 size;
+    u64 address;
     enum type type;
 };
 

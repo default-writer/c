@@ -5,7 +5,7 @@
 
 struct object_methods {
     u64 (*alloc)(u64 size);
-    void (*free)(u64 ptr);
+    u64 (*free)(u64 ptr);
     u64 (*load)(const void* data, u64 size);
     void* (*unsafe)(u64 ptr);
     u64 (*size)(u64 ptr);

@@ -259,7 +259,7 @@ static u64 pointer_copy(u64 ptr) {
     if (ptr == 0) {
         return 0;
     }
-    const struct pointer* data_ptr = vm->read(&base->vm, ptr);
+    struct pointer* data_ptr = vm->read(&base->vm, ptr);
     if (data_ptr == 0) {
         return 0;
     }
@@ -428,7 +428,7 @@ static u64 pointer_size(u64 ptr) {
     if (ptr == 0) {
         return 0;
     }
-    const struct pointer* data_ptr = vm->read(&base->vm, ptr);
+    struct pointer* data_ptr = vm->read(&base->vm, ptr);
     if (data_ptr == 0) {
         return 0;
     }
@@ -441,7 +441,7 @@ static void pointer_strcpy(u64 dest, u64 src) {
     if (dest_ptr == 0) {
         return;
     }
-    const struct pointer* src_ptr = vm->read(&base->vm, src);
+    struct pointer* src_ptr = vm->read(&base->vm, src);
     if (src_ptr == 0) {
         return;
     }
@@ -467,7 +467,7 @@ static void pointer_strcat(u64 dest, u64 src) {
     if (dest_ptr == 0) {
         return;
     }
-    const struct pointer* src_ptr = vm->read(&base->vm, src);
+    struct pointer* src_ptr = vm->read(&base->vm, src);
     if (src_ptr == 0) {
         return;
     }
@@ -489,11 +489,11 @@ static void pointer_strcat(u64 dest, u64 src) {
 }
 
 static u64 pointer_match_last(u64 src, u64 match) {
-    const struct pointer* src_ptr = vm->read(&base->vm, src);
+    struct pointer* src_ptr = vm->read(&base->vm, src);
     if (src_ptr == 0) {
         return 0;
     }
-    const struct pointer* match_ptr = vm->read(&base->vm, match);
+    struct pointer* match_ptr = vm->read(&base->vm, match);
     if (match_ptr == 0) {
         return 0;
     }
@@ -559,7 +559,7 @@ static u64 pointer_file_alloc(u64 file_path, u64 mode) {
     if (file_path_ptr == 0) {
         return 0;
     }
-    const struct pointer* mode_ptr = vm->read(&base->vm, mode);
+    struct pointer* mode_ptr = vm->read(&base->vm, mode);
     if (mode_ptr == 0) {
         return 0;
     }

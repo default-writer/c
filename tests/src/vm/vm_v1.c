@@ -7,7 +7,7 @@ extern const struct pointer_vm_methods pointer_vm_methods_definition;
 
 /* definition */
 static const struct vm_methods* vm = &vm_methods_definition;
-static const struct pointer_vm_methods* pointer = &pointer_vm_methods_definition;
+static const struct pointer_vm_methods* virtual = &pointer_vm_methods_definition;
 
 /* Data structure to use at the core of our fixture. */
 typedef struct test_data {
@@ -32,7 +32,7 @@ RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tea
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_read_0, .fixture = test_fixture) {
-    const struct pointer* ptr = vm->read(0);
+    struct pointer* ptr = vm->read(0, TYPE_PTR);
     RX_ASSERT(ptr == 0);
 }
 
@@ -45,36 +45,36 @@ RX_TEST_CASE(tests, test_vm_init_0, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_read_1, .fixture = test_fixture) {
-    const struct pointer* ptr = vm->read(1);
+    struct pointer* ptr = vm->read(1, TYPE_PTR);
     RX_ASSERT(ptr == 0);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_write_0, .fixture = test_fixture) {
-    u64 ptr = vm->write(0);
+    u64 ptr = vm->alloc(0);
     RX_ASSERT(ptr == 0);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_write_1_read_1, .fixture = test_fixture) {
-    struct pointer* ptr = pointer->alloc(0, TYPE_PTR);
-    u64 data_ptr = vm->write(ptr);
-    const struct pointer* vm_ptr = vm->read(data_ptr);
+    struct pointer* ptr = virtual->alloc(0, TYPE_PTR);
+    u64 data_ptr = vm->alloc(ptr);
+    struct pointer* vm_ptr = vm->read(data_ptr, TYPE_PTR);
     RX_ASSERT(ptr != 0);
     RX_ASSERT(data_ptr != 0);
     RX_ASSERT(vm_ptr == ptr);
-    pointer->free(ptr);
+    virtual->free(ptr);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_write_1_read_2, .fixture = test_fixture) {
-    struct pointer* ptr = pointer->alloc(0, TYPE_PTR);
-    u64 data_ptr = vm->write(ptr);
-    const struct pointer* vm_ptr = vm->read(data_ptr + 1);
+    struct pointer* ptr = virtual->alloc(0, TYPE_PTR);
+    u64 data_ptr = vm->alloc(ptr);
+    struct pointer* vm_ptr = vm->read(data_ptr + 1, TYPE_PTR);
     RX_ASSERT(ptr != 0);
     RX_ASSERT(data_ptr != 0);
     RX_ASSERT(vm_ptr == 0);
-    pointer->free(ptr);
+    virtual->free(ptr);
 }
 
 static int run(void) {

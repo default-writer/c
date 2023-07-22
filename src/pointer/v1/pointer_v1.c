@@ -123,22 +123,23 @@ static void pointer_vm_realloc(struct pointer* ptr, u64 size) {
 }
 
 static void pointer_vm_free(struct pointer* ptr) {
-    if (ptr != 0) {
-        if (ptr->data != 0 && ptr->size != 0) {
-            global_free(ptr->data, ptr->size);
-        }
-#ifdef USE_MEMORY_CLEANUP
-        ptr->data = 0;
-        ptr->size = 0;
-#endif
+    if (ptr == 0) {
+        return;
     }
+    if (ptr->data != 0 && ptr->size != 0) {
+        global_free(ptr->data, ptr->size);
+    }
+    vm->free(ptr->address);
     global_free(ptr, POINTER_SIZE);
 }
 
 static void pointer_free_internal(u64 ptr) {
     struct vm_types* current = types;
     while (current->next != 0) {
-        current->type->free(ptr);
+        const struct vm_type* type = current->type;
+        if (type->typeid == type->free(ptr)) {
+            return;
+        }
         current = current->next;
     }
 }

@@ -20,13 +20,13 @@ extern const struct pointer_vm_methods pointer_vm_methods_definition;
 /* definition */
 static const struct vm_methods* vm = &vm_methods_definition;
 static const struct list* list = &list_micro_definition;
-static const struct pointer_vm_methods* pointer = &pointer_vm_methods_definition;
+static const struct pointer_vm_methods* virtual = &pointer_vm_methods_definition;
 static struct pointer_data* base = &vm_pointer;
 static const struct vm_type type_definition;
 
 /* internal */
 static u64 object_alloc(u64 size);
-static void object_free(u64 ptr);
+static u64 object_free(u64 ptr);
 static u64 object_load(const void* data, u64 size);
 static void* object_unsafe(u64 ptr);
 static u64 object_size(u64 ptr);
@@ -36,28 +36,21 @@ static u64 object_alloc(u64 size) {
     if (size == 0) {
         return 0;
     }
-    struct pointer* ptr = pointer->alloc(size, TYPE_OBJECT);
-    u64 data = vm->write(ptr);
+    struct pointer* ptr = virtual->alloc(size, TYPE_OBJECT);
+    u64 data = vm->alloc(ptr);
 #ifdef USE_GC
     list->push(&base->gc, (void*)data);
 #endif
     return data;
 }
 
-static void object_free(u64 ptr) {
-    if (ptr == 0) {
-        return;
-    }
-    struct pointer* data_ptr = vm->read(ptr);
+static u64 object_free(u64 ptr) {
+    struct pointer* data_ptr = vm->read(ptr, TYPE_OBJECT);
     if (data_ptr == 0) {
-        return;
+        return 0;
     }
-    if (data_ptr->type != TYPE_OBJECT) {
-        return;
-    }
-    // ptr is already a valid address because of previous vm->read check
-    data_ptr = vm->free(ptr);
-    pointer->free(data_ptr);
+    virtual->free(data_ptr);
+    return TYPE_OBJECT;
 }
 
 static u64 object_load(const void* src_data, u64 size) {
@@ -67,9 +60,9 @@ static u64 object_load(const void* src_data, u64 size) {
     if (size == 0) {
         return 0;
     }
-    struct pointer* data_ptr = pointer->alloc(size, TYPE_OBJECT);
+    struct pointer* data_ptr = virtual->alloc(size, TYPE_OBJECT);
     memcpy(data_ptr->data, src_data, size); /* NOLINT */
-    u64 data = vm->write(data_ptr);
+    u64 data = vm->alloc(data_ptr);
 #ifdef USE_GC
     list->push(&base->gc, (void*)data);
 #endif
@@ -77,14 +70,8 @@ static u64 object_load(const void* src_data, u64 size) {
 }
 
 static void* object_unsafe(u64 ptr) {
-    if (ptr == 0) {
-        return 0;
-    }
-    struct pointer* data_ptr = vm->read(ptr);
+    struct pointer* data_ptr = vm->read(ptr, TYPE_OBJECT);
     if (data_ptr == 0) {
-        return 0;
-    }
-    if (data_ptr->type != TYPE_OBJECT) {
         return 0;
     }
     char* data = data_ptr->data;
@@ -92,10 +79,7 @@ static void* object_unsafe(u64 ptr) {
 }
 
 static u64 object_size(u64 ptr) {
-    if (ptr == 0) {
-        return 0;
-    }
-    const struct pointer* data_ptr = vm->read(ptr);
+    struct pointer* data_ptr = vm->read(ptr, TYPE_OBJECT);
     if (data_ptr == 0) {
         return 0;
     }
@@ -104,7 +88,8 @@ static u64 object_size(u64 ptr) {
 }
 
 static const struct vm_type type_definition = {
-    .free = object_free
+    .free = object_free,
+    .typeid = TYPE_OBJECT
 };
 
 static void INIT init() {

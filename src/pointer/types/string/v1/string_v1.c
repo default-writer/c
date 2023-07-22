@@ -20,13 +20,13 @@ extern const struct pointer_vm_methods pointer_vm_methods_definition;
 /* definition */
 static const struct vm_methods* vm = &vm_methods_definition;
 static const struct list* list = &list_micro_definition;
-static const struct pointer_vm_methods* pointer = &pointer_vm_methods_definition;
+static const struct pointer_vm_methods* virtual = &pointer_vm_methods_definition;
 static struct pointer_data* base = &vm_pointer;
 static const struct vm_type type_definition;
 
 /* internal */
 static u64 string_alloc(void);
-static void string_free(u64 ptr);
+static u64 string_free(u64 ptr);
 static u64 string_copy(u64 ptr);
 static void string_strcpy(u64 dest_ptr, u64 src_ptr);
 static void string_strcat(u64 dest_ptr, u64 src_ptr);
@@ -45,47 +45,34 @@ struct list_handler {
 };
 
 static u64 string_alloc(void) {
-    struct pointer* ptr = pointer->alloc(0, TYPE_STRING);
-    u64 data = vm->write(ptr);
+    struct pointer* ptr = virtual->alloc(0, TYPE_STRING);
+    u64 data = vm->alloc(ptr);
 #ifdef USE_GC
     list->push(&base->gc, (void*)data);
 #endif
     return data;
 }
 
-static void string_free(u64 ptr) {
-    if (ptr == 0) {
-        return;
-    }
-    struct pointer* data_ptr = vm->read(ptr);
+static u64 string_free(u64 ptr) {
+    struct pointer* data_ptr = vm->read(ptr, TYPE_STRING);
     if (data_ptr == 0) {
-        return;
+        return 0;
     }
-    if (data_ptr->type != TYPE_STRING) {
-        return;
-    }
-    // ptr is already a valid address because of previous vm->read check
-    data_ptr = vm->free(ptr);
-    pointer->free(data_ptr);
+    virtual->free(data_ptr);
+    return TYPE_STRING;
 }
 
 static u64 string_copy(u64 ptr) {
-    if (ptr == 0) {
-        return 0;
-    }
-    const struct pointer* data_ptr = vm->read(ptr);
+    struct pointer* data_ptr = vm->read(ptr, TYPE_STRING);
     if (data_ptr == 0) {
-        return 0;
-    }
-    if (data_ptr->type != TYPE_STRING) {
         return 0;
     }
     if (data_ptr->size == 0) {
         return 0;
     }
-    struct pointer* copy_ptr = pointer->alloc(data_ptr->size, data_ptr->type);
+    struct pointer* copy_ptr = virtual->alloc(data_ptr->size, data_ptr->type);
     memcpy(copy_ptr->data, data_ptr->data, copy_ptr->size); /* NOLINT */
-    u64 data = vm->write(copy_ptr);
+    u64 data = vm->alloc(copy_ptr);
 #ifdef USE_GC
     list->push(&base->gc, (void*)data);
 #endif
@@ -96,18 +83,12 @@ static void string_strcpy(u64 dest, u64 src) {
     if (src == dest) {
         return;
     }
-    struct pointer* dest_ptr = vm->read(dest);
+    struct pointer* dest_ptr = vm->read(dest, TYPE_STRING);
     if (dest_ptr == 0) {
         return;
     }
-    if (dest_ptr->type != TYPE_STRING) {
-        return;
-    }
-    const struct pointer* src_ptr = vm->read(src);
+    struct pointer* src_ptr = vm->read(src, TYPE_STRING);
     if (src_ptr == 0) {
-        return;
-    }
-    if (src_ptr->type != TYPE_STRING) {
         return;
     }
     if (src_ptr->size == 0) {
@@ -120,7 +101,7 @@ static void string_strcpy(u64 dest, u64 src) {
     } else {
         u64 size = src_ptr->size + 1;
         if (dest_ptr->size < size) {
-            pointer->realloc(dest_ptr, size);
+            virtual->realloc(dest_ptr, size);
         }
     }
     char* data_dest = dest_ptr->data;
@@ -131,18 +112,12 @@ static void string_strcat(u64 dest, u64 src) {
     if (src == dest) {
         return;
     }
-    struct pointer* dest_ptr = vm->read(dest);
+    struct pointer* dest_ptr = vm->read(dest, TYPE_STRING);
     if (dest_ptr == 0) {
         return;
     }
-    if (dest_ptr->type != TYPE_STRING) {
-        return;
-    }
-    const struct pointer* src_ptr = vm->read(src);
+    struct pointer* src_ptr = vm->read(src, TYPE_STRING);
     if (src_ptr == 0) {
-        return;
-    }
-    if (src_ptr->type != TYPE_STRING) {
         return;
     }
     if (src_ptr->size == 0) {
@@ -155,7 +130,7 @@ static void string_strcat(u64 dest, u64 src) {
     } else {
         u64 size = dest_ptr->size + src_ptr->size - 1;
         if (dest_ptr->size < size) {
-            pointer->realloc(dest_ptr, size);
+            virtual->realloc(dest_ptr, size);
         }
     }
     char* data_dest = dest_ptr->data;
@@ -163,18 +138,12 @@ static void string_strcat(u64 dest, u64 src) {
 }
 
 static u64 string_match_last(u64 src, u64 match) {
-    const struct pointer* src_ptr = vm->read(src);
+    struct pointer* src_ptr = vm->read(src, TYPE_STRING);
     if (src_ptr == 0) {
         return 0;
     }
-    if (src_ptr->type != TYPE_STRING) {
-        return 0;
-    }
-    const struct pointer* match_ptr = vm->read(match);
+    struct pointer* match_ptr = vm->read(match, TYPE_STRING);
     if (match_ptr == 0) {
-        return 0;
-    }
-    if (match_ptr->type != TYPE_STRING) {
         return 0;
     }
     const char* data_src = src_ptr->data;
@@ -190,9 +159,9 @@ static u64 string_match_last(u64 src, u64 match) {
     if (*data_match != 0) {
         return 0;
     }
-    struct pointer* last_match_ptr = pointer->alloc(0, TYPE_STRING);
+    struct pointer* last_match_ptr = virtual->alloc(0, TYPE_STRING);
     last_match_ptr->data = --data_last;
-    u64 data = vm->write(last_match_ptr);
+    u64 data = vm->alloc(last_match_ptr);
 #ifdef USE_GC
     list->push(&base->gc, (void*)data);
 #endif
@@ -207,9 +176,9 @@ static u64 string_load(const char* src_data) {
         return 0;
     }
     u64 size = strlen(src_data) + 1;
-    struct pointer* data_ptr = pointer->alloc(size, TYPE_STRING);
+    struct pointer* data_ptr = virtual->alloc(size, TYPE_STRING);
     memcpy(data_ptr->data, src_data, size); /* NOLINT */
-    u64 data = vm->write(data_ptr);
+    u64 data = vm->alloc(data_ptr);
 #ifdef USE_GC
     list->push(&base->gc, (void*)data);
 #endif
@@ -229,11 +198,8 @@ static u64 string_getcwd(void) {
 }
 
 static void string_printf(u64 ptr) {
-    struct pointer* data_ptr = vm->read(ptr);
+    struct pointer* data_ptr = vm->read(ptr, TYPE_STRING);
     if (data_ptr == 0) {
-        return;
-    }
-    if (data_ptr->type != TYPE_STRING) {
         return;
     }
     const char* data = data_ptr->data;
@@ -248,11 +214,8 @@ static void string_printf(u64 ptr) {
 }
 
 static void string_put_char(u64 ptr, char value) {
-    struct pointer* data_ptr = vm->read(ptr);
+    struct pointer* data_ptr = vm->read(ptr, TYPE_STRING);
     if (data_ptr == 0) {
-        return;
-    }
-    if (data_ptr->type != TYPE_STRING) {
         return;
     }
     char* data = data_ptr->data;
@@ -266,14 +229,8 @@ static void string_put_char(u64 ptr, char value) {
 }
 
 static char* string_unsafe(u64 ptr) {
-    if (ptr == 0) {
-        return 0;
-    }
-    struct pointer* data_ptr = vm->read(ptr);
+    struct pointer* data_ptr = vm->read(ptr, TYPE_STRING);
     if (data_ptr == 0) {
-        return 0;
-    }
-    if (data_ptr->type != TYPE_STRING) {
         return 0;
     }
     char* data = data_ptr->data;
@@ -281,10 +238,7 @@ static char* string_unsafe(u64 ptr) {
 }
 
 static u64 string_size(u64 ptr) {
-    if (ptr == 0) {
-        return 0;
-    }
-    const struct pointer* data_ptr = vm->read(ptr);
+    struct pointer* data_ptr = vm->read(ptr, TYPE_STRING);
     if (data_ptr == 0) {
         return 0;
     }
@@ -293,7 +247,8 @@ static u64 string_size(u64 ptr) {
 }
 
 static const struct vm_type type_definition = {
-    .free = string_free
+    .free = string_free,
+    .typeid = TYPE_STRING
 };
 
 static void INIT init() {

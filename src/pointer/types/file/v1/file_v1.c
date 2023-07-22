@@ -21,7 +21,7 @@ extern const struct data_methods data_methods_definition;
 /* definition */
 static const struct vm_methods* vm = &vm_methods_definition;
 static const struct list* list = &list_micro_definition;
-static const struct pointer_vm_methods* pointer = &pointer_vm_methods_definition;
+static const struct pointer_vm_methods* virtual = &pointer_vm_methods_definition;
 static const struct data_methods* data = &data_methods_definition;
 static struct pointer_data* base = &vm_pointer;
 static const struct vm_type type_definition;
@@ -29,7 +29,7 @@ static const struct vm_type type_definition;
 /* internal */
 static u64 file_alloc(u64 file_path_ptr, u64 mode_ptr);
 static u64 file_data(u64 ptr);
-static void file_free(u64 ptr);
+static u64 file_free(u64 ptr);
 
 /* implementation*/
 struct file_handler {
@@ -46,18 +46,12 @@ static u64 file_alloc(u64 file_path, u64 mode) {
     if (mode == 0) {
         return 0;
     }
-    struct pointer* file_path_ptr = vm->read(file_path);
+    struct pointer* file_path_ptr = vm->read(file_path, TYPE_STRING);
     if (file_path_ptr == 0) {
         return 0;
     }
-    if (file_path_ptr->type != TYPE_STRING) {
-        return 0;
-    }
-    const struct pointer* mode_ptr = vm->read(mode);
+    struct pointer* mode_ptr = vm->read(mode, TYPE_STRING);
     if (mode_ptr == 0) {
-        return 0;
-    }
-    if (mode_ptr->type != TYPE_STRING) {
         return 0;
     }
     const char* file_path_data = file_path_ptr->data;
@@ -66,13 +60,13 @@ static u64 file_alloc(u64 file_path, u64 mode) {
     if (file == 0) {
         return 0;
     }
-    struct pointer* f_ptr = pointer->alloc(sizeof(struct file_handler), TYPE_FILE);
+    struct pointer* f_ptr = virtual->alloc(sizeof(struct file_handler), TYPE_FILE);
     struct file_handler* handler = f_ptr->data;
     handler->file = file;
 #ifdef USE_MEMORY_DEBUG_INFO
     handler->path = file_path_ptr->data;
 #endif
-    u64 data_ptr = vm->write(f_ptr);
+    u64 data_ptr = vm->alloc(f_ptr);
 #ifdef USE_GC
     list->push(&base->gc, (void*)data_ptr);
 #endif
@@ -80,14 +74,8 @@ static u64 file_alloc(u64 file_path, u64 mode) {
 }
 
 static u64 file_data(u64 ptr) {
-    if (ptr == 0) {
-        return 0;
-    }
-    struct pointer* data_ptr = vm->read(ptr);
+    struct pointer* data_ptr = vm->read(ptr, TYPE_FILE);
     if (data_ptr == 0) {
-        return 0;
-    }
-    if (data_ptr->type != TYPE_FILE) {
         return 0;
     }
     struct file_handler* handler = data_ptr->data;
@@ -105,29 +93,23 @@ static u64 file_data(u64 ptr) {
     return virtual_data;
 }
 
-static void file_free(u64 ptr) {
-    if (ptr == 0) {
-        return;
-    }
-    struct pointer* data_ptr = vm->read(ptr);
+static u64 file_free(u64 ptr) {
+    struct pointer* data_ptr = vm->read(ptr, TYPE_FILE);
     if (data_ptr == 0) {
-        return;
-    }
-    if (data_ptr->type != TYPE_FILE) {
-        return;
+        return 0;
     }
     struct file_handler* handler = data_ptr->data;
     if (handler->file != 0) {
         fclose(handler->file);
         handler->file = 0;
     }
-    // ptr is already a valid address because of previous vm->read check
-    data_ptr = vm->free(ptr);
-    pointer->free(data_ptr);
+    virtual->free(data_ptr);
+    return TYPE_FILE;
 }
 
 static const struct vm_type type_definition = {
-    .free = file_free
+    .free = file_free,
+    .typeid = TYPE_FILE
 };
 
 static void INIT init() {

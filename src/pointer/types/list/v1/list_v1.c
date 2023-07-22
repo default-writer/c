@@ -20,13 +20,13 @@ extern const struct pointer_vm_methods pointer_vm_methods_definition;
 /* definition */
 static const struct vm_methods* vm = &vm_methods_definition;
 static const struct list* list = &list_micro_definition;
-static const struct pointer_vm_methods* pointer = &pointer_vm_methods_definition;
+static const struct pointer_vm_methods* virtual = &pointer_vm_methods_definition;
 static struct pointer_data* base = &vm_pointer;
 static const struct vm_type type_definition;
 
 /* internal */
 static u64 list_alloc(void);
-static void list_free(u64 ptr);
+static u64 list_free(u64 ptr);
 static void list_push(u64 ptr, u64 data_ptr);
 static u64 list_peek(u64 ptr);
 static u64 list_pop(u64 ptr);
@@ -37,38 +37,26 @@ struct list_handler {
 };
 
 static u64 list_alloc(void) {
-    struct pointer* ptr = pointer->alloc(sizeof(struct list_handler), TYPE_LIST);
+    struct pointer* ptr = virtual->alloc(sizeof(struct list_handler), TYPE_LIST);
     struct list_handler* handler = ptr->data;
     list->init(&handler->list);
-    u64 data = vm->write(ptr);
+    u64 data = vm->alloc(ptr);
 #ifdef USE_GC
     list->push(&base->gc, (void*)data);
 #endif
     return data;
 }
 
-static void list_free(u64 ptr) {
-    if (ptr == 0) {
-        return;
-    }
-    struct pointer* data_ptr = vm->read(ptr);
+static u64 list_free(u64 ptr) {
+    struct pointer* data_ptr = vm->read(ptr, TYPE_LIST);
     if (data_ptr == 0) {
-        return;
+        return 0;
     }
-    if (data_ptr->type != TYPE_LIST) {
-        return;
-    }
-    // ptr is already a valid address because of previous vm->read check
-    data_ptr = vm->free(ptr);
     struct list_handler* handler = data_ptr->data;
-    pointer->cleanup(&handler->list);
+    virtual->cleanup(&handler->list);
     list->destroy(&handler->list);
-    global_free(data_ptr->data, data_ptr->size);
-#ifdef USE_MEMORY_CLEANUP
-    data_ptr->data = 0;
-    data_ptr->size = 0;
-#endif
-    pointer->free(data_ptr);
+    virtual->free(data_ptr);
+    return TYPE_LIST;
 }
 
 static void list_push(u64 ptr_list, u64 ptr) {
@@ -78,11 +66,8 @@ static void list_push(u64 ptr_list, u64 ptr) {
     if (ptr == 0) {
         return;
     }
-    struct pointer* data_ptr = vm->read(ptr_list);
+    struct pointer* data_ptr = vm->read(ptr_list, TYPE_LIST);
     if (data_ptr == 0) {
-        return;
-    }
-    if (data_ptr->type != TYPE_LIST) {
         return;
     }
     struct list_handler* handler = data_ptr->data;
@@ -93,14 +78,8 @@ static void list_push(u64 ptr_list, u64 ptr) {
 }
 
 static u64 list_peek(u64 ptr) {
-    if (ptr == 0) {
-        return 0;
-    }
-    struct pointer* data_ptr = vm->read(ptr);
+    struct pointer* data_ptr = vm->read(ptr, TYPE_LIST);
     if (data_ptr == 0) {
-        return 0;
-    }
-    if (data_ptr->type != TYPE_LIST) {
         return 0;
     }
     struct list_handler* handler = data_ptr->data;
@@ -109,14 +88,8 @@ static u64 list_peek(u64 ptr) {
 }
 
 static u64 list_pop(u64 ptr) {
-    if (ptr == 0) {
-        return 0;
-    }
-    struct pointer* data_ptr = vm->read(ptr);
+    struct pointer* data_ptr = vm->read(ptr, TYPE_LIST);
     if (data_ptr == 0) {
-        return 0;
-    }
-    if (data_ptr->type != TYPE_LIST) {
         return 0;
     }
     struct list_handler* handler = data_ptr->data;
@@ -125,10 +98,7 @@ static u64 list_pop(u64 ptr) {
 }
 
 static u64 list_size(u64 ptr) {
-    if (ptr == 0) {
-        return 0;
-    }
-    const struct pointer* data_ptr = vm->read(ptr);
+    struct pointer* data_ptr = vm->read(ptr, TYPE_LIST);
     if (data_ptr == 0) {
         return 0;
     }
@@ -137,7 +107,8 @@ static u64 list_size(u64 ptr) {
 }
 
 static const struct vm_type type_definition = {
-    .free = list_free
+    .free = list_free,
+    .typeid = TYPE_LIST
 };
 
 static void INIT init() {
