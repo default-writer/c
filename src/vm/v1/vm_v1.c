@@ -68,8 +68,8 @@ static void vm_destroy(struct vm**);
 static void vm_dump(void);
 static void vm_dump_ref(void);
 #endif
-static u64 vm_alloc(struct pointer* data);
-static struct pointer* vm_free(u64 address);
+static u64 vm_alloc(struct pointer* ptr);
+static void vm_free(struct pointer* ptr);
 static struct pointer* vm_read(u64 address, u64 typeid);
 #ifdef VM_DEBUG_INFO
 static struct pointer* vm_data_enumerator_next(void);
@@ -216,62 +216,60 @@ static void vm_dump_ref(void) {
 }
 #endif
 
-static struct pointer* vm_free(u64 address) {
-    if (!address) {
-        return 0;
+static void vm_free(struct pointer* ptr) {
+    if (!ptr) {
+        return;
     }
-    struct pointer* data = 0;
-    struct pointer** ptr = vm_read_internal(address);
-    if (ptr != 0) {
-        data = *ptr;
+    struct pointer** data = vm_read_internal(ptr->address);
+    if (data != 0) {
+        ptr = *data;
 #ifndef USE_GC
         struct vm_pointer* vm_ptr = global_alloc(VM_POINTER_SIZE);
-        vm_ptr->ptr = ptr;
-        vm_ptr->vm = data->vm;
+        vm_ptr->ptr = data;
+        vm_ptr->vm = ptr->vm;
         list->push(cache, vm_ptr);
 #endif
 #ifdef VM_DEBUG_INFO
-        printf("  >-: %016llx ! %016llx > %016llx\n", address, (u64)data, (u64)ptr);
+        printf("  >-: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)data);
 #endif
-        *ptr = 0;
+        *data = 0;
     }
-    return data;
 }
 
 static struct pointer* vm_read(u64 address, u64 typeid) {
     if (!address) {
         return 0;
     }
-    struct pointer** ptr = vm_read_internal(address);
-    struct pointer* data = 0;
-    if (ptr == 0) {
-        return 0;
-    }
-    data = *ptr;
+    struct pointer** data = vm_read_internal(address);
+    struct pointer* ptr = 0;
     if (data == 0) {
         return 0;
     }
-    if (data->type != typeid) {
+    ptr = *data;
+    if (ptr == 0) {
+        return 0;
+    }
+    if (ptr->typeid != typeid) {
         return 0;
     }
 #ifdef VM_DEBUG_INFO
-    printf("  <v: %016llx ! %016llx > %016llx\n", address, (u64)data, (u64)ptr);
+    printf("  <v: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)data);
 #endif
-    return data;
+    return ptr;
 }
 
-static u64 vm_alloc(struct pointer* data) {
-    if (!data) {
+static u64 vm_alloc(struct pointer* ptr) {
+    if (!ptr) {
         return 0;
     }
     u64 address = 0;
     struct vm_data* target = 0;
-    struct pointer** ptr = vm_alloc_internal(&address, &target);
-    *ptr = data;
-    data->vm = target;
-    data->address = address;
+    struct pointer** data = vm_alloc_internal(&address, &target);
+    *data = ptr;
+    ptr->vm = target;
+    ptr->address = address;
 #ifdef VM_DEBUG_INFO
-    printf("  >v: %016llx ! %016llx > %016llx\n", address, (u64)data, (u64)ptr);
+    printf("  >v: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)data);
 #endif
     return address;
 }

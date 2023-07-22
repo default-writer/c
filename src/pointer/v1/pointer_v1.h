@@ -27,7 +27,7 @@ struct pointer {
     void* data;
     u64 size;
     u64 address;
-    enum type type;
+    u64 typeid;
 };
 
 struct pointer_data {
@@ -38,7 +38,7 @@ struct pointer_data {
 };
 
 struct pointer_vm_methods {
-    struct pointer* (*alloc)(u64 size, enum type type);
+    struct pointer* (*alloc)(u64 size, u64 typeid);
     void (*realloc)(struct pointer* ptr, u64 size);
     void (*free)(struct pointer* ptr);
     void (*cleanup)(struct list_data** current);

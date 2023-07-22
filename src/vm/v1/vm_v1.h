@@ -11,7 +11,7 @@ struct vm_methods {
     struct vm* (*init)(u64 size);
     void (*destroy)(struct vm**);
     u64 (*alloc)(struct pointer* value);
-    struct pointer* (*free)(u64 address);
+    void (*free)(struct pointer* ptr);
     struct pointer* (*read)(u64 address, u64 typeid);
 #ifdef VM_DEBUG_INFO
     void (*dump)(void);

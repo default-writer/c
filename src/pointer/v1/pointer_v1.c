@@ -44,7 +44,7 @@ void pointer_vm_register_type(struct vm_type* type);
 void pointer_ctx_init(struct pointer_data** ctx, u64 size);
 void pointer_ctx_destroy(struct pointer_data** ctx);
 
-static struct pointer* pointer_vm_alloc(u64 size, enum type type);
+static struct pointer* pointer_vm_alloc(u64 size, u64 typeid);
 static void pointer_vm_realloc(struct pointer* ptr, u64 size);
 static void pointer_vm_free(struct pointer* ptr);
 static void pointer_vm_cleanup(struct list_data** current);
@@ -105,13 +105,13 @@ static void DESTROY vm_types_destroy() {
     }
 }
 
-static struct pointer* pointer_vm_alloc(u64 size, enum type type) {
+static struct pointer* pointer_vm_alloc(u64 size, u64 typeid) {
     struct pointer* ptr = global_alloc(POINTER_SIZE);
     if (size != 0) {
         ptr->data = global_alloc(size);
         ptr->size = size;
     }
-    ptr->type = type;
+    ptr->typeid = typeid;
     return ptr;
 }
 
@@ -129,7 +129,7 @@ static void pointer_vm_free(struct pointer* ptr) {
     if (ptr->data != 0 && ptr->size != 0) {
         global_free(ptr->data, ptr->size);
     }
-    vm->free(ptr->address);
+    vm->free(ptr);
     global_free(ptr, POINTER_SIZE);
 }
 
