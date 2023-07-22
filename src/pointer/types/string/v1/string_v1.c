@@ -70,7 +70,7 @@ static u64 string_copy(u64 ptr) {
     if (data_ptr->size == 0) {
         return 0;
     }
-    struct pointer* copy_ptr = virtual->alloc(data_ptr->size, data_ptr->type);
+    struct pointer* copy_ptr = virtual->alloc(data_ptr->size, TYPE_STRING);
     memcpy(copy_ptr->data, data_ptr->data, copy_ptr->size); /* NOLINT */
     u64 data = vm->alloc(copy_ptr);
 #ifdef USE_GC
