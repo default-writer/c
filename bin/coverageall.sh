@@ -162,7 +162,7 @@ for target in ${targets[@]}; do
     case "${target}" in main-*)
         timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/coverage_v1/${target}" 2>&1 >"${pwd}/out/log-${target}_v1.txt" || (echo ERROR: "${target}" && exit 1)
         lcov --capture --directory "${pwd}/coverage_v1/" --output-file "${pwd}/coverage_v1/${target}.lcov" &>/dev/null
-        lcov --remove "${pwd}/coverage_v1/${target}.lcov" "${pwd}/.deps/*" -o "${pwd}/coverage_v1/${target}_v1.lcov"
+        lcov --remove "${pwd}/coverage_v1/${target}.lcov" "${pwd}/.deps/*" -o "${pwd}/coverage/${target}_v1.lcov"
         rm "${pwd}/coverage_v1/${target}.lcov"
     esac
 done
@@ -188,7 +188,7 @@ ${cmake} \
 
 for target in ${targets[@]}; do
     echo Building target ${target}
-    echo Building with options $(cmake-coverage-options) -DGC:BOOL=FALSE
+    echo Building with options $(cmake-coverage-options) -DGC:BOOL=TRUE
     if [ "${silent}" == "--silent" ]; then
         ${cmake} --build "${pwd}/coverage_v2" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
     else
@@ -197,12 +197,12 @@ for target in ${targets[@]}; do
     case "${target}" in main-*)
         timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/coverage_v2/${target}" 2>&1 >"${pwd}/out/log-${target}_v2.txt" || (echo ERROR: "${target}" && exit 1)
         lcov --capture --directory "${pwd}/coverage_v2/" --output-file "${pwd}/coverage_v2/${target}.lcov" &>/dev/null
-        lcov --remove "${pwd}/coverage_v2/${target}.lcov" "${pwd}/.deps/*" -o "${pwd}/coverage_v2/${target}_v2.lcov"
+        lcov --remove "${pwd}/coverage_v2/${target}.lcov" "${pwd}/.deps/*" -o "${pwd}/coverage/${target}_v2.lcov"
         rm "${pwd}/coverage_v2/${target}.lcov"
     esac
 done
 
-find "${pwd}/coverage" "${pwd}/coverage" -type f -name "*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
+find "${pwd}/coverage" -type f -name "*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
 
 
 if [ "${silent}" == "--silent" ]; then
