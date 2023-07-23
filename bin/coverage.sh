@@ -111,8 +111,6 @@ targets=( $(get-targets) )
 
 default=${target}
 
-find "${pwd}/coverage" -type f -name "*.lcov" -delete
-
 target=${default}
 if [ "${target}" == "--target" ]; then
     for target in ${targets[@]}; do
@@ -154,7 +152,7 @@ for target in ${targets[@]}; do
         ${cmake} --build "${pwd}/coverage" --target "${target}" || (echo ERROR: "${target}" && exit 1)
     fi
     case "${target}" in main-*)
-        timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/coverage/${target}" 2>&1 >"${pwd}/coverage/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
+        timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/coverage/${target}" 2>&1 >"${pwd}/out/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
         lcov --capture --directory "${pwd}/coverage/" --output-file "${pwd}/coverage/${target}.lcov" &>/dev/null
         lcov --remove "${pwd}/coverage/${target}.lcov" "${pwd}/.deps/*" -o "${pwd}/coverage/${target}.lcov"
     esac

@@ -113,10 +113,6 @@ targets=( $(get-targets) )
 
 default=${target}
 
-find "${pwd}/coverage_v1" -type f -name "*.lcov" -delete
-find "${pwd}/coverage_v2" -type f -name "*.lcov" -delete
-find "${pwd}/coverage" -type f -name "*.lcov" -delete
-
 target=${default}
 if [ "${target}" == "--target" ]; then
     for target in ${targets[@]}; do
@@ -155,11 +151,6 @@ ${cmake} \
     -B"${pwd}/coverage_v1" \
     -G "Ninja" 2>&1 >/dev/null
 
-coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" )
-for f in ${coverage}; do
-    find "${pwd}/coverage_v1" -type f -name "${f}" -delete
-done
-
 for target in ${targets[@]}; do
     echo Building target ${target}
     echo Building with options $(cmake-coverage-options) -DGC:BOOL=FALSE
@@ -169,9 +160,10 @@ for target in ${targets[@]}; do
         ${cmake} --build "${pwd}/coverage_v1" --target "${target}" || (echo ERROR: "${target}" && exit 1)
     fi
     case "${target}" in main-*)
-        timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/coverage_v1/${target}" 2>&1 >"${pwd}/coverage/log-${target}_v1.txt" || (echo ERROR: "${target}" && exit 1)
+        timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/coverage_v1/${target}" 2>&1 >"${pwd}/out/log-${target}_v1.txt" || (echo ERROR: "${target}" && exit 1)
         lcov --capture --directory "${pwd}/coverage_v1/" --output-file "${pwd}/coverage_v1/${target}.lcov" &>/dev/null
         lcov --remove "${pwd}/coverage_v1/${target}.lcov" "${pwd}/.deps/*" -o "${pwd}/coverage_v1/${target}_v1.lcov"
+        rm "${pwd}/coverage_v1/${target}.lcov"
     esac
 done
 
@@ -203,21 +195,14 @@ for target in ${targets[@]}; do
         ${cmake} --build "${pwd}/coverage_v2" --target "${target}" || (echo ERROR: "${target}" && exit 1)
     fi
     case "${target}" in main-*)
-        timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/coverage_v2/${target}" 2>&1 >"${pwd}/coverage/log-${target}_v2.txt" || (echo ERROR: "${target}" && exit 1)
+        timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/coverage_v2/${target}" 2>&1 >"${pwd}/out/log-${target}_v2.txt" || (echo ERROR: "${target}" && exit 1)
         lcov --capture --directory "${pwd}/coverage_v2/" --output-file "${pwd}/coverage_v2/${target}.lcov" &>/dev/null
         lcov --remove "${pwd}/coverage_v2/${target}.lcov" "${pwd}/.deps/*" -o "${pwd}/coverage_v2/${target}_v2.lcov"
+        rm "${pwd}/coverage_v2/${target}.lcov"
     esac
 done
 
-for target in ${targets[@]}; do
-    echo Merging tracefiles for target ${target}
-    case "${target}" in main-*)
-        lcov --add-tracefile "${pwd}/coverage_v1/${target}_v1.lcov" --add-tracefile "${pwd}/coverage_v2/${target}_v2.lcov" --output-file "${pwd}/coverage/${target}.lcov"
-    esac
-done
-
-find "${pwd}/coverage" -type f -name "*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
-# find "${pwd}/coverage" -type f -name "*.lcov" ! -name "lcov.info" -delete
+find "${pwd}/coverage" "${pwd}/coverage" -type f -name "*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
 
 
 if [ "${silent}" == "--silent" ]; then
