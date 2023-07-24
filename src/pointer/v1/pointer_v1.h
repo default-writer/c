@@ -84,4 +84,7 @@ struct pointer_methods {
 #endif
 };
 
+struct pointer_data* pointer_data_init(u64 size);
+void pointer_data_destroy(struct pointer_data** ctx);
+
 #endif /* _POINTER_V1_H_ */

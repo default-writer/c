@@ -61,14 +61,11 @@ static const struct vm_methods* vm = &vm_methods_definition;
 static const struct list* list = &list_micro_definition;
 static struct vm* vm_ptr;
 
-static void pointer_init(u64 size);
-static void pointer_destroy(void);
-
 /* api */
-void pointer_vm_register_type(struct vm_type* type);
-void pointer_ctx_init(struct pointer_data** ctx, u64 size);
-void pointer_ctx_destroy(struct pointer_data** ctx);
+struct pointer_data* pointer_data_init(u64 size);
+void pointer_data_destroy(struct pointer_data** ctx);
 
+/* internal */
 static struct pointer* pointer_vm_alloc(u64 size, u64 typeid);
 static void pointer_vm_realloc(struct pointer* ptr, u64 size);
 static void pointer_vm_free(struct pointer* ptr);
@@ -101,8 +98,8 @@ struct list_handler {
 
 static void pointer_init_internal(struct pointer_data* ptr, u64 size);
 static void pointer_destroy_internal(struct pointer_data* ptr);
-static void pointer_ctx_init_internal(struct pointer_data* ptr, u64 size);
-static void pointer_ctx_destroy_internal(struct pointer_data* ptr);
+static void pointer_data_init_internal(struct pointer_data* ptr, u64 size);
+static void pointer_data_destroy_internal(struct pointer_data* ptr);
 static void copy_internal(struct pointer_data* dest, struct pointer_data* src);
 
 /* free */
@@ -211,22 +208,23 @@ static void copy_internal(struct pointer_data* dest, struct pointer_data* src) {
 #endif
 }
 
-static void pointer_ctx_init_internal(struct pointer_data* ptr, u64 size) {
+static void pointer_data_init_internal(struct pointer_data* ptr, u64 size) {
     copy_internal(base, ptr);
     pointer_init_internal(base, size);
 }
 
-static void pointer_ctx_destroy_internal(struct pointer_data* ptr) {
+static void pointer_data_destroy_internal(struct pointer_data* ptr) {
     copy_internal(ptr, base);
     pointer_destroy_internal(base);
 }
 
-void pointer_ctx_init(struct pointer_data** ctx, u64 size) {
-    *ctx = global_alloc(POINTER_DATA_SIZE);
-    pointer_ctx_init_internal(*ctx, size);
+struct pointer_data* pointer_data_init(u64 size) {
+    struct pointer_data* context = global_alloc(POINTER_DATA_SIZE);
+    pointer_data_init_internal(context, size);
+    return context;
 }
 
-void pointer_ctx_destroy(struct pointer_data** ctx) {
+void pointer_data_destroy(struct pointer_data** ctx) {
 #ifdef VM_DEBUG_INFO
     vm->dump_ref();
     vm->dump();
@@ -234,7 +232,7 @@ void pointer_ctx_destroy(struct pointer_data** ctx) {
 #ifdef USE_GC
     pointer_gc();
 #endif
-    pointer_ctx_destroy_internal(*ctx);
+    pointer_data_destroy_internal(*ctx);
     global_free(*ctx, POINTER_DATA_SIZE);
 }
 
