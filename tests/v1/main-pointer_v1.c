@@ -40,8 +40,8 @@
 #define DEFAULT_SIZE 0x8
 
 /* definition */
-extern void pointer_ctx_init(struct pointer_data** ctx, u64 size);
-extern void pointer_ctx_destroy(struct pointer_data** ctx);
+extern struct pointer_data* pointer_data_init(u64 size);
+extern void pointer_data_destroy(struct pointer_data** ctx);
 
 extern const struct vm_methods vm_methods_definition;
 
@@ -64,14 +64,14 @@ typedef struct test_data {
 RX_SET_UP(test_set_up) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct pointer_data** ctx = &rx->ctx;
-    pointer_ctx_init(ctx, 8);
+    *ctx = pointer_data_init(8);
     return RX_SUCCESS;
 }
 
 RX_TEAR_DOWN(test_tear_down) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct pointer_data** ctx = &rx->ctx;
-    pointer_ctx_destroy(ctx);
+    pointer_data_destroy(ctx);
 }
 
 /* Define the fixture. */
