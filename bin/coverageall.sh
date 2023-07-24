@@ -159,11 +159,15 @@ for target in ${targets[@]}; do
     else
         ${cmake} --build "${pwd}/coverage_v1" --target "${target}" || (echo ERROR: "${target}" && exit 1)
     fi
-    case "${target}" in main-*)
-        timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/coverage_v1/${target}" 2>&1 >"${pwd}/out/log-${target}_v1.txt" || (echo ERROR: "${target}" && exit 1)
-        lcov --capture --directory "${pwd}/coverage_v1/" --output-file "${pwd}/coverage_v1/${target}.lcov" &>/dev/null
-        lcov --remove "${pwd}/coverage_v1/${target}.lcov" "${pwd}/.deps/*" -o "${pwd}/coverage/${target}_v1.lcov"
-        rm "${pwd}/coverage_v1/${target}.lcov"
+    case "${target}" in 
+        main-*) ;& test-*)
+            timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/coverage_v1/${target}" 2>&1 >"${pwd}/out/log-${target}_v1.txt" || (echo ERROR: "${target}" && exit 1)
+            lcov --capture --directory "${pwd}/coverage_v1/" --output-file "${pwd}/coverage_v1/${target}.lcov" &>/dev/null
+            lcov --remove "${pwd}/coverage_v1/${target}.lcov" "${pwd}/.deps/*" -o "${pwd}/coverage/${target}_v1.lcov"
+            rm "${pwd}/coverage_v1/${target}.lcov"
+            ;;
+        *)
+            ;;
     esac
 done
 
@@ -194,13 +198,18 @@ for target in ${targets[@]}; do
     else
         ${cmake} --build "${pwd}/coverage_v2" --target "${target}" || (echo ERROR: "${target}" && exit 1)
     fi
-    case "${target}" in main-*)
-        timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/coverage_v2/${target}" 2>&1 >"${pwd}/out/log-${target}_v2.txt" || (echo ERROR: "${target}" && exit 1)
-        lcov --capture --directory "${pwd}/coverage_v2/" --output-file "${pwd}/coverage_v2/${target}.lcov" &>/dev/null
-        lcov --remove "${pwd}/coverage_v2/${target}.lcov" "${pwd}/.deps/*" -o "${pwd}/coverage/${target}_v2.lcov"
-        rm "${pwd}/coverage_v2/${target}.lcov"
+    case "${target}" in 
+        main-*) ;& test-*)
+            timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/coverage_v2/${target}" 2>&1 >"${pwd}/out/log-${target}_v2.txt" || (echo ERROR: "${target}" && exit 1)
+            lcov --capture --directory "${pwd}/coverage_v2/" --output-file "${pwd}/coverage_v2/${target}.lcov" &>/dev/null
+            lcov --remove "${pwd}/coverage_v2/${target}.lcov" "${pwd}/.deps/*" -o "${pwd}/coverage/${target}_v2.lcov"
+            rm "${pwd}/coverage_v2/${target}.lcov"
+            ;;
+        *)
+            ;;            
     esac
 done
+
 
 find "${pwd}/coverage" -type f -name "*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
 
