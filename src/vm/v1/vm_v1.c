@@ -95,7 +95,8 @@ static void vm_dump_ref(void);
 #endif
 static u64 vm_alloc(struct pointer* ptr);
 static void vm_free(struct pointer* ptr);
-static struct pointer* vm_read(u64 address, u64 typeid);
+static struct pointer* vm_read(u64 address);
+static struct pointer* vm_read_type(u64 address, u64 id);
 #ifdef VM_DEBUG_INFO
 static struct pointer* vm_data_enumerator_next(void);
 static void* vm_data_enumerator_next_ref(void);
@@ -261,7 +262,7 @@ static void vm_free(struct pointer* ptr) {
     }
 }
 
-static struct pointer* vm_read(u64 address, u64 typeid) {
+static struct pointer* vm_read_type(u64 address, u64 id) {
     if (!address) {
         return 0;
     }
@@ -274,7 +275,26 @@ static struct pointer* vm_read(u64 address, u64 typeid) {
     if (ptr == 0) {
         return 0;
     }
-    if (ptr->typeid != typeid) {
+    if (ptr->id != id) {
+        return 0;
+    }
+#ifdef VM_DEBUG_INFO
+    printf("  <v: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)data);
+#endif
+    return ptr;
+}
+
+static struct pointer* vm_read(u64 address) {
+    if (!address) {
+        return 0;
+    }
+    struct pointer** data = vm_read_internal(address);
+    struct pointer* ptr = 0;
+    if (data == 0) {
+        return 0;
+    }
+    ptr = *data;
+    if (ptr == 0) {
         return 0;
     }
 #ifdef VM_DEBUG_INFO
@@ -343,6 +363,7 @@ const struct vm_methods vm_methods_definition = {
     .alloc = vm_alloc,
     .free = vm_free,
     .read = vm_read,
+    .read_type = vm_read_type,
 #ifdef VM_DEBUG_INFO
     .dump = vm_dump,
     .dump_ref = vm_dump_ref

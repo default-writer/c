@@ -52,6 +52,10 @@ for opt in ${opts[@]}; do
         "")
             ;;
 
+        "--keep") # [optional] keeps coverage files and merges them
+            keep="--keep"
+            ;;
+
         "--clean") # [optional] cleans up directories before build
             clean="--clean"
             ;;
@@ -99,6 +103,7 @@ fi
 [ ! -d "${pwd}/coverage_v2" ] && mkdir "${pwd}/coverage_v2"
 [ ! -d "${pwd}/coverage" ] && mkdir "${pwd}/coverage"
 
+if [ "${keep}" == "" ]; then
 if [ "${clean}" == "--clean" ]; then
     rm -rf "${pwd}/coverage_v1"
     rm -rf "${pwd}/coverage_v2"
@@ -106,6 +111,7 @@ if [ "${clean}" == "--clean" ]; then
     mkdir "${pwd}/coverage_v1"
     mkdir "${pwd}/coverage_v2"
     mkdir "${pwd}/coverage"
+fi
 fi
 
 cmake=$(get-cmake)
@@ -206,13 +212,14 @@ for target in ${targets[@]}; do
             rm "${pwd}/coverage_v2/${target}.lcov"
             ;;
         *)
-            ;;            
+            ;;
     esac
 done
 
 
-find "${pwd}/coverage" -type f -name "*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
-
+if [ "${keep}" == "" ]; then
+    find "${pwd}/coverage" -type f -name "*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
+fi
 
 if [ "${silent}" == "--silent" ]; then
     exec 1>&2 2>&-

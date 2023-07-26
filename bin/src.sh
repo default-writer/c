@@ -123,10 +123,18 @@ done
 if [[ "$found_target_base" = true ]]; then
     linked_targets=$(get-linked-targets ${target_base})
     for linked_target in ${linked_targets[@]}; do
-        if [[ " ${targets[*]} " == *" ${linked_target} "* ]]; then
-            ${pwd}/bin/coverageall.sh --target ${linked_target} ${opts[@]}
-        fi
+        case ${linked_target} in
+            main-*) ;& test-*)
+                if [[ " ${targets[*]} " == *" ${linked_target} "* ]]; then
+                    ${pwd}/bin/coverageall.sh --target ${linked_target} --keep ${opts[@]}
+                fi
+                ;;
+            *)
+                ${pwd}/bin/buildall.sh --target ${linked_target} --keep
+                ;;
+        esac
     done
+    find "${pwd}/coverage" -type f -name "*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
 else
     help
     exit 8

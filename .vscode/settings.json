@@ -238,9 +238,6 @@
   "[c]": {
     "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
   },
-  "[jsonc]": {
-    "editor.defaultFormatter": "trunk.io"
-  },
   "files.watcherExclude": {
     "**/.git/objects/**": true,
     "**/.git/subtree-cache/**": true,
@@ -252,9 +249,6 @@
     "**/config/**": true,
     "**/logs/**": true,
     "**/gtk/**": true
-  },
-  "[json]": {
-    "editor.defaultFormatter": "trunk.io"
   },
   "cmake.configureArgs": [
     "CONFIG_MEMORY_DEBUG_INFO",

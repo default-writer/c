@@ -48,13 +48,16 @@ static const struct list* list = &list_micro_definition;
 static const struct pointer_vm_methods* virtual = &pointer_vm_methods_definition;
 static struct pointer_data* base = &vm_pointer;
 static const struct vm_type type_definition;
+static const struct vm_type* type = &type_definition;
 
 /* internal */
 static u64 list_alloc(void);
-static u64 list_free(u64 ptr);
+static void list_free(u64 ptr);
+static void list_vm_free(struct pointer* ptr);
 static void list_push(u64 ptr, u64 data_ptr);
 static u64 list_peek(u64 ptr);
 static u64 list_pop(u64 ptr);
+static u64 list_size(u64 ptr);
 
 /* implementation*/
 struct list_handler {
@@ -62,7 +65,7 @@ struct list_handler {
 };
 
 static u64 list_alloc(void) {
-    struct pointer* ptr = virtual->alloc(sizeof(struct list_handler), TYPE_LIST);
+    struct pointer* ptr = virtual->alloc(sizeof(struct list_handler), type->id);
     struct list_handler* handler = ptr->data;
     list->init(&handler->list);
     u64 data = vm->alloc(ptr);
@@ -72,16 +75,19 @@ static u64 list_alloc(void) {
     return data;
 }
 
-static u64 list_free(u64 ptr) {
-    struct pointer* data_ptr = vm->read(ptr, TYPE_LIST);
+static void list_free(u64 ptr) {
+    struct pointer* data_ptr = vm->read_type(ptr, type->id);
     if (data_ptr == 0) {
-        return 0;
+        return;
     }
-    struct list_handler* handler = data_ptr->data;
+    list_vm_free(data_ptr);
+}
+
+static void list_vm_free(struct pointer* ptr) {
+    struct list_handler* handler = ptr->data;
     virtual->cleanup(&handler->list);
     list->destroy(&handler->list);
-    virtual->free(data_ptr);
-    return TYPE_LIST;
+    virtual->free(ptr);
 }
 
 static void list_push(u64 ptr_list, u64 ptr) {
@@ -91,7 +97,7 @@ static void list_push(u64 ptr_list, u64 ptr) {
     if (ptr == 0) {
         return;
     }
-    struct pointer* data_ptr = vm->read(ptr_list, TYPE_LIST);
+    struct pointer* data_ptr = vm->read_type(ptr_list, type->id);
     if (data_ptr == 0) {
         return;
     }
@@ -103,7 +109,7 @@ static void list_push(u64 ptr_list, u64 ptr) {
 }
 
 static u64 list_peek(u64 ptr) {
-    struct pointer* data_ptr = vm->read(ptr, TYPE_LIST);
+    struct pointer* data_ptr = vm->read_type(ptr, type->id);
     if (data_ptr == 0) {
         return 0;
     }
@@ -113,7 +119,7 @@ static u64 list_peek(u64 ptr) {
 }
 
 static u64 list_pop(u64 ptr) {
-    struct pointer* data_ptr = vm->read(ptr, TYPE_LIST);
+    struct pointer* data_ptr = vm->read_type(ptr, type->id);
     if (data_ptr == 0) {
         return 0;
     }
@@ -123,7 +129,7 @@ static u64 list_pop(u64 ptr) {
 }
 
 static u64 list_size(u64 ptr) {
-    struct pointer* data_ptr = vm->read(ptr, TYPE_LIST);
+    const struct pointer* data_ptr = vm->read_type(ptr, type->id);
     if (data_ptr == 0) {
         return 0;
     }
@@ -132,12 +138,11 @@ static u64 list_size(u64 ptr) {
 }
 
 static const struct vm_type type_definition = {
-    .free = list_free,
-    .typeid = TYPE_LIST
+    .free = list_vm_free,
+    .id = TYPE_LIST
 };
 
 static void INIT init() {
-    const struct vm_type* type = &type_definition;
     pointer_vm_register_type(type);
 }
 

@@ -23,7 +23,7 @@
  * SOFTWARE.
  *
  */
-#include "pointer/types/object/v1/object_v1.h"
+#include "pointer/types/void/v1/void_v1.h"
 #include "common/alloc.h"
 #include "list-micro/data.h"
 #include "pointer/v1/pointer_v1.h"
@@ -32,8 +32,8 @@
 #define DEFAULT_SIZE 0x100
 
 /* api */
-const struct object_methods object_methods_definition;
-void object_init();
+const struct void_methods void_methods_definition;
+void void_init();
 
 /* definition */
 extern void pointer_vm_register_type(const struct vm_type* type);
@@ -51,15 +51,12 @@ static const struct vm_type type_definition;
 static const struct vm_type* type = &type_definition;
 
 /* internal */
-static u64 object_alloc(u64 size);
-static void object_free(u64 ptr);
-static void object_vm_free(struct pointer* ptr);
-static void* object_unsafe(u64 ptr);
-static u64 object_load(const void* data, u64 size);
-static u64 object_size(u64 ptr);
+static u64 void_alloc(u64 size);
+static void void_free(u64 ptr);
+static void void_vm_free(struct pointer* ptr);
 
 /* implementation*/
-static u64 object_alloc(u64 size) {
+static u64 void_alloc(u64 size) {
     if (size == 0) {
         return 0;
     }
@@ -71,19 +68,15 @@ static u64 object_alloc(u64 size) {
     return data;
 }
 
-static void object_free(u64 ptr) {
+static void void_free(u64 ptr) {
     struct pointer* data_ptr = vm->read_type(ptr, type->id);
     if (data_ptr == 0) {
         return;
     }
-    return object_vm_free(data_ptr);
+    return void_vm_free(data_ptr);
 }
 
-static void object_vm_free(struct pointer* ptr) {
-    virtual->free(ptr);
-}
-
-static void* object_unsafe(u64 ptr) {
+static void* void_unsafe(u64 ptr) {
     struct pointer* data_ptr = vm->read_type(ptr, type->id);
     if (data_ptr == 0) {
         return 0;
@@ -92,34 +85,13 @@ static void* object_unsafe(u64 ptr) {
     return data;
 }
 
-static u64 object_load(const void* src_data, u64 size) {
-    if (src_data == 0) {
-        return 0;
-    }
-    if (size == 0) {
-        return 0;
-    }
-    struct pointer* data_ptr = virtual->alloc(size, type->id);
-    memcpy(data_ptr->data, src_data, size); /* NOLINT */
-    u64 data = vm->alloc(data_ptr);
-#ifdef USE_GC
-    list->push(&base->gc, (void*)data);
-#endif
-    return data;
-}
-
-static u64 object_size(u64 ptr) {
-    const struct pointer* data_ptr = vm->read_type(ptr, type->id);
-    if (data_ptr == 0) {
-        return 0;
-    }
-    u64 size = data_ptr->size;
-    return size;
+static void void_vm_free(struct pointer* ptr) {
+    virtual->free(ptr);
 }
 
 static const struct vm_type type_definition = {
-    .free = object_vm_free,
-    .id = TYPE_OBJECT
+    .free = void_vm_free,
+    .id = TYPE_VOID
 };
 
 static void INIT init() {
@@ -127,16 +99,14 @@ static void INIT init() {
 }
 
 /* public */
-const struct object_methods object_methods_definition = {
-    .alloc = object_alloc,
-    .free = object_free,
-    .load = object_load,
-    .unsafe = object_unsafe,
-    .size = object_size
+const struct void_methods void_methods_definition = {
+    .alloc = void_alloc,
+    .free = void_free,
+    .unsafe = void_unsafe
 };
 
 #ifndef ATTRIBUTE
-void object_init() {
+void void_init() {
     init();
 }
 #endif

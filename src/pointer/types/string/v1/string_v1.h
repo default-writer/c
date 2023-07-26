@@ -30,7 +30,7 @@
 
 struct string_methods {
     u64 (*alloc)(void);
-    u64 (*free)(u64 ptr);
+    void (*free)(u64 ptr);
     u64 (*copy)(u64 ptr);
     void (*strcpy)(u64 dest, u64 src);
     void (*strcat)(u64 dest, u64 src);

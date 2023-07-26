@@ -53,6 +53,10 @@ for opt in ${opts[@]}; do
         "")
             ;;
 
+        "--keep") # [optional] keeps coverage files and merges them
+            keep="--keep"
+            ;;
+
         "--silent") # [optional] suppress verbose output
             silent="--silent"
             ;;
@@ -74,17 +78,17 @@ fi
 
 echo =============================================================================
 echo -1/6------- building with garbage collector ---------------------------------
-"${pwd}/bin/build.sh" ${target} --gc --clean ${silent}
+"${pwd}/bin/build.sh" ${target} ${keep} --gc --clean ${silent}
 echo -2/6------- building with garbage collector / with sanitizer ----------------
-"${pwd}/bin/build.sh" ${target} --gc --clean --sanitize ${silent}
+"${pwd}/bin/build.sh" ${target} ${keep} --gc --clean --sanitize ${silent}
 echo -3/6------- building with garbage collector / with valgrind -----------------
-"${pwd}/bin/build.sh" ${target} --gc --clean --valgrind ${silent}
+"${pwd}/bin/build.sh" ${target} ${keep} --gc --clean --valgrind ${silent}
 echo -4/6------- building without garbage collector ------------------------------
-"${pwd}/bin/build.sh" ${target} --clean ${silent}
+"${pwd}/bin/build.sh" ${target} ${keep} --clean ${silent}
 echo -5/6------- building without garbage collector / with sanitizer -------------
-"${pwd}/bin/build.sh" ${target} --clean --sanitize ${silent}
+"${pwd}/bin/build.sh" ${target} ${keep} --clean --sanitize ${silent}
 echo -6/6------- building without garbage collector / with valgrind --------------
-"${pwd}/bin/build.sh" ${target} --clean --valgrind ${silent}
+"${pwd}/bin/build.sh" ${target} ${keep} --clean --valgrind ${silent}
 echo =============================================================================
 
 if [ "${silent}" == "--silent" ]; then

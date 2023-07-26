@@ -37,7 +37,8 @@ struct vm_methods {
     void (*destroy)(struct vm**);
     u64 (*alloc)(struct pointer* value);
     void (*free)(struct pointer* ptr);
-    struct pointer* (*read)(u64 address, u64 typeid);
+    struct pointer* (*read)(u64 address);
+    struct pointer* (*read_type)(u64 address, u64 id);
 #ifdef VM_DEBUG_INFO
     void (*dump)(void);
     void (*dump_ref)(void);
@@ -45,8 +46,8 @@ struct vm_methods {
 };
 
 struct vm_type {
-    u64 (*free)(u64 args);
-    const u64 typeid;
+    void (*free)(struct pointer* ptr);
+    u64 id;
 };
 
 #endif /* _VIRTUAL_H_ */

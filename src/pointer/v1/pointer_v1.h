@@ -29,18 +29,20 @@
 #include "std/common.h"
 
 enum type {
-    /* value used for void type */
-    TYPE_VOID = 0,
-    /* value used for pointer type */
-    TYPE_PTR = 1,
-    /* value used for string type */
-    TYPE_STRING = 2,
-    /* value used for file type */
-    TYPE_FILE = 3,
-    /* value used for list type */
-    TYPE_LIST = 4,
-    /* value used for object type */
-    TYPE_OBJECT = 5,
+    /* value used for ephemeral type - null */
+    TYPE_NULL = 0,
+    /* value used for void type - void */
+    TYPE_VOID = 1,
+    /* value used for pointer type - ref */
+    TYPE_DATA = 2,
+    /* value used for string type - string */
+    TYPE_STRING = 3,
+    /* value used for file type - file */
+    TYPE_FILE = 4,
+    /* value used for list type - list */
+    TYPE_LIST = 5,
+    /* value used for object type - object */
+    TYPE_OBJECT = 6,
 };
 
 struct vm_data;
@@ -52,7 +54,7 @@ struct pointer {
     void* data;
     u64 size;
     u64 address;
-    u64 typeid;
+    u64 id;
 };
 
 struct pointer_data {
@@ -63,7 +65,7 @@ struct pointer_data {
 };
 
 struct pointer_vm_methods {
-    struct pointer* (*alloc)(u64 size, u64 typeid);
+    struct pointer* (*alloc)(u64 size, u64 id);
     void (*realloc)(struct pointer* ptr, u64 size);
     void (*free)(struct pointer* ptr);
     void (*cleanup)(struct list_data** current);

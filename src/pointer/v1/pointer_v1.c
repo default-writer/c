@@ -33,7 +33,7 @@
 #define POINTER_DATA_SIZE sizeof(struct pointer_data)
 
 /* public */
-void pointer_vm_register_type(struct vm_type* type);
+void pointer_vm_register_type(struct vm_type* ptr);
 
 /* private */
 struct vm_types {
@@ -42,17 +42,22 @@ struct vm_types {
 };
 struct pointer_data vm_pointer;
 
-static struct vm_types types_definition;
-static struct vm_types* types = &types_definition;
+static struct vm_types vm_types_definition;
+static struct vm_types* vm_types = &vm_types_definition;
+static struct vm_type* types;
+
+static const struct vm_type type_definition;
+static const struct vm_type* type = &type_definition;
 
 /* definition */
 extern const struct vm_methods vm_methods_definition;
 extern const struct list list_micro_definition;
 
+extern void void_init(void);
 extern void data_init(void);
-extern void list_init(void);
-extern void file_init(void);
 extern void string_init(void);
+extern void file_init(void);
+extern void list_init(void);
 extern void object_init(void);
 
 /* definition */
@@ -62,11 +67,12 @@ static const struct list* list = &list_micro_definition;
 static struct vm* vm_ptr;
 
 /* api */
+const struct pointer_vm_methods pointer_vm_methods_definition;
 struct pointer_data* pointer_data_init(u64 size);
 void pointer_data_destroy(struct pointer_data** ctx);
 
 /* internal */
-static struct pointer* pointer_vm_alloc(u64 size, u64 typeid);
+static struct pointer* pointer_vm_alloc(u64 size, u64 id);
 static void pointer_vm_realloc(struct pointer* ptr, u64 size);
 static void pointer_vm_free(struct pointer* ptr);
 static void pointer_vm_cleanup(struct list_data** current);
@@ -103,37 +109,44 @@ static void pointer_data_destroy_internal(struct pointer_data* ptr);
 static void copy_internal(struct pointer_data* dest, struct pointer_data* src);
 
 /* free */
-static void vm_types_init(struct vm_type* type);
+static void vm_types_init(struct vm_type* ptr);
 static void vm_types_destroy(void);
 static void pointer_free_internal(u64 ptr);
 
 /* internal */
-void pointer_vm_register_type(struct vm_type* type) {
-    vm_types_init(type);
+void pointer_vm_register_type(struct vm_type* ptr) {
+    vm_types_init(ptr);
 }
 
-static void vm_types_init(struct vm_type* type) {
+static const struct pointer_vm_methods* virtual = &pointer_vm_methods_definition;
+
+static u64 type_count = TYPE_OBJECT;
+
+static void vm_types_init(struct vm_type* ptr) {
     struct vm_types* next = global_alloc(sizeof(struct vm_types));
-    next->type = type;
-    next->next = types;
-    types = next;
+    next->type = ptr;
+    next->next = vm_types;
+    if (ptr->id == 0) {
+        ptr->id = ++type_count;
+    }
+    vm_types = next;
 }
 
 static void DESTROY vm_types_destroy() {
-    while (types->next != 0) {
-        struct vm_types* prev = types->next;
-        global_free(types, sizeof(struct vm_types));
-        types = prev;
+    while (vm_types->next != 0) {
+        struct vm_types* prev = vm_types->next;
+        global_free(vm_types, sizeof(struct vm_types));
+        vm_types = prev;
     }
 }
 
-static struct pointer* pointer_vm_alloc(u64 size, u64 typeid) {
+static struct pointer* pointer_vm_alloc(u64 size, u64 id) {
     struct pointer* ptr = global_alloc(POINTER_SIZE);
     if (size != 0) {
         ptr->data = global_alloc(size);
         ptr->size = size;
     }
-    ptr->typeid = typeid;
+    ptr->id = id;
     return ptr;
 }
 
@@ -156,13 +169,13 @@ static void pointer_vm_free(struct pointer* ptr) {
 }
 
 static void pointer_free_internal(u64 ptr) {
-    struct vm_types* current = types;
-    while (current->next != 0) {
-        const struct vm_type* type = current->type;
-        if (type->typeid == type->free(ptr)) {
-            return;
-        }
-        current = current->next;
+    struct pointer* data_ptr = vm->read(ptr);
+    if (data_ptr == 0) {
+        return;
+    }
+    const struct vm_type* type_ptr = types + data_ptr->id;
+    if (type_ptr->free) {
+        type_ptr->free(data_ptr);
     }
 }
 
@@ -177,19 +190,29 @@ static void pointer_vm_cleanup(struct list_data** current) {
 static void pointer_init_internal(struct pointer_data* ptr, u64 size) {
     vm_ptr = vm->init(size);
     list->init(&ptr->list);
-#ifndef ATTRIBUTE
-    data_init();
-    list_init();
-    file_init();
-    string_init();
-    object_init();
-#endif
 #ifdef USE_GC
     list->init(&ptr->gc);
 #endif
+#ifndef ATTRIBUTE
+    void_init();
+    data_init(void);
+    string_init(void);
+    file_init(void);
+    list_init(void);
+    object_init(void);
+#endif
+    types = global_alloc((type_count + 1) * sizeof(struct vm_type));
+    struct vm_types* current = vm_types;
+    while (current->next != 0) {
+        struct vm_types* prev = current->next;
+        types[current->type->id] = *(current->type);
+        current = prev;
+    }
+    types[TYPE_VOID] = *type;
 }
 
 static void pointer_destroy_internal(struct pointer_data* ptr) {
+    global_free(types, type_count * sizeof(struct vm_type));
 #ifdef USE_GC
     list->destroy(&ptr->gc);
 #endif

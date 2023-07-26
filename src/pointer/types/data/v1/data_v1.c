@@ -48,16 +48,18 @@ static const struct list* list = &list_micro_definition;
 static const struct pointer_vm_methods* virtual = &pointer_vm_methods_definition;
 static struct pointer_data* base = &vm_pointer;
 static const struct vm_type type_definition;
+static const struct vm_type* type = &type_definition;
 
 /* internal */
 static u64 data_alloc(u64 size);
-static u64 data_free(u64 ptr);
+static void data_free(u64 ptr);
+static void data_vm_free(struct pointer* data_ptr);
 static void* data_unsafe(u64 ptr);
 static u64 data_size(u64 ptr);
 
 /* implementation*/
 static u64 data_alloc(u64 size) {
-    struct pointer* f_ptr = virtual->alloc(size, TYPE_PTR);
+    struct pointer* f_ptr = virtual->alloc(size, type->id);
     u64 data = vm->alloc(f_ptr);
 #ifdef USE_GC
     list->push(&base->gc, (void*)data);
@@ -65,17 +67,20 @@ static u64 data_alloc(u64 size) {
     return data;
 }
 
-static u64 data_free(u64 ptr) {
-    struct pointer* data_ptr = vm->read(ptr, TYPE_PTR);
+static void data_free(u64 ptr) {
+    struct pointer* data_ptr = vm->read_type(ptr, type->id);
     if (data_ptr == 0) {
-        return 0;
+        return;
     }
-    virtual->free(data_ptr);
-    return TYPE_PTR;
+    data_vm_free(data_ptr);
+}
+
+static void data_vm_free(struct pointer* ptr) {
+    virtual->free(ptr);
 }
 
 static void* data_unsafe(u64 ptr) {
-    struct pointer* data_ptr = vm->read(ptr, TYPE_PTR);
+    struct pointer* data_ptr = vm->read_type(ptr, type->id);
     if (data_ptr == 0) {
         return 0;
     }
@@ -84,7 +89,7 @@ static void* data_unsafe(u64 ptr) {
 }
 
 static u64 data_size(u64 ptr) {
-    struct pointer* data_ptr = vm->read(ptr, TYPE_PTR);
+    const struct pointer* data_ptr = vm->read_type(ptr, type->id);
     if (data_ptr == 0) {
         return 0;
     }
@@ -93,12 +98,11 @@ static u64 data_size(u64 ptr) {
 }
 
 static const struct vm_type type_definition = {
-    .free = data_free,
-    .typeid = TYPE_PTR
+    .free = data_vm_free,
+    .id = TYPE_DATA
 };
 
 static void INIT init() {
-    const struct vm_type* type = &type_definition;
     pointer_vm_register_type(type);
 }
 

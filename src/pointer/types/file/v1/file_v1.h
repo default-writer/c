@@ -31,8 +31,8 @@
 
 struct file_methods {
     u64 (*alloc)(u64 file_path_ptr, u64 mode_ptr);
+    void (*free)(u64 ptr);
     u64 (*data)(u64 ptr);
-    u64 (*free)(u64 ptr);
 };
 
 #endif /* _POINTER_TYPES_FILE_H_ */

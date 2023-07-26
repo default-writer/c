@@ -46,7 +46,7 @@ report
 .venv
 .args
 gtk
-build
+build*
 clangd
 cmake
 config
