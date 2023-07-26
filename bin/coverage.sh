@@ -52,6 +52,10 @@ for opt in ${opts[@]}; do
         "")
             ;;
 
+        "--keep") # [optional] keeps coverage files and merges them
+            keep="--keep"
+            ;;
+
         "--clean") # [optional] cleans up directories before build
             clean="--clean"
             ;;
@@ -99,11 +103,28 @@ if [ "${silent}" == "--silent" ]; then
     exec 2>&1 >/dev/null
 fi
 
-[ ! -d "${pwd}/coverage" ] && mkdir "${pwd}/coverage"
 
+build="${pwd}/build-coverage"
+
+if [ "${gc}" == "--gc" ]; then
+    build="${build}-gc"
+fi
+
+if [ "${sanitize}" == "--sanitize" ]; then
+    build="${build}-sanitize"
+fi
+
+if [ "${valgrind}" == "--valgrind" ]; then
+    build="${build}-valgrind"
+fi
+
+[ ! -d "${build}" ] && mkdir "${build}"
+
+if [ "${keep}" == "" ]; then
 if [ "${clean}" == "--clean" ]; then
-    rm -rf "${pwd}/coverage"
-    mkdir "${pwd}/coverage"
+    rm -rf "${build}"
+    mkdir "${build}"
+fi
 fi
 
 cmake=$(get-cmake)
@@ -140,27 +161,27 @@ ${cmake} \
     -DCODE_COVERAGE:BOOL=TRUE \
     $(cmake-options) \
     -S"${pwd}" \
-    -B"${pwd}/coverage" \
+    -B"${build}" \
     -G "Ninja" 2>&1 >/dev/null
 
 for target in ${targets[@]}; do
     echo Building target ${target}
     echo Building with options $(cmake-options)
     if [ "${silent}" == "--silent" ]; then
-        ${cmake} --build "${pwd}/coverage" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
+        ${cmake} --build "${build}" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
     else
-        ${cmake} --build "${pwd}/coverage" --target "${target}" || (echo ERROR: "${target}" && exit 1)
+        ${cmake} --build "${build}" --target "${target}" || (echo ERROR: "${target}" && exit 1)
     fi
     case "${target}" in main-*)
-        timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/coverage/${target}" 2>&1 >"${pwd}/out/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
-        lcov --capture --directory "${pwd}/coverage/" --output-file "${pwd}/coverage/${target}.lcov" &>/dev/null
-        lcov --remove "${pwd}/coverage/${target}.lcov" "${pwd}/.deps/*" -o "${pwd}/coverage/${target}.lcov"
+        timeout --foreground 180 $(cmake-valgrind-options) "${build}/${target}" 2>&1 >"${pwd}/out/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
+        lcov --capture --directory "${build}/" --output-file "${build}/${target}.lcov" &>/dev/null
+        lcov --remove "${build}/${target}.lcov" "${pwd}/.deps/*" -o "${build}/${target}.lcov"
     esac
 done
 
-find "${pwd}/coverage" -type f -name "*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
+find "${build}" -type f -name "*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
 
-find "${pwd}/coverage" -type f -name "*.lcov" ! -name "lcov.info" -delete
+find "${build}" -type f -name "*.lcov" ! -name "lcov.info" -delete
 
 if [ "${silent}" == "--silent" ]; then
     exec 1>&2 2>&-

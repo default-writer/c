@@ -280,7 +280,7 @@ add_library(tests STATIC
     ${TESTS_SRC_LIST_ALLOC}
     ${TESTS_SRC_LIST_EXPERIMENTAL}
     ${TESTS_SRC_LIST_MICRO})
-add_library(tests-vm-v1 STATIC ${TESTS_SRC_VM_V1})
+add_library(lib-tests-vm-v1 STATIC ${TESTS_SRC_VM_V1})
 
 # all
 add_library(list-v1 STATIC ${LIB_LIST1_SOURCE})
@@ -378,7 +378,7 @@ target_link_libraries(structs-v3 PRIVATE list-class)
 
 # test
 target_link_libraries(tests PRIVATE list-alloc list-parameters)
-target_link_libraries(tests-vm-v1 PRIVATE list-common list-micro list-pointer1)
+target_link_libraries(lib-tests-vm-v1 PRIVATE list-common list-micro list-pointer1)
 
 # main
 target_link_libraries(main-default PRIVATE tests list-common list-alloc list-v1 list-default)
@@ -398,14 +398,14 @@ target_link_libraries(main-pointer1 PRIVATE list-pointer1 list-micro vm-v1)
 target_link_libraries(main-pointer2 PRIVATE list-pointer2 list-micro)
 target_link_libraries(main-hashtable1 PRIVATE list-pointer1 list-micro vm-v1 hashtable1)
 target_link_libraries(main-hashtable2 PRIVATE list-pointer2 list-micro hashtable2)
-target_link_libraries(main-vm1 PRIVATE tests tests-vm-v1 list-alloc list-light vm-v1)
+target_link_libraries(main-vm1 PRIVATE tests lib-tests-vm-v1 list-alloc list-light vm-v1)
 target_link_libraries(main-vm2 PRIVATE list-pointer2 list-micro)
 target_link_libraries(main-structs1 PRIVATE list-common)
 target_link_libraries(main-structs2 PRIVATE list-class)
 target_link_libraries(main-structs3 PRIVATE structs-v3)
 target_link_libraries(main-linked-list PRIVATE stl-linked-list)
 target_link_libraries(main-linked-list-static-enumerator PRIVATE stl-linked-list)
-target_link_libraries(main-tests-vm1 PRIVATE list-micro list-pointer1 tests-vm-v1 vm-v1)
+target_link_libraries(main-tests-vm1 PRIVATE list-micro list-pointer1 lib-tests-vm-v1 vm-v1)
 
 configure_file(all_english_words.txt ${CMAKE_BINARY_DIR}/all_english_words.txt COPYONLY)
 

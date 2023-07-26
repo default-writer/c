@@ -102,6 +102,7 @@ fi
 [ ! -d "${pwd}/coverage_v1" ] && mkdir "${pwd}/coverage_v1"
 [ ! -d "${pwd}/coverage_v2" ] && mkdir "${pwd}/coverage_v2"
 [ ! -d "${pwd}/coverage" ] && mkdir "${pwd}/coverage"
+[ ! -d "${pwd}/out" ] && mkdir "${pwd}/out"
 
 if [ "${keep}" == "" ]; then
 if [ "${clean}" == "--clean" ]; then

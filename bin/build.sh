@@ -32,8 +32,8 @@ case "${install}" in
         ;;
 
     "--target") # builds and runs specified target
+        target="--target $2"
         opts=( "${@:3}" )
-        target="--target"
         ;;
 
     "--all") # builds and runs all targets
@@ -105,12 +105,16 @@ fi
 
 build="${pwd}/build"
 
-if [ "${valgrind}" == "--valgrind" ]; then
-    build="${pwd}/build-valgrind"
+if [ "${gc}" == "--gc" ]; then
+    build="${build}-gc"
 fi
 
 if [ "${sanitize}" == "--sanitize" ]; then
-    build="${pwd}/build-sanitize"
+    build="${build}-sanitize"
+fi
+
+if [ "${valgrind}" == "--valgrind" ]; then
+    build="${build}-valgrind"
 fi
 
 [ ! -d "${build}" ] && mkdir "${build}"
@@ -128,25 +132,54 @@ find "${pwd}/tests" -type f -name "*.s" -delete
 
 cmake=$(get-cmake)
 targets=( $(get-targets) )
-if [ "${target}" == "--target" ]; then
-    for target in ${targets[@]}; do
-        if [ "${target}" == "$2" ]; then 
-            array=( ${target} )
-            break
-        fi
-    done
-    if [ "$(echo ${array[@]})" == "" ]; then
-        help
-        exit 8
+
+found_target=false
+for target in ${targets[@]}; do
+    if [ "${target}" == "$2" ]; then 
+        array=( ${target} )
+        found_target=true
     fi
-    targets=( ${array[@]} )
+done
+
+if [[ "${found_target}" = false ]]; then
+    targets=()
+    found_target_base=false
+    sources=$(find "${pwd}/config" -type f -name "sources.txt")
+    for source in ${sources[@]}; do
+        # Find target directory for the given source file
+        while IFS= read -r line; do
+            if [[ "${target}" == "--target ${line}" ]]; then
+                found_target_base=true
+                target_base=$(basename $(dirname "${source}"))
+                break
+            fi
+        done <  $source
+    done
+
+    if [[ "${found_target_base}" = true ]]; then
+        linked_targets=$(get-linked-targets ${target_base})
+        if [ "${target}" == "--target ${line}" ]; then
+            for linked_target in ${linked_targets[@]}; do
+                if [ "${linked_target}" == "$2" ]; then 
+                    array+=( ${linked_target} )
+                    break
+                fi
+            done
+            targets=( ${array[@]} )
+        fi
+    fi
 fi
 
-[ ! -d "${pwd}/coverage" ] && mkdir "${pwd}/coverage"
+if [ "$(echo ${targets[@]})" == "" ]; then
+    help
+    exit 8
+fi
+
+[ ! -d "${build}" ] && mkdir "${build}"
 
 coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" )
 for f in ${coverage}; do
-    find "${pwd}/coverage" -type f -name "${f}" -delete
+    find "${build}" -type f -name "${f}" -delete
 done
 
 export MAKEFLAGS=-j8

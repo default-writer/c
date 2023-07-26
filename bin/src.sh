@@ -122,9 +122,10 @@ done
 
 if [[ "$found_target_base" = true ]]; then
     linked_targets=$(get-linked-targets ${target_base})
+    echo "${linked_targets[@]}"
     for linked_target in ${linked_targets[@]}; do
         case ${linked_target} in
-            main-*) ;& test-*)
+            main-*) ;& tests-*)
                 if [[ " ${targets[*]} " == *" ${linked_target} "* ]]; then
                     ${pwd}/bin/coverageall.sh --target ${linked_target} --keep ${opts[@]}
                 fi
