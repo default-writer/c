@@ -15,19 +15,28 @@
       "c": "./bin/src.sh --target ${relativeFile} --sanitize --clean"
     }
   ],
-  "koverage.coverageFileNames": ["lcov.info"],
-  "coverage-gutters.coverageFileNames": ["lcov.info"],
+  "koverage.coverageFileNames": [
+    "lcov.info"
+  ],
+  "coverage-gutters.coverageFileNames": [
+    "lcov.info"
+  ],
   "coverage-gutters.coverageBaseDir": "coverage",
   "coverage-gutters.showLineCoverage": true,
   "coverage-gutters.showGutterCoverage": false,
   "cSpell.checkOnlyEnabledFileTypes": true,
-  "cSpell.enableFiletypes": ["c", "!jsonc"],
+  "cSpell.enableFiletypes": [
+    "c",
+    "!jsonc"
+  ],
   "files.autoSave": "off",
   "files.associations": {
     "*.h": "c",
     "*.c": "c"
   },
-  "files.watcherInclude": ["."],
+  "files.watcherInclude": [
+    "."
+  ],
   "files.exclude": {},
   "pdf-preview.default.scale": "page-width",
   "cmake.showConsoleAutomatically": true,
@@ -135,8 +144,12 @@
   "presentation-mode.configBackup": {
     "window.zoomLevel": "undefined"
   },
-  "grammarly.files.include": ["**/*.md"],
-  "grammarly.files.exclude": ["**/*.txt"],
+  "grammarly.files.include": [
+    "**/*.md"
+  ],
+  "grammarly.files.exclude": [
+    "**/*.txt"
+  ],
   "C_Cpp.dimInactiveRegions": true,
   "C_Cpp.errorSquiggles": "disabled",
   "C_Cpp.intelliSenseEngine": "disabled",
@@ -219,10 +232,15 @@
   "clang-format.style": "{BasedOnStyle: WebKit, IndentWidth: 4, BreakBeforeBraces: Attach}",
   "clang-format.language.c.enable": true,
   "clang-tidy.lintOnSave": true,
-  "clang-tidy.compilerArgs": ["-I/usr/include/gtk-4.0"],
+  "clang-tidy.compilerArgs": [
+    "-I/usr/include/gtk-4.0"
+  ],
   "editor.formatOnSave": true,
   "editor.fontWeight": "normal",
-  "cmake.additionalKits": ["${workspaceFolder}/.vscode", "${workspaceFolder}"],
+  "cmake.additionalKits": [
+    "${workspaceFolder}/.vscode",
+    "${workspaceFolder}"
+  ],
   "cmake.useCMakePresets": "always",
   "emeraldwalk.runonsave": {
     "commands": [
@@ -291,5 +309,46 @@
   "terminal.integrated.tabStopWidth": 8,
   "editor.tabSize": 4,
   "editor.indentSize": "tabSize",
-  "editor.fontSize": 12
+  "editor.fontSize": 12,
+  "fileHeaderComment.parameter": {
+    "*": {
+      "commentbegin": "/*",
+      "commentprefix": " *",
+      "commentend": " */",
+      "author": "Artur Mustafin",
+      "license_mit": [
+        "MIT License",
+        "",
+        " Copyright (c) ${year} ${author}",
+        "",
+        " Permission is hereby granted, free of charge, to any person obtaining a copy",
+        " of this software and associated documentation files (the \"Software\"), to deal",
+        " in the Software without restriction, including without limitation the rights",
+        " to use, copy, modify, merge, publish, distribute, sublicense, and/or sell",
+        " copies of the Software, and to permit persons to whom the Software is",
+        " furnished to do so, subject to the following conditions:",
+        "",
+        " The above copyright notice and this permission notice shall be included in all",
+        " copies or substantial portions of the Software.",
+        "",
+        " THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR",
+        " IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,",
+        " FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE",
+        " AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER",
+        " LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,",
+        " OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE",
+        " SOFTWARE."
+      ]
+    }
+  },
+  "fileHeaderComment.template": {
+    "*": [
+      "${commentbegin}",
+      "${commentprefix}",
+      "${commentprefix} ${license_mit}",
+      "${commentprefix}",
+      "${commentend}"
+    ]
+  },
+  "git.suggestSmartCommit": false
 }
