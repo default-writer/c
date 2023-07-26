@@ -43,43 +43,46 @@ case "${install}" in
 
 esac
 
-
+options=()
 for opt in ${opts[@]}; do
     case ${opt} in
 
         "")
             ;;
 
-        "--clean") # [optional] cleans up directories before build
-            clean="--clean"
+        "--keep") # [optional] keeps coverage files and merges them
+            keep="--keep"
+            options+=( "${keep}" )
             ;;
 
-        "--sanitize") # [optional] builds using sanitizer
-            sanitize="--sanitize"
+        "--clean") # [optional] cleans up directories before build
+            clean="--clean"
+            options+=( "${clean}" )
             ;;
 
         "--mocks") # [optional] builds with mocks
             mocks="--mocks"
-            ;;
-
-        "--gc") # [optional] builds with garbage collector
-            gc="--gc"
+            options+=( "${mocks}" )
             ;;
 
         "--silent") # [optional] suppress verbose output
             silent="--silent"
+            options+=( "${silent}" )
             ;;
 
         "--valgrind") # [optional] runs using valgrind (disables --sanitize on build)
             valgrind="--valgrind"
+            options+=( "${valgrind}" )
             ;;
 
         "--callgrind") # [optional] runs using valgrind with tool callgrind (disables --sanitize on build)
             callgrind="--callgrind"
+            options+=( "${callgrind}" )
             ;;
 
         "--debug") # [optional] runs using debug memory debug info
             debug="--debug"
+            options+=( "${debug}" )
             ;;
 
         "--help") # shows command desctiption
@@ -87,6 +90,7 @@ for opt in ${opts[@]}; do
             ;;
 
         *)
+            echo "Error: unknown argyment ${opt}"
             help
             ;;
 
@@ -120,18 +124,17 @@ for source in ${sources[@]}; do
     done <  $source
 done
 
-if [[ "$found_target_base" = true ]]; then
+if [[ "$found_target_base" == true ]]; then
     linked_targets=$(get-linked-targets ${target_base})
-    echo "${linked_targets[@]}"
     for linked_target in ${linked_targets[@]}; do
         case ${linked_target} in
             main-*) ;& tests-*)
                 if [[ " ${targets[*]} " == *" ${linked_target} "* ]]; then
-                    ${pwd}/bin/coverageall.sh --target ${linked_target} --keep ${opts[@]}
+                    ${pwd}/bin/coverageall.sh --target ${linked_target} ${options}
                 fi
                 ;;
             *)
-                ${pwd}/bin/buildall.sh --target ${linked_target} --keep
+                ${pwd}/bin/buildall.sh --target ${linked_target} ${options}
                 ;;
         esac
     done

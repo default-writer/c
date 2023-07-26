@@ -93,6 +93,7 @@ for opt in ${opts[@]}; do
             ;;
 
         *)
+            echo "Error: unknown argyment ${opt}"
             help
             ;;
 
@@ -141,36 +142,38 @@ for target in ${targets[@]}; do
     fi
 done
 
-if [[ "${found_target}" = false ]]; then
-    targets=()
+if [[ "${found_target}" == false ]]; then
+    array=()
+    target=$2
     found_target_base=false
     sources=$(find "${pwd}/config" -type f -name "sources.txt")
     for source in ${sources[@]}; do
         # Find target directory for the given source file
         while IFS= read -r line; do
-            if [[ "${target}" == "--target ${line}" ]]; then
+            if [[ "${target}" == "${line}" ]]; then
                 found_target_base=true
                 target_base=$(basename $(dirname "${source}"))
+                array+=( ${target_base} )
                 break
             fi
         done <  $source
-    done
-
-    if [[ "${found_target_base}" = true ]]; then
-        linked_targets=$(get-linked-targets ${target_base})
-        if [ "${target}" == "--target ${line}" ]; then
-            for linked_target in ${linked_targets[@]}; do
-                if [ "${linked_target}" == "$2" ]; then 
-                    array+=( ${linked_target} )
-                    break
-                fi
-            done
-            targets=( ${array[@]} )
+        if [[ "${found_target_base}" == true ]]; then
+            linked_targets=$(get-linked-targets ${target_base})
+            if [ "${target}" == "--target ${line}" ]; then
+                for linked_target in ${linked_targets[@]}; do
+                    if [ "${linked_target}" == "$2" ]; then 
+                        array+=( ${linked_target} )
+                    fi
+                done
+            fi
         fi
-    fi
+    done
 fi
 
+targets=( ${array[@]} )
+
 if [ "$(echo ${targets[@]})" == "" ]; then
+    echo "Error: no targets found for $2"
     help
     exit 8
 fi

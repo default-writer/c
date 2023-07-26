@@ -51,7 +51,7 @@ function get-targets() {
 function search() {
     local target=$1
     if [[ ! "${target}" == "" ]]; then
-        target=$(sed -n "s/target_link_libraries(\([^ ]*\) .*${target}.*)/\1/p" CMakeLists.txt)
+        target=$(sed -n "$s#target_link_libraries(\([^ ]*\) .*${target}}.*)#\1#p" CMakeLists.txt)
         if [[ ! "${target}" == "" ]]; then
             printf '%s\n' "${target}"
             search ${target}
