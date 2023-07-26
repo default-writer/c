@@ -446,20 +446,23 @@ if(TARGETS)
 get_property(std_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
 get_property(main_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
 get_property(test_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
+get_property(lib_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
 get_property(gtk_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
 
 list(FILTER std_target_names INCLUDE REGEX "^std-")
 list(FILTER main_target_names INCLUDE REGEX "^main-")
 list(FILTER test_target_names INCLUDE REGEX "^test-")
+list(FILTER lib_target_names INCLUDE REGEX "^lib-")
 list(FILTER gtk_target_names INCLUDE REGEX "^gtk-")
 
 string(REGEX REPLACE ";" " " std_target_names "${std_target_names}")
 string(REGEX REPLACE ";" " " main_target_names "${main_target_names}")
 string(REGEX REPLACE ";" " " test_target_names "${test_target_names}")
+string(REGEX REPLACE ";" " " lib_target_names "${lib_target_names}")
 string(REGEX REPLACE ";" " " gtk_target_names "${gtk_target_names}")
 
 FILE(WRITE ${CMAKE_BINARY_DIR}/targets.txt
-    "${std_target_names} ${main_target_names} ${test_target_names}"
+    "${std_target_names} ${main_target_names} ${test_target_names} ${lib_target_names}"
 )
 
 FILE(WRITE ${CMAKE_BINARY_DIR}/gtktargets.txt

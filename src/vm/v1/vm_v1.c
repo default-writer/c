@@ -248,7 +248,6 @@ static void vm_free(struct pointer* ptr) {
     }
     struct pointer** data = vm_read_internal(ptr->address);
     if (data != 0) {
-        ptr = *data;
 #ifndef USE_GC
         struct vm_pointer* vm_ptr = global_alloc(VM_POINTER_SIZE);
         vm_ptr->ptr = data;
