@@ -53,6 +53,10 @@ for opt in ${opts[@]}; do
         "")
             ;;
 
+        "--keep") # [optional] keeps coverage files and merges them
+            keep="--keep"
+            ;;
+
         "--clean") # [optional] cleans up directories before build
             clean="--clean"
             ;;
@@ -85,6 +89,10 @@ for opt in ${opts[@]}; do
             debug="--debug"
             ;;
 
+        "--verbose") # [optional] shows verbose messages
+            verbose="--verbose"
+            ;;
+
         "--help") # [optional] shows command desctiption
             help
             ;;
@@ -107,9 +115,11 @@ fi
 
 find "${pwd}/out" -type f -name "log-*" -delete
 
+if [ "${keep}" == "" ]; then
 if [ "${clean}" == "--clean" ]; then
     rm -rf "${pwd}/logs"
     mkdir "${pwd}/logs"
+fi
 fi
 
 cmake=$(get-cmake)
@@ -144,8 +154,10 @@ ${cmake} \
     -G "Ninja" 2>&1 >/dev/null
 
 for target in ${targets[@]}; do
-    echo Building target ${target}
-    echo Building with options $(cmake-options)
+    if [[ "${verbose}" == "--verbose" ]]; then
+        echo Building target ${target}
+        echo Building with options $(cmake-options)
+    fi
     if [ "${silent}" == "--silent" ]; then
         ${cmake} --build "${pwd}/logs" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
     else

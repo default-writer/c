@@ -86,6 +86,10 @@ for opt in ${opts[@]}; do
             options+=( "${debug}" )
             ;;
 
+        "--verbose") # [optional] shows verbose messages
+            verbose="--verbose"
+            ;;
+
         "--help") # [optional] shows command desctiption
             help
             ;;
@@ -105,9 +109,11 @@ fi
 
 [ ! -d "${pwd}/config" ] && mkdir "${pwd}/config"
 
+if [ "${keep}" == "" ]; then
 if [ "${clean}" == "--clean" ]; then
     rm -rf "${pwd}/config"
     mkdir "${pwd}/config"
+fi
 fi
 
 cmake=$(get-cmake)

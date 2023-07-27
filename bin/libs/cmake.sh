@@ -181,6 +181,7 @@ function cmake-options() {
     local sanitize_options
     local mocks_options
     local gc_options
+    local verbose_options
 
     if [ "${sanitize}" == "--sanitize" ] && [ "${valgrind}" == "" ]; then
         sanitize_options=-DCODE_SANITIZER:BOOL=TRUE
@@ -198,13 +199,18 @@ function cmake-options() {
         debug_options=-DCONFIG_MEMORY_DEBUG_INFO:BOOL=TRUE
     fi
 
-    echo " ${sanitize_options} ${mocs_options} ${gc_options} ${debug_options}"
+    if [[ "${verbose}" == "--verbose" ]]; then
+        verbose_options=-DVERBOSE:BOOL=TRUE
+    fi
+
+    echo " ${sanitize_options} ${mocs_options} ${gc_options} ${debug_options} ${verbose_options}"
 }
 
 function cmake-coverage-options() {
     local sanitize_options
     local mocks_options
     local debug_options
+    local verbose_options
 
     if [ "${sanitize}" == "--sanitize" ] && [ "${valgrind}" == "" ]; then
         sanitize_options=-DCODE_SANITIZER:BOOL=TRUE
@@ -218,7 +224,11 @@ function cmake-coverage-options() {
         debug_options=-DCONFIG_MEMORY_DEBUG_INFO:BOOL=TRUE
     fi
 
-    echo " ${sanitize_options} ${mocs_options} ${debug_options}"
+    if [[ "${verbose}" == "--verbose" ]]; then
+        verbose_options=-DVERBOSE:BOOL=TRUE
+    fi
+
+    echo " ${sanitize_options} ${mocs_options} ${debug_options} ${verbose_options}"
 }
 
 function cmake-valgrind-options() {

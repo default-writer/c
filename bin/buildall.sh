@@ -62,6 +62,10 @@ for opt in ${opts[@]}; do
             silent="--silent"
             ;;
 
+        "--verbose") # [optional] shows verbose messages
+            verbose="--verbose"
+            ;;
+
         "--help") # [optional] shows command desctiption
             help
             ;;

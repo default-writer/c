@@ -89,6 +89,10 @@ for opt in ${opts[@]}; do
             debug="--debug"
             ;;
 
+        "--verbose") # [optional] shows verbose messages
+            verbose="--verbose"
+            ;;
+
         "--help") # [optional] shows command desctiption
             help
             exit 8
@@ -203,6 +207,7 @@ ${cmake} \
     -DCMAKE_BUILD_TYPE:STRING=Debug \
     -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
     -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
+    -DVERBOSE:BOOL=FALSE \
     $(cmake-options) \
     -S"${pwd}" \
     -B"${build}" \
@@ -210,8 +215,10 @@ ${cmake} \
 
 
 for target in ${targets[@]}; do
-    echo Building target ${target}
-    echo Building with options $(cmake-options)
+    if [[ "${verbose}" == "--verbose" ]]; then
+        echo Building target ${target}
+        echo Building with options $(cmake-options)
+    fi
     if [ "${silent}" == "--silent" ]; then
         ${cmake} --build "${build}" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
     else

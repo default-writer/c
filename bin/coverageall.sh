@@ -85,6 +85,10 @@ for opt in ${opts[@]}; do
             debug="--debug"
             ;;
 
+        "--verbose") # [optional] shows verbose messages
+            verbose="--verbose"
+            ;;
+
         "--help") # [optional] shows command desctiption
             help
             ;;
@@ -165,8 +169,10 @@ ${cmake} \
     -G "Ninja" 2>&1 >/dev/null
 
 for target in ${targets[@]}; do
-    echo Building target ${target}
-    echo Building with options $(cmake-coverage-options) -DGC:BOOL=FALSE
+    if [[ "${verbose}" == "--verbose" ]]; then
+        echo Building target ${target}
+        echo Building with options $(cmake-coverage-options) -DGC:BOOL=FALSE
+    fi
     if [ "${silent}" == "--silent" ]; then
         ${cmake} --build "${pwd}/coverage_v1" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
     else
@@ -204,8 +210,10 @@ ${cmake} \
     -G "Ninja" 2>&1 >/dev/null
 
 for target in ${targets[@]}; do
-    echo Building target ${target}
-    echo Building with options $(cmake-coverage-options) -DGC:BOOL=TRUE
+    if [[ "${verbose}" == "--verbose" ]]; then
+        echo Building target ${target}
+        echo Building with options $(cmake-coverage-options) -DGC:BOOL=TRUE
+    fi
     if [ "${silent}" == "--silent" ]; then
         ${cmake} --build "${pwd}/coverage_v2" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
     else
