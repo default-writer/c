@@ -33,6 +33,7 @@ case "${install}" in
 
     "--target") # builds and runs specified target
         target="--target $2"
+        source=$2
         opts=( "${@:3}" )
         ;;
 
@@ -139,51 +140,7 @@ find "${pwd}/src" -type f -name "*.s" -delete
 find "${pwd}/tests" -type f -name "*.s" -delete
 
 cmake=$(get-cmake)
-targets=( $(get-cmake-targets) )
-
-found_target=false
-for target in ${targets[@]}; do
-    if [ "${target}" == "$2" ]; then 
-        array=( ${target} )
-        found_target=true
-    fi
-done
-
-if [[ "${found_target}" == false ]]; then
-    array=()
-    target=$2
-    found_target_base=false
-    sources=$(find "${pwd}/config" -type f -name "sources.txt")
-    for source in ${sources[@]}; do
-        # Find target directory for the given source file
-        while IFS= read -r line; do
-            if [[ "${target}" == "${line}" ]]; then
-                found_target_base=true
-                target_base=$(basename $(dirname "${source}"))
-                array+=( ${target_base} )
-                break
-            fi
-        done <  $source
-        if [[ "${found_target_base}" == true ]]; then
-            linked_targets=$(get-linked-targets ${target_base})
-            if [ "${target}" == "--target ${line}" ]; then
-                for linked_target in ${linked_targets[@]}; do
-                    if [ "${linked_target}" == "$2" ]; then 
-                        array+=( ${linked_target} )
-                    fi
-                done
-            fi
-        fi
-    done
-fi
-
-targets=( ${array[@]} )
-
-if [[ "${target_base}" == "" ]]; then
-    target_base="${targets[@]}"
-fi
-
-targets=$(echo "${targets[@]} ${linked_targets[@]}" | xargs -n1 | sort -u | xargs)
+targets=( $(get-source-targets ${source}) )
 
 if [[ "${targets[@]}" == "" ]]; then
     if [[ "${help}" == "--help" ]]; then

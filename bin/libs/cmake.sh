@@ -122,6 +122,69 @@ function get-gtktargets() {
     printf '%s\n' "${array[@]}"
 }
 
+function get-source-targets() {
+    local source_target=$1
+    local cmake
+    local targets
+    local array
+    local target
+    local source
+    local sources
+    local target_base
+    local line
+    local found_target
+    local found_target_base
+    
+    cmake=$(get-cmake)
+    targets=( $(get-cmake-targets) )
+
+    found_target=false
+    for target in ${targets[@]}; do
+        if [ "${target}" == "${source_target}" ]; then 
+            array=( ${target} )
+            found_target=true
+        fi
+    done
+
+    if [[ "${found_target}" == false ]]; then
+        array=()
+        target=${source_target}
+        found_target_base=false
+        sources=$(find "${pwd}/config" -type f -name "sources.txt")
+        for source in ${sources[@]}; do
+            # Find target directory for the given source file
+            while IFS= read -r line; do
+                if [[ "${target}" == "${line}" ]]; then
+                    found_target_base=true
+                    target_base=$(basename $(dirname "${source}"))
+                    array+=( ${target_base} )
+                    break
+                fi
+            done <  $source
+            if [[ "${found_target_base}" == true ]]; then
+                linked_targets=$(get-linked-targets ${target_base})
+                if [ "${target}" == "--target ${line}" ]; then
+                    for linked_target in ${linked_targets[@]}; do
+                        if [ "${linked_target}" == "${source_target}" ]; then 
+                            array+=( ${linked_target} )
+                        fi
+                    done
+                fi
+            fi
+        done
+    fi
+
+    targets=( ${array[@]} )
+
+    if [[ "${target_base}" == "" ]]; then
+        target_base="${targets[@]}"
+    fi
+
+    targets=$(echo "${targets[@]} ${linked_targets[@]}" | xargs -n1 | sort -u | xargs)
+
+    printf '%s\n' "${targets[@]}"
+}
+
 function get-options() {
     local opts=${@:1}
     for opt in ${opts[@]}; do
@@ -247,6 +310,7 @@ function cmake-valgrind-options() {
 export -f get-cmake
 export -f get-targets
 export -f get-linked-targets
+export -f get-source-targets
 export -f get-gtktargets
 export -f get-cmake-targets
 export -f get-options
