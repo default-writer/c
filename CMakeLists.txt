@@ -219,11 +219,13 @@ set(LIB_STD_FILE1_SOURCE src/pointer/types/file/v1/file_v1.c)
 set(LIB_STD_STRING1_SOURCE src/pointer/types/string/v1/string_v1.c)
 set(LIB_STD_OBJECT1_SOURCE src/pointer/types/object/v1/object_v1.c)
 set(LIB_STD_TYPES1_SOURCE
+    src/pointer/types/void/v1/void_v1.c
     src/pointer/types/data/v1/data_v1.c
-    src/pointer/types/list/v1/list_v1.c
-    src/pointer/types/file/v1/file_v1.c
     src/pointer/types/string/v1/string_v1.c
+    src/pointer/types/file/v1/file_v1.c
+    src/pointer/types/list/v1/list_v1.c
     src/pointer/types/object/v1/object_v1.c)
+
 set(LIB_LINKED_LIST_SOURCE
     src/stl/linked_list.c
     src/stl/linked_list_enumerator.c

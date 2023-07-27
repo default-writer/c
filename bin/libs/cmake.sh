@@ -51,7 +51,7 @@ function get-targets() {
 function search() {
     local target=$1
     if [[ ! "${target}" == "" ]]; then
-        target=$(sed -n "$s#target_link_libraries(\([^ ]*\) .*${target}}.*)#\1#p" CMakeLists.txt)
+        target=$(sed -n "s#target_link_libraries(\([^ ]*\) .*${target}.*)#\1#p" CMakeLists.txt)
         if [[ ! "${target}" == "" ]]; then
             printf '%s\n' "${target}"
             search ${target}
@@ -67,6 +67,25 @@ function get-linked-targets() {
     fi
 }
 
+function get-cmake-targets() {
+    local target=$1
+    local targets=()
+    local lib=""
+    local exe=""
+    lib=$(sed -n "s#add_library(\([^ ]*\) .*#\1#p" CMakeLists.txt)
+    exe=$(sed -n "s#add_executable(\([^ ]*\) .*#\1#p" CMakeLists.txt)
+    targets+=( ${lib[@]} )
+    targets+=( ${exe[@]} )
+    targets=$(echo "${targets[@]}" | xargs -n1 | sort -u | xargs)
+    if [[ ! "${target}" == "" ]]; then
+        if [[ " ${targets[*]} " == *" ${target} "* ]]; then
+            printf '%s\n' "${target}"
+        fi
+    fi
+    if [[ "${target}" == "" ]]; then
+        printf '%s\n' "${targets[@]}"
+    fi
+}
 
 function get-gtktargets() {
     local array=()
@@ -143,12 +162,13 @@ function get-options() {
                 debug="--debug"
                 ;;
 
-            "--help") # shows command desctiption
+            "--help") # [optional] shows command desctiption
                 help="--help"
                 ;;
 
             *)
                 help
+                exit 8
                 ;;
 
         esac
@@ -218,6 +238,7 @@ export -f get-cmake
 export -f get-targets
 export -f get-linked-targets
 export -f get-gtktargets
+export -f get-cmake-targets
 export -f get-options
 export -f cmake-options
 export -f cmake-coverage-options

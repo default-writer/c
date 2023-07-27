@@ -42,6 +42,7 @@ case "${install}" in
 
     *)
         help
+        exit 8
         ;;
 
 esac
@@ -88,13 +89,15 @@ for opt in ${opts[@]}; do
             debug="--debug"
             ;;
 
-        "--help") # shows command desctiption
+        "--help") # [optional] shows command desctiption
             help
+            exit 8
             ;;
 
         *)
             echo "Error: unknown argyment ${opt}"
             help
+            exit 8
             ;;
 
     esac
@@ -132,7 +135,7 @@ find "${pwd}/src" -type f -name "*.s" -delete
 find "${pwd}/tests" -type f -name "*.s" -delete
 
 cmake=$(get-cmake)
-targets=( $(get-targets) )
+targets=( $(get-cmake-targets) )
 
 found_target=false
 for target in ${targets[@]}; do
@@ -172,9 +175,17 @@ fi
 
 targets=( ${array[@]} )
 
-if [ "$(echo ${targets[@]})" == "" ]; then
-    echo "Error: no targets found for $2"
-    help
+if [[ "${target_base}" == "" ]]; then
+    target_base="${targets[@]}"
+fi
+
+targets=$(echo "${targets[@]} ${linked_targets[@]}" | xargs -n1 | sort -u | xargs)
+
+if [[ "${targets[@]}" == "" ]]; then
+    if [[ "${help}" == "--help" ]]; then
+        help
+    fi
+    echo ERROR
     exit 8
 fi
 

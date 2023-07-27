@@ -43,6 +43,7 @@ case "${install}" in
 
     *)
         help
+        exit 8
         ;;
 
 esac
@@ -61,13 +62,14 @@ for opt in ${opts[@]}; do
             silent="--silent"
             ;;
 
-        "--help") # shows command desctiption
+        "--help") # [optional] shows command desctiption
             help
             ;;
 
         *)
             echo "Error: unknown argyment ${opt}"
             help
+            exit 8
             ;;
 
     esac
@@ -78,7 +80,7 @@ if [[ "${silent}" == "--silent" ]]; then
 fi
 
 cmake=$(get-cmake)
-targets=( $(get-targets) )
+targets=( $(get-cmake-targets) )
 
 found_target=false
 for target in ${targets[@]}; do
@@ -118,26 +120,28 @@ fi
 
 targets=( ${array[@]} )
 
-if [ "$(echo ${targets[@]})" == "" ]; then
-    echo "Error: no targets found for $2"
-    help
+if [[ "${target_base}" == "" ]]; then
+    target_base="${targets[@]}"
+fi
+
+targets=$(echo "${targets[@]} ${linked_targets[@]}" | xargs -n1 | sort -u | xargs)
+
+if [[ "${targets[@]}" == "" ]]; then
+    if [[ "${help}" == "--help" ]]; then
+        help
+    fi
+    echo ERROR
     exit 8
 fi
 
-echo =============================================================================
-echo -1/6------- building with garbage collector ---------------------------------
-"${pwd}/bin/build.sh" --target ${target} --gc ${opts[@]}
-echo -2/6------- building with garbage collector / with sanitizer ----------------
-"${pwd}/bin/build.sh" --target ${target} --gc --sanitize ${opts[@]}
-echo -3/6------- building with garbage collector / with valgrind -----------------
-"${pwd}/bin/build.sh" --target ${target} --gc --valgrind ${opts[@]}
-echo -4/6------- building without garbage collector ------------------------------
-"${pwd}/bin/build.sh" --target ${target} ${silent} ${opts[@]}
-echo -5/6------- building without garbage collector / with sanitizer -------------
-"${pwd}/bin/build.sh" --target ${target} --sanitize ${opts[@]}
-echo -6/6------- building without garbage collector / with valgrind --------------
-"${pwd}/bin/build.sh" --target ${target} --valgrind ${opts[@]}
-echo =============================================================================
+for target in ${targets[@]}; do
+    "${pwd}/bin/build.sh" --target ${target} --gc ${opts[@]}
+    "${pwd}/bin/build.sh" --target ${target} --gc --sanitize ${opts[@]}
+    "${pwd}/bin/build.sh" --target ${target} --gc --valgrind ${opts[@]}
+    "${pwd}/bin/build.sh" --target ${target} ${silent} ${opts[@]}
+    "${pwd}/bin/build.sh" --target ${target} --sanitize ${opts[@]}
+    "${pwd}/bin/build.sh" --target ${target} --valgrind ${opts[@]}
+done
 
 if [ "${silent}" == "--silent" ]; then
     exec 1>&2 2>&-

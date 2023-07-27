@@ -42,6 +42,7 @@ case "${install}" in
 
     *)
         help
+        exit 8
         ;;
 
 esac
@@ -84,13 +85,14 @@ for opt in ${opts[@]}; do
             debug="--debug"
             ;;
 
-        "--help") # shows command desctiption
+        "--help") # [optional] shows command desctiption
             help
             ;;
 
         *)
             echo "Error: unknown argyment ${opt}"
             help
+            exit 8
             ;;
 
     esac
@@ -120,7 +122,10 @@ if [ "${target}" == "--target" ]; then
         fi
     done
     if [ "$(echo ${array[@]})" == "" ]; then
-        help
+        if [[ "${help}" == "--help" ]]; then
+            help
+        fi
+        echo ERROR
         exit 8
     fi
     targets=( ${array[@]} )
