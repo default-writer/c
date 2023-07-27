@@ -32,6 +32,10 @@ struct vm;
 struct vm_data;
 struct pointer;
 
+struct vm_default_options {
+    const u64 size;
+};
+
 struct vm_methods {
     struct vm* (*init)(u64 size);
     void (*destroy)(struct vm**);

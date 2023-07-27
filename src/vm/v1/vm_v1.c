@@ -355,6 +355,9 @@ static void* vm_data_enumerator_next_ref(void) {
 #endif
 
 /* public */
+const struct vm_default_options vm_default_options_definition = {
+    .size = DEFAULT_SIZE
+};
 
 const struct vm_methods vm_methods_definition = {
     .init = vm_init,
