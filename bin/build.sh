@@ -33,6 +33,7 @@ case "${install}" in
 
     "--target") # builds and runs specified target
         target="--target $2"
+        source=$2
         opts=( "${@:3}" )
         ;;
 
@@ -42,6 +43,7 @@ case "${install}" in
 
     *)
         help
+        exit 8
         ;;
 
 esac
@@ -88,12 +90,19 @@ for opt in ${opts[@]}; do
             debug="--debug"
             ;;
 
-        "--help") # shows command desctiption
+        "--verbose") # [optional] shows verbose messages
+            verbose="--verbose"
+            ;;
+
+        "--help") # [optional] shows command desctiption
             help
+            exit 8
             ;;
 
         *)
+            echo "Error: unknown argyment ${opt}"
             help
+            exit 8
             ;;
 
     esac
@@ -131,47 +140,13 @@ find "${pwd}/src" -type f -name "*.s" -delete
 find "${pwd}/tests" -type f -name "*.s" -delete
 
 cmake=$(get-cmake)
-targets=( $(get-targets) )
+targets=( $(get-source-targets ${source}) )
 
-found_target=false
-for target in ${targets[@]}; do
-    if [ "${target}" == "$2" ]; then 
-        array=( ${target} )
-        found_target=true
+if [[ "${targets[@]}" == "" ]]; then
+    if [[ "${help}" == "--help" ]]; then
+        help
     fi
-done
-
-if [[ "${found_target}" = false ]]; then
-    targets=()
-    found_target_base=false
-    sources=$(find "${pwd}/config" -type f -name "sources.txt")
-    for source in ${sources[@]}; do
-        # Find target directory for the given source file
-        while IFS= read -r line; do
-            if [[ "${target}" == "--target ${line}" ]]; then
-                found_target_base=true
-                target_base=$(basename $(dirname "${source}"))
-                break
-            fi
-        done <  $source
-    done
-
-    if [[ "${found_target_base}" = true ]]; then
-        linked_targets=$(get-linked-targets ${target_base})
-        if [ "${target}" == "--target ${line}" ]; then
-            for linked_target in ${linked_targets[@]}; do
-                if [ "${linked_target}" == "$2" ]; then 
-                    array+=( ${linked_target} )
-                    break
-                fi
-            done
-            targets=( ${array[@]} )
-        fi
-    fi
-fi
-
-if [ "$(echo ${targets[@]})" == "" ]; then
-    help
+    echo ERROR
     exit 8
 fi
 
@@ -189,6 +164,7 @@ ${cmake} \
     -DCMAKE_BUILD_TYPE:STRING=Debug \
     -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
     -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
+    -DVERBOSE:BOOL=FALSE \
     $(cmake-options) \
     -S"${pwd}" \
     -B"${build}" \
@@ -196,8 +172,10 @@ ${cmake} \
 
 
 for target in ${targets[@]}; do
-    echo Building target ${target}
-    echo Building with options $(cmake-options)
+    if [[ "${verbose}" == "--verbose" ]]; then
+        echo Building target ${target}
+        echo Building with options $(cmake-options)
+    fi
     if [ "${silent}" == "--silent" ]; then
         ${cmake} --build "${build}" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
     else
