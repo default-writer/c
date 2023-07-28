@@ -33,6 +33,8 @@
 #define MAX_LINE 2048
 #define SEED 0x12345678
 
+#define RXP_DEBUG_TESTS
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wsign-conversion"
 #pragma GCC diagnostic ignored "-Wunknown-pragmas"
