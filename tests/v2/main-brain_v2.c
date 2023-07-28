@@ -149,6 +149,66 @@ RX_TEST_CASE(tests, test_strcat_load_alloc, .fixture = test_fixture) {
 }
 
 /* test init */
+RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
+    u64 string_ptr = pointer->load("/all_english_words.txt");
+    u64 list_ptr = list->alloc();
+    u64 empty_ptr = pointer->load("\0");
+
+    pointer->printf(string_ptr);
+    pointer->printf(list_ptr);
+    pointer->printf(empty_ptr);
+
+    pointer->put_char(string_ptr, 'a');
+    pointer->put_char(empty_ptr, 'a');
+
+    pointer->put_char(string_ptr, '\0');
+    pointer->put_char(empty_ptr, '\0');
+
+    pointer->put_char(string_ptr, '/');
+    pointer->strcpy(string_ptr, empty_ptr);
+
+    pointer->strcat(string_ptr, string_ptr);
+    pointer->strcat(string_ptr, empty_ptr);
+
+    pointer->match_last(string_ptr, string_ptr);
+    pointer->match_last(string_ptr, empty_ptr);
+    pointer->match_last(string_ptr, string_ptr);
+    pointer->match_last(empty_ptr, empty_ptr);
+    pointer->match_last(empty_ptr, string_ptr);
+
+    pointer->match_last(empty_ptr, empty_ptr);
+    pointer->match_last(empty_ptr, string_ptr);
+    pointer->match_last(string_ptr, empty_ptr);
+    pointer->match_last(string_ptr, string_ptr);
+
+    pointer->unsafe(empty_ptr);
+    pointer->unsafe(string_ptr);
+
+    file->file_alloc(string_ptr, string_ptr);
+    file->file_alloc(string_ptr, empty_ptr);
+
+    const char* data_unsafe_ptr1 = pointer->unsafe(empty_ptr);
+    const char* data_unsafe_ptr2 = pointer->unsafe(string_ptr);
+    const char* data_unsafe_ptr3 = pointer->unsafe(list_ptr);
+
+    RX_ASSERT(data_unsafe_ptr1 != 0);
+    RX_ASSERT(data_unsafe_ptr2 != 0);
+    RX_ASSERT(data_unsafe_ptr3 == 0);
+
+    RX_ASSERT(string_ptr != 0);
+
+    u64 undefined_ptr = pointer->copy(list_ptr);
+
+    RX_ASSERT(undefined_ptr == 0);
+
+    list->free(list_ptr);
+#ifndef USE_GC
+    pointer->free(string_ptr);
+    pointer->free(empty_ptr);
+#endif
+}
+
+/* test init */
 RX_TEST_CASE(tests, test_strcat_alloc_load, .fixture = test_fixture) {
     u64 zero_ptr = pointer->alloc();
     u64 char_ptr = pointer->load("/");

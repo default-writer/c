@@ -523,6 +523,9 @@ static u64 pointer_match_last(u64 src, u64 match) {
         return 0;
     }
     const char* data_src = src_ptr->data;
+    if (data_src == 0) {
+        return 0;
+    }
     const char* data_match = match_ptr->data;
     if (data_match == 0) {
         return 0;
