@@ -149,10 +149,73 @@ RX_TEST_CASE(tests, test_strcat_load_alloc, .fixture = test_fixture) {
 }
 
 /* test init */
+RX_TEST_CASE(tests, test_push_pop_peek, .fixture = test_fixture) {
+    u64 list_ptr = list->alloc();
+    pointer->push(0);
+    u64 value_ptr1 = pointer->peek();
+    pointer->push(list_ptr);
+    u64 value_ptr2 = pointer->peek();
+    u64 value_ptr3 = pointer->pop();
+    RX_ASSERT(value_ptr1 == 0);
+    RX_ASSERT(value_ptr2 != 0);
+    RX_ASSERT(value_ptr3 == value_ptr2);
+    list->free(list_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_api_0, .fixture = test_fixture) {
+    u64 value_ptr1 = pointer->peek();
+    u64 value_ptr2 = pointer->pop();
+    u64 value_ptr3 = pointer->copy(0);
+    RX_ASSERT(value_ptr1 == 0);
+    RX_ASSERT(value_ptr2 == 0);
+    RX_ASSERT(value_ptr3 == 0);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_pointer_unsafe, .fixture = test_fixture) {
+    u64 zero_ptr = pointer->alloc();
+    u64 data_ptr1 = pointer->alloc();
+
+    u64 char_ptr = pointer->load("/");
+    pointer->strcat(zero_ptr, char_ptr);
+
+    u64 list_ptr = list->alloc();
+
+    const void* data1 = pointer->unsafe(0);
+    const void* data2 = pointer->unsafe(0xffffffffffffffff);
+    const void* data3 = pointer->unsafe(list_ptr);
+    const void* data4 = pointer->unsafe(data_ptr1);
+    const void* data5 = pointer->unsafe(zero_ptr);
+
+    u64 value_ptr = pointer->copy(data_ptr1);
+
+    RX_ASSERT(value_ptr == 0);
+    RX_ASSERT(zero_ptr != 0);
+    RX_ASSERT(char_ptr != 0);
+
+    RX_ASSERT(data1 == 0);
+    RX_ASSERT(data2 == 0);
+    RX_ASSERT(data3 == 0);
+    RX_ASSERT(data4 == 0);
+    RX_ASSERT(data5 != 0);
+
+    list->free(list_ptr);
+
+#ifndef USE_GC
+    pointer->free(zero_ptr);
+    pointer->free(char_ptr);
+    pointer->free(data_ptr1);
+#endif
+}
+
+/* test init */
 RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     u64 string_ptr = pointer->load("/all_english_words.txt");
     u64 list_ptr = list->alloc();
     u64 empty_ptr = pointer->load("\0");
+    u64 null_ptr = 0;
+    u64 void_ptr = 0xffffffffffffffff;
 
     pointer->printf(string_ptr);
     pointer->printf(list_ptr);
@@ -165,11 +228,25 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     pointer->put_char(empty_ptr, '\0');
 
     pointer->put_char(string_ptr, '/');
+
+    pointer->strcpy(string_ptr, null_ptr);
+    pointer->strcpy(null_ptr, null_ptr);
+    pointer->strcpy(string_ptr, void_ptr);
+    pointer->strcpy(void_ptr, void_ptr);
+    pointer->strcpy(string_ptr, string_ptr);
     pointer->strcpy(string_ptr, empty_ptr);
 
+    pointer->strcat(string_ptr, null_ptr);
+    pointer->strcat(null_ptr, null_ptr);
+    pointer->strcat(string_ptr, void_ptr);
+    pointer->strcat(void_ptr, void_ptr);
     pointer->strcat(string_ptr, string_ptr);
     pointer->strcat(string_ptr, empty_ptr);
 
+    pointer->match_last(string_ptr, null_ptr);
+    pointer->match_last(null_ptr, null_ptr);
+    pointer->match_last(string_ptr, void_ptr);
+    pointer->match_last(void_ptr, void_ptr);
     pointer->match_last(string_ptr, string_ptr);
     pointer->match_last(string_ptr, empty_ptr);
     pointer->match_last(string_ptr, string_ptr);
@@ -181,9 +258,15 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     pointer->match_last(string_ptr, empty_ptr);
     pointer->match_last(string_ptr, string_ptr);
 
+    pointer->unsafe(null_ptr);
+    pointer->unsafe(void_ptr);
     pointer->unsafe(empty_ptr);
     pointer->unsafe(string_ptr);
 
+    file->file_alloc(string_ptr, null_ptr);
+    file->file_alloc(null_ptr, null_ptr);
+    file->file_alloc(string_ptr, void_ptr);
+    file->file_alloc(void_ptr, void_ptr);
     file->file_alloc(string_ptr, string_ptr);
     file->file_alloc(string_ptr, empty_ptr);
 

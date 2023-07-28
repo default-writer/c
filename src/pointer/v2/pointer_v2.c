@@ -470,6 +470,9 @@ static void pointer_strcpy(u64 dest, u64 src) {
     if (src_ptr == 0) {
         return;
     }
+    if (dest_ptr == src_ptr) {
+        return;
+    }
     if (src_ptr->size == 0) {
         return;
     }
