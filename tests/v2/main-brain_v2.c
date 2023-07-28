@@ -23,11 +23,14 @@
  * SOFTWARE.
  *
  */
+
 #include "common/alloc.h"
 #include "list-micro/data.h"
 #include "playground/brain/brain.h"
 #include "playground/hashtable/v2/hashtable_v2.h"
 #include "pointer/v2/pointer_v2.h"
+#include "vm/v2/vm_v2.h"
+
 #define RXP_DEBUG_TESTS
 
 #include "rexo/include/rexo.h"
@@ -35,17 +38,26 @@
 #define DEFAULT_SIZE 0x100
 
 /* definition */
-extern const struct vm_methods vm_methods_definition;
 
 extern const struct pointer_methods pointer_methods_definition;
 extern const struct list_methods list_methods_definition;
 extern const struct file_methods file_methods_definition;
 extern const struct memory_methods memory_methods_definition;
+extern const struct vm_methods vm_methods_definition;
 
 const struct pointer_methods* pointer = &pointer_methods_definition;
 const struct list_methods* list = &list_methods_definition;
 const struct file_methods* file = &file_methods_definition;
 const struct memory_methods* memory = &memory_methods_definition;
+const struct vm_methods* vm = &vm_methods_definition;
+
+struct pointer_data {
+    struct vm_data* vm;
+    struct list_data* list;
+#ifdef USE_GC
+    struct list_data* gc;
+#endif
+};
 
 typedef struct test_data {
     struct pointer_data* ctx;
@@ -211,6 +223,12 @@ RX_TEST_CASE(tests, test_pointer_unsafe, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct pointer_data* ctx = rx->ctx;
+
+    u64 file_name_ptr = pointer->load("/all_english_words.txt");
+    u64 mode_ptr = pointer->load("rb");
+
     u64 string_ptr = pointer->load("/all_english_words.txt");
     u64 missing_ptr = pointer->load("//");
     u64 list_ptr = list->alloc();
@@ -222,6 +240,41 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     pointer->printf(string_ptr);
     pointer->printf(list_ptr);
     pointer->printf(empty_ptr);
+    pointer->printf(null_ptr);
+
+    list->peek(string_ptr);
+    list->peek(list_ptr);
+    list->peek(empty_ptr);
+    list->peek(null_ptr);
+
+    list->push(string_ptr, string_ptr);
+    list->push(string_ptr, list_ptr);
+    list->push(string_ptr, empty_ptr);
+    list->push(string_ptr, null_ptr);
+    list->push(string_ptr, void_ptr);
+    list->push(list_ptr, string_ptr);
+    list->push(list_ptr, list_ptr);
+    list->push(list_ptr, empty_ptr);
+    list->push(list_ptr, null_ptr);
+    list->push(list_ptr, void_ptr);
+    list->push(empty_ptr, string_ptr);
+    list->push(empty_ptr, list_ptr);
+    list->push(empty_ptr, empty_ptr);
+    list->push(empty_ptr, null_ptr);
+    list->push(empty_ptr, void_ptr);
+    list->push(null_ptr, string_ptr);
+    list->push(null_ptr, list_ptr);
+    list->push(null_ptr, empty_ptr);
+    list->push(null_ptr, null_ptr);
+    list->push(void_ptr, string_ptr);
+    list->push(void_ptr, list_ptr);
+    list->push(void_ptr, empty_ptr);
+    list->push(void_ptr, null_ptr);
+
+    list->pop(string_ptr);
+    list->pop(list_ptr);
+    list->pop(empty_ptr);
+    list->pop(null_ptr);
 
     pointer->strcpy(string_ptr, empty_ptr);
     pointer->strcpy(string_ptr, zero_ptr);
@@ -255,6 +308,24 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     pointer->size(string_ptr);
     pointer->size(null_ptr);
     pointer->size(void_ptr);
+
+    u64 file_data_ptr = file->file_alloc(file_name_ptr, mode_ptr);
+    u64 data_ptr = file->file_read(file_data_ptr);
+    file->file_free(file_data_ptr);
+    file->file_free(file_data_ptr);
+
+    file->file_free(data_ptr);
+    file->file_free(data_ptr);
+
+    file->file_read(string_ptr);
+    file->file_read(null_ptr);
+    file->file_read(void_ptr);
+    file->file_read(empty_ptr);
+
+    pointer->printf(string_ptr);
+    pointer->printf(null_ptr);
+    pointer->printf(void_ptr);
+    pointer->printf(zero_ptr);
 
     pointer->strcpy(string_ptr, null_ptr);
     pointer->strcpy(null_ptr, null_ptr);
@@ -312,7 +383,15 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     RX_ASSERT(undefined_ptr == 0);
 
     list->free(list_ptr);
+
+#ifdef USE_MEMORY_DEBUG_INFO
+    vm->dump(ctx->vm);
+    vm->dump_ref(ctx->vm);
+#endif
+
 #ifndef USE_GC
+    pointer->free(file_name_ptr);
+    pointer->free(mode_ptr);
     pointer->free(missing_ptr);
     pointer->free(string_ptr);
     pointer->free(empty_ptr);

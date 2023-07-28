@@ -222,7 +222,6 @@ static void pointer_destroy_internal(struct pointer_data* ptr) {
 static void copy_internal(struct pointer_data* dest, struct pointer_data* src) {
     dest->list = src->list;
 #ifdef USE_GC
-    /* gc */
     dest->gc = src->gc;
 #endif
 }

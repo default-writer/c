@@ -125,18 +125,6 @@ static struct pointer* pointer_alloc_internal(u64 size, enum type type) {
 }
 
 static void pointer_realloc_internal(struct pointer* ptr, u64 size) {
-    if (ptr == 0) {
-        return;
-    }
-    if (size == 0) {
-        return;
-    }
-    if (ptr->data == 0) {
-        return;
-    }
-    if (ptr->size == 0) {
-        return;
-    }
     ptr->data = global_realloc(ptr->data, ptr->size, size);
     ptr->size = size;
 }
@@ -172,35 +160,14 @@ static struct pointer* list_alloc_internal(void) {
 }
 
 static void list_free_internal(struct pointer* ptr) {
-    if (ptr == 0) {
-        return;
-    }
-    if (ptr->data == 0) {
-        return;
-    }
-    if (ptr->size == 0) {
-        return;
-    }
     struct list_handler* handler = ptr->data;
-    if (handler == 0) {
-        return;
-    }
     pointer_gc_internal(&handler->list);
     list->destroy(&handler->list);
 }
 
 static void file_close_internal(struct pointer* ptr) {
-    if (ptr == 0) {
-        return;
-    }
     struct file_handler* handler = ptr->data;
-    if (handler == 0) {
-        return;
-    }
     FILE* file = handler->file;
-    if (file == 0) {
-        return;
-    }
     fclose(file);
     handler->file = 0;
 }
@@ -218,7 +185,6 @@ void pointer_ctx_init(struct pointer_data** ctx, u64 size) {
     list->init(&ptr->list);
     base->list = ptr->list;
 #ifdef USE_GC
-    /* gc */
     list->init(&ptr->gc);
     base->gc = ptr->gc;
 #endif
@@ -232,7 +198,6 @@ void pointer_ctx_destroy(struct pointer_data** ctx) {
     struct pointer_data* ptr = *ctx;
 #ifdef USE_GC
     pointer_gc();
-    /* gc */
     ptr->gc = base->gc;
     list->destroy(&ptr->gc);
 #endif
@@ -340,6 +305,9 @@ static void pointer_list_free(u64 ptr) {
 }
 
 static void pointer_list_push(u64 ptr_list, u64 ptr) {
+    if (ptr_list == ptr) {
+        return;
+    }
     if (ptr_list == 0) {
         return;
     }
@@ -466,6 +434,9 @@ static void pointer_strcpy(u64 dest, u64 src) {
     if (dest_ptr == 0) {
         return;
     }
+    if (dest_ptr->data == 0) {
+        return;
+    }
     const struct pointer* src_ptr = vm->read(&base->vm, src);
     if (src_ptr == 0) {
         return;
@@ -561,9 +532,6 @@ static u64 pointer_load(const char* src_data) {
         return 0;
     }
     u64 size = strlen(src_data) + 1;
-    if (size == 0) {
-        return 0;
-    }
     struct pointer* data_ptr = pointer_alloc_internal(size, TYPE_PTR);
     memcpy(data_ptr->data, src_data, size); /* NOLINT */
     u64 data = vm->write(&base->vm, data_ptr);
@@ -631,6 +599,9 @@ static u64 pointer_file_read(u64 ptr) {
     if (data_ptr == 0) {
         return 0;
     }
+    if (data_ptr->data == 0) {
+        return 0;
+    }
     if (data_ptr->type != TYPE_FILE) {
         return 0;
     }
@@ -639,9 +610,6 @@ static u64 pointer_file_read(u64 ptr) {
         return 0;
     }
     FILE* file = handler->file;
-    if (file == 0) {
-        return 0;
-    }
     fseek(file, 0, SEEK_END); /* NOLINT */
     u64 size = (u64)ftell(file);
     fseek(file, 0, SEEK_SET);
@@ -661,6 +629,9 @@ static void pointer_file_free(u64 ptr) {
     }
     struct pointer* data_ptr = vm->read(&base->vm, ptr);
     if (data_ptr == 0) {
+        return;
+    }
+    if (data_ptr->data == 0) {
         return;
     }
     if (data_ptr->type != TYPE_FILE) {
