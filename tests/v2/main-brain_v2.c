@@ -212,14 +212,36 @@ RX_TEST_CASE(tests, test_pointer_unsafe, .fixture = test_fixture) {
 /* test init */
 RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     u64 string_ptr = pointer->load("/all_english_words.txt");
+    u64 missing_ptr = pointer->load("//");
     u64 list_ptr = list->alloc();
     u64 empty_ptr = pointer->load("\0");
+    u64 zero_ptr = pointer->alloc();
     u64 null_ptr = 0;
     u64 void_ptr = 0xffffffffffffffff;
 
     pointer->printf(string_ptr);
     pointer->printf(list_ptr);
     pointer->printf(empty_ptr);
+
+    pointer->strcpy(string_ptr, empty_ptr);
+    pointer->strcpy(string_ptr, zero_ptr);
+
+    pointer->strcat(string_ptr, empty_ptr);
+    pointer->strcat(string_ptr, zero_ptr);
+
+    pointer->match_last(string_ptr, missing_ptr);
+
+    u64 result_match_last[] = {
+        pointer->match_last(string_ptr, empty_ptr),
+        pointer->match_last(string_ptr, zero_ptr),
+        pointer->match_last(empty_ptr, string_ptr),
+        pointer->match_last(zero_ptr, string_ptr)
+    };
+
+    RX_ASSERT(result_match_last[0] == 0);
+    RX_ASSERT(result_match_last[1] == 0);
+    RX_ASSERT(result_match_last[2] == 0);
+    RX_ASSERT(result_match_last[3] == 0);
 
     pointer->put_char(string_ptr, 'a');
     pointer->put_char(empty_ptr, 'a');
@@ -228,6 +250,11 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     pointer->put_char(empty_ptr, '\0');
 
     pointer->put_char(string_ptr, '/');
+
+    pointer->size(zero_ptr);
+    pointer->size(string_ptr);
+    pointer->size(null_ptr);
+    pointer->size(void_ptr);
 
     pointer->strcpy(string_ptr, null_ptr);
     pointer->strcpy(null_ptr, null_ptr);
@@ -286,8 +313,10 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
 
     list->free(list_ptr);
 #ifndef USE_GC
+    pointer->free(missing_ptr);
     pointer->free(string_ptr);
     pointer->free(empty_ptr);
+    pointer->free(zero_ptr);
 #endif
 }
 
@@ -390,6 +419,30 @@ RX_TEST_CASE(tests, test_file_read_invalid_type, .fixture = test_fixture) {
     file->file_free(list_ptr);
     list->free(list_ptr);
 #ifndef USE_GC
+    pointer->free(data_ptr);
+#endif
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_load_open_match_last_unsafe_free, .fixture = test_fixture) {
+    u64 file_path_ptr = pointer->getcwd();
+    u64 file_name_ptr = pointer->load("/all_english_words.txt//");
+    pointer->strcat(file_path_ptr, file_name_ptr);
+    u64 pattern_ptr = pointer->load("//");
+    u64 last_match_ptr = pointer->match_last(file_path_ptr, pattern_ptr);
+    pointer->put_char(last_match_ptr, '\0');
+    pointer->strcat(file_path_ptr, file_name_ptr);
+    u64 mode_ptr = pointer->load("rb");
+    u64 f_ptr = file->file_alloc(file_path_ptr, mode_ptr);
+    u64 data_ptr = file->file_read(f_ptr);
+    pointer->printf(data_ptr);
+#ifndef USE_GC
+    pointer->free(file_path_ptr);
+    pointer->free(file_name_ptr);
+    pointer->free(pattern_ptr);
+    pointer->free(last_match_ptr);
+    pointer->free(mode_ptr);
+    pointer->free(f_ptr);
     pointer->free(data_ptr);
 #endif
 }
