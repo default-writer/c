@@ -26,6 +26,12 @@
 #include "vm_v1.h"
 #include "vm/v1/vm_v1.h"
 
+#include "pointer/types/list/v1/list_v1.h"
+#include "pointer/types/user/v1/user_v1.h"
+#include "pointer/v1/pointer_v1.h"
+
+#define DEFAULT_SIZE 0x100
+
 /* definition */
 extern const struct vm_methods vm_methods_definition;
 extern const struct vm_default_options vm_default_options_definition;
@@ -64,6 +70,17 @@ RX_TEST_CASE(tests, test_vm_read_type_0, .fixture = test_fixture) {
 }
 
 /* test init */
+RX_TEST_CASE(tests, test_vm_alloc_user, .fixture = test_fixture) {
+    struct pointer* ptr = virtual->alloc(0, TYPE_USER);
+    u64 data_ptr = vm->alloc(ptr);
+    const struct pointer* vm_ptr = vm->read(data_ptr);
+    RX_ASSERT(ptr != 0);
+    RX_ASSERT(data_ptr != 0);
+    RX_ASSERT(vm_ptr == ptr);
+    virtual->free(ptr);
+}
+
+/* test init */
 RX_TEST_CASE(tests, test_vm_read_data, .fixture = test_fixture) {
     struct pointer* ptr = virtual->alloc(0, TYPE_DATA);
     u64 data_ptr = vm->alloc(ptr);
@@ -94,6 +111,17 @@ RX_TEST_CASE(tests, test_vm_read_9, .fixture = test_fixture) {
     RX_ASSERT(data_ptr != 0);
     RX_ASSERT(vm_ptr == 0);
     virtual->free(ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_pointer_vm_free_0, .fixture = test_fixture) {
+    virtual->free(0);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_vm_free_0, .fixture = test_fixture) {
+    vm->free(0);
+    RX_ASSERT(0 == 0);
 }
 
 /* test init */
@@ -139,6 +167,68 @@ RX_TEST_CASE(tests, test_vm_read_type_write_1_read_2, .fixture = test_fixture) {
     RX_ASSERT(data_ptr != 0);
     RX_ASSERT(vm_ptr == 0);
     virtual->free(ptr);
+}
+
+/* -------------------------------------------------------- *
+ *                                                          *
+ *                                                          *
+ * test pointer                                             *
+ *                                                          *
+ *                                                          *
+ * -------------------------------------------------------- */
+
+/* definition */
+extern struct pointer_data* pointer_data_init(u64 size);
+extern void pointer_data_destroy(struct pointer_data** ctx);
+
+/* definition */
+extern const struct user_methods user_methods_definition;
+extern const struct list_methods list_methods_definition;
+extern const struct pointer_methods pointer_methods_definition;
+
+/* definition */
+static const struct user_methods* user = &user_methods_definition;
+static const struct list_methods* list = &list_methods_definition;
+static const struct pointer_methods* pointer = &pointer_methods_definition;
+
+typedef struct test_pointer_data {
+    struct pointer_data* ctx;
+}* TEST_POINTER_DATA;
+
+RX_SET_UP(test_pointer_set_up) {
+    TEST_POINTER_DATA rx = (TEST_POINTER_DATA)RX_DATA;
+    struct pointer_data** ctx = &rx->ctx;
+    *ctx = pointer_data_init(8);
+    return RX_SUCCESS;
+}
+
+RX_TEAR_DOWN(test_pointer_tear_down) {
+    TEST_POINTER_DATA rx = (TEST_POINTER_DATA)RX_DATA;
+    struct pointer_data** ctx = &rx->ctx;
+    pointer_data_destroy(ctx);
+}
+
+/* Define the fixture. */
+RX_FIXTURE(test_pointer_fixture, TEST_POINTER_DATA, .set_up = test_pointer_set_up, .tear_down = test_pointer_tear_down);
+
+/* test init */
+RX_TEST_CASE(tests, test_list, .fixture = test_pointer_fixture) {
+    u64 list_ptr = list->alloc();
+    list->free(list_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_user, .fixture = test_pointer_fixture) {
+    u64 list_ptr = list->alloc();
+    u64 user_ptr = user->alloc();
+    list->push(list_ptr, user_ptr);
+    user->free(user_ptr);
+    list->free(list_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_user_free_0, .fixture = test_pointer_fixture) {
+    user->free(0);
 }
 
 static int run(void) {

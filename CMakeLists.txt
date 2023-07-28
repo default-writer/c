@@ -247,6 +247,7 @@ set(LIB_MEMORY_REF2_SOURCE src/memory/v2/ref_v2.c)
 set(LIB_MEMORY_REF3_SOURCE src/memory/v3/ref_v3.c)
 set(LIB_CLASS_SOURCE src/class/class.c)
 set(LIB_STD_DATA1_SOURCE src/pointer/types/data/v1/data_v1.c)
+set(LIB_STD_USER1_SOURCE src/pointer/types/user/v1/user_v1.c)
 set(LIB_STD_LIST1_SOURCE src/pointer/types/list/v1/list_v1.c)
 set(LIB_STD_FILE1_SOURCE src/pointer/types/file/v1/file_v1.c)
 set(LIB_STD_STRING1_SOURCE src/pointer/types/string/v1/string_v1.c)
@@ -317,6 +318,9 @@ add_library(tests STATIC
     ${TESTS_SRC_LIST_MICRO})
 add_library(lib-tests-vm-v1 STATIC ${TESTS_SRC_VM_V1})
 
+#user
+add_library(lib-user1 SHARED ${LIB_STD_USER1_SOURCE})
+
 # all
 add_library(list-v1 STATIC ${LIB_LIST1_SOURCE})
 add_library(list-v2 STATIC ${LIB_LIST2_SOURCE})
@@ -355,6 +359,7 @@ add_library(std-list1 SHARED ${LIB_STD_LIST1_SOURCE})
 add_library(std-file1 SHARED ${LIB_STD_FILE1_SOURCE})
 add_library(std-string1 SHARED ${LIB_STD_STRING1_SOURCE})
 add_library(std-data1 SHARED ${LIB_STD_DATA1_SOURCE})
+
 add_library(std-object1 SHARED ${LIB_STD_OBJECT1_SOURCE})
 
 # test
@@ -433,14 +438,14 @@ target_link_libraries(main-pointer1 PRIVATE list-pointer1 list-micro vm-v1)
 target_link_libraries(main-pointer2 PRIVATE list-pointer2 list-micro)
 target_link_libraries(main-hashtable1 PRIVATE list-pointer1 list-micro vm-v1 hashtable1)
 target_link_libraries(main-hashtable2 PRIVATE list-pointer2 list-micro hashtable2)
-target_link_libraries(main-vm1 PRIVATE tests lib-tests-vm-v1 list-alloc list-light vm-v1)
+target_link_libraries(main-vm1 PRIVATE tests lib-tests-vm-v1 list-alloc list-light vm-v1 lib-user1)
 target_link_libraries(main-vm2 PRIVATE list-pointer2 list-micro)
 target_link_libraries(main-structs1 PRIVATE list-common)
 target_link_libraries(main-structs2 PRIVATE list-class)
 target_link_libraries(main-structs3 PRIVATE structs-v3)
 target_link_libraries(main-linked-list PRIVATE stl-linked-list)
 target_link_libraries(main-linked-list-static-enumerator PRIVATE stl-linked-list)
-target_link_libraries(main-tests-vm1 PRIVATE list-micro list-pointer1 lib-tests-vm-v1 vm-v1)
+target_link_libraries(main-tests-vm1 PRIVATE list-micro list-pointer1 lib-tests-vm-v1 vm-v1 lib-user1)
 
 configure_file(all_english_words.txt ${CMAKE_BINARY_DIR}/all_english_words.txt COPYONLY)
 

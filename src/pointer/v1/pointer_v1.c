@@ -46,9 +46,6 @@ static struct vm_types vm_types_definition;
 static struct vm_types* vm_types = &vm_types_definition;
 static struct vm_type* types;
 
-static const struct vm_type type_definition;
-static const struct vm_type* type = &type_definition;
-
 /* definition */
 extern const struct vm_methods vm_methods_definition;
 extern const struct list list_micro_definition;
@@ -208,7 +205,6 @@ static void pointer_init_internal(struct pointer_data* ptr, u64 size) {
         types[current->type->id] = *(current->type);
         current = prev;
     }
-    types[TYPE_VOID] = *type;
 }
 
 static void pointer_destroy_internal(struct pointer_data* ptr) {

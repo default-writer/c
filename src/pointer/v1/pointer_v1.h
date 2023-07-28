@@ -30,7 +30,7 @@
 
 enum type {
     /* value used for ephemeral type - null */
-    TYPE_NULL = 0,
+    TYPE_NONE = 0,
     /* value used for void type - void */
     TYPE_VOID = 1,
     /* value used for pointer type - ref */
@@ -43,6 +43,8 @@ enum type {
     TYPE_LIST = 5,
     /* value used for object type - object */
     TYPE_OBJECT = 6,
+    /* value used for user type - user */
+    TYPE_USER = 7,
 };
 
 struct vm_data;
