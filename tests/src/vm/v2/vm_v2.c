@@ -227,11 +227,11 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct pointer_data* ctx = rx->ctx;
 
-    u64 file_name_ptr = pointer->load("all_english_words.txt");
+    u64 file_name_ptr = pointer->load("input.txt");
     u64 mode_ptr = pointer->load("rb");
 
-    u64 string_ptr = pointer->load("all_english_words.txt");
-    u64 missing_ptr = pointer->load("aa");
+    u64 string_ptr = pointer->load("input.txt");
+    u64 missing_ptr = pointer->load("ii");
     u64 list_ptr = list->alloc();
     u64 empty_ptr = pointer->load("\0");
     u64 zero_ptr = pointer->alloc();
@@ -293,7 +293,7 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     u64 data_ptr = file->file_read(file_data_ptr);
 
     const char* tmp = pointer->unsafe(data_ptr);
-    tmp += 0xff;
+    tmp += 0xf;
     u64 copy_ptr = pointer->load(tmp);
     file->file_free(data_ptr);
 
