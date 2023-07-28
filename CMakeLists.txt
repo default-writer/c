@@ -455,6 +455,7 @@ target_link_libraries(main-tests-vm1 PRIVATE list-micro list-pointer1 lib-tests-
 target_link_libraries(main-tests-vm2 PRIVATE list-micro list-pointer2 lib-tests-vm-v2 vm-v2 list-pointer2 list-micro)
 
 configure_file(all_english_words.txt ${CMAKE_BINARY_DIR}/all_english_words.txt COPYONLY)
+configure_file(file.txt ${CMAKE_BINARY_DIR}/file.txt COPYONLY)
 
 FILE(WRITE ${CMAKE_BINARY_DIR}/input.txt
     "fopen<\"input.txt\",\"rb\">f (? f==0 perror<\"file not found\" exit<1 : print<\"all ok\")"
