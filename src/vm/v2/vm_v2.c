@@ -189,6 +189,9 @@ static void vm_destroy(struct vm_data** current) {
 
 #ifdef USE_MEMORY_DEBUG_INFO
 static void vm_dump(struct vm_data* vm_ptr) {
+    if (vm_ptr == 0) {
+        return;
+    }
     while (vm_ptr->prev != 0) {
         vm_ptr = vm_ptr->prev;
     }
@@ -201,6 +204,9 @@ static void vm_dump(struct vm_data* vm_ptr) {
 }
 
 static void vm_dump_ref(struct vm_data* vm_ptr) {
+    if (vm_ptr == 0) {
+        return;
+    }
     while (vm_ptr->prev != 0) {
         vm_ptr = vm_ptr->prev;
     }

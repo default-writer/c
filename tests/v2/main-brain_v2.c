@@ -218,6 +218,7 @@ RX_TEST_CASE(tests, test_pointer_unsafe, .fixture = test_fixture) {
     pointer->free(zero_ptr);
     pointer->free(char_ptr);
     pointer->free(data_ptr1);
+    pointer->free(value_ptr);
 #endif
 }
 
@@ -226,11 +227,11 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct pointer_data* ctx = rx->ctx;
 
-    u64 file_name_ptr = pointer->load("/all_english_words.txt");
+    u64 file_name_ptr = pointer->load("all_english_words.txt");
     u64 mode_ptr = pointer->load("rb");
 
-    u64 string_ptr = pointer->load("/all_english_words.txt");
-    u64 missing_ptr = pointer->load("//");
+    u64 string_ptr = pointer->load("all_english_words.txt");
+    u64 missing_ptr = pointer->load("aa");
     u64 list_ptr = list->alloc();
     u64 empty_ptr = pointer->load("\0");
     u64 zero_ptr = pointer->alloc();
@@ -276,32 +277,68 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     list->pop(empty_ptr);
     list->pop(null_ptr);
 
+    u64 file_data_ptr = file->file_alloc(file_name_ptr, mode_ptr);
+    u64 data_ptr = file->file_read(file_data_ptr);
+
+    pointer->strcpy(string_ptr, missing_ptr);
+    pointer->strcpy(string_ptr, file_data_ptr);
+    pointer->strcpy(string_ptr, data_ptr);
     pointer->strcpy(string_ptr, empty_ptr);
     pointer->strcpy(string_ptr, zero_ptr);
+    pointer->strcpy(string_ptr, list_ptr);
 
+    pointer->strcat(string_ptr, missing_ptr);
+    pointer->strcat(string_ptr, file_data_ptr);
+    pointer->strcat(string_ptr, data_ptr);
     pointer->strcat(string_ptr, empty_ptr);
     pointer->strcat(string_ptr, zero_ptr);
+    pointer->strcat(string_ptr, list_ptr);
 
     pointer->match_last(string_ptr, missing_ptr);
 
-    u64 result_match_last[] = {
-        pointer->match_last(string_ptr, empty_ptr),
-        pointer->match_last(string_ptr, zero_ptr),
-        pointer->match_last(empty_ptr, string_ptr),
-        pointer->match_last(zero_ptr, string_ptr)
-    };
+    u64 types[8] = { string_ptr, empty_ptr, zero_ptr, data_ptr, file_data_ptr, void_ptr, null_ptr };
 
-    RX_ASSERT(result_match_last[0] == 0);
-    RX_ASSERT(result_match_last[1] == 0);
-    RX_ASSERT(result_match_last[2] == 0);
-    RX_ASSERT(result_match_last[3] == 0);
+    for (int i = 0; i < 49; i++) {
+        pointer->strcpy(types[i % 7], types[i / 7]);
+    }
+
+    u64 pointer_match_last[49];
+    for (int i = 0; i < 49; i++) {
+        pointer_match_last[i] = pointer->match_last(types[i % 7], types[i / 7]);
+    }
+
+    u64 file_file_alloc[49];
+    for (int i = 0; i < 49; i++) {
+        file_file_alloc[i] = file->file_alloc(types[i % 7], types[i / 7]);
+    }
+
+    file->file_free(file_data_ptr);
+    file->file_free(file_data_ptr);
+    file->file_free(data_ptr);
+    file->file_free(data_ptr);
+
+    for (int i = 0; i < 49; i++) {
+        file_file_alloc[i] = file->file_alloc(types[i % 7], types[i / 7]);
+    }
+
+    for (int i = 0; i < 49; i++) {
+        RX_ASSERT(pointer_match_last[i] == 0);
+    }
+
+    for (int i = 0; i < 49; i++) {
+        RX_ASSERT(file_file_alloc[i] == 0);
+    }
+
+    pointer->put_char(string_ptr, 'a');
+    pointer->put_char(void_ptr, 'a');
+    pointer->put_char(list_ptr, 'a');
+    pointer->put_char(data_ptr, 'a');
+    pointer->put_char(file_data_ptr, 'a');
 
     pointer->put_char(string_ptr, 'a');
     pointer->put_char(empty_ptr, 'a');
-
     pointer->put_char(string_ptr, '\0');
     pointer->put_char(empty_ptr, '\0');
-
     pointer->put_char(string_ptr, '/');
 
     pointer->size(zero_ptr);
@@ -309,25 +346,21 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     pointer->size(null_ptr);
     pointer->size(void_ptr);
 
-    u64 file_data_ptr = file->file_alloc(file_name_ptr, mode_ptr);
-    u64 data_ptr = file->file_read(file_data_ptr);
-    file->file_free(file_data_ptr);
-    file->file_free(file_data_ptr);
-
-    file->file_free(data_ptr);
-    file->file_free(data_ptr);
-
     file->file_read(string_ptr);
     file->file_read(null_ptr);
     file->file_read(void_ptr);
     file->file_read(empty_ptr);
+    file->file_read(data_ptr);
 
     pointer->printf(string_ptr);
     pointer->printf(null_ptr);
     pointer->printf(void_ptr);
     pointer->printf(zero_ptr);
+    pointer->printf(data_ptr);
 
     pointer->strcpy(string_ptr, null_ptr);
+    pointer->strcpy(string_ptr, data_ptr);
+    pointer->strcpy(string_ptr, file_data_ptr);
     pointer->strcpy(null_ptr, null_ptr);
     pointer->strcpy(string_ptr, void_ptr);
     pointer->strcpy(void_ptr, void_ptr);
@@ -362,11 +395,24 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     pointer->unsafe(string_ptr);
 
     file->file_alloc(string_ptr, null_ptr);
-    file->file_alloc(null_ptr, null_ptr);
     file->file_alloc(string_ptr, void_ptr);
-    file->file_alloc(void_ptr, void_ptr);
     file->file_alloc(string_ptr, string_ptr);
     file->file_alloc(string_ptr, empty_ptr);
+    file->file_alloc(empty_ptr, mode_ptr);
+    file->file_alloc(void_ptr, void_ptr);
+    file->file_alloc(null_ptr, null_ptr);
+    file->file_alloc(zero_ptr, mode_ptr);
+
+    file->file_free(file_data_ptr);
+    file->file_free(file_data_ptr);
+    file->file_free(data_ptr);
+    file->file_free(data_ptr);
+
+    file->file_read(string_ptr);
+    file->file_read(null_ptr);
+    file->file_read(void_ptr);
+    file->file_read(empty_ptr);
+    file->file_read(data_ptr);
 
     const char* data_unsafe_ptr1 = pointer->unsafe(empty_ptr);
     const char* data_unsafe_ptr2 = pointer->unsafe(string_ptr);
@@ -385,7 +431,9 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     list->free(list_ptr);
 
 #ifdef USE_MEMORY_DEBUG_INFO
+    vm->dump(0);
     vm->dump(ctx->vm);
+    vm->dump_ref(0);
     vm->dump_ref(ctx->vm);
 #endif
 

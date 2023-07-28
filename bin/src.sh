@@ -132,11 +132,11 @@ for linked_target in ${targets[@]}; do
     case ${linked_target} in
         main-*) ;& test-*)
             if [[ " ${targets[*]} " == *" ${linked_target} "* ]]; then
-                ${pwd}/bin/coverageall.sh --target ${linked_target} --keep ${options}
+                ${pwd}/bin/coverageall.sh --target ${linked_target} ${options}
             fi
             ;;
         *)
-            ${pwd}/bin/buildall.sh --target ${linked_target} --keep ${options}
+            ${pwd}/bin/buildall.sh --target ${linked_target} ${options}
             ;;
     esac
 done

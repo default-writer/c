@@ -59,8 +59,16 @@ for opt in ${opts[@]}; do
             keep="--keep"
             ;;
 
+        "--clean") # [optional] cleans up directories before build
+            clean="--clean"
+            ;;
+
         "--silent") # [optional] suppress verbose output
             silent="--silent"
+            ;;
+
+        "--debug") # [optional] runs using debug memory debug info
+            debug="--debug"
             ;;
 
         "--verbose") # [optional] shows verbose messages
