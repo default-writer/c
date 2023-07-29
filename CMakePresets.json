@@ -38,7 +38,7 @@
         },
         "GC": {
           "type": "BOOL",
-          "value": "ON"
+          "value": "OFF"
         }
       }
     }

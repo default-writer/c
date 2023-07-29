@@ -12,7 +12,7 @@
   "testFilesOnSave.languageId": "c",
   "testFilesOnSave.testCommands": [
     {
-      "c": "./bin/src.sh --target ${relativeFile} --keep"
+      "c": "./bin/src.sh --target ${relativeFile} --clean"
     }
   ],
   "koverage.coverageFileNames": [
