@@ -8,7 +8,7 @@ err_report() {
 trap 'err_report $LINENO' ERR
 
 function get-cmake() {
-    local cmake=${cmake-cmake}
+    local cmake
     [ -d "${pwd}/.tools/cmake-3.25/bin" ] && cmake=${pwd}/.tools/cmake-3.25/bin/cmake || cmake=${cmake}
     echo ${cmake}
 }
@@ -69,9 +69,10 @@ function get-linked-targets() {
 
 function get-cmake-targets() {
     local target=$1
-    local targets=()
+    local targets
     local lib=""
     local exe=""
+    targets=( $(get-targets) )
     lib=$(sed -n "s#add_library(\([^ ]*\) .*#\1#p" CMakeLists.txt)
     exe=$(sed -n "s#add_executable(\([^ ]*\) .*#\1#p" CMakeLists.txt)
     targets+=( ${lib[@]} )
@@ -134,9 +135,11 @@ function get-source-targets() {
     local line
     local found_target
     local found_target_base
+    local targets
+    
+    targets=( $(get-cmake-targets) )
     
     cmake=$(get-cmake)
-    targets=( $(get-cmake-targets) )
 
     found_target=false
     for target in ${targets[@]}; do
@@ -151,6 +154,7 @@ function get-source-targets() {
         target=${source_target}
         found_target_base=false
         sources=$(find "${pwd}/config" -type f -name "sources.txt")
+
         for source in ${sources[@]}; do
             # Find target directory for the given source file
             while IFS= read -r line; do
@@ -175,6 +179,9 @@ function get-source-targets() {
     fi
 
     targets=( ${array[@]} )
+
+    echo "${source_target}" "${targets[@]}" "${found_target}"
+    return
 
     if [[ "${target_base}" == "" ]]; then
         target_base="${targets[@]}"

@@ -491,46 +491,42 @@ endif()
 
 if(TARGETS)
 
-get_property(std_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
-get_property(main_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
-get_property(test_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
-get_property(lib_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
-get_property(gtk_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
+    get_property(main_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
+    get_property(test_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
+    get_property(gtk_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
 
-list(FILTER main_target_names INCLUDE REGEX "^main-")
-list(FILTER test_target_names INCLUDE REGEX "^test-")
-list(FILTER gtk_target_names INCLUDE REGEX "^gtk-")
+    list(FILTER main_target_names INCLUDE REGEX "^main-")
+    list(FILTER test_target_names INCLUDE REGEX "^test-")
+    list(FILTER gtk_target_names INCLUDE REGEX "^gtk-")
 
-string(REGEX REPLACE ";" " " std_target_names "${std_target_names}")
-string(REGEX REPLACE ";" " " main_target_names "${main_target_names}")
-string(REGEX REPLACE ";" " " test_target_names "${test_target_names}")
-string(REGEX REPLACE ";" " " lib_target_names "${lib_target_names}")
-string(REGEX REPLACE ";" " " gtk_target_names "${gtk_target_names}")
+    string(REGEX REPLACE ";" " " main_target_names "${main_target_names}")
+    string(REGEX REPLACE ";" " " test_target_names "${test_target_names}")
+    string(REGEX REPLACE ";" " " gtk_target_names "${gtk_target_names}")
 
-FILE(WRITE ${CMAKE_BINARY_DIR}/targets.txt
-    "${std_target_names} ${main_target_names} ${test_target_names} ${lib_target_names}"
-)
+    FILE(WRITE ${CMAKE_BINARY_DIR}/targets.txt
+        "${main_target_names} ${test_target_names}"
+    )
 
-FILE(WRITE ${CMAKE_BINARY_DIR}/gtktargets.txt
-    "${gtk_target_names}"
-)
+    FILE(WRITE ${CMAKE_BINARY_DIR}/gtktargets.txt
+        "${gtk_target_names}"
+    )
 
-get_property(target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
-foreach(target_name ${target_names})
-    get_target_property(TARGET_SOURCES ${target_name} SOURCES)
-    set(output_dir "${CMAKE_BINARY_DIR}/${target_name}")
-    file(MAKE_DIRECTORY ${output_dir})
+    get_property(target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
+    foreach(target_name ${target_names})
+        get_target_property(TARGET_SOURCES ${target_name} SOURCES)
+        set(output_dir "${CMAKE_BINARY_DIR}/${target_name}")
+        file(MAKE_DIRECTORY ${output_dir})
 
-    file(WRITE ${output_dir}/sources.txt "")
-    foreach(source_file ${TARGET_SOURCES})
-        file(APPEND ${output_dir}/sources.txt "${source_file}\n")
+        file(WRITE ${output_dir}/sources.txt "")
+        foreach(source_file ${TARGET_SOURCES})
+            file(APPEND ${output_dir}/sources.txt "${source_file}\n")
+        endforeach()
     endforeach()
-endforeach()
 
-file(GLOB_RECURSE SOURCE_FILES "src/*.c" "src/*.h")
-file(WRITE ${CMAKE_BINARY_DIR}/sources.txt "")
-foreach(source_file ${SOURCE_FILES})
-    file(APPEND ${CMAKE_BINARY_DIR}/sources.txt "${source_file}\n")
-endforeach()
+    file(GLOB_RECURSE SOURCE_FILES "src/*.c" "src/*.h")
+    file(WRITE ${CMAKE_BINARY_DIR}/sources.txt "")
+    foreach(source_file ${SOURCE_FILES})
+        file(APPEND ${CMAKE_BINARY_DIR}/sources.txt "${source_file}\n")
+    endforeach()
 
 endif()
