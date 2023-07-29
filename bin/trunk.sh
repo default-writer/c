@@ -26,11 +26,12 @@ install="$1"
 
 case "${install}" in
 
-"--help") # Use .trunk formatter
-	help
-	;;
+	"--help") # [optional] shows command desctiption
+		help
+		;;
 
-*) ;;
+	*)
+		;;
 
 esac
 

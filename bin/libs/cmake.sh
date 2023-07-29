@@ -48,6 +48,45 @@ function get-targets() {
     printf '%s\n' "${array[@]}"
 }
 
+function search() {
+    local target=$1
+    if [[ ! "${target}" == "" ]]; then
+        target=$(sed -n "s#target_link_libraries(\([^ ]*\) .*${target}.*)#\1#p" CMakeLists.txt)
+        if [[ ! "${target}" == "" ]]; then
+            printf '%s\n' "${target}"
+            search ${target}
+        fi
+    fi
+}
+
+function get-linked-targets() {
+    local target=$1
+    if [[ ! "${target}" == "" ]]; then
+        printf '%s\n' "${target}"
+        search ${target}
+    fi
+}
+
+function get-cmake-targets() {
+    local target=$1
+    local targets=()
+    local lib=""
+    local exe=""
+    lib=$(sed -n "s#add_library(\([^ ]*\) .*#\1#p" CMakeLists.txt)
+    exe=$(sed -n "s#add_executable(\([^ ]*\) .*#\1#p" CMakeLists.txt)
+    targets+=( ${lib[@]} )
+    targets+=( ${exe[@]} )
+    targets=$(echo "${targets[@]}" | xargs -n1 | sort -u | xargs)
+    if [[ ! "${target}" == "" ]]; then
+        if [[ " ${targets[*]} " == *" ${target} "* ]]; then
+            printf '%s\n' "${target}"
+        fi
+    fi
+    if [[ "${target}" == "" ]]; then
+        printf '%s\n' "${targets[@]}"
+    fi
+}
+
 function get-gtktargets() {
     local array=()
     local source=$0
@@ -81,6 +120,69 @@ function get-gtktargets() {
     fi
 
     printf '%s\n' "${array[@]}"
+}
+
+function get-source-targets() {
+    local source_target=$1
+    local cmake
+    local targets
+    local array
+    local target
+    local source
+    local sources
+    local target_base
+    local line
+    local found_target
+    local found_target_base
+    
+    cmake=$(get-cmake)
+    targets=( $(get-cmake-targets) )
+
+    found_target=false
+    for target in ${targets[@]}; do
+        if [ "${target}" == "${source_target}" ]; then 
+            array=( ${target} )
+            found_target=true
+        fi
+    done
+
+    if [[ "${found_target}" == false ]]; then
+        array=()
+        target=${source_target}
+        found_target_base=false
+        sources=$(find "${pwd}/config" -type f -name "sources.txt")
+        for source in ${sources[@]}; do
+            # Find target directory for the given source file
+            while IFS= read -r line; do
+                if [[ "${target}" == "${line}" ]]; then
+                    found_target_base=true
+                    target_base=$(basename $(dirname "${source}"))
+                    array+=( ${target_base} )
+                    break
+                fi
+            done <  $source
+            if [[ "${found_target_base}" == true ]]; then
+                linked_targets=$(get-linked-targets ${target_base})
+                if [ "${target}" == "--target ${line}" ]; then
+                    for linked_target in ${linked_targets[@]}; do
+                        if [ "${linked_target}" == "${source_target}" ]; then 
+                            array+=( ${linked_target} )
+                        fi
+                    done
+                fi
+            fi
+        done
+    fi
+
+    targets=( ${array[@]} )
+
+    if [[ "${target_base}" == "" ]]; then
+        target_base="${targets[@]}"
+    fi
+
+    targets=$(echo "${targets[@]} ${linked_targets[@]}" | xargs -n1 | sort -u | xargs)
+
+    printf '%s\n' "${targets[@]}"
 }
 
 function get-options() {
@@ -123,12 +225,13 @@ function get-options() {
                 debug="--debug"
                 ;;
 
-            "--help") # shows command desctiption
+            "--help") # [optional] shows command desctiption
                 help="--help"
                 ;;
 
             *)
                 help
+                exit 8
                 ;;
 
         esac
@@ -141,6 +244,7 @@ function cmake-options() {
     local sanitize_options
     local mocks_options
     local gc_options
+    local verbose_options
 
     if [ "${sanitize}" == "--sanitize" ] && [ "${valgrind}" == "" ]; then
         sanitize_options=-DCODE_SANITIZER:BOOL=TRUE
@@ -158,13 +262,18 @@ function cmake-options() {
         debug_options=-DCONFIG_MEMORY_DEBUG_INFO:BOOL=TRUE
     fi
 
-    echo " ${sanitize_options} ${mocs_options} ${gc_options} ${debug_options}"
+    if [[ "${verbose}" == "--verbose" ]]; then
+        verbose_options=-DVERBOSE:BOOL=TRUE
+    fi
+
+    echo " ${sanitize_options} ${mocs_options} ${gc_options} ${debug_options} ${verbose_options}"
 }
 
 function cmake-coverage-options() {
     local sanitize_options
     local mocks_options
-    local gc_options
+    local debug_options
+    local verbose_options
 
     if [ "${sanitize}" == "--sanitize" ] && [ "${valgrind}" == "" ]; then
         sanitize_options=-DCODE_SANITIZER:BOOL=TRUE
@@ -178,7 +287,11 @@ function cmake-coverage-options() {
         debug_options=-DCONFIG_MEMORY_DEBUG_INFO:BOOL=TRUE
     fi
 
-    echo " ${sanitize_options} ${mocs_options} ${debug_options}"
+    if [[ "${verbose}" == "--verbose" ]]; then
+        verbose_options=-DVERBOSE:BOOL=TRUE
+    fi
+
+    echo " ${sanitize_options} ${mocs_options} ${debug_options} ${verbose_options}"
 }
 
 function cmake-valgrind-options() {
@@ -196,7 +309,10 @@ function cmake-valgrind-options() {
 }
 export -f get-cmake
 export -f get-targets
+export -f get-linked-targets
+export -f get-source-targets
 export -f get-gtktargets
+export -f get-cmake-targets
 export -f get-options
 export -f cmake-options
 export -f cmake-coverage-options

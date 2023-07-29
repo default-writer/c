@@ -33,8 +33,9 @@ case "${install}" in
         ;;
 
     "--target") # builds and runs specified target
-        opts=( "${@:3}" )
         target="--target $2"
+        source=$2
+        opts=( "${@:3}" )
         ;;
 
     "--all") # builds and runs all targets
@@ -43,6 +44,7 @@ case "${install}" in
 
     *)
         help
+        exit 8
         ;;
 
 esac
@@ -53,16 +55,34 @@ for opt in ${opts[@]}; do
         "")
             ;;
 
+        "--keep") # [optional] keeps coverage files and merges them
+            keep="--keep"
+            ;;
+
+        "--clean") # [optional] cleans up directories before build
+            clean="--clean"
+            ;;
+
         "--silent") # [optional] suppress verbose output
             silent="--silent"
             ;;
 
-        "--help") # shows command desctiption
+        "--debug") # [optional] runs using debug memory debug info
+            debug="--debug"
+            ;;
+
+        "--verbose") # [optional] shows verbose messages
+            verbose="--verbose"
+            ;;
+
+        "--help") # [optional] shows command desctiption
             help
             ;;
 
         *)
+            echo "Error: unknown argyment ${opt}"
             help
+            exit 8
             ;;
 
     esac
@@ -72,20 +92,25 @@ if [[ "${silent}" == "--silent" ]]; then
     exec 2>&1 >/dev/null
 fi
 
-echo =============================================================================
-echo -1/6------- building with garbage collector ---------------------------------
-"${pwd}/bin/build.sh" ${target} --gc --clean ${silent}
-echo -2/6------- building with garbage collector / with sanitizer ----------------
-"${pwd}/bin/build.sh" ${target} --gc --clean --sanitize ${silent}
-echo -3/6------- building with garbage collector / with valgrind -----------------
-"${pwd}/bin/build.sh" ${target} --gc --clean --valgrind ${silent}
-echo -4/6------- building without garbage collector ------------------------------
-"${pwd}/bin/build.sh" ${target} --clean ${silent}
-echo -5/6------- building without garbage collector / with sanitizer -------------
-"${pwd}/bin/build.sh" ${target} --clean --sanitize ${silent}
-echo -6/6------- building without garbage collector / with valgrind --------------
-"${pwd}/bin/build.sh" ${target} --clean --valgrind ${silent}
-echo =============================================================================
+cmake=$(get-cmake)
+targets=( $(get-source-targets ${source}) )
+
+if [[ "${targets[@]}" == "" ]]; then
+    if [[ "${help}" == "--help" ]]; then
+        help
+    fi
+    echo ERROR
+    exit 8
+fi
+
+for target in ${targets[@]}; do
+    "${pwd}/bin/build.sh" --target ${target} --gc ${opts[@]}
+    "${pwd}/bin/build.sh" --target ${target} --gc --sanitize ${opts[@]}
+    "${pwd}/bin/build.sh" --target ${target} --gc --valgrind ${opts[@]}
+    "${pwd}/bin/build.sh" --target ${target} ${silent} ${opts[@]}
+    "${pwd}/bin/build.sh" --target ${target} --sanitize ${opts[@]}
+    "${pwd}/bin/build.sh" --target ${target} --valgrind ${opts[@]}
+done
 
 if [ "${silent}" == "--silent" ]; then
     exec 1>&2 2>&-

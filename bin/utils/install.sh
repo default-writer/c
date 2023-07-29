@@ -148,7 +148,7 @@ case "${install}" in
 
     *)
         help
-        exit
+        exit 8
         ;;
 
 esac

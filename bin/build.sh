@@ -32,8 +32,9 @@ case "${install}" in
         ;;
 
     "--target") # builds and runs specified target
+        target="--target $2"
+        source=$2
         opts=( "${@:3}" )
-        target="--target"
         ;;
 
     "--all") # builds and runs all targets
@@ -42,6 +43,7 @@ case "${install}" in
 
     *)
         help
+        exit 8
         ;;
 
 esac
@@ -50,6 +52,10 @@ for opt in ${opts[@]}; do
     case ${opt} in
 
         "")
+            ;;
+
+        "--keep") # [optional] keeps coverage files and merges them
+            keep="--keep"
             ;;
 
         "--clean") # [optional] cleans up directories before build
@@ -84,12 +90,19 @@ for opt in ${opts[@]}; do
             debug="--debug"
             ;;
 
-        "--help") # shows command desctiption
+        "--verbose") # [optional] shows verbose messages
+            verbose="--verbose"
+            ;;
+
+        "--help") # [optional] shows command desctiption
             help
+            exit 8
             ;;
 
         *)
+            echo "Error: unknown argyment ${opt}"
             help
+            exit 8
             ;;
 
     esac
@@ -99,11 +112,27 @@ if [ "${silent}" == "--silent" ]; then
     exec 2>&1 >/dev/null
 fi
 
-[ ! -d "${pwd}/build" ] && mkdir "${pwd}/build"
+build="${pwd}/build"
 
+if [ "${gc}" == "--gc" ]; then
+    build="${build}-gc"
+fi
+
+if [ "${sanitize}" == "--sanitize" ]; then
+    build="${build}-sanitize"
+fi
+
+if [ "${valgrind}" == "--valgrind" ]; then
+    build="${build}-valgrind"
+fi
+
+[ ! -d "${build}" ] && mkdir "${build}"
+
+if [ "${keep}" == "" ]; then
 if [ "${clean}" == "--clean" ]; then
-    rm -rf "${pwd}/build"
-    mkdir "${pwd}/build"
+    rm -rf "${build}"
+    mkdir "${build}"
+fi
 fi
 
 find "${pwd}" -type f -name "callgrind.out.*" -delete
@@ -111,26 +140,21 @@ find "${pwd}/src" -type f -name "*.s" -delete
 find "${pwd}/tests" -type f -name "*.s" -delete
 
 cmake=$(get-cmake)
-targets=( $(get-targets) )
-if [ "${target}" == "--target" ]; then
-    for target in ${targets[@]}; do
-        if [ "${target}" == "$2" ]; then 
-            array=( ${target} )
-            break
-        fi
-    done
-    if [ "$(echo ${array[@]})" == "" ]; then
+targets=( $(get-source-targets ${source}) )
+
+if [[ "${targets[@]}" == "" ]]; then
+    if [[ "${help}" == "--help" ]]; then
         help
-        exit 8
     fi
-    targets=( ${array[@]} )
+    echo ERROR
+    exit 8
 fi
 
-[ ! -d "${pwd}/coverage" ] && mkdir "${pwd}/coverage"
+[ ! -d "${build}" ] && mkdir "${build}"
 
 coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" )
 for f in ${coverage}; do
-    find "${pwd}/coverage" -type f -name "${f}" -delete
+    find "${build}" -type f -name "${f}" -delete
 done
 
 export MAKEFLAGS=-j8
@@ -140,26 +164,29 @@ ${cmake} \
     -DCMAKE_BUILD_TYPE:STRING=Debug \
     -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
     -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
+    -DVERBOSE:BOOL=FALSE \
     $(cmake-options) \
     -S"${pwd}" \
-    -B"${pwd}/build" \
+    -B"${build}" \
     -G "Ninja" 2>&1 >/dev/null
 
 
 for target in ${targets[@]}; do
-    echo Building target ${target}
-    echo Building with options $(cmake-options)
+    if [[ "${verbose}" == "--verbose" ]]; then
+        echo Building target ${target}
+        echo Building with options $(cmake-options)
+    fi
     if [ "${silent}" == "--silent" ]; then
-        ${cmake} --build "${pwd}/build" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
+        ${cmake} --build "${build}" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
     else
-        ${cmake} --build "${pwd}/build" --target "${target}" || (echo ERROR: "${target}" && exit 1)
+        ${cmake} --build "${build}" --target "${target}" || (echo ERROR: "${target}" && exit 1)
     fi
     case "${target}" in main-*)
-        timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/build/${target}" 2>&1 >"${pwd}/build/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
+        timeout --foreground 180 $(cmake-valgrind-options) "${build}/${target}" 2>&1 >"${build}/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
     esac
 done
 
-main=$(find "${pwd}/build" -type f -name "*.s" -exec echo {} \;)
+main=$(find "${build}" -type f -name "*.s" -exec echo {} \;)
 for i in $main; do
     path="${pwd}/$(echo $i | sed -n -e 's/^.*.dir\/\(.*\)$/\1/p')"
     cp "${i}" "${path}"

@@ -46,11 +46,11 @@ report
 .venv
 .args
 gtk
-build
+build*
 clangd
 cmake
 config
-coverage
+/coverage*
 logs
 out
 **/*.c.s

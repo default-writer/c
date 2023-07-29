@@ -40,11 +40,14 @@ for opt in ${opts[@]}; do
             updgradeflags="--no-upgrade"
             ;;
 
-        "--help") # shows command desctiption
+        "--help") # [optional] shows command desctiption
             help
             ;;
 
         *)
+            echo "Error: unknown argyment ${opt}"
+            help
+            exit 8
             ;;
 
     esac

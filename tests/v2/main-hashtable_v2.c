@@ -1,10 +1,37 @@
+/*
+ *
+ * MIT License
+ *
+ * Copyright (c) 2023 Artur Mustafin
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */
 #include "common/alloc.h"
 #include "list-micro/data.h"
 #include "playground/brain/brain.h"
 #include "playground/hashtable/v2/hashtable_v2.h"
-#include "playground/pointer/v2/pointer_v2.h"
+#include "pointer/v2/pointer_v2.h"
 
-#include <rexo/include/rexo.h>
+#define RXP_DEBUG_TESTS
+
+#include "rexo/include/rexo.h"
 
 #define HASHTABLE_SIZE 101
 #define DEFAULT_SIZE 0x1
@@ -599,6 +626,7 @@ RX_TEST_CASE(tests, test_alloc_free, .fixture = test_fixture) {
     u64 size = pointer->size(list_ptr);
     RX_ASSERT(size == 8);
     u64 pattern_ptr = pointer->alloc();
+    u64 ptr_size = pointer->size(pattern_ptr);
     list->free(pattern_ptr);
     list->free(list_ptr);
 #ifndef USE_GC
@@ -607,6 +635,7 @@ RX_TEST_CASE(tests, test_alloc_free, .fixture = test_fixture) {
 #else
     pointer->gc();
 #endif
+    RX_ASSERT(ptr_size == 0);
 }
 
 /* test init */
@@ -729,7 +758,22 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable_murmurhash3_hash, .fixt
     hashtable->destroy();
 }
 
+static void INIT init() {
+#ifdef USE_MEMORY_DEBUG_INFO
+    global_statistics();
+#endif
+}
+
+static void DESTROY destroy() {
+#ifdef USE_MEMORY_DEBUG_INFO
+    global_statistics();
+#endif
+}
+
 int main(int argc, char** argv) {
+#ifndef ATTRIBUTE
+    init();
+#endif
     CLEAN(argc)
     CLEAN(argv)
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -742,8 +786,8 @@ int main(int argc, char** argv) {
 #endif
     /* Execute the main function that runs the test cases found. */
     int result = rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
-#ifdef USE_MEMORY_DEBUG_INFO
-    global_statistics();
+#ifndef ATTRIBUTE
+    destroy();
 #endif
     return result;
 }

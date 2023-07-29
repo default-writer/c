@@ -1,6 +1,34 @@
+/*
+ *
+ * MIT License
+ *
+ * Copyright (c) 2023 Artur Mustafin
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */
+#define RXP_DEBUG_TESTS
+
+#include "rexo/include/rexo.h"
+
 #include "stl/linked_list.h"
 #include "stl/linked_list_static_enumerator.h"
-#include <rexo/include/rexo.h>
 
 /* definition */
 extern const struct linked_list_methods linked_list_methods_definition;
@@ -780,6 +808,95 @@ RX_TEST_CASE(tests, test_list_1234_reverse_until_3, .fixture = test_fixture) {
     RX_ASSERT(list->tail(ctx) == head);
 }
 
+/* test init */
+RX_TEST_CASE(tests, test_list_set_next_2, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct linked_list* ctx = rx->ctx;
+
+    list->append_tail(ctx, (void*)(2));
+    list->append_tail(ctx, (void*)(1));
+
+    enumerator->init(ctx);
+    struct linked_list_node* node = enumerator->find((void*)2);
+    struct linked_list_node* node_prev = enumerator->find_prev((void*)2);
+    list->set_next(node, node_prev);
+    enumerator->destroy();
+
+    RX_ASSERT(list->next(node) == node_prev);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_set_next_0, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct linked_list* ctx = rx->ctx;
+
+    list->append_tail(ctx, (void*)(2));
+    list->append_tail(ctx, (void*)(1));
+
+    enumerator->init(ctx);
+    struct linked_list_node* node = enumerator->find((void*)2);
+    const struct linked_list_node* node_prev = enumerator->find_prev((void*)2);
+    list->set_next(0, 0);
+    enumerator->destroy();
+
+    RX_ASSERT(list->next(node) == node_prev);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_set_next_node, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct linked_list* ctx = rx->ctx;
+
+    list->append_tail(ctx, (void*)(2));
+    list->append_tail(ctx, (void*)(1));
+
+    enumerator->init(ctx);
+    struct linked_list_node* node = enumerator->find((void*)2);
+    struct linked_list_node* node_prev = enumerator->find_prev((void*)2);
+    list->set_next(0, node_prev);
+    enumerator->destroy();
+
+    RX_ASSERT(list->next(node) == node_prev);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_set, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct linked_list* ctx = rx->ctx;
+
+    list->append_tail(ctx, (void*)(2));
+    list->append_tail(ctx, (void*)(1));
+
+    enumerator->init(ctx);
+    struct linked_list_node* node = enumerator->find((void*)2);
+    struct linked_list_node* node_prev = enumerator->find_prev((void*)2);
+    list->set(ctx, node, node_prev);
+    enumerator->destroy();
+
+    RX_ASSERT(list->head(ctx) == node);
+    RX_ASSERT(list->tail(ctx) == node_prev);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_set_0, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct linked_list* ctx = rx->ctx;
+
+    list->append_tail(ctx, (void*)(2));
+    list->append_tail(ctx, (void*)(1));
+
+    enumerator->init(ctx);
+    struct linked_list_node* node = enumerator->find((void*)2);
+    struct linked_list_node* node_prev = enumerator->find_prev((void*)2);
+    list->set(ctx, node_prev, 0);
+    list->set(ctx, 0, node);
+    list->set(0, node_prev, node);
+    enumerator->destroy();
+
+    RX_ASSERT(list->head(ctx) == node);
+    RX_ASSERT(list->tail(ctx) == node_prev);
+}
+
 static struct linked_list_node* context = 0;
 
 static u64 match_function(struct linked_list_node* current) {
@@ -1013,6 +1130,16 @@ RX_TEST_CASE(tests, test_list_enumerator_reverse, .fixture = test_fixture) {
     enumerator->init(ctx);
     enumerator->reverse();
     enumerator->destroy();
+
+    RX_ASSERT(list->head(ctx) == 0);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_enumerator_reverse_null, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct linked_list* ctx = rx->ctx;
+
+    enumerator->reverse();
 
     RX_ASSERT(list->head(ctx) == 0);
 }

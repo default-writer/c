@@ -1,6 +1,38 @@
+/*
+ *
+ * MIT License
+ *
+ * Copyright (c) 2023 Artur Mustafin
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */
 #include "common/alloc.h"
 #include "list-light/data.h"
-#include <rexo/include/rexo.h>
+
+#include "../tests/src/test.h"
+
+extern const struct test_suite list_micro_test_suite_definition;
+static const struct test_suite* list_micro_tests = &list_micro_test_suite_definition;
+
+extern const struct test_suite list_alloc_test_suite_definition;
+static const struct test_suite* list_alloc_tests = &list_alloc_test_suite_definition;
 
 extern const struct list list_light_definition;
 
@@ -26,7 +58,7 @@ static void delete_list(struct list_data** ctx) {
 }
 
 /* runs default list usage scenario */
-static void using_list(void (*list_using)(struct list_data** const)) {
+static void using_list1(void (*list_using)(struct list_data** const)) {
     /* initialize current context (stack) */
     struct list_data* ctx = new_list();
     /* call user method */
@@ -57,42 +89,42 @@ static void list_using(struct list_data** current) {
     RX_ASSERT(0 == is_null[0]);
     RX_ASSERT(0 == is_null[1]);
     list->push(current, payload);
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef VM_DEBUG_INFO
     list->print_head(current);
 #endif
     list->push(current, ++payload);
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef VM_DEBUG_INFO
     list->print_head(current);
 #endif
     list->push(current, ++payload);
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef VM_DEBUG_INFO
     list->print_head(current);
 #endif
     list->push(current, ++payload);
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef VM_DEBUG_INFO
     list->print_head(current);
 #endif
     list->push(current, ++payload);
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef VM_DEBUG_INFO
     list->print_head(current);
 #endif
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef VM_DEBUG_INFO
     list->print(current);
 #endif
     const void* q_peek0 = list->peek(current);
     CLEAN(q_peek0)
     void* q_pop0 = list->pop(current);
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef VM_DEBUG_INFO
     list->print(current);
 #endif
     const void* q_pop1 = list->pop(current);
     CLEAN(q_pop1)
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef VM_DEBUG_INFO
     list->print(current);
 #endif
     const void* q_pop2 = list->pop(current);
     CLEAN(q_pop2)
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef VM_DEBUG_INFO
     list->print(current);
 #endif
     const void* q_peek1 = list->peek(current);
@@ -105,33 +137,33 @@ static void list_using(struct list_data** current) {
     RX_ASSERT(q_peek1 == q_peek3);
     const void* q_pop4 = list->pop(current);
     CLEAN(q_pop4)
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef VM_DEBUG_INFO
     list->print(current);
 #endif
     const void* q_pop5 = list->pop(current);
     CLEAN(q_pop5)
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef VM_DEBUG_INFO
     list->print(current);
 #endif
     const void* q_peek4 = list->peek(current);
     list->push(current, q_pop0);
     CLEAN(q_peek4)
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef VM_DEBUG_INFO
     list->print(current);
 #endif
     const void* q_pop6 = list->pop(current);
     CLEAN(q_pop6)
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef VM_DEBUG_INFO
     list->print(current);
 #endif
     const void* q_pop7 = list->pop(current);
     CLEAN(q_pop7)
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef VM_DEBUG_INFO
     list->print(current);
 #endif
     const void* q_peek5 = list->peek(current);
     CLEAN(q_peek5)
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef VM_DEBUG_INFO
     list->print(current);
 #endif
 }
@@ -301,20 +333,37 @@ RX_TEST_CASE(tests, test_list_pop_is_zero, .fixture = test_fixture) {
     RX_ASSERT(head == 0);
 }
 
+static void INIT init() {
+#ifdef USE_MEMORY_DEBUG_INFO
+    global_statistics();
+#endif
+}
+
+static void DESTROY destroy() {
+#ifdef USE_MEMORY_DEBUG_INFO
+    global_statistics();
+#endif
+}
+
 int main(void) {
+#ifndef ATTRIBUTE
+    init();
+#endif
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- acceptance test code\n");
 #endif
+    int result_alloc = list_alloc_tests->run();
+    int result_micro = list_micro_tests->run();
     /* some messy code */
-    using_list(list_using);
+    using_list1(list_using);
     using_list2(list_using);
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- rexo unit test code\n");
 #endif
     /* Execute the main function that runs the test cases found. */
     int result = rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
-#ifdef USE_MEMORY_DEBUG_INFO
-    global_statistics();
+#ifndef ATTRIBUTE
+    destroy();
 #endif
-    return result;
+    return result_alloc | result_micro | result;
 }

@@ -125,7 +125,9 @@
 		"trunk.io",
 		"ms-azuretools.vscode-docker",
 		"ms-vscode.makefile-tools",
-		"SonarSource.sonarlint-vscode"
+		"SonarSource.sonarlint-vscode",
+		"hack2root.testfilesonsave",
+		"doi.fileheadercomment"
 	]
     }
   }

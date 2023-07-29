@@ -1,3 +1,28 @@
+/*
+ *
+ * MIT License
+ *
+ * Copyright (c) 2023 Artur Mustafin
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */
 #include "common/alloc.h"
 #include "common/parameters.h"
 #include "list-experimental/data.h"
@@ -166,7 +191,7 @@ static void* list_peek(struct list_data** current) {
     return 0;
 }
 
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef VM_DEBUG_INFO
 
 /* prints head on current context (stack) */
 static void list_print_head(struct list_data** current) {
@@ -206,7 +231,7 @@ static void list_print(struct list_data** current) {
 /* public */
 
 /* initializes the new context's head element */
-void list_init(struct list_data** current) {
+void list_experimental_init(struct list_data** current) {
     const struct list_data* tmp = *current;
     /* checks if pointer is null */
     if (tmp == 0) {
@@ -216,7 +241,7 @@ void list_init(struct list_data** current) {
 }
 
 /* destroys the memory stack */
-void list_destroy(struct list_data** current) {
+void list_experimental_destroy(struct list_data** current) {
     /* gets the current memory pointer */
     struct list_data* tmp = *current;
     /* checks if pointer is not null */
@@ -241,7 +266,7 @@ const struct list list_experimental_definition = {
     .push = list_push,
     .pop = list_pop,
     .peek = list_peek,
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef VM_DEBUG_INFO
     .print_head = list_print_head,
     .print = list_print
 #endif

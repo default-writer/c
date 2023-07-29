@@ -1,21 +1,49 @@
+/*
+ *
+ * MIT License
+ *
+ * Copyright (c) 2023 Artur Mustafin
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */
 #include "common/alloc.h"
 #include "list-micro/data.h"
 #include "playground/brain/brain.h"
 #include "playground/hashtable/v1/hashtable_v1.h"
-#include "playground/pointer/types/data/v1/data_v1.h"
-#include "playground/pointer/types/file/v1/file_v1.h"
-#include "playground/pointer/types/list/v1/list_v1.h"
-#include "playground/pointer/types/string/v1/string_v1.h"
-#include "playground/pointer/v1/pointer_v1.h"
-#include <rexo/include/rexo.h>
+#include "pointer/types/data/v1/data_v1.h"
+#include "pointer/types/file/v1/file_v1.h"
+#include "pointer/types/list/v1/list_v1.h"
+#include "pointer/types/string/v1/string_v1.h"
+#include "pointer/v1/pointer_v1.h"
+
+#define RXP_DEBUG_TESTS
+
+#include "rexo/include/rexo.h"
 
 #define DEFAULT_SIZE 0x8
 
 /* definition */
-extern void pointer_ctx_init(struct pointer_data** ctx, u64 size);
-extern void pointer_ctx_destroy(struct pointer_data** ctx);
+extern struct pointer_data* pointer_data_init(u64 size);
+extern void pointer_data_destroy(struct pointer_data** ctx);
 
-extern const struct vm vm_definition;
+extern const struct vm_methods vm_methods_definition;
 
 extern const struct pointer_methods pointer_methods_definition;
 extern const struct list_methods list_methods_definition;
@@ -36,14 +64,14 @@ typedef struct test_data {
 RX_SET_UP(test_set_up) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct pointer_data** ctx = &rx->ctx;
-    pointer_ctx_init(ctx, 8);
+    *ctx = pointer_data_init(8);
     return RX_SUCCESS;
 }
 
 RX_TEAR_DOWN(test_tear_down) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct pointer_data** ctx = &rx->ctx;
-    pointer_ctx_destroy(ctx);
+    pointer_data_destroy(ctx);
 }
 
 /* Define the fixture. */
@@ -177,7 +205,22 @@ RX_TEST_CASE(tests, test_list_peek_0, .fixture = test_fixture) {
     global_free(dest, size);
 }
 
+static void INIT init() {
+#ifdef USE_MEMORY_DEBUG_INFO
+    global_statistics();
+#endif
+}
+
+static void DESTROY destroy() {
+#ifdef USE_MEMORY_DEBUG_INFO
+    global_statistics();
+#endif
+}
+
 int main(int argc, char** argv) {
+#ifndef ATTRIBUTE
+    init();
+#endif
     CLEAN(argc)
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- acceptance test code\n");
@@ -192,8 +235,8 @@ int main(int argc, char** argv) {
 #endif
     /* Execute the main function that runs the test cases found. */
     int result = rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
-#ifdef USE_MEMORY_DEBUG_INFO
-    global_statistics();
+#ifndef ATTRIBUTE
+    destroy();
 #endif
     return result;
 }

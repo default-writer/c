@@ -82,62 +82,85 @@ set(STRICT
 )
 
 if(CONFIG_MEMORY_DEBUG_INFO)
-    message(STATUS "Configure with memory debug information")
+    if(VERBOSE)
+        message(STATUS "Configure with memory debug information")
+    endif()
     add_compile_definitions(CONFIG_MEMORY_DEBUG_INFO)
     add_definitions(-DCONFIG_MEMORY_DEBUG_INFO)
 endif()
 
 if(CONFIG_MEMORY_CLEANUP)
-    message(STATUS "Configure with memory cleanup")
+    if(VERBOSE)
+        message(STATUS "Configure with memory cleanup")
+    endif()
     add_compile_definitions(CONFIG_MEMORY_CLEANUP)
     add_definitions(-DCONFIG_MEMORY_CLEANUP)
 endif()
 
 if(CONFIG_MEMORY_ALLOC)
-    message(STATUS "Configure with memory allocator")
+    if(VERBOSE)
+        message(STATUS "Configure with memory allocator")
+    endif()
     add_compile_definitions(CONFIG_MEMORY_ALLOC)
     add_definitions(-DCONFIG_MEMORY_ALLOC)
 endif()
 
 if(CONFIG_MEMCPY)
-    message(STATUS "Configure with use of memcpy")
+    if(VERBOSE)
+        message(STATUS "Configure with use of memcpy")
+    endif()
     add_compile_definitions(CONFIG_MEMCPY)
     add_definitions(-DCONFIG_MEMCPY)
 endif()
 
 if(CODE_SANITIZER)
-    message("Building with sanitizers")
+    if(VERBOSE)
+        message("Building with sanitizers")
+    endif()
     add_compile_options(${STANDARD} ${SANITIZE} ${OPTIONS})
     add_link_options(${STANDARD} ${SANITIZE} ${OPTIONS})
 else()
-    message("Building without sanitizers")
+    if(VERBOSE)
+        message("Building without sanitizers")
+    endif()
     add_compile_options(${STANDARD} ${NO_SANITIZE})
     add_link_options(${STANDARD} ${NO_SANITIZE})
 endif()
 
 if(MOCKS)
-    message("Building with mocks")
+    if(VERBOSE)
+        message("Building with mocks")
+    endif()
     add_compile_definitions(MOCKS)
     add_definitions(-DMOCKS)
 else()
-    message("Building without mocks")
+    if(VERBOSE)
+        message("Building without mocks")
+    endif()
 endif()
 
 if(GC)
-    message("Building with garbage collector")
+    if(VERBOSE)
+        message("Building with garbage collector")
+    endif()
     add_compile_definitions(GC)
     add_definitions(-DGC)
 else()
-    message("Building without garbage collector")
+    if(VERBOSE)
+        message("Building without garbage collector")
+    endif()
 endif()
 
 if(CODE_COVERAGE)
     if("${CMAKE_C_COMPILER_ID}" MATCHES "(Apple)?[Cc]lang" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "(Apple)?[Cc]lang")
-        message("Building with llvm code coverage tools")
-
+        if(VERBOSE)
+            message("Building with llvm code coverage tools")
+        endif()
         # Warning/Error messages
         if(NOT LLVM_COV_PATH)
-            message(FATAL_ERROR "llvm-cov not found! Aborting.")
+            if(VERBOSE)
+                message(FATAL_ERROR "llvm-cov not found! Aborting.")
+            endif()    
         endif()
 
         # set Flags
@@ -145,23 +168,33 @@ if(CODE_COVERAGE)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-instr-generate -fcoverage-mapping")
 
     elseif(CMAKE_COMPILER_IS_GNUCXX)
-        message("Building with lcov code coverage tools")
+        if(VERBOSE)
+            message("Building with lcov code coverage tools")
+        endif()
 
         # Warning/Error messages
         if(NOT (CMAKE_BUILD_TYPE STREQUAL "Debug"))
-            message(WARNING "Code coverage results with an optimized (non-Debug) build may be misleading")
+            if(VERBOSE)
+                message(WARNING "Code coverage results with an optimized (non-Debug) build may be misleading")
+            endif()
         endif()
         if(NOT LCOV_PATH)
-            message(FATAL_ERROR "lcov not found! Aborting...")
+            if(VERBOSE)
+                message(FATAL_ERROR "lcov not found! Aborting...")
+            endif()
         endif()
         if(NOT GENHTML_PATH)
-            message(FATAL_ERROR "genhtml not found! Aborting...")
+            if(VERBOSE)
+                message(FATAL_ERROR "genhtml not found! Aborting...")
+            endif()
         endif()
 
         set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --coverage -ftest-coverage")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage -ftest-coverage")
     else()
-        message(FATAL_ERROR "Code coverage requires Clang or GCC. Aborting.")
+        if(VERBOSE)
+            message(FATAL_ERROR "Code coverage requires Clang or GCC. Aborting.")
+        endif()
     endif()
     if(CMAKE_C_COMPILER_ID MATCHES "(Apple)?[Cc]lang" OR CMAKE_CXX_COMPILER_ID MATCHES "(Apple)?[Cc]lang")
         add_compile_options(-fprofile-instr-generate -fcoverage-mapping)
@@ -182,8 +215,8 @@ set(LIB_PARAMETERS_SOURCE src/common/parameters.c)
 
 set(LIB_LIST1_SOURCE src/playground/list/v1/list_v1.c)
 set(LIB_LIST2_SOURCE src/playground/list/v2/list_v2.c)
-set(LIB_VM1_SOURCE src/playground/vm/v1/vm_v1.c)
-set(LIB_VM2_SOURCE src/playground/vm/v2/vm_v2.c)
+set(LIB_VM1_SOURCE src/vm/v1/vm_v1.c)
+set(LIB_VM2_SOURCE src/vm/v2/vm_v2.c)
 set(LIB_HASHTABLE1_SOURCE src/playground/hashtable/v1/hashtable_v1.c)
 set(LIB_HASHTABLE2_SOURCE src/playground/hashtable/v2/hashtable_v2.c)
 set(LIB_STANDARD_SOURCE src/list/code.c)
@@ -204,8 +237,8 @@ set(LIB_MEMORY3_SOURCE
 set(LIB_MEMORY4_SOURCE
     src/playground/memory/v6/memory_v6.c)
 set(LIB_BRAIN_SOURCE src/playground/brain/brain.c)
-set(LIB_POINTER1_SOURCE src/playground/pointer/v1/pointer_v1.c)
-set(LIB_POINTER2_SOURCE src/playground/pointer/v2/pointer_v2.c)
+set(LIB_POINTER1_SOURCE src/pointer/v1/pointer_v1.c)
+set(LIB_POINTER2_SOURCE src/pointer/v2/pointer_v2.c)
 set(LIB_MEMORY_LIST1_SOURCE src/playground/memory/list/v1/memory_list_v1.c)
 set(LIB_MEMORY_LIST2_SOURCE src/playground/memory/list/v2/memory_list_v2.c)
 set(LIB_MEMORY_LIST3_SOURCE src/playground/memory/list/v3/memory_list_v3.c)
@@ -213,24 +246,50 @@ set(LIB_MEMORY_REF1_SOURCE src/memory/v1/ref_v1.c)
 set(LIB_MEMORY_REF2_SOURCE src/memory/v2/ref_v2.c)
 set(LIB_MEMORY_REF3_SOURCE src/memory/v3/ref_v3.c)
 set(LIB_CLASS_SOURCE src/class/class.c)
-set(LIB_STD_PTR1_SOURCE src/playground/pointer/types/data/v1/data_v1.c)
-set(LIB_STD_LIST1_SOURCE src/playground/pointer/types/list/v1/list_v1.c)
-set(LIB_STD_FILE1_SOURCE src/playground/pointer/types/file/v1/file_v1.c)
-set(LIB_STD_STRING1_SOURCE src/playground/pointer/types/string/v1/string_v1.c)
-set(LIB_STD1_SOURCE
-    src/playground/pointer/types/data/v1/data_v1.c
-    src/playground/pointer/types/list/v1/list_v1.c
-    src/playground/pointer/types/file/v1/file_v1.c
-    src/playground/pointer/types/string/v1/string_v1.c)
+set(LIB_STD_DATA1_SOURCE src/pointer/types/data/v1/data_v1.c)
+set(LIB_STD_USER1_SOURCE src/pointer/types/user/v1/user_v1.c)
+set(LIB_STD_LIST1_SOURCE src/pointer/types/list/v1/list_v1.c)
+set(LIB_STD_FILE1_SOURCE src/pointer/types/file/v1/file_v1.c)
+set(LIB_STD_STRING1_SOURCE src/pointer/types/string/v1/string_v1.c)
+set(LIB_STD_OBJECT1_SOURCE src/pointer/types/object/v1/object_v1.c)
+set(LIB_STD_TYPES1_SOURCE
+    src/pointer/types/void/v1/void_v1.c
+    src/pointer/types/data/v1/data_v1.c
+    src/pointer/types/string/v1/string_v1.c
+    src/pointer/types/file/v1/file_v1.c
+    src/pointer/types/list/v1/list_v1.c
+    src/pointer/types/object/v1/object_v1.c)
+
 set(LIB_LINKED_LIST_SOURCE
     src/stl/linked_list.c
     src/stl/linked_list_enumerator.c
     src/stl/linked_list_static_enumerator.c)
-set(MAIN_STANDARD_SOURCE tests/main.c ${LIB_STANDARD_SOURCE})
+
+# test
+set(TEST_HASHES_SOURCE tests/test-hashes.c)
+set(TEST_LINKED_LIST_SOURCE tests/main-linked-list.c)
+set(TEST_LINKED_LIST_STATIC_ENUMERATOR_SOURCE tests/main-linked-list-static-enumerator.c)
+set(TEST_STRUCTS1_SOURCE tests/structs/v1/main-structs_v1.c)
+set(TEST_STRUCTS2_SOURCE tests/structs/v2/main-structs_v2.c)
+set(TEST_STRUCTS3_SOURCE tests/structs/v3/main-structs_v3.c)
+set(TEST_STRUCTS3_LIB_SOURCE tests/structs/v3/A.c tests/structs/v3/B.c)
+
+set(TESTS_SRC_LIST tests/src/list/list.c)
+set(TESTS_SRC_LIST_MICRO tests/src/list-micro/list-micro.c)
+set(TESTS_SRC_LIST_ALLOC tests/src/list-alloc/list-alloc.c)
+set(TESTS_SRC_LIST_EXPERIMENTAL tests/src/list-experimental/list-experimental.c)
+set(TESTS_SRC_VM_V1 tests/src/vm/v1/vm_v1.c)
+set(TESTS_SRC_VM_V2 tests/src/vm/v2/vm_v2.c)
+
+# gtk
+set(GTK_EXPERIMENT src/ui/gtk-experiment.c)
+
+# main
+set(MAIN_STANDARD_SOURCE tests/main-default.c)
 set(MAIN_LIGHT_SOURCE tests/main-light.c ${LIB_LIGHT_SOURCE})
-set(MAIN_MICRO_SOURCE tests/main-micro.c ${LIB_MICRO_SOURCE})
-set(MAIN_ALLOC_SOURCE tests/main-alloc.c ${LIB_ALLOC_SOURCE})
-set(MAIN_EXPERIMENTAL_SOURCE tests/main-experimental.c ${LIB_EXPERIMENTAL_SOURCE})
+set(MAIN_MICRO_SOURCE tests/main-micro.c)
+set(MAIN_ALLOC_SOURCE tests/main-alloc.c)
+set(MAIN_EXPERIMENTAL_SOURCE tests/main-experimental.c)
 set(MAIN_PLAYGROUND1_SOURCE tests/v1/main-playground_v1.c ${LIB_CLASS1_SOURCE})
 set(MAIN_PLAYGROUND2_SOURCE tests/v2/main-playground_v2.c ${LIB_CLASS2_SOURCE})
 set(MAIN_MEMORY1_SOURCE tests/v1/main-memory_v1.c ${LIB_MEMORY1_SOURCE})
@@ -246,18 +305,27 @@ set(MAIN_HASHTABLE2_SOURCE tests/v2/main-hashtable_v2.c)
 set(MAIN_VM1_SOURCE tests/v1/main-vm1.c)
 set(MAIN_VM2_SOURCE tests/v2/main-vm2.c)
 set(MAIN_ZEN_SOURCE src/playground/zen/zen.c)
-set(GTK_EXPERIMENT src/ui/gtk-experiment.c)
-set(TEST_HASHES_SOURCE tests/test-hashes.c)
-set(TEST_LINKED_LIST_SOURCE tests/main-linked-list.c)
-set(TEST_LINKED_LIST_STATIC_ENUMERATOR_SOURCE tests/main-linked-list-static-enumerator.c)
-set(TEST_STRUCTS1_SOURCE tests/structs/v1/main-structs_v1.c)
-set(TEST_STRUCTS2_SOURCE tests/structs/v2/main-structs_v2.c)
-set(TEST_STRUCTS3_SOURCE tests/structs/v3/main-structs_v3.c)
-set(TEST_STRUCTS3_LIB_SOURCE tests/structs/v3/A.c tests/structs/v3/B.c)
+set(MAIN_TESTS_VM1_SOURCE tests/v1/main-tests_v1.c)
+set(MAIN_TESTS_VM2_SOURCE tests/v2/main-tests_v2.c)
+
 
 include_directories(.deps)
 include_directories(src)
 
+# test
+add_library(tests STATIC
+    ${TESTS_SRC_LIST}
+    ${TESTS_SRC_LIST_ALLOC}
+    ${TESTS_SRC_LIST_EXPERIMENTAL}
+    ${TESTS_SRC_LIST_MICRO})
+
+add_library(lib-tests-vm-v1 STATIC ${TESTS_SRC_VM_V1})
+add_library(lib-tests-vm-v2 STATIC ${TESTS_SRC_VM_V2})
+
+#user
+add_library(lib-user1 SHARED ${LIB_STD_USER1_SOURCE})
+
+# all
 add_library(list-v1 STATIC ${LIB_LIST1_SOURCE})
 add_library(list-v2 STATIC ${LIB_LIST2_SOURCE})
 add_library(vm-v1 STATIC ${LIB_VM1_SOURCE})
@@ -271,7 +339,7 @@ add_library(list-memory4 STATIC ${LIB_MEMORY4_SOURCE})
 add_library(list-common STATIC ${LIB_COMMON_SOURCE})
 add_library(list-lcg STATIC ${LIB_LCG_SOURCE})
 add_library(list-parameters STATIC ${LIB_PARAMETERS_SOURCE})
-add_library(list-standard STATIC ${LIB_STANDARD_SOURCE})
+add_library(list-default STATIC ${LIB_STANDARD_SOURCE})
 add_library(list-light STATIC ${LIB_LIGHT_SOURCE})
 add_library(list-micro STATIC ${LIB_MICRO_SOURCE})
 add_library(list-alloc STATIC ${LIB_ALLOC_SOURCE})
@@ -290,12 +358,21 @@ add_library(memory-ref2 STATIC ${LIB_MEMORY_REF2_SOURCE})
 add_library(memory-ref3 STATIC ${LIB_MEMORY_REF3_SOURCE})
 add_library(structs-v3 STATIC ${TEST_STRUCTS3_LIB_SOURCE})
 add_library(stl-linked-list STATIC ${LIB_LINKED_LIST_SOURCE})
-add_library(std-types1 STATIC ${LIB_STD1_SOURCE})
+add_library(std-types1 STATIC ${LIB_STD_TYPES1_SOURCE})
 add_library(std-list1 SHARED ${LIB_STD_LIST1_SOURCE})
 add_library(std-file1 SHARED ${LIB_STD_FILE1_SOURCE})
 add_library(std-string1 SHARED ${LIB_STD_STRING1_SOURCE})
-add_library(std-ptr1 SHARED ${LIB_STD_PTR1_SOURCE})
+add_library(std-data1 SHARED ${LIB_STD_DATA1_SOURCE})
 
+add_library(std-object1 SHARED ${LIB_STD_OBJECT1_SOURCE})
+
+# test
+add_executable(test-hashes ${TEST_HASHES_SOURCE})
+
+# gtk
+add_executable(gtk-experiment ${GTK_EXPERIMENT})
+
+# main 
 add_executable(main-default ${MAIN_STANDARD_SOURCE})
 add_executable(main-light ${MAIN_LIGHT_SOURCE})
 add_executable(main-micro ${MAIN_MICRO_SOURCE})
@@ -316,14 +393,17 @@ add_executable(main-hashtable2 ${MAIN_HASHTABLE2_SOURCE})
 add_executable(main-vm1 ${MAIN_VM1_SOURCE})
 add_executable(main-vm2 ${MAIN_VM2_SOURCE})
 add_executable(main-zen ${MAIN_ZEN_SOURCE})
-add_executable(gtk-experiment ${GTK_EXPERIMENT})
-add_executable(test-hashes ${TEST_HASHES_SOURCE})
 add_executable(main-linked-list ${TEST_LINKED_LIST_SOURCE})
 add_executable(main-linked-list-static-enumerator ${TEST_LINKED_LIST_STATIC_ENUMERATOR_SOURCE})
 add_executable(main-structs1 ${TEST_STRUCTS1_SOURCE})
 add_executable(main-structs2 ${TEST_STRUCTS2_SOURCE})
 add_executable(main-structs3 ${TEST_STRUCTS3_SOURCE})
+add_executable(main-tests-vm1 ${MAIN_TESTS_VM1_SOURCE})
+add_executable(main-tests-vm2 ${MAIN_TESTS_VM2_SOURCE})
 
+# links
+
+# all
 target_link_libraries(hashtable1 PRIVATE list-lcg)
 target_link_libraries(hashtable2 PRIVATE list-lcg)
 target_link_libraries(list-memory1 PRIVATE list-common)
@@ -332,19 +412,26 @@ target_link_libraries(list-memory3 PRIVATE list-common)
 target_link_libraries(list-memory4 PRIVATE list-common)
 target_link_libraries(list-class PRIVATE list-common)
 target_link_libraries(list-alloc PRIVATE list-parameters)
-target_link_libraries(list-pointer1 PRIVATE list-common std-types1)
+target_link_libraries(list-pointer1 PRIVATE list-common list-micro std-types1)
 target_link_libraries(list-pointer2 PRIVATE list-common)
 target_link_libraries(list-experimental PRIVATE list-parameters)
 target_link_libraries(memory-ref1 PRIVATE memory-list1 list-micro list-common)
 target_link_libraries(memory-ref2 PRIVATE memory-list2 list-micro list-common)
 target_link_libraries(memory-ref3 PRIVATE memory-list3 list-micro list-common)
 target_link_libraries(list-pointer2 PRIVATE vm-v2)
+target_link_libraries(structs-v3 PRIVATE list-class)
 
-target_link_libraries(main-default PRIVATE list-v1 list-common)
-target_link_libraries(main-light PRIVATE list-light list-common)
-target_link_libraries(main-micro PRIVATE list-micro list-common)
-target_link_libraries(main-alloc PRIVATE list-alloc list-lcg list-parameters list-common)
-target_link_libraries(main-experimental PRIVATE list-experimental list-lcg list-parameters list-common)
+# test
+target_link_libraries(tests PRIVATE list-alloc list-parameters)
+target_link_libraries(lib-tests-vm-v1 PRIVATE list-common list-micro list-pointer1)
+target_link_libraries(lib-tests-vm-v2 PRIVATE list-common list-micro list-pointer2)
+
+# main
+target_link_libraries(main-default PRIVATE tests list-common list-alloc list-v1 list-default)
+target_link_libraries(main-light PRIVATE tests list-common list-alloc  list-micro list-light)
+target_link_libraries(main-micro PRIVATE tests list-common list-alloc list-micro)
+target_link_libraries(main-alloc PRIVATE tests list-common list-alloc list-lcg list-parameters)
+target_link_libraries(main-experimental PRIVATE tests list-common list-experimental list-lcg list-parameters)
 target_link_libraries(main-playground1 PRIVATE list-class1 list-micro list-common list-v1)
 target_link_libraries(main-playground2 PRIVATE list-class2 list-micro list-common list-v2)
 target_link_libraries(main-memory1 PRIVATE list-memory1)
@@ -357,16 +444,18 @@ target_link_libraries(main-pointer1 PRIVATE list-pointer1 list-micro vm-v1)
 target_link_libraries(main-pointer2 PRIVATE list-pointer2 list-micro)
 target_link_libraries(main-hashtable1 PRIVATE list-pointer1 list-micro vm-v1 hashtable1)
 target_link_libraries(main-hashtable2 PRIVATE list-pointer2 list-micro hashtable2)
-target_link_libraries(main-vm1 PRIVATE list-pointer1 list-micro vm-v1)
-target_link_libraries(main-vm2 PRIVATE list-pointer2 list-micro)
+target_link_libraries(main-vm1 PRIVATE tests lib-tests-vm-v1 list-alloc list-light vm-v1 lib-user1)
+target_link_libraries(main-vm2 PRIVATE tests lib-tests-vm-v2 list-alloc list-light vm-v2 list-pointer2 list-micro)
 target_link_libraries(main-structs1 PRIVATE list-common)
 target_link_libraries(main-structs2 PRIVATE list-class)
 target_link_libraries(main-structs3 PRIVATE structs-v3)
-target_link_libraries(structs-v3 PRIVATE list-class)
 target_link_libraries(main-linked-list PRIVATE stl-linked-list)
 target_link_libraries(main-linked-list-static-enumerator PRIVATE stl-linked-list)
+target_link_libraries(main-tests-vm1 PRIVATE list-micro list-pointer1 lib-tests-vm-v1 vm-v1 lib-user1)
+target_link_libraries(main-tests-vm2 PRIVATE list-micro list-pointer2 lib-tests-vm-v2 vm-v2 list-pointer2 list-micro)
 
 configure_file(all_english_words.txt ${CMAKE_BINARY_DIR}/all_english_words.txt COPYONLY)
+configure_file(file.txt ${CMAKE_BINARY_DIR}/file.txt COPYONLY)
 
 FILE(WRITE ${CMAKE_BINARY_DIR}/input.txt
     "fopen<\"input.txt\",\"rb\">f (? f==0 perror<\"file not found\" exit<1 : print<\"all ok\")"
@@ -405,25 +494,45 @@ if(TARGETS)
 get_property(std_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
 get_property(main_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
 get_property(test_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
+get_property(lib_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
 get_property(gtk_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
 
 list(FILTER std_target_names INCLUDE REGEX "^std-")
 list(FILTER main_target_names INCLUDE REGEX "^main-")
 list(FILTER test_target_names INCLUDE REGEX "^test-")
+list(FILTER lib_target_names INCLUDE REGEX "^lib-")
 list(FILTER gtk_target_names INCLUDE REGEX "^gtk-")
 
 string(REGEX REPLACE ";" " " std_target_names "${std_target_names}")
 string(REGEX REPLACE ";" " " main_target_names "${main_target_names}")
 string(REGEX REPLACE ";" " " test_target_names "${test_target_names}")
+string(REGEX REPLACE ";" " " lib_target_names "${lib_target_names}")
 string(REGEX REPLACE ";" " " gtk_target_names "${gtk_target_names}")
 
 FILE(WRITE ${CMAKE_BINARY_DIR}/targets.txt
-    "${std_target_names} ${main_target_names} ${test_target_names}"
+    "${std_target_names} ${main_target_names} ${test_target_names} ${lib_target_names}"
 )
 
 FILE(WRITE ${CMAKE_BINARY_DIR}/gtktargets.txt
     "${gtk_target_names}"
 )
 
-endif()
+get_property(target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
+foreach(target_name ${target_names})
+    get_target_property(TARGET_SOURCES ${target_name} SOURCES)
+    set(output_dir "${CMAKE_BINARY_DIR}/${target_name}")
+    file(MAKE_DIRECTORY ${output_dir})
 
+    file(WRITE ${output_dir}/sources.txt "")
+    foreach(source_file ${TARGET_SOURCES})
+        file(APPEND ${output_dir}/sources.txt "${source_file}\n")
+    endforeach()
+endforeach()
+
+file(GLOB_RECURSE SOURCE_FILES "src/*.c" "src/*.h")
+file(WRITE ${CMAKE_BINARY_DIR}/sources.txt "")
+foreach(source_file ${SOURCE_FILES})
+    file(APPEND ${CMAKE_BINARY_DIR}/sources.txt "${source_file}\n")
+endforeach()
+
+endif()
