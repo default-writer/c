@@ -293,7 +293,6 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     u64 data_ptr = file->file_read(file_data_ptr);
 
     const char* tmp = pointer->unsafe(data_ptr);
-    // tmp += 0xf;
     u64 copy_ptr = pointer->load(tmp);
     file->file_free(data_ptr);
 
@@ -379,21 +378,21 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
 
     pointer->strcpy(string_ptr, null_ptr);
     pointer->strcpy(string_ptr, copy_ptr);
-    pointer->strcpy(null_ptr, null_ptr);
+    pointer->strcpy(null_ptr, string_ptr);
     pointer->strcpy(string_ptr, void_ptr);
     pointer->strcpy(void_ptr, void_ptr);
-    pointer->strcpy(string_ptr, string_ptr);
     pointer->strcpy(string_ptr, empty_ptr);
 
     pointer->strcat(string_ptr, null_ptr);
-    pointer->strcat(null_ptr, null_ptr);
+    pointer->strcat(null_ptr, string_ptr);
     pointer->strcat(string_ptr, void_ptr);
     pointer->strcat(void_ptr, void_ptr);
+    pointer->strcat(zero_ptr, void_ptr);
     pointer->strcat(string_ptr, string_ptr);
     pointer->strcat(string_ptr, empty_ptr);
 
     pointer->match_last(string_ptr, null_ptr);
-    pointer->match_last(null_ptr, null_ptr);
+    pointer->match_last(null_ptr, string_ptr);
     pointer->match_last(string_ptr, void_ptr);
     pointer->match_last(void_ptr, void_ptr);
     pointer->match_last(string_ptr, string_ptr);
