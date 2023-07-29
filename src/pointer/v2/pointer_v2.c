@@ -441,6 +441,9 @@ static void pointer_strcpy(u64 dest, u64 src) {
 }
 
 static void pointer_strcat(u64 dest, u64 src) {
+    if (dest == src) {
+        return;
+    }
     struct pointer* dest_ptr = vm->read(&base->vm, dest);
     if (dest_ptr == 0) {
         return;
