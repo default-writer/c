@@ -23,7 +23,7 @@
  * SOFTWARE.
  *
  */
-#include "src/list-alloc/list-alloc.h"
+#include "src/test_list-alloc/test_list-alloc.h"
 
 extern const struct test_suite list_alloc_test_suite_definition;
 static const struct test_suite* list_alloc_tests = &list_alloc_test_suite_definition;

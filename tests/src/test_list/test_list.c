@@ -23,7 +23,7 @@
  * SOFTWARE.
  *
  */
-#include "list.h"
+#include "test_list.h"
 
 extern const struct list list_definition;
 

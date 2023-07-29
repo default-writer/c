@@ -23,7 +23,7 @@
  * SOFTWARE.
  *
  */
-#include "list-micro.h"
+#include "test_list-micro.h"
 
 extern const struct list list_micro_definition;
 

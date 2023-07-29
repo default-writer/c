@@ -274,10 +274,10 @@ set(TEST_STRUCTS2_SOURCE tests/structs/v2/main-structs_v2.c)
 set(TEST_STRUCTS3_SOURCE tests/structs/v3/main-structs_v3.c)
 set(TEST_STRUCTS3_LIB_SOURCE tests/structs/v3/A.c tests/structs/v3/B.c)
 
-set(TESTS_SRC_LIST tests/src/list/list.c)
-set(TESTS_SRC_LIST_MICRO tests/src/list-micro/list-micro.c)
-set(TESTS_SRC_LIST_ALLOC tests/src/list-alloc/list-alloc.c)
-set(TESTS_SRC_LIST_EXPERIMENTAL tests/src/list-experimental/list-experimental.c)
+set(TESTS_SRC_LIST tests/src/test_list/test_list.c)
+set(TESTS_SRC_LIST_MICRO tests/src/test_list-micro/test_list-micro.c)
+set(TESTS_SRC_LIST_ALLOC tests/src/test_list-alloc/test_list-alloc.c)
+set(TESTS_SRC_LIST_EXPERIMENTAL tests/src/test_list-experimental/test_list-experimental.c)
 set(TESTS_SRC_VM_V1 tests/src/vm/v1/vm_v1.c)
 set(TESTS_SRC_VM_V2 tests/src/vm/v2/vm_v2.c)
 
@@ -319,11 +319,11 @@ add_library(tests STATIC
     ${TESTS_SRC_LIST_EXPERIMENTAL}
     ${TESTS_SRC_LIST_MICRO})
 
-add_library(lib-tests-vm-v1 STATIC ${TESTS_SRC_VM_V1})
-add_library(lib-tests-vm-v2 STATIC ${TESTS_SRC_VM_V2})
+add_library(tests-vm-v1 STATIC ${TESTS_SRC_VM_V1})
+add_library(tests-vm-v2 STATIC ${TESTS_SRC_VM_V2})
 
 #user
-add_library(lib-user1 SHARED ${LIB_STD_USER1_SOURCE})
+add_library(user1 SHARED ${LIB_STD_USER1_SOURCE})
 
 # all
 add_library(list-v1 STATIC ${LIB_LIST1_SOURCE})
@@ -423,8 +423,8 @@ target_link_libraries(structs-v3 PRIVATE list-class)
 
 # test
 target_link_libraries(tests PRIVATE list-alloc list-parameters)
-target_link_libraries(lib-tests-vm-v1 PRIVATE list-common list-micro list-pointer1)
-target_link_libraries(lib-tests-vm-v2 PRIVATE list-common list-micro list-pointer2)
+target_link_libraries(tests-vm-v1 PRIVATE list-common list-micro list-pointer1)
+target_link_libraries(tests-vm-v2 PRIVATE list-common list-micro list-pointer2)
 
 # main
 target_link_libraries(main-default PRIVATE tests list-common list-alloc list-v1 list-default)
@@ -444,15 +444,15 @@ target_link_libraries(main-pointer1 PRIVATE list-pointer1 list-micro vm-v1)
 target_link_libraries(main-pointer2 PRIVATE list-pointer2 list-micro)
 target_link_libraries(main-hashtable1 PRIVATE list-pointer1 list-micro vm-v1 hashtable1)
 target_link_libraries(main-hashtable2 PRIVATE list-pointer2 list-micro hashtable2)
-target_link_libraries(main-vm1 PRIVATE tests lib-tests-vm-v1 list-alloc list-light vm-v1 lib-user1)
-target_link_libraries(main-vm2 PRIVATE tests lib-tests-vm-v2 list-alloc list-light vm-v2 list-pointer2 list-micro)
+target_link_libraries(main-vm1 PRIVATE tests tests-vm-v1 list-alloc list-light vm-v1 user1)
+target_link_libraries(main-vm2 PRIVATE tests tests-vm-v2 list-alloc list-light vm-v2 list-pointer2 list-micro)
 target_link_libraries(main-structs1 PRIVATE list-common)
 target_link_libraries(main-structs2 PRIVATE list-class)
 target_link_libraries(main-structs3 PRIVATE structs-v3)
 target_link_libraries(main-linked-list PRIVATE stl-linked-list)
 target_link_libraries(main-linked-list-static-enumerator PRIVATE stl-linked-list)
-target_link_libraries(main-tests-vm1 PRIVATE list-micro list-pointer1 lib-tests-vm-v1 vm-v1 lib-user1)
-target_link_libraries(main-tests-vm2 PRIVATE list-micro list-pointer2 lib-tests-vm-v2 vm-v2 list-pointer2 list-micro)
+target_link_libraries(main-tests-vm1 PRIVATE list-micro list-pointer1 tests-vm-v1 vm-v1 user1)
+target_link_libraries(main-tests-vm2 PRIVATE list-micro list-pointer2 tests-vm-v2 vm-v2 list-pointer2 list-micro)
 
 configure_file(all_english_words.txt ${CMAKE_BINARY_DIR}/all_english_words.txt COPYONLY)
 configure_file(file.txt ${CMAKE_BINARY_DIR}/file.txt COPYONLY)
@@ -497,10 +497,8 @@ get_property(test_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BU
 get_property(lib_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
 get_property(gtk_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
 
-list(FILTER std_target_names INCLUDE REGEX "^std-")
 list(FILTER main_target_names INCLUDE REGEX "^main-")
 list(FILTER test_target_names INCLUDE REGEX "^test-")
-list(FILTER lib_target_names INCLUDE REGEX "^lib-")
 list(FILTER gtk_target_names INCLUDE REGEX "^gtk-")
 
 string(REGEX REPLACE ";" " " std_target_names "${std_target_names}")

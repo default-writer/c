@@ -23,7 +23,7 @@
  * SOFTWARE.
  *
  */
-#include "list-alloc.h"
+#include "test_list-alloc.h"
 
 /* macros */
 #define MAX_ALLOC_SIZE 1024
