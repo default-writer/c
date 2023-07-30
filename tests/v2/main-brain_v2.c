@@ -438,6 +438,7 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
 #endif
 
 #ifndef USE_GC
+    pointer->free(data_ptr);
     pointer->free(file_name_ptr);
     pointer->free(mode_ptr);
     pointer->free(missing_ptr);

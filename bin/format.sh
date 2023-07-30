@@ -58,13 +58,12 @@ case "${install}" in
         format=("InheritParentConfig")
         ;;
 
-    "--help") # Use the .clang-format file from the parent directory
+    "--help") # [optional] shows command desctiption
         help
         ;;
 
     *)
         help
-        exit 8
         ;;
 
 esac

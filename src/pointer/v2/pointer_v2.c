@@ -574,7 +574,7 @@ static u64 pointer_file_alloc(u64 file_path, u64 mode) {
     if (mode_ptr->type != TYPE_PTR) {
         return 0;
     }
-    if (file_path_ptr->size == 0 || file_path_ptr->size > 2048) {
+    if (file_path_ptr->size == 0 || file_path_ptr->size > PATH_MAX) {
         return 0;
     }
     const char* file_path_data = file_path_ptr->data;

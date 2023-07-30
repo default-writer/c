@@ -25,12 +25,12 @@
  */
 
 #include <bits/stdint-uintn.h>
+#include <limits.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_LINE 2048
 #define SEED 0x12345678
 
 #define RXP_DEBUG_TESTS
@@ -265,7 +265,7 @@ void get_data() {
     FILE* f = fopen(fn, "r");
 
     /* Read file line by line, calculate hash */
-    char line[MAX_LINE];
+    char line[PATH_MAX];
     while (fgets(line, sizeof(line), f)) {
         line[strcspn(line, "\n")] = '\0'; /* strip newline */
         struct list* current = calloc(1, sizeof(struct list));

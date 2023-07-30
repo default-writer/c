@@ -29,21 +29,21 @@ opts=( "${@:2}" )
 case "${install}" in
 
     "")
-        target="--all"
+        source="all"
         ;;
 
     "--target") # builds and runs specified target
-        target="--target $2"
+        source="$2"
         opts=( "${@:3}" )
         ;;
 
-    "--all") # builds and runs all targets
-        target="--all"
+    "--all") # builds and runs specified target
+        source="all"
+        opts=( "${@:2}" )
         ;;
 
     *)
         help
-        exit 8
         ;;
 
 esac

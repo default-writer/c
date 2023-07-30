@@ -29,22 +29,21 @@ opts=( "${@:2}" )
 case "${install}" in
 
     "")
-        target="--all"
+        source="all"
         ;;
 
     "--target") # builds and runs specified target
-        target="--target $2"
-        source=$2
+        source="$2"
         opts=( "${@:3}" )
         ;;
 
-    "--all") # builds and runs all targets
-        target="--all"
+    "--all") # builds and runs specified target
+        source="all"
+        opts=( "${@:2}" )
         ;;
 
     *)
         help
-        exit 8
         ;;
 
 esac
@@ -55,10 +54,6 @@ for opt in ${opts[@]}; do
         "")
             ;;
 
-        "--keep") # [optional] keeps coverage files and merges them
-            keep="--keep"
-            ;;
-
         "--clean") # [optional] cleans up directories before build
             clean="--clean"
             ;;
@@ -67,22 +62,12 @@ for opt in ${opts[@]}; do
             silent="--silent"
             ;;
 
-        "--debug") # [optional] runs using debug memory debug info
-            debug="--debug"
-            ;;
-
-        "--verbose") # [optional] shows verbose messages
-            verbose="--verbose"
-            ;;
-
         "--help") # [optional] shows command desctiption
             help
             ;;
 
         *)
-            echo "Error: unknown argyment ${opt}"
             help
-            exit 8
             ;;
 
     esac
@@ -92,25 +77,12 @@ if [[ "${silent}" == "--silent" ]]; then
     exec 2>&1 >/dev/null
 fi
 
-cmake=$(get-cmake)
-targets=( $(get-source-targets ${source}) )
-
-if [[ "${targets[@]}" == "" ]]; then
-    if [[ "${help}" == "--help" ]]; then
-        help
-    fi
-    echo ERROR
-    exit 8
-fi
-
-for target in ${targets[@]}; do
-    "${pwd}/bin/build.sh" --target ${target} --gc ${opts[@]}
-    "${pwd}/bin/build.sh" --target ${target} --gc --sanitize ${opts[@]}
-    "${pwd}/bin/build.sh" --target ${target} --gc --valgrind ${opts[@]}
-    "${pwd}/bin/build.sh" --target ${target} ${silent} ${opts[@]}
-    "${pwd}/bin/build.sh" --target ${target} --sanitize ${opts[@]}
-    "${pwd}/bin/build.sh" --target ${target} --valgrind ${opts[@]}
-done
+"${pwd}/bin/build.sh" --target ${source} --valgrind ${silent} ${opts[@]}
+"${pwd}/bin/build.sh" --target ${source} --sanitize ${silent} ${opts[@]}
+"${pwd}/bin/build.sh" --target ${source} ${silent}
+"${pwd}/bin/build.sh" --target ${source} --gc --valgrind ${silent} ${opts[@]}
+"${pwd}/bin/build.sh" --target ${source} --gc --sanitize ${silent} ${opts[@]}
+"${pwd}/bin/build.sh" --target ${source} --gc ${silent}
 
 if [ "${silent}" == "--silent" ]; then
     exec 1>&2 2>&-

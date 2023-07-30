@@ -29,20 +29,21 @@ opts=( "${@:2}" )
 case "${install}" in
 
     "")
+        source="all"
         ;;
 
     "--target") # builds and runs specified target
+        source="$2"
         opts=( "${@:3}" )
-        target="--target"
         ;;
 
-    "--all") # builds and runs all targets
-        target="--all"
+    "--all") # builds and runs specified target
+        source="all"
+        opts=( "${@:2}" )
         ;;
 
     *)
         help
-        exit 8
         ;;
 
 esac
@@ -90,9 +91,7 @@ for opt in ${opts[@]}; do
             ;;
 
         *)
-            echo "Error: unknown argyment ${opt}"
             help
-            exit 8
             ;;
 
     esac
@@ -114,22 +113,20 @@ find "${pwd}/src" -type f -name "*.s" -delete
 find "${pwd}/tests" -type f -name "*.s" -delete
 
 cmake=$(get-cmake)
-gtktargets=( $(get-gtktargets) )
-if [ "${target}" == "--target" ]; then
-    for target in ${gtktargets[@]}; do
-        if [ "${target}" == "$2" ]; then 
-            array=( ${target} )
-            break
-        fi
-    done
-    if [ "$(echo ${array[@]})" == "" ]; then
-        if [[ "${help}" == "--help" ]]; then
-            help
-        fi
-        echo ERROR
-        exit 8
+
+if [[ "${cmake}" == "" ]]; then
+    echo cmake not found. please run "$(pwd)/bin/utils/install.sh" --cmake
+    exit 8
+fi
+
+targets=( $(get-source-targets ${source}) )
+
+if [[ "${targets[@]}" == "" ]]; then
+    if [[ "${help}" == "--help" ]]; then
+        help
     fi
-    targets=( ${array[@]} )
+    echo ERROR
+    exit 8
 fi
 
 [ ! -d "${pwd}/coverage" ] && mkdir "${pwd}/coverage"

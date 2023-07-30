@@ -28,6 +28,11 @@ function get-targets() {
 
     [ ! -d "${pwd}/config" ] && mkdir "${pwd}/config"
 
+    cmake=$(get-cmake)
+    if [[ "${cmake}" == "" ]]; then
+        return
+    fi
+
     exec 2>&1 >/dev/null
 
     ${cmake} \
@@ -50,40 +55,37 @@ function get-targets() {
 
 function search() {
     local target=$1
-    if [[ ! "${target}" == "" ]]; then
-        target=$(sed -n "s#target_link_libraries(\([^ ]*\) .*${target}.*)#\1#p" CMakeLists.txt)
-        if [[ ! "${target}" == "" ]]; then
-            printf '%s\n' "${target}"
-            search ${target}
-        fi
-    fi
+    local targets
+    printf '%s\n' "${target}"
+    targets=$(sed -n "s#target_link_libraries(\([^ ]*\) .*${target}.*)#\1#p" CMakeLists.txt)
+    for target in ${targets[@]}; do
+        search ${target}
+    done
 }
 
 function get-linked-targets() {
     local target=$1
-    if [[ ! "${target}" == "" ]]; then
-        printf '%s\n' "${target}"
-        search ${target}
-    fi
+    search ${target}
 }
 
 function get-cmake-targets() {
     local target=$1
     local targets
-    local lib=""
-    local exe=""
+    local lib
+    local exe
+
     targets=( $(get-targets) )
+
     lib=$(sed -n "s#add_library(\([^ ]*\) .*#\1#p" CMakeLists.txt)
     exe=$(sed -n "s#add_executable(\([^ ]*\) .*#\1#p" CMakeLists.txt)
-    targets+=( ${lib[@]} )
-    targets+=( ${exe[@]} )
-    targets=$(echo "${targets[@]}" | xargs -n1 | sort -u | xargs)
+
+    targets=$(echo "${lib[@]} ${exe[@]}" | xargs -n1 | sort -u | xargs)
+
     if [[ ! "${target}" == "" ]]; then
         if [[ " ${targets[*]} " == *" ${target} "* ]]; then
             printf '%s\n' "${target}"
         fi
-    fi
-    if [[ "${target}" == "" ]]; then
+    else
         printf '%s\n' "${targets[@]}"
     fi
 }
@@ -102,6 +104,11 @@ function get-gtktargets() {
     done
 
     [ ! -d "${pwd}/config" ] && mkdir "${pwd}/config"
+
+    cmake=$(get-cmake)
+    if [[ "${cmake}" == "" ]]; then
+        return
+    fi
 
     exec 2>&1 >/dev/null
 
@@ -124,70 +131,61 @@ function get-gtktargets() {
 }
 
 function get-source-targets() {
-    local source_target=$1
+    local source=$1
     local cmake
     local targets
     local array
     local target
     local source
     local sources
-    local target_base
+    local link
     local line
-    local found_target
-    local found_target_base
     local targets
+    local cmake
+
+    cmake=$(get-cmake)
+    if [[ "${cmake}" == "" ]]; then
+        return
+    fi
+
+    exec 2>&1 >/dev/null
+
+    ${cmake} \
+        -DTARGETS:BOOL=ON \
+        -S"${pwd}" \
+        -B"${pwd}/config" \
+        -G "Ninja" 2>&1 >/dev/null
+
+    exec 1>&2 2>&-
     
     targets=( $(get-cmake-targets) )
-    
-    cmake=$(get-cmake)
 
-    found_target=false
-    for target in ${targets[@]}; do
-        if [ "${target}" == "${source_target}" ]; then 
-            array=( ${target} )
-            found_target=true
-        fi
-    done
+    if [[ ! "${source}" == "all" ]]; then
 
-    if [[ "${found_target}" == false ]]; then
-        array=()
-        target=${source_target}
-        found_target_base=false
-        sources=$(find "${pwd}/config" -type f -name "sources.txt")
-
-        for source in ${sources[@]}; do
-            # Find target directory for the given source file
-            while IFS= read -r line; do
-                if [[ "${target}" == "${line}" ]]; then
-                    found_target_base=true
-                    target_base=$(basename $(dirname "${source}"))
-                    array+=( ${target_base} )
-                    break
-                fi
-            done <  $source
-            if [[ "${found_target_base}" == true ]]; then
-                linked_targets=$(get-linked-targets ${target_base})
-                if [ "${target}" == "--target ${line}" ]; then
-                    for linked_target in ${linked_targets[@]}; do
-                        if [ "${linked_target}" == "${source_target}" ]; then 
-                            array+=( ${linked_target} )
-                        fi
-                    done
-                fi
+        for target in ${targets[@]}; do
+            if [ "${target}" == "${source}" ]; then 
+                array=( "${target}" )
+                break
             fi
         done
+
+        targets=( "${array[@]}" )
+
+        files=$(find "${pwd}/config" -type f -name "sources.txt")
+
+        for file in ${files[@]}; do
+            while IFS= read -r line; do
+                if [[ "${source}" == "${line}" ]]; then
+                    link=$(basename $(dirname "${file}"))
+                    linked_targets=$(get-linked-targets ${link})
+                    targets=$(echo "${link} ${linked_targets[@]}" | xargs -n1 | sort -u | xargs)
+                    break
+                fi
+            done <  $file
+        done
+    else
+        targets=$(echo "$targets[@]" | sed 's/\bgtk-[^ ]*//g')
     fi
-
-    targets=( ${array[@]} )
-
-    echo "${source_target}" "${targets[@]}" "${found_target}"
-    return
-
-    if [[ "${target_base}" == "" ]]; then
-        target_base="${targets[@]}"
-    fi
-
-    targets=$(echo "${targets[@]} ${linked_targets[@]}" | xargs -n1 | sort -u | xargs)
 
     printf '%s\n' "${targets[@]}"
 }
@@ -238,7 +236,6 @@ function get-options() {
 
             *)
                 help
-                exit 8
                 ;;
 
         esac
@@ -269,10 +266,6 @@ function cmake-options() {
         debug_options=-DCONFIG_MEMORY_DEBUG_INFO:BOOL=TRUE
     fi
 
-    if [[ "${verbose}" == "--verbose" ]]; then
-        verbose_options=-DVERBOSE:BOOL=TRUE
-    fi
-
     echo " ${sanitize_options} ${mocs_options} ${gc_options} ${debug_options} ${verbose_options}"
 }
 
@@ -294,10 +287,6 @@ function cmake-coverage-options() {
         debug_options=-DCONFIG_MEMORY_DEBUG_INFO:BOOL=TRUE
     fi
 
-    if [[ "${verbose}" == "--verbose" ]]; then
-        verbose_options=-DVERBOSE:BOOL=TRUE
-    fi
-
     echo " ${sanitize_options} ${mocs_options} ${debug_options} ${verbose_options}"
 }
 
@@ -314,6 +303,7 @@ function cmake-valgrind-options() {
 
     echo " ${valgrind_options} ${callgrind_options}"
 }
+
 export -f get-cmake
 export -f get-targets
 export -f get-linked-targets

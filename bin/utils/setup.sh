@@ -45,9 +45,6 @@ for opt in ${opts[@]}; do
             ;;
 
         *)
-            echo "Error: unknown argyment ${opt}"
-            help
-            exit 8
             ;;
 
     esac

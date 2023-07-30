@@ -29,20 +29,21 @@ opts=( "${@:2}" )
 case "${install}" in
 
     "")
+        source="all"
         ;;
 
     "--target") # builds and runs specified target
+        source="$2"
         opts=( "${@:3}" )
-        target="--target"
         ;;
 
-    "--all") # builds and runs all targets
-        target="--all"
+    "--all") # builds and runs specified target
+        source="all"
+        opts=( "${@:2}" )
         ;;
 
     *)
         help
-        exit 8
         ;;
 
 esac
@@ -51,10 +52,6 @@ for opt in ${opts[@]}; do
     case ${opt} in
 
         "")
-            ;;
-
-        "--keep") # [optional] keeps coverage files and merges them
-            keep="--keep"
             ;;
 
         "--clean") # [optional] cleans up directories before build
@@ -89,18 +86,12 @@ for opt in ${opts[@]}; do
             debug="--debug"
             ;;
 
-        "--verbose") # [optional] shows verbose messages
-            verbose="--verbose"
-            ;;
-
         "--help") # [optional] shows command desctiption
             help
             ;;
 
         *)
-            echo "Error: unknown argyment ${opt}"
             help
-            exit 8
             ;;
 
     esac
@@ -113,61 +104,19 @@ fi
 [ ! -d "${pwd}/cmake" ] && mkdir "${pwd}/cmake"
 [ ! -d "${pwd}/logs" ] && mkdir "${pwd}/logs"
 
-if [ "${keep}" == "" ]; then
 if [ "${clean}" == "--clean" ]; then
     rm -rf "${pwd}/cmake"
     mkdir "${pwd}/cmake"
 fi
-fi
 
 cmake=$(get-cmake)
-targets=( $(get-cmake-targets) )
 
-if [[ ! "${target}" == "--all" ]]; then
-    found_target=false
-    for target in ${targets[@]}; do
-        if [ "${target}" == "$2" ]; then 
-            array=( ${target} )
-            found_target=true
-        fi
-    done
-
-    if [[ "${found_target}" == false ]]; then
-        array=()
-        target=$2
-        found_target_base=false
-        sources=$(find "${pwd}/config" -type f -name "sources.txt")
-        for source in ${sources[@]}; do
-            # Find target directory for the given source file
-            while IFS= read -r line; do
-                if [[ "${target}" == "${line}" ]]; then
-                    found_target_base=true
-                    target_base=$(basename $(dirname "${source}"))
-                    array+=( ${target_base} )
-                    break
-                fi
-            done <  $source
-            if [[ "${found_target_base}" == true ]]; then
-                linked_targets=$(get-linked-targets ${target_base})
-                if [ "${target}" == "--target ${line}" ]; then
-                    for linked_target in ${linked_targets[@]}; do
-                        if [ "${linked_target}" == "$2" ]; then 
-                            array+=( ${linked_target} )
-                        fi
-                    done
-                fi
-            fi
-        done
-    fi
-
-    targets=( ${array[@]} )
+if [[ "${cmake}" == "" ]]; then
+    echo cmake not found. please run "$(pwd)/bin/utils/install.sh" --cmake
+    exit 8
 fi
 
-if [[ "${target_base}" == "" ]]; then
-    target_base="${targets[@]}"
-fi
-
-targets=$(echo "${targets[@]} ${linked_targets[@]}" | xargs -n1 | sort -u | xargs)
+targets=( $(get-source-targets ${source}) )
 
 if [[ "${targets[@]}" == "" ]]; then
     if [[ "${help}" == "--help" ]]; then
@@ -190,10 +139,8 @@ ${cmake} \
     -G "Ninja" 2>&1 >/dev/null
 
 for target in ${targets[@]}; do
-    if [[ "${verbose}" == "--verbose" ]]; then
-        echo Building target ${target}
-        echo Building with options $(cmake-options)
-    fi
+    echo Building target ${target}
+    echo Building with options $(cmake-options)
     if [ "${silent}" == "--silent" ]; then
         ${cmake} --build "${pwd}/cmake" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
     else

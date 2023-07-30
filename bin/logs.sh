@@ -29,20 +29,21 @@ opts=( "${@:2}" )
 case "${install}" in
 
     "")
+        source="all"
         ;;
 
     "--target") # builds and runs specified target
+        source="$2"
         opts=( "${@:3}" )
-        target="--target"
         ;;
 
-    "--all") # builds and runs all targets
-        target="--all"
+    "--all") # builds and runs specified target
+        source="all"
+        opts=( "${@:2}" )
         ;;
 
     *)
         help
-        exit 8
         ;;
 
 esac
@@ -51,10 +52,6 @@ for opt in ${opts[@]}; do
     case ${opt} in
 
         "")
-            ;;
-
-        "--keep") # [optional] keeps coverage files and merges them
-            keep="--keep"
             ;;
 
         "--clean") # [optional] cleans up directories before build
@@ -89,18 +86,12 @@ for opt in ${opts[@]}; do
             debug="--debug"
             ;;
 
-        "--verbose") # [optional] shows verbose messages
-            verbose="--verbose"
-            ;;
-
         "--help") # [optional] shows command desctiption
             help
             ;;
 
         *)
-            echo "Error: unknown argyment ${opt}"
             help
-            exit 8
             ;;
 
     esac
@@ -115,30 +106,26 @@ fi
 
 find "${pwd}/out" -type f -name "log-*" -delete
 
-if [ "${keep}" == "" ]; then
 if [ "${clean}" == "--clean" ]; then
     rm -rf "${pwd}/logs"
     mkdir "${pwd}/logs"
 fi
-fi
 
 cmake=$(get-cmake)
-targets=( $(get-targets) )
-if [ "${target}" == "--target" ]; then
-    for target in ${targets[@]}; do
-        if [ "${target}" == "$2" ]; then 
-            array=( ${target} )
-            break
-        fi
-    done
-    if [ "$(echo ${array[@]})" == "" ]; then
-        if [[ "${help}" == "--help" ]]; then
-            help
-        fi
-        echo ERROR
-        exit 8
+
+if [[ "${cmake}" == "" ]]; then
+    echo cmake not found. please run "$(pwd)/bin/utils/install.sh" --cmake
+    exit 8
+fi
+
+targets=( $(get-source-targets ${source}) )
+
+if [[ "${targets[@]}" == "" ]]; then
+    if [[ "${help}" == "--help" ]]; then
+        help
     fi
-    targets=( ${array[@]} )
+    echo ERROR
+    exit 8
 fi
 
 export MAKEFLAGS=-j8
@@ -154,10 +141,8 @@ ${cmake} \
     -G "Ninja" 2>&1 >/dev/null
 
 for target in ${targets[@]}; do
-    if [[ "${verbose}" == "--verbose" ]]; then
-        echo Building target ${target}
-        echo Building with options $(cmake-options)
-    fi
+    echo Building target ${target}
+    echo Building with options $(cmake-options)
     if [ "${silent}" == "--silent" ]; then
         ${cmake} --build "${pwd}/logs" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
     else

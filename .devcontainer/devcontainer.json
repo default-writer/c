@@ -127,7 +127,8 @@
 		"ms-vscode.makefile-tools",
 		"SonarSource.sonarlint-vscode",
 		"hack2root.testfilesonsave",
-		"doi.fileheadercomment"
+		"doi.fileheadercomment",
+		"moshfeu.compare-folders"
 	]
     }
   }

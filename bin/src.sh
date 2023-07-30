@@ -28,10 +28,18 @@ opts=( "${@:2}" )
 
 case "${install}" in
 
+    "")
+        source="all"
+        ;;
+
     "--target") # builds and runs specified target
-        target="--target $2"
-        source=$2
+        source="$2"
         opts=( "${@:3}" )
+        ;;
+
+    "--all") # builds and runs specified target
+        source="all"
+        opts=( "${@:2}" )
         ;;
 
     "--help") # [optional] shows command desctiption
@@ -40,55 +48,47 @@ case "${install}" in
 
     *)
         help
-        exit 8
         ;;
 
 esac
 
-options=()
+
 for opt in ${opts[@]}; do
     case ${opt} in
 
         "")
             ;;
 
-        "--keep") # [optional] keeps coverage files and merges them
-            keep="--keep"
-            options+=( "${keep}" )
-            ;;
-
         "--clean") # [optional] cleans up directories before build
             clean="--clean"
-            options+=( "${clean}" )
+            ;;
+
+        "--sanitize") # [optional] builds using sanitizer
+            sanitize="--sanitize"
             ;;
 
         "--mocks") # [optional] builds with mocks
             mocks="--mocks"
-            options+=( "${mocks}" )
+            ;;
+
+        "--gc") # [optional] builds with garbage collector
+            gc="--gc"
             ;;
 
         "--silent") # [optional] suppress verbose output
             silent="--silent"
-            options+=( "${silent}" )
             ;;
 
         "--valgrind") # [optional] runs using valgrind (disables --sanitize on build)
             valgrind="--valgrind"
-            options+=( "${valgrind}" )
             ;;
 
         "--callgrind") # [optional] runs using valgrind with tool callgrind (disables --sanitize on build)
             callgrind="--callgrind"
-            options+=( "${callgrind}" )
             ;;
 
         "--debug") # [optional] runs using debug memory debug info
             debug="--debug"
-            options+=( "${debug}" )
-            ;;
-
-        "--verbose") # [optional] shows verbose messages
-            verbose="--verbose"
             ;;
 
         "--help") # [optional] shows command desctiption
@@ -96,9 +96,7 @@ for opt in ${opts[@]}; do
             ;;
 
         *)
-            echo "Error: unknown argyment ${opt}"
             help
-            exit 8
             ;;
 
     esac
@@ -110,14 +108,18 @@ fi
 
 [ ! -d "${pwd}/config" ] && mkdir "${pwd}/config"
 
-if [ "${keep}" == "" ]; then
 if [ "${clean}" == "--clean" ]; then
     rm -rf "${pwd}/config"
     mkdir "${pwd}/config"
 fi
-fi
 
 cmake=$(get-cmake)
+
+if [[ "${cmake}" == "" ]]; then
+    echo cmake not found. please run "$(pwd)/bin/utils/install.sh" --cmake
+    exit 8
+fi
+
 targets=( $(get-source-targets ${source}) )
 
 if [[ "${targets[@]}" == "" ]]; then
@@ -132,14 +134,15 @@ for linked_target in ${targets[@]}; do
     case ${linked_target} in
         main-*) ;& test-*)
             if [[ " ${targets[*]} " == *" ${linked_target} "* ]]; then
-                ${pwd}/bin/coverageall.sh --target ${linked_target} ${options}
+                ${pwd}/bin/coverageall.sh --target ${linked_target} ${opts[@]}
             fi
             ;;
         *)
-            ${pwd}/bin/buildall.sh --target ${linked_target} ${options}
+            ${pwd}/bin/buildall.sh --target ${linked_target} ${opts[@]}
             ;;
     esac
 done
+
 find "${pwd}/coverage" -type f -name "*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
 
 if [ "${silent}" == "--silent" ]; then

@@ -32,18 +32,17 @@ case "${install}" in
         ;;
 
     "--target") # builds and runs specified target
-        target="--target $2"
-        source=$2
+        source="$2"
         opts=( "${@:3}" )
         ;;
 
-    "--all") # builds and runs all targets
-        target="--all"
+    "--all") # builds and runs specified target
+        source="*"
+        opts=( "${@:2}" )
         ;;
 
     *)
         help
-        exit 8
         ;;
 
 esac
@@ -52,10 +51,6 @@ for opt in ${opts[@]}; do
     case ${opt} in
 
         "")
-            ;;
-
-        "--keep") # [optional] keeps coverage files and merges them
-            keep="--keep"
             ;;
 
         "--clean") # [optional] cleans up directories before build
@@ -90,19 +85,12 @@ for opt in ${opts[@]}; do
             debug="--debug"
             ;;
 
-        "--verbose") # [optional] shows verbose messages
-            verbose="--verbose"
-            ;;
-
         "--help") # [optional] shows command desctiption
             help
-            exit 8
             ;;
 
         *)
-            echo "Error: unknown argyment ${opt}"
             help
-            exit 8
             ;;
 
     esac
@@ -128,11 +116,9 @@ fi
 
 [ ! -d "${build}" ] && mkdir "${build}"
 
-if [ "${keep}" == "" ]; then
 if [ "${clean}" == "--clean" ]; then
     rm -rf "${build}"
     mkdir "${build}"
-fi
 fi
 
 find "${pwd}" -type f -name "callgrind.out.*" -delete
@@ -140,6 +126,12 @@ find "${pwd}/src" -type f -name "*.s" -delete
 find "${pwd}/tests" -type f -name "*.s" -delete
 
 cmake=$(get-cmake)
+
+if [[ "${cmake}" == "" ]]; then
+    echo cmake not found. please run "$(pwd)/bin/utils/install.sh" --cmake
+    exit 8
+fi
+
 targets=( $(get-source-targets ${source}) )
 
 if [[ "${targets[@]}" == "" ]]; then
@@ -164,7 +156,6 @@ ${cmake} \
     -DCMAKE_BUILD_TYPE:STRING=Debug \
     -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
     -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
-    -DVERBOSE:BOOL=FALSE \
     $(cmake-options) \
     -S"${pwd}" \
     -B"${build}" \
@@ -172,10 +163,8 @@ ${cmake} \
 
 
 for target in ${targets[@]}; do
-    if [[ "${verbose}" == "--verbose" ]]; then
-        echo Building target ${target}
-        echo Building with options $(cmake-options)
-    fi
+    echo Building target ${target}
+    echo Building with options $(cmake-options)
     if [ "${silent}" == "--silent" ]; then
         ${cmake} --build "${build}" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
     else
