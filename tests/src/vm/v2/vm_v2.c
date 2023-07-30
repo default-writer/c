@@ -44,12 +44,16 @@ extern const struct list_methods list_methods_definition;
 extern const struct file_methods file_methods_definition;
 extern const struct memory_methods memory_methods_definition;
 extern const struct vm_methods vm_methods_definition;
+extern const struct test_suite list_micro_test_suite_definition;
+extern const struct test_suite list_alloc_test_suite_definition;
 
 static const struct pointer_methods* pointer = &pointer_methods_definition;
 static const struct list_methods* list = &list_methods_definition;
 static const struct file_methods* file = &file_methods_definition;
 static const struct memory_methods* memory = &memory_methods_definition;
 static const struct vm_methods* vm = &vm_methods_definition;
+static const struct test_suite* list_micro_tests = &list_micro_test_suite_definition;
+static const struct test_suite* list_alloc_tests = &list_alloc_test_suite_definition;
 
 struct pointer_data {
     struct vm_data* vm;
@@ -645,6 +649,8 @@ static void DESTROY destroy() {
 }
 
 static int run(void) {
+    int alloc = list_alloc_tests->run();
+    int micro = list_micro_tests->run();
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- acceptance test code\n");
 #endif
@@ -654,7 +660,7 @@ static int run(void) {
 #endif
     /* Execute the main function that runs the test cases found. */
     int result = rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
-    return result;
+    return alloc | micro | result;
 }
 
 const struct test_suite vm_v2_test_suite_definition = {

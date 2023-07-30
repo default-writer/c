@@ -423,8 +423,8 @@ target_link_libraries(structs-v3 PRIVATE list-class)
 
 # test
 target_link_libraries(tests PRIVATE list-alloc list-parameters)
-target_link_libraries(tests-vm-v1 PRIVATE list-common list-micro list-pointer1)
-target_link_libraries(tests-vm-v2 PRIVATE list-common list-micro list-pointer2)
+target_link_libraries(tests-vm-v1 PRIVATE tests list-common list-micro list-pointer1)
+target_link_libraries(tests-vm-v2 PRIVATE tests list-common list-micro list-pointer2)
 
 # main
 target_link_libraries(main-default PRIVATE tests list-common list-alloc list-v1 list-default)
