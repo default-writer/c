@@ -151,8 +151,6 @@ for target in ${targets[@]}; do
     esac
 done
 
-find "${pwd}/logs" -type f -not -name "log-*" -delete
-
 if [ "${silent}" == "--silent" ]; then
     exec 1>&2 2>&-
 fi

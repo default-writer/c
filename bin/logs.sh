@@ -104,8 +104,6 @@ fi
 [ ! -d "${pwd}/logs" ] && mkdir "${pwd}/logs"
 [ ! -d "${pwd}/out" ] && mkdir "${pwd}/out"
 
-find "${pwd}/out" -type f -name "log-*" -delete
-
 if [ "${clean}" == "--clean" ]; then
     rm -rf "${pwd}/logs"
     mkdir "${pwd}/logs"

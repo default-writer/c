@@ -170,8 +170,6 @@ done
 
 find "${build}" -type f -name "*.lcov" -exec echo -a {} \; | xargs lcov -o "${build}/lcov.info"
 
-find "${build}" -type f -name "*.lcov" ! -name "lcov.info" -delete
-
 if [ "${silent}" == "--silent" ]; then
     exec 1>&2 2>&-
 fi
