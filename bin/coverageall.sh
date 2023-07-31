@@ -99,7 +99,9 @@ for directory in ${directories[@]}; do
     done
 done
 
-find "${pwd}/coverage" -type f -name "*.info" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
+if [[ ! "${source}" == "all" ]]; then
+    find "${pwd}/coverage" -type f -name "*.info" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
+fi
 
 if [ "${silent}" == "--silent" ]; then
     exec 1>&2 2>&-
