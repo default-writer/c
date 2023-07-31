@@ -53,6 +53,10 @@ for opt in ${opts[@]}; do
         "")
             ;;
 
+        "--dir="*) # [optional] cleans up directories before build
+            dir=${opt#*=}
+            ;;
+
         "--clean") # [optional] cleans up directories before build
             clean="--clean"
             ;;
@@ -100,18 +104,10 @@ if [ "${silent}" == "--silent" ]; then
     exec 2>&1 >/dev/null
 fi
 
-build="${pwd}/build"
+build="build"
 
-if [ "${gc}" == "--gc" ]; then
-    build="${build}-gc"
-fi
-
-if [ "${sanitize}" == "--sanitize" ]; then
-    build="${build}-sanitize"
-fi
-
-if [ "${valgrind}" == "--valgrind" ]; then
-    build="${build}-valgrind"
+if [[ ! "${dir}" == "" ]]; then
+    build="${dir}"
 fi
 
 [ ! -d "${build}" ] && mkdir "${build}"
@@ -161,10 +157,9 @@ ${cmake} \
     -B"${build}" \
     -G "Ninja" 2>&1 >/dev/null
 
-
 for target in ${targets[@]}; do
-    echo Building target ${target}
-    echo Building with options $(cmake-options)
+    echo building ${target}
+    echo options $(cmake-options)
     if [ "${silent}" == "--silent" ]; then
         ${cmake} --build "${build}" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
     else

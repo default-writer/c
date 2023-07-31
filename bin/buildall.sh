@@ -77,12 +77,24 @@ if [[ "${silent}" == "--silent" ]]; then
     exec 2>&1 >/dev/null
 fi
 
-"${pwd}/bin/build.sh" --target ${source} --valgrind ${silent} ${opts[@]}
-"${pwd}/bin/build.sh" --target ${source} --sanitize ${silent} ${opts[@]}
-"${pwd}/bin/build.sh" --target ${source} ${silent}
-"${pwd}/bin/build.sh" --target ${source} --gc --valgrind ${silent} ${opts[@]}
-"${pwd}/bin/build.sh" --target ${source} --gc --sanitize ${silent} ${opts[@]}
-"${pwd}/bin/build.sh" --target ${source} --gc ${silent}
+"${pwd}/bin/build.sh" --target ${source} --dir=build-v1 --valgrind ${silent} ${opts[@]}
+"${pwd}/bin/build.sh" --target ${source} --dir=build-v2 --sanitize ${silent} ${opts[@]}
+"${pwd}/bin/build.sh" --target ${source} --dir=build-v3 ${silent}
+"${pwd}/bin/build.sh" --target ${source} --dir=build-v4 --gc --valgrind ${silent} ${opts[@]}
+"${pwd}/bin/build.sh" --target ${source} --dir=build-v5 --gc --sanitize ${silent} ${opts[@]}
+"${pwd}/bin/build.sh" --target ${source} --dir=build-v6 --gc ${silent}
+
+[ ! -d "${pwd}/build" ] && mkdir "${pwd}/build"
+
+directories=( "build-v1" "build-v2" "build-v3" "build-v4" "build-v5" "build-v6" )
+
+for directory in ${directories[@]}; do
+    files=$(find "${directory}" -type f -name "log-*.txt" -exec echo {} \;)
+    for file in ${files[@]}; do
+        link=$(basename $(dirname "${file}"))
+        cp "${file}" "${pwd}/build/${link}-$(basename ${file})"
+    done
+done
 
 if [ "${silent}" == "--silent" ]; then
     exec 1>&2 2>&-

@@ -33,15 +33,17 @@ function get-targets() {
         return
     fi
 
-    exec 2>&1 >/dev/null
+    if [[ ! -d "${pwd}/config" ]]; then
+        exec 2>&1 >/dev/null
 
-    ${cmake} \
-        -DTARGETS:BOOL=ON \
-        -S"${pwd}" \
-        -B"${pwd}/config" \
-        -G "Ninja" 2>&1 >/dev/null
+        ${cmake} \
+            -DTARGETS:BOOL=ON \
+            -S"${pwd}" \
+            -B"${pwd}/config" \
+            -G "Ninja" 2>&1 >/dev/null
 
-    exec 1>&2 2>&-
+        exec 1>&2 2>&-
+    fi
 
     if [ -f "${pwd}/config/targets.txt" ]; then
         targets=$(cat "${pwd}/config/targets.txt")
@@ -110,15 +112,17 @@ function get-gtktargets() {
         return
     fi
 
-    exec 2>&1 >/dev/null
+    if [[ ! -d "${pwd}/config" ]]; then
+        exec 2>&1 >/dev/null
 
-    ${cmake} \
-        -DTARGETS:BOOL=ON \
-        -S"${pwd}" \
-        -B"${pwd}/config" \
-        -G "Ninja" 2>&1 >/dev/null
+        ${cmake} \
+            -DTARGETS:BOOL=ON \
+            -S"${pwd}" \
+            -B"${pwd}/config" \
+            -G "Ninja" 2>&1 >/dev/null
 
-    exec 1>&2 2>&-
+        exec 1>&2 2>&-
+    fi
 
     if [ -f "${pwd}/config/gtktargets.txt" ]; then
         gtktargets=$(cat "${pwd}/config/gtktargets.txt")
@@ -148,15 +152,17 @@ function get-source-targets() {
         return
     fi
 
-    exec 2>&1 >/dev/null
+    if [[ ! -d "${pwd}/config" ]]; then
+        exec 2>&1 >/dev/null
 
-    ${cmake} \
-        -DTARGETS:BOOL=ON \
-        -S"${pwd}" \
-        -B"${pwd}/config" \
-        -G "Ninja" 2>&1 >/dev/null
+        ${cmake} \
+            -DTARGETS:BOOL=ON \
+            -S"${pwd}" \
+            -B"${pwd}/config" \
+            -G "Ninja" 2>&1 >/dev/null
 
-    exec 1>&2 2>&-
+        exec 1>&2 2>&-
+    fi
     
     targets=( $(get-cmake-targets) )
 

@@ -22,7 +22,7 @@ opts=( "${@:2}" )
 
 . "${pwd}/bin/scripts/load.sh"
 
-## Builds binaries and creates coverage info
+## Builds binaries
 ## Usage: ${script} <option> [optional]
 ## ${commands}
 
@@ -54,32 +54,12 @@ for opt in ${opts[@]}; do
         "")
             ;;
 
-        "--clean") # [optional] cleans up directories before build
+        "--clean") # [optional] cleans up directories before coverage
             clean="--clean"
-            ;;
-
-        "--sanitize") # [optional] builds using sanitizer
-            sanitize="--sanitize"
-            ;;
-
-        "--mocks") # [optional] builds with mocks
-            mocks="--mocks"
             ;;
 
         "--silent") # [optional] suppress verbose output
             silent="--silent"
-            ;;
-
-        "--valgrind") # [optional] runs using valgrind (disables --sanitize on build)
-            valgrind="--valgrind"
-            ;;
-
-        "--callgrind") # [optional] runs using valgrind with tool callgrind (disables --sanitize on build)
-            callgrind="--callgrind"
-            ;;
-
-        "--debug") # [optional] runs using debug memory debug info
-            debug="--debug"
             ;;
 
         "--help") # [optional] shows command desctiption
@@ -93,124 +73,29 @@ for opt in ${opts[@]}; do
     esac
 done
 
-if [ "${silent}" == "--silent" ]; then
+if [[ "${silent}" == "--silent" ]]; then
     exec 2>&1 >/dev/null
 fi
 
-[ ! -d "${pwd}/coverage_v1" ] && mkdir "${pwd}/coverage_v1"
-[ ! -d "${pwd}/coverage_v2" ] && mkdir "${pwd}/coverage_v2"
+"${pwd}/bin/coverage.sh" --target ${source} --dir=coverage-v1 --valgrind ${silent} ${opts[@]}
+"${pwd}/bin/coverage.sh" --target ${source} --dir=coverage-v2 --sanitize ${silent} ${opts[@]}
+"${pwd}/bin/coverage.sh" --target ${source} --dir=coverage-v3 ${silent}
+"${pwd}/bin/coverage.sh" --target ${source} --dir=coverage-v4 --gc --valgrind ${silent} ${opts[@]}
+"${pwd}/bin/coverage.sh" --target ${source} --dir=coverage-v5 --gc --sanitize ${silent} ${opts[@]}
+"${pwd}/bin/coverage.sh" --target ${source} --dir=coverage-v6 --gc ${silent}
+
 [ ! -d "${pwd}/coverage" ] && mkdir "${pwd}/coverage"
-[ ! -d "${pwd}/out" ] && mkdir "${pwd}/out"
 
-if [ "${clean}" == "--clean" ]; then
-    rm -rf "${pwd}/coverage_v1"
-    rm -rf "${pwd}/coverage_v2"
-    rm -rf "${pwd}/coverage"
-    mkdir "${pwd}/coverage_v1"
-    mkdir "${pwd}/coverage_v2"
-    mkdir "${pwd}/coverage"
-fi
-
-cmake=$(get-cmake)
-
-if [[ "${cmake}" == "" ]]; then
-    echo cmake not found. please run "$(pwd)/bin/utils/install.sh" --cmake
-    exit 8
-fi
-
-targets=( $(get-source-targets ${source}) )
-
-if [[ "${targets[@]}" == "" ]]; then
-    if [[ "${help}" == "--help" ]]; then
-        help
-    fi
-    echo ERROR
-    exit 8
-fi
-
-export LCOV_PATH=$(which lcov)
-export GENHTML_PATH==$(which genhtml)
-export MAKEFLAGS=-j8
-
-coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" )
-for f in ${coverage}; do
-    find "${pwd}/coverage_v1" -type f -name "${f}" -delete
+directories=( "coverage-v1" "coverage-v2" "coverage-v3" "coverage-v4" "coverage-v5" "coverage-v6" )
+for directory in ${directories[@]}; do
+    files=$(find "${directory}" -type f -name "lcov.info" -exec echo {} \;)
+    for file in ${files[@]}; do
+        link=$(basename $(dirname "${file}"))
+        cp "${file}" "${pwd}/coverage/${link}-$(basename ${file})"
+    done
 done
 
-${cmake} \
-    -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
-    -DCMAKE_BUILD_TYPE:STRING=Debug \
-    -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
-    -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
-    -DLCOV_PATH=${LCOV_PATH} \
-    -DGENHTML_PATH=${GENHTML_PATH} \
-    -DCODE_COVERAGE:BOOL=TRUE \
-    -DGC:BOOL=FALSE \
-    $(cmake-coverage-options) \
-    -S"${pwd}" \
-    -B"${pwd}/coverage_v1" \
-    -G "Ninja" 2>&1 >/dev/null
-
-for target in ${targets[@]}; do
-    echo Building target ${target}
-    echo Building with options $(cmake-coverage-options) -DGC:BOOL=FALSE
-    if [ "${silent}" == "--silent" ]; then
-        ${cmake} --build "${pwd}/coverage_v1" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
-    else
-        ${cmake} --build "${pwd}/coverage_v1" --target "${target}" || (echo ERROR: "${target}" && exit 1)
-    fi
-    case "${target}" in 
-        main-*) ;& test-*)
-            timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/coverage_v1/${target}" 2>&1 >"${pwd}/out/log-${target}_v1.txt" || (echo ERROR: "${target}" && exit 1)
-            lcov --capture --directory "${pwd}/coverage_v1/" --output-file "${pwd}/coverage_v1/${target}.lcov" &>/dev/null
-            lcov --remove "${pwd}/coverage_v1/${target}.lcov" "${pwd}/.deps/*" -o "${pwd}/coverage/${target}_v1.lcov"
-            rm "${pwd}/coverage_v1/${target}.lcov"
-            ;;
-        *)
-            ;;
-    esac
-done
-
-coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" )
-for f in ${coverage}; do
-    find "${pwd}/coverage_v2" -type f -name "${f}" -delete
-done
-
-${cmake} \
-    -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
-    -DCMAKE_BUILD_TYPE:STRING=Debug \
-    -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
-    -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
-    -DLCOV_PATH=${LCOV_PATH} \
-    -DGENHTML_PATH=${GENHTML_PATH} \
-    -DCODE_COVERAGE:BOOL=TRUE \
-    -DGC:BOOL=TRUE \
-    $(cmake-coverage-options) \
-    -S"${pwd}" \
-    -B"${pwd}/coverage_v2" \
-    -G "Ninja" 2>&1 >/dev/null
-
-for target in ${targets[@]}; do
-    echo Building target ${target}
-    echo Building with options $(cmake-coverage-options) -DGC:BOOL=TRUE
-    if [ "${silent}" == "--silent" ]; then
-        ${cmake} --build "${pwd}/coverage_v2" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
-    else
-        ${cmake} --build "${pwd}/coverage_v2" --target "${target}" || (echo ERROR: "${target}" && exit 1)
-    fi
-    case "${target}" in 
-        main-*) ;& test-*)
-            timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/coverage_v2/${target}" 2>&1 >"${pwd}/out/log-${target}_v2.txt" || (echo ERROR: "${target}" && exit 1)
-            lcov --capture --directory "${pwd}/coverage_v2/" --output-file "${pwd}/coverage_v2/${target}.lcov" &>/dev/null
-            lcov --remove "${pwd}/coverage_v2/${target}.lcov" "${pwd}/.deps/*" -o "${pwd}/coverage/${target}_v2.lcov"
-            rm "${pwd}/coverage_v2/${target}.lcov"
-            ;;
-        *)
-            ;;
-    esac
-done
-
-find "${pwd}/coverage" -type f -name "*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
+find "${pwd}/coverage" -type f -name "*.info" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
 
 if [ "${silent}" == "--silent" ]; then
     exec 1>&2 2>&-

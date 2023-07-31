@@ -139,8 +139,8 @@ ${cmake} \
     -G "Ninja" 2>&1 >/dev/null
 
 for target in ${targets[@]}; do
-    echo Building target ${target}
-    echo Building with options $(cmake-options)
+    echo building ${target}
+    echo options $(cmake-options)
     if [ "${silent}" == "--silent" ]; then
         ${cmake} --build "${pwd}/cmake" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
     else

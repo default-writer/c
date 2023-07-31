@@ -54,6 +54,10 @@ for opt in ${opts[@]}; do
         "")
             ;;
 
+        "--dir="*) # [optional] cleans up directories before build
+            dir=${opt#*=}
+            ;;
+
         "--clean") # [optional] cleans up directories before build
             clean="--clean"
             ;;
@@ -102,18 +106,10 @@ if [ "${silent}" == "--silent" ]; then
 fi
 
 
-build="${pwd}/build-coverage"
+build="coverage"
 
-if [ "${gc}" == "--gc" ]; then
-    build="${build}-gc"
-fi
-
-if [ "${sanitize}" == "--sanitize" ]; then
-    build="${build}-sanitize"
-fi
-
-if [ "${valgrind}" == "--valgrind" ]; then
-    build="${build}-valgrind"
+if [[ ! "${dir}" == "" ]]; then
+    build="${dir}"
 fi
 
 [ ! -d "${build}" ] && mkdir "${build}"
@@ -158,21 +154,21 @@ ${cmake} \
     -G "Ninja" 2>&1 >/dev/null
 
 for target in ${targets[@]}; do
-    echo Building target ${target}
-    echo Building with options $(cmake-options)
+    echo building ${target}
+    echo options $(cmake-options)
     if [ "${silent}" == "--silent" ]; then
         ${cmake} --build "${build}" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
     else
         ${cmake} --build "${build}" --target "${target}" || (echo ERROR: "${target}" && exit 1)
     fi
     case "${target}" in main-*)
-        timeout --foreground 180 $(cmake-valgrind-options) "${build}/${target}" 2>&1 >"${pwd}/out/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
+        timeout --foreground 180 $(cmake-valgrind-options) "${build}/${target}" 2>&1 >"${build}/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
         lcov --capture --directory "${build}/" --output-file "${build}/${target}.lcov" &>/dev/null
         lcov --remove "${build}/${target}.lcov" "${pwd}/.deps/*" -o "${build}/${target}.lcov"
     esac
 done
 
-find "${build}" -type f -name "*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
+find "${build}" -type f -name "*.lcov" -exec echo -a {} \; | xargs lcov -o "${build}/lcov.info"
 
 find "${build}" -type f -name "*.lcov" ! -name "lcov.info" -delete
 
