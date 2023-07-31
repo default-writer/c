@@ -99,7 +99,7 @@ for directory in ${directories[@]}; do
     done
 done
 
-if [[ ! "${source}" == "all" ]]; then
+if [[ "${source}" == "all" ]]; then
     find "${pwd}/coverage" -type f -name "*.info" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
 fi
 
