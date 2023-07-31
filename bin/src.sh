@@ -106,11 +106,9 @@ if [ "${silent}" == "--silent" ]; then
     exec 2>&1 >/dev/null
 fi
 
-[ ! -d "${pwd}/config" ] && mkdir "${pwd}/config"
-
 if [ "${clean}" == "--clean" ]; then
-    rm -rf "${pwd}/config"
-    mkdir "${pwd}/config"
+    rm -rf "${pwd}/coverage"
+    mkdir "${pwd}/coverage"
 fi
 
 cmake=$(get-cmake)
