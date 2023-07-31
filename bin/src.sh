@@ -130,6 +130,12 @@ if [[ "${targets[@]}" == "" ]]; then
     exit 8
 fi
 
+[ ! -d "${pwd}/coverage" ] && mkdir "${pwd}/coverage"
+
+if [[ -f "${pwd}/coverage/lcov.info" ]]; then 
+    rm "${pwd}/coverage/lcov.info"
+fi
+
 for linked_target in ${targets[@]}; do
     case ${linked_target} in
         main-*) ;& test-*)
@@ -143,7 +149,7 @@ for linked_target in ${targets[@]}; do
     esac
 done
 
-find "${pwd}/coverage" -type f -name "*.lcov" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
+find "${pwd}/coverage" -type f -name "*.info" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
 
 if [ "${silent}" == "--silent" ]; then
     exec 1>&2 2>&-
