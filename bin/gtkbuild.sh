@@ -97,15 +97,17 @@ for opt in ${opts[@]}; do
     esac
 done
 
-if [ "${silent}" == "--silent" ]; then
-    exec 2>&1 >/dev/null
+build="gtk"
+
+if [[ ! "${dir}" == "" ]]; then
+    build="${dir}"
 fi
 
-[ ! -d "${pwd}/gtk" ] && mkdir "${pwd}/gtk"
+[ ! -d "${build}" ] && mkdir "${build}"
 
 if [ "${clean}" == "--clean" ]; then
-    rm -rf "${pwd}/gtk"
-    mkdir "${pwd}/gtk"
+    rm -rf "${build}"
+    mkdir "${build}"
 fi
 
 find "${pwd}" -type f -name "callgrind.out.*" -delete
@@ -129,11 +131,11 @@ if [[ "${targets[@]}" == "" ]]; then
     exit 8
 fi
 
-[ ! -d "${pwd}/coverage" ] && mkdir "${pwd}/coverage"
+[ ! -d "${build}" ] && mkdir "${build}"
 
 coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" )
 for f in ${coverage}; do
-    find "${pwd}/coverage" -type f -name "${f}" -delete
+    find "${build}" -type f -name "${f}" -delete
 done
 
 export MAKEFLAGS=-j8
@@ -145,22 +147,21 @@ ${cmake} \
     -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
     $(cmake-options) \
     -S"${pwd}" \
-    -B"${pwd}/gtk" \
+    -B"${build}" \
     -G "Ninja" 2>&1 >/dev/null
-
 
 for target in ${gtktargets[@]}; do
     if [ "${silent}" == "--silent" ]; then
-        ${cmake} --build "${pwd}/gtk" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
+        ${cmake} --build "${build}" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
     else
-        ${cmake} --build "${pwd}/gtk" --target "${target}" || (echo ERROR: "${target}" && exit 1)
+        ${cmake} --build "${build}" --target "${target}" || (echo ERROR: "${target}" && exit 1)
     fi
     case "${target}" in gtk-*)
-        timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/gtk/${target}" 2>&1 >"${pwd}/gtk/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
+        timeout --foreground 180 $(cmake-valgrind-options) "${build}/${target}" 2>&1 >"${build}/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
     esac
 done
 
-main=$(find "${pwd}/gtk" -type f -name "*.s" -exec echo {} \;)
+main=$(find "${build}" -type f -name "*.s" -exec echo {} \;)
 for i in $main; do
     path="${pwd}/$(echo $i | sed -n -e 's/^.*.dir\/\(.*\)$/\1/p')"
     cp "${i}" "${path}"

@@ -29,6 +29,7 @@ opts=( "${@:2}" )
 case "${install}" in
 
     "")
+        source="all"
         ;;
 
     "--target") # builds and runs specified target
@@ -37,7 +38,7 @@ case "${install}" in
         ;;
 
     "--all") # builds and runs specified target
-        source="*"
+        source="all"
         opts=( "${@:2}" )
         ;;
 
@@ -53,7 +54,7 @@ for opt in ${opts[@]}; do
         "")
             ;;
 
-        "--dir="*) # [optional] cleans up directories before build
+        "--dir="*) # [optional] build directory
             dir=${opt#*=}
             ;;
 

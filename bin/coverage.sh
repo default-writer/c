@@ -54,7 +54,7 @@ for opt in ${opts[@]}; do
         "")
             ;;
 
-        "--dir="*) # [optional] cleans up directories before build
+        "--dir="*) # [optional] build directory
             dir=${opt#*=}
             ;;
 
@@ -105,7 +105,6 @@ if [ "${silent}" == "--silent" ]; then
     exec 2>&1 >/dev/null
 fi
 
-
 build="coverage"
 
 if [[ ! "${dir}" == "" ]]; then
@@ -118,6 +117,10 @@ if [ "${clean}" == "--clean" ]; then
     rm -rf "${build}"
     mkdir "${build}"
 fi
+
+find "${pwd}" -type f -name "callgrind.out.*" -delete
+find "${pwd}/src" -type f -name "*.s" -delete
+find "${pwd}/tests" -type f -name "*.s" -delete
 
 cmake=$(get-cmake)
 
@@ -135,6 +138,13 @@ if [[ "${targets[@]}" == "" ]]; then
     echo ERROR
     exit 8
 fi
+
+[ ! -d "${build}" ] && mkdir "${build}"
+
+coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" )
+for f in ${coverage}; do
+    find "${build}" -type f -name "${f}" -delete
+done
 
 export LCOV_PATH=$(which lcov)
 export GENHTML_PATH==$(which genhtml)
@@ -169,6 +179,12 @@ for target in ${targets[@]}; do
 done
 
 find "${build}" -type f -name "*.lcov" -exec echo -a {} \; | xargs lcov -o "${build}/lcov.info"
+
+main=$(find "${build}" -type f -name "*.s" -exec echo {} \;)
+for i in $main; do
+    path="${pwd}/$(echo $i | sed -n -e 's/^.*.dir\/\(.*\)$/\1/p')"
+    cp "${i}" "${path}"
+done
 
 if [ "${silent}" == "--silent" ]; then
     exec 1>&2 2>&-

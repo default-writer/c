@@ -22,7 +22,7 @@ opts=( "${@:2}" )
 
 . "${pwd}/bin/scripts/load.sh"
 
-## Builds and logs binaries
+## Builds binaries
 ## Usage: ${script} <option> [optional]
 ## ${commands}
 
@@ -52,6 +52,10 @@ for opt in ${opts[@]}; do
     case ${opt} in
 
         "")
+            ;;
+
+        "--dir="*) # [optional] build directory
+            dir=${opt#*=}
             ;;
 
         "--clean") # [optional] cleans up directories before build
@@ -101,13 +105,22 @@ if [ "${silent}" == "--silent" ]; then
     exec 2>&1 >/dev/null
 fi
 
-[ ! -d "${pwd}/cmake" ] && mkdir "${pwd}/cmake"
-[ ! -d "${pwd}/logs" ] && mkdir "${pwd}/logs"
+build="cmake"
+
+if [[ ! "${dir}" == "" ]]; then
+    build="${dir}"
+fi
+
+[ ! -d "${build}" ] && mkdir "${build}"
 
 if [ "${clean}" == "--clean" ]; then
-    rm -rf "${pwd}/cmake"
-    mkdir "${pwd}/cmake"
+    rm -rf "${build}"
+    mkdir "${build}"
 fi
+
+find "${pwd}" -type f -name "callgrind.out.*" -delete
+find "${pwd}/src" -type f -name "*.s" -delete
+find "${pwd}/tests" -type f -name "*.s" -delete
 
 cmake=$(get-cmake)
 
@@ -126,6 +139,13 @@ if [[ "${targets[@]}" == "" ]]; then
     exit 8
 fi
 
+[ ! -d "${build}" ] && mkdir "${build}"
+
+coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" )
+for f in ${coverage}; do
+    find "${build}" -type f -name "${f}" -delete
+done
+
 export MAKEFLAGS=-j8
 
 ${cmake} \
@@ -135,20 +155,26 @@ ${cmake} \
     -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
     $(cmake-options) \
     -S"${pwd}" \
-    -B"${pwd}/cmake" \
+    -B"${build}" \
     -G "Ninja" 2>&1 >/dev/null
 
 for target in ${targets[@]}; do
     echo building ${target}
     echo options $(cmake-options)
     if [ "${silent}" == "--silent" ]; then
-        ${cmake} --build "${pwd}/cmake" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
+        ${cmake} --build "${build}" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
     else
-        ${cmake} --build "${pwd}/cmake" --target "${target}" || (echo ERROR: "${target}" && exit 1)
+        ${cmake} --build "${build}" --target "${target}" || (echo ERROR: "${target}" && exit 1)
     fi
     case "${target}" in main-*)
-        timeout --foreground 180 $(cmake-valgrind-options) "${pwd}/cmake/${target}" 2>&1 >"${pwd}/logs/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
+        timeout --foreground 180 $(cmake-valgrind-options) "${build}/${target}" 2>&1 >"${build}/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
     esac
+done
+
+main=$(find "${build}" -type f -name "*.s" -exec echo {} \;)
+for i in $main; do
+    path="${pwd}/$(echo $i | sed -n -e 's/^.*.dir\/\(.*\)$/\1/p')"
+    cp "${i}" "${path}"
 done
 
 if [ "${silent}" == "--silent" ]; then

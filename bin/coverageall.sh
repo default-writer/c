@@ -86,6 +86,10 @@ fi
 
 [ ! -d "${pwd}/coverage" ] && mkdir "${pwd}/coverage"
 
+if [[ -f "${pwd}/coverage/lcov.info" ]]; then 
+    rm "${pwd}/coverage/lcov.info"
+fi
+
 directories=( "coverage-v1" "coverage-v2" "coverage-v3" "coverage-v4" "coverage-v5" "coverage-v6" )
 for directory in ${directories[@]}; do
     files=$(find "${directory}" -type f -name "lcov.info" -exec echo {} \;)
