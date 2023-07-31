@@ -97,7 +97,7 @@ case "${install}" in
         ;;
 
     "--submodule-rexo") # installs rexo as git submodule
-        submodule-install https://github.com/christophercrouzet/rexo.git .deps/rexo
+        submodule-install https://github.com/default-writer/rexo.git .deps/rexo
         ;;
 
     "--submodule-vcpkg") # installs rexo as git submodule
