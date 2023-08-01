@@ -47,6 +47,10 @@ case "${install}" in
         submodule-uninstall ${pwd} .deps/vcpkg
         ;;
 
+    "--submodule-raylib") # uninstalls rexo as raylib submodule
+        submodule-uninstall ${pwd} .deps/raylib
+        ;;
+
     "--submodule-lldb-mi") # uninstalls lldb-mi as git submodule
         submodule-uninstall ${pwd} .deps/lldb-mi
         ;;

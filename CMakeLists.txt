@@ -372,6 +372,9 @@ add_executable(test-hashes ${TEST_HASHES_SOURCE})
 # gtk
 add_executable(gtk-experiment ${GTK_EXPERIMENT})
 
+#raylib
+add_executable(raylib-experiment1 src/raylib/examples/ex1/main.c)
+
 # main 
 add_executable(main-default ${MAIN_STANDARD_SOURCE})
 add_executable(main-light ${MAIN_LIGHT_SOURCE})
@@ -420,6 +423,7 @@ target_link_libraries(memory-ref2 PRIVATE memory-list2 list-micro list-common)
 target_link_libraries(memory-ref3 PRIVATE memory-list3 list-micro list-common)
 target_link_libraries(list-pointer2 PRIVATE vm-v2)
 target_link_libraries(structs-v3 PRIVATE list-class)
+target_link_libraries(raylib-experiment1 raylib)
 
 # test
 target_link_libraries(tests PRIVATE list-alloc list-parameters)
@@ -463,6 +467,17 @@ FILE(WRITE ${CMAKE_BINARY_DIR}/input.txt
 
 target_include_directories(gtk-experiment PRIVATE /usr/include/gtk-4.0)
 target_include_directories(gtk-experiment PRIVATE /usr/include/glib-2.0)
+
+if(TARGET "raylib-experiment1")
+    find_package(raylib 3.0 REQUIRED) # Requires at least version 3.0
+
+    # Checks if OSX and links appropriate frameworks (only required on MacOS)
+    if (APPLE)
+        target_link_libraries(${PROJECT_NAME} "-framework IOKit")
+        target_link_libraries(${PROJECT_NAME} "-framework Cocoa")
+        target_link_libraries(${PROJECT_NAME} "-framework OpenGL")
+    endif()
+endif()
 
 if(TARGET "gtk-experiment")
     find_package(PkgConfig REQUIRED)

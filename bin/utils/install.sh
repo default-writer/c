@@ -104,6 +104,10 @@ case "${install}" in
         submodule-install https://github.com/Microsoft/vcpkg.git .deps/vcpkg
         ;;
 
+    "--submodule-raylib") # installs raylib as git submodule
+        submodule-install https://github.com/raysan5/raylib.git .deps/raylib
+        ;;
+
     "--submodule-lldb-mi") # installs lldb-mi as git submodule
         submodule-install https://github.com/lldb-tools/lldb-mi.git .deps/lldb-mi
         ;;
