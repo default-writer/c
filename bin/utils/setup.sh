@@ -60,6 +60,12 @@ case "${install}" in
         upgrade ${updgradeflags}
         ;;
 
+    "--raylib") # installs raylib
+        update ${updateflags}
+        apt install -y libasound2-dev libx11-dev libxrandr-dev libxi-dev libgl1-mesa-dev libglu1-mesa-dev libxcursor-dev libxinerama-dev
+        upgrade ${updgradeflags}
+        ;;
+
     "--zip") # installs unzip
         update ${updateflags}
         apt install -y unzip
