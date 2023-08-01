@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22.1)
 
-project(list VERSION 0.0.1 LANGUAGES C CXX)
+project(c VERSION 0.0.1 LANGUAGES C CXX)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_C_STANDARD 99)
@@ -51,8 +51,8 @@ set(NO_SANITIZE
 )
 
 set(OPTIONS
-    -Winline
     # -Wpedantic
+    -Winline
     -Werror
     -Wall
     -Wextra
@@ -83,7 +83,7 @@ set(STRICT
 
 if(CONFIG_MEMORY_DEBUG_INFO)
     if(VERBOSE)
-        message(STATUS "Configure with memory debug information")
+        message(STATUS "configure with memory debug information")
     endif()
     add_compile_definitions(CONFIG_MEMORY_DEBUG_INFO)
     add_definitions(-DCONFIG_MEMORY_DEBUG_INFO)
@@ -91,7 +91,7 @@ endif()
 
 if(CONFIG_MEMORY_CLEANUP)
     if(VERBOSE)
-        message(STATUS "Configure with memory cleanup")
+        message(STATUS "configure with memory cleanup")
     endif()
     add_compile_definitions(CONFIG_MEMORY_CLEANUP)
     add_definitions(-DCONFIG_MEMORY_CLEANUP)
@@ -99,7 +99,7 @@ endif()
 
 if(CONFIG_MEMORY_ALLOC)
     if(VERBOSE)
-        message(STATUS "Configure with memory allocator")
+        message(STATUS "configure with memory allocator")
     endif()
     add_compile_definitions(CONFIG_MEMORY_ALLOC)
     add_definitions(-DCONFIG_MEMORY_ALLOC)
@@ -107,7 +107,7 @@ endif()
 
 if(CONFIG_MEMCPY)
     if(VERBOSE)
-        message(STATUS "Configure with use of memcpy")
+        message(STATUS "configure with use of memcpy")
     endif()
     add_compile_definitions(CONFIG_MEMCPY)
     add_definitions(-DCONFIG_MEMCPY)
@@ -115,13 +115,13 @@ endif()
 
 if(CODE_SANITIZER)
     if(VERBOSE)
-        message("Building with sanitizers")
+        message("building with sanitizers")
     endif()
     add_compile_options(${STANDARD} ${SANITIZE} ${OPTIONS})
     add_link_options(${STANDARD} ${SANITIZE} ${OPTIONS})
 else()
     if(VERBOSE)
-        message("Building without sanitizers")
+        message("building without sanitizers")
     endif()
     add_compile_options(${STANDARD} ${NO_SANITIZE})
     add_link_options(${STANDARD} ${NO_SANITIZE})
@@ -129,32 +129,32 @@ endif()
 
 if(MOCKS)
     if(VERBOSE)
-        message("Building with mocks")
+        message("building with mocks")
     endif()
     add_compile_definitions(MOCKS)
     add_definitions(-DMOCKS)
 else()
     if(VERBOSE)
-        message("Building without mocks")
+        message("building without mocks")
     endif()
 endif()
 
 if(GC)
     if(VERBOSE)
-        message("Building with garbage collector")
+        message("building with garbage collector")
     endif()
     add_compile_definitions(GC)
     add_definitions(-DGC)
 else()
     if(VERBOSE)
-        message("Building without garbage collector")
+        message("building without garbage collector")
     endif()
 endif()
 
 if(CODE_COVERAGE)
     if("${CMAKE_C_COMPILER_ID}" MATCHES "(Apple)?[Cc]lang" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "(Apple)?[Cc]lang")
         if(VERBOSE)
-            message("Building with llvm code coverage tools")
+            message("building with llvm code coverage tools")
         endif()
         # Warning/Error messages
         if(NOT LLVM_COV_PATH)
@@ -169,13 +169,13 @@ if(CODE_COVERAGE)
 
     elseif(CMAKE_COMPILER_IS_GNUCXX)
         if(VERBOSE)
-            message("Building with lcov code coverage tools")
+            message("building with lcov code coverage tools")
         endif()
 
         # Warning/Error messages
         if(NOT (CMAKE_BUILD_TYPE STREQUAL "Debug"))
             if(VERBOSE)
-                message(WARNING "Code coverage results with an optimized (non-Debug) build may be misleading")
+                message(WARNING "code coverage results with an optimized (non-Debug) build may be misleading")
             endif()
         endif()
         if(NOT LCOV_PATH)
@@ -193,7 +193,7 @@ if(CODE_COVERAGE)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage -ftest-coverage")
     else()
         if(VERBOSE)
-            message(FATAL_ERROR "Code coverage requires Clang or GCC. Aborting.")
+            message(FATAL_ERROR "code coverage requires Clang or GCC. Aborting.")
         endif()
     endif()
     if(CMAKE_C_COMPILER_ID MATCHES "(Apple)?[Cc]lang" OR CMAKE_CXX_COMPILER_ID MATCHES "(Apple)?[Cc]lang")
@@ -372,9 +372,6 @@ add_executable(test-hashes ${TEST_HASHES_SOURCE})
 # gtk
 add_executable(gtk-experiment ${GTK_EXPERIMENT})
 
-#raylib
-add_executable(raylib-experiment1 src/raylib/examples/ex1/main.c)
-
 # main 
 add_executable(main-default ${MAIN_STANDARD_SOURCE})
 add_executable(main-light ${MAIN_LIGHT_SOURCE})
@@ -423,7 +420,6 @@ target_link_libraries(memory-ref2 PRIVATE memory-list2 list-micro list-common)
 target_link_libraries(memory-ref3 PRIVATE memory-list3 list-micro list-common)
 target_link_libraries(list-pointer2 PRIVATE vm-v2)
 target_link_libraries(structs-v3 PRIVATE list-class)
-target_link_libraries(raylib-experiment1 raylib)
 
 # test
 target_link_libraries(tests PRIVATE list-alloc list-parameters)
@@ -467,17 +463,6 @@ FILE(WRITE ${CMAKE_BINARY_DIR}/input.txt
 
 target_include_directories(gtk-experiment PRIVATE /usr/include/gtk-4.0)
 target_include_directories(gtk-experiment PRIVATE /usr/include/glib-2.0)
-
-if(TARGET "raylib-experiment1")
-    find_package(raylib 3.0 REQUIRED) # Requires at least version 3.0
-
-    # Checks if OSX and links appropriate frameworks (only required on MacOS)
-    if (APPLE)
-        target_link_libraries(${PROJECT_NAME} "-framework IOKit")
-        target_link_libraries(${PROJECT_NAME} "-framework Cocoa")
-        target_link_libraries(${PROJECT_NAME} "-framework OpenGL")
-    endif()
-endif()
 
 if(TARGET "gtk-experiment")
     find_package(PkgConfig REQUIRED)
