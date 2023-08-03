@@ -56,6 +56,8 @@ target_link_libraries(raylib-experiment1 PRIVATE raylib m)
 add_compile_options(${STANDARD} ${OPTIONS})
 add_link_options(${STANDARD} ${OPTIONS})
 
+include_directories(raylib/src)
+
 # Checks if OSX and links appropriate frameworks (only required on MacOS)
 if (APPLE)
     target_link_libraries(${PROJECT_NAME} "-framework IOKit")
