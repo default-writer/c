@@ -32,7 +32,7 @@ static void class_destroy(object_typeinfo ptr);
 typedef struct writeable_object_typeinfo {
     object object;
     typeinfo typeinfo;
-}* writeable_object_typeinfo;
+} struct_writeable_object_typeinfo, *writeable_object_typeinfo;
 
 static object_typeinfo class_create(typeinfo ti) {
     object_typeinfo ptr;
