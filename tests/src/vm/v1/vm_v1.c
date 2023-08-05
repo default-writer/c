@@ -71,7 +71,7 @@ RX_TEST_CASE(tests, test_vm_read_type_0, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_alloc_user, .fixture = test_fixture) {
-    struct pointer* ptr = virtual->alloc(0, TYPE_USER);
+    struct pointer* ptr = virtual->alloc(0, TYPE_NULL);
     u64 data_ptr = vm->alloc(ptr);
     const struct pointer* vm_ptr = vm->read(data_ptr);
     RX_ASSERT(ptr != 0);

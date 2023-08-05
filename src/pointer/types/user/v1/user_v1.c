@@ -79,7 +79,7 @@ static void user_vm_free(struct pointer* ptr) {
 
 static struct vm_type type_definition = {
     .free = user_vm_free,
-    .id = TYPE_NONE
+    .id = TYPE_NULL
 };
 
 static void INIT init() {
