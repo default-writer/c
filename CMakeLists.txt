@@ -25,55 +25,73 @@ set(CONFIG_MEMORY_CLEANUP ON)
 set(CONFIG_MEMORY_ALLOC OFF)
 set(CONFIG_MEMCPY OFF)
 
-set(STANDARD
-    -save-temps
-    -std=gnu89
-    -fgnu89-inline
-)
 
-set(INLINE 
-    -finline-functions-called-once
-)
+# Check the operating system version
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
 
-set(CLANGD
-    -fsanitize=bounds-strict
-    -static-libasan
-)
+    set(INLINE 
+        -finline-functions-called-once
+    )
 
-set(SANITIZE
-    -fsanitize=address,undefined,leak,pointer-compare,pointer-subtract,float-cast-overflow,float-divide-by-zero
-    -fsanitize-undefined-trap-on-error
-    -fno-sanitize-recover=all
-)
+    set(CLANGD
+        -fsanitize=bounds-strict
+        -static-libasan
+    )
 
-set(NO_SANITIZE
-    -fno-sanitize=all
-)
+    set(STANDARD
+        -save-temps
+        -std=gnu89
+        -fgnu89-inline
+    )
 
-set(OPTIONS
-    # -Wpedantic
-    -Winline
-    -Werror
-    -Wall
-    -Wextra
-    -Waggregate-return
-    -Wcast-align
-    -Wcast-qual
-    -Wconversion
-    -Wfloat-equal
-    -Wpointer-arith
-    -Wshadow
-    -Wstrict-overflow=5
-    -Wswitch
-    -Wswitch-default
-    -Wundef
-    -Wunreachable-code
-    -Wwrite-strings
-    -Wformat-nonliteral
-    -Wno-implicit-fallthrough
-    -Wno-unused-parameter
-    -Wno-unused-variable
-)
+    set(SANITIZE
+        -fsanitize=address,undefined,leak,pointer-compare,pointer-subtract,float-cast-overflow,float-divide-by-zero
+        -fsanitize-undefined-trap-on-error
+        -fno-sanitize-recover=all
+    )
+
+    set(NO_SANITIZE
+        -fno-sanitize=all
+    )
+
+    set(OPTIONS
+        # -Wpedantic
+        -Winline
+        -Werror
+        -Wall
+        -Wextra
+        -Waggregate-return
+        -Wcast-align
+        -Wcast-qual
+        -Wconversion
+        -Wfloat-equal
+        -Wpointer-arith
+        -Wshadow
+        -Wstrict-overflow=5
+        -Wswitch
+        -Wswitch-default
+        -Wundef
+        -Wunreachable-code
+        -Wwrite-strings
+        -Wformat-nonliteral
+        -Wno-implicit-fallthrough
+        -Wno-unused-parameter
+        -Wno-unused-variable
+        -Wno-unused-function
+    )
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    # Windows specific configuration
+    message("Detected Windows OS")
+    # You can add specific CMake options or behavior for Windows here
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    # macOS specific configuration
+    message("Detected macOS OS")
+    # You can add specific CMake options or behavior for macOS here
+else()
+    # Other/Unknown OS
+    message("Unknown OS")
+    # You can add behavior for other/unknown OS here if needed
+endif()
 
 set(STRICT
     -Wstrict-prototypes
@@ -460,34 +478,6 @@ configure_file(file.txt ${CMAKE_BINARY_DIR}/file.txt COPYONLY)
 FILE(WRITE ${CMAKE_BINARY_DIR}/input.txt
     "fopen<\"input.txt\",\"rb\">f (? f==0 perror<\"file not found\" exit<1 : print<\"all ok\")"
 )
-
-target_include_directories(gtk-experiment PRIVATE /usr/include/gtk-4.0)
-target_include_directories(gtk-experiment PRIVATE /usr/include/glib-2.0)
-
-if(TARGET "gtk-experiment")
-    find_package(PkgConfig REQUIRED)
-    pkg_check_modules(GTK4 REQUIRED IMPORTED_TARGET gtk4)
-    target_link_libraries(gtk-experiment PRIVATE PkgConfig::GTK4)
-
-    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/gtk-4.0)
-    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/glib-2.0)
-    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/gio-unix-2.0)
-    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/cairo)
-    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/pango-1.0)
-    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/harfbuzz)
-    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/fribidi)
-    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/gdk-pixbuf-2.0)
-    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/pixman-1)
-    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/uuid)
-    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/freetype2)
-    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/libpng16)
-    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/graphene-1.0)
-    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/libmount)
-    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/blkid)
-    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/lib/x86_64-linux-gnu/glib-2.0/include)
-    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/lib/x86_64-linux-gnu/graphene-1.0/include)
-
-endif()
 
 if(TARGETS)
 
