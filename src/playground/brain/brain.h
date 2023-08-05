@@ -26,7 +26,28 @@
 #ifndef _BRAIN_H_
 #define _BRAIN_H_
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4505)
+#endif
+
 extern inline void source1(void) __attribute__((always_inline));
 extern inline void source2(void) __attribute__((always_inline));
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+
+#if defined(__GNUC__) || defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Winline"
+#endif
+
+extern inline void source1(void) __attribute__((always_inline));
+extern inline void source2(void) __attribute__((always_inline));
+
+#if defined(__GNUC__) || defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
 
 #endif /* _BRAIN_H_ */

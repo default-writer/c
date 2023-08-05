@@ -38,7 +38,7 @@
 u32 default_hash(const char* source);
 
 /* private */
-static u64 lcg_state = 0;
+static u32 lcg_state = 0;
 
 static struct hashtable_data* hashtable_extract_internal(struct hashtable_data* head, const struct hashtable_data* ptr);
 
@@ -54,10 +54,10 @@ static void update(char** prev, const char* new, u64 old_size, u64 new_size);
 static u32 default_hash_function(const char* source);
 static u32 hash_func(const char* source);
 
-static void hashtable_init(u64 size);
+static void hashtable_init(u32 size);
 static void hashtable_destroy(void);
 
-static u64 hashtable_size = DEFAULT_SIZE;
+static u32 hashtable_size = DEFAULT_SIZE;
 
 static u32 (*hash_function_ptr)(const char* source) = 0;
 
@@ -169,7 +169,7 @@ u32 murmurhash3(const char* source) {
     return data;
 }
 
-static void hashtable_init(u64 size) {
+static void hashtable_init(u32 size) {
     if (size > 0) {
         hashtable_size = size;
     }

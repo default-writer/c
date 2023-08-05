@@ -39,7 +39,7 @@ struct hashtable_data { /* table entry: */
 };
 
 struct hashtable {
-    void (*init)(u64 size);
+    void (*init)(u32 size);
     void (*destroy)(void);
     struct hashtable_data* (*alloc)(const char* key, const char* value);
     void (*free)(struct hashtable_data* node);
