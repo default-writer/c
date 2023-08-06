@@ -72,22 +72,8 @@ void base_destroy(const object_typeinfo ptr) {
     global_free(ptr->object, ptr->typeinfo->size);
 }
 
-static void INIT init() {
-#ifdef USE_MEMORY_DEBUG_INFO
-    global_statistics();
-#endif
-}
-
-static void DESTROY destroy() {
-#ifdef USE_MEMORY_DEBUG_INFO
-    global_statistics();
-#endif
-}
-
 int main(void) {
-#ifndef ATTRIBUTE
-    init();
-#endif
+    global_statistics();
     typedef struct B _B;
     typedef _B* B;
 
@@ -124,8 +110,6 @@ int main(void) {
     };
 
     base->destroy(&obj);
-#ifndef ATTRIBUTE
-    destroy();
-#endif
+    global_statistics();
     return 0;
 }

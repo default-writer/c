@@ -121,22 +121,8 @@ extern inline void source2(void) {
     string->free(file_path_ptr);
 }
 
-static void INIT init() {
-#ifdef USE_MEMORY_DEBUG_INFO
-    global_statistics();
-#endif
-}
-
-static void DESTROY destroy() {
-#ifdef USE_MEMORY_DEBUG_INFO
-    global_statistics();
-#endif
-}
-
 int main(int argc, char** argv) {
-#ifndef ATTRIBUTE
-    init();
-#endif
+    global_statistics();
     int alloc = list_alloc_tests->run();
     int micro = list_micro_tests->run();
     int vm_v1 = vm_v1_tests->run();
@@ -148,8 +134,6 @@ int main(int argc, char** argv) {
     source2();
     string->free(argv_ptr);
     pointer->destroy();
-#ifndef ATTRIBUTE
-    destroy();
-#endif
+    global_statistics();
     return alloc | micro | vm_v1;
 }

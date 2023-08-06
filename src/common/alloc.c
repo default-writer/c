@@ -66,15 +66,15 @@ void global_free(void* ptr, u64 size) {
 #ifdef USE_MEMORY_CLEANUP
         global_memset(ptr, 0, size); /* NOLINT */
 #endif
-#ifdef USE_MEMORY_DEBUG_INFO
-        total_free += size;
-        const struct memory_info* memory = global_memory_info();
-        printf("   -: %016llx ! %16lld . %16lld : %16lld : %16lld : %16lld\n", (u64)ptr, size, memory->maximum_used, memory->used_memory, memory->free_memory, memory->allocated_memory);
-#endif
 #ifdef USE_MEMORY_ALLOC
         memory_free(ptr, size);
 #else
         free(ptr);
+#endif
+#ifdef USE_MEMORY_DEBUG_INFO
+        total_free += size;
+        const struct memory_info* memory = global_memory_info();
+        printf("   -: %016llx ! %16lld . %16lld : %16lld : %16lld : %16lld\n", (u64)ptr, size, memory->maximum_used, memory->used_memory, memory->free_memory, memory->allocated_memory);
 #endif
     }
 }

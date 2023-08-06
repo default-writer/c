@@ -119,22 +119,8 @@ static void source2(void) {
 #endif
 }
 
-static void INIT init() {
-#ifdef USE_MEMORY_DEBUG_INFO
-    global_statistics();
-#endif
-}
-
-static void DESTROY destroy() {
-#ifdef USE_MEMORY_DEBUG_INFO
-    global_statistics();
-#endif
-}
-
 int main(int argc, char** argv) {
-#ifndef ATTRIBUTE
-    init();
-#endif
+    global_statistics();
     CLEAN(argc)
     pointer->init(DEFAULT_SIZE);
     u64 argv_ptr = pointer->load(argv[0]);
@@ -145,8 +131,6 @@ int main(int argc, char** argv) {
     pointer->free(argv_ptr);
 #endif
     pointer->destroy();
-#ifndef ATTRIBUTE
-    destroy();
-#endif
+    global_statistics();
     return 0;
 }

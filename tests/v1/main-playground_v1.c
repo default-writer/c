@@ -127,30 +127,14 @@ RX_TEST_CASE(tests, test_class_push_pop_get_set_data_v1, .fixture = test_fixture
     context->delete (data2);
 }
 
-static void INIT init() {
-#ifdef USE_MEMORY_DEBUG_INFO
-    global_statistics();
-#endif
-}
-
-static void DESTROY destroy() {
-#ifdef USE_MEMORY_DEBUG_INFO
-    global_statistics();
-#endif
-}
-
 int main(void) {
-#ifndef ATTRIBUTE
-    init();
-#endif
+    global_statistics();
 #ifdef USE_MEMORY_ALLOC
     memory_init(void);
     memory_destroy(void);
 #endif
     /* Execute the main function that runs the test cases found. */
     int result = rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
-#ifndef ATTRIBUTE
-    destroy();
-#endif
+    global_statistics();
     return result;
 }

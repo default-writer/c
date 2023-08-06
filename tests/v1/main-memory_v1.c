@@ -64,27 +64,11 @@ void use(const union memory_allocator_api* allocator) {
     allocator->v1.destroy();
 }
 
-static void INIT init() {
-#ifdef USE_MEMORY_DEBUG_INFO
-    global_statistics();
-#endif
-}
-
-static void DESTROY destroy() {
-#ifdef USE_MEMORY_DEBUG_INFO
-    global_statistics();
-#endif
-}
-
 int main(void) {
-#ifndef ATTRIBUTE
-    init();
-#endif
+    global_statistics();
     use(&memory_allocator_v1);
     use(&memory_allocator_v2);
     use(&memory_allocator_v3);
-#ifndef ATTRIBUTE
-    destroy();
-#endif
+    global_statistics();
     return 0;
 }

@@ -686,22 +686,8 @@ extern inline void source2(void) {
 #endif
 }
 
-static void INIT init() {
-#ifdef USE_MEMORY_DEBUG_INFO
-    global_statistics();
-#endif
-}
-
-static void DESTROY destroy() {
-#ifdef USE_MEMORY_DEBUG_INFO
-    global_statistics();
-#endif
-}
-
 int main(int argc, char** argv) {
-#ifndef ATTRIBUTE
-    init();
-#endif
+    global_statistics();
     CLEAN(argc)
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- acceptance test code\n");
@@ -720,8 +706,6 @@ int main(int argc, char** argv) {
 #endif
     /* Execute the main function that runs the test cases found. */
     int result = rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
-#ifndef ATTRIBUTE
-    destroy();
-#endif
+    global_statistics();
     return result;
 }
