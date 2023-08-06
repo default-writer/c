@@ -58,6 +58,10 @@ for opt in ${opts[@]}; do
             clean="--clean"
             ;;
 
+        "--global") # [optional] merge to main output
+            global="--global"
+            ;;
+
         "--silent") # [optional] suppress verbose output
             silent="--silent"
             ;;
@@ -86,8 +90,8 @@ fi
 
 [ ! -d "${pwd}/coverage" ] && mkdir "${pwd}/coverage"
 
-if [[ -f "${pwd}/coverage/lcov.info" ]]; then 
-    rm "${pwd}/coverage/lcov.info"
+if [[ -f "${pwd}/coverage/${source}.info" ]]; then 
+    rm "${pwd}/coverage/${source}.info"
 fi
 
 directories=( "coverage-v1" "coverage-v2" "coverage-v3" "coverage-v4" "coverage-v5" "coverage-v6" )
@@ -95,11 +99,15 @@ for directory in ${directories[@]}; do
     files=$(find "${directory}" -type f -name "lcov.info" -exec echo {} \;)
     for file in ${files[@]}; do
         link=$(basename $(dirname "${file}"))
-        cp "${file}" "${pwd}/coverage/${link}-$(basename ${file})"
+        cp "${file}" "${pwd}/coverage/${link}-${source}-$(basename ${file})"
     done
 done
 
-find "${pwd}/coverage" -type f -name "*.info" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
+find "${pwd}/coverage" -type f -name "*.info" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/${source}.info"
+
+if [[ "${source}" == "all" ]]; then
+    mv "${pwd}/coverage/${source}.info" "${pwd}/coverage/lcov.info"
+fi
 
 if [ "${silent}" == "--silent" ]; then
     exec 1>&2 2>&-
