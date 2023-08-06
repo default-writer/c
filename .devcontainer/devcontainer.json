@@ -130,7 +130,8 @@
 		"doi.fileheadercomment",
 		"moshfeu.compare-folders",
 		"fougas.msys2",
-		"ms-vscode.cpptools-extension-pack"
+		"ms-vscode.cpptools-extension-pack",
+		"zchrissirhcz.cmake-highlight"
 	]
     }
   }
