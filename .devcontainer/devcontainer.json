@@ -128,7 +128,9 @@
 		"SonarSource.sonarlint-vscode",
 		"hack2root.testfilesonsave",
 		"doi.fileheadercomment",
-		"moshfeu.compare-folders"
+		"moshfeu.compare-folders",
+		"fougas.msys2",
+		"ms-vscode.cpptools-extension-pack"
 	]
     }
   }

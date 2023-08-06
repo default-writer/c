@@ -7,7 +7,6 @@
     "tenninebt.vscode-koverage",
     "nateageek.memory-viewer",
     "visualstudioexptteam.vscodeintellicode",
-    "twxs.cmake",
     "ryanluker.vscode-coverage-gutters",
     "beardedbear.beardedicons",
     "ms-vscode.cmake-tools",
@@ -31,6 +30,8 @@
     "ms-vscode.makefile-tools",
     "hack2root.testfilesonsave",
     "doi.fileheadercomment",
-    "moshfeu.compare-folders"
+    "moshfeu.compare-folders",
+    "fougas.msys2",
+    "ms-vscode.cpptools-extension-pack"
   ]
 }
