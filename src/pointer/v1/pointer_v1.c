@@ -200,7 +200,7 @@ static void pointer_init_internal(struct pointer_data* ptr, u64 size) {
     list_init(void);
     object_init(void);
 #endif
-    types = global_alloc((type_count + 1) * sizeof(struct vm_type));
+    types = memory->alloc((type_count + 1) * sizeof(struct vm_type));
     struct vm_types* current = vm_types;
     while (current->next != 0) {
         struct vm_types* prev = current->next;
@@ -210,7 +210,7 @@ static void pointer_init_internal(struct pointer_data* ptr, u64 size) {
 }
 
 static void pointer_destroy_internal(struct pointer_data* ptr) {
-    global_free(types, type_count * sizeof(struct vm_type));
+    memory->free(types, type_count * sizeof(struct vm_type));
 #ifdef USE_GC
     list->destroy(&ptr->gc);
 #endif
