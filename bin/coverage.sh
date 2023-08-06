@@ -150,6 +150,10 @@ for target in ${targets[@]}; do
     fi
 done
 
+if [[ -f "${build}/${target}.lcov" ]]; then 
+    rm "${build}/${target}.lcov"
+fi
+
 coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" )
 for f in ${coverage}; do
     find "${build}" -type f -name "${f}" -delete
