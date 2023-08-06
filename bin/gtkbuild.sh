@@ -133,6 +133,15 @@ fi
 
 [ ! -d "${build}" ] && mkdir "${build}"
 
+output="${pwd}/output"
+[ ! -d "${output}" ] && mkdir "${output}"
+
+for target in ${targets[@]}; do
+    if [[ -f "${output}/log-${target}.txt" ]]; then
+        rm "${output}/log-${target}.txt"
+    fi
+done
+
 coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" )
 for f in ${coverage}; do
     find "${build}" -type f -name "${f}" -delete
@@ -157,7 +166,7 @@ for target in ${gtktargets[@]}; do
         ${cmake} --build "${build}" --target "${target}" || (echo ERROR: "${target}" && exit 1)
     fi
     case "${target}" in gtk-*)
-        timeout --foreground 180 $(cmake-valgrind-options) "${build}/${target}" 2>&1 >"${build}/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
+        timeout --foreground 180 $(cmake-valgrind-options) "${build}/${target}" 2>&1 >"${output}/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
     esac
 done
 
