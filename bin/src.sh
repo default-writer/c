@@ -149,6 +149,16 @@ done
 
 find "${pwd}/coverage" -type f -name "*.info" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
 
+for linked_target in ${targets[@]}; do
+    case ${linked_target} in
+        main-*) ;& test-*)
+            rm "${pwd}/coverage/${linked-target}.lcov"
+            fi
+        *)
+            ;;
+    esac
+done
+
 if [ "${silent}" == "--silent" ]; then
     exec 1>&2 2>&-
 fi
