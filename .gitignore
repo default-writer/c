@@ -50,9 +50,9 @@ build*/
 coverage*/
 cmake*/
 logs*/
+output*/
 clangd
 config
-out
 **/*.c.s
 **/*.gcda
 **/*.gcno
