@@ -153,7 +153,7 @@ for linked_target in ${targets[@]}; do
     case ${linked_target} in
         main-*) ;& test-*)
             rm "${pwd}/coverage/${linked-target}.lcov"
-            fi
+            ;;
         *)
             ;;
     esac
