@@ -105,6 +105,15 @@ done
 
 find "${pwd}/coverage" -type f -name "*.info" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/${source}.info"
 
+directories=( "coverage-v1" "coverage-v2" "coverage-v3" "coverage-v4" "coverage-v5" "coverage-v6" )
+for directory in ${directories[@]}; do
+    files=$(find "${directory}" -type f -name "lcov.info" -exec echo {} \;)
+    for file in ${files[@]}; do
+        link=$(basename $(dirname "${file}"))
+        rm "${pwd}/coverage/${link}-${source}-$(basename ${file})"
+    done
+done
+
 if [[ "${source}" == "all" ]]; then
     mv "${pwd}/coverage/${source}.info" "${pwd}/coverage/lcov.info"
 fi
