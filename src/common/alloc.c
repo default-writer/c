@@ -79,6 +79,31 @@ void global_free(void* ptr, u64 size) {
     }
 }
 
+static void* static_alloc(u64 size) {
+    void* ptr = 0;
+    if (size != 0) {
+#ifdef USE_MEMORY_ALLOC
+        ptr = memory_alloc(nmemb, size);
+#else
+        ptr = calloc(1, size);
+#endif
+    }
+    return ptr;
+}
+
+static void static_free(void* ptr, u64 size) {
+    if (ptr != 0) {
+#ifdef USE_MEMORY_CLEANUP
+        global_memset(ptr, 0, size); /* NOLINT */
+#endif
+#ifdef USE_MEMORY_ALLOC
+        memory_free(ptr, size);
+#else
+        free(ptr);
+#endif
+    }
+}
+
 #ifdef USE_MEMORY_DEBUG_INFO
 void global_statistics(void) {
     const struct memory_info* memory = global_memory_info();
@@ -127,3 +152,8 @@ void* global_memset(void* dest, u8 c, size_t count) {
 
     return dest;
 }
+
+const struct memory memory_functions_definition = {
+    .alloc = static_alloc,
+    .free = static_free
+};

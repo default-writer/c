@@ -49,6 +49,7 @@ static struct vm_type* types;
 /* definition */
 extern const struct vm_methods vm_methods_definition;
 extern const struct list list_micro_definition;
+extern const struct memory memory_functions_definition;
 
 extern void void_init(void);
 extern void data_init(void);
@@ -61,6 +62,7 @@ extern void object_init(void);
 static struct pointer_data* base = &vm_pointer;
 static const struct vm_methods* vm = &vm_methods_definition;
 static const struct list* list = &list_micro_definition;
+static const struct memory* memory = &memory_functions_definition;
 static struct vm* vm_ptr;
 
 /* api */
@@ -120,7 +122,7 @@ static const struct pointer_vm_methods* virtual = &pointer_vm_methods_definition
 static u64 type_count = TYPE_OBJECT;
 
 static void vm_types_init(struct vm_type* ptr) {
-    struct vm_types* next = global_alloc(sizeof(struct vm_types));
+    struct vm_types* next = memory->alloc(sizeof(struct vm_types));
     next->type = ptr;
     next->next = vm_types;
     if (ptr->id == 0) {
@@ -132,7 +134,7 @@ static void vm_types_init(struct vm_type* ptr) {
 static void DESTROY vm_types_destroy() {
     while (vm_types->next != 0) {
         struct vm_types* prev = vm_types->next;
-        global_free(vm_types, sizeof(struct vm_types));
+        memory->free(vm_types, sizeof(struct vm_types));
         vm_types = prev;
     }
 }
@@ -237,7 +239,7 @@ static void pointer_data_destroy_internal(struct pointer_data* ptr) {
 }
 
 struct pointer_data* pointer_data_init(u64 size) {
-    struct pointer_data* context = global_alloc(POINTER_DATA_SIZE);
+    struct pointer_data* context = memory->alloc(POINTER_DATA_SIZE);
     pointer_data_init_internal(context, size);
     return context;
 }
@@ -251,7 +253,7 @@ void pointer_data_destroy(struct pointer_data** ctx) {
     pointer_gc();
 #endif
     pointer_data_destroy_internal(*ctx);
-    global_free(*ctx, POINTER_DATA_SIZE);
+    memory->free(*ctx, POINTER_DATA_SIZE);
 }
 
 static void pointer_init(u64 size) {

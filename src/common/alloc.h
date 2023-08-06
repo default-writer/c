@@ -43,6 +43,11 @@ struct memory_info {
     u64 allocated_memory;
 };
 
+struct memory {
+    void* (*alloc)(u64 size);
+    void (*free)(void* ptr, u64 size);
+};
+
 const struct memory_info* global_memory_info(void);
 
 #endif /* _COMMON_ALLOC_H_ */

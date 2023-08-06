@@ -268,8 +268,8 @@ void get_data() {
     char line[PATH_MAX];
     while (fgets(line, sizeof(line), f)) {
         line[strcspn(line, "\n")] = '\0'; /* strip newline */
-        struct list* current = calloc(1, sizeof(struct list));
         unsigned long size = ((strlen(line) >> 3) | 1) << 3;
+        struct list* current = calloc(1, sizeof(struct list));
         current->data = calloc(1, size);
         current->size = size;
         memcpy(current->data, line, size);
