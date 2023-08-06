@@ -30,17 +30,23 @@
 #endif
 
 static u64 total_alloc = 0;
-static u64 maximum_used = 0;
+static u64 total_used = 0;
 static u64 total_free = 0;
+
+static u64 static_alloc = 0;
+static u64 static_used = 0;
+static u64 static_free = 0;
 
 static struct memory_info memory_info;
 const struct memory_info* base = &memory_info;
 
+static void* memory_alloc(u64 size);
+static void memory_free(void* ptr, u64 size);
+
 const struct memory_info* global_memory_info(void) {
-    memory_info.used_memory = total_alloc - total_free;
-    memory_info.maximum_used = memory_info.used_memory > memory_info.maximum_used ? memory_info.used_memory : memory_info.maximum_used;
-    memory_info.free_memory = total_free;
-    memory_info.allocated_memory = total_alloc;
+    memory_info.alloc = memory_info.used > memory_info.alloc ? memory_info.used : memory_info.alloc;
+    memory_info.free = total_free;
+    memory_info.used = total_alloc - total_free;
     return base;
 }
 
@@ -55,7 +61,7 @@ void* global_alloc(u64 size) {
 #ifdef USE_MEMORY_DEBUG_INFO
         total_alloc += size;
         const struct memory_info* memory = global_memory_info();
-        printf("   +: %016llx ! %16lld . %16lld : %16lld : %16lld : %16lld\n", (u64)ptr, size, memory->maximum_used, memory->used_memory, memory->free_memory, memory->allocated_memory);
+        printf("   +: %016llx ! %16lld . %16lld : %16lld : %16lld : %16lld\n", (u64)ptr, size, memory->alloc, memory->free, memory->used, memory_info.used + memory_info.free);
 #endif
     }
     return ptr;
@@ -74,12 +80,12 @@ void global_free(void* ptr, u64 size) {
 #ifdef USE_MEMORY_DEBUG_INFO
         total_free += size;
         const struct memory_info* memory = global_memory_info();
-        printf("   -: %016llx ! %16lld . %16lld : %16lld : %16lld : %16lld\n", (u64)ptr, size, memory->maximum_used, memory->used_memory, memory->free_memory, memory->allocated_memory);
+        printf("   -: %016llx ! %16lld . %16lld : %16lld : %16lld : %16lld\n", (u64)ptr, size, memory->alloc, memory->free, memory->used, memory_info.used + memory_info.free);
 #endif
     }
 }
 
-static void* static_alloc(u64 size) {
+static void* memory_alloc(u64 size) {
     void* ptr = 0;
     if (size != 0) {
 #ifdef USE_MEMORY_ALLOC
@@ -91,7 +97,7 @@ static void* static_alloc(u64 size) {
     return ptr;
 }
 
-static void static_free(void* ptr, u64 size) {
+static void memory_free(void* ptr, u64 size) {
     if (ptr != 0) {
 #ifdef USE_MEMORY_CLEANUP
         global_memset(ptr, 0, size); /* NOLINT */
@@ -107,7 +113,7 @@ static void static_free(void* ptr, u64 size) {
 #ifdef USE_MEMORY_DEBUG_INFO
 void global_statistics(void) {
     const struct memory_info* memory = global_memory_info();
-    printf("   .: %16s ! %16lld . %16lld : %16lld : %16lld : %16lld\n", "", (u64)0, memory->maximum_used, memory->used_memory, memory->free_memory, memory->allocated_memory);
+    printf("   .: %16s ! %16lld . %16lld : %16lld : %16lld : %16lld\n", "", (u64)0, memory->alloc, memory->free, memory->used, memory_info.used + memory_info.free);
 }
 #endif
 
@@ -117,9 +123,9 @@ void* global_realloc(void* old_ptr, u64 size, u64 new_size) {
         ptr = realloc(ptr, new_size);
 #ifdef USE_MEMORY_DEBUG_INFO
         const struct memory_info* memory = global_memory_info();
-        printf("   -: %016llx ! %16lld . %16lld : %16lld : %16lld : %16lld\n", (u64)ptr, size, memory->maximum_used, memory->used_memory, memory->free_memory, memory->allocated_memory);
+        printf("   -: %016llx ! %16lld . %16lld : %16lld : %16lld : %16lld\n", (u64)ptr, size, memory->alloc, memory->free, memory->used, memory_info.used + memory_info.free);
         total_alloc += new_size - size;
-        printf("   +: %016llx ! %16lld . %16lld : %16lld : %16lld : %16lld\n", (u64)ptr, size, memory->maximum_used, memory->used_memory, memory->free_memory, memory->allocated_memory);
+        printf("   +: %016llx ! %16lld . %16lld : %16lld : %16lld : %16lld\n", (u64)ptr, size, memory->alloc, memory->free, memory->used, memory_info.used + memory_info.free);
 #endif
     }
     return ptr;
@@ -154,6 +160,6 @@ void* global_memset(void* dest, u8 c, size_t count) {
 }
 
 const struct memory memory_functions_definition = {
-    .alloc = static_alloc,
-    .free = static_free
+    .alloc = memory_alloc,
+    .free = memory_free
 };

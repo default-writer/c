@@ -37,10 +37,9 @@ void global_statistics(void);
 #endif
 
 struct memory_info {
-    u64 used_memory;
-    u64 free_memory;
-    u64 maximum_used;
-    u64 allocated_memory;
+    u64 alloc;
+    u64 used;
+    u64 free;
 };
 
 struct memory {
