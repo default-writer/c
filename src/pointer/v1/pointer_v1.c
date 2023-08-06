@@ -210,7 +210,7 @@ static void pointer_init_internal(struct pointer_data* ptr, u64 size) {
 }
 
 static void pointer_destroy_internal(struct pointer_data* ptr) {
-    memory->free(types, type_count * sizeof(struct vm_type));
+    memory->free(types, (type_count + 1) * sizeof(struct vm_type));
 #ifdef USE_GC
     list->destroy(&ptr->gc);
 #endif
