@@ -26,6 +26,12 @@
 #include "common/alloc.h"
 #include "std/common.h"
 
+/* definition */
+extern const struct memory memory_definition;
+
+/* definition */
+static const struct memory* memory = &memory_definition;
+
 typedef struct object* object;
 typedef const struct typeinfo* typeinfo;
 typedef const struct object_typeinfo* object_typeinfo;
@@ -58,7 +64,7 @@ const struct base base_methods = {
 };
 
 object base_create(const typeinfo t) {
-    object obj = (object)global_alloc(t->size);
+    object obj = (object)memory->alloc(t->size);
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("creating type %s of size %ld\n", t->name, t->size);
 #endif
@@ -69,7 +75,7 @@ void base_destroy(const object_typeinfo ptr) {
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("deleting type %s of size %ld\n", ptr->typeinfo->name, ptr->typeinfo->size);
 #endif
-    global_free(ptr->object, ptr->typeinfo->size);
+    memory->free(ptr->object, ptr->typeinfo->size);
 }
 
 int main(void) {

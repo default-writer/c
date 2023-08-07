@@ -40,6 +40,12 @@
 #define DEFAULT_SIZE 0x8
 
 /* definition */
+extern const struct memory memory_definition;
+
+/* definition */
+static const struct memory* memory = &memory_definition;
+
+/* definition */
 extern struct pointer_data* pointer_data_init(u64 size);
 extern void pointer_data_destroy(struct pointer_data** ctx);
 
@@ -82,7 +88,7 @@ RX_TEST_CASE(tests, test_list_push_list_peek_list_pop, .fixture = test_fixture) 
     u64 list_ptr = list->alloc();
     const char* source = "Hello, world!";
     u64 size = strlen(source) + 1;
-    char* dest = global_alloc(size);
+    char* dest = memory->alloc(size);
     memcpy(dest, source, size); /* NOLINT */
     for (u64 i = 0; i < size - 1; i++) {
         char* ptr = dest + i;
@@ -93,7 +99,7 @@ RX_TEST_CASE(tests, test_list_push_list_peek_list_pop, .fixture = test_fixture) 
         *tmp = ch;
         list->push(list_ptr, string_ptr);
     }
-    char* buffer = global_alloc(size);
+    char* buffer = memory->alloc(size);
     for (u64 i = 0; i < size - 1; i++) {
         u64 ch0 = list->peek(list_ptr);
         const char* string_ptr = string->unsafe(ch0);
@@ -102,8 +108,8 @@ RX_TEST_CASE(tests, test_list_push_list_peek_list_pop, .fixture = test_fixture) 
         string->free(ch);
     }
     printf("%s\n", buffer);
-    global_free(buffer, size);
-    global_free(dest, size);
+    memory->free(buffer, size);
+    memory->free(dest, size);
     list->free(list_ptr);
 }
 
@@ -112,7 +118,7 @@ RX_TEST_CASE(tests, test_list_push_list_peek_list_pop_free, .fixture = test_fixt
     u64 list_ptr = list->alloc();
     const char* source = "Hello, world!";
     u64 size = strlen(source) + 1;
-    char* dest = global_alloc(size);
+    char* dest = memory->alloc(size);
     memcpy(dest, source, size); /* NOLINT */
     for (u64 i = 0; i < size - 1; i++) {
         char* ptr = dest + i;
@@ -123,7 +129,7 @@ RX_TEST_CASE(tests, test_list_push_list_peek_list_pop_free, .fixture = test_fixt
         *tmp = ch;
         list->push(list_ptr, string_ptr);
     }
-    char* buffer = global_alloc(size);
+    char* buffer = memory->alloc(size);
     for (u64 i = 0; i < size - 1; i++) {
         u64 ch0 = list->peek(list_ptr);
         const char* string_ptr = string->unsafe(ch0);
@@ -133,8 +139,8 @@ RX_TEST_CASE(tests, test_list_push_list_peek_list_pop_free, .fixture = test_fixt
     }
     string->free(list_ptr);
     printf("%s\n", buffer);
-    global_free(buffer, size);
-    global_free(dest, size);
+    memory->free(buffer, size);
+    memory->free(dest, size);
     list->free(list_ptr);
 }
 
@@ -183,7 +189,7 @@ RX_TEST_CASE(tests, test_list_push_0_list_peek_0_list_pop_0_list_free_0, .fixtur
 RX_TEST_CASE(tests, test_list_peek_0, .fixture = test_fixture) {
     const char* source = "Hello, world! A very long string do not fit in 8 bytes.";
     u64 size = strlen(source) + 1;
-    char* dest = global_alloc(size);
+    char* dest = memory->alloc(size);
     memcpy(dest, source, size); /* NOLINT */
     for (u64 i = 0; i < size - 1; i++) {
         char* ptr = dest + i;
@@ -194,15 +200,15 @@ RX_TEST_CASE(tests, test_list_peek_0, .fixture = test_fixture) {
         *tmp = ch;
         pointer->push(string_ptr);
     }
-    char* buffer = global_alloc(size);
+    char* buffer = memory->alloc(size);
     for (u64 i = 0; i < size - 1; i++) {
         const char* string_ptr = string->unsafe(i + 1);
         *(buffer + i) = *string_ptr;
         string->free(i + 1);
     }
     printf("%s\n", buffer);
-    global_free(buffer, size);
-    global_free(dest, size);
+    memory->free(buffer, size);
+    memory->free(dest, size);
 }
 
 int main(int argc, char** argv) {

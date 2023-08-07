@@ -79,6 +79,14 @@
 #define PTR_SIZE sizeof(void*) /* size of a pointer */
 
 /* definition */
+extern const struct memory memory_definition;
+
+/* definition */
+static const struct memory* memory = &memory_definition;
+
+/* implementation */
+
+/* definition */
 extern const struct list list_micro_definition;
 
 /* definition */
@@ -86,7 +94,7 @@ static const struct list* list = &list_micro_definition;
 static struct list_data** cache;
 
 void memory_list_init(void) {
-    cache = global_alloc(PTR_SIZE);
+    cache = memory->alloc(PTR_SIZE);
     list->init(cache);
 }
 
@@ -104,7 +112,7 @@ void* memory_list_pop(void) {
 
 void memory_list_destroy(void) {
     list->destroy(cache);
-    global_free(cache, PTR_SIZE);
+    memory->free(cache, PTR_SIZE);
 #ifdef USE_MEMORY_CLEANUP
     cache = 0;
 #endif

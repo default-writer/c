@@ -38,7 +38,16 @@ struct linked_list_enumerator {
 extern const struct linked_list_methods linked_list_methods_definition;
 static const struct linked_list_methods* list = &linked_list_methods_definition;
 
+/* definition */
+extern const struct memory memory_definition;
+
+/* definition */
+static const struct memory* memory = &memory_definition;
+
+/* implementation */
+
 /* private */
+
 static struct linked_list_enumerator* linked_list_enumerator_new(struct linked_list* list);
 static void linked_list_enumerator_delete(struct linked_list_enumerator** enumerator);
 static void linked_list_enumerator_reverse(struct linked_list_enumerator* enumerator);

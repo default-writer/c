@@ -26,7 +26,16 @@
 #include "common/alloc.h"
 #include "list-micro/data.h"
 
+/* definition */
+extern const struct memory memory_definition;
+
+/* definition */
+static const struct memory* memory = &memory_definition;
+
+/* implementation */
+
 /* private */
+
 static struct list_data* list_next(struct list_data* ptr);
 static void* list_data(struct list_data* ptr);
 static void list_delete(struct list_data* ptr);
@@ -43,16 +52,18 @@ static void list_print(struct list_data** current);
 /* size of a memory block to allocate */
 static const size_t _size = sizeof(struct list_data);
 
+/* implementation */
+
 /* allocates memory pointer */
 static struct list_data* _new(void) {
     /* returns list object */
-    return global_alloc(_size);
+    return memory->alloc(_size);
 }
 
 /* releases memory pointer */
 static void _delete(struct list_data* ptr) {
     /* releases the pointer */
-    global_free(ptr, _size);
+    memory->free(ptr, _size);
 }
 
 /* gets chunk's next item. external code ensures ptr is not 0 */

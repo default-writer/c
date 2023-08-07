@@ -36,17 +36,25 @@
 
 /* definition */
 
+/* definition */
+extern const struct memory memory_definition;
+
+/* definition */
+static const struct memory* memory = &memory_definition;
+
+/* implementation */
+
 /* private */
 
 extern const struct pointer_methods pointer_methods_definition;
 extern const struct list_methods list_methods_definition;
 extern const struct file_methods file_methods_definition;
-extern const struct memory_methods memory_methods_definition;
+extern const struct debug_methods debug_methods_definition;
 
 static const struct pointer_methods* pointer = &pointer_methods_definition;
 static const struct list_methods* list = &list_methods_definition;
 static const struct file_methods* file = &file_methods_definition;
-static const struct memory_methods* memory = &memory_methods_definition;
+static const struct debug_methods* debug = &debug_methods_definition;
 
 struct vm_data {
     struct pointer** sp; /* stack pointer */
@@ -100,8 +108,8 @@ static void vm_enumerator_destroy_internal(void);
 #endif
 
 static struct vm_data* vm_init_internal(u64 size, u64 offset) {
-    struct vm_data* vm = global_alloc(VM_DATA_SIZE);
-    vm->bp = global_alloc(ALLOC_SIZE(size));
+    struct vm_data* vm = memory->alloc(VM_DATA_SIZE);
+    vm->bp = memory->alloc(ALLOC_SIZE(size));
     vm->sp = vm->bp;
     vm->offset = offset;
     vm->size = size;
@@ -181,8 +189,8 @@ static void vm_destroy(struct vm_data** current) {
     }
     while (vm != 0) {
         struct vm_data* next = vm->next;
-        global_free(vm->bp, ALLOC_SIZE(vm->size));
-        global_free(vm, VM_DATA_SIZE);
+        memory->free(vm->bp, ALLOC_SIZE(vm->size));
+        memory->free(vm, VM_DATA_SIZE);
         vm = next;
     }
 }
@@ -198,7 +206,7 @@ static void vm_dump(struct vm_data* vm_ptr) {
     vm_enumerator_init_internal(vm_ptr);
     struct pointer* ptr = 0;
     while ((ptr = vm_data_enumerator_next()) != 0) {
-        memory->dump(ptr);
+        debug->dump(ptr);
     }
     vm_enumerator_destroy_internal();
 }
@@ -213,7 +221,7 @@ static void vm_dump_ref(struct vm_data* vm_ptr) {
     vm_enumerator_init_internal(vm_ptr);
     void** ptr = 0;
     while ((ptr = vm_data_enumerator_next_ref()) != 0) {
-        memory->dump_ref(ptr);
+        debug->dump_ref(ptr);
     }
     vm_enumerator_destroy_internal();
 }

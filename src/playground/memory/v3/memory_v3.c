@@ -31,8 +31,18 @@
 #define PTR_SIZE sizeof(void*) /* size of a pointer */
 #define ALLOC_SIZE(size) ((size + 3) * PTR_SIZE)
 
+/* definition */
+extern const struct memory memory_definition;
+
+/* definition */
+static const struct memory* memory = &memory_definition;
+
+/* implementation */
+
+/* private */
+
 /* global allocated memory */
-static void* memory = 0;
+static void* mem = 0;
 static void** ptr = 0;
 static void* memory_alloc_internal(void** next, void* prev, u64 size);
 
@@ -42,7 +52,7 @@ static void* memory_alloc(u64 size);
 static void memory_free(void* data, u64 size);
 
 static void* memory_alloc_internal(void** next, void* prev, u64 size) {
-    void** tmp = global_alloc(ALLOC_SIZE(size)); //
+    void** tmp = memory->alloc(ALLOC_SIZE(size)); //
     next = *next;
     *next = tmp;
 
@@ -60,14 +70,14 @@ static u64 offset(const void* data) {
 }
 
 static void memory_init(void) {
-    ptr = &memory;
+    ptr = &mem;
     *ptr = ptr;
     ptr = memory_alloc_internal(ptr, 0, DEFAULT_SIZE);
 }
 
 static void memory_destroy(void) {
-    global_free(memory, ALLOC_SIZE(DEFAULT_SIZE));
-    memory = 0;
+    memory->free(mem, ALLOC_SIZE(DEFAULT_SIZE));
+    mem = 0;
     ptr = 0;
 }
 
@@ -94,7 +104,7 @@ static void memory_free(void* data, u64 size) {
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("  0-: %016llx ! %16lld\n", (u64)last, size);
 #endif
-    global_free(head - 2, ALLOC_SIZE(size));
+    memory->free(head - 2, ALLOC_SIZE(size));
 }
 
 const union memory_allocator_api memory_allocator_v3 = {

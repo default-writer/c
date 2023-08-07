@@ -32,9 +32,17 @@
 #define MEMORY_REF_SIZE sizeof(struct memory_ref)
 #define ALLOC_SIZE(size) (MEMORY_REF_SIZE + size * PTR_SIZE)
 
+/* definition */
+extern const struct memory memory_definition;
+
+/* definition */
+static const struct memory* memory = &memory_definition;
+
+/* implementation */
+
 /* declaration */
 
-static struct memory_ref* memory;
+static struct memory_ref* ref;
 
 /* global allocated memory */
 static void** current = 0;
@@ -83,7 +91,7 @@ static void* memory_ref_alloc(u64 size) {
     void* ptr = 0;
     if (data != 0) {
         struct memory_ref* ref_ptr = memory_ref_ref(data);
-        struct memory_ref* tmp = global_alloc(ALLOC_SIZE(size));
+        struct memory_ref* tmp = memory->alloc(ALLOC_SIZE(size));
         ref_ptr->next = memory_ref_ptr(tmp);
 #ifdef USE_MEMORY_DEBUG_INFO
         printf("  p.: %016llx . %016llx . %016llx\n", (u64)data, (u64)ref_ptr->prev, (u64)ref_ptr->next);
@@ -101,7 +109,7 @@ static void memory_ref_free(void* data) {
     if (data != 0) {
         u8* ptr = (u8*)data - MEMORY_REF_SIZE;
         u64 size = memory_ref_size(data);
-        global_free(ptr, ALLOC_SIZE(size));
+        memory->free(ptr, ALLOC_SIZE(size));
 #ifdef USE_MEMORY_DEBUG_INFO
         printf("  0-: %016llx ! %16lld\n", (u64)data, size);
 #endif
@@ -110,9 +118,9 @@ static void memory_ref_free(void* data) {
 
 static void memory_ref_init(u64 size) {
     memory_list_init();
-    memory = global_alloc(MEMORY_REF_SIZE);
-    ++memory;
-    current = (void*)memory;
+    ref = memory->alloc(MEMORY_REF_SIZE);
+    ++ref;
+    current = (void*)ref;
     current = memory_ref_alloc(size);
 }
 
@@ -121,11 +129,11 @@ static void memory_ref_destroy(void) {
     while ((data = memory_ref_pop()) != 0) {
         memory_ref_free(data);
     }
-    --memory;
-    global_free(memory_ref_ref(memory->next), MEMORY_REF_SIZE);
-    global_free(memory, MEMORY_REF_SIZE);
+    --ref;
+    memory->free(memory_ref_ref(ref->next), MEMORY_REF_SIZE);
+    memory->free(ref, MEMORY_REF_SIZE);
 #ifdef USE_MEMORY_CLEANUP
-    memory = 0;
+    ref = 0;
     current = 0;
 #endif
     memory_list_destroy();

@@ -55,7 +55,7 @@ static u64 void_alloc(u64 size);
 static void void_free(u64 ptr);
 static void void_vm_free(struct pointer* ptr);
 
-/* implementation*/
+/* implementation */
 static u64 void_alloc(u64 size) {
     if (size == 0) {
         return 0;

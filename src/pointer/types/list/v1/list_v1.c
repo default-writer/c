@@ -59,7 +59,7 @@ static u64 list_peek(u64 ptr);
 static u64 list_pop(u64 ptr);
 static u64 list_size(u64 ptr);
 
-/* implementation*/
+/* implementation */
 struct list_handler {
     struct list_data* list;
 };

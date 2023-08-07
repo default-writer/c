@@ -43,6 +43,14 @@ struct vm_pointer {
 };
 #endif
 
+/* definition */
+extern const struct memory memory_definition;
+
+/* definition */
+static const struct memory* memory = &memory_definition;
+
+/* implementation */
+
 /* private */
 
 #ifndef USE_GC
@@ -113,8 +121,8 @@ static void vm_enumerator_destroy_internal(void);
 #endif
 
 static struct vm_data* vm_init_internal(u64 size, u64 offset) {
-    struct vm_data* vm = global_alloc(VM_DATA_SIZE);
-    vm->bp = global_alloc(ALLOC_SIZE(size));
+    struct vm_data* vm = memory->alloc(VM_DATA_SIZE);
+    vm->bp = memory->alloc(ALLOC_SIZE(size));
     vm->sp = vm->bp;
     vm->offset = offset;
     vm->size = size;
@@ -142,7 +150,7 @@ static struct pointer** vm_alloc_internal(u64* address, struct vm_data** target)
     if (vm_ptr != 0) {
         ptr = vm_ptr->ptr;
         vm = vm_ptr->vm;
-        global_free(vm_ptr, VM_POINTER_SIZE);
+        memory->free(vm_ptr, VM_POINTER_SIZE);
     }
     if (ptr == 0) {
 #endif
@@ -180,13 +188,13 @@ static void vm_enumerator_destroy_internal(void) {
 
 static struct vm* vm_init(u64 size) {
 #ifndef USE_GC
-    cache = global_alloc(PTR_SIZE);
+    cache = memory->alloc(PTR_SIZE);
     list->init(cache);
 #endif
     vm_data = vm_init_internal(size == 0 ? DEFAULT_SIZE : size, 0);
     head = vm_data;
     tail = vm_data;
-    struct vm* vm = global_alloc(sizeof(struct vm));
+    struct vm* vm = memory->alloc(sizeof(struct vm));
     vm->head = vm_data;
     vm->tail = vm_data;
     return vm;
@@ -197,16 +205,16 @@ static void vm_destroy(struct vm** ptr) {
         struct vm* current = *ptr;
         head = current->head;
         tail = current->tail;
-        global_free(current, sizeof(struct vm));
+        memory->free(current, sizeof(struct vm));
         *ptr = 0;
     }
 #ifndef USE_GC
     struct vm_pointer* vm_ptr = 0;
     while ((vm_ptr = list->pop(cache)) != 0) {
-        global_free(vm_ptr, VM_POINTER_SIZE);
+        memory->free(vm_ptr, VM_POINTER_SIZE);
     }
     list->destroy(cache);
-    global_free(cache, PTR_SIZE);
+    memory->free(cache, PTR_SIZE);
 #ifdef USE_MEMORY_CLEANUP
     cache = 0;
 #endif
@@ -214,8 +222,8 @@ static void vm_destroy(struct vm** ptr) {
     struct vm_data* vm = head;
     while (vm != 0) {
         struct vm_data* next = vm->next;
-        global_free(vm->bp, ALLOC_SIZE(vm->size));
-        global_free(vm, VM_DATA_SIZE);
+        memory->free(vm->bp, ALLOC_SIZE(vm->size));
+        memory->free(vm, VM_DATA_SIZE);
         vm = next;
     }
     head = 0;
@@ -249,7 +257,7 @@ static void vm_free(struct pointer* ptr) {
     struct pointer** data = vm_read_internal(ptr->address);
     if (data != 0) {
 #ifndef USE_GC
-        struct vm_pointer* vm_ptr = global_alloc(VM_POINTER_SIZE);
+        struct vm_pointer* vm_ptr = memory->alloc(VM_POINTER_SIZE);
         vm_ptr->ptr = data;
         vm_ptr->vm = ptr->vm;
         list->push(cache, vm_ptr);

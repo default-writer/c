@@ -29,11 +29,20 @@
 /* macros */
 #define PTR_SIZE sizeof(void*) /* size of a pointer */
 
+/* definition */
+extern const struct memory memory_definition;
+
+/* definition */
+static const struct memory* memory = &memory_definition;
+
+/* implementation */
+
 /* private */
+
 static struct memory_ref** current;
 
 void memory_list_init(void) {
-    current = global_alloc(PTR_SIZE);
+    current = memory->alloc(PTR_SIZE);
 }
 
 struct memory_ref* memory_list_peek(void) {
@@ -56,7 +65,7 @@ struct memory_ref* memory_list_pop(void) {
 }
 
 void memory_list_destroy(void) {
-    global_free(current, PTR_SIZE);
+    memory->free(current, PTR_SIZE);
 #ifdef USE_MEMORY_CLEANUP
     current = 0;
 #endif

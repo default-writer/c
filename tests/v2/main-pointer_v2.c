@@ -35,18 +35,24 @@
 #define DEFAULT_SIZE 0x8
 
 /* definition */
+extern const struct memory memory_definition;
+
+/* definition */
+static const struct memory* memory = &memory_definition;
+
+/* definition */
 extern const struct vm_methods vm_methods_definition;
 extern const struct list list_micro_definition;
 
 extern const struct pointer_methods pointer_methods_definition;
 extern const struct list_methods list_methods_definition;
 extern const struct file_methods file_methods_definition;
-extern const struct memory_methods memory_methods_definition;
+extern const struct debug_methods debug_methods_definition;
 
 static const struct pointer_methods* pointer = &pointer_methods_definition;
 static const struct list_methods* list = &list_methods_definition;
 static const struct file_methods* file = &file_methods_definition;
-static const struct memory_methods* memory = &memory_methods_definition;
+static const struct debug_methods* debug = &debug_methods_definition;
 
 typedef struct test_data {
     struct pointer_data* ctx;
@@ -73,7 +79,7 @@ RX_TEST_CASE(tests, test_list_push_list_peek_list_pop, .fixture = test_fixture) 
     u64 list_ptr = list->alloc();
     const char* source = "Hello, world!";
     u64 size = strlen(source) + 1;
-    char* dest = global_alloc(size);
+    char* dest = memory->alloc(size);
     memcpy(dest, source, size); /* NOLINT */
     for (u64 i = 0; i < size - 1; i++) {
         char* ptr = dest + i;
@@ -84,7 +90,7 @@ RX_TEST_CASE(tests, test_list_push_list_peek_list_pop, .fixture = test_fixture) 
         *tmp = ch;
         list->push(list_ptr, data);
     }
-    char* buffer = global_alloc(size);
+    char* buffer = memory->alloc(size);
     for (u64 i = 0; i < size - 1; i++) {
         u64 ch0 = list->peek(list_ptr);
         const char* data = pointer->unsafe(ch0);
@@ -98,8 +104,8 @@ RX_TEST_CASE(tests, test_list_push_list_peek_list_pop, .fixture = test_fixture) 
 #endif
     }
     printf("%s\n", buffer);
-    global_free(buffer, size);
-    global_free(dest, size);
+    memory->free(buffer, size);
+    memory->free(dest, size);
     list->free(list_ptr);
 }
 
@@ -108,7 +114,7 @@ RX_TEST_CASE(tests, test_list_push_list_peek_list_pop_free, .fixture = test_fixt
     u64 list_ptr = list->alloc();
     const char* source = "Hello, world!";
     u64 size = strlen(source) + 1;
-    char* dest = global_alloc(size);
+    char* dest = memory->alloc(size);
     memcpy(dest, source, size); /* NOLINT */
     for (u64 i = 0; i < size - 1; i++) {
         char* ptr = dest + i;
@@ -119,7 +125,7 @@ RX_TEST_CASE(tests, test_list_push_list_peek_list_pop_free, .fixture = test_fixt
         *tmp = ch;
         list->push(list_ptr, data);
     }
-    char* buffer = global_alloc(size);
+    char* buffer = memory->alloc(size);
     for (u64 i = 0; i < size - 1; i++) {
         u64 ch0 = list->peek(list_ptr);
         const char* data = pointer->unsafe(ch0);
@@ -136,8 +142,8 @@ RX_TEST_CASE(tests, test_list_push_list_peek_list_pop_free, .fixture = test_fixt
     pointer->free(list_ptr);
 #endif
     printf("%s\n", buffer);
-    global_free(buffer, size);
-    global_free(dest, size);
+    memory->free(buffer, size);
+    memory->free(dest, size);
     list->free(list_ptr);
 }
 
@@ -145,7 +151,7 @@ RX_TEST_CASE(tests, test_list_push_list_peek_list_pop_free, .fixture = test_fixt
 RX_TEST_CASE(tests, test_list_peek_0, .fixture = test_fixture) {
     const char* source = "Hello, world! A very long string do not fit in 8 bytes.";
     u64 size = strlen(source) + 1;
-    char* dest = global_alloc(size);
+    char* dest = memory->alloc(size);
     memcpy(dest, source, size); /* NOLINT */
     for (u64 i = 0; i < size - 1; i++) {
         char* ptr = dest + i;
@@ -156,7 +162,7 @@ RX_TEST_CASE(tests, test_list_peek_0, .fixture = test_fixture) {
         *tmp = ch;
         pointer->push(data);
     }
-    char* buffer = global_alloc(size);
+    char* buffer = memory->alloc(size);
     for (u64 i = 0; i < size - 1; i++) {
         const char* data = pointer->unsafe(i + 1);
         *(buffer + i) = *data;
@@ -165,8 +171,8 @@ RX_TEST_CASE(tests, test_list_peek_0, .fixture = test_fixture) {
 #endif
     }
     printf("%s\n", buffer);
-    global_free(buffer, size);
-    global_free(dest, size);
+    memory->free(buffer, size);
+    memory->free(dest, size);
 }
 
 int main(int argc, char** argv) {

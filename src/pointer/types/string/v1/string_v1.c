@@ -65,7 +65,13 @@ static void string_put_char(u64 ptr, char value);
 static char* string_unsafe(u64 ptr);
 static u64 string_size(u64 ptr);
 
-/* implementation*/
+/* definition */
+extern const struct memory memory_definition;
+
+/* definition */
+static const struct memory* memory = &memory_definition;
+
+/* implementation */
 
 struct list_handler {
     struct list_data* list;
@@ -126,7 +132,7 @@ static void string_strcpy(u64 dest, u64 src) {
     }
     const char* data_src = src_ptr->data; /* NOLINT */
     if (dest_ptr->size == 0) {
-        dest_ptr->data = global_alloc(src_ptr->size);
+        dest_ptr->data = memory->alloc(src_ptr->size);
         dest_ptr->size = src_ptr->size;
     } else {
         u64 size = src_ptr->size + 1;
@@ -155,7 +161,7 @@ static void string_strcat(u64 dest, u64 src) {
     }
     const char* data_src = src_ptr->data; /* NOLINT */
     if (dest_ptr->size == 0) {
-        dest_ptr->data = global_alloc(src_ptr->size);
+        dest_ptr->data = memory->alloc(src_ptr->size);
         dest_ptr->size = src_ptr->size;
     } else {
         u64 size = dest_ptr->size + src_ptr->size - 1;
@@ -220,10 +226,10 @@ static u64 string_getcwd(void) {
     u64 data_ptr;
     getcwd(cwd, sizeof(cwd));
     u64 size = strlen(cwd) + 1;
-    char* data = global_alloc(size);
+    char* data = memory->alloc(size);
     strcpy(data, cwd); /* NOLINT */
     data_ptr = string_load(data);
-    global_free(data, size);
+    memory->free(data, size);
     return data_ptr;
 }
 

@@ -46,7 +46,16 @@ struct hashtable_data { /* table entry: */
 /* public */
 u32 default_hash(const char* source);
 
+/* definition */
+extern const struct memory memory_definition;
+
+/* definition */
+static const struct memory* memory = &memory_definition;
+
+/* implementation */
+
 /* private */
+
 static u64 lcg_state = 0;
 
 static void hashtable_free_internal(struct hashtable_data* ptr);
@@ -69,6 +78,8 @@ static u32 hash_func(const char* source);
 
 static void hashtable_init(u64 size);
 static void hashtable_destroy(void);
+
+/* implementation */
 
 static u64 hashtable_size = HASHTABLE_DEFAULT_SIZE;
 
@@ -185,14 +196,14 @@ static void hashtable_init(u64 size) {
     if (size > 0) {
         hashtable_size = size;
     }
-    hashtable = global_alloc(ALLOC_SIZE(hashtable_size));
+    hashtable = memory->alloc(ALLOC_SIZE(hashtable_size));
 }
 
 static void hashtable_destroy(void) {
     for (u64 i = 0; i < hashtable_size; i++) {
         hashtable_free(hashtable[i]);
     }
-    global_free(hashtable, ALLOC_SIZE(hashtable_size));
+    memory->free(hashtable, ALLOC_SIZE(hashtable_size));
 }
 
 static void hashtable_free_internal(struct hashtable_data* ptr) {
@@ -227,12 +238,12 @@ static struct hashtable_data* hashtable_alloc(const char* key, void* value) {
         return hashtable[hash];
     }
     struct hashtable_data* next = hashtable[hash];
-    struct hashtable_data* node = global_alloc(sizeof(struct hashtable_data));
+    struct hashtable_data* node = memory->alloc(sizeof(struct hashtable_data));
     u64 size = strlen(key) + 1;
 #ifdef USE_MEMORY_DEBUG_INFO
     node->key_size = size;
 #endif
-    char* node_key = global_alloc(size); /* +1 for ’\0’ */
+    char* node_key = memory->alloc(size); /* +1 for ’\0’ */
     strcpy(node_key, key); /* NOLINT */
     node->key = node_key;
     node->value = value;
@@ -246,8 +257,8 @@ static void hashtable_item_free_internal(struct hashtable_data* ptr) {
 #ifdef USE_MEMORY_DEBUG_INFO
     size = ptr->key_size;
 #endif
-    global_free(ptr->key, size);
-    global_free(ptr, sizeof(struct hashtable_data));
+    memory->free(ptr->key, size);
+    memory->free(ptr, sizeof(struct hashtable_data));
 }
 
 static void hashtable_free(struct hashtable_data* ptr) {

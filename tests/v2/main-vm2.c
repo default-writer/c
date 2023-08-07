@@ -36,12 +36,12 @@ extern const struct vm_methods vm_methods_definition;
 extern const struct pointer_methods pointer_methods_definition;
 extern const struct list_methods list_methods_definition;
 extern const struct file_methods file_methods_definition;
-extern const struct memory_methods memory_methods_definition;
+extern const struct debug_methods debug_methods_definition;
 
 static const struct pointer_methods* pointer = &pointer_methods_definition;
 static const struct list_methods* list = &list_methods_definition;
 static const struct file_methods* file = &file_methods_definition;
-static const struct memory_methods* memory = &memory_methods_definition;
+static const struct debug_methods* debug = &debug_methods_definition;
 
 typedef struct test_data {
     struct pointer_data* ctx;

@@ -58,7 +58,7 @@ static void file_free(u64 ptr);
 static void file_vm_free(struct pointer* ptr);
 static u64 file_data(u64 ptr);
 
-/* implementation*/
+/* implementation */
 struct file_handler {
     FILE* file;
 #ifdef USE_MEMORY_DEBUG_INFO

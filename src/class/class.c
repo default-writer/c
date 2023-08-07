@@ -29,6 +29,14 @@
 static object_typeinfo class_create(typeinfo ti);
 static void class_destroy(object_typeinfo ptr);
 
+/* definition */
+extern const struct memory memory_definition;
+
+/* definition */
+static const struct memory* memory = &memory_definition;
+
+/* implementation */
+
 typedef struct writeable_object_typeinfo {
     object object;
     typeinfo typeinfo;
@@ -37,14 +45,14 @@ typedef struct writeable_object_typeinfo {
 static object_typeinfo class_create(typeinfo ti) {
     object_typeinfo ptr;
 #ifndef USE_MEMCPY
-    writeable_object_typeinfo type = global_alloc(sizeof(struct_object_typeinfo));
-    type->object = global_alloc(ti->size);
+    writeable_object_typeinfo type = memory->alloc(sizeof(struct_object_typeinfo));
+    type->object = memory->alloc(ti->size);
     type->typeinfo = ti;
     ptr = (object_typeinfo)type;
 #else
-    ptr = global_alloc(sizeof(object_typeinfo));
+    ptr = memory->alloc(sizeof(object_typeinfo));
     struct_object_typeinfo object_ti = {
-        .object = global_alloc(t->size),
+        .object = memory->alloc(t->size),
         .typeinfo = ti
     };
     memcpy(ptr, &object_ti, sizeof(object_typeinfo));
@@ -59,8 +67,8 @@ static void class_destroy(object_typeinfo ptr) {
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("deleting type %s of size %ld (+ %ld)\n", ptr->typeinfo->name, ptr->typeinfo->size, sizeof(struct_object_typeinfo));
 #endif
-    global_free(ptr->object, ptr->typeinfo->size);
-    global_free(ptr, sizeof(struct_object_typeinfo));
+    memory->free(ptr->object, ptr->typeinfo->size);
+    memory->free(ptr, sizeof(struct_object_typeinfo));
 }
 
 const struct_class class_definition = {

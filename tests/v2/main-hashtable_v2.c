@@ -37,6 +37,14 @@
 #define DEFAULT_SIZE 0x1
 
 /* definition */
+extern const struct memory memory_definition;
+
+/* definition */
+static const struct memory* memory = &memory_definition;
+
+/* implementation */
+
+/* definition */
 
 extern struct hashtable hashtable_definition_v2;
 static const struct hashtable* hashtable = &hashtable_definition_v2;
@@ -44,12 +52,12 @@ static const struct hashtable* hashtable = &hashtable_definition_v2;
 extern const struct pointer_methods pointer_methods_definition;
 extern const struct list_methods list_methods_definition;
 extern const struct file_methods file_methods_definition;
-extern const struct memory_methods memory_methods_definition;
+extern const struct debug_methods debug_methods_definition;
 
 static const struct pointer_methods* pointer = &pointer_methods_definition;
 static const struct list_methods* list = &list_methods_definition;
 static const struct file_methods* file = &file_methods_definition;
-static const struct memory_methods* memory = &memory_methods_definition;
+static const struct debug_methods* debug = &debug_methods_definition;
 
 typedef struct test_data {
     struct pointer_data* ctx;
@@ -88,157 +96,157 @@ RX_TEST_CASE(tests, test_hashtable_init_setup_destroy, .fixture = test_fixture) 
 RX_TEST_CASE(tests, test_hashtable_alloc_free, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     const u64 size = 2;
-    char* key = global_alloc(size);
-    char* value = global_alloc(size);
+    char* key = memory->alloc(size);
+    char* value = memory->alloc(size);
     memcpy(key, "1", 2); /* NOLINT */
     memcpy(value, "a", 2); /* NOLINT */
     struct hashtable_data* tmp = hashtable->alloc(key, value);
     hashtable->free(tmp);
     hashtable->destroy();
-    global_free(key, size);
-    global_free(value, size);
+    memory->free(key, size);
+    memory->free(value, size);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_hashtable_alloc_0_free, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     const u64 size = 5;
-    char* value = global_alloc(size);
+    char* value = memory->alloc(size);
     memcpy(value, "asdf", 5); /* NOLINT */
     struct hashtable_data* tmp = hashtable->alloc(0, (void*)value);
     hashtable->free(tmp);
     hashtable->destroy();
-    global_free(value, size);
+    memory->free(value, size);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_hashtable_alloc_5, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     const u64 size = 5;
-    char* key = global_alloc(size);
-    char* value = global_alloc(size);
+    char* key = memory->alloc(size);
+    char* value = memory->alloc(size);
     memcpy(key, "1234", 3); /* NOLINT */
     memcpy(value, "abcd", 3); /* NOLINT */
     struct hashtable_data* tmp = hashtable->alloc(key, value);
     hashtable->free(tmp);
     hashtable->destroy();
-    global_free(key, size);
-    global_free(value, size);
+    memory->free(key, size);
+    memory->free(value, size);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_hashtable_alloc_4, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     const u64 size = 4;
-    char* key = global_alloc(size);
-    char* value = global_alloc(size);
+    char* key = memory->alloc(size);
+    char* value = memory->alloc(size);
     memcpy(key, "123", 3); /* NOLINT */
     memcpy(value, "abc", 3); /* NOLINT */
     struct hashtable_data* tmp = hashtable->alloc(key, value);
     hashtable->free(tmp);
     hashtable->destroy();
-    global_free(key, size);
-    global_free(value, size);
+    memory->free(key, size);
+    memory->free(value, size);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_hashtable_alloc_3, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     const u64 size = 3;
-    char* key = global_alloc(size);
-    char* value = global_alloc(size);
+    char* key = memory->alloc(size);
+    char* value = memory->alloc(size);
     memcpy(key, "12", 2); /* NOLINT */
     memcpy(value, "ab", 2); /* NOLINT */
     struct hashtable_data* tmp = hashtable->alloc(key, value);
     hashtable->free(tmp);
     hashtable->destroy();
-    global_free(key, size);
-    global_free(value, size);
+    memory->free(key, size);
+    memory->free(value, size);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_hashtable_alloc_2, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     const u64 size = 2;
-    char* key = global_alloc(size);
-    char* value = global_alloc(size);
+    char* key = memory->alloc(size);
+    char* value = memory->alloc(size);
     memcpy(key, "1", 2); /* NOLINT */
     memcpy(value, "a", 2); /* NOLINT */
     hashtable->alloc(key, value);
     hashtable->destroy();
-    global_free(key, size);
-    global_free(value, size);
+    memory->free(key, size);
+    memory->free(value, size);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_hashtable_alloc_alloc, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     const u64 size = 2;
-    char* key = global_alloc(size);
-    char* value = global_alloc(size);
+    char* key = memory->alloc(size);
+    char* value = memory->alloc(size);
     memcpy(key, "1", 2); /* NOLINT */
     memcpy(value, "a", 2); /* NOLINT */
     hashtable->alloc(key, value);
     hashtable->alloc(key, value);
     hashtable->destroy();
-    global_free(key, size);
-    global_free(value, size);
+    memory->free(key, size);
+    memory->free(value, size);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_hashtable_alloc_alloc_alloc, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     const u64 size = 2;
-    char* key = global_alloc(size);
-    char* value = global_alloc(size);
+    char* key = memory->alloc(size);
+    char* value = memory->alloc(size);
     memcpy(key, "1", 2); /* NOLINT */
     memcpy(value, "a", 2); /* NOLINT */
     hashtable->alloc(key, value);
     hashtable->alloc(key, value);
     hashtable->alloc(key, value);
     hashtable->destroy();
-    global_free(key, size);
-    global_free(value, size);
+    memory->free(key, size);
+    memory->free(value, size);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_hashtable_alloc_free_alloc, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     const u64 size = 2;
-    char* key = global_alloc(size);
-    char* value = global_alloc(size);
+    char* key = memory->alloc(size);
+    char* value = memory->alloc(size);
     memcpy(key, "1", 2); /* NOLINT */
     memcpy(value, "a", 2); /* NOLINT */
     struct hashtable_data* temp = hashtable->alloc(key, value);
     hashtable->free(temp);
     hashtable->alloc(key, value);
     hashtable->destroy();
-    global_free(key, size);
-    global_free(value, size);
+    memory->free(key, size);
+    memory->free(value, size);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_hashtable_alloc_alloc_free, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     const u64 size = 2;
-    char* key = global_alloc(size);
-    char* value = global_alloc(size);
+    char* key = memory->alloc(size);
+    char* value = memory->alloc(size);
     memcpy(key, "1", 2); /* NOLINT */
     memcpy(value, "a", 2); /* NOLINT */
     struct hashtable_data* temp = hashtable->alloc(key, value);
     hashtable->alloc(key, value);
     hashtable->free(temp);
     hashtable->destroy();
-    global_free(key, size);
-    global_free(value, size);
+    memory->free(key, size);
+    memory->free(value, size);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_hashtable_alloc_free_alloc_free, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     const u64 size = 2;
-    char* key = global_alloc(size);
-    char* value = global_alloc(size);
+    char* key = memory->alloc(size);
+    char* value = memory->alloc(size);
     memcpy(key, "1", 2); /* NOLINT */
     memcpy(value, "a", 2); /* NOLINT */
     struct hashtable_data* temp = hashtable->alloc(key, value);
@@ -246,16 +254,16 @@ RX_TEST_CASE(tests, test_hashtable_alloc_free_alloc_free, .fixture = test_fixtur
     temp = hashtable->alloc(key, value);
     hashtable->free(temp);
     hashtable->destroy();
-    global_free(key, size);
-    global_free(value, size);
+    memory->free(key, size);
+    memory->free(value, size);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_hashtable_alloc_alloc_temp_alloc_free_temp_alloc_alloc, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
     const u64 size = 2;
-    char* key = global_alloc(size);
-    char* value = global_alloc(size);
+    char* key = memory->alloc(size);
+    char* value = memory->alloc(size);
     memcpy(key, "1", 2); /* NOLINT */
     memcpy(value, "a", 2); /* NOLINT */
     hashtable->alloc(key, value);
@@ -265,20 +273,20 @@ RX_TEST_CASE(tests, test_hashtable_alloc_alloc_temp_alloc_free_temp_alloc_alloc,
     hashtable->alloc(key, value);
     hashtable->alloc(key, value);
     hashtable->destroy();
-    global_free(key, size);
-    global_free(value, size);
+    memory->free(key, size);
+    memory->free(value, size);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_hashtable_alloc_alloc_alloc_temp_alloc_alloc_free_temp, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
-    char* key = global_alloc(6);
-    char* key1 = global_alloc(2);
-    char* key2 = global_alloc(2);
-    char* key3 = global_alloc(2);
-    char* key4 = global_alloc(2);
-    char* key5 = global_alloc(2);
-    char* value = global_alloc(2);
+    char* key = memory->alloc(6);
+    char* key1 = memory->alloc(2);
+    char* key2 = memory->alloc(2);
+    char* key3 = memory->alloc(2);
+    char* key4 = memory->alloc(2);
+    char* key5 = memory->alloc(2);
+    char* value = memory->alloc(2);
     memcpy(key, "12345", 6); /* NOLINT */
     memcpy(key1, "1", 2); /* NOLINT */
     memcpy(key2, "2", 2); /* NOLINT */
@@ -324,26 +332,26 @@ RX_TEST_CASE(tests, test_hashtable_alloc_alloc_alloc_temp_alloc_alloc_free_temp,
     RX_ASSERT(node_key != 0);
     RX_ASSERT(nonexistent_key == 0);
     hashtable->destroy();
-    global_free(key, 6);
-    global_free(key1, 2);
-    global_free(key2, 2);
-    global_free(key3, 2);
-    global_free(key4, 2);
-    global_free(key5, 2);
-    global_free(value, 2);
+    memory->free(key, 6);
+    memory->free(key1, 2);
+    memory->free(key2, 2);
+    memory->free(key3, 2);
+    memory->free(key4, 2);
+    memory->free(key5, 2);
+    memory->free(value, 2);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_hashtable_alloc_set_get, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
-    char* key = global_alloc(6);
-    char* key1 = global_alloc(2);
-    char* key2 = global_alloc(2);
-    char* key3 = global_alloc(2);
-    char* value1 = global_alloc(2);
-    char* value2 = global_alloc(2);
-    char* value3 = global_alloc(2);
-    char* value = global_alloc(5);
+    char* key = memory->alloc(6);
+    char* key1 = memory->alloc(2);
+    char* key2 = memory->alloc(2);
+    char* key3 = memory->alloc(2);
+    char* value1 = memory->alloc(2);
+    char* value2 = memory->alloc(2);
+    char* value3 = memory->alloc(2);
+    char* value = memory->alloc(5);
     memcpy(key, "12345", 6); /* NOLINT */
     memcpy(key1, "1", 2); /* NOLINT */
     memcpy(key2, "1", 2); /* NOLINT */
@@ -379,25 +387,25 @@ RX_TEST_CASE(tests, test_hashtable_alloc_set_get, .fixture = test_fixture) {
     RX_ASSERT(strcmp(hashtable->data(key_value), value) == 0);
     hashtable->free(temp);
     hashtable->destroy();
-    global_free(key, 6);
-    global_free(key1, 2);
-    global_free(key2, 2);
-    global_free(key3, 2);
-    global_free(value1, 2);
-    global_free(value2, 2);
-    global_free(value3, 2);
-    global_free(value, 5);
+    memory->free(key, 6);
+    memory->free(key1, 2);
+    memory->free(key2, 2);
+    memory->free(key3, 2);
+    memory->free(value1, 2);
+    memory->free(value2, 2);
+    memory->free(value3, 2);
+    memory->free(value, 5);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_hashtable_alloc_set_get_count, .fixture = test_fixture) {
     hashtable->init(HASHTABLE_SIZE);
-    char* key1 = global_alloc(2);
-    char* key2 = global_alloc(2);
-    char* key3 = global_alloc(2);
-    char* value1 = global_alloc(2);
-    char* value2 = global_alloc(2);
-    char* value3 = global_alloc(2);
+    char* key1 = memory->alloc(2);
+    char* key2 = memory->alloc(2);
+    char* key3 = memory->alloc(2);
+    char* value1 = memory->alloc(2);
+    char* value2 = memory->alloc(2);
+    char* value3 = memory->alloc(2);
     memcpy(key1, "1", 2); /* NOLINT */
     memcpy(key2, "1", 2); /* NOLINT */
     memcpy(key3, "1", 2); /* NOLINT */
@@ -424,12 +432,12 @@ RX_TEST_CASE(tests, test_hashtable_alloc_set_get_count, .fixture = test_fixture)
     u64 count = hashtable->count(key1);
     RX_ASSERT(count == 3);
     hashtable->destroy();
-    global_free(key1, 2);
-    global_free(key2, 2);
-    global_free(key3, 2);
-    global_free(value1, 2);
-    global_free(value2, 2);
-    global_free(value3, 2);
+    memory->free(key1, 2);
+    memory->free(key2, 2);
+    memory->free(key3, 2);
+    memory->free(value1, 2);
+    memory->free(value2, 2);
+    memory->free(value3, 2);
 }
 
 /* test init */

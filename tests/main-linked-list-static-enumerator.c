@@ -43,6 +43,14 @@ typedef struct test_data {
 
 /* list parameters definition */
 
+/* definition */
+extern const struct memory memory_definition;
+
+/* definition */
+static const struct memory* memory = &memory_definition;
+
+/* implementation */
+
 /* private */
 
 /* Initialize the data structure. Its allocation is handled by Rexo. */

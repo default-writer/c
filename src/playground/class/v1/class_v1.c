@@ -39,6 +39,16 @@ struct class_data {
     /* list */
 };
 
+/* implementation */
+
+/* definition */
+extern const struct memory memory_definition;
+
+/* definition */
+static const struct memory* memory = &memory_definition;
+
+/* implementation */
+
 /* private */
 
 /* class data list */
@@ -65,13 +75,13 @@ static const size_t _size = sizeof(struct class_data);
 /* allocates memory pointer */
 static struct class_data* _new(void) {
     /* returns class object */
-    return global_alloc(_size);
+    return memory->alloc(_size);
 }
 
 /* releases memory pointer */
 static void _delete(struct class_data* class) {
     /* releases the pointer */
-    global_free(class, _size);
+    memory->free(class, _size);
 }
 
 /* initializes the new context's head element */

@@ -36,6 +36,14 @@ extern const struct list list_alloc_definition;
 /* list parameters definition */
 extern struct list_parameters list_parameters_definition;
 
+/* definition */
+extern const struct memory memory_definition;
+
+/* definition */
+static const struct memory* memory = &memory_definition;
+
+/* implementation */
+
 /* initializes the new context's head element */
 struct list_data* list_init(void);
 /* destroys the memory stack */
@@ -195,18 +203,18 @@ RX_TEAR_DOWN(test_tear_down) {
 RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tear_down);
 
 /* test init */
-RX_TEST_CASE(list_alloc_tests, test_global_alloc_global_free, .fixture = test_fixture) {
+RX_TEST_CASE(list_alloc_tests, test_alloc_free, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
     u64* alloc[MAX_ALLOC_SIZE];
     for (u64 i = 0; i < MAX_ALLOC_SIZE; i++) {
-        alloc[i] = global_alloc(i);
+        alloc[i] = memory->alloc(i);
     }
     for (u64 i = 0; i < MAX_ALLOC_SIZE; i++) {
         global_memset(alloc[i], (u8)(i & 0xff), i);
     }
     for (u64 i = 0; i < MAX_ALLOC_SIZE; i++) {
-        global_free(alloc[i], i);
+        memory->free(alloc[i], i);
     }
     /* ensures counter is initialized to 0 */
     RX_ASSERT(*ctx != 0);
@@ -520,7 +528,7 @@ RX_TEST_CASE(list_alloc_tests, test_list_push_pop, .fixture = test_fixture) {
     /* prepares the payload */
     u8* payload = (void*)0xdeadbeef;
     /* record buffer has N items */
-    void** _recorded = global_alloc(ALLOC_SIZE(N_ELEMENTS));
+    void** _recorded = memory->alloc(ALLOC_SIZE(N_ELEMENTS));
     /* pushes all pseudo-random values */
     /* pushes to the list multiple times */
     int i = 0;
@@ -556,7 +564,7 @@ RX_TEST_CASE(list_alloc_tests, test_list_push_pop, .fixture = test_fixture) {
         i--;
     } while (i >= 0);
     /* releases memory allocated for the data */
-    global_free(_recorded, ALLOC_SIZE(N_ELEMENTS));
+    memory->free(_recorded, ALLOC_SIZE(N_ELEMENTS));
 }
 
 static int run(void) {

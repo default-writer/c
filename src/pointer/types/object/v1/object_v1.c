@@ -58,7 +58,7 @@ static void* object_unsafe(u64 ptr);
 static u64 object_load(const void* data, u64 size);
 static u64 object_size(u64 ptr);
 
-/* implementation*/
+/* implementation */
 static u64 object_alloc(u64 size) {
     if (size == 0) {
         return 0;

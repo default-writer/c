@@ -26,6 +26,16 @@
 #include "common/alloc.h"
 #include "list/data.h"
 
+/* implementation */
+
+/* definition */
+extern const struct memory memory_definition;
+
+/* definition */
+static const struct memory* memory = &memory_definition;
+
+/* implementation */
+
 /* private */
 
 /* size of a memory block to allocate */
@@ -34,13 +44,13 @@ static const size_t _size = sizeof(struct list_data);
 /* allocates memory pointer */
 static struct list_data* _new(void) {
     /* returns list object */
-    return global_alloc(_size);
+    return memory->alloc(_size);
 }
 
 /* releases memory pointer */
 static void _delete(struct list_data* ptr) {
     /* releases the pointer */
-    global_free(ptr, _size);
+    memory->free(ptr, _size);
 }
 
 /* gets chunk's next item. external code ensures ptr is not 0 */

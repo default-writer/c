@@ -57,7 +57,7 @@ static void data_vm_free(struct pointer* data_ptr);
 static void* data_unsafe(u64 ptr);
 static u64 data_size(u64 ptr);
 
-/* implementation*/
+/* implementation */
 static u64 data_alloc(u64 size) {
     struct pointer* f_ptr = virtual->alloc(size, type->id);
     u64 data = vm->alloc(f_ptr);

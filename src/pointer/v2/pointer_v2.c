@@ -34,7 +34,16 @@
 extern const struct vm_methods vm_methods_definition;
 extern const struct list list_micro_definition;
 
+/* definition */
+extern const struct memory memory_definition;
+
+/* definition */
+static const struct memory* memory = &memory_definition;
+
+/* implementation */
+
 /* private */
+
 struct pointer {
     void* data;
     u64 size;
@@ -115,9 +124,9 @@ static void list_free_internal(struct pointer* ptr);
 static void file_close_internal(struct pointer* ptr);
 
 static struct pointer* pointer_alloc_internal(u64 size, enum type type) {
-    struct pointer* ptr = global_alloc(sizeof(struct pointer));
+    struct pointer* ptr = memory->alloc(sizeof(struct pointer));
     if (size != 0) {
-        ptr->data = global_alloc(size);
+        ptr->data = memory->alloc(size);
         ptr->size = size;
     }
     ptr->type = type;
@@ -131,13 +140,13 @@ static void pointer_realloc_internal(struct pointer* ptr, u64 size) {
 
 static void pointer_free_internal(struct pointer* ptr) {
     if (ptr->data != 0 && ptr->size != 0) {
-        global_free(ptr->data, ptr->size);
+        memory->free(ptr->data, ptr->size);
 #ifdef USE_MEMORY_CLEANUP
         ptr->data = 0;
         ptr->size = 0;
 #endif
     }
-    global_free(ptr, sizeof(struct pointer));
+    memory->free(ptr, sizeof(struct pointer));
 }
 
 static void pointer_gc_internal(struct list_data** current) {
@@ -169,11 +178,11 @@ static void file_close_internal(struct pointer* ptr) {
     handler->file = 0;
 }
 
-/* implementation*/
+/* implementation */
 
 void pointer_ctx_init(struct pointer_data** ctx, u64 size) {
     /* ctx */
-    *ctx = global_alloc(sizeof(struct pointer_data));
+    *ctx = memory->alloc(sizeof(struct pointer_data));
     struct pointer_data* ptr = *ctx;
     /* vm */
     vm->init(&ptr->vm, size);
@@ -205,7 +214,7 @@ void pointer_ctx_destroy(struct pointer_data** ctx) {
     ptr->vm = base->vm;
     vm->destroy(&ptr->vm);
     /* ctx */
-    global_free(*ctx, sizeof(struct pointer_data));
+    memory->free(*ctx, sizeof(struct pointer_data));
 }
 
 extern const struct list list_micro_definition;
@@ -427,7 +436,7 @@ static void pointer_strcpy(u64 dest, u64 src) {
         return;
     }
     if (dest_ptr->size == 0) {
-        dest_ptr->data = global_alloc(src_ptr->size);
+        dest_ptr->data = memory->alloc(src_ptr->size);
         dest_ptr->size = src_ptr->size;
     } else {
         u64 size = src_ptr->size + 1;
@@ -456,7 +465,7 @@ static void pointer_strcat(u64 dest, u64 src) {
         return;
     }
     if (dest_ptr->size == 0) {
-        dest_ptr->data = global_alloc(src_ptr->size);
+        dest_ptr->data = memory->alloc(src_ptr->size);
         dest_ptr->size = src_ptr->size;
     } else {
         u64 size = dest_ptr->size + src_ptr->size - 1;
@@ -543,10 +552,10 @@ static u64 pointer_getcwd(void) {
     u64 data_ptr;
     getcwd(cwd, sizeof(cwd));
     u64 size = strlen(cwd) + 1;
-    char* data = global_alloc(size);
+    char* data = memory->alloc(size);
     strcpy(data, cwd); /* NOLINT */
     data_ptr = pointer_load(data);
-    global_free(data, size);
+    memory->free(data, size);
     return data_ptr;
 }
 
@@ -704,7 +713,7 @@ const struct file_methods file_methods_definition = {
 };
 
 #ifdef USE_MEMORY_DEBUG_INFO
-const struct memory_methods memory_methods_definition = {
+const struct debug_methods debug_methods_definition = {
     .dump = pointer_dump,
     .dump_ref = pointer_dump_ref
 };

@@ -55,7 +55,7 @@ static u64 user_alloc(void);
 static void user_free(u64 ptr);
 static void user_vm_free(struct pointer* ptr);
 
-/* implementation*/
+/* implementation */
 static u64 user_alloc(void) {
     struct pointer* ptr = virtual->alloc(0, type->id);
     u64 data = vm->alloc(ptr);

@@ -28,8 +28,18 @@
 
 #define MAX_MEMORY 0xffff /* 64K bytes */
 
+/* definition */
+extern const struct memory memory_definition;
+
+/* definition */
+static const struct memory* memory = &memory_definition;
+
+/* implementation */
+
+/* private */
+
 /* global allocated memory */
-static void* memory = 0;
+static void* mem = 0;
 static void** ptr = 0;
 
 static void memory_init(void);
@@ -38,14 +48,14 @@ static void* memory_alloc(u64 size);
 static void memory_free(void* data, u64 size);
 
 static void memory_init(void) {
-    ptr = &memory;
-    *ptr = global_alloc(MAX_MEMORY);
+    ptr = &mem;
+    *ptr = memory->alloc(MAX_MEMORY);
     ptr = *ptr;
 }
 
 static void memory_destroy(void) {
-    global_free(memory, MAX_MEMORY);
-    memory = 0;
+    memory->free(mem, MAX_MEMORY);
+    mem = 0;
     ptr = 0;
 }
 

@@ -40,7 +40,16 @@ static const struct linked_list_methods* list = &linked_list_methods_definition;
 static struct linked_list_enumerator_data static_linked_list_enumerator_data;
 static struct linked_list_enumerator_data* enumerator = &static_linked_list_enumerator_data;
 
+/* definition */
+extern const struct memory memory_definition;
+
+/* definition */
+static const struct memory* memory = &memory_definition;
+
+/* implementation */
+
 /* private */
+
 static void linked_list_enumerator_init(struct linked_list* list);
 static void linked_list_enumerator_destroy(void);
 static struct linked_list_node* linked_list_enumerator_next(void);

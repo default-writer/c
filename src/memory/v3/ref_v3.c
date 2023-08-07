@@ -52,6 +52,12 @@ static void* memory_ref_ptr_internal(struct memory_ref* ptr);
 static void* memory_ref_peek_internal(void);
 static void* memory_ref_pop_internal(void);
 
+/* definition */
+extern const struct memory memory_definition;
+
+/* definition */
+static const struct memory* memory = &memory_definition;
+
 /* implementation */
 
 static void* memory_ref_ptr_internal(struct memory_ref* ptr) {
@@ -81,15 +87,15 @@ static void* memory_ref_alloc(u64 size) {
 static void memory_ref_free_internal(void* data) {
     if (data != 0) {
         struct memory_ref* ptr = data;
-        global_free(ptr, ALLOC_SIZE(ptr->offset));
+        memory->free(ptr, ALLOC_SIZE(ptr->offset));
     }
 }
 
 static void memory_ref_init(u64 size) {
     memory_list_init();
-    memory_ptr = global_alloc(MEMORY_REF_SIZE);
+    memory_ptr = memory->alloc(MEMORY_REF_SIZE);
     if (size > 0) {
-        memory_ptr->next = global_alloc(ALLOC_SIZE(size));
+        memory_ptr->next = memory->alloc(ALLOC_SIZE(size));
         memory_ptr->next->size = size;
         memory_ptr->next->offset = size;
         memory_list_push(memory_ptr->next);
@@ -101,7 +107,7 @@ static void memory_ref_destroy(void) {
     while ((ptr = memory_ref_pop_internal()) != 0) {
         memory_ref_free_internal(ptr);
     }
-    global_free(memory_ptr, MEMORY_REF_SIZE);
+    memory->free(memory_ptr, MEMORY_REF_SIZE);
 #ifdef USE_MEMORY_CLEANUP
     memory_ptr = 0;
 #endif
@@ -113,7 +119,7 @@ static struct memory_ref* memory_alloc_internal(u64 size) {
 #ifdef USE_MEMORY_DEBUG_INFO
     void* data = ptr;
 #endif
-    struct memory_ref* next_ptr = global_alloc(ALLOC_SIZE(size));
+    struct memory_ref* next_ptr = memory->alloc(ALLOC_SIZE(size));
     next_ptr->size = size;
     next_ptr->offset = size;
     next_ptr->prev = memory_ref_ptr_internal(ptr);

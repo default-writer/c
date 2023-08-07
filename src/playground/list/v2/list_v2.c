@@ -31,7 +31,16 @@
 #define PTR_SIZE sizeof(void*) /* size of a pointer */
 #define ALLOC_SIZE(size) (size * PTR_SIZE)
 
+/* definition */
+extern const struct memory memory_definition;
+
+/* definition */
+static const struct memory* memory = &memory_definition;
+
+/* implementation */
+
 /* private */
+
 struct list_data {
     void** ptr;
     void** base;
@@ -46,8 +55,8 @@ static void* list_pop(struct list_data* pointer);
 static void* list_peek(struct list_data* pointer);
 
 static struct list_data* list_alloc(u64 size) {
-    struct list_data* ptr = global_alloc(sizeof(struct list_data));
-    ptr->base = global_alloc(ALLOC_SIZE(size));
+    struct list_data* ptr = memory->alloc(sizeof(struct list_data));
+    ptr->base = memory->alloc(ALLOC_SIZE(size));
     ptr->ptr = ptr->base;
     ptr->max = ptr->base + size;
     ptr->size = size;
@@ -55,11 +64,11 @@ static struct list_data* list_alloc(u64 size) {
 }
 
 static void list_free(struct list_data* pointer) {
-    global_free(pointer->base, ALLOC_SIZE(pointer->size));
+    memory->free(pointer->base, ALLOC_SIZE(pointer->size));
     pointer->base = 0;
     pointer->ptr = 0;
     pointer->max = 0;
-    global_free(pointer, sizeof(struct list_data));
+    memory->free(pointer, sizeof(struct list_data));
     pointer = 0;
 }
 

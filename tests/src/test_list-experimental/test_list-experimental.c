@@ -35,6 +35,14 @@ extern const struct list list_experimental_definition;
 /* list parameters definition */
 extern struct list_parameters list_parameters_definition;
 
+/* definition */
+extern const struct memory memory_definition;
+
+/* definition */
+static const struct memory* memory = &memory_definition;
+
+/* implementation */
+
 /* initializes the new context's head element */
 void list_init(struct list_data** current);
 /* destroys the memory stack */
@@ -502,7 +510,7 @@ RX_TEST_CASE(tests, test_list_push_pop, .fixture = test_fixture) {
     /* prepares the payload */
     u8* payload = (void*)0xdeadbeef;
     /* record buffer has N items */
-    void** _recorded = global_alloc(ALLOC_SIZE(N_ELEMENTS));
+    void** _recorded = memory->alloc(ALLOC_SIZE(N_ELEMENTS));
     /* pushes all pseudo-random values */
     /* pushes to the list multiple times */
     int i = 0;
@@ -538,7 +546,7 @@ RX_TEST_CASE(tests, test_list_push_pop, .fixture = test_fixture) {
         i--;
     } while (i >= 0);
     /* releases memory allocated for the data */
-    global_free(_recorded, ALLOC_SIZE(N_ELEMENTS));
+    memory->free(_recorded, ALLOC_SIZE(N_ELEMENTS));
 }
 
 static int run(void) {

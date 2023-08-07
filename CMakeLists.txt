@@ -438,6 +438,7 @@ target_link_libraries(memory-ref2 PRIVATE memory-list2 list-micro list-common)
 target_link_libraries(memory-ref3 PRIVATE memory-list3 list-micro list-common)
 target_link_libraries(list-pointer2 PRIVATE vm-v2)
 target_link_libraries(structs-v3 PRIVATE list-class)
+target_link_libraries(stl-linked-list PRIVATE list-common)
 
 # test
 target_link_libraries(tests PRIVATE list-alloc list-parameters)
