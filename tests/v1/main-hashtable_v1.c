@@ -622,7 +622,7 @@ RX_TEST_CASE(tests, test_improper_use_of_different_calls, .fixture = test_fixtur
 /* test init */
 RX_TEST_CASE(tests, test_alloc_free, .fixture = test_fixture) {
     u64 list_ptr = list->alloc();
-    u64 pattern_ptr = string->alloc();
+    u64 pattern_ptr = string->load("\0");
     u64 list_size = list->size(list_ptr);
     u64 ptr_size = object->size(pattern_ptr);
     u64 null_size = string->size(0);
@@ -644,7 +644,7 @@ RX_TEST_CASE(tests, test_alloc_free_list, .fixture = test_fixture) {
     u64 list_ptr = list->alloc();
     u64 size = list->size(list_ptr);
     RX_ASSERT(size == 8);
-    u64 pattern_ptr = string->alloc();
+    u64 pattern_ptr = string->load("\0");
     list->free(pattern_ptr);
     list->free(list_ptr);
     string->free(list_ptr);

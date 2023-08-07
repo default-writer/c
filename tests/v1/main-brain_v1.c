@@ -87,6 +87,12 @@ RX_TEST_CASE(tests, test_print_0, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests, test_load_0, .fixture = test_fixture) {
+    u64 empty_ptr = string->load("\0");
+    RX_ASSERT(empty_ptr == 0);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_load_null, .fixture = test_fixture) {
     u64 empty_ptr = string->load(0);
     RX_ASSERT(empty_ptr == 0);
 }
@@ -141,10 +147,10 @@ RX_TEST_CASE(tests, test_load_free_free, .fixture = test_fixture) {
 /* test init */
 RX_TEST_CASE(tests, test_strcat_load_alloc, .fixture = test_fixture) {
     u64 char_ptr = string->load("/");
-    u64 pattern_ptr = string->alloc();
+    u64 pattern_ptr = string->load("\0");
     string->strcat(pattern_ptr, char_ptr);
     RX_ASSERT(char_ptr != 0);
-    RX_ASSERT(pattern_ptr != 0);
+    RX_ASSERT(pattern_ptr == 0);
     string->free(char_ptr);
     string->free(pattern_ptr);
 }
@@ -152,11 +158,11 @@ RX_TEST_CASE(tests, test_strcat_load_alloc, .fixture = test_fixture) {
 /* test init */
 RX_TEST_CASE(tests, test_string_size, .fixture = test_fixture) {
     u64 char_ptr = string->load("/");
-    u64 pattern_ptr = string->alloc();
+    u64 pattern_ptr = string->load("\0");
     u64 string_size = data->size(pattern_ptr);
     RX_ASSERT(string_size == 0);
     RX_ASSERT(char_ptr != 0);
-    RX_ASSERT(pattern_ptr != 0);
+    RX_ASSERT(pattern_ptr == 0);
     string->free(char_ptr);
     string->free(pattern_ptr);
 }
@@ -164,11 +170,11 @@ RX_TEST_CASE(tests, test_string_size, .fixture = test_fixture) {
 /* test init */
 RX_TEST_CASE(tests, test_pointer_size_0, .fixture = test_fixture) {
     u64 char_ptr = string->load("/");
-    u64 pattern_ptr = string->alloc();
+    u64 pattern_ptr = string->load("\0");
     u64 string_size = string->size(0);
     RX_ASSERT(string_size == 0);
     RX_ASSERT(char_ptr != 0);
-    RX_ASSERT(pattern_ptr != 0);
+    RX_ASSERT(pattern_ptr == 0);
     string->free(char_ptr);
     string->free(pattern_ptr);
 }
@@ -176,11 +182,11 @@ RX_TEST_CASE(tests, test_pointer_size_0, .fixture = test_fixture) {
 /* test init */
 RX_TEST_CASE(tests, test_pointer_size_empty, .fixture = test_fixture) {
     u64 char_ptr = string->load(" ");
-    u64 pattern_ptr = string->alloc();
+    u64 pattern_ptr = string->load("\0");
     u64 string_size = string->size(char_ptr);
     RX_ASSERT(string_size == 2);
     RX_ASSERT(char_ptr != 0);
-    RX_ASSERT(pattern_ptr != 0);
+    RX_ASSERT(pattern_ptr == 0);
     string->free(char_ptr);
     string->free(pattern_ptr);
 }
@@ -188,11 +194,11 @@ RX_TEST_CASE(tests, test_pointer_size_empty, .fixture = test_fixture) {
 /* test init */
 RX_TEST_CASE(tests, test_pointer_size_object, .fixture = test_fixture) {
     u64 object_ptr = object->alloc(1);
-    u64 pattern_ptr = string->alloc();
+    u64 pattern_ptr = string->load("\0");
     u64 object_size = object->size(object_ptr);
     RX_ASSERT(object_size == 1);
     RX_ASSERT(object_ptr != 0);
-    RX_ASSERT(pattern_ptr != 0);
+    RX_ASSERT(pattern_ptr == 0);
     string->free(object_ptr);
     string->free(pattern_ptr);
     object->free(object_ptr);
@@ -201,11 +207,11 @@ RX_TEST_CASE(tests, test_pointer_size_object, .fixture = test_fixture) {
 /* test init */
 RX_TEST_CASE(tests, test_object_0, .fixture = test_fixture) {
     u64 object_ptr = object->alloc(0);
-    u64 pattern_ptr = string->alloc();
+    u64 pattern_ptr = string->load("\0");
     u64 object_size = object->size(object_ptr);
     RX_ASSERT(object_size == 0);
     RX_ASSERT(object_ptr == 0);
-    RX_ASSERT(pattern_ptr != 0);
+    RX_ASSERT(pattern_ptr == 0);
     string->free(object_ptr);
     string->free(pattern_ptr);
     object->free(object_ptr);
@@ -214,11 +220,11 @@ RX_TEST_CASE(tests, test_object_0, .fixture = test_fixture) {
 /* test init */
 RX_TEST_CASE(tests, test_object_alloc_0, .fixture = test_fixture) {
     u64 object_ptr = object->alloc(0);
-    u64 pattern_ptr = string->alloc();
+    u64 pattern_ptr = string->load("\0");
     u64 object_size = object->size(object_ptr);
     RX_ASSERT(object_size == 0);
     RX_ASSERT(object_ptr == 0);
-    RX_ASSERT(pattern_ptr != 0);
+    RX_ASSERT(pattern_ptr == 0);
     string->free(object_ptr);
     string->free(pattern_ptr);
     object->free(object_ptr);
@@ -227,11 +233,11 @@ RX_TEST_CASE(tests, test_object_alloc_0, .fixture = test_fixture) {
 /* test init */
 RX_TEST_CASE(tests, test_object_load_0, .fixture = test_fixture) {
     u64 object_ptr = object->load(0, 0x01234567);
-    u64 pattern_ptr = string->alloc();
+    u64 pattern_ptr = string->load("\0");
     u64 object_size = object->size(object_ptr);
     RX_ASSERT(object_size == 0);
     RX_ASSERT(object_ptr == 0);
-    RX_ASSERT(pattern_ptr != 0);
+    RX_ASSERT(pattern_ptr == 0);
     string->free(object_ptr);
     string->free(pattern_ptr);
     object->free(object_ptr);
@@ -242,11 +248,11 @@ RX_TEST_CASE(tests, test_object_load_string_0, .fixture = test_fixture) {
     const char* test_data = "Hello, world!";
     const void* ptr = (const void*)test_data;
     u64 object_ptr = object->load(ptr, 0);
-    u64 pattern_ptr = string->alloc();
+    u64 pattern_ptr = string->load("\0");
     u64 object_size = object->size(object_ptr);
     RX_ASSERT(object_size == 0);
     RX_ASSERT(object_ptr == 0);
-    RX_ASSERT(pattern_ptr != 0);
+    RX_ASSERT(pattern_ptr == 0);
     string->free(object_ptr);
     string->free(pattern_ptr);
     object->free(object_ptr);
@@ -257,11 +263,11 @@ RX_TEST_CASE(tests, test_object_load_string, .fixture = test_fixture) {
     const char* test_data = "Hello, world!";
     const void* ptr = (const void*)test_data;
     u64 object_ptr = object->load(ptr, strlen(ptr));
-    u64 pattern_ptr = string->alloc();
+    u64 pattern_ptr = string->load("\0");
     u64 object_size = object->size(object_ptr);
     RX_ASSERT(object_size == strlen(ptr));
     RX_ASSERT(object_ptr != 0);
-    RX_ASSERT(pattern_ptr != 0);
+    RX_ASSERT(pattern_ptr == 0);
     string->free(object_ptr);
     string->free(pattern_ptr);
     object->free(object_ptr);
@@ -270,13 +276,13 @@ RX_TEST_CASE(tests, test_object_load_string, .fixture = test_fixture) {
 /* test init */
 RX_TEST_CASE(tests, test_object_load_string_unsafe_alloc_0, .fixture = test_fixture) {
     u64 object_ptr = object->alloc(0);
-    u64 pattern_ptr = string->alloc();
+    u64 pattern_ptr = string->load("\0");
     u64 object_size = object->size(object_ptr);
     const char* ch = (char*)object->unsafe(object_ptr);
     RX_ASSERT(ch == 0);
     RX_ASSERT(object_size == 0);
     RX_ASSERT(object_ptr == 0);
-    RX_ASSERT(pattern_ptr != 0);
+    RX_ASSERT(pattern_ptr == 0);
     string->free(object_ptr);
     string->free(pattern_ptr);
     object->free(object_ptr);
@@ -285,13 +291,13 @@ RX_TEST_CASE(tests, test_object_load_string_unsafe_alloc_0, .fixture = test_fixt
 /* test init */
 RX_TEST_CASE(tests, test_object_load_string_unsafe_string, .fixture = test_fixture) {
     u64 object_ptr = object->alloc(0);
-    u64 pattern_ptr = string->alloc();
+    u64 pattern_ptr = string->load("\0");
     u64 object_size = object->size(object_ptr);
     const char* ch = (char*)object->unsafe(pattern_ptr);
     RX_ASSERT(ch == 0);
     RX_ASSERT(object_size == 0);
     RX_ASSERT(object_ptr == 0);
-    RX_ASSERT(pattern_ptr != 0);
+    RX_ASSERT(pattern_ptr == 0);
     string->free(object_ptr);
     string->free(pattern_ptr);
     object->free(object_ptr);
@@ -302,13 +308,13 @@ RX_TEST_CASE(tests, test_object_load_string_unsafe_0, .fixture = test_fixture) {
     const char* test_data = "Hello, world!";
     const void* ptr = (const void*)test_data;
     u64 object_ptr = object->load(ptr, strlen(ptr));
-    u64 pattern_ptr = string->alloc();
+    u64 pattern_ptr = string->load("\0");
     u64 object_size = object->size(object_ptr);
     const char* ch = (char*)object->unsafe(0);
     RX_ASSERT(ch == 0);
     RX_ASSERT(object_size == strlen(ptr));
     RX_ASSERT(object_ptr != 0);
-    RX_ASSERT(pattern_ptr != 0);
+    RX_ASSERT(pattern_ptr == 0);
     string->free(object_ptr);
     string->free(pattern_ptr);
     object->free(object_ptr);
@@ -319,13 +325,13 @@ RX_TEST_CASE(tests, test_object_load_string_unsafe, .fixture = test_fixture) {
     const char* test_data = "Hello, world!";
     const void* ptr = (const void*)test_data;
     u64 object_ptr = object->load(ptr, strlen(ptr));
-    u64 pattern_ptr = string->alloc();
+    u64 pattern_ptr = string->load("\0");
     u64 object_size = object->size(object_ptr);
     char* ch = (char*)object->unsafe(object_ptr);
     *ch = 'Z';
     RX_ASSERT(object_size == strlen(ptr));
     RX_ASSERT(object_ptr != 0);
-    RX_ASSERT(pattern_ptr != 0);
+    RX_ASSERT(pattern_ptr == 0);
     string->free(object_ptr);
     string->free(pattern_ptr);
     object->free(object_ptr);
@@ -333,11 +339,11 @@ RX_TEST_CASE(tests, test_object_load_string_unsafe, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests, test_strcat_alloc_alloc, .fixture = test_fixture) {
-    u64 char_ptr = string->alloc();
-    u64 pattern_ptr = string->alloc();
+    u64 char_ptr = string->load("\0");
+    u64 pattern_ptr = string->load("\0");
     string->strcat(pattern_ptr, char_ptr);
-    RX_ASSERT(char_ptr != 0);
-    RX_ASSERT(pattern_ptr != 0);
+    RX_ASSERT(char_ptr == 0);
+    RX_ASSERT(pattern_ptr == 0);
     string->free(char_ptr);
     string->free(pattern_ptr);
 }
@@ -345,7 +351,7 @@ RX_TEST_CASE(tests, test_strcat_alloc_alloc, .fixture = test_fixture) {
 /* test init */
 RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     u64 string_ptr = string->load("/all_english_words.txt");
-    u64 zero_ptr = string->alloc();
+    u64 zero_ptr = string->load("\0");
     u64 data_ptr = data->alloc(1);
     u64 list_ptr = list->alloc();
     u64 empty_ptr = string->load("\0");
@@ -421,7 +427,7 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     string->strcat(string_ptr, none_ptr);
     string->strcat(none_ptr, string_ptr);
 
-    string->match_last(string_ptr, string_ptr);
+    u64 last_matched_ptr1 = string->match_last(string_ptr, string_ptr);
     string->match_last(data_ptr, null_ptr);
     string->match_last(list_ptr, null_ptr);
     string->match_last(string_ptr, data_ptr);
@@ -435,7 +441,8 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     string->match_last(list_ptr, string_ptr);
     string->match_last(null_ptr, null_ptr);
     string->match_last(string_ptr, null_ptr);
-    string->match_last(string_ptr, string_ptr);
+
+    u64 last_matched_ptr2 = string->match_last(string_ptr, string_ptr);
     string->match_last(string_ptr, zero_ptr);
     string->match_last(data_ptr, zero_ptr);
     string->match_last(list_ptr, zero_ptr);
@@ -460,7 +467,8 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     string->match_last(empty_ptr, list_ptr);
     string->match_last(string_ptr, null_ptr);
     string->match_last(string_ptr, empty_ptr);
-    string->match_last(string_ptr, string_ptr);
+
+    u64 last_matched_ptr3 = string->match_last(string_ptr, string_ptr);
     string->match_last(string_ptr, data_ptr);
     string->match_last(string_ptr, list_ptr);
     string->match_last(data_ptr, null_ptr);
@@ -530,6 +538,10 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
 
     RX_ASSERT(undefined_ptr == 0);
 
+    string->free(last_matched_ptr1);
+    string->free(last_matched_ptr2);
+    string->free(last_matched_ptr3);
+
     string->free(null_ptr);
     string->free(zero_ptr);
     string->free(string_ptr);
@@ -565,10 +577,10 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests, test_strcat_alloc_load, .fixture = test_fixture) {
-    u64 zero_ptr = string->alloc();
+    u64 zero_ptr = string->load("\0");
     u64 char_ptr = string->load("/");
     string->strcat(zero_ptr, char_ptr);
-    RX_ASSERT(zero_ptr != 0);
+    RX_ASSERT(zero_ptr == 0);
     RX_ASSERT(char_ptr != 0);
     string->free(zero_ptr);
     string->free(char_ptr);
@@ -577,13 +589,13 @@ RX_TEST_CASE(tests, test_strcat_alloc_load, .fixture = test_fixture) {
 /* test init */
 RX_TEST_CASE(tests, test_strcat_load_alloc_alloc, .fixture = test_fixture) {
     u64 char_ptr = string->load("/");
-    u64 pattern_ptr = string->alloc();
-    u64 empty_ptr = string->alloc();
+    u64 pattern_ptr = string->load("\0");
+    u64 empty_ptr = string->load("\0");
     string->strcat(pattern_ptr, char_ptr);
     string->strcpy(empty_ptr, pattern_ptr);
     RX_ASSERT(char_ptr != 0);
-    RX_ASSERT(pattern_ptr != 0);
-    RX_ASSERT(empty_ptr != 0);
+    RX_ASSERT(pattern_ptr == 0);
+    RX_ASSERT(empty_ptr == 0);
     string->free(empty_ptr);
     string->free(pattern_ptr);
     string->free(char_ptr);
@@ -603,10 +615,10 @@ RX_TEST_CASE(tests, test_strcat_load_load, .fixture = test_fixture) {
 /* test init */
 RX_TEST_CASE(tests, test_strcpy_load_alloc, .fixture = test_fixture) {
     u64 pattern_ptr = string->load("/");
-    u64 empty_ptr = string->alloc();
+    u64 empty_ptr = string->load("\0");
     string->strcpy(empty_ptr, pattern_ptr);
     RX_ASSERT(pattern_ptr != 0);
-    RX_ASSERT(empty_ptr != 0);
+    RX_ASSERT(empty_ptr == 0);
     string->free(empty_ptr);
     string->free(pattern_ptr);
 }

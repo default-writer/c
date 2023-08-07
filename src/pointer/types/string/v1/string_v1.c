@@ -51,7 +51,6 @@ static const struct vm_type type_definition;
 static const struct vm_type* type = &type_definition;
 
 /* internal */
-static u64 string_alloc(void);
 static void string_free(u64 ptr);
 static void string_vm_free(struct pointer* ptr);
 static u64 string_copy(u64 ptr);
@@ -73,15 +72,6 @@ struct list_handler {
     struct list_data* list;
 };
 
-static u64 string_alloc(void) {
-    struct pointer* ptr = virtual->alloc(0, type->id);
-    u64 data = vm->alloc(ptr);
-#ifdef USE_GC
-    list->push(&base->gc, (void*)data);
-#endif
-    return data;
-}
-
 static void string_free(u64 ptr) {
     struct pointer* data_ptr = vm->read_type(ptr, type->id);
     if (data_ptr == 0) {
@@ -99,9 +89,6 @@ static u64 string_copy(u64 ptr) {
     if (data_ptr == 0) {
         return 0;
     }
-    if (data_ptr->size == 0) {
-        return 0;
-    }
     struct pointer* copy_ptr = virtual->alloc(data_ptr->size, type->id);
     memcpy(copy_ptr->data, data_ptr->data, copy_ptr->size); /* NOLINT */
     u64 data = vm->alloc(copy_ptr);
@@ -115,26 +102,18 @@ static void string_strcpy(u64 dest, u64 src) {
     if (src == dest) {
         return;
     }
-    struct pointer* dest_ptr = vm->read_type(dest, TYPE_STRING);
+    struct pointer* dest_ptr = vm->read_type(dest, type->id);
     if (dest_ptr == 0) {
         return;
     }
-    const struct pointer* src_ptr = vm->read_type(src, TYPE_STRING);
+    const struct pointer* src_ptr = vm->read_type(src, type->id);
     if (src_ptr == 0) {
         return;
     }
-    if (src_ptr->size == 0) {
-        return;
-    }
     const char* data_src = src_ptr->data; /* NOLINT */
-    if (dest_ptr->size == 0) {
-        dest_ptr->data = memory->alloc(src_ptr->size);
-        dest_ptr->size = src_ptr->size;
-    } else {
-        u64 size = src_ptr->size + 1;
-        if (dest_ptr->size < size) {
-            virtual->realloc(dest_ptr, size);
-        }
+    u64 size = src_ptr->size + 1;
+    if (dest_ptr->size < size) {
+        virtual->realloc(dest_ptr, size);
     }
     char* data_dest = dest_ptr->data;
     strcpy(data_dest, data_src); /* NOLINT */
@@ -144,37 +123,29 @@ static void string_strcat(u64 dest, u64 src) {
     if (src == dest) {
         return;
     }
-    struct pointer* dest_ptr = vm->read_type(dest, TYPE_STRING);
+    struct pointer* dest_ptr = vm->read_type(dest, type->id);
     if (dest_ptr == 0) {
         return;
     }
-    const struct pointer* src_ptr = vm->read_type(src, TYPE_STRING);
+    const struct pointer* src_ptr = vm->read_type(src, type->id);
     if (src_ptr == 0) {
         return;
     }
-    if (src_ptr->size == 0) {
-        return;
-    }
     const char* data_src = src_ptr->data; /* NOLINT */
-    if (dest_ptr->size == 0) {
-        dest_ptr->data = memory->alloc(src_ptr->size);
-        dest_ptr->size = src_ptr->size;
-    } else {
-        u64 size = dest_ptr->size + src_ptr->size - 1;
-        if (dest_ptr->size < size) {
-            virtual->realloc(dest_ptr, size);
-        }
+    u64 size = dest_ptr->size + src_ptr->size - 1;
+    if (dest_ptr->size < size) {
+        virtual->realloc(dest_ptr, size);
     }
     char* data_dest = dest_ptr->data;
     strcat(data_dest, data_src); /* NOLINT */
 }
 
 static u64 string_match_last(u64 src, u64 match) {
-    const struct pointer* src_ptr = vm->read_type(src, TYPE_STRING);
+    const struct pointer* src_ptr = vm->read_type(src, type->id);
     if (src_ptr == 0) {
         return 0;
     }
-    const struct pointer* match_ptr = vm->read_type(match, TYPE_STRING);
+    const struct pointer* match_ptr = vm->read_type(match, type->id);
     if (match_ptr == 0) {
         return 0;
     }
@@ -235,9 +206,6 @@ static void string_printf(u64 ptr) {
         return;
     }
     const char* data = data_ptr->data;
-    if (data == 0) {
-        return;
-    }
 #ifdef USE_MEMORY_DEBUG_INFO
     void* ptr_data = data_ptr->data;
     printf("   .: %016llx > %016llx\n", (u64)data_ptr, (u64)ptr_data);
@@ -251,12 +219,6 @@ static void string_put_char(u64 ptr, char value) {
         return;
     }
     char* data = data_ptr->data;
-    if (data == 0) {
-        return;
-    }
-    if (value == 0) {
-        return;
-    }
     *data = value;
 }
 
@@ -289,7 +251,6 @@ static void INIT init() {
 
 /* public */
 const struct string_methods string_methods_definition = {
-    .alloc = string_alloc,
     .free = string_free,
     .copy = string_copy,
     .strcpy = string_strcpy,
