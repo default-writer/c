@@ -31,11 +31,7 @@ static void class_destroy(object_typeinfo ptr);
 
 /* definition */
 extern const struct memory memory_definition;
-
-/* definition */
 static const struct memory* memory = &memory_definition;
-
-/* implementation */
 
 typedef struct writeable_object_typeinfo {
     object object;

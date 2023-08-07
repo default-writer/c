@@ -42,11 +42,7 @@ static struct linked_list_enumerator_data* enumerator = &static_linked_list_enum
 
 /* definition */
 extern const struct memory memory_definition;
-
-/* definition */
 static const struct memory* memory = &memory_definition;
-
-/* implementation */
 
 /* private */
 

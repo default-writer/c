@@ -80,11 +80,7 @@
 
 /* definition */
 extern const struct memory memory_definition;
-
-/* definition */
 static const struct memory* memory = &memory_definition;
-
-/* implementation */
 
 /* definition */
 extern const struct list list_micro_definition;

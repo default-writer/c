@@ -67,11 +67,7 @@ static u64 string_size(u64 ptr);
 
 /* definition */
 extern const struct memory memory_definition;
-
-/* definition */
 static const struct memory* memory = &memory_definition;
-
-/* implementation */
 
 struct list_handler {
     struct list_data* list;

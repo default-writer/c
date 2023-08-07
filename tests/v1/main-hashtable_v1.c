@@ -42,11 +42,7 @@
 
 /* definition */
 extern const struct memory memory_definition;
-
-/* definition */
 static const struct memory* memory = &memory_definition;
-
-/* implementation */
 
 /* definition */
 extern struct pointer_data* pointer_data_init(u64 size);

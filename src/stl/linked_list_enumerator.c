@@ -40,11 +40,7 @@ static const struct linked_list_methods* list = &linked_list_methods_definition;
 
 /* definition */
 extern const struct memory memory_definition;
-
-/* definition */
 static const struct memory* memory = &memory_definition;
-
-/* implementation */
 
 /* private */
 

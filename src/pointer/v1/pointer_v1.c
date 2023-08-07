@@ -37,11 +37,7 @@ void pointer_vm_register_type(struct vm_type* ptr);
 
 /* definition */
 extern const struct memory memory_definition;
-
-/* definition */
 static const struct memory* memory = &memory_definition;
-
-/* implementation */
 
 /* private */
 

@@ -54,11 +54,7 @@ static void* memory_ref_pop_internal(void);
 
 /* definition */
 extern const struct memory memory_definition;
-
-/* definition */
 static const struct memory* memory = &memory_definition;
-
-/* implementation */
 
 static void* memory_ref_ptr_internal(struct memory_ref* ptr) {
     void* data = 0;

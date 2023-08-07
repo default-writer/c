@@ -45,11 +45,7 @@ struct vm_pointer {
 
 /* definition */
 extern const struct memory memory_definition;
-
-/* definition */
 static const struct memory* memory = &memory_definition;
-
-/* implementation */
 
 /* private */
 
