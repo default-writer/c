@@ -31,12 +31,14 @@
 
 #define DEFAULT_SIZE 0x100
 
+static const enum type id = TYPE_OBJECT;
+
 /* api */
 const struct object_methods object_methods_definition;
 void object_init();
 
 /* definition */
-extern void pointer_vm_register_type(const struct vm_type* type);
+extern u64 pointer_vm_register_type(u64 id, const struct vm_type* type);
 extern struct pointer_data vm_pointer;
 extern const struct vm_methods vm_methods_definition;
 extern const struct list list_micro_definition;
@@ -63,7 +65,7 @@ static u64 object_alloc(u64 size) {
     if (size == 0) {
         return 0;
     }
-    struct pointer* ptr = virtual->alloc(size, type->id);
+    struct pointer* ptr = virtual->alloc(size, id);
     u64 data = vm->alloc(ptr);
 #ifdef USE_GC
     list->push(&base->gc, (void*)data);
@@ -72,7 +74,7 @@ static u64 object_alloc(u64 size) {
 }
 
 static void object_free(u64 ptr) {
-    struct pointer* data_ptr = vm->read_type(ptr, type->id);
+    struct pointer* data_ptr = vm->read_type(ptr, id);
     if (data_ptr == 0) {
         return;
     }
@@ -84,7 +86,7 @@ static void object_vm_free(struct pointer* ptr) {
 }
 
 static void* object_unsafe(u64 ptr) {
-    struct pointer* data_ptr = vm->read_type(ptr, type->id);
+    struct pointer* data_ptr = vm->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
@@ -99,7 +101,7 @@ static u64 object_load(const void* src_data, u64 size) {
     if (size == 0) {
         return 0;
     }
-    struct pointer* data_ptr = virtual->alloc(size, type->id);
+    struct pointer* data_ptr = virtual->alloc(size, id);
     memcpy(data_ptr->data, src_data, size); /* NOLINT */
     u64 data = vm->alloc(data_ptr);
 #ifdef USE_GC
@@ -109,7 +111,7 @@ static u64 object_load(const void* src_data, u64 size) {
 }
 
 static u64 object_size(u64 ptr) {
-    const struct pointer* data_ptr = vm->read_type(ptr, type->id);
+    const struct pointer* data_ptr = vm->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
@@ -118,12 +120,11 @@ static u64 object_size(u64 ptr) {
 }
 
 static const struct vm_type type_definition = {
-    .free = object_vm_free,
-    .id = TYPE_OBJECT
+    .free = object_vm_free
 };
 
 static void INIT init() {
-    pointer_vm_register_type(type);
+    pointer_vm_register_type(id, type);
 }
 
 /* public */

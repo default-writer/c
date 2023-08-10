@@ -20,7 +20,7 @@
 // #endif
 
 // void process(u8 *data) {
-//     printf("%s\n", data);
+//     printf("   +: %s\n", data);
 // }
 
 /**
@@ -195,7 +195,7 @@ typedef void (*function)();
 //     } else {
 //         print("all ok")
 //     }
-//     fseek(f, 0, SEEK_END); 
+//     fseek(f, 0, SEEK_END);
 //     u64 size = (u32)ftell(f);
 //     fseek(f, 0, SEEK_SET);
 
@@ -220,7 +220,7 @@ typedef void (*function)();
 //     push(6, "input.txt");
 //     push(7, SEEK_SET);
 //     push(0, pop_s_pop_s_fopen()); // FILE *f = fopen("input.txt", "rb");
-//     peek_pop_pop_fseek();// fseek(f, 0, SEEK_END); 
+//     peek_pop_pop_fseek();// fseek(f, 0, SEEK_END);
 //     push(peek_ftell()); // u32 size = (u32)ftell(f);
 //     // fseek(f, 0, SEEK_SET);
 // }
@@ -248,7 +248,7 @@ typedef void (*function)();
 // functions calls:
 //     <function>'< '<variables>
 //
-// if statements: 
+// if statements:
 //     '? '<condition>': '<statements>['! '<statements>]' '
 //
 // while statement
@@ -287,18 +287,18 @@ typedef void (*function)();
 //         print<"all ok"
 //     !
 //
-// translates to 
-// 
+// translates to
+//
 // fopen<"input.txt","rb">f (? f==0 perror<"file not found" exit<1 : print<"all ok")
 //
 // == .. ?, < .. ?
 //
 // () are the same as grouping, cause no () in function calls
-// 
+//
 // fopen<"input.txt","rb">f ? f==0: perror<"file not found" exit<1!: print<"all ok"
 
 // fopen<"input.txt","rb">f ? f==0: perror<"file not found" exit<1 : fseek<f,0,SEEK_END ftell(f)>size fseek(f, 0, SEEK_SET) // name: means function definition with name 'name'
-// f>fclose 
+// f>fclose
 // process<data
 
 // int main() {

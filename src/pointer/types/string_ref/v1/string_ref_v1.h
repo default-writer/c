@@ -23,15 +23,18 @@
  * SOFTWARE.
  *
  */
-#ifndef _TESTS_COMMON_H_
-#define _TESTS_COMMON_H_
+#ifndef _POINTER_TYPES_STRING_REF_H_
+#define _POINTER_TYPES_STRING_REF_H_
 
-#define RXP_DEBUG_TESTS
+#include "std/common.h"
 
-#include "../.deps/rexo/include/rexo.h"
-
-struct test_suite {
-    int (*run)(void);
+struct string_ref_methods {
+    void (*free)(u64 ptr);
 };
 
-#endif /* _TESTS_COMMON_H_ */
+struct string_ref {
+    u64 ptr;
+    u64 offset;
+};
+
+#endif /* _POINTER_TYPES_STRING_REF_H_ */

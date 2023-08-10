@@ -40,7 +40,7 @@
 #pragma GCC diagnostic ignored "-Wunknown-pragmas"
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 
-#include "rexo/include/rexo.h"
+#include "../.deps/rexo/include/rexo.h"
 
 void get_hash_from_file(int hash_id);
 

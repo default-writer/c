@@ -31,6 +31,7 @@
 #include "pointer/types/file/v1/file_v1.h"
 #include "pointer/types/list/v1/list_v1.h"
 #include "pointer/types/string/v1/string_v1.h"
+#include "pointer/types/string_ref/v1/string_ref_v1.h"
 #include "pointer/v1/pointer_v1.h"
 
 #include "../tests/src/test.h"
@@ -53,12 +54,14 @@ extern const struct pointer_methods pointer_methods_definition;
 extern const struct list_methods list_methods_definition;
 extern const struct file_methods file_methods_definition;
 extern const struct string_methods string_methods_definition;
+extern const struct string_ref_methods string_ref_methods_definition;
 extern const struct data_methods data_methods_definition;
 
 const struct pointer_methods* pointer = &pointer_methods_definition;
 const struct list_methods* list = &list_methods_definition;
 const struct file_methods* file = &file_methods_definition;
 const struct string_methods* string = &string_methods_definition;
+const struct string_ref_methods* string_ref = &string_ref_methods_definition;
 const struct data_methods* data = &data_methods_definition;
 
 typedef struct test_data {
@@ -72,7 +75,7 @@ extern inline void source1(void) {
     u64 last_match_ptr = string->match_last(file_path_ptr, pattern_ptr);
     string->free(pattern_ptr);
     string->put_char(last_match_ptr, '\0');
-    string->free(last_match_ptr);
+    string_ref->free(last_match_ptr);
     string->strcat(file_path_ptr, file_name_ptr);
     string->free(file_name_ptr);
     u64 mode_ptr = string->load("rb");
@@ -110,7 +113,7 @@ extern inline void source2(void) {
             u64 string_ptr = string->load(file_data);
             list->push(list_ptr, string_ptr);
             char* unsafe = string->unsafe(string_ptr);
-            printf("%s\n", unsafe);
+            printf("   +: %s\n", unsafe);
             file_data = tmp;
         }
         list->free(list_ptr);

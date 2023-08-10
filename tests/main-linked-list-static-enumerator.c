@@ -25,7 +25,7 @@
  */
 #define RXP_DEBUG_TESTS
 
-#include "rexo/include/rexo.h"
+#include "../.deps/rexo/include/rexo.h"
 
 #include "stl/linked_list.h"
 #include "stl/linked_list_static_enumerator.h"

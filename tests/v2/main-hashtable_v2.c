@@ -31,7 +31,7 @@
 
 #define RXP_DEBUG_TESTS
 
-#include "rexo/include/rexo.h"
+#include "../.deps/rexo/include/rexo.h"
 
 #define HASHTABLE_SIZE 101
 #define DEFAULT_SIZE 0x1

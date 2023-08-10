@@ -37,12 +37,16 @@ enum type {
     TYPE_DATA = 2,
     /* value used for string type - string */
     TYPE_STRING = 3,
+    /* value used for string ref type - string ref */
+    TYPE_STRING_REF = 4,
     /* value used for file type - file */
-    TYPE_FILE = 4,
+    TYPE_FILE = 5,
     /* value used for list type - list */
-    TYPE_LIST = 5,
+    TYPE_LIST = 6,
     /* value used for object type - object */
-    TYPE_OBJECT = 6
+    TYPE_OBJECT = 7,
+    /* value used for user type - user (id: +1, +2, +3, ...) */
+    TYPE_USER = 8
 };
 
 struct vm_data;

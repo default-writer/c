@@ -31,12 +31,14 @@
 
 #define DEFAULT_SIZE 0x100
 
+static enum type id = TYPE_NULL;
+
 /* api */
 const struct user_methods user_methods_definition;
 void user_type_init();
 
 /* definition */
-extern void pointer_vm_register_type(const struct vm_type* type);
+extern u64 pointer_vm_register_type(u64 id, const struct vm_type* type);
 extern struct pointer_data vm_pointer;
 extern const struct vm_methods vm_methods_definition;
 extern const struct list list_micro_definition;
@@ -57,7 +59,7 @@ static void user_vm_free(struct pointer* ptr);
 
 /* implementation */
 static u64 user_alloc(void) {
-    struct pointer* ptr = virtual->alloc(0, type->id);
+    struct pointer* ptr = virtual->alloc(0, id);
     u64 data = vm->alloc(ptr);
 #ifdef USE_GC
     list->push(&base->gc, (void*)data);
@@ -66,7 +68,7 @@ static u64 user_alloc(void) {
 }
 
 static void user_free(u64 ptr) {
-    struct pointer* data_ptr = vm->read_type(ptr, type->id);
+    struct pointer* data_ptr = vm->read_type(ptr, id);
     if (data_ptr == 0) {
         return;
     }
@@ -78,12 +80,11 @@ static void user_vm_free(struct pointer* ptr) {
 }
 
 static struct vm_type type_definition = {
-    .free = user_vm_free,
-    .id = TYPE_NULL
+    .free = user_vm_free
 };
 
 static void INIT init() {
-    pointer_vm_register_type(type);
+    id = pointer_vm_register_type(TYPE_NULL, type);
 }
 
 /* public */

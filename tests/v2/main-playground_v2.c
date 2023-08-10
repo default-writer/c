@@ -28,7 +28,7 @@
 #include "playground/list/v2/list_v2.h"
 #define RXP_DEBUG_TESTS
 
-#include "rexo/include/rexo.h"
+#include "../.deps/rexo/include/rexo.h"
 
 #define DEFAULT_SIZE 0xffff /* 64K bytes */
 

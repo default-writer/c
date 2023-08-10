@@ -227,6 +227,15 @@ RX_TEST_CASE(tests, test_list_user, .fixture = test_pointer_fixture) {
 }
 
 /* test init */
+RX_TEST_CASE(tests, test_list_free_user_free, .fixture = test_pointer_fixture) {
+    u64 list_ptr = list->alloc();
+    u64 user_ptr = user->alloc();
+    list->push(list_ptr, user_ptr);
+    list->free(list_ptr);
+    user->free(user_ptr);
+}
+
+/* test init */
 RX_TEST_CASE(tests, test_user_free_0, .fixture = test_pointer_fixture) {
     user->free(0);
 }

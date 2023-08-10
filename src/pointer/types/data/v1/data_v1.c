@@ -31,12 +31,14 @@
 
 #define DEFAULT_SIZE 0x100
 
+static const enum type id = TYPE_DATA;
+
 /* api */
 const struct data_methods data_methods_definition;
 void data_init();
 
 /* definition */
-extern void pointer_vm_register_type(const struct vm_type* type);
+extern u64 pointer_vm_register_type(u64 id, const struct vm_type* type);
 extern struct pointer_data vm_pointer;
 extern const struct vm_methods vm_methods_definition;
 extern const struct list list_micro_definition;
@@ -59,7 +61,7 @@ static u64 data_size(u64 ptr);
 
 /* implementation */
 static u64 data_alloc(u64 size) {
-    struct pointer* f_ptr = virtual->alloc(size, type->id);
+    struct pointer* f_ptr = virtual->alloc(size, id);
     u64 data = vm->alloc(f_ptr);
 #ifdef USE_GC
     list->push(&base->gc, (void*)data);
@@ -68,7 +70,7 @@ static u64 data_alloc(u64 size) {
 }
 
 static void data_free(u64 ptr) {
-    struct pointer* data_ptr = vm->read_type(ptr, type->id);
+    struct pointer* data_ptr = vm->read_type(ptr, id);
     if (data_ptr == 0) {
         return;
     }
@@ -80,7 +82,7 @@ static void data_vm_free(struct pointer* ptr) {
 }
 
 static void* data_unsafe(u64 ptr) {
-    struct pointer* data_ptr = vm->read_type(ptr, type->id);
+    struct pointer* data_ptr = vm->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
@@ -89,7 +91,7 @@ static void* data_unsafe(u64 ptr) {
 }
 
 static u64 data_size(u64 ptr) {
-    const struct pointer* data_ptr = vm->read_type(ptr, type->id);
+    const struct pointer* data_ptr = vm->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
@@ -98,12 +100,11 @@ static u64 data_size(u64 ptr) {
 }
 
 static const struct vm_type type_definition = {
-    .free = data_vm_free,
-    .id = TYPE_DATA
+    .free = data_vm_free
 };
 
 static void INIT init() {
-    pointer_vm_register_type(type);
+    pointer_vm_register_type(id, type);
 }
 
 /* public */

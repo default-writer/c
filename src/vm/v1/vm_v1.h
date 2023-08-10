@@ -49,9 +49,8 @@ struct vm_methods {
 #endif
 };
 
-struct vm_type {
+typedef struct vm_type {
     void (*free)(struct pointer* ptr);
-    u64 id;
-};
+} vm_type, *vm_type_ptr;
 
 #endif /* _VIRTUAL_H_ */

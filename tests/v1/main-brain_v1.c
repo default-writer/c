@@ -32,11 +32,13 @@
 #include "pointer/types/list/v1/list_v1.h"
 #include "pointer/types/object/v1/object_v1.h"
 #include "pointer/types/string/v1/string_v1.h"
+#include "pointer/types/string_ref/v1/string_ref_v1.h"
+#include "pointer/types/user/v1/user_v1.h"
 #include "pointer/v1/pointer_v1.h"
 
 #define RXP_DEBUG_TESTS
 
-#include "rexo/include/rexo.h"
+#include "../.deps/rexo/include/rexo.h"
 
 #define DEFAULT_SIZE 0x100
 
@@ -50,6 +52,8 @@ extern const struct pointer_methods pointer_methods_definition;
 extern const struct list_methods list_methods_definition;
 extern const struct file_methods file_methods_definition;
 extern const struct string_methods string_methods_definition;
+extern const struct string_ref_methods string_ref_methods_definition;
+extern const struct user_methods user_methods_definition;
 extern const struct data_methods data_methods_definition;
 extern const struct object_methods object_methods_definition;
 
@@ -57,6 +61,8 @@ const struct pointer_methods* pointer = &pointer_methods_definition;
 const struct list_methods* list = &list_methods_definition;
 const struct file_methods* file = &file_methods_definition;
 const struct string_methods* string = &string_methods_definition;
+const struct string_ref_methods* string_ref = &string_ref_methods_definition;
+const struct user_methods* user = &user_methods_definition;
 const struct data_methods* data = &data_methods_definition;
 const struct object_methods* object = &object_methods_definition;
 
@@ -538,7 +544,12 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
 
     RX_ASSERT(undefined_ptr == 0);
 
-    string->free(last_matched_ptr1);
+    RX_ASSERT(last_matched_ptr1 != 0);
+    RX_ASSERT(last_matched_ptr2 != 0);
+    RX_ASSERT(last_matched_ptr3 != 0);
+    string_ref->free(last_matched_ptr1);
+    string_ref->free(last_matched_ptr2);
+    string_ref->free(last_matched_ptr3);
     string->free(last_matched_ptr2);
     string->free(last_matched_ptr3);
 
@@ -684,6 +695,26 @@ RX_TEST_CASE(tests, test_load_open_match_last_unsafe_free, .fixture = test_fixtu
 }
 
 /* test init */
+RX_TEST_CASE(tests, test_load_open_match_last_unsafe_free_unsuppported_calls, .fixture = test_fixture) {
+    u64 ptr1 = string->load("qwerty//u");
+    u64 ptr2 = string->load("asdfghjkl");
+    u64 pattern_ptr = string->load("/u");
+    u64 last_match_ptr = string->match_last(ptr1, pattern_ptr);
+    string->strcat(last_match_ptr, ptr2);
+    string->free(pattern_ptr);
+    string->put_char(last_match_ptr, '\0');
+    string->free(ptr1);
+    string->free(ptr2);
+    string_ref->free(last_match_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_user, .fixture = test_fixture) {
+    u64 ptr1 = user->alloc();
+    user->free(ptr1);
+}
+
+/* test init */
 RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixture) {
     u64 file_path_ptr = string->getcwd();
     u64 file_name_ptr = string->load("/all_english_words.txt");
@@ -705,7 +736,7 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixtur
             u64 string_ptr = string->load((char*)file_data);
             list->push(list_ptr, string_ptr);
             char* unsafe = string->unsafe(string_ptr);
-            printf("%s\n", unsafe);
+            printf("   .: %016llx ! %16s\n", (u64)unsafe, unsafe);
             file_data = tmp;
         }
         list->free(list_ptr);
@@ -733,7 +764,7 @@ extern inline void source1(void) {
     u64 last_match_ptr = string->match_last(file_path_ptr, pattern_ptr);
     string->free(pattern_ptr);
     string->put_char(last_match_ptr, '\0');
-    string->free(last_match_ptr);
+    string_ref->free(last_match_ptr);
     string->strcat(file_path_ptr, file_name_ptr);
     string->free(file_name_ptr);
     u64 mode_ptr = string->load("rb");
@@ -771,7 +802,7 @@ extern inline void source2(void) {
             u64 string_ptr = string->load((char*)file_data);
             list->push(list_ptr, string_ptr);
             char* unsafe = string->unsafe(string_ptr);
-            printf("%s\n", unsafe);
+            printf("   +: %s\n", unsafe);
             file_data = tmp;
         }
         list->free(list_ptr);

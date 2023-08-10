@@ -28,7 +28,7 @@
 #include "playground/list/v1/list_v1.h"
 #define RXP_DEBUG_TESTS
 
-#include "rexo/include/rexo.h"
+#include "../.deps/rexo/include/rexo.h"
 
 #ifdef USE_MEMORY_ALLOC
 #include "playground/memory/memory.h"

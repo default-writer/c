@@ -42,7 +42,6 @@ lcov.info
 report
 .cache
 .history
-.trunk
 .venv
 .args
 gtk*/

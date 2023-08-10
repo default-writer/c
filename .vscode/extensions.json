@@ -33,6 +33,7 @@
     "moshfeu.compare-folders",
     "fougas.msys2",
     "ms-vscode.cpptools-extension-pack",
-    "zchrissirhcz.cmake-highlight"
+    "zchrissirhcz.cmake-highlight",
+    "xaver.clang-format"
   ]
 }

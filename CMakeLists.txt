@@ -269,11 +269,13 @@ set(LIB_STD_USER1_SOURCE src/pointer/types/user/v1/user_v1.c)
 set(LIB_STD_LIST1_SOURCE src/pointer/types/list/v1/list_v1.c)
 set(LIB_STD_FILE1_SOURCE src/pointer/types/file/v1/file_v1.c)
 set(LIB_STD_STRING1_SOURCE src/pointer/types/string/v1/string_v1.c)
+set(LIB_STD_STRING_REF1_SOURCE src/pointer/types/string_ref/v1/string_ref_v1.c)
 set(LIB_STD_OBJECT1_SOURCE src/pointer/types/object/v1/object_v1.c)
 set(LIB_STD_TYPES1_SOURCE
     src/pointer/types/void/v1/void_v1.c
     src/pointer/types/data/v1/data_v1.c
     src/pointer/types/string/v1/string_v1.c
+    src/pointer/types/string_ref/v1/string_ref_v1.c
     src/pointer/types/file/v1/file_v1.c
     src/pointer/types/list/v1/list_v1.c
     src/pointer/types/object/v1/object_v1.c)
@@ -326,8 +328,6 @@ set(MAIN_ZEN_SOURCE src/playground/zen/zen.c)
 set(MAIN_TESTS_VM1_SOURCE tests/v1/main-tests_v1.c)
 set(MAIN_TESTS_VM2_SOURCE tests/v2/main-tests_v2.c)
 
-
-include_directories(.deps)
 include_directories(src)
 
 # test
@@ -380,6 +380,7 @@ add_library(std-types1 STATIC ${LIB_STD_TYPES1_SOURCE})
 add_library(std-list1 SHARED ${LIB_STD_LIST1_SOURCE})
 add_library(std-file1 SHARED ${LIB_STD_FILE1_SOURCE})
 add_library(std-string1 SHARED ${LIB_STD_STRING1_SOURCE})
+add_library(std-string-ref1 SHARED ${LIB_STD_STRING_REF1_SOURCE})
 add_library(std-data1 SHARED ${LIB_STD_DATA1_SOURCE})
 
 add_library(std-object1 SHARED ${LIB_STD_OBJECT1_SOURCE})
@@ -430,7 +431,7 @@ target_link_libraries(list-memory3 PRIVATE list-common)
 target_link_libraries(list-memory4 PRIVATE list-common)
 target_link_libraries(list-class PRIVATE list-common)
 target_link_libraries(list-alloc PRIVATE list-parameters)
-target_link_libraries(list-pointer1 PRIVATE list-common list-micro std-types1)
+target_link_libraries(list-pointer1 PRIVATE list-common list-micro std-types1 user1)
 target_link_libraries(list-pointer2 PRIVATE list-common)
 target_link_libraries(list-experimental PRIVATE list-parameters)
 target_link_libraries(memory-ref1 PRIVATE memory-list1 list-micro list-common)
@@ -457,11 +458,11 @@ target_link_libraries(main-memory1 PRIVATE list-memory1)
 target_link_libraries(main-memory2 PRIVATE list-memory2 memory-ref1)
 target_link_libraries(main-memory3 PRIVATE list-memory3 memory-ref2)
 target_link_libraries(main-memory4 PRIVATE list-memory4 memory-ref3 list-lcg)
-target_link_libraries(main-brain1 PRIVATE list-pointer1 list-micro vm-v1)
+target_link_libraries(main-brain1 PRIVATE list-pointer1 list-micro vm-v1 std-string-ref1)
 target_link_libraries(main-brain2 PRIVATE list-pointer2 list-micro)
 target_link_libraries(main-pointer1 PRIVATE list-pointer1 list-micro vm-v1)
 target_link_libraries(main-pointer2 PRIVATE list-pointer2 list-micro)
-target_link_libraries(main-hashtable1 PRIVATE list-pointer1 list-micro vm-v1 hashtable1)
+target_link_libraries(main-hashtable1 PRIVATE list-pointer1 list-micro vm-v1 hashtable1 std-string-ref1)
 target_link_libraries(main-hashtable2 PRIVATE list-pointer2 list-micro hashtable2)
 target_link_libraries(main-vm1 PRIVATE tests tests-vm-v1 list-alloc list-light vm-v1 user1)
 target_link_libraries(main-vm2 PRIVATE tests tests-vm-v2 list-alloc list-light vm-v2 list-pointer2 list-micro)
@@ -479,6 +480,31 @@ configure_file(file.txt ${CMAKE_BINARY_DIR}/file.txt COPYONLY)
 FILE(WRITE ${CMAKE_BINARY_DIR}/input.txt
     "fopen<\"input.txt\",\"rb\">f (? f==0 perror<\"file not found\" exit<1 : print<\"all ok\")"
 )
+
+if(TARGET "gtk-experiment")
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(GTK4 REQUIRED IMPORTED_TARGET gtk4)
+    target_link_libraries(gtk-experiment PRIVATE PkgConfig::GTK4)
+
+    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/gtk-4.0)
+    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/glib-2.0)
+    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/gio-unix-2.0)
+    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/cairo)
+    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/pango-1.0)
+    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/harfbuzz)
+    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/fribidi)
+    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/gdk-pixbuf-2.0)
+    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/pixman-1)
+    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/uuid)
+    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/freetype2)
+    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/libpng16)
+    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/graphene-1.0)
+    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/libmount)
+    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/blkid)
+    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/lib/x86_64-linux-gnu/glib-2.0/include)
+    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/lib/x86_64-linux-gnu/graphene-1.0/include)
+
+endif()
 
 if(TARGETS)
 

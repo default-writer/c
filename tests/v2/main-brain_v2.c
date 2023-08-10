@@ -33,7 +33,7 @@
 
 #define RXP_DEBUG_TESTS
 
-#include "rexo/include/rexo.h"
+#include "../.deps/rexo/include/rexo.h"
 
 #define DEFAULT_SIZE 0x100
 
@@ -597,7 +597,7 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixtur
             u64 data = pointer->load(file_data);
             list->push(list_ptr, data);
             char* unsafe = pointer->unsafe(data);
-            printf("%s\n", unsafe);
+            printf("   +: %s\n", unsafe);
             file_data = tmp;
         }
         list->free(list_ptr);
@@ -669,7 +669,7 @@ extern inline void source2(void) {
             u64 data = pointer->load(file_data);
             list->push(list_ptr, data);
             char* unsafe = pointer->unsafe(data);
-            printf("%s\n", unsafe);
+            printf("   +: %s\n", unsafe);
             file_data = tmp;
         }
         list->free(list_ptr);

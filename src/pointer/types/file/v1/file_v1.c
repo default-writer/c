@@ -31,12 +31,14 @@
 
 #define DEFAULT_SIZE 0x100
 
+static const enum type id = TYPE_FILE;
+
 /* api */
 const struct file_methods file_methods_definition;
 void file_init();
 
 /* definition */
-extern void pointer_vm_register_type(const struct vm_type* type);
+extern u64 pointer_vm_register_type(u64 id, const struct vm_type* type);
 extern struct pointer_data vm_pointer;
 extern const struct vm_methods vm_methods_definition;
 extern const struct list list_micro_definition;
@@ -87,7 +89,7 @@ static u64 file_alloc(u64 file_path, u64 mode) {
     if (file == 0) {
         return 0;
     }
-    struct pointer* f_ptr = virtual->alloc(sizeof(struct file_handler), type->id);
+    struct pointer* f_ptr = virtual->alloc(sizeof(struct file_handler), id);
     struct file_handler* handler = f_ptr->data;
     handler->file = file;
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -101,7 +103,7 @@ static u64 file_alloc(u64 file_path, u64 mode) {
 }
 
 static void file_free(u64 ptr) {
-    struct pointer* data_ptr = vm->read_type(ptr, type->id);
+    struct pointer* data_ptr = vm->read_type(ptr, id);
     if (data_ptr == 0) {
         return;
     }
@@ -118,7 +120,7 @@ static void file_vm_free(struct pointer* ptr) {
 }
 
 static u64 file_data(u64 ptr) {
-    struct pointer* data_ptr = vm->read_type(ptr, type->id);
+    struct pointer* data_ptr = vm->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
@@ -138,12 +140,11 @@ static u64 file_data(u64 ptr) {
 }
 
 static const struct vm_type type_definition = {
-    .free = file_vm_free,
-    .id = TYPE_FILE
+    .free = file_vm_free
 };
 
 static void INIT init() {
-    pointer_vm_register_type(type);
+    pointer_vm_register_type(id, type);
 }
 
 /* public */

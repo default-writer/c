@@ -15,28 +15,19 @@
       "c": "./bin/src.sh --target ${relativeFile}"
     }
   ],
-  "koverage.coverageFileNames": [
-    "lcov.info"
-  ],
-  "coverage-gutters.coverageFileNames": [
-    "lcov.info"
-  ],
+  "koverage.coverageFileNames": ["lcov.info"],
+  "coverage-gutters.coverageFileNames": ["lcov.info"],
   "coverage-gutters.coverageBaseDir": "coverage",
   "coverage-gutters.showLineCoverage": true,
   "coverage-gutters.showGutterCoverage": false,
   "cSpell.checkOnlyEnabledFileTypes": true,
-  "cSpell.enableFiletypes": [
-    "c",
-    "!jsonc"
-  ],
+  "cSpell.enableFiletypes": ["c", "!jsonc"],
   "files.autoSave": "off",
   "files.associations": {
     "*.h": "c",
     "*.c": "c"
   },
-  "files.watcherInclude": [
-    "."
-  ],
+  "files.watcherInclude": ["."],
   "files.exclude": {},
   "pdf-preview.default.scale": "page-width",
   "cmake.showConsoleAutomatically": true,
@@ -101,7 +92,7 @@
       "command": "twitch.open"
     }
   ],
-  "window.zoomLevel": 0,
+  "window.zoomLevel": 2,
   "workbench.editor.enablePreview": true,
   "workbench.colorTheme": "Yitzchok (rainglow)",
   "editor.tokenColorCustomizations": {
@@ -142,14 +133,10 @@
     "window.zoomLevel": 0
   },
   "presentation-mode.configBackup": {
-    "window.zoomLevel": "undefined"
+    "window.zoomLevel": 0
   },
-  "grammarly.files.include": [
-    "**/*.md"
-  ],
-  "grammarly.files.exclude": [
-    "**/*.txt"
-  ],
+  "grammarly.files.include": ["**/*.md"],
+  "grammarly.files.exclude": ["**/*.txt"],
   "C_Cpp.dimInactiveRegions": true,
   "C_Cpp.errorSquiggles": "disabled",
   "C_Cpp.intelliSenseEngine": "disabled",
@@ -228,19 +215,14 @@
   "clangd.restartAfterCrash": true,
   "clangd.onConfigChanged": "restart",
   "clangd.detectExtensionConflicts": true,
-  "clangd.defaultProfile": "C++",
+  "clangd.defaultProfile": "C++ WSL/containers",
   "clang-format.style": "{BasedOnStyle: WebKit, IndentWidth: 4, BreakBeforeBraces: Attach}",
   "clang-format.language.c.enable": true,
   "clang-tidy.lintOnSave": true,
-  "clang-tidy.compilerArgs": [
-    "-I/usr/include/gtk-4.0"
-  ],
+  "clang-tidy.compilerArgs": ["-I/usr/include/gtk-4.0"],
   "editor.formatOnSave": true,
   "editor.fontWeight": "normal",
-  "cmake.additionalKits": [
-    "${workspaceFolder}/.vscode",
-    "${workspaceFolder}"
-  ],
+  "cmake.additionalKits": ["${workspaceFolder}/.vscode", "${workspaceFolder}"],
   "cmake.useCMakePresets": "always",
   "emeraldwalk.runonsave": {
     "commands": [
@@ -301,10 +283,6 @@
   "interactiveSession.editor.fontSize": 12,
   "scm.inputFontSize": 12,
   "twitch.fontSize": "12px",
-  "customPresentationMode.backup": {
-    "workbench.colorTheme": "Yitzchok (rainglow)",
-    "editor.fontWeight": "normal"
-  },
   "workbench.editorLargeFileConfirmation": 16,
   "terminal.integrated.tabStopWidth": 8,
   "editor.tabSize": 4,
@@ -350,5 +328,22 @@
       "${commentend}"
     ]
   },
-  "git.suggestSmartCommit": false
+  "git.suggestSmartCommit": false,
+  "presentationMode.zoomLevel": 2,
+  "customPresentationMode.backup": {
+    "workbench.colorTheme": "Yitzchok (rainglow)",
+    "editor.fontWeight": "normal",
+    "window.zoomLevel": 0
+  },
+  "editor.codeLensFontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
+  "editor.inlayHints.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
+  "scm.inputFontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
+  "debug.console.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
+  "terminal.integrated.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
+  "chat.editor.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
+  "notebook.output.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
+  "chat.editor.fontSize": 12,
+  "[jsonc]": {
+    "editor.defaultFormatter": "trunk.io"
+  }
 }

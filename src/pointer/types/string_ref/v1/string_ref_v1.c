@@ -23,7 +23,7 @@
  * SOFTWARE.
  *
  */
-#include "pointer/types/void/v1/void_v1.h"
+#include "pointer/types/string_ref/v1/string_ref_v1.h"
 #include "common/alloc.h"
 #include "list-micro/data.h"
 #include "pointer/v1/pointer_v1.h"
@@ -31,68 +31,42 @@
 
 #define DEFAULT_SIZE 0x100
 
-static const enum type id = TYPE_VOID;
+static const enum type id = TYPE_STRING_REF;
 
 /* api */
-const struct void_methods void_methods_definition;
-void void_init();
+const struct string_ref_methods string_ref_methods_definition;
+void string_ref_init();
 
 /* definition */
 extern u64 pointer_vm_register_type(u64 id, const struct vm_type* type);
-extern struct pointer_data vm_pointer;
 extern const struct vm_methods vm_methods_definition;
-extern const struct list list_micro_definition;
 extern const struct pointer_vm_methods pointer_vm_methods_definition;
 
 /* definition */
 static const struct vm_methods* vm = &vm_methods_definition;
-static const struct list* list = &list_micro_definition;
 static const struct pointer_vm_methods* virtual = &pointer_vm_methods_definition;
-static struct pointer_data* base = &vm_pointer;
 static const struct vm_type type_definition;
 static const struct vm_type* type = &type_definition;
 
 /* internal */
-static u64 void_alloc(u64 size);
-static void void_free(u64 ptr);
-static void void_vm_free(struct pointer* ptr);
+static void string_ref_vm_free(struct pointer* ptr);
+static void string_ref_free(u64 ptr);
 
 /* implementation */
-static u64 void_alloc(u64 size) {
-    if (size == 0) {
-        return 0;
-    }
-    struct pointer* ptr = virtual->alloc(size, id);
-    u64 data = vm->alloc(ptr);
-#ifdef USE_GC
-    list->push(&base->gc, (void*)data);
-#endif
-    return data;
-}
-
-static void void_free(u64 ptr) {
+static void string_ref_free(u64 ptr) {
     struct pointer* data_ptr = vm->read_type(ptr, id);
     if (data_ptr == 0) {
         return;
     }
-    return void_vm_free(data_ptr);
+    return string_ref_vm_free(data_ptr);
 }
 
-static void* void_unsafe(u64 ptr) {
-    struct pointer* data_ptr = vm->read_type(ptr, id);
-    if (data_ptr == 0) {
-        return 0;
-    }
-    void* data = data_ptr->data;
-    return data;
-}
-
-static void void_vm_free(struct pointer* ptr) {
+static void string_ref_vm_free(struct pointer* ptr) {
     virtual->free(ptr);
 }
 
 static const struct vm_type type_definition = {
-    .free = void_vm_free
+    .free = string_ref_vm_free
 };
 
 static void INIT init() {
@@ -100,14 +74,12 @@ static void INIT init() {
 }
 
 /* public */
-const struct void_methods void_methods_definition = {
-    .alloc = void_alloc,
-    .free = void_free,
-    .unsafe = void_unsafe
+const struct string_ref_methods string_ref_methods_definition = {
+    .free = string_ref_free,
 };
 
 #ifndef ATTRIBUTE
-void void_init() {
+void string_ref_init() {
     init();
 }
 #endif

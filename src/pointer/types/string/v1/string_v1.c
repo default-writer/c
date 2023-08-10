@@ -23,21 +23,25 @@
  * SOFTWARE.
  *
  */
-#include "pointer/types/string/v1/string_v1.h"
+#include "string_v1.h"
 #include "common/alloc.h"
 #include "list-micro/data.h"
+#include "pointer/types/string_ref/v1/string_ref_v1.h"
 #include "pointer/v1/pointer_v1.h"
 #include "vm/v1/vm_v1.h"
 
 #define DEFAULT_SIZE 0x100
+
+static const enum type id = TYPE_STRING;
 
 /* api */
 const struct string_methods string_methods_definition;
 void string_init();
 
 /* definition */
-extern void pointer_vm_register_type(const struct vm_type* type);
+extern u64 pointer_vm_register_type(u64 id, const struct vm_type* type);
 extern struct pointer_data vm_pointer;
+extern const struct string_ref_methods string_ref_methods_definition;
 extern const struct vm_methods vm_methods_definition;
 extern const struct list list_micro_definition;
 extern const struct pointer_vm_methods pointer_vm_methods_definition;
@@ -73,7 +77,7 @@ struct list_handler {
 };
 
 static void string_free(u64 ptr) {
-    struct pointer* data_ptr = vm->read_type(ptr, type->id);
+    struct pointer* data_ptr = vm->read_type(ptr, id);
     if (data_ptr == 0) {
         return;
     }
@@ -85,11 +89,11 @@ static void string_vm_free(struct pointer* ptr) {
 }
 
 static u64 string_copy(u64 ptr) {
-    const struct pointer* data_ptr = vm->read_type(ptr, type->id);
+    const struct pointer* data_ptr = vm->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
-    struct pointer* copy_ptr = virtual->alloc(data_ptr->size, type->id);
+    struct pointer* copy_ptr = virtual->alloc(data_ptr->size, id);
     memcpy(copy_ptr->data, data_ptr->data, copy_ptr->size); /* NOLINT */
     u64 data = vm->alloc(copy_ptr);
 #ifdef USE_GC
@@ -102,11 +106,11 @@ static void string_strcpy(u64 dest, u64 src) {
     if (src == dest) {
         return;
     }
-    struct pointer* dest_ptr = vm->read_type(dest, type->id);
+    struct pointer* dest_ptr = vm->read_type(dest, id);
     if (dest_ptr == 0) {
         return;
     }
-    const struct pointer* src_ptr = vm->read_type(src, type->id);
+    const struct pointer* src_ptr = vm->read_type(src, id);
     if (src_ptr == 0) {
         return;
     }
@@ -123,11 +127,11 @@ static void string_strcat(u64 dest, u64 src) {
     if (src == dest) {
         return;
     }
-    struct pointer* dest_ptr = vm->read_type(dest, type->id);
+    struct pointer* dest_ptr = vm->read_type(dest, id);
     if (dest_ptr == 0) {
         return;
     }
-    const struct pointer* src_ptr = vm->read_type(src, type->id);
+    const struct pointer* src_ptr = vm->read_type(src, id);
     if (src_ptr == 0) {
         return;
     }
@@ -141,11 +145,11 @@ static void string_strcat(u64 dest, u64 src) {
 }
 
 static u64 string_match_last(u64 src, u64 match) {
-    const struct pointer* src_ptr = vm->read_type(src, type->id);
+    const struct pointer* src_ptr = vm->read_type(src, id);
     if (src_ptr == 0) {
         return 0;
     }
-    const struct pointer* match_ptr = vm->read_type(match, type->id);
+    const struct pointer* match_ptr = vm->read_type(match, id);
     if (match_ptr == 0) {
         return 0;
     }
@@ -162,7 +166,7 @@ static u64 string_match_last(u64 src, u64 match) {
     if (*data_match != 0) {
         return 0;
     }
-    struct pointer* last_match_ptr = virtual->alloc(0, type->id);
+    struct pointer* last_match_ptr = virtual->alloc(0, TYPE_STRING_REF);
     last_match_ptr->data = --data_last;
     u64 data = vm->alloc(last_match_ptr);
 #ifdef USE_GC
@@ -179,7 +183,7 @@ static u64 string_load(const char* src_data) {
         return 0;
     }
     u64 size = strlen(src_data) + 1;
-    struct pointer* data_ptr = virtual->alloc(size, type->id);
+    struct pointer* data_ptr = virtual->alloc(size, id);
     memcpy(data_ptr->data, src_data, size); /* NOLINT */
     u64 data = vm->alloc(data_ptr);
 #ifdef USE_GC
@@ -201,7 +205,7 @@ static u64 string_getcwd(void) {
 }
 
 static void string_printf(u64 ptr) {
-    struct pointer* data_ptr = vm->read_type(ptr, type->id);
+    struct pointer* data_ptr = vm->read_type(ptr, id);
     if (data_ptr == 0) {
         return;
     }
@@ -214,7 +218,7 @@ static void string_printf(u64 ptr) {
 }
 
 static void string_put_char(u64 ptr, char value) {
-    struct pointer* data_ptr = vm->read_type(ptr, type->id);
+    struct pointer* data_ptr = vm->read_type(ptr, id);
     if (data_ptr == 0) {
         return;
     }
@@ -223,7 +227,7 @@ static void string_put_char(u64 ptr, char value) {
 }
 
 static char* string_unsafe(u64 ptr) {
-    struct pointer* data_ptr = vm->read_type(ptr, type->id);
+    struct pointer* data_ptr = vm->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
@@ -232,7 +236,7 @@ static char* string_unsafe(u64 ptr) {
 }
 
 static u64 string_size(u64 ptr) {
-    const struct pointer* data_ptr = vm->read_type(ptr, type->id);
+    const struct pointer* data_ptr = vm->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
@@ -241,12 +245,11 @@ static u64 string_size(u64 ptr) {
 }
 
 static const struct vm_type type_definition = {
-    .free = string_vm_free,
-    .id = TYPE_STRING
+    .free = string_vm_free
 };
 
 static void INIT init() {
-    pointer_vm_register_type(type);
+    pointer_vm_register_type(id, type);
 }
 
 /* public */
