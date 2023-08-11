@@ -154,7 +154,7 @@ if [[ -f "${build}/${target}.lcov" ]]; then
     rm "${build}/${target}.lcov"
 fi
 
-coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" )
+coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" "*.info" )
 for f in ${coverage}; do
     find "${build}" -type f -name "${f}" -delete
 done

@@ -81,6 +81,14 @@ if [[ "${silent}" == "--silent" ]]; then
     exec 2>&1 >/dev/null
 fi
 
+coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" "*.info" )
+directories=( "coverage-v1" "coverage-v2" "coverage-v3" "coverage-v4" "coverage-v5" "coverage-v6" )
+for directory in ${directories[@]}; do
+    for f in ${coverage}; do
+        find "${directory}" -type f -name "${f}" -delete
+    done
+done
+
 "${pwd}/bin/coverage.sh" --target ${source} --dir=coverage-v1 --valgrind ${silent} ${opts[@]}
 "${pwd}/bin/coverage.sh" --target ${source} --dir=coverage-v2 --sanitize ${silent} ${opts[@]}
 "${pwd}/bin/coverage.sh" --target ${source} --dir=coverage-v3 ${silent}

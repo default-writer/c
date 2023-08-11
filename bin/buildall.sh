@@ -77,6 +77,14 @@ if [[ "${silent}" == "--silent" ]]; then
     exec 2>&1 >/dev/null
 fi
 
+coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" "*.info" )
+directories=( "build-v1" "build-v2" "build-v3" "build-v4" "build-v5" "build-v6" )
+for directory in ${directories[@]}; do
+    for f in ${coverage}; do
+        find "${directory}" -type f -name "${f}" -delete
+    done
+done
+
 "${pwd}/bin/build.sh" --target ${source} --dir=build-v1 --valgrind ${silent} ${opts[@]}
 "${pwd}/bin/build.sh" --target ${source} --dir=build-v2 --sanitize ${silent} ${opts[@]}
 "${pwd}/bin/build.sh" --target ${source} --dir=build-v3 ${silent}
@@ -87,7 +95,6 @@ fi
 [ ! -d "${pwd}/build" ] && mkdir "${pwd}/build"
 
 directories=( "build-v1" "build-v2" "build-v3" "build-v4" "build-v5" "build-v6" )
-
 for directory in ${directories[@]}; do
     files=$(find "${directory}" -type f -name "log-*.txt" -exec echo {} \;)
     for file in ${files[@]}; do

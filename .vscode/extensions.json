@@ -34,6 +34,7 @@
     "fougas.msys2",
     "ms-vscode.cpptools-extension-pack",
     "zchrissirhcz.cmake-highlight",
-    "xaver.clang-format"
+    "xaver.clang-format",
+    "gruntfuggly.todo-tree"
   ]
 }

@@ -142,7 +142,7 @@ for target in ${targets[@]}; do
     fi
 done
 
-coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" )
+coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" "*.info" )
 for f in ${coverage}; do
     find "${build}" -type f -name "${f}" -delete
 done
