@@ -123,7 +123,8 @@ for directory in ${directories[@]}; do
 done
 
 if [[ "${source}" == "all" ]]; then
-    mv "${pwd}/coverage/${source}.info" "${pwd}/coverage/lcov.info"
+    lcov --remove "${pwd}/coverage/${source}.info" "${pwd}/.deps/*" -o "${pwd}/coverage/lcov.info"
+    rm "${pwd}/coverage/${source}.info"
 fi
 
 if [ "${silent}" == "--silent" ]; then
