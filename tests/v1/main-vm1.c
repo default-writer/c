@@ -72,7 +72,7 @@ extern inline void source1(void) {
     u64 file_path_ptr = pointer->pop();
     u64 file_name_ptr = string->load("/input.txt");
     u64 pattern_ptr = string->load("/");
-    u64 last_match_ptr = string->match_last(file_path_ptr, pattern_ptr);
+    u64 last_match_ptr = string->match_last_src(file_path_ptr, pattern_ptr);
     string->free(pattern_ptr);
     string->put_char(last_match_ptr, '\0');
     string_ref->free(last_match_ptr);

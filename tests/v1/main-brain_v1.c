@@ -355,6 +355,17 @@ RX_TEST_CASE(tests, test_strcat_alloc_alloc, .fixture = test_fixture) {
 }
 
 /* test init */
+RX_TEST_CASE(tests, test_string_last_match_ptr, .fixture = test_fixture) {
+    u64 string_ptr1 = string->load("/all_english_words.txt0xdeadbeef");
+    u64 string_ptr2 = string->load("/all_english_words.txt");
+    u64 last_matched_ptr1 = string->match_last_src(string_ptr1, string_ptr2);
+    RX_ASSERT(last_matched_ptr1 != 0);
+    string_ref->free(last_matched_ptr1);
+    string->free(string_ptr1);
+    string->free(string_ptr2);
+}
+
+/* test init */
 RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     u64 string_ptr = string->load("/all_english_words.txt");
     u64 zero_ptr = string->load("\0");
@@ -433,62 +444,62 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     string->strcat(string_ptr, none_ptr);
     string->strcat(none_ptr, string_ptr);
 
-    u64 last_matched_ptr1 = string->match_last(string_ptr, string_ptr);
-    string->match_last(data_ptr, null_ptr);
-    string->match_last(list_ptr, null_ptr);
-    string->match_last(string_ptr, data_ptr);
-    string->match_last(string_ptr, empty_ptr);
-    string->match_last(data_ptr, null_ptr);
-    string->match_last(list_ptr, string_ptr);
-    string->match_last(data_ptr, null_ptr);
-    string->match_last(list_ptr, null_ptr);
-    string->match_last(string_ptr, data_ptr);
-    string->match_last(data_ptr, null_ptr);
-    string->match_last(list_ptr, string_ptr);
-    string->match_last(null_ptr, null_ptr);
-    string->match_last(string_ptr, null_ptr);
+    u64 last_matched_ptr1 = string->match_last_src(string_ptr, string_ptr);
+    string->match_last_src(data_ptr, null_ptr);
+    string->match_last_src(list_ptr, null_ptr);
+    string->match_last_src(string_ptr, data_ptr);
+    string->match_last_src(string_ptr, empty_ptr);
+    string->match_last_src(data_ptr, null_ptr);
+    string->match_last_src(list_ptr, string_ptr);
+    string->match_last_src(data_ptr, null_ptr);
+    string->match_last_src(list_ptr, null_ptr);
+    string->match_last_src(string_ptr, data_ptr);
+    string->match_last_src(data_ptr, null_ptr);
+    string->match_last_src(list_ptr, string_ptr);
+    string->match_last_src(null_ptr, null_ptr);
+    string->match_last_src(string_ptr, null_ptr);
 
-    u64 last_matched_ptr2 = string->match_last(string_ptr, string_ptr);
-    string->match_last(string_ptr, zero_ptr);
-    string->match_last(data_ptr, zero_ptr);
-    string->match_last(list_ptr, zero_ptr);
-    string->match_last(string_ptr, data_ptr);
-    string->match_last(zero_ptr, zero_ptr);
-    string->match_last(zero_ptr, data_ptr);
-    string->match_last(zero_ptr, list_ptr);
-    string->match_last(zero_ptr, string_ptr);
-    string->match_last(empty_ptr, empty_ptr);
-    string->match_last(empty_ptr, string_ptr);
-    string->match_last(empty_ptr, zero_ptr);
+    u64 last_matched_ptr2 = string->match_last_src(string_ptr, string_ptr);
+    string->match_last_src(string_ptr, zero_ptr);
+    string->match_last_src(data_ptr, zero_ptr);
+    string->match_last_src(list_ptr, zero_ptr);
+    string->match_last_src(string_ptr, data_ptr);
+    string->match_last_src(zero_ptr, zero_ptr);
+    string->match_last_src(zero_ptr, data_ptr);
+    string->match_last_src(zero_ptr, list_ptr);
+    string->match_last_src(zero_ptr, string_ptr);
+    string->match_last_src(empty_ptr, empty_ptr);
+    string->match_last_src(empty_ptr, string_ptr);
+    string->match_last_src(empty_ptr, zero_ptr);
 
-    string->match_last(null_ptr, null_ptr);
-    string->match_last(null_ptr, empty_ptr);
-    string->match_last(null_ptr, string_ptr);
-    string->match_last(null_ptr, data_ptr);
-    string->match_last(null_ptr, list_ptr);
-    string->match_last(empty_ptr, null_ptr);
-    string->match_last(empty_ptr, empty_ptr);
-    string->match_last(empty_ptr, string_ptr);
-    string->match_last(empty_ptr, data_ptr);
-    string->match_last(empty_ptr, list_ptr);
-    string->match_last(string_ptr, null_ptr);
-    string->match_last(string_ptr, empty_ptr);
+    string->match_last_src(null_ptr, null_ptr);
+    string->match_last_src(null_ptr, empty_ptr);
+    string->match_last_src(null_ptr, string_ptr);
+    string->match_last_src(null_ptr, data_ptr);
+    string->match_last_src(null_ptr, list_ptr);
+    string->match_last_src(empty_ptr, null_ptr);
+    string->match_last_src(empty_ptr, empty_ptr);
+    string->match_last_src(empty_ptr, string_ptr);
+    string->match_last_src(empty_ptr, data_ptr);
+    string->match_last_src(empty_ptr, list_ptr);
+    string->match_last_src(string_ptr, null_ptr);
+    string->match_last_src(string_ptr, empty_ptr);
 
-    u64 last_matched_ptr3 = string->match_last(string_ptr, string_ptr);
-    string->match_last(string_ptr, data_ptr);
-    string->match_last(string_ptr, list_ptr);
-    string->match_last(data_ptr, null_ptr);
-    string->match_last(data_ptr, empty_ptr);
-    string->match_last(data_ptr, string_ptr);
-    string->match_last(data_ptr, data_ptr);
-    string->match_last(data_ptr, list_ptr);
-    string->match_last(list_ptr, null_ptr);
-    string->match_last(list_ptr, empty_ptr);
-    string->match_last(list_ptr, string_ptr);
-    string->match_last(list_ptr, data_ptr);
-    string->match_last(list_ptr, list_ptr);
-    string->match_last(string_ptr, none_ptr);
-    string->match_last(none_ptr, string_ptr);
+    u64 last_matched_ptr3 = string->match_last_src(string_ptr, string_ptr);
+    string->match_last_src(string_ptr, data_ptr);
+    string->match_last_src(string_ptr, list_ptr);
+    string->match_last_src(data_ptr, null_ptr);
+    string->match_last_src(data_ptr, empty_ptr);
+    string->match_last_src(data_ptr, string_ptr);
+    string->match_last_src(data_ptr, data_ptr);
+    string->match_last_src(data_ptr, list_ptr);
+    string->match_last_src(list_ptr, null_ptr);
+    string->match_last_src(list_ptr, empty_ptr);
+    string->match_last_src(list_ptr, string_ptr);
+    string->match_last_src(list_ptr, data_ptr);
+    string->match_last_src(list_ptr, list_ptr);
+    string->match_last_src(string_ptr, none_ptr);
+    string->match_last_src(none_ptr, string_ptr);
 
     string->unsafe(null_ptr);
     string->unsafe(empty_ptr);
@@ -543,7 +554,6 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     u64 undefined_ptr = string->copy(list_ptr);
 
     RX_ASSERT(undefined_ptr == 0);
-
     RX_ASSERT(last_matched_ptr1 != 0);
     RX_ASSERT(last_matched_ptr2 != 0);
     RX_ASSERT(last_matched_ptr3 != 0);
@@ -678,7 +688,7 @@ RX_TEST_CASE(tests, test_load_open_match_last_unsafe_free, .fixture = test_fixtu
     u64 file_name_ptr = string->load("/all_english_words.txt//");
     string->strcat(file_path_ptr, file_name_ptr);
     u64 pattern_ptr = string->load("//");
-    u64 last_match_ptr = string->match_last(file_path_ptr, pattern_ptr);
+    u64 last_match_ptr = string->match_last_src(file_path_ptr, pattern_ptr);
     string->free(pattern_ptr);
     string->put_char(last_match_ptr, '\0');
     string->free(last_match_ptr);
@@ -699,7 +709,7 @@ RX_TEST_CASE(tests, test_load_open_match_last_unsafe_free_unsuppported_calls, .f
     u64 ptr1 = string->load("qwerty//u");
     u64 ptr2 = string->load("asdfghjkl");
     u64 pattern_ptr = string->load("/u");
-    u64 last_match_ptr = string->match_last(ptr1, pattern_ptr);
+    u64 last_match_ptr = string->match_last_src(ptr1, pattern_ptr);
     string->strcat(last_match_ptr, ptr2);
     string->free(pattern_ptr);
     string->put_char(last_match_ptr, '\0');
@@ -750,7 +760,7 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixtur
 RX_TEST_CASE(tests, test_load_load_match_last, .fixture = test_fixture) {
     u64 str_ptr = string->load("Hello, world!");
     u64 ch_ptr = string->load("z");
-    u64 last_match_ptr = string->match_last(str_ptr, ch_ptr);
+    u64 last_match_ptr = string->match_last_src(str_ptr, ch_ptr);
     string->free(last_match_ptr);
     string->free(str_ptr);
     string->free(ch_ptr);
@@ -761,7 +771,7 @@ extern inline void source1(void) {
     u64 file_path_ptr = pointer->pop();
     u64 file_name_ptr = string->load("/input.txt");
     u64 pattern_ptr = string->load("/");
-    u64 last_match_ptr = string->match_last(file_path_ptr, pattern_ptr);
+    u64 last_match_ptr = string->match_last_src(file_path_ptr, pattern_ptr);
     string->free(pattern_ptr);
     string->put_char(last_match_ptr, '\0');
     string_ref->free(last_match_ptr);

@@ -60,7 +60,7 @@ static void string_vm_free(struct pointer* ptr);
 static u64 string_copy(u64 ptr);
 static void string_strcpy(u64 dest_ptr, u64 src_ptr);
 static void string_strcat(u64 dest_ptr, u64 src_ptr);
-static u64 string_match_last(u64 src_ptr, u64 match_ptr);
+static u64 string_match_last_src(u64 src_ptr, u64 match_ptr);
 static u64 string_load(const char* data);
 static u64 string_getcwd(void);
 static void string_printf(u64 ptr);
@@ -144,7 +144,15 @@ static void string_strcat(u64 dest, u64 src) {
     strcat(data_dest, data_src); /* NOLINT */
 }
 
-static u64 string_match_last(u64 src, u64 match) {
+/*
+    str1                         str2
+    0xdeaddeaddeaddeadbeef <---> 0xdead
+                  ^  ^
+                  |  |
+                  |  d is the last matching character of str1 string matching str2
+                  | d is the rightmost character of str1 string matching str2 (strrchr)
+*/
+static u64 string_match_last_src(u64 src, u64 match) {
     const struct pointer* src_ptr = vm->read_type(src, id);
     if (src_ptr == 0) {
         return 0;
@@ -154,20 +162,22 @@ static u64 string_match_last(u64 src, u64 match) {
         return 0;
     }
     const char* data_src = src_ptr->data;
-    const char* data_match = match_ptr->data;
-    char* data_last = strrchr(data_src, *data_match);
-    while (data_last != 0 && *data_last != 0 && *data_match != 0 && *data_last == *data_match) {
-        data_last++;
-        data_match++;
+    char* data_match = match_ptr->data;
+    char* str1 = strrchr(data_src, *data_match);
+    char* str2 = data_match;
+    while (
+        str1 != 0 && *str1 != 0 && str2 != 0 && *str2 != 0 && *str1 == *str2) {
+        str1++;
+        str2++;
     }
-    if (data_last == 0) {
+    if (str1 == 0) {
         return 0;
     }
-    if (*data_match != 0) {
+    if (*str1 == 0 && *str2 != 0) {
         return 0;
     }
     struct pointer* last_match_ptr = virtual->alloc(0, TYPE_STRING_REF);
-    last_match_ptr->data = --data_last;
+    last_match_ptr->data = --str1;
     u64 data = vm->alloc(last_match_ptr);
 #ifdef USE_GC
     list->push(&base->gc, (void*)data);
@@ -258,7 +268,7 @@ const struct string_methods string_methods_definition = {
     .copy = string_copy,
     .strcpy = string_strcpy,
     .strcat = string_strcat,
-    .match_last = string_match_last,
+    .match_last_src = string_match_last_src,
     .load = string_load,
     .getcwd = string_getcwd,
     .printf = string_printf,

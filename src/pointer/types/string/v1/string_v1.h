@@ -33,7 +33,7 @@ struct string_methods {
     u64 (*copy)(u64 ptr);
     void (*strcpy)(u64 dest, u64 src);
     void (*strcat)(u64 dest, u64 src);
-    u64 (*match_last)(u64 src_ptr, u64 match_prt);
+    u64 (*match_last_src)(u64 src_ptr, u64 match_prt);
     u64 (*getcwd)(void);
     u64 (*load)(const char* data);
     void (*printf)(u64 ptr);
