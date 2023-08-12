@@ -795,6 +795,52 @@ RX_TEST_CASE(tests, test_hashtable_alloc_set_get_count, .fixture = test_fixture)
     memory->free(value3, 2);
 }
 
+/* test init */
+RX_TEST_CASE(tests, test_hashtable_alloc_set_get_default_count, .fixture = test_fixture) {
+    hashtable->init(HASHTABLE_SIZE);
+    hashtable->setup(0);
+    char* key1 = memory->alloc(2);
+    char* key2 = memory->alloc(2);
+    char* key3 = memory->alloc(2);
+    char* value1 = memory->alloc(2);
+    char* value2 = memory->alloc(2);
+    char* value3 = memory->alloc(2);
+    memcpy(key1, "1", 2); /* NOLINT */
+    memcpy(key2, "1", 2); /* NOLINT */
+    memcpy(key3, "1", 2); /* NOLINT */
+    memcpy(value1, "a", 2); /* NOLINT */
+    memcpy(value2, "b", 2); /* NOLINT */
+    memcpy(value3, "c", 2); /* NOLINT */
+    struct hashtable_data* values[3] = {
+        hashtable->alloc(key1, value1),
+        hashtable->alloc(key2, value2),
+        hashtable->alloc(key3, value3)
+    };
+    RX_ASSERT(values[0] != 0);
+    RX_ASSERT(values[1] != 0);
+    RX_ASSERT(values[2] != 0);
+    const struct hashtable_data* key_value1 = hashtable->get(key1);
+    RX_ASSERT(key_value1 != 0);
+    RX_ASSERT(strcmp(key_value1->value, value3) == 0);
+    hashtable->set(key1, value2);
+    const struct hashtable_data* key_value2 = hashtable->get(key1);
+    RX_ASSERT(key_value2 != 0);
+    RX_ASSERT(strcmp(key_value2->value, value2) == 0);
+    hashtable->set(key1, value1);
+    const struct hashtable_data* key_value3 = hashtable->get(key1);
+    RX_ASSERT(key_value3 != 0);
+    RX_ASSERT(strcmp(key_value3->value, value1) == 0);
+    u64 count = hashtable->count(key1);
+    RX_ASSERT(count == 3);
+    hashtable->destroy();
+    memory->free(key1, 2);
+    memory->free(key2, 2);
+    memory->free(key3, 2);
+    memory->free(value1, 2);
+    memory->free(value2, 2);
+    memory->free(value3, 2);
+}
+
 int main(int argc, char** argv) {
     global_statistics();
     CLEAN(argc)

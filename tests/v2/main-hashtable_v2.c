@@ -437,6 +437,50 @@ RX_TEST_CASE(tests, test_hashtable_alloc_set_get_count, .fixture = test_fixture)
 }
 
 /* test init */
+RX_TEST_CASE(tests, test_hashtable_alloc_set_get_default_count, .fixture = test_fixture) {
+    hashtable->init(HASHTABLE_SIZE);
+    hashtable->setup(0);
+    char* key1 = memory->alloc(2);
+    char* key2 = memory->alloc(2);
+    char* key3 = memory->alloc(2);
+    char* value1 = memory->alloc(2);
+    char* value2 = memory->alloc(2);
+    char* value3 = memory->alloc(2);
+    memcpy(key1, "1", 2); /* NOLINT */
+    memcpy(key2, "1", 2); /* NOLINT */
+    memcpy(key3, "1", 2); /* NOLINT */
+    memcpy(value1, "a", 2); /* NOLINT */
+    memcpy(value2, "b", 2); /* NOLINT */
+    memcpy(value3, "c", 2); /* NOLINT */
+    struct hashtable_data* values[3] = {
+        hashtable->alloc(key1, value1),
+        hashtable->alloc(key2, value2),
+        hashtable->alloc(key3, value3)
+    };
+    RX_ASSERT(values[0] != 0);
+    RX_ASSERT(values[1] != 0);
+    RX_ASSERT(values[2] != 0);
+    u32 key_value1 = hashtable->get(key1);
+    RX_ASSERT(key_value1 != 0);
+    hashtable->set(key1, value2);
+    u32 key_value2 = hashtable->get(key1);
+    RX_ASSERT(key_value1 != 0);
+    hashtable->set(key1, value3);
+    u32 key_value3 = hashtable->get(key1);
+    RX_ASSERT(key_value1 != 0);
+    RX_ASSERT(key_value3 == key_value2 && key_value2 == key_value1);
+    u64 count = hashtable->count(key1);
+    RX_ASSERT(count == 3);
+    hashtable->destroy();
+    memory->free(key1, 2);
+    memory->free(key2, 2);
+    memory->free(key3, 2);
+    memory->free(value1, 2);
+    memory->free(value2, 2);
+    memory->free(value3, 2);
+}
+
+/* test init */
 RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixture) {
     hashtable->init(0xff);
     u64 file_path_ptr = pointer->getcwd();

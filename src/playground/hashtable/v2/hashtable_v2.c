@@ -82,9 +82,7 @@ static u64 hashtable_size = HASHTABLE_DEFAULT_SIZE;
 static u32 (*hash_function_ptr)(const char* source) = 0;
 
 static void hashtable_setup(u32 (*function)(const char* source)) {
-    if (function != 0) {
-        hash_function_ptr = function;
-    }
+    hash_function_ptr = function;
 }
 
 /* hash: form hash value for string s */

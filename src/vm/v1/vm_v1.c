@@ -126,10 +126,6 @@ static struct vm_data* vm_init_internal(u64 size, u64 offset) {
 }
 
 static struct pointer** vm_read_internal(u64 address) {
-    /*
-        TODO: replase default search in vm space with
-            ptr->vm->bp + ptr->address - ptr->vm->offset - 1
-    */
     struct pointer** ptr = 0;
     const struct vm_data* vm = head;
     do {
@@ -254,7 +250,8 @@ static void vm_free(struct pointer* ptr) {
     if (!ptr) {
         return;
     }
-    struct pointer** data = vm_read_internal(ptr->address);
+    const struct vm_data* vm = ptr->vm;
+    struct pointer** data = vm->bp + ptr->address - vm->offset - 1;
     if (data != 0) {
 #ifndef USE_GC
         struct vm_pointer* vm_ptr = memory->alloc(VM_POINTER_SIZE);
