@@ -64,6 +64,10 @@ for opt in ${opts[@]}; do
     esac
 done
 
+if [ "${silent}" == "--silent" ]; then
+    exec 2>&1 >/dev/null
+fi
+
 if [[ "${source}" == "musl" ]]; then
 
     if [ ! "${uid}" -eq 0 ]; then
@@ -72,9 +76,22 @@ if [[ "${source}" == "musl" ]]; then
     fi
 
     cd "${pwd}/.deps/musl"
-    ./configure
+    ./configure 2>&1
     make
     make install
+
+    cat > hello.c <<EOF
+#include <stdio.h>
+int main()
+{
+    printf("hello, world!\n");
+    return 0;
+}
+EOF
+    /usr/local/musl/bin/musl-gcc --pipe ./hello.c
+    ./a.out
+    rm hello.c
+    rm ./a.out
 
 fi
 
