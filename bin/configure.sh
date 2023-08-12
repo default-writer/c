@@ -11,8 +11,6 @@ uid=$(id -u)
 
 pwd=$(pwd)
 
-pwd=$(pwd)
-
 install="$1"
 
 opts=( "${@:2}" )
@@ -66,9 +64,11 @@ for opt in ${opts[@]}; do
     esac
 done
 
-if [[ "${target}" == "musl" ]]; then
+if [[ "${source}" == "musl" ]]; then
+    echo HAHAHAH
     cd "${pwd}/.deps/musl"
     ./configure
+    exit
 fi
 
 if [ "${silent}" == "--silent" ]; then
