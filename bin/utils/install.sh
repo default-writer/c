@@ -100,6 +100,10 @@ case "${install}" in
         submodule-install https://github.com/default-writer/rexo.git .deps/rexo
         ;;
 
+    "--submodule-musl") # installs musl as git submodule
+        submodule-install https://git.musl-libc.org/git/musl .deps/musl
+        ;;
+
     "--submodule-vcpkg") # installs rexo as git submodule
         submodule-install https://github.com/Microsoft/vcpkg.git .deps/vcpkg
         ;;

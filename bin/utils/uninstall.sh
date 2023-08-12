@@ -43,6 +43,10 @@ case "${install}" in
         submodule-uninstall ${pwd} .deps/rexo
         ;;
 
+    "--submodule-musl") # uninstalls git submodule musl and cleans up rexo directories
+        submodule-uninstall ${pwd} .deps/musl
+        ;;
+
     "--submodule-vcpkg") # uninstalls rexo as git submodule
         submodule-uninstall ${pwd} .deps/vcpkg
         ;;
