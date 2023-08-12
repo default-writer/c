@@ -4,6 +4,7 @@ set -e
 export LCOV_PATH=$(which lcov)
 export GENHTML_PATH==$(which genhtml)
 export MAKEFLAGS=-j8
+export LD_LIBRARY_PATH=/usr/local/lib
 
 pwd=$(pwd)
 logs="${pwd}/logs"

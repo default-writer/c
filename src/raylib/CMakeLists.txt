@@ -54,9 +54,10 @@ target_link_libraries(${PROJECT_NAME} PRIVATE raylib m c)
 
 add_compile_options(${STANDARD} ${OPTIONS})
 add_link_options(${STANDARD} ${OPTIONS})
-link_directories(${MUSL}/lib)
 
 include_directories(raylib/src)
+
+link_directories( $ENV{LD_LIBRARY_PATH} )
 
 # Checks if OSX and links appropriate frameworks (only required on MacOS)
 if (APPLE)

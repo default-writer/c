@@ -156,6 +156,7 @@ for f in ${coverage}; do
 done
 
 export MAKEFLAGS=-j8
+export LD_LIBRARY_PATH=/usr/local/lib
 
 ${cmake} \
     -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \

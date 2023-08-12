@@ -25,6 +25,7 @@ set(CONFIG_MEMORY_CLEANUP ON)
 set(CONFIG_MEMORY_ALLOC OFF)
 set(CONFIG_MEMCPY OFF)
 
+link_directories( $ENV{LD_LIBRARY_PATH} )
 
 # Check the operating system version
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
