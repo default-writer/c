@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22.1)
 
-project(c VERSION 0.0.1 LANGUAGES C CXX)
+project(raylib-experiment1 VERSION 0.0.1 LANGUAGES C CXX)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_C_STANDARD 99)
@@ -49,12 +49,12 @@ set(OPTIONS
 
 find_package(raylib 3.0 REQUIRED) # Requires at least version 3.0
 
-add_executable(raylib-experiment1 examples/ex1/main.c)
-
-target_link_libraries(raylib-experiment1 PRIVATE raylib m)
+add_executable(${PROJECT_NAME} examples/ex1/main.c)
+target_link_libraries(${PROJECT_NAME} PRIVATE raylib m c)
 
 add_compile_options(${STANDARD} ${OPTIONS})
 add_link_options(${STANDARD} ${OPTIONS})
+link_directories(${MUSL}/lib)
 
 include_directories(raylib/src)
 
