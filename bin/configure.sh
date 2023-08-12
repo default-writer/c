@@ -66,7 +66,7 @@ for opt in ${opts[@]}; do
     esac
 done
 
-if [[ "${musl}" == "--musl" ]]; then
+if [[ "${target}" == "musl" ]]; then
     cd "${pwd}/.deps/musl"
     ./configure
 fi
