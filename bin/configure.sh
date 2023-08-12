@@ -65,12 +65,17 @@ for opt in ${opts[@]}; do
 done
 
 if [[ "${source}" == "musl" ]]; then
-    echo HAHAHAH
+
+    if [ ! "${uid}" -eq 0 ]; then
+        echo "Please run as root"
+        exit
+    fi
+
     cd "${pwd}/.deps/musl"
     ./configure
     make
     make install
-    exit
+
 fi
 
 if [ "${silent}" == "--silent" ]; then
