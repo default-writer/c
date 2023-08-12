@@ -34,7 +34,6 @@ struct string_pointer_methods {
 };
 
 struct string_reference {
-    struct pointer* ptr;
     u64 address;
     u64 offset;
 };

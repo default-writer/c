@@ -87,10 +87,14 @@ static char* string_pointer_internal(struct pointer* data_ptr) {
     }
     if (data_ptr->id == TYPE_STRING_POINTER) {
         struct string_reference* ref = data_ptr->data;
-        if (ref != 0) {
-            ptr = ref->ptr;
-            offset = ref->offset;
+        if (ref == 0) {
+            return 0;
         }
+        ptr = vm->read_type(ref->address, TYPE_STRING);
+        if (ptr == 0) {
+            return 0;
+        }
+        offset = ref->offset;
     }
     if (ptr == 0) {
         return 0;
@@ -215,7 +219,6 @@ static u64 string_match_last_src(u64 src, u64 match) {
     struct string_reference* ref = (struct string_reference*)last_match_ptr->data;
     ref->address = src;
     ref->offset = offset;
-    ref->ptr = src_ptr;
     u64 data = vm->alloc(last_match_ptr);
 #ifdef USE_GC
     list->push(&base->gc, (void*)data);
