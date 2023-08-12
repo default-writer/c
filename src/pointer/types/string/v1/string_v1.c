@@ -212,11 +212,11 @@ static u64 string_match_last_src(u64 src, u64 match) {
     if (*str1 == 0 && *str2 != 0) {
         return 0;
     }
-    struct pointer* last_match_ptr = virtual->alloc(sizeof(struct string_reference), TYPE_STRING_POINTER);
-    struct string_reference* ref = (struct string_reference*)last_match_ptr->data;
+    struct pointer* data_ptr = virtual->alloc(sizeof(struct string_reference), TYPE_STRING_POINTER);
+    struct string_reference* ref = (struct string_reference*)data_ptr->data;
     ref->address = src;
     ref->offset = offset;
-    u64 data = vm->alloc(last_match_ptr);
+    u64 data = vm->alloc(data_ptr);
 #ifdef USE_GC
     list->push(&base->gc, (void*)data);
 #endif
