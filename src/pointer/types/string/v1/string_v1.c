@@ -213,7 +213,7 @@ static u64 string_match_last_src(u64 src, u64 match) {
         return 0;
     }
     struct pointer* data_ptr = virtual->alloc(sizeof(struct string_reference), TYPE_STRING_POINTER);
-    struct string_reference* ref = (struct string_reference*)data_ptr->data;
+    struct string_reference* ref = data_ptr->data;
     ref->address = src;
     ref->offset = offset;
     u64 data = vm->alloc(data_ptr);
