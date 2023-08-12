@@ -38,7 +38,7 @@ enum type {
     /* value used for string type - string */
     TYPE_STRING = 3,
     /* value used for string ref type - string ref */
-    TYPE_STRING_REF = 4,
+    TYPE_STRING_POINTER = 4,
     /* value used for file type - file */
     TYPE_FILE = 5,
     /* value used for list type - list */

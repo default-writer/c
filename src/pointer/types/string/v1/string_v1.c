@@ -26,7 +26,7 @@
 #include "string_v1.h"
 #include "common/alloc.h"
 #include "list-micro/data.h"
-#include "pointer/types/string_ref/v1/string_ref_v1.h"
+#include "pointer/types/string_pointer/v1/string_pointer_v1.h"
 #include "pointer/v1/pointer_v1.h"
 #include "vm/v1/vm_v1.h"
 
@@ -41,7 +41,7 @@ void string_init();
 /* definition */
 extern u64 pointer_vm_register_type(u64 id, const struct vm_type* type);
 extern struct pointer_data vm_pointer;
-extern const struct string_ref_methods string_ref_methods_definition;
+extern const struct string_pointer_methods string_pointer_methods_definition;
 extern const struct vm_methods vm_methods_definition;
 extern const struct list list_micro_definition;
 extern const struct pointer_vm_methods pointer_vm_methods_definition;
@@ -176,7 +176,7 @@ static u64 string_match_last_src(u64 src, u64 match) {
     if (*str1 == 0 && *str2 != 0) {
         return 0;
     }
-    struct pointer* last_match_ptr = virtual->alloc(0, TYPE_STRING_REF);
+    struct pointer* last_match_ptr = virtual->alloc(0, TYPE_STRING_POINTER);
     last_match_ptr->data = --str1;
     u64 data = vm->alloc(last_match_ptr);
 #ifdef USE_GC

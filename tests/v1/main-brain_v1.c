@@ -32,7 +32,7 @@
 #include "pointer/types/list/v1/list_v1.h"
 #include "pointer/types/object/v1/object_v1.h"
 #include "pointer/types/string/v1/string_v1.h"
-#include "pointer/types/string_ref/v1/string_ref_v1.h"
+#include "pointer/types/string_pointer/v1/string_pointer_v1.h"
 #include "pointer/types/user/v1/user_v1.h"
 #include "pointer/v1/pointer_v1.h"
 
@@ -52,7 +52,7 @@ extern const struct pointer_methods pointer_methods_definition;
 extern const struct list_methods list_methods_definition;
 extern const struct file_methods file_methods_definition;
 extern const struct string_methods string_methods_definition;
-extern const struct string_ref_methods string_ref_methods_definition;
+extern const struct string_pointer_methods string_pointer_methods_definition;
 extern const struct user_methods user_methods_definition;
 extern const struct data_methods data_methods_definition;
 extern const struct object_methods object_methods_definition;
@@ -61,7 +61,7 @@ const struct pointer_methods* pointer = &pointer_methods_definition;
 const struct list_methods* list = &list_methods_definition;
 const struct file_methods* file = &file_methods_definition;
 const struct string_methods* string = &string_methods_definition;
-const struct string_ref_methods* string_ref = &string_ref_methods_definition;
+const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
 const struct user_methods* user = &user_methods_definition;
 const struct data_methods* data = &data_methods_definition;
 const struct object_methods* object = &object_methods_definition;
@@ -360,7 +360,7 @@ RX_TEST_CASE(tests, test_string_last_match_ptr, .fixture = test_fixture) {
     u64 string_ptr2 = string->load("/all_english_words.txt");
     u64 last_matched_ptr1 = string->match_last_src(string_ptr1, string_ptr2);
     RX_ASSERT(last_matched_ptr1 != 0);
-    string_ref->free(last_matched_ptr1);
+    string_pointer->free(last_matched_ptr1);
     string->free(string_ptr1);
     string->free(string_ptr2);
 }
@@ -557,9 +557,9 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     RX_ASSERT(last_matched_ptr1 != 0);
     RX_ASSERT(last_matched_ptr2 != 0);
     RX_ASSERT(last_matched_ptr3 != 0);
-    string_ref->free(last_matched_ptr1);
-    string_ref->free(last_matched_ptr2);
-    string_ref->free(last_matched_ptr3);
+    string_pointer->free(last_matched_ptr1);
+    string_pointer->free(last_matched_ptr2);
+    string_pointer->free(last_matched_ptr3);
     string->free(last_matched_ptr2);
     string->free(last_matched_ptr3);
 
@@ -715,7 +715,7 @@ RX_TEST_CASE(tests, test_load_open_match_last_unsafe_free_unsuppported_calls, .f
     string->put_char(last_match_ptr, '\0');
     string->free(ptr1);
     string->free(ptr2);
-    string_ref->free(last_match_ptr);
+    string_pointer->free(last_match_ptr);
 }
 
 /* test init */
@@ -774,7 +774,7 @@ extern inline void source1(void) {
     u64 last_match_ptr = string->match_last_src(file_path_ptr, pattern_ptr);
     string->free(pattern_ptr);
     string->put_char(last_match_ptr, '\0');
-    string_ref->free(last_match_ptr);
+    string_pointer->free(last_match_ptr);
     string->strcat(file_path_ptr, file_name_ptr);
     string->free(file_name_ptr);
     u64 mode_ptr = string->load("rb");

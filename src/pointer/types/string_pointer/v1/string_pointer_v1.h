@@ -23,18 +23,20 @@
  * SOFTWARE.
  *
  */
-#ifndef _POINTER_TYPES_STRING_REF_H_
-#define _POINTER_TYPES_STRING_REF_H_
+#ifndef _POINTER_TYPES_STRING_POINTER_H_
+#define _POINTER_TYPES_STRING_POINTER_H_
 
+#include "pointer/v1/pointer_v1.h"
 #include "std/common.h"
 
-struct string_ref_methods {
+struct string_pointer_methods {
     void (*free)(u64 ptr);
 };
 
-struct string_ref {
-    u64 ptr;
+struct string_referece {
+    struct pointer* ptr;
+    u64 address;
     u64 offset;
 };
 
-#endif /* _POINTER_TYPES_STRING_REF_H_ */
+#endif /* _POINTER_TYPES_STRING_POINTER_H_ */

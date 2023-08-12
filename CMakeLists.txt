@@ -270,13 +270,13 @@ set(LIB_STD_USER1_SOURCE src/pointer/types/user/v1/user_v1.c)
 set(LIB_STD_LIST1_SOURCE src/pointer/types/list/v1/list_v1.c)
 set(LIB_STD_FILE1_SOURCE src/pointer/types/file/v1/file_v1.c)
 set(LIB_STD_STRING1_SOURCE src/pointer/types/string/v1/string_v1.c)
-set(LIB_STD_STRING_REF1_SOURCE src/pointer/types/string_ref/v1/string_ref_v1.c)
+set(LIB_STD_STRING_POINTER1_SOURCE src/pointer/types/string_pointer/v1/string_pointer_v1.c)
 set(LIB_STD_OBJECT1_SOURCE src/pointer/types/object/v1/object_v1.c)
 set(LIB_STD_TYPES1_SOURCE
     src/pointer/types/void/v1/void_v1.c
     src/pointer/types/data/v1/data_v1.c
     src/pointer/types/string/v1/string_v1.c
-    src/pointer/types/string_ref/v1/string_ref_v1.c
+    src/pointer/types/string_pointer/v1/string_pointer_v1.c
     src/pointer/types/file/v1/file_v1.c
     src/pointer/types/list/v1/list_v1.c
     src/pointer/types/object/v1/object_v1.c)
@@ -381,7 +381,7 @@ add_library(std-types1 STATIC ${LIB_STD_TYPES1_SOURCE})
 add_library(std-list1 SHARED ${LIB_STD_LIST1_SOURCE})
 add_library(std-file1 SHARED ${LIB_STD_FILE1_SOURCE})
 add_library(std-string1 SHARED ${LIB_STD_STRING1_SOURCE})
-add_library(std-string-ref1 SHARED ${LIB_STD_STRING_REF1_SOURCE})
+add_library(std-string-pointer1 SHARED ${LIB_STD_STRING_POINTER1_SOURCE})
 add_library(std-data1 SHARED ${LIB_STD_DATA1_SOURCE})
 
 add_library(std-object1 SHARED ${LIB_STD_OBJECT1_SOURCE})
@@ -459,11 +459,11 @@ target_link_libraries(main-memory1 PRIVATE list-memory1)
 target_link_libraries(main-memory2 PRIVATE list-memory2 memory-ref1)
 target_link_libraries(main-memory3 PRIVATE list-memory3 memory-ref2)
 target_link_libraries(main-memory4 PRIVATE list-memory4 memory-ref3 list-lcg)
-target_link_libraries(main-brain1 PRIVATE list-pointer1 list-micro vm-v1 std-string-ref1)
+target_link_libraries(main-brain1 PRIVATE list-pointer1 list-micro vm-v1 std-string-pointer1)
 target_link_libraries(main-brain2 PRIVATE list-pointer2 list-micro)
 target_link_libraries(main-pointer1 PRIVATE list-pointer1 list-micro vm-v1)
 target_link_libraries(main-pointer2 PRIVATE list-pointer2 list-micro)
-target_link_libraries(main-hashtable1 PRIVATE list-pointer1 list-micro vm-v1 hashtable1 std-string-ref1)
+target_link_libraries(main-hashtable1 PRIVATE list-pointer1 list-micro vm-v1 hashtable1 std-string-pointer1)
 target_link_libraries(main-hashtable2 PRIVATE list-pointer2 list-micro hashtable2)
 target_link_libraries(main-vm1 PRIVATE tests tests-vm-v1 list-alloc list-light vm-v1 user1)
 target_link_libraries(main-vm2 PRIVATE tests tests-vm-v2 list-alloc list-light vm-v2 list-pointer2 list-micro)

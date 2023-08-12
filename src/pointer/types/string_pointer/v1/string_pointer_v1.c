@@ -23,7 +23,7 @@
  * SOFTWARE.
  *
  */
-#include "pointer/types/string_ref/v1/string_ref_v1.h"
+#include "pointer/types/string_pointer/v1/string_pointer_v1.h"
 #include "common/alloc.h"
 #include "list-micro/data.h"
 #include "pointer/v1/pointer_v1.h"
@@ -31,11 +31,11 @@
 
 #define DEFAULT_SIZE 0x100
 
-static const enum type id = TYPE_STRING_REF;
+static const enum type id = TYPE_STRING_POINTER;
 
 /* api */
-const struct string_ref_methods string_ref_methods_definition;
-void string_ref_init();
+const struct string_pointer_methods string_pointer_methods_definition;
+void string_pointer_init();
 
 /* definition */
 extern u64 pointer_vm_register_type(u64 id, const struct vm_type* type);
@@ -49,24 +49,24 @@ static const struct vm_type type_definition;
 static const struct vm_type* type = &type_definition;
 
 /* internal */
-static void string_ref_vm_free(struct pointer* ptr);
-static void string_ref_free(u64 ptr);
+static void string_pointer_vm_free(struct pointer* ptr);
+static void string_pointer_free(u64 ptr);
 
 /* implementation */
-static void string_ref_free(u64 ptr) {
+static void string_pointer_free(u64 ptr) {
     struct pointer* data_ptr = vm->read_type(ptr, id);
     if (data_ptr == 0) {
         return;
     }
-    return string_ref_vm_free(data_ptr);
+    return string_pointer_vm_free(data_ptr);
 }
 
-static void string_ref_vm_free(struct pointer* ptr) {
+static void string_pointer_vm_free(struct pointer* ptr) {
     virtual->free(ptr);
 }
 
 static const struct vm_type type_definition = {
-    .free = string_ref_vm_free
+    .free = string_pointer_vm_free
 };
 
 static void INIT init() {
@@ -74,12 +74,12 @@ static void INIT init() {
 }
 
 /* public */
-const struct string_ref_methods string_ref_methods_definition = {
-    .free = string_ref_free,
+const struct string_pointer_methods string_pointer_methods_definition = {
+    .free = string_pointer_free,
 };
 
 #ifndef ATTRIBUTE
-void string_ref_init() {
+void string_pointer_init() {
     init();
 }
 #endif

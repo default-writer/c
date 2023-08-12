@@ -92,7 +92,7 @@
       "command": "twitch.open"
     }
   ],
-  "window.zoomLevel": 0,
+  "window.zoomLevel": 2,
   "workbench.editor.enablePreview": true,
   "workbench.colorTheme": "Yitzchok (rainglow)",
   "editor.tokenColorCustomizations": {

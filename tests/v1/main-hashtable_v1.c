@@ -31,7 +31,7 @@
 #include "pointer/types/list/v1/list_v1.h"
 #include "pointer/types/object/v1/object_v1.h"
 #include "pointer/types/string/v1/string_v1.h"
-#include "pointer/types/string_ref/v1/string_ref_v1.h"
+#include "pointer/types/string_pointer/v1/string_pointer_v1.h"
 #include "pointer/v1/pointer_v1.h"
 
 #define RXP_DEBUG_TESTS
@@ -56,7 +56,7 @@ extern const struct pointer_methods pointer_methods_definition;
 extern const struct list_methods list_methods_definition;
 extern const struct file_methods file_methods_definition;
 extern const struct string_methods string_methods_definition;
-extern const struct string_ref_methods string_ref_methods_definition;
+extern const struct string_pointer_methods string_pointer_methods_definition;
 extern const struct data_methods data_methods_definition;
 extern const struct object_methods object_methods_definition;
 
@@ -65,7 +65,7 @@ static const struct pointer_methods* pointer = &pointer_methods_definition;
 static const struct list_methods* list = &list_methods_definition;
 static const struct file_methods* file = &file_methods_definition;
 static const struct string_methods* string = &string_methods_definition;
-static const struct string_ref_methods* string_ref = &string_ref_methods_definition;
+static const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
 static const struct data_methods* data = &data_methods_definition;
 static const struct object_methods* object = &object_methods_definition;
 
@@ -441,7 +441,7 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixtur
             struct hashtable_data* unsafe_tmp = hashtable->alloc(unsafe, 0);
             hashtable->free(unsafe_tmp);
             string->free(pattern_ptr);
-            string_ref->free(last_match_ptr);
+            string_pointer->free(last_match_ptr);
             string->free(leak_ptr);
             file_data = tmp;
         }
