@@ -85,14 +85,14 @@ for directory in ${directories[@]}; do
     done
 done
 
+[ ! -d "${pwd}/build" ] && mkdir "${pwd}/build"
+
 "${pwd}/bin/build.sh" --target ${source} --dir=build-v1 --valgrind ${silent} ${opts[@]}
 "${pwd}/bin/build.sh" --target ${source} --dir=build-v2 --sanitize ${silent} ${opts[@]}
 "${pwd}/bin/build.sh" --target ${source} --dir=build-v3 ${silent}
 "${pwd}/bin/build.sh" --target ${source} --dir=build-v4 --gc --valgrind ${silent} ${opts[@]}
 "${pwd}/bin/build.sh" --target ${source} --dir=build-v5 --gc --sanitize ${silent} ${opts[@]}
 "${pwd}/bin/build.sh" --target ${source} --dir=build-v6 --gc ${silent}
-
-[ ! -d "${pwd}/build" ] && mkdir "${pwd}/build"
 
 directories=( "build-v1" "build-v2" "build-v3" "build-v4" "build-v5" "build-v6" )
 for directory in ${directories[@]}; do
