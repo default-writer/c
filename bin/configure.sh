@@ -68,6 +68,8 @@ if [[ "${source}" == "musl" ]]; then
     echo HAHAHAH
     cd "${pwd}/.deps/musl"
     ./configure
+    make
+    make install
     exit
 fi
 
