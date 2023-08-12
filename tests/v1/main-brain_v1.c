@@ -357,12 +357,38 @@ RX_TEST_CASE(tests, test_strcat_alloc_alloc, .fixture = test_fixture) {
 /* test init */
 RX_TEST_CASE(tests, test_string_last_match_ptr, .fixture = test_fixture) {
     u64 string_ptr1 = string->load("/all_english_words.txt0xdeadbeef");
-    u64 string_ptr2 = string->load("/all_english_words.txt");
+    u64 string_ptr2 = string->load("/all_english_words.txt2");
     u64 last_matched_ptr1 = string->match_last_src(string_ptr1, string_ptr2);
     RX_ASSERT(last_matched_ptr1 != 0);
     string_pointer->free(last_matched_ptr1);
     string->free(string_ptr1);
     string->free(string_ptr2);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_strcpy, .fixture = test_fixture) {
+    u64 path_ptr1 = string->load("/");
+    u64 path_ptr2 = string->load("@");
+    u64 path_copy_ptr = string->copy(path_ptr1);
+    string->strcat(path_copy_ptr, path_ptr2);
+
+    char* path1 = string->unsafe(path_ptr1);
+    char* path2 = string->unsafe(path_ptr2);
+    u64 path1_len = strlen(path1);
+    u64 path2_len = strlen(path2);
+    RX_ASSERT(path1_len > 0);
+    RX_ASSERT(path2_len > 0);
+    char* buf = calloc(1, path1_len + path2_len + 1);
+    strcpy(buf, path1);
+    strcat(buf, path2);
+    char* path_copy = string->unsafe(path_copy_ptr);
+    RX_ASSERT(strlen(path_copy) == strlen(buf));
+    RX_ASSERT(strcmp(path_copy, buf) == 0);
+    free(buf);
+
+    string->free(path_ptr1);
+    string->free(path_ptr2);
+    string->free(path_copy_ptr);
 }
 
 /* test init */
@@ -674,6 +700,67 @@ RX_TEST_CASE(tests, test_load_open_file_close_file, .fixture = test_fixture) {
 }
 
 /* test init */
+RX_TEST_CASE(tests, test_match_last_src_strcpy, .fixture = test_fixture) {
+    u64 name_ptr = string->load("name");
+    u64 at_ptr = string->load("@");
+    u64 domain_ptr = string->load("domain.org");
+    string->strcat(name_ptr, at_ptr);
+    string->strcat(name_ptr, domain_ptr);
+
+    u64 path_ptr1 = string->load("name@domain.org");
+    u64 path_ptr2 = string->copy(at_ptr);
+
+    u64 domain_name = string->match_last_src(path_ptr1, path_ptr2);
+    string->strcpy(name_ptr, domain_name);
+
+    char* domain = string->unsafe(domain_ptr);
+    char* name = string->unsafe(name_ptr);
+    u64 domain_len = strlen(domain);
+    u64 name_len = strlen(name);
+    RX_ASSERT(domain_len > 0);
+    RX_ASSERT(name_len > 0);
+    RX_ASSERT(domain_len == name_len);
+    RX_ASSERT(strcmp(domain, name) == 0);
+
+    string_pointer->free(domain_name);
+    string->free(name_ptr);
+    string->free(path_ptr1);
+    string->free(path_ptr2);
+    string->free(name_ptr);
+    string->free(domain_ptr);
+    string->free(at_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_match_last_src_strcat, .fixture = test_fixture) {
+    u64 name_ptr = string->load("name");
+    u64 at_ptr = string->load("@");
+    string->strcat(name_ptr, at_ptr);
+
+    u64 path_ptr1 = string->load("name@domain.org");
+    u64 path_ptr2 = string->copy(at_ptr);
+
+    u64 domain_name = string->match_last_src(path_ptr1, path_ptr2);
+    string->strcat(name_ptr, domain_name);
+
+    char* domain = string->unsafe(path_ptr1);
+    char* name = string->unsafe(name_ptr);
+    u64 domain_len = strlen(domain);
+    u64 name_len = strlen(name);
+    RX_ASSERT(domain_len > 0);
+    RX_ASSERT(name_len > 0);
+    RX_ASSERT(domain_len == name_len);
+    RX_ASSERT(strcmp(domain, name) == 0);
+
+    string_pointer->free(domain_name);
+    string->free(name_ptr);
+    string->free(path_ptr1);
+    string->free(path_ptr2);
+    string->free(name_ptr);
+    string->free(at_ptr);
+}
+
+/* test init */
 RX_TEST_CASE(tests, test_file_read_invalid_type, .fixture = test_fixture) {
     u64 list_ptr = list->alloc();
     u64 data_ptr = file->data(list_ptr);
@@ -769,14 +856,31 @@ RX_TEST_CASE(tests, test_load_load_match_last, .fixture = test_fixture) {
 
 extern inline void source1(void) {
     u64 file_path_ptr = pointer->pop();
-    u64 file_name_ptr = string->load("/input.txt");
+    u64 file_name_ptr = string->load("input.txt");
     u64 pattern_ptr = string->load("/");
+    u64 path_ptr = string->load("/");
     u64 last_match_ptr = string->match_last_src(file_path_ptr, pattern_ptr);
     string->free(pattern_ptr);
     string->put_char(last_match_ptr, '\0');
+    string->strcpy(path_ptr, file_path_ptr);
     string_pointer->free(last_match_ptr);
     string->strcat(file_path_ptr, file_name_ptr);
     string->free(file_name_ptr);
+
+    char* path = string->unsafe(path_ptr);
+    u64 path_len = strlen(path);
+    u64 input_len = strlen("input.txt");
+    RX_ASSERT(path_len > 0);
+    RX_ASSERT(input_len > 0);
+    char* buf = calloc(1, path_len + input_len + 1);
+    strcpy(buf, path);
+    strcat(buf, "input.txt");
+    char* file_path = string->unsafe(file_path_ptr);
+    RX_ASSERT(strlen(file_path) == strlen(buf));
+    RX_ASSERT(strcmp(file_path, buf) == 0);
+    free(buf);
+
+    string->free(path_ptr);
     u64 mode_ptr = string->load("rb");
     u64 f_ptr = file->alloc(file_path_ptr, mode_ptr);
     string->free(file_path_ptr);

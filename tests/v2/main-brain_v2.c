@@ -221,6 +221,34 @@ RX_TEST_CASE(tests, test_pointer_unsafe, .fixture = test_fixture) {
 }
 
 /* test init */
+RX_TEST_CASE(tests, test_strcpy, .fixture = test_fixture) {
+    u64 path_ptr1 = pointer->load("/");
+    u64 path_ptr2 = pointer->load("@");
+    u64 path_copy_ptr = pointer->copy(path_ptr1);
+    pointer->strcat(path_copy_ptr, path_ptr2);
+
+    char* path1 = pointer->unsafe(path_ptr1);
+    char* path2 = pointer->unsafe(path_ptr2);
+    u64 path1_len = strlen(path1);
+    u64 path2_len = strlen(path2);
+    RX_ASSERT(path1_len > 0);
+    RX_ASSERT(path2_len > 0);
+    char* buf = calloc(1, path1_len + path2_len + 1);
+    strcpy(buf, path1);
+    strcat(buf, path2);
+    char* path_copy = pointer->unsafe(path_copy_ptr);
+    RX_ASSERT(strlen(path_copy) == strlen(buf));
+    RX_ASSERT(strcmp(path_copy, buf) == 0);
+    free(buf);
+
+#ifndef USE_GC
+    pointer->free(path_ptr1);
+    pointer->free(path_ptr2);
+    pointer->free(path_copy_ptr);
+#endif
+}
+
+/* test init */
 RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct pointer_data* ctx = rx->ctx;

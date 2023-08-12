@@ -33,7 +33,7 @@ struct string_pointer_methods {
     void (*free)(u64 ptr);
 };
 
-struct string_referece {
+struct string_reference {
     struct pointer* ptr;
     u64 address;
     u64 offset;
