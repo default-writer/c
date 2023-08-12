@@ -150,8 +150,8 @@ for target in ${targets[@]}; do
     fi
 done
 
-if [[ -f "${build}/${target}.lcov" ]]; then 
-    rm "${build}/${target}.lcov"
+if [[ -f "${build}/${target}.info" ]]; then
+    rm "${build}/${target}.info"
 fi
 
 coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" "*.info" )
@@ -187,12 +187,12 @@ for target in ${targets[@]}; do
     fi
     case "${target}" in main-*)
         timeout --foreground 180 $(cmake-valgrind-options) "${build}/${target}" 2>&1 >"${output}/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
-        lcov --capture --directory "${build}/" --output-file "${build}/${target}.lcov" &>/dev/null
-        lcov --remove "${build}/${target}.lcov" "${pwd}/.deps/*" -o "${build}/${target}.lcov"
+        lcov --capture --directory "${build}/" --output-file "${build}/${target}.info" &>/dev/null
+        lcov --remove "${build}/${target}.info" "${pwd}/.deps/*" -o "${build}/${target}.info"
     esac
 done
 
-find "${build}" -type f -name "*.lcov" -exec echo -a {} \; | xargs lcov -o "${build}/lcov.info"
+find "${build}" -type f -name "*.info" -exec echo -a {} \; | xargs lcov -o "${build}/lcov.info"
 
 main=$(find "${build}" -type f -name "*.s" -exec echo {} \;)
 for i in $main; do

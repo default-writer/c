@@ -128,6 +128,8 @@ if [[ "${targets[@]}" == "" ]]; then
     exit 8
 fi
 
+find "${pwd}" -type f -name *.info -delete
+
 [ ! -d "${pwd}/coverage" ] && mkdir "${pwd}/coverage"
 
 if [[ -f "${pwd}/coverage/lcov.info" ]]; then 
