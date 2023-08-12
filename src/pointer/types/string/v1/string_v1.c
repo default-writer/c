@@ -87,9 +87,6 @@ static char* string_pointer_internal(struct pointer* data_ptr) {
     }
     if (data_ptr->id == TYPE_STRING_POINTER) {
         struct string_reference* ref = data_ptr->data;
-        if (ref == 0) {
-            return 0;
-        }
         ptr = vm->read_type(ref->address, TYPE_STRING);
         if (ptr == 0) {
             return 0;
