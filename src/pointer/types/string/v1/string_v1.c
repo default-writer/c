@@ -154,7 +154,6 @@ static void string_strcpy(u64 dest, u64 src) {
         return;
     }
     data += offset;
-    size += 1;
     if (dest_ptr->size < size) {
         virtual->realloc(dest_ptr, size);
     }
