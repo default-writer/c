@@ -776,7 +776,7 @@ RX_TEST_CASE(tests, test_string_pointer_size, .fixture = test_fixture) {
     u64 substring_index_ptr = string->match_last_src(printing_ptr, comma_ptr);
     u64 substring_ptr = string->copy(substring_index_ptr);
 
-    u64 size_expected = strlen(" world!") + 1; /* adds one 0 tremonation byte */
+    u64 size_expected = strlen(" world!") + 1; /* adds one 0 to termination byte */
     u64 size_actual = string->size(substring_ptr);
     RX_ASSERT(size_expected == size_actual);
 
