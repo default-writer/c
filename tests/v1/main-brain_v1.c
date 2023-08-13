@@ -770,6 +770,15 @@ RX_TEST_CASE(tests, test_print_string_pointer_copy, .fixture = test_fixture) {
 }
 
 /* test init */
+RX_TEST_CASE(tests, test_list_size, .fixture = test_fixture) {
+    u64 list_ptr = list->alloc();
+    u64 size_actual = string->size(list_ptr);
+    u64 size_expected = 0;
+    RX_ASSERT(size_expected == size_actual);
+    list->free(list_ptr);
+}
+
+/* test init */
 RX_TEST_CASE(tests, test_string_pointer_size, .fixture = test_fixture) {
     u64 printing_ptr = string->load("hello, world!");
     u64 comma_ptr = string->load(",");
