@@ -310,6 +310,26 @@ RX_TEST_CASE(list_alloc_tests, test_alloc_pop_count_0, .fixture = test_fixture) 
     RX_ASSERT(head != 0);
 }
 
+RX_TEST_CASE(list_alloc_tests, test_global_alloc_0, .fixture = test_fixture) {
+    void* data = global_alloc(0);
+    void* expected_value = 0;
+    void* actual_value = data;
+    RX_ASSERT(expected_value == actual_value);
+}
+
+RX_TEST_CASE(list_alloc_tests, test_global_alloc_1, .fixture = test_fixture) {
+    void* data = global_alloc(1);
+    void* expected_value = 0;
+    void* actual_value = data;
+    RX_ASSERT(expected_value != actual_value);
+    global_free(data, 1);
+}
+
+RX_TEST_CASE(list_alloc_tests, test_global_free_1, .fixture = test_fixture) {
+    u64* data = global_alloc(1);
+    global_free(data, 1);
+}
+
 RX_TEST_CASE(list_alloc_tests, test_alloc_pop_payload, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
