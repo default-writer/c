@@ -338,8 +338,8 @@ int main(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- acceptance test code\n");
 #endif
-    int result_alloc = list_alloc_tests->run();
-    int result_micro = list_micro_tests->run();
+    int alloc = list_alloc_tests->run();
+    int micro = list_micro_tests->run();
     /* some messy code */
     using_list1(list_using);
     using_list2(list_using);
@@ -349,5 +349,5 @@ int main(void) {
     /* Execute the main function that runs the test cases found. */
     int result = rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
     global_statistics();
-    return result_alloc | result_micro | result;
+    return alloc | micro | result;
 }

@@ -71,7 +71,7 @@ static void* list_peek(void) {
 
 /* public */
 
-const struct list list_v1 = {
+const struct list list_methods_v1 = {
     .init = list_init,
     .destroy = list_destroy,
     .push = list_push,

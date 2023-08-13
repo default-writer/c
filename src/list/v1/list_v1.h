@@ -23,41 +23,41 @@
  * SOFTWARE.
  *
  */
-#ifndef _LIST_DATA_H_
-#define _LIST_DATA_H_
+#ifndef _LIST_DATA_V1_H_
+#define _LIST_DATA_V1_H_
 
 #include "std/common.h"
 
-struct list_data {
+struct list_v1 {
     /* points to previous node */
-    struct list_data* prev;
+    struct list_v1* prev;
     /* points to next node */
-    struct list_data* next;
+    struct list_v1* next;
     /* data */
     void* data;
 };
 
-struct list {
+struct list_methods_v1 {
     /* allocate list item */
-    struct list_data* (*alloc)(void* payload);
+    struct list_v1* (*alloc)(void* payload);
     /* free item */
-    void (*free)(struct list_data** item);
+    void (*free)(struct list_v1** item);
     /* initialize context */
-    void (*init)(struct list_data** current);
+    void (*init)(struct list_v1** current);
     /* destroy context */
-    void (*destroy)(struct list_data** current);
+    void (*destroy)(struct list_v1** current);
     /* push item on current context (stack) */
-    struct list_data* (*push)(struct list_data** current, struct list_data* item);
+    struct list_v1* (*push)(struct list_v1** current, struct list_v1* item);
     /* pop item on current context (stack) */
-    struct list_data* (*pop)(struct list_data** current);
+    struct list_v1* (*pop)(struct list_v1** current);
     /* peek item on current context (stack) */
-    struct list_data* (*peek)(struct list_data** current);
+    struct list_v1* (*peek)(struct list_v1** current);
 #ifdef VM_DEBUG_INFO
     /* print head */
-    void (*print_head)(struct list_data** current);
+    void (*print_head)(struct list_v1** current);
     /* print */
-    void (*print)(struct list_data** current);
+    void (*print)(struct list_v1** current);
 #endif
 };
 
-#endif /* _LIST_DATA_H_ */
+#endif /* _LIST_DATA_V1_H_ */

@@ -25,6 +25,7 @@
  */
 #include "common/alloc.h"
 #include "list-micro/data.h"
+#include "list/v1/list_v1.h"
 #include "playground/brain/brain.h"
 #include "playground/hashtable/v1/hashtable_v1.h"
 #include "pointer/types/data/v1/data_v1.h"
@@ -38,9 +39,21 @@
 
 #define RXP_DEBUG_TESTS
 
+#include "../../tests/src/test.h"
 #include "../.deps/rexo/include/rexo.h"
 
 #define DEFAULT_SIZE 0x100
+
+/* definition */
+extern const struct test_suite list_alloc_test_suite_definition;
+extern const struct test_suite list_micro_test_suite_definition;
+extern const struct test_suite list_test_suite_definition;
+extern const struct test_suite vm_v1_test_suite_definition;
+
+static const struct test_suite* list_alloc_tests = &list_alloc_test_suite_definition;
+static const struct test_suite* list_micro_tests = &list_micro_test_suite_definition;
+static const struct test_suite* list_tests = &list_test_suite_definition;
+static const struct test_suite* vm_v1_tests = &vm_v1_test_suite_definition;
 
 /* definition */
 extern struct pointer_data* pointer_data_init(u64 size);
@@ -1041,6 +1054,10 @@ extern inline void source2(void) {
 int main(int argc, char** argv) {
     global_statistics();
     CLEAN(argc)
+    int alloc = list_alloc_tests->run();
+    int micro = list_micro_tests->run();
+    int tests = list_tests->run();
+    int vm_v1 = vm_v1_tests->run();
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- acceptance test code\n");
 #endif
@@ -1054,8 +1071,9 @@ int main(int argc, char** argv) {
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- rexo unit test code\n");
 #endif
+
     /* Execute the main function that runs the test cases found. */
     int result = rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
     global_statistics();
-    return result;
+    return alloc | tests | micro | vm_v1 | result;
 }

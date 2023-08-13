@@ -33,8 +33,8 @@ static const struct test_suite* list_micro_tests = &list_micro_test_suite_defini
 
 int main(void) {
     global_statistics();
-    int result_alloc = list_alloc_tests->run();
+    int alloc = list_alloc_tests->run();
     int result = list_micro_tests->run();
     global_statistics();
-    return result_alloc | result;
+    return alloc | result;
 }

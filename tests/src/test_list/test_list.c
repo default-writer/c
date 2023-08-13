@@ -25,13 +25,13 @@
  */
 #include "test_list.h"
 
-extern const struct list list_definition;
+extern const struct list_methods_v1 list_definition;
 
 /* allocates memory pointer for list object */
-static struct list_data* new_list(void) {
+static struct list_v1* new_list(void) {
     /* declares pointer to list functions definitions */
-    const struct list* list = &list_definition;
-    struct list_data* ctx = 0;
+    const struct list_methods_v1* list = &list_definition;
+    struct list_v1* ctx = 0;
     /* initializes the list */
     list->init(&ctx);
     /* returns list object */
@@ -39,9 +39,9 @@ static struct list_data* new_list(void) {
 }
 
 /* releases memory pointer for list object */
-static void delete_list(struct list_data** ctx) {
+static void delete_list(struct list_v1** ctx) {
     /* declares pointer to list functions definitions */
-    const struct list* list = &list_definition;
+    const struct list_methods_v1* list = &list_definition;
     /* destroys the list */
     list->destroy(ctx);
     /* cleans up */
@@ -49,9 +49,9 @@ static void delete_list(struct list_data** ctx) {
 }
 
 /* runs default list usage scenario */
-static void using_list1(void (*list_using)(struct list_data** const)) {
+static void using_list1(void (*list_using)(struct list_v1** const)) {
     /* initialize current context (stack) */
-    struct list_data* ctx = new_list();
+    struct list_v1* ctx = new_list();
     /* call user method */
     list_using(&ctx);
     /* destroy list */
@@ -59,9 +59,9 @@ static void using_list1(void (*list_using)(struct list_data** const)) {
 }
 
 /* runs default list usage scenario */
-static void using_list2(void (*list_using)(struct list_data** const)) {
+static void using_list2(void (*list_using)(struct list_v1** const)) {
     /* initialize current context (stack) */
-    struct list_data* ctx = new_list();
+    struct list_v1* ctx = new_list();
     /* call user method */
     list_using(&ctx);
     /* destroy list */
@@ -69,39 +69,39 @@ static void using_list2(void (*list_using)(struct list_data** const)) {
 }
 
 /* uses the list */
-static void list_using(struct list_data** current) {
+static void list_using(struct list_v1** current) {
     /* declares pointer to list functions definitions */
-    const struct list* list = &list_definition;
+    const struct list_methods_v1* list = &list_definition;
     /* prepares the payload */
     u8* payload = (void*)0xdeadbeef;
     /* peeks and pops from empty list */
-    struct list_data* is_null[] = {
+    struct list_v1* is_null[] = {
         list->peek(current),
         list->pop(current)
     };
     RX_ASSERT(0 == is_null[0]);
     RX_ASSERT(0 == is_null[1]);
-    struct list_data* tmp1 = list->alloc(payload);
+    struct list_v1* tmp1 = list->alloc(payload);
     list->push(current, tmp1);
 #ifdef VM_DEBUG_INFO
     list->print_head(current);
 #endif
-    struct list_data* tmp2 = list->alloc(++payload);
+    struct list_v1* tmp2 = list->alloc(++payload);
     list->push(current, tmp2);
 #ifdef VM_DEBUG_INFO
     list->print_head(current);
 #endif
-    struct list_data* tmp3 = list->alloc(++payload);
+    struct list_v1* tmp3 = list->alloc(++payload);
     list->push(current, tmp3);
 #ifdef VM_DEBUG_INFO
     list->print_head(current);
 #endif
-    struct list_data* tmp4 = list->alloc(++payload);
+    struct list_v1* tmp4 = list->alloc(++payload);
     list->push(current, tmp4);
 #ifdef VM_DEBUG_INFO
     list->print_head(current);
 #endif
-    struct list_data* tmp5 = list->alloc(++payload);
+    struct list_v1* tmp5 = list->alloc(++payload);
     list->push(current, tmp5);
 #ifdef VM_DEBUG_INFO
     list->print_head(current);
@@ -109,34 +109,34 @@ static void list_using(struct list_data** current) {
 #ifdef VM_DEBUG_INFO
     list->print(current);
 #endif
-    struct list_data* q_pop0 = list->pop(current);
+    struct list_v1* q_pop0 = list->pop(current);
     list->free(&q_pop0);
 #ifdef VM_DEBUG_INFO
     list->print(current);
 #endif
-    struct list_data* q_pop1 = list->pop(current);
+    struct list_v1* q_pop1 = list->pop(current);
     list->free(&q_pop1);
 #ifdef VM_DEBUG_INFO
     list->print(current);
 #endif
-    struct list_data* q_pop2 = list->pop(current);
+    struct list_v1* q_pop2 = list->pop(current);
     list->free(&q_pop2);
 #ifdef VM_DEBUG_INFO
     list->print(current);
 #endif
-    struct list_data* q_pop3 = list->pop(current);
+    struct list_v1* q_pop3 = list->pop(current);
     list->push(current, q_pop3);
     q_pop3 = list->pop(current);
     list->free(&q_pop3);
 #ifdef VM_DEBUG_INFO
     list->print(current);
 #endif
-    struct list_data* q_pop4 = list->pop(current);
+    struct list_v1* q_pop4 = list->pop(current);
     list->free(&q_pop4);
 #ifdef VM_DEBUG_INFO
     list->print(current);
 #endif
-    struct list_data* q_pop5 = list->peek(current);
+    struct list_v1* q_pop5 = list->peek(current);
     list->free(&q_pop5);
     list->push(current, q_pop0);
 #ifdef VM_DEBUG_INFO
@@ -150,15 +150,15 @@ static void list_using(struct list_data** current) {
 
 /* Data structure to use at the core of our fixture. */
 typedef struct test_data {
-    struct list_data* ctx;
+    struct list_v1* ctx;
 }* TEST_DATA;
 
 /* Initialize the data structure. Its allocation is handled by Rexo. */
 RX_SET_UP(test_set_up) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct list_data** ctx = &rx->ctx;
+    struct list_v1** ctx = &rx->ctx;
     /* declares pointer to list functions definitions */
-    const struct list* list = &list_definition;
+    const struct list_methods_v1* list = &list_definition;
     /* initializes to 0 */
     *ctx = 0;
     /* initialize list */
@@ -168,9 +168,9 @@ RX_SET_UP(test_set_up) {
 
 RX_TEAR_DOWN(test_tear_down) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct list_data** ctx = &rx->ctx;
+    struct list_v1** ctx = &rx->ctx;
     /* declares pointer to list functions definitions */
-    const struct list* list = &list_definition;
+    const struct list_methods_v1* list = &list_definition;
     /* destroy list */
     list->destroy(ctx);
     /* initializes to 0 */
@@ -181,16 +181,16 @@ RX_TEAR_DOWN(test_tear_down) {
 RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tear_down);
 
 /* test init */
-RX_TEST_CASE(list_tests, test_list_data, .fixture = test_fixture) {
+RX_TEST_CASE(list_tests, test_list_data_v1, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct list_data** ctx = &rx->ctx;
+    struct list_v1** ctx = &rx->ctx;
     /* declares pointer to list functions definitions */
-    const struct list* list = &list_definition;
+    const struct list_methods_v1* list = &list_definition;
     /* prepares the payload */
     u8* payload = (void*)0xdeadbeef;
 
     /* allocates the memory for the structure */
-    struct list_data* tmp = list->alloc(payload);
+    struct list_v1* tmp = list->alloc(payload);
     /* reads the data */
     const void* data = tmp->data;
 
@@ -203,7 +203,7 @@ RX_TEST_CASE(list_tests, test_list_data, .fixture = test_fixture) {
     list->free(&tmp);
 
     /* gets the head pointer to the list */
-    const struct list_data* ptr = *ctx;
+    const struct list_v1* ptr = *ctx;
 
     /* ensures peek does not changes the head pointer */
     RX_ASSERT(ptr == *ctx);
@@ -213,7 +213,7 @@ RX_TEST_CASE(list_tests, test_list_data, .fixture = test_fixture) {
 /* test init */
 RX_TEST_CASE(list_tests, test_empty_list_count_equals_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct list_data** ctx = &rx->ctx;
+    struct list_v1** ctx = &rx->ctx;
     /* ensures counter is initialized to 0 */
     RX_ASSERT(*ctx != 0);
 }
@@ -221,19 +221,19 @@ RX_TEST_CASE(list_tests, test_empty_list_count_equals_0, .fixture = test_fixture
 /* test peek */
 RX_TEST_CASE(list_tests, test_standard_list_peek_does_not_changes_stack, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct list_data** ctx = &rx->ctx;
+    struct list_v1** ctx = &rx->ctx;
     /* declares pointer to list functions definitions */
-    const struct list* list = &list_definition;
+    const struct list_methods_v1* list = &list_definition;
     /* prepares the payload */
     u8* payload = (void*)0xdeadbeef;
     /* allocates the memory for the structure */
-    struct list_data* tmp = list->alloc(payload);
+    struct list_v1* tmp = list->alloc(payload);
     /* pushed to the list */
     list->push(ctx, tmp);
     /* gets the head pointer to the list */
-    const struct list_data* ptr = *ctx;
+    const struct list_v1* ptr = *ctx;
     /* peeks from the list */
-    const struct list_data* head = list->peek(ctx);
+    const struct list_v1* head = list->peek(ctx);
     /* ensures data is added to the list */
     RX_ASSERT(head != 0);
     /* ensures payload is on top of the stack */
@@ -244,22 +244,22 @@ RX_TEST_CASE(list_tests, test_standard_list_peek_does_not_changes_stack, .fixtur
 
 /* test pop from 0 pointer */
 RX_TEST_CASE(list_tests, test_empty_list_pop_equals_0, .fixture = test_fixture) {
-    struct list_data* ctx = 0;
+    struct list_v1* ctx = 0;
     /* declares pointer to list functions definitions */
-    const struct list* list = &list_definition;
+    const struct list_methods_v1* list = &list_definition;
     /* pups out the current head element */
-    const struct list_data* head = list->pop(&ctx);
+    const struct list_v1* head = list->pop(&ctx);
     /* ensures head is not initialized */
     RX_ASSERT(head == 0);
 }
 
 /* test pop from 0 pointer */
 RX_TEST_CASE(list_tests, test_empty_list_peek_equals_0, .fixture = test_fixture) {
-    struct list_data* ctx = 0;
+    struct list_v1* ctx = 0;
     /* declares pointer to list functions definitions */
-    const struct list* list = &list_definition;
+    const struct list_methods_v1* list = &list_definition;
     /* peeks up the current head element */
-    const struct list_data* head = list->peek(&ctx);
+    const struct list_v1* head = list->peek(&ctx);
     /* ensures head is not initialized */
     RX_ASSERT(head == 0);
 }
@@ -267,13 +267,13 @@ RX_TEST_CASE(list_tests, test_empty_list_peek_equals_0, .fixture = test_fixture)
 /* test alloc */
 RX_TEST_CASE(list_tests, test_alloc_count_eq_1, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct list_data** ctx = &rx->ctx;
+    struct list_v1** ctx = &rx->ctx;
     /* declares pointer to list functions definitions */
-    const struct list* list = &list_definition;
+    const struct list_methods_v1* list = &list_definition;
     /* prepares the payload */
     u8* payload = (void*)0xdeadbeef;
     /* allocates the memory for the structure */
-    struct list_data* tmp = list->alloc(payload);
+    struct list_v1* tmp = list->alloc(payload);
     /* pushes to the list */
     list->push(ctx, tmp);
     /* ensures data is added to the list */
@@ -282,33 +282,33 @@ RX_TEST_CASE(list_tests, test_alloc_count_eq_1, .fixture = test_fixture) {
 
 RX_TEST_CASE(list_tests, test_alloc_payload, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct list_data** ctx = &rx->ctx;
+    struct list_v1** ctx = &rx->ctx;
     /* declares pointer to list functions definitions */
-    const struct list* list = &list_definition;
+    const struct list_methods_v1* list = &list_definition;
     /* prepares the payload */
     u8* payload = (void*)0xdeadbeef;
     /* allocates the memory for the structure */
-    struct list_data* tmp = list->alloc(payload);
+    struct list_v1* tmp = list->alloc(payload);
     /* pushes to the list */
     list->push(ctx, tmp);
     /* peeks from list */
-    const struct list_data* head = list->peek(ctx);
+    const struct list_v1* head = list->peek(ctx);
     /* ensures data is added to the list */
     RX_ASSERT(head->data == payload);
 }
 
 RX_TEST_CASE(list_tests, test_alloc_pop_count_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct list_data** ctx = &rx->ctx;
+    struct list_v1** ctx = &rx->ctx;
     /* declares pointer to list functions definitions */
-    const struct list* list = &list_definition;
+    const struct list_methods_v1* list = &list_definition;
     /* prepares the payload */
     u8* payload = (void*)0xdeadbeef;
     /* allocates the memory for the structure */
-    struct list_data* tmp = list->alloc(payload);
+    struct list_v1* tmp = list->alloc(payload);
     list->push(ctx, tmp);
     /* pop from the list */
-    struct list_data* head = list->pop(ctx);
+    struct list_v1* head = list->pop(ctx);
     /* releases memory allocated for the data */
     list->free(&head);
     /* ensures head is not initialized */
@@ -317,17 +317,17 @@ RX_TEST_CASE(list_tests, test_alloc_pop_count_0, .fixture = test_fixture) {
 
 RX_TEST_CASE(list_tests, test_alloc_pop_payload, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct list_data** ctx = &rx->ctx;
+    struct list_v1** ctx = &rx->ctx;
     /* declares pointer to list functions definitions */
-    const struct list* list = &list_definition;
+    const struct list_methods_v1* list = &list_definition;
     /* prepares the payload */
     u8* payload = (void*)0xdeadbeef;
     /* allocates the memory for the structure */
-    struct list_data* tmp = list->alloc(payload);
+    struct list_v1* tmp = list->alloc(payload);
     /* pushes to the list */
     list->push(ctx, tmp);
     /* pops from the list */
-    struct list_data* head = list->pop(ctx);
+    struct list_v1* head = list->pop(ctx);
     /* retrieves the data from the top of the list */
     const void* head_payload = head->data;
     /* releases memory allocated for the data */
@@ -338,23 +338,23 @@ RX_TEST_CASE(list_tests, test_alloc_pop_payload, .fixture = test_fixture) {
 
 RX_TEST_CASE(list_tests, test_alloc_and_prev_next_equals_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct list_data** ctx = &rx->ctx;
+    struct list_v1** ctx = &rx->ctx;
     /* declares pointer to list functions definitions */
-    const struct list* list = &list_definition;
+    const struct list_methods_v1* list = &list_definition;
     /* prepares the payload */
     u8* payload = (void*)0xdeadbeef;
     /* allocates the memory for the structure */
-    struct list_data* tmp = list->alloc(payload);
+    struct list_v1* tmp = list->alloc(payload);
     /* pushes to the list */
     list->push(ctx, tmp);
     /* peeks from the list */
-    const struct list_data* head = list->peek(ctx);
+    const struct list_v1* head = list->peek(ctx);
     /* ensures peek does data cleanup */
     RX_ASSERT(head->prev == 0);
     /* pops from the list */
-    struct list_data* current = list->pop(ctx);
-    const struct list_data* prev = current->next;
-    const struct list_data* next = current->prev;
+    struct list_v1* current = list->pop(ctx);
+    const struct list_v1* prev = current->next;
+    const struct list_v1* next = current->prev;
     const void* head_payload = current->data;
     list->free(&current);
     /* ensures data is added to the list */
@@ -369,16 +369,16 @@ RX_TEST_CASE(list_tests, test_alloc_and_prev_next_equals_0, .fixture = test_fixt
 
 RX_TEST_CASE(list_tests, test_free_head, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct list_data** ctx = &rx->ctx;
+    struct list_v1** ctx = &rx->ctx;
     /* declares pointer to list functions definitions */
-    const struct list* list = &list_definition;
+    const struct list_methods_v1* list = &list_definition;
     /* prepares the payload */
     u8* payload = (void*)0xdeadbeef;
     /* allocates the memory for the structure */
-    struct list_data* tmp = list->alloc(payload);
+    struct list_v1* tmp = list->alloc(payload);
     list->push(ctx, tmp);
     /* pops from the list */
-    struct list_data* head = list->pop(ctx);
+    struct list_v1* head = list->pop(ctx);
     /* releases memory allocated for the data */
     list->free(&head);
     /* ensures head is not initialized */
@@ -388,11 +388,11 @@ RX_TEST_CASE(list_tests, test_free_head, .fixture = test_fixture) {
 /* test peek */
 RX_TEST_CASE(list_tests, test_list_peek_is_zero, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct list_data** ctx = &rx->ctx;
+    struct list_v1** ctx = &rx->ctx;
     /* declares pointer to list functions definitions */
-    const struct list* list = &list_definition;
+    const struct list_methods_v1* list = &list_definition;
     /* peeks from the list */
-    const struct list_data* head = list->peek(ctx);
+    const struct list_v1* head = list->peek(ctx);
     /* ensures head is not initialized */
     RX_ASSERT(head == 0);
 }
@@ -400,11 +400,11 @@ RX_TEST_CASE(list_tests, test_list_peek_is_zero, .fixture = test_fixture) {
 /* test pop */
 RX_TEST_CASE(list_tests, test_list_pop_is_zero, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct list_data** ctx = &rx->ctx;
+    struct list_v1** ctx = &rx->ctx;
     /* declares pointer to list functions definitions */
-    const struct list* list = &list_definition;
+    const struct list_methods_v1* list = &list_definition;
     /* pop from the list */
-    const struct list_data* head = list->pop(ctx);
+    const struct list_v1* head = list->pop(ctx);
     /* ensures head is not initialized */
     RX_ASSERT(head == 0);
 }

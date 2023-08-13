@@ -27,7 +27,7 @@
 #define _TESTS_SRC_LIST_H_
 
 #include "common/alloc.h"
-#include "list/data.h"
+#include "list/v1/list_v1.h"
 
 #include "../tests/src/test.h"
 

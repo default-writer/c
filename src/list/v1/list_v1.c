@@ -23,8 +23,8 @@
  * SOFTWARE.
  *
  */
+#include "list/v1/list_v1.h"
 #include "common/alloc.h"
-#include "list/data.h"
 
 /* implementation */
 
@@ -35,36 +35,36 @@ static const struct memory* memory = &memory_definition;
 /* private */
 
 /* size of a memory block to allocate */
-static const size_t _size = sizeof(struct list_data);
+static const size_t _size = sizeof(struct list_v1);
 
 /* allocates memory pointer */
-static struct list_data* _new(void) {
+static struct list_v1* _new(void) {
     /* returns list object */
     return memory->alloc(_size);
 }
 
 /* releases memory pointer */
-static void _delete(struct list_data* ptr) {
+static void _delete(struct list_v1* ptr) {
     /* releases the pointer */
     memory->free(ptr, _size);
 }
 
 /* gets chunk's next item. external code ensures ptr is not 0 */
-static struct list_data* list_next(struct list_data* ptr) {
+static struct list_v1* list_next(struct list_v1* ptr) {
     /* external code ensures prt is not 0 */
     return ptr->next;
 }
 
 /* deletes the data pointer */
-static void list_delete(struct list_data* ptr) {
+static void list_delete(struct list_v1* ptr) {
     /* releases the pointer */
     _delete(ptr);
 }
 
 /* allocates memory pointer */
-static struct list_data* list_alloc(void* payload) {
+static struct list_v1* list_alloc(void* payload) {
     /* creates empty data chunk */
-    struct list_data* item = _new();
+    struct list_v1* item = _new();
     /* writes data into allocated memory buffer */
     item->data = payload;
     /* returns created data structure */
@@ -72,9 +72,9 @@ static struct list_data* list_alloc(void* payload) {
 }
 
 /* releases memory pointer */
-static void list_free(struct list_data** current) {
+static void list_free(struct list_v1** current) {
     /* gets the current memory pointer */
-    struct list_data* tmp = *current;
+    struct list_v1* tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
         /* releases memory */
@@ -85,12 +85,12 @@ static void list_free(struct list_data** current) {
 }
 
 /* pushes new item to existing context */
-static struct list_data* list_push(struct list_data** current, struct list_data* item) {
-    const struct list_data* tmp = *current;
+static struct list_v1* list_push(struct list_v1** current, struct list_v1* item) {
+    const struct list_v1* tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0 && item != 0) {
         /* gets the current memory pointer */
-        struct list_data* head = *current;
+        struct list_v1* head = *current;
         /* assigns item pointer to head's prev pointer value */
         head->prev = item;
         /* assigns item's next pointer to current pointer */
@@ -105,14 +105,14 @@ static struct list_data* list_push(struct list_data** current, struct list_data*
 }
 
 /* pops existing element at the top of the stack/queue/list */
-static struct list_data* list_pop(struct list_data** current) {
-    const struct list_data* tmp = *current;
+static struct list_v1* list_pop(struct list_v1** current) {
+    const struct list_v1* tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
         /* gets the current memory pointer */
-        struct list_data* ptr = *current;
+        struct list_v1* ptr = *current;
         /* gets next pointer */
-        struct list_data* next = list_next(ptr);
+        struct list_v1* next = list_next(ptr);
         /* root elements returns null, i.e. 0 by convention */
         if (next == 0) {
             /* returns default element as null element */
@@ -136,14 +136,14 @@ static struct list_data* list_pop(struct list_data** current) {
 }
 
 /* peeks existing element at the top of the stack/queue/list */
-static struct list_data* list_peek(struct list_data** current) {
-    const struct list_data* tmp = *current;
+static struct list_v1* list_peek(struct list_v1** current) {
+    const struct list_v1* tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
         /* gets the current memory pointer */
-        struct list_data* ptr = *current;
+        struct list_v1* ptr = *current;
         /* gets next pointer */
-        const struct list_data* next = list_next(ptr);
+        const struct list_v1* next = list_next(ptr);
         /* root elements returns null, i.e. 0 by convention */
         if (next == 0) {
             /* returns default element as null element */
@@ -157,8 +157,8 @@ static struct list_data* list_peek(struct list_data** current) {
 }
 
 /* initializes the new context's head element */
-static void list_init(struct list_data** current) {
-    const struct list_data* tmp = *current;
+static void list_init(struct list_v1** current) {
+    const struct list_v1* tmp = *current;
     /* checks if pointer is null */
     if (tmp == 0) {
         /* sets the current memory pointer */
@@ -167,17 +167,17 @@ static void list_init(struct list_data** current) {
 }
 
 /* destroys the memory stack */
-static void list_destroy(struct list_data** current) {
+static void list_destroy(struct list_v1** current) {
     /* gets the current memory pointer */
-    struct list_data* tmp = *current;
+    struct list_v1* tmp = *current;
     /* checks if pointer is not null */
     if (tmp != 0) {
         /* until we found element with no next node (not a list element) */
         do {
             /* gets temporary pointer value */
-            struct list_data* ptr = tmp;
+            struct list_v1* ptr = tmp;
             /* gets prev pointer value */
-            struct list_data* next = list_next(ptr);
+            struct list_v1* next = list_next(ptr);
             /* releases memory, should check for 0 before execution */
             list_delete(ptr);
             /* advances temporary pointer value to the next item */
@@ -191,24 +191,24 @@ static void list_destroy(struct list_data** current) {
 #ifdef VM_DEBUG_INFO
 
 /* prints head on current context (stack) */
-static void list_print_head(struct list_data** current) {
+static void list_print_head(struct list_v1** current) {
     /* get current context's head */
-    struct list_data* ptr = *current;
+    struct list_v1* ptr = *current;
     /* visualize item */
-    printf("   *: %016llx > %016llx\n", (u64)ptr, (u64)list_data(ptr));
+    printf("   *: %016llx > %016llx\n", (u64)ptr, (u64)list_data_v1(ptr));
 }
 
 /* prints all stack trace to output */
-static void list_print(struct list_data** current) {
+static void list_print(struct list_v1** current) {
     /* sets the counter */
     int i = 0;
     /* assigns current's head pointer to the temporary */
-    struct list_data* tmp = *current;
+    struct list_v1* tmp = *current;
     if (tmp != 0) {
         /* until we found root element (element with no previous element reference) */
         do {
             /* debug output of memory dump */
-            printf("%4d: %016llx * %016llx\n", ++i, (u64)tmp, (u64)list_data(tmp));
+            printf("%4d: %016llx * %016llx\n", ++i, (u64)tmp, (u64)list_data_v1(tmp));
             /* remember temporary's prior pointer value to temporary */
             tmp = list_next(tmp);
         } while (tmp != 0 /*root*/);
@@ -220,7 +220,7 @@ static void list_print(struct list_data** current) {
 
 /* public */
 
-const struct list list_definition = {
+const struct list_methods_v1 list_definition = {
     /* generic methods */
     .init = list_init,
     .destroy = list_destroy,
