@@ -126,7 +126,7 @@ static u64 string_copy(u64 ptr) {
         return 0;
     }
     data += offset;
-    struct pointer* copy_ptr = virtual->alloc(size, id);
+    struct pointer* copy_ptr = virtual->alloc(size - offset, id);
     memcpy(copy_ptr->data, data, size - offset); /* NOLINT */
     u64 copy = vm->alloc(copy_ptr);
 #ifdef USE_GC
@@ -309,11 +309,16 @@ static char* string_unsafe(u64 ptr) {
 }
 
 static u64 string_size(u64 ptr) {
-    const struct pointer* data_ptr = vm->read_type(ptr, id);
+    struct pointer* data_ptr = vm->read(ptr);
     if (data_ptr == 0) {
         return 0;
     }
-    u64 size = data_ptr->size;
+    u64 size = 0;
+    u64 offset = 0;
+    char* data = string_pointer_internal(data_ptr, &size, &offset);
+    if (data == 0) {
+        return 0;
+    }
     return size;
 }
 

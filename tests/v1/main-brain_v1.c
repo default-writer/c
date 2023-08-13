@@ -770,6 +770,23 @@ RX_TEST_CASE(tests, test_print_string_pointer_copy, .fixture = test_fixture) {
 }
 
 /* test init */
+RX_TEST_CASE(tests, test_string_pointer_size, .fixture = test_fixture) {
+    u64 printing_ptr = string->load("hello, world!");
+    u64 comma_ptr = string->load(",");
+    u64 substring_index_ptr = string->match_last_src(printing_ptr, comma_ptr);
+    u64 substring_ptr = string->copy(substring_index_ptr);
+
+    u64 size_expected = strlen(" world!") + 1; /* adds one 0 tremonation byte */
+    u64 size_actual = string->size(substring_ptr);
+    RX_ASSERT(size_expected == size_actual);
+
+    string->free(printing_ptr);
+    string->free(comma_ptr);
+    string_pointer->free(substring_index_ptr);
+    string->free(substring_ptr);
+}
+
+/* test init */
 RX_TEST_CASE(tests, test_print_string_pointer_free, .fixture = test_fixture) {
     u64 printing_ptr = string->load("hello, world!");
     u64 comma_ptr = string->load(",");
