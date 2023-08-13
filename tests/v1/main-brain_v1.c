@@ -779,6 +779,42 @@ RX_TEST_CASE(tests, test_list_size, .fixture = test_fixture) {
 }
 
 /* test init */
+RX_TEST_CASE(tests, test_list_unsafe, .fixture = test_fixture) {
+    u64 list_ptr = list->alloc();
+    char* ptr_actual = string->unsafe(list_ptr);
+    char* ptr_expected = 0;
+    RX_ASSERT(ptr_expected == ptr_actual);
+    list->free(list_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_match_last_src, .fixture = test_fixture) {
+    u64 string_ptr = string->load("himem.sys");
+    u64 list_ptr = list->alloc();
+    u64 size_actual = string->match_last_src(string_ptr, list_ptr);
+    u64 size_expected = 0;
+    RX_ASSERT(size_expected == size_actual);
+    list->free(list_ptr);
+    string->free(string_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, teststring_pointer_unsafe, .fixture = test_fixture) {
+    u64 printing_ptr = string->load("hello, world!");
+    u64 comma_ptr = string->load(",");
+    u64 substring_index_ptr = string->match_last_src(printing_ptr, comma_ptr);
+
+    char* expected_value = string->unsafe(substring_index_ptr);
+    const char* actual_value = " world!";
+    RX_ASSERT(strcmp(expected_value, actual_value) == 0);
+
+    string_pointer->free(substring_index_ptr);
+    string->printf(substring_index_ptr);
+    string->free(printing_ptr);
+    string->free(comma_ptr);
+}
+
+/* test init */
 RX_TEST_CASE(tests, test_string_pointer_size, .fixture = test_fixture) {
     u64 printing_ptr = string->load("hello, world!");
     u64 comma_ptr = string->load(",");

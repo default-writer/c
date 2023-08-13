@@ -300,11 +300,17 @@ static void string_put_char(u64 src, char value) {
 }
 
 static char* string_unsafe(u64 ptr) {
-    struct pointer* data_ptr = vm->read_type(ptr, id);
+    struct pointer* data_ptr = vm->read(ptr);
     if (data_ptr == 0) {
         return 0;
     }
-    char* data = data_ptr->data;
+    u64 size = 0;
+    u64 offset = 0;
+    char* data = string_pointer_internal(data_ptr, &size, &offset);
+    if (data == 0) {
+        return 0;
+    }
+    data += offset;
     return data;
 }
 
