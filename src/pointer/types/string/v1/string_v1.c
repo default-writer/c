@@ -202,17 +202,24 @@ static u64 string_match_last_src(u64 src, u64 match) {
     if (src_ptr == 0) {
         return 0;
     }
+    u64 size = 0;
+    u64 offset = 0;
+    char* data = string_pointer_internal(src_ptr, &size, &offset);
+    if (data == 0) {
+        return 0;
+    }
+    data += offset;
     const struct pointer* match_ptr = vm->read_type(match, id);
     if (match_ptr == 0) {
         return 0;
     }
-    char* data_src = src_ptr->data;
+    char* data_src = data;
     char* data_match = match_ptr->data;
     char* str1 = strrchr(data_src, *data_match);
     if (str1 == 0) {
         return 0;
     }
-    u64 offset = (u64)((u8*)str1 - (u8*)data_src);
+    offset = (u64)((u8*)str1 - (u8*)data_src);
     char* str2 = data_match;
     while (*str1 != 0 && *str2 != 0 && offset < src_ptr->size) {
         if (*str1 != *str2) {
