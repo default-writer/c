@@ -75,7 +75,7 @@ extern inline void source1(void) {
     u64 last_match_ptr = string->offset(file_path_ptr, pattern_ptr);
     string->free(pattern_ptr);
     string->put_char(last_match_ptr, '\0');
-    string_pointer->free(last_match_ptr);
+    string->free(last_match_ptr);
     string->strcat(file_path_ptr, file_name_ptr);
     string->free(file_name_ptr);
     u64 mode_ptr = string->load("rb");

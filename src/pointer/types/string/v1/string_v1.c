@@ -73,7 +73,11 @@ static u64 string_size(u64 ptr);
 
 /* definition */
 extern const struct memory memory_definition;
+extern const struct string_pointer_methods string_pointer_methods_definition;
+
+/* definition */
 static const struct memory* memory = &memory_definition;
+static const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
 
 struct list_handler {
     struct list_data* list;
@@ -110,11 +114,16 @@ static char* string_pointer_internal(struct pointer* data_ptr, u64* data_size, u
 }
 
 static void string_free(u64 ptr) {
-    struct pointer* data_ptr = vm->read_type(ptr, id);
+    struct pointer* data_ptr = vm->read(ptr);
     if (data_ptr == 0) {
         return;
     }
-    return string_vm_free(data_ptr);
+    if (data_ptr->id == TYPE_STRING) {
+        return string_vm_free(data_ptr);
+    }
+    if (data_ptr->id == TYPE_STRING_POINTER) {
+        return string_pointer->free(data_ptr->address);
+    }
 }
 
 static void string_vm_free(struct pointer* ptr) {

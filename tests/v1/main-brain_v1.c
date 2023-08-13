@@ -49,11 +49,14 @@ extern const struct test_suite list_alloc_test_suite_definition;
 extern const struct test_suite list_micro_test_suite_definition;
 extern const struct test_suite list_test_suite_definition;
 extern const struct test_suite vm_v1_test_suite_definition;
+extern const struct string_pointer_methods string_pointer_methods_definition;
 
+/* definition */
 static const struct test_suite* list_alloc_tests = &list_alloc_test_suite_definition;
 static const struct test_suite* list_micro_tests = &list_micro_test_suite_definition;
 static const struct test_suite* list_tests = &list_test_suite_definition;
 static const struct test_suite* vm_v1_tests = &vm_v1_test_suite_definition;
+static const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
 
 /* definition */
 extern struct pointer_data* pointer_data_init(u64 size);
@@ -65,7 +68,6 @@ extern const struct pointer_methods pointer_methods_definition;
 extern const struct list_methods list_methods_definition;
 extern const struct file_methods file_methods_definition;
 extern const struct string_methods string_methods_definition;
-extern const struct string_pointer_methods string_pointer_methods_definition;
 extern const struct user_methods user_methods_definition;
 extern const struct data_methods data_methods_definition;
 extern const struct object_methods object_methods_definition;
@@ -74,7 +76,6 @@ const struct pointer_methods* pointer = &pointer_methods_definition;
 const struct list_methods* list = &list_methods_definition;
 const struct file_methods* file = &file_methods_definition;
 const struct string_methods* string = &string_methods_definition;
-const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
 const struct user_methods* user = &user_methods_definition;
 const struct data_methods* data = &data_methods_definition;
 const struct object_methods* object = &object_methods_definition;
@@ -373,7 +374,7 @@ RX_TEST_CASE(tests, test_string_last_match_ptr, .fixture = test_fixture) {
     u64 string_ptr2 = string->load("/all_english_words.txt2");
     u64 last_matched_ptr1 = string->offset(string_ptr1, string_ptr2);
     RX_ASSERT(last_matched_ptr1 != 0);
-    string_pointer->free(last_matched_ptr1);
+    string->free(last_matched_ptr1);
     string->free(string_ptr1);
     string->free(string_ptr2);
 }
@@ -385,6 +386,19 @@ RX_TEST_CASE(tests, test_string_last_match_ptr_list, .fixture = test_fixture) {
     u64 last_matched_ptr = string->offset(list_ptr, string_ptr);
     RX_ASSERT(last_matched_ptr == 0);
     string->free(string_ptr);
+    list->free(list_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_string_pointer_free_list, .fixture = test_fixture) {
+    u64 list_ptr = list->alloc();
+    u64 string_ptr = string->load("hello");
+    u64 e_ptr = string->load("e");
+    u64 string_pointer_ptr = string->offset(string_ptr, e_ptr);
+    string_pointer->free(list_ptr);
+    string_pointer->free(string_pointer_ptr);
+    string->free(string_ptr);
+    string->free(e_ptr);
     list->free(list_ptr);
 }
 
@@ -606,9 +620,9 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     RX_ASSERT(last_matched_ptr1 != 0);
     RX_ASSERT(last_matched_ptr2 != 0);
     RX_ASSERT(last_matched_ptr3 != 0);
-    string_pointer->free(last_matched_ptr1);
-    string_pointer->free(last_matched_ptr2);
-    string_pointer->free(last_matched_ptr3);
+    string->free(last_matched_ptr1);
+    string->free(last_matched_ptr2);
+    string->free(last_matched_ptr3);
     string->free(last_matched_ptr2);
     string->free(last_matched_ptr3);
 
@@ -741,7 +755,7 @@ RX_TEST_CASE(tests, test_offset_strcpy, .fixture = test_fixture) {
     RX_ASSERT(strcmp(domain, "domain.org") == 0);
     RX_ASSERT(strcmp(name, "domain.org") == 0);
 
-    string_pointer->free(domain_name);
+    string->free(domain_name);
     string->free(name_ptr);
     string->free(path_ptr1);
     string->free(path_ptr2);
@@ -770,7 +784,7 @@ RX_TEST_CASE(tests, test_offset_strcpy_free, .fixture = test_fixture) {
     RX_ASSERT(strcmp(domain, "domain.org") == 0);
     RX_ASSERT(strcmp(name, "name@domain.org") == 0);
 
-    string_pointer->free(domain_name);
+    string->free(domain_name);
     string->free(name_ptr);
     string->free(path_ptr2);
     string->free(name_ptr);
@@ -799,7 +813,7 @@ RX_TEST_CASE(tests, test_print_string_pointer, .fixture = test_fixture) {
     u64 substring_index_ptr = string->offset(printing_ptr, comma_ptr);
     string->printf(substring_index_ptr);
     string->free(printing_ptr);
-    string_pointer->free(substring_index_ptr);
+    string->free(substring_index_ptr);
     string->free(comma_ptr);
 }
 
@@ -816,7 +830,7 @@ RX_TEST_CASE(tests, test_print_string_pointer_copy, .fixture = test_fixture) {
 
     string->free(printing_ptr);
     string->free(comma_ptr);
-    string_pointer->free(substring_index_ptr);
+    string->free(substring_index_ptr);
     string->free(substring_ptr);
 }
 
@@ -859,7 +873,7 @@ RX_TEST_CASE(tests, teststring_pointer_unsafe, .fixture = test_fixture) {
     const char* actual_value = " world!";
     RX_ASSERT(strcmp(expected_value, actual_value) == 0);
 
-    string_pointer->free(substring_index_ptr);
+    string->free(substring_index_ptr);
     string->printf(substring_index_ptr);
     string->free(printing_ptr);
     string->free(comma_ptr);
@@ -878,7 +892,7 @@ RX_TEST_CASE(tests, test_string_pointer_size, .fixture = test_fixture) {
 
     string->free(printing_ptr);
     string->free(comma_ptr);
-    string_pointer->free(substring_index_ptr);
+    string->free(substring_index_ptr);
     string->free(substring_ptr);
 }
 
@@ -897,8 +911,8 @@ RX_TEST_CASE(tests, test_string_offset_subsearch, .fixture = test_fixture) {
 
     string->free(printing_ptr);
     string->free(comma_ptr);
-    string_pointer->free(substring_index_ptr1);
-    string_pointer->free(substring_index_ptr2);
+    string->free(substring_index_ptr1);
+    string->free(substring_index_ptr2);
     string->free(substring_ptr);
     string->free(w_ptr);
 }
@@ -908,7 +922,7 @@ RX_TEST_CASE(tests, test_print_string_pointer_free, .fixture = test_fixture) {
     u64 printing_ptr = string->load("hello, world!");
     u64 comma_ptr = string->load(",");
     u64 substring_index_ptr = string->offset(printing_ptr, comma_ptr);
-    string_pointer->free(substring_index_ptr);
+    string->free(substring_index_ptr);
     string->printf(substring_index_ptr);
     string->free(printing_ptr);
     string->free(comma_ptr);
@@ -935,7 +949,7 @@ RX_TEST_CASE(tests, test_offset_strcat, .fixture = test_fixture) {
     RX_ASSERT(domain_len == name_len);
     RX_ASSERT(strcmp(domain, name) == 0);
 
-    string_pointer->free(domain_name);
+    string->free(domain_name);
     string->free(name_ptr);
     string->free(path_ptr1);
     string->free(path_ptr2);
@@ -985,7 +999,7 @@ RX_TEST_CASE(tests, test_load_open_match_last_unsafe_free_unsuppported_calls, .f
     string->put_char(last_match_ptr, '\0');
     string->free(ptr1);
     string->free(ptr2);
-    string_pointer->free(last_match_ptr);
+    string->free(last_match_ptr);
 }
 
 /* test init */
@@ -1046,7 +1060,7 @@ extern inline void source1(void) {
     string->free(pattern_ptr);
     string->put_char(last_match_ptr, '\0');
     string->strcpy(path_ptr, file_path_ptr);
-    string_pointer->free(last_match_ptr);
+    string->free(last_match_ptr);
     string->strcat(file_path_ptr, file_name_ptr);
     string->free(file_name_ptr);
 

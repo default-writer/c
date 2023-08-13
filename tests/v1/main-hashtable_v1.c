@@ -441,7 +441,7 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixtur
             struct hashtable_data* unsafe_tmp = hashtable->alloc(unsafe, 0);
             hashtable->free(unsafe_tmp);
             string->free(pattern_ptr);
-            string_pointer->free(last_match_ptr);
+            string->free(last_match_ptr);
             string->free(leak_ptr);
             file_data = tmp;
         }
