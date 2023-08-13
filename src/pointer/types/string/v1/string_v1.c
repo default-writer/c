@@ -127,7 +127,7 @@ static u64 string_copy(u64 ptr) {
     }
     data += offset;
     struct pointer* copy_ptr = virtual->alloc(size, id);
-    memcpy(copy_ptr->data, data, copy_ptr->size - offset); /* NOLINT */
+    memcpy(copy_ptr->data, data, size - offset); /* NOLINT */
     u64 copy = vm->alloc(copy_ptr);
 #ifdef USE_GC
     list->push(&base->gc, (void*)copy);
