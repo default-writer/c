@@ -728,6 +728,42 @@ RX_TEST_CASE(tests, test_match_last_src_strcpy, .fixture = test_fixture) {
 }
 
 /* test init */
+RX_TEST_CASE(tests, test_print_free, .fixture = test_fixture) {
+    u64 printing_ptr = string->load("hello, world!");
+    string->free(printing_ptr);
+    string->printf(printing_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_print, .fixture = test_fixture) {
+    u64 printing_ptr = string->load("hello, world!");
+    string->printf(printing_ptr);
+    string->free(printing_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_print_string_pointer, .fixture = test_fixture) {
+    u64 printing_ptr = string->load("hello, world!");
+    u64 comma_ptr = string->load(",");
+    u64 substring_index_ptr = string->match_last_src(printing_ptr, comma_ptr);
+    string->printf(substring_index_ptr);
+    string->free(printing_ptr);
+    string_pointer->free(substring_index_ptr);
+    string->free(comma_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_print_string_pointer_free, .fixture = test_fixture) {
+    u64 printing_ptr = string->load("hello, world!");
+    u64 comma_ptr = string->load(",");
+    u64 substring_index_ptr = string->match_last_src(printing_ptr, comma_ptr);
+    string_pointer->free(substring_index_ptr);
+    string->printf(substring_index_ptr);
+    string->free(printing_ptr);
+    string->free(comma_ptr);
+}
+
+/* test init */
 RX_TEST_CASE(tests, test_match_last_src_strcat, .fixture = test_fixture) {
     u64 name_ptr = string->load("name");
     u64 at_ptr = string->load("@");

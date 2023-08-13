@@ -253,11 +253,14 @@ static u64 string_getcwd(void) {
 }
 
 static void string_printf(u64 ptr) {
-    struct pointer* data_ptr = vm->read_type(ptr, id);
+    struct pointer* data_ptr = vm->read(ptr);
     if (data_ptr == 0) {
         return;
     }
-    const char* data = data_ptr->data;
+    const char* data = string_pointer_internal(data_ptr);
+    if (data == 0) {
+        return;
+    }
 #ifdef USE_MEMORY_DEBUG_INFO
     void* ptr_data = data_ptr->data;
     printf("   .: %016llx > %016llx\n", (u64)data_ptr, (u64)ptr_data);
