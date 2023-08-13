@@ -55,7 +55,7 @@ static const struct vm_type type_definition;
 static const struct vm_type* type = &type_definition;
 
 /* internal */
-static char* string_pointer_internal(struct pointer* data_ptr);
+static char* string_pointer_internal(struct pointer* data_ptr, u64* data_size, u64* data_offset);
 
 /* declaration */
 static void string_free(u64 ptr);
@@ -79,7 +79,7 @@ struct list_handler {
     struct list_data* list;
 };
 
-static char* string_pointer_internal(struct pointer* data_ptr) {
+static char* string_pointer_internal(struct pointer* data_ptr, u64* data_size, u64* data_offset) {
     u64 offset = 0;
     struct pointer* ptr = 0;
     if (data_ptr->id == TYPE_STRING) {
@@ -96,8 +96,9 @@ static char* string_pointer_internal(struct pointer* data_ptr) {
     if (ptr == 0) {
         return 0;
     }
+    *data_size = ptr->size;
+    *data_offset = offset;
     char* data = ptr->data;
-    data += offset;
     return data;
 }
 
@@ -114,17 +115,24 @@ static void string_vm_free(struct pointer* ptr) {
 }
 
 static u64 string_copy(u64 ptr) {
-    const struct pointer* data_ptr = vm->read_type(ptr, id);
+    struct pointer* data_ptr = vm->read(ptr);
     if (data_ptr == 0) {
         return 0;
     }
-    struct pointer* copy_ptr = virtual->alloc(data_ptr->size, id);
-    memcpy(copy_ptr->data, data_ptr->data, copy_ptr->size); /* NOLINT */
-    u64 data = vm->alloc(copy_ptr);
+    u64 size = 0;
+    u64 offset = 0;
+    char* data = string_pointer_internal(data_ptr, &size, &offset);
+    if (data == 0) {
+        return 0;
+    }
+    data += offset;
+    struct pointer* copy_ptr = virtual->alloc(size, id);
+    memcpy(copy_ptr->data, data, copy_ptr->size - offset); /* NOLINT */
+    u64 copy = vm->alloc(copy_ptr);
 #ifdef USE_GC
-    list->push(&base->gc, (void*)data);
+    list->push(&base->gc, (void*)copy);
 #endif
-    return data;
+    return copy;
 }
 
 static void string_strcpy(u64 dest, u64 src) {
@@ -139,11 +147,14 @@ static void string_strcpy(u64 dest, u64 src) {
     if (data_ptr == 0) {
         return;
     }
-    char* data = string_pointer_internal(data_ptr);
+    u64 size = 0;
+    u64 offset = 0;
+    char* data = string_pointer_internal(data_ptr, &size, &offset);
     if (data == 0) {
         return;
     }
-    u64 size = data_ptr->size + 1;
+    data += offset;
+    size += 1;
     if (dest_ptr->size < size) {
         virtual->realloc(dest_ptr, size);
     }
@@ -163,12 +174,15 @@ static void string_strcat(u64 dest, u64 src) {
     if (data_ptr == 0) {
         return;
     }
-    char* data = string_pointer_internal(data_ptr);
+    u64 size = 0;
+    u64 offset = 0;
+    char* data = string_pointer_internal(data_ptr, &size, &offset);
     if (data == 0) {
         return;
     }
+    data += offset;
     const char* data_src = data; /* NOLINT */
-    u64 size = dest_ptr->size + data_ptr->size - 1;
+    size += dest_ptr->size - 1;
     if (dest_ptr->size < size) {
         virtual->realloc(dest_ptr, size);
     }
@@ -257,10 +271,13 @@ static void string_printf(u64 ptr) {
     if (data_ptr == 0) {
         return;
     }
-    const char* data = string_pointer_internal(data_ptr);
+    u64 size = 0;
+    u64 offset = 0;
+    const char* data = string_pointer_internal(data_ptr, &size, &offset);
     if (data == 0) {
         return;
     }
+    data += offset;
 #ifdef USE_MEMORY_DEBUG_INFO
     void* ptr_data = data_ptr->data;
     printf("   .: %016llx > %016llx\n", (u64)data_ptr, (u64)ptr_data);
@@ -273,10 +290,13 @@ static void string_put_char(u64 src, char value) {
     if (data_ptr == 0) {
         return;
     }
-    char* data = string_pointer_internal(data_ptr);
+    u64 size = 0;
+    u64 offset = 0;
+    char* data = string_pointer_internal(data_ptr, &size, &offset);
     if (data == 0) {
         return;
     }
+    data += offset;
     *data = value;
 }
 
