@@ -63,7 +63,7 @@ static void string_vm_free(struct pointer* ptr);
 static u64 string_copy(u64 ptr);
 static void string_strcpy(u64 dest_ptr, u64 src_ptr);
 static void string_strcat(u64 dest_ptr, u64 src_ptr);
-static u64 string_match_last_src(u64 src_ptr, u64 match_ptr);
+static u64 string_offset(u64 src_ptr, u64 match_ptr);
 static u64 string_load(const char* data);
 static u64 string_getcwd(void);
 static void string_printf(u64 ptr);
@@ -204,7 +204,7 @@ static void string_strcat(u64 dest, u64 src) {
                   |  d is the last matching character of str1 string matching str2
                   | d is the rightmost character of str1 string matching str2 (strrchr)
 */
-static u64 string_match_last_src(u64 src, u64 match) {
+static u64 string_offset(u64 src, u64 match) {
     struct pointer* src_ptr = vm->read(src);
     if (src_ptr == 0) {
         return 0;
@@ -354,7 +354,7 @@ const struct string_methods string_methods_definition = {
     .copy = string_copy,
     .strcpy = string_strcpy,
     .strcat = string_strcat,
-    .match_last_src = string_match_last_src,
+    .offset = string_offset,
     .load = string_load,
     .getcwd = string_getcwd,
     .printf = string_printf,

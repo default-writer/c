@@ -371,7 +371,7 @@ RX_TEST_CASE(tests, test_strcat_alloc_alloc, .fixture = test_fixture) {
 RX_TEST_CASE(tests, test_string_last_match_ptr, .fixture = test_fixture) {
     u64 string_ptr1 = string->load("/all_english_words.txt0xdeadbeef");
     u64 string_ptr2 = string->load("/all_english_words.txt2");
-    u64 last_matched_ptr1 = string->match_last_src(string_ptr1, string_ptr2);
+    u64 last_matched_ptr1 = string->offset(string_ptr1, string_ptr2);
     RX_ASSERT(last_matched_ptr1 != 0);
     string_pointer->free(last_matched_ptr1);
     string->free(string_ptr1);
@@ -382,7 +382,7 @@ RX_TEST_CASE(tests, test_string_last_match_ptr, .fixture = test_fixture) {
 RX_TEST_CASE(tests, test_string_last_match_ptr_list, .fixture = test_fixture) {
     u64 list_ptr = list->alloc();
     u64 string_ptr = string->load("hello");
-    u64 last_matched_ptr = string->match_last_src(list_ptr, string_ptr);
+    u64 last_matched_ptr = string->offset(list_ptr, string_ptr);
     RX_ASSERT(last_matched_ptr == 0);
     string->free(string_ptr);
     list->free(list_ptr);
@@ -493,62 +493,62 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     string->strcat(string_ptr, none_ptr);
     string->strcat(none_ptr, string_ptr);
 
-    u64 last_matched_ptr1 = string->match_last_src(string_ptr, string_ptr);
-    string->match_last_src(data_ptr, null_ptr);
-    string->match_last_src(list_ptr, null_ptr);
-    string->match_last_src(string_ptr, data_ptr);
-    string->match_last_src(string_ptr, empty_ptr);
-    string->match_last_src(data_ptr, null_ptr);
-    string->match_last_src(list_ptr, string_ptr);
-    string->match_last_src(data_ptr, null_ptr);
-    string->match_last_src(list_ptr, null_ptr);
-    string->match_last_src(string_ptr, data_ptr);
-    string->match_last_src(data_ptr, null_ptr);
-    string->match_last_src(list_ptr, string_ptr);
-    string->match_last_src(null_ptr, null_ptr);
-    string->match_last_src(string_ptr, null_ptr);
+    u64 last_matched_ptr1 = string->offset(string_ptr, string_ptr);
+    string->offset(data_ptr, null_ptr);
+    string->offset(list_ptr, null_ptr);
+    string->offset(string_ptr, data_ptr);
+    string->offset(string_ptr, empty_ptr);
+    string->offset(data_ptr, null_ptr);
+    string->offset(list_ptr, string_ptr);
+    string->offset(data_ptr, null_ptr);
+    string->offset(list_ptr, null_ptr);
+    string->offset(string_ptr, data_ptr);
+    string->offset(data_ptr, null_ptr);
+    string->offset(list_ptr, string_ptr);
+    string->offset(null_ptr, null_ptr);
+    string->offset(string_ptr, null_ptr);
 
-    u64 last_matched_ptr2 = string->match_last_src(string_ptr, string_ptr);
-    string->match_last_src(string_ptr, zero_ptr);
-    string->match_last_src(data_ptr, zero_ptr);
-    string->match_last_src(list_ptr, zero_ptr);
-    string->match_last_src(string_ptr, data_ptr);
-    string->match_last_src(zero_ptr, zero_ptr);
-    string->match_last_src(zero_ptr, data_ptr);
-    string->match_last_src(zero_ptr, list_ptr);
-    string->match_last_src(zero_ptr, string_ptr);
-    string->match_last_src(empty_ptr, empty_ptr);
-    string->match_last_src(empty_ptr, string_ptr);
-    string->match_last_src(empty_ptr, zero_ptr);
+    u64 last_matched_ptr2 = string->offset(string_ptr, string_ptr);
+    string->offset(string_ptr, zero_ptr);
+    string->offset(data_ptr, zero_ptr);
+    string->offset(list_ptr, zero_ptr);
+    string->offset(string_ptr, data_ptr);
+    string->offset(zero_ptr, zero_ptr);
+    string->offset(zero_ptr, data_ptr);
+    string->offset(zero_ptr, list_ptr);
+    string->offset(zero_ptr, string_ptr);
+    string->offset(empty_ptr, empty_ptr);
+    string->offset(empty_ptr, string_ptr);
+    string->offset(empty_ptr, zero_ptr);
 
-    string->match_last_src(null_ptr, null_ptr);
-    string->match_last_src(null_ptr, empty_ptr);
-    string->match_last_src(null_ptr, string_ptr);
-    string->match_last_src(null_ptr, data_ptr);
-    string->match_last_src(null_ptr, list_ptr);
-    string->match_last_src(empty_ptr, null_ptr);
-    string->match_last_src(empty_ptr, empty_ptr);
-    string->match_last_src(empty_ptr, string_ptr);
-    string->match_last_src(empty_ptr, data_ptr);
-    string->match_last_src(empty_ptr, list_ptr);
-    string->match_last_src(string_ptr, null_ptr);
-    string->match_last_src(string_ptr, empty_ptr);
+    string->offset(null_ptr, null_ptr);
+    string->offset(null_ptr, empty_ptr);
+    string->offset(null_ptr, string_ptr);
+    string->offset(null_ptr, data_ptr);
+    string->offset(null_ptr, list_ptr);
+    string->offset(empty_ptr, null_ptr);
+    string->offset(empty_ptr, empty_ptr);
+    string->offset(empty_ptr, string_ptr);
+    string->offset(empty_ptr, data_ptr);
+    string->offset(empty_ptr, list_ptr);
+    string->offset(string_ptr, null_ptr);
+    string->offset(string_ptr, empty_ptr);
 
-    u64 last_matched_ptr3 = string->match_last_src(string_ptr, string_ptr);
-    string->match_last_src(string_ptr, data_ptr);
-    string->match_last_src(string_ptr, list_ptr);
-    string->match_last_src(data_ptr, null_ptr);
-    string->match_last_src(data_ptr, empty_ptr);
-    string->match_last_src(data_ptr, string_ptr);
-    string->match_last_src(data_ptr, data_ptr);
-    string->match_last_src(data_ptr, list_ptr);
-    string->match_last_src(list_ptr, null_ptr);
-    string->match_last_src(list_ptr, empty_ptr);
-    string->match_last_src(list_ptr, string_ptr);
-    string->match_last_src(list_ptr, data_ptr);
-    string->match_last_src(list_ptr, list_ptr);
-    string->match_last_src(string_ptr, none_ptr);
-    string->match_last_src(none_ptr, string_ptr);
+    u64 last_matched_ptr3 = string->offset(string_ptr, string_ptr);
+    string->offset(string_ptr, data_ptr);
+    string->offset(string_ptr, list_ptr);
+    string->offset(data_ptr, null_ptr);
+    string->offset(data_ptr, empty_ptr);
+    string->offset(data_ptr, string_ptr);
+    string->offset(data_ptr, data_ptr);
+    string->offset(data_ptr, list_ptr);
+    string->offset(list_ptr, null_ptr);
+    string->offset(list_ptr, empty_ptr);
+    string->offset(list_ptr, string_ptr);
+    string->offset(list_ptr, data_ptr);
+    string->offset(list_ptr, list_ptr);
+    string->offset(string_ptr, none_ptr);
+    string->offset(none_ptr, string_ptr);
 
     string->unsafe(null_ptr);
     string->unsafe(empty_ptr);
@@ -723,7 +723,7 @@ RX_TEST_CASE(tests, test_load_open_file_close_file, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_match_last_src_strcpy, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_offset_strcpy, .fixture = test_fixture) {
     u64 name_ptr = string->load("name");
     u64 at_ptr = string->load("@");
     u64 domain_ptr = string->load("domain.org");
@@ -733,7 +733,7 @@ RX_TEST_CASE(tests, test_match_last_src_strcpy, .fixture = test_fixture) {
     u64 path_ptr1 = string->load("name@domain.org");
     u64 path_ptr2 = string->copy(at_ptr);
 
-    u64 domain_name = string->match_last_src(path_ptr1, path_ptr2);
+    u64 domain_name = string->offset(path_ptr1, path_ptr2);
     string->strcpy(name_ptr, domain_name);
 
     char* domain = string->unsafe(domain_ptr);
@@ -751,7 +751,7 @@ RX_TEST_CASE(tests, test_match_last_src_strcpy, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_match_last_src_strcpy_free, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_offset_strcpy_free, .fixture = test_fixture) {
     u64 name_ptr = string->load("name");
     u64 at_ptr = string->load("@");
     u64 domain_ptr = string->load("domain.org");
@@ -761,7 +761,7 @@ RX_TEST_CASE(tests, test_match_last_src_strcpy_free, .fixture = test_fixture) {
     u64 path_ptr1 = string->load("name@domain.org");
     u64 path_ptr2 = string->copy(at_ptr);
 
-    u64 domain_name = string->match_last_src(path_ptr1, path_ptr2);
+    u64 domain_name = string->offset(path_ptr1, path_ptr2);
     string->free(path_ptr1);
     string->strcpy(name_ptr, domain_name);
 
@@ -796,7 +796,7 @@ RX_TEST_CASE(tests, test_print, .fixture = test_fixture) {
 RX_TEST_CASE(tests, test_print_string_pointer, .fixture = test_fixture) {
     u64 printing_ptr = string->load("hello, world!");
     u64 comma_ptr = string->load(",");
-    u64 substring_index_ptr = string->match_last_src(printing_ptr, comma_ptr);
+    u64 substring_index_ptr = string->offset(printing_ptr, comma_ptr);
     string->printf(substring_index_ptr);
     string->free(printing_ptr);
     string_pointer->free(substring_index_ptr);
@@ -808,7 +808,7 @@ RX_TEST_CASE(tests, test_print_string_pointer_copy, .fixture = test_fixture) {
     const char* substring_expected = " world!";
     u64 printing_ptr = string->load("hello, world!");
     u64 comma_ptr = string->load(",");
-    u64 substring_index_ptr = string->match_last_src(printing_ptr, comma_ptr);
+    u64 substring_index_ptr = string->offset(printing_ptr, comma_ptr);
     u64 substring_ptr = string->copy(substring_index_ptr);
 
     char* substring_actual = string->unsafe(substring_ptr);
@@ -839,10 +839,10 @@ RX_TEST_CASE(tests, test_list_unsafe, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_list_match_last_src, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_list_offset, .fixture = test_fixture) {
     u64 string_ptr = string->load("himem.sys");
     u64 list_ptr = list->alloc();
-    u64 size_actual = string->match_last_src(string_ptr, list_ptr);
+    u64 size_actual = string->offset(string_ptr, list_ptr);
     u64 size_expected = 0;
     RX_ASSERT(size_expected == size_actual);
     list->free(list_ptr);
@@ -853,7 +853,7 @@ RX_TEST_CASE(tests, test_list_match_last_src, .fixture = test_fixture) {
 RX_TEST_CASE(tests, teststring_pointer_unsafe, .fixture = test_fixture) {
     u64 printing_ptr = string->load("hello, world!");
     u64 comma_ptr = string->load(",");
-    u64 substring_index_ptr = string->match_last_src(printing_ptr, comma_ptr);
+    u64 substring_index_ptr = string->offset(printing_ptr, comma_ptr);
 
     char* expected_value = string->unsafe(substring_index_ptr);
     const char* actual_value = " world!";
@@ -869,7 +869,7 @@ RX_TEST_CASE(tests, teststring_pointer_unsafe, .fixture = test_fixture) {
 RX_TEST_CASE(tests, test_string_pointer_size, .fixture = test_fixture) {
     u64 printing_ptr = string->load("hello, world!");
     u64 comma_ptr = string->load(",");
-    u64 substring_index_ptr = string->match_last_src(printing_ptr, comma_ptr);
+    u64 substring_index_ptr = string->offset(printing_ptr, comma_ptr);
     u64 substring_ptr = string->copy(substring_index_ptr);
 
     u64 size_expected = strlen(" world!") + 1; /* adds one 0 to termination byte */
@@ -883,12 +883,12 @@ RX_TEST_CASE(tests, test_string_pointer_size, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_string_match_last_src_subsearch, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_string_offset_subsearch, .fixture = test_fixture) {
     u64 printing_ptr = string->load("hello, world!");
     u64 comma_ptr = string->load(",");
     u64 w_ptr = string->load("w");
-    u64 substring_index_ptr1 = string->match_last_src(printing_ptr, comma_ptr);
-    u64 substring_index_ptr2 = string->match_last_src(substring_index_ptr1, w_ptr);
+    u64 substring_index_ptr1 = string->offset(printing_ptr, comma_ptr);
+    u64 substring_index_ptr2 = string->offset(substring_index_ptr1, w_ptr);
     u64 substring_ptr = string->copy(substring_index_ptr2);
 
     u64 size_expected = strlen("orld!") + 1; /* adds one 0 to termination byte */
@@ -907,7 +907,7 @@ RX_TEST_CASE(tests, test_string_match_last_src_subsearch, .fixture = test_fixtur
 RX_TEST_CASE(tests, test_print_string_pointer_free, .fixture = test_fixture) {
     u64 printing_ptr = string->load("hello, world!");
     u64 comma_ptr = string->load(",");
-    u64 substring_index_ptr = string->match_last_src(printing_ptr, comma_ptr);
+    u64 substring_index_ptr = string->offset(printing_ptr, comma_ptr);
     string_pointer->free(substring_index_ptr);
     string->printf(substring_index_ptr);
     string->free(printing_ptr);
@@ -915,7 +915,7 @@ RX_TEST_CASE(tests, test_print_string_pointer_free, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_match_last_src_strcat, .fixture = test_fixture) {
+RX_TEST_CASE(tests, test_offset_strcat, .fixture = test_fixture) {
     u64 name_ptr = string->load("name");
     u64 at_ptr = string->load("@");
     string->strcat(name_ptr, at_ptr);
@@ -923,7 +923,7 @@ RX_TEST_CASE(tests, test_match_last_src_strcat, .fixture = test_fixture) {
     u64 path_ptr1 = string->load("name@domain.org");
     u64 path_ptr2 = string->copy(at_ptr);
 
-    u64 domain_name = string->match_last_src(path_ptr1, path_ptr2);
+    u64 domain_name = string->offset(path_ptr1, path_ptr2);
     string->strcat(name_ptr, domain_name);
 
     char* domain = string->unsafe(path_ptr1);
@@ -958,7 +958,7 @@ RX_TEST_CASE(tests, test_load_open_match_last_unsafe_free, .fixture = test_fixtu
     u64 file_name_ptr = string->load("/all_english_words.txt//");
     string->strcat(file_path_ptr, file_name_ptr);
     u64 pattern_ptr = string->load("//");
-    u64 last_match_ptr = string->match_last_src(file_path_ptr, pattern_ptr);
+    u64 last_match_ptr = string->offset(file_path_ptr, pattern_ptr);
     string->free(pattern_ptr);
     string->put_char(last_match_ptr, '\0');
     string->free(last_match_ptr);
@@ -979,7 +979,7 @@ RX_TEST_CASE(tests, test_load_open_match_last_unsafe_free_unsuppported_calls, .f
     u64 ptr1 = string->load("qwerty//u");
     u64 ptr2 = string->load("asdfghjkl");
     u64 pattern_ptr = string->load("/u");
-    u64 last_match_ptr = string->match_last_src(ptr1, pattern_ptr);
+    u64 last_match_ptr = string->offset(ptr1, pattern_ptr);
     string->strcat(last_match_ptr, ptr2);
     string->free(pattern_ptr);
     string->put_char(last_match_ptr, '\0');
@@ -1030,7 +1030,7 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixtur
 RX_TEST_CASE(tests, test_load_load_match_last, .fixture = test_fixture) {
     u64 str_ptr = string->load("Hello, world!");
     u64 ch_ptr = string->load("z");
-    u64 last_match_ptr = string->match_last_src(str_ptr, ch_ptr);
+    u64 last_match_ptr = string->offset(str_ptr, ch_ptr);
     string->free(last_match_ptr);
     string->free(str_ptr);
     string->free(ch_ptr);
@@ -1042,7 +1042,7 @@ extern inline void source1(void) {
     u64 file_name_ptr = string->load("input.txt");
     u64 pattern_ptr = string->load("/");
     u64 path_ptr = string->load("/");
-    u64 last_match_ptr = string->match_last_src(file_path_ptr, pattern_ptr);
+    u64 last_match_ptr = string->offset(file_path_ptr, pattern_ptr);
     string->free(pattern_ptr);
     string->put_char(last_match_ptr, '\0');
     string->strcpy(path_ptr, file_path_ptr);

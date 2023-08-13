@@ -435,8 +435,8 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixtur
             string->printf(string_ptr);
             string->put_char(string_ptr, unsafe[0]);
             u64 pattern_ptr = string->load("b");
-            u64 last_match_ptr = string->match_last_src(string_ptr, pattern_ptr);
-            u64 leak_ptr = string->match_last_src(string_ptr, last_match_ptr);
+            u64 last_match_ptr = string->offset(string_ptr, pattern_ptr);
+            u64 leak_ptr = string->offset(string_ptr, last_match_ptr);
             string->printf(leak_ptr);
             struct hashtable_data* unsafe_tmp = hashtable->alloc(unsafe, 0);
             hashtable->free(unsafe_tmp);
