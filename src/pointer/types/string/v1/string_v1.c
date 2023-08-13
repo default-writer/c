@@ -115,24 +115,24 @@ static void string_vm_free(struct pointer* ptr) {
 }
 
 static u64 string_copy(u64 ptr) {
-    struct pointer* data_ptr = vm->read(ptr);
-    if (data_ptr == 0) {
+    struct pointer* pointer_ptr = vm->read(ptr);
+    if (pointer_ptr == 0) {
         return 0;
     }
     u64 size = 0;
     u64 offset = 0;
-    char* data = string_pointer_internal(data_ptr, &size, &offset);
+    char* data = string_pointer_internal(pointer_ptr, &size, &offset);
     if (data == 0) {
         return 0;
     }
     data += offset;
-    struct pointer* copy_ptr = virtual->alloc(size - offset, id);
-    memcpy(copy_ptr->data, data, size - offset); /* NOLINT */
-    u64 copy = vm->alloc(copy_ptr);
+    struct pointer* data_ptr = virtual->alloc(size - offset, id);
+    memcpy(data_ptr->data, data, size - offset); /* NOLINT */
+    u64 pointer = vm->alloc(data_ptr);
 #ifdef USE_GC
-    list->push(&base->gc, (void*)copy);
+    list->push(&base->gc, (void*)pointer);
 #endif
-    return copy;
+    return pointer;
 }
 
 static void string_strcpy(u64 dest, u64 src) {
@@ -198,7 +198,7 @@ static void string_strcat(u64 dest, u64 src) {
                   | d is the rightmost character of str1 string matching str2 (strrchr)
 */
 static u64 string_match_last_src(u64 src, u64 match) {
-    struct pointer* src_ptr = vm->read_type(src, id);
+    struct pointer* src_ptr = vm->read(src);
     if (src_ptr == 0) {
         return 0;
     }
@@ -229,11 +229,11 @@ static u64 string_match_last_src(u64 src, u64 match) {
     struct string_reference* ref = data_ptr->data;
     ref->address = src;
     ref->offset = offset;
-    u64 data = vm->alloc(data_ptr);
+    u64 pointer = vm->alloc(data_ptr);
 #ifdef USE_GC
-    list->push(&base->gc, (void*)data);
+    list->push(&base->gc, (void*)pointer);
 #endif
-    return data;
+    return pointer;
 }
 
 static u64 string_load(const char* src_data) {
@@ -246,11 +246,11 @@ static u64 string_load(const char* src_data) {
     u64 size = strlen(src_data) + 1;
     struct pointer* data_ptr = virtual->alloc(size, id);
     memcpy(data_ptr->data, src_data, size); /* NOLINT */
-    u64 data = vm->alloc(data_ptr);
+    u64 pointer = vm->alloc(data_ptr);
 #ifdef USE_GC
-    list->push(&base->gc, (void*)data);
+    list->push(&base->gc, (void*)pointer);
 #endif
-    return data;
+    return pointer;
 }
 
 static u64 string_getcwd(void) {
