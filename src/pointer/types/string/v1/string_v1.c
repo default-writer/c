@@ -220,15 +220,13 @@ static u64 string_match_last_src(u64 src, u64 match) {
     if (match_ptr == 0) {
         return 0;
     }
-    char* data_src = data;
-    char* data_match = match_ptr->data;
-    char* str1 = strrchr(data_src, *data_match);
+    char* str2 = match_ptr->data;
+    char* str1 = strrchr(data, *str2);
     if (str1 == 0) {
         return 0;
     }
-    offset = (u64)((u8*)str1 - (u8*)data_src);
-    char* str2 = data_match;
-    while (*str1 != 0 && *str2 != 0 && offset < src_ptr->size) {
+    offset = (u64)((u8*)str1 - (u8*)data);
+    while (*str1 != 0 && *str2 != 0 && offset < size) {
         if (*str1 != *str2) {
             break;
         }

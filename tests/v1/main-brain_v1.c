@@ -734,6 +734,34 @@ RX_TEST_CASE(tests, test_match_last_src_strcpy, .fixture = test_fixture) {
     u64 path_ptr2 = string->copy(at_ptr);
 
     u64 domain_name = string->match_last_src(path_ptr1, path_ptr2);
+    string->strcpy(name_ptr, domain_name);
+
+    char* domain = string->unsafe(domain_ptr);
+    char* name = string->unsafe(name_ptr);
+    RX_ASSERT(strcmp(domain, "domain.org") == 0);
+    RX_ASSERT(strcmp(name, "domain.org") == 0);
+
+    string_pointer->free(domain_name);
+    string->free(name_ptr);
+    string->free(path_ptr1);
+    string->free(path_ptr2);
+    string->free(name_ptr);
+    string->free(domain_ptr);
+    string->free(at_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_match_last_src_strcpy_free, .fixture = test_fixture) {
+    u64 name_ptr = string->load("name");
+    u64 at_ptr = string->load("@");
+    u64 domain_ptr = string->load("domain.org");
+    string->strcat(name_ptr, at_ptr);
+    string->strcat(name_ptr, domain_ptr);
+
+    u64 path_ptr1 = string->load("name@domain.org");
+    u64 path_ptr2 = string->copy(at_ptr);
+
+    u64 domain_name = string->match_last_src(path_ptr1, path_ptr2);
     string->free(path_ptr1);
     string->strcpy(name_ptr, domain_name);
 
