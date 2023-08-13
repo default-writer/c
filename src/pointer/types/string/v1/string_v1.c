@@ -87,11 +87,18 @@ static char* string_pointer_internal(struct pointer* data_ptr, u64* data_size, u
     }
     if (data_ptr->id == TYPE_STRING_POINTER) {
         struct string_reference* ref = data_ptr->data;
+        while ((ptr = vm->read(ref->address)) != 0) {
+            if (ptr->id != TYPE_STRING_POINTER) {
+                break;
+            }
+            offset += ref->offset;
+            ref = ptr->data;
+        }
         ptr = vm->read_type(ref->address, TYPE_STRING);
         if (ptr == 0) {
             return 0;
         }
-        offset = ref->offset;
+        offset += ref->offset;
     }
     if (ptr == 0) {
         return 0;
