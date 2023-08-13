@@ -379,6 +379,16 @@ RX_TEST_CASE(tests, test_string_last_match_ptr, .fixture = test_fixture) {
 }
 
 /* test init */
+RX_TEST_CASE(tests, test_string_last_match_ptr_list, .fixture = test_fixture) {
+    u64 list_ptr = list->alloc();
+    u64 string_ptr = string->load("hello");
+    u64 last_matched_ptr = string->match_last_src(list_ptr, string_ptr);
+    RX_ASSERT(last_matched_ptr == 0);
+    string->free(string_ptr);
+    list->free(list_ptr);
+}
+
+/* test init */
 RX_TEST_CASE(tests, test_strcpy, .fixture = test_fixture) {
     u64 path_ptr1 = string->load("/");
     u64 path_ptr2 = string->load("@");
