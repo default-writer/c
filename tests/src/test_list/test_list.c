@@ -73,7 +73,7 @@ static void list_using(struct list_v1** current) {
     /* declares pointer to list functions definitions */
     const struct list_methods_v1* list = &list_definition;
     /* prepares the payload */
-    u8* payload = (void*)0x8bde1248;
+    u8* payload = (void*)0x7bde8421;
     /* peeks and pops from empty list */
     struct list_v1* is_null[] = {
         list->peek(current),
@@ -187,7 +187,7 @@ RX_TEST_CASE(list_tests, test_list_data_v1, .fixture = test_fixture) {
     /* declares pointer to list functions definitions */
     const struct list_methods_v1* list = &list_definition;
     /* prepares the payload */
-    u8* payload = (void*)0x8bde1248;
+    u8* payload = (void*)0x7bde8421;
 
     /* allocates the memory for the structure */
     struct list_v1* tmp = list->alloc(payload);
@@ -225,7 +225,7 @@ RX_TEST_CASE(list_tests, test_standard_list_peek_does_not_changes_stack, .fixtur
     /* declares pointer to list functions definitions */
     const struct list_methods_v1* list = &list_definition;
     /* prepares the payload */
-    u8* payload = (void*)0x8bde1248;
+    u8* payload = (void*)0x7bde8421;
     /* allocates the memory for the structure */
     struct list_v1* tmp = list->alloc(payload);
     /* pushed to the list */
@@ -271,7 +271,7 @@ RX_TEST_CASE(list_tests, test_alloc_count_eq_1, .fixture = test_fixture) {
     /* declares pointer to list functions definitions */
     const struct list_methods_v1* list = &list_definition;
     /* prepares the payload */
-    u8* payload = (void*)0x8bde1248;
+    u8* payload = (void*)0x7bde8421;
     /* allocates the memory for the structure */
     struct list_v1* tmp = list->alloc(payload);
     /* pushes to the list */
@@ -286,7 +286,7 @@ RX_TEST_CASE(list_tests, test_alloc_payload, .fixture = test_fixture) {
     /* declares pointer to list functions definitions */
     const struct list_methods_v1* list = &list_definition;
     /* prepares the payload */
-    u8* payload = (void*)0x8bde1248;
+    u8* payload = (void*)0x7bde8421;
     /* allocates the memory for the structure */
     struct list_v1* tmp = list->alloc(payload);
     /* pushes to the list */
@@ -303,7 +303,7 @@ RX_TEST_CASE(list_tests, test_alloc_pop_count_0, .fixture = test_fixture) {
     /* declares pointer to list functions definitions */
     const struct list_methods_v1* list = &list_definition;
     /* prepares the payload */
-    u8* payload = (void*)0x8bde1248;
+    u8* payload = (void*)0x7bde8421;
     /* allocates the memory for the structure */
     struct list_v1* tmp = list->alloc(payload);
     list->push(ctx, tmp);
@@ -321,7 +321,7 @@ RX_TEST_CASE(list_tests, test_alloc_pop_payload, .fixture = test_fixture) {
     /* declares pointer to list functions definitions */
     const struct list_methods_v1* list = &list_definition;
     /* prepares the payload */
-    u8* payload = (void*)0x8bde1248;
+    u8* payload = (void*)0x7bde8421;
     /* allocates the memory for the structure */
     struct list_v1* tmp = list->alloc(payload);
     /* pushes to the list */
@@ -342,7 +342,7 @@ RX_TEST_CASE(list_tests, test_alloc_and_prev_next_equals_0, .fixture = test_fixt
     /* declares pointer to list functions definitions */
     const struct list_methods_v1* list = &list_definition;
     /* prepares the payload */
-    u8* payload = (void*)0x8bde1248;
+    u8* payload = (void*)0x7bde8421;
     /* allocates the memory for the structure */
     struct list_v1* tmp = list->alloc(payload);
     /* pushes to the list */
@@ -373,7 +373,7 @@ RX_TEST_CASE(list_tests, test_free_head, .fixture = test_fixture) {
     /* declares pointer to list functions definitions */
     const struct list_methods_v1* list = &list_definition;
     /* prepares the payload */
-    u8* payload = (void*)0x8bde1248;
+    u8* payload = (void*)0x7bde8421;
     /* allocates the memory for the structure */
     struct list_v1* tmp = list->alloc(payload);
     list->push(ctx, tmp);

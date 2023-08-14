@@ -207,7 +207,7 @@ static void string_strcat(u64 dest, u64 src) {
 
 /*
     str1                         str2
-    "8bde12488bde1248" <---> "e1248"
+    "7bde84217bde8421" <---> "e1248"
         ^       ^
         |       |
         |       d is the last matching character of str1 string matching str2
