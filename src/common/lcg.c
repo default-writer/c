@@ -26,19 +26,19 @@
 #include "lcg.h"
 #include "std/common.h"
 
-static u64 lcg_parkmiller_state_internal(void);
+static u32 lcg_parkmiller_state_internal(void);
 
 /* LCG Park-Miller state */
-static u64 state = (0x7bde8421 & 0x7fffffff) - 1; /* 0x7bde8420 */
+static u32 state = (0x7bde8421 & 0x7fffffff) - 1; /* 0x7bde8420 */
 
 /* LCG Park-Miller function */
-static u64 lcg_parkmiller_state_internal(void) {
+static u32 lcg_parkmiller_state_internal(void) {
     u64 product = (u64)state * 48271;
     u32 x = (product & 0x7fffffff) + (product >> 31);
     x = (x & 0x7fffffff) + (x >> 31);
-    return state = x;
+    return state = (u32)x;
 }
 
 u64 lcg_parkmiller_64(void) {
-    return lcg_parkmiller_state_internal();
+    return (lcg_parkmiller_state_internal() << 32) + lcg_parkmiller_state_internal();
 }
