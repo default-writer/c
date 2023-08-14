@@ -34,4 +34,11 @@ struct test_suite {
     int (*run)(void);
 };
 
+#define TEST_RUN(variable, expression)           \
+    int test_run_##variable = expression->run(); \
+    if (test_run_##variable != 0) {              \
+        return test_run_##variable;              \
+    }                                            \
+    int variable = test_run_##variable
+
 #endif /* _TESTS_COMMON_H_ */

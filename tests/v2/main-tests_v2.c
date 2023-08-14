@@ -40,7 +40,7 @@ typedef struct test_data {
 
 int main(int argc, char** argv) {
     global_statistics();
-    int vm_v2 = vm_v2_tests->run();
+    TEST_RUN(vm_v2, vm_v2_tests);
     global_statistics();
     return vm_v2;
 }

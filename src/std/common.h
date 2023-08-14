@@ -28,6 +28,7 @@
 
 #include "std/compile.h"
 #include "std/data.h"
+#include "std/errors.h"
 #include "std/headers.h"
 #include "std/macros.h"
 

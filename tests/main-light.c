@@ -338,8 +338,8 @@ int main(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- acceptance test code\n");
 #endif
-    int alloc = list_alloc_tests->run();
-    int micro = list_micro_tests->run();
+    TEST_RUN(alloc, list_alloc_tests);
+    TEST_RUN(micro, list_micro_tests);
     /* some messy code */
     using_list1(list_using);
     using_list2(list_using);

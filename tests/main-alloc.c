@@ -30,7 +30,7 @@ static const struct test_suite* list_alloc_tests = &list_alloc_test_suite_defini
 
 int main(void) {
     global_statistics();
-    int result = list_alloc_tests->run();
+    TEST_RUN(result, list_alloc_tests);
     global_statistics();
     return result;
 }

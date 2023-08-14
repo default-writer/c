@@ -11,8 +11,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -23,24 +23,14 @@
  * SOFTWARE.
  *
  */
-#include "common/alloc.h"
+#ifndef _STD_ERRORS_H_
+#define _STD_ERRORS_H_
 
-#include "../tests/src/test.h"
+#define ERROR_MSG_INDEX(n) (-n)
 
-extern const struct test_suite vm_v1_test_suite_definition;
-static const struct test_suite* vm_v1_tests = &vm_v1_test_suite_definition;
+#define ERROR_MSG_ID_INVALID_ARGUMENT ERROR_MSG_INDEX((u64)1)
 
-#define DEFAULT_SIZE 0x100
+#define ERROR(x) ERROR_MSG_ID_##x
+#define ERROR_INVALID_ARGUMENT ERROR(INVALID_ARGUMENT)
 
-/* definition */
-extern const struct vm_methods vm_methods_definition;
-
-typedef struct test_data {
-}* TEST_DATA;
-
-int main(int argc, char** argv) {
-    global_statistics();
-    TEST_RUN(vm_v1, vm_v1_tests);
-    global_statistics();
-    return vm_v1;
-}
+#endif /* _STD_ERRORS_H_ */

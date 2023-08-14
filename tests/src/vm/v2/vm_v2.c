@@ -638,8 +638,8 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixtur
 }
 
 static int run(void) {
-    int alloc = list_alloc_tests->run();
-    int micro = list_micro_tests->run();
+    TEST_RUN(alloc, list_alloc_tests);
+    TEST_RUN(micro, list_micro_tests);
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- acceptance test code\n");
 #endif

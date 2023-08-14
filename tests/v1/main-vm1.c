@@ -126,9 +126,9 @@ extern inline void source2(void) {
 
 int main(int argc, char** argv) {
     global_statistics();
-    int alloc = list_alloc_tests->run();
-    int micro = list_micro_tests->run();
-    int vm_v1 = vm_v1_tests->run();
+    TEST_RUN(alloc, list_alloc_tests);
+    TEST_RUN(micro, list_micro_tests);
+    TEST_RUN(vm_v1, vm_v1_tests);
     CLEAN(argc)
     pointer->init(DEFAULT_SIZE);
     u64 argv_ptr = string->load(argv[0]);

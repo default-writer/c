@@ -93,6 +93,9 @@ static void list_vm_free(struct pointer* ptr) {
 }
 
 static void list_push(u64 ptr_list, u64 ptr) {
+    if (ptr_list == ptr) {
+        return;
+    }
     if (ptr_list == 0) {
         return;
     }

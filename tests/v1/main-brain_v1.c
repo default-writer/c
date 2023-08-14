@@ -403,6 +403,122 @@ RX_TEST_CASE(tests, test_string_pointer_free_list, .fixture = test_fixture) {
 }
 
 /* test init */
+RX_TEST_CASE(tests, test_list_push_0_1, .fixture = test_fixture) {
+    list->push(0, 1);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_push_1_0, .fixture = test_fixture) {
+    list->push(1, 0);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_push_0, .fixture = test_fixture) {
+    u64 list_ptr = list->alloc();
+    list->push(list_ptr, 0);
+    list->free(list_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_push_list, .fixture = test_fixture) {
+    u64 list_ptr = list->alloc();
+    list->push(list_ptr, list_ptr);
+    list->free(list_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_push_string, .fixture = test_fixture) {
+    u64 string_ptr = string->load("@");
+    u64 list_ptr = list->alloc();
+    list->push(string_ptr, list_ptr);
+    list->free(list_ptr);
+    string->free(string_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_size_string, .fixture = test_fixture) {
+    u64 string_ptr = string->load("@");
+    u64 list_ptr = list->alloc();
+    u64 value = list->size(string_ptr);
+    RX_ASSERT(value == 0);
+    list->free(list_ptr);
+    string->free(string_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_push_size, .fixture = test_fixture) {
+    u64 string_ptr = string->load("@");
+    u64 list_ptr = list->alloc();
+    list->push(list_ptr, string_ptr);
+    u64 value = list->size(list_ptr);
+    RX_ASSERT(value != 0);
+    list->free(list_ptr);
+    string->free(string_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_pop_0_1, .fixture = test_fixture) {
+    u64 value_ptr = list->pop(0);
+    RX_ASSERT(value_ptr == 0);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_pop_1_0, .fixture = test_fixture) {
+    u64 value_ptr = list->pop(1);
+    RX_ASSERT(value_ptr == 0);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_pop_list, .fixture = test_fixture) {
+    u64 list_ptr = list->alloc();
+    u64 value_ptr = list->pop(list_ptr);
+    RX_ASSERT(value_ptr == 0);
+    list->free(list_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_pop_string, .fixture = test_fixture) {
+    u64 string_ptr = string->load("@");
+    u64 list_ptr = list->alloc();
+    list->push(list_ptr, string_ptr);
+    u64 value_ptr = list->pop(list_ptr);
+    RX_ASSERT(value_ptr != 0);
+    list->free(list_ptr);
+    string->free(string_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_peek_0_1, .fixture = test_fixture) {
+    u64 value_ptr = list->peek(0);
+    RX_ASSERT(value_ptr == 0);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_peek_1_0, .fixture = test_fixture) {
+    u64 value_ptr = list->peek(1);
+    RX_ASSERT(value_ptr == 0);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_peek_list, .fixture = test_fixture) {
+    u64 list_ptr = list->alloc();
+    u64 value_ptr = list->peek(list_ptr);
+    RX_ASSERT(value_ptr == 0);
+    list->free(list_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_peek_string, .fixture = test_fixture) {
+    u64 string_ptr = string->load("@");
+    u64 list_ptr = list->alloc();
+    list->push(list_ptr, string_ptr);
+    u64 value_ptr = list->peek(list_ptr);
+    RX_ASSERT(value_ptr != 0);
+    list->free(list_ptr);
+    string->free(string_ptr);
+}
+
+/* test init */
 RX_TEST_CASE(tests, test_strcpy, .fixture = test_fixture) {
     u64 path_ptr1 = string->load("/");
     u64 path_ptr2 = string->load("@");
@@ -416,8 +532,8 @@ RX_TEST_CASE(tests, test_strcpy, .fixture = test_fixture) {
     RX_ASSERT(path1_len > 0);
     RX_ASSERT(path2_len > 0);
     char* buf = calloc(1, path1_len + path2_len + 1);
-    strcpy(buf, path1);
-    strcat(buf, path2);
+    strcpy(buf, path1); /* NOLINT */
+    strcat(buf, path2); /* NOLINT */
     char* path_copy = string->unsafe(path_copy_ptr);
     RX_ASSERT(strlen(path_copy) == strlen(buf));
     RX_ASSERT(strcmp(path_copy, buf) == 0);
@@ -1070,8 +1186,8 @@ extern inline void source1(void) {
     RX_ASSERT(path_len > 0);
     RX_ASSERT(input_len > 0);
     char* buf = calloc(1, path_len + input_len + 1);
-    strcpy(buf, path);
-    strcat(buf, "input.txt");
+    strcpy(buf, path); /* NOLINT */
+    strcat(buf, "input.txt"); /* NOLINT */
     char* file_path = string->unsafe(file_path_ptr);
     RX_ASSERT(strlen(file_path) == strlen(buf));
     RX_ASSERT(strcmp(file_path, buf) == 0);
@@ -1127,10 +1243,10 @@ extern inline void source2(void) {
 int main(int argc, char** argv) {
     global_statistics();
     CLEAN(argc)
-    int alloc = list_alloc_tests->run();
-    int micro = list_micro_tests->run();
-    int tests = list_tests->run();
-    int vm_v1 = vm_v1_tests->run();
+    TEST_RUN(alloc, list_alloc_tests);
+    TEST_RUN(micro, list_micro_tests);
+    TEST_RUN(tests, list_tests);
+    TEST_RUN(vm_v1, vm_v1_tests);
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- acceptance test code\n");
 #endif
