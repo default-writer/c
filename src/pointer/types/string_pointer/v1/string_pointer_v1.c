@@ -50,17 +50,8 @@ static const struct vm_type* type = &type_definition;
 
 /* internal */
 static void string_pointer_vm_free(struct pointer* ptr);
-static void string_pointer_free(u64 ptr);
 
 /* implementation */
-static void string_pointer_free(u64 ptr) {
-    struct pointer* data_ptr = vm->read_type(ptr, id);
-    if (data_ptr == 0) {
-        return;
-    }
-    return string_pointer_vm_free(data_ptr);
-}
-
 static void string_pointer_vm_free(struct pointer* ptr) {
     virtual->free(ptr);
 }
@@ -74,9 +65,7 @@ static void INIT init() {
 }
 
 /* public */
-const struct string_pointer_methods string_pointer_methods_definition = {
-    .free = string_pointer_free,
-};
+const struct string_pointer_methods string_pointer_methods_definition = {};
 
 #ifndef ATTRIBUTE
 void string_pointer_init() {

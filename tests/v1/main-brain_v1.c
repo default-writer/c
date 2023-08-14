@@ -395,9 +395,21 @@ RX_TEST_CASE(tests, test_string_pointer_free_list, .fixture = test_fixture) {
     u64 string_ptr = string->load("hello");
     u64 e_ptr = string->load("e");
     u64 string_pointer_ptr = string->offset(string_ptr, e_ptr);
-    string_pointer->free(list_ptr);
-    string_pointer->free(string_pointer_ptr);
+    string->free(list_ptr);
+    string->free(string_pointer_ptr);
     string->free(string_ptr);
+    string->free(e_ptr);
+    list->free(list_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_string_pointer_free, .fixture = test_fixture) {
+    u64 list_ptr = list->alloc();
+    u64 string_ptr = string->load("hello");
+    u64 e_ptr = string->load("e");
+    u64 string_pointer_ptr = string->offset(string_ptr, e_ptr);
+    list->push(list_ptr, string_pointer_ptr);
+    list->push(list_ptr, string_ptr);
     string->free(e_ptr);
     list->free(list_ptr);
 }

@@ -30,7 +30,6 @@
 #include "std/common.h"
 
 struct string_pointer_methods {
-    void (*free)(u64 ptr);
 };
 
 struct string_reference {

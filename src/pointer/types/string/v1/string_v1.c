@@ -122,7 +122,8 @@ static void string_free(u64 ptr) {
         return string_vm_free(data_ptr);
     }
     if (data_ptr->id == TYPE_STRING_POINTER) {
-        return string_pointer->free(data_ptr->address);
+        struct pointer* pointer_ptr = vm->read_type(ptr, TYPE_STRING_POINTER);
+        return string_vm_free(pointer_ptr);
     }
 }
 
