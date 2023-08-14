@@ -72,7 +72,7 @@ static void using_list2(void (*list_using)(struct list_data** const)) {
 static void list_using(struct list_data** current) {
     /* declares pointer to list functions definitions */
     const struct list* list = &list_micro_definition;
-    u8* payload = (void*)0xdeadbeef;
+    u8* payload = (void*)0x8bde1248;
     void* is_null[] = {
         list->peek(current),
         list->pop(current)
@@ -360,7 +360,7 @@ RX_TEST_CASE(list_micro_tests, test_standard_list_peek_does_not_changes_stack, .
     /* declares pointer to list functions definitions */
     const struct list* list = &list_micro_definition;
     /* prepares the payload */
-    u8* payload = (void*)0xdeadbeef;
+    u8* payload = (void*)0x8bde1248;
     /* pushed to the list */
     list->push(ctx, payload);
     /* gets the head pointer to the list */
@@ -402,7 +402,7 @@ RX_TEST_CASE(list_micro_tests, test_alloc_count_eq_1, .fixture = test_fixture) {
     /* declares pointer to list functions definitions */
     const struct list* list = &list_micro_definition;
     /* prepares the payload */
-    u8* payload = (void*)0xdeadbeef;
+    u8* payload = (void*)0x8bde1248;
     /* pushes to the list */
     list->push(ctx, payload);
     /* ensures data is added to the list */
@@ -415,7 +415,7 @@ RX_TEST_CASE(list_micro_tests, test_alloc_payload, .fixture = test_fixture) {
     /* declares pointer to list functions definitions */
     const struct list* list = &list_micro_definition;
     /* prepares the payload */
-    u8* payload = (void*)0xdeadbeef;
+    u8* payload = (void*)0x8bde1248;
     /* pushes to the list */
     list->push(ctx, payload);
     /* peeks from the list */
@@ -430,7 +430,7 @@ RX_TEST_CASE(list_micro_tests, test_alloc_pop_count_0, .fixture = test_fixture) 
     /* declares pointer to list functions definitions */
     const struct list* list = &list_micro_definition;
     /* prepares the payload */
-    u8* payload = (void*)0xdeadbeef;
+    u8* payload = (void*)0x8bde1248;
     /* pushes to the list */
     list->push(ctx, payload);
     /* pops from the list */
@@ -445,7 +445,7 @@ RX_TEST_CASE(list_micro_tests, test_alloc_pop_payload, .fixture = test_fixture) 
     /* declares pointer to list functions definitions */
     const struct list* list = &list_micro_definition;
     /* prepares the payload */
-    u8* payload = (void*)0xdeadbeef;
+    u8* payload = (void*)0x8bde1248;
     /* pushes to the list */
     list->push(ctx, payload);
     /* pops from the list */

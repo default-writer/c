@@ -370,7 +370,7 @@ RX_TEST_CASE(tests, test_strcat_alloc_alloc, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests, test_string_last_match_ptr, .fixture = test_fixture) {
-    u64 string_ptr1 = string->load("/all_english_words.txt0xdeadbeef");
+    u64 string_ptr1 = string->load("/all_english_words.txt0x8bde1248");
     u64 string_ptr2 = string->load("/all_english_words.txt2");
     u64 last_matched_ptr1 = string->offset(string_ptr1, string_ptr2);
     RX_ASSERT(last_matched_ptr1 != 0);

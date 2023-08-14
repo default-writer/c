@@ -29,7 +29,7 @@
 static u32 lcg_parkmiller_state_internal(void);
 
 /* LCG Park-Miller state */
-static u64 lcg_state = (0xdeadbeef & 0x7fffffff) - 1; /* 0x5eadbeee */
+static u64 lcg_state = (0x8bde1248 & 0x7fffffff) - 1; /* 0x0bde1247 */
 
 /* LCG Park-Miller function */
 static u32 lcg_parkmiller_state_internal(void) {

@@ -66,7 +66,7 @@ RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tea
 /* test context */
 RX_TEST_CASE(tests, test_list_push_v1, .fixture = test_fixture) {
     /* prepares the payload */
-    u8* payload = (void*)0xdeadbeef;
+    u8* payload = (void*)0x8bde1248;
     /* pushes to the list multiple times */
     list->push(payload);
     list->push(payload);
@@ -94,7 +94,7 @@ RX_TEST_CASE(tests, test_context_enter_leave_v1, .fixture = test_fixture) {
 RX_TEST_CASE(tests, test_class_get_set_data_v1, .fixture = test_fixture) {
     const struct class* context = &class_definition_v1;
     struct class_data* data = context->new ();
-    void* payload = (void(*))0xdeadbeef;
+    void* payload = (void(*))0x8bde1248;
     context->push(data);
     context->set(payload);
     RX_ASSERT(context->get() == payload);
@@ -108,7 +108,7 @@ RX_TEST_CASE(tests, test_class_push_pop_get_set_data_v1, .fixture = test_fixture
     struct class_data* data1 = context->new ();
     struct class_data* data2 = context->new ();
 
-    void* payload1 = (void(*))0xdeadbeef;
+    void* payload1 = (void(*))0x8bde1248;
     void* payload2 = (void(*))0xbebebebe;
 
     context->push(data1);

@@ -207,11 +207,11 @@ static void string_strcat(u64 dest, u64 src) {
 
 /*
     str1                         str2
-    0xdeaddeaddeaddeadbeef <---> 0xdead
-                  ^  ^
-                  |  |
-                  |  d is the last matching character of str1 string matching str2
-                  | d is the rightmost character of str1 string matching str2 (strrchr)
+    "8bde12488bde1248" <---> "e1248"
+        ^       ^
+        |       |
+        |       d is the last matching character of str1 string matching str2
+        | d is the rightmost character of str1 string matching str2 (strrchr)
 */
 static u64 string_offset(u64 src, u64 match) {
     struct pointer* src_ptr = vm->read(src);

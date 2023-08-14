@@ -38,21 +38,21 @@ void use(const union memory_allocator_api* allocator) {
     /* allocates memory block */
     void** ptr = allocator->v1.alloc(size);
     for (u64 i = 0; i < size; i++) {
-        *(ptr + i) = (void*)0xdeadbeefdeadbeef;
+        *(ptr + i) = (void*)0x8bde12488bde1248;
     }
     /* allocation size aligned to 8 byte boundaries (64-bit pointers) */
     u64 size2 = 3;
     /* allocates memory block */
     void** ptr2 = allocator->v1.alloc(size2);
     for (u64 i = 0; i < size2; i++) {
-        *(ptr2 + i) = (void*)0xdeadbeefdeadbeef;
+        *(ptr2 + i) = (void*)0x8bde12488bde1248;
     }
     /* allocation size aligned to 8 byte boundaries (64-bit pointers) */
     u64 size3 = 16;
     /* allocates memory block */
     void** ptr3 = allocator->v1.alloc(size3);
     for (u64 i = 0; i < size3; i++) {
-        *(ptr3 + i) = (void*)0xdeadbeefdeadbeef;
+        *(ptr3 + i) = (void*)0x8bde12488bde1248;
     }
     /* releases memory block */
     allocator->v1.free(ptr3, size3);
