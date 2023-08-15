@@ -369,9 +369,42 @@ RX_TEST_CASE(tests, test_strcat_alloc_alloc, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_string_last_match_ptr, .fixture = test_fixture) {
-    u64 string_ptr1 = string->load("/all_english_words.txt0x7bde8421");
-    u64 string_ptr2 = string->load("/all_english_words.txt2");
+RX_TEST_CASE(tests, test_string_offset_ptr_diff, .fixture = test_fixture) {
+    u64 string_ptr1 = string->load("192.168.0.111");
+    u64 string_ptr2 = string->load("192.168.0.12");
+    u64 last_matched_ptr1 = string->offset(string_ptr1, string_ptr2);
+    RX_ASSERT(last_matched_ptr1 == 0);
+    string->free(last_matched_ptr1);
+    string->free(string_ptr1);
+    string->free(string_ptr2);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_string_offset_ptr_less, .fixture = test_fixture) {
+    u64 string_ptr1 = string->load("192.168.0.11");
+    u64 string_ptr2 = string->load("8.0.112");
+    u64 last_matched_ptr1 = string->offset(string_ptr1, string_ptr2);
+    RX_ASSERT(last_matched_ptr1 == 0);
+    string->free(last_matched_ptr1);
+    string->free(string_ptr1);
+    string->free(string_ptr2);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_string_offset_ptr_offset, .fixture = test_fixture) {
+    u64 string_ptr1 = string->load("192.168.0.11");
+    u64 string_ptr2 = string->load("8.0.12");
+    u64 last_matched_ptr1 = string->offset(string_ptr1, string_ptr2);
+    RX_ASSERT(last_matched_ptr1 == 0);
+    string->free(last_matched_ptr1);
+    string->free(string_ptr1);
+    string->free(string_ptr2);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_string_offset_ptr_offset_found, .fixture = test_fixture) {
+    u64 string_ptr1 = string->load("192.168.0.111");
+    u64 string_ptr2 = string->load("8.0.");
     u64 last_matched_ptr1 = string->offset(string_ptr1, string_ptr2);
     RX_ASSERT(last_matched_ptr1 != 0);
     string->free(last_matched_ptr1);
@@ -417,12 +450,12 @@ RX_TEST_CASE(tests, test_string_offset_list, .fixture = test_fixture) {
 /* test init */
 RX_TEST_CASE(tests, test_string_pointer_match, .fixture = test_fixture) {
     u64 list_ptr = list->alloc();
-    u64 string_ptr = string->load("192.168.0.1");
-    u64 dot_ptr = string->load(".");
+    u64 string_ptr = string->load("192.192.0.1");
+    u64 dot_ptr = string->load("192.");
     u64 string_pointer_ptr1 = string->match(string_ptr, dot_ptr);
     u64 string_pointer_ptr2 = string->match(string_pointer_ptr1, dot_ptr);
-    RX_ASSERT(string_pointer_ptr1 != 0);
-    RX_ASSERT(string_pointer_ptr2 != 0);
+    RX_ASSERT(strcmp(string->unsafe(string_pointer_ptr1), "192.0.1") == 0);
+    RX_ASSERT(strcmp(string->unsafe(string_pointer_ptr2), "0.1") == 0);
     list->push(list_ptr, string_pointer_ptr1);
     list->push(list_ptr, string_pointer_ptr2);
     list->push(list_ptr, string_ptr);
@@ -447,9 +480,9 @@ RX_TEST_CASE(tests, test_string_pointer_match_miss, .fixture = test_fixture) {
 RX_TEST_CASE(tests, test_string_pointer_match_pattern, .fixture = test_fixture) {
     u64 list_ptr = list->alloc();
     u64 string_ptr = string->load("192.168.0.112");
-    u64 dot_ptr = string->load("11");
+    u64 dot_ptr = string->load("192.168.0.");
     u64 string_pointer_ptr1 = string->match(string_ptr, dot_ptr);
-    RX_ASSERT(string_pointer_ptr1 != 0);
+    RX_ASSERT(strcmp(string->unsafe(string_pointer_ptr1), "112") == 0);
     list->push(list_ptr, string_pointer_ptr1);
     list->push(list_ptr, string_ptr);
     string->free(dot_ptr);
@@ -459,10 +492,10 @@ RX_TEST_CASE(tests, test_string_pointer_match_pattern, .fixture = test_fixture) 
 /* test init */
 RX_TEST_CASE(tests, test_string_pointer_match_patter_0, .fixture = test_fixture) {
     u64 list_ptr = list->alloc();
-    u64 string_ptr = string->load("192.168.0.11");
-    u64 dot_ptr = string->load("11");
+    u64 string_ptr = string->load("192.168.0.112");
+    u64 dot_ptr = string->load("193");
     u64 string_pointer_ptr1 = string->match(string_ptr, dot_ptr);
-    RX_ASSERT(string_pointer_ptr1 != 0);
+    RX_ASSERT(string_pointer_ptr1 == 0);
     list->push(list_ptr, string_pointer_ptr1);
     list->push(list_ptr, string_ptr);
     string->free(dot_ptr);
@@ -523,8 +556,8 @@ RX_TEST_CASE(tests, test_string_pointer_strchr, .fixture = test_fixture) {
     u64 dot_ptr = string->load(".");
     u64 string_pointer_ptr1 = string->strchr(string_ptr, dot_ptr);
     u64 string_pointer_ptr2 = string->match(string_pointer_ptr1, dot_ptr);
-    RX_ASSERT(string_pointer_ptr1 != 0);
-    RX_ASSERT(string_pointer_ptr2 != 0);
+    RX_ASSERT(strcmp(string->unsafe(string_pointer_ptr1), ".168.0.1") == 0);
+    RX_ASSERT(strcmp(string->unsafe(string_pointer_ptr2), "168.0.1") == 0);
     list->push(list_ptr, string_pointer_ptr1);
     list->push(list_ptr, string_pointer_ptr2);
     list->push(list_ptr, string_ptr);
@@ -586,8 +619,8 @@ RX_TEST_CASE(tests, test_string_pointer_strrchr, .fixture = test_fixture) {
     u64 dot_ptr = string->load(".");
     u64 string_pointer_ptr1 = string->strrchr(string_ptr, dot_ptr);
     u64 string_pointer_ptr2 = string->match(string_pointer_ptr1, dot_ptr);
-    RX_ASSERT(string_pointer_ptr1 != 0);
-    RX_ASSERT(string_pointer_ptr2 != 0);
+    RX_ASSERT(strcmp(string->unsafe(string_pointer_ptr1), ".1") == 0);
+    RX_ASSERT(strcmp(string->unsafe(string_pointer_ptr2), "1") == 0);
     list->push(list_ptr, string_pointer_ptr1);
     list->push(list_ptr, string_pointer_ptr2);
     list->push(list_ptr, string_ptr);

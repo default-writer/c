@@ -307,6 +307,9 @@ static u64 string_match(u64 src, u64 match) {
     if (*str1 == 0 && *str2 != 0) {
         return 0;
     }
+    if (*str2 != 0 && *str2 != *str1) {
+        return 0;
+    }
     struct pointer* data_ptr = virtual->alloc(sizeof(struct string_reference), TYPE_STRING_POINTER);
     struct string_reference* ref = data_ptr->data;
     ref->address = src;
@@ -339,7 +342,7 @@ static u64 string_offset(u64 src, u64 match) {
     if (str1 == 0) {
         return 0;
     }
-    offset = (u64)((u8*)str1 - (u8*)data);
+    offset = (u64)(str1 - data);
     while (*str1 != 0 && *str2 != 0 && offset < size) {
         if (*str1 != *str2) {
             break;
@@ -349,6 +352,9 @@ static u64 string_offset(u64 src, u64 match) {
         offset++;
     }
     if (*str1 == 0 && *str2 != 0) {
+        return 0;
+    }
+    if (*str2 != 0 && *str2 != *str1) {
         return 0;
     }
     struct pointer* data_ptr = virtual->alloc(sizeof(struct string_reference), TYPE_STRING_POINTER);
