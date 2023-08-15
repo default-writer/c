@@ -52,15 +52,15 @@ run (as co-owner or contributor)
 - eval `ssh-agent -s`
 - git config --global user.name "$USER_NAME"
 - git config --global user.email "$USER_EMAIL"
-- git clone https://github.com/default-writer/c.git
+- git clone [https://github.com/default-writer/c.git](https://github.com/default-writer/c.git)
 
 ### containers
 
 run
 
 - ./bin/init.sh
- 
-## GTK GUI app development:
+
+## GTK GUI app development
 
 run
 
