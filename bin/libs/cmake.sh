@@ -163,7 +163,7 @@ function get-source-targets() {
 
         exec 1>&2 2>&-
     fi
-    
+
     targets=( $(get-cmake-targets) )
 
     if [[ ! "${source}" == "all" ]]; then

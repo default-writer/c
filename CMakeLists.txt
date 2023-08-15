@@ -179,7 +179,7 @@ if(CODE_COVERAGE)
         if(NOT LLVM_COV_PATH)
             if(VERBOSE)
                 message(FATAL_ERROR "llvm-cov not found! Aborting.")
-            endif()    
+            endif()
         endif()
 
         # set Flags

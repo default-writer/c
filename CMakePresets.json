@@ -110,6 +110,6 @@
         "noTestsAction": "error",
         "stopOnFailure": true
       }
-    }    
+    }
   ]
 }
