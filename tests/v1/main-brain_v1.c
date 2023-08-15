@@ -136,8 +136,8 @@ RX_TEST_CASE(tests, test_print_load_empty, .fixture = test_fixture) {
 RX_TEST_CASE(tests, test_load_copy, .fixture = test_fixture) {
     u64 char_ptr = string->load("/");
     u64 copy_ptr = string->copy(char_ptr);
-    RX_ASSERT(char_ptr != 0);
-    RX_ASSERT(copy_ptr != 0);
+    RX_ASSERT(strcmp(string->unsafe(char_ptr), "/") == 0);
+    RX_ASSERT(strcmp(string->unsafe(copy_ptr), "/") == 0);
     RX_ASSERT(char_ptr != copy_ptr);
     string->free(char_ptr);
     string->free(copy_ptr);
@@ -149,9 +149,9 @@ RX_TEST_CASE(tests, test_load_push_peek_pop, .fixture = test_fixture) {
     pointer->push(char_ptr);
     u64 peek_ptr = pointer->peek();
     u64 pop_ptr = pointer->pop();
-    RX_ASSERT(char_ptr != 0);
-    RX_ASSERT(peek_ptr != 0);
-    RX_ASSERT(pop_ptr != 0);
+    RX_ASSERT(strcmp(string->unsafe(char_ptr), "/") == 0);
+    RX_ASSERT(strcmp(string->unsafe(peek_ptr), "/") == 0);
+    RX_ASSERT(strcmp(string->unsafe(pop_ptr), "/") == 0);
     string->free(char_ptr);
     string->free(peek_ptr);
     string->free(pop_ptr);
@@ -159,7 +159,7 @@ RX_TEST_CASE(tests, test_load_push_peek_pop, .fixture = test_fixture) {
 
 RX_TEST_CASE(tests, test_load_free_free, .fixture = test_fixture) {
     u64 char_ptr = string->load("/");
-    RX_ASSERT(char_ptr != 0);
+    RX_ASSERT(strcmp(string->unsafe(char_ptr), "/") == 0);
     string->free(char_ptr);
     string->free(char_ptr);
 }
@@ -169,8 +169,8 @@ RX_TEST_CASE(tests, test_strcat_load_alloc, .fixture = test_fixture) {
     u64 char_ptr = string->load("/");
     u64 pattern_ptr = string->load("\0");
     string->strcat(pattern_ptr, char_ptr);
-    RX_ASSERT(char_ptr != 0);
     RX_ASSERT(pattern_ptr == 0);
+    RX_ASSERT(strcmp(string->unsafe(char_ptr), "/") == 0);
     string->free(char_ptr);
     string->free(pattern_ptr);
 }
@@ -181,8 +181,8 @@ RX_TEST_CASE(tests, test_string_size, .fixture = test_fixture) {
     u64 pattern_ptr = string->load("\0");
     u64 string_size = data->size(pattern_ptr);
     RX_ASSERT(string_size == 0);
-    RX_ASSERT(char_ptr != 0);
     RX_ASSERT(pattern_ptr == 0);
+    RX_ASSERT(strcmp(string->unsafe(char_ptr), "/") == 0);
     string->free(char_ptr);
     string->free(pattern_ptr);
 }
@@ -193,8 +193,8 @@ RX_TEST_CASE(tests, test_pointer_size_0, .fixture = test_fixture) {
     u64 pattern_ptr = string->load("\0");
     u64 string_size = string->size(0);
     RX_ASSERT(string_size == 0);
-    RX_ASSERT(char_ptr != 0);
     RX_ASSERT(pattern_ptr == 0);
+    RX_ASSERT(strcmp(string->unsafe(char_ptr), "/") == 0);
     string->free(char_ptr);
     string->free(pattern_ptr);
 }
@@ -205,8 +205,8 @@ RX_TEST_CASE(tests, test_pointer_size_empty, .fixture = test_fixture) {
     u64 pattern_ptr = string->load("\0");
     u64 string_size = string->size(char_ptr);
     RX_ASSERT(string_size == 2);
-    RX_ASSERT(char_ptr != 0);
     RX_ASSERT(pattern_ptr == 0);
+    RX_ASSERT(strcmp(string->unsafe(char_ptr), " ") == 0);
     string->free(char_ptr);
     string->free(pattern_ptr);
 }
@@ -406,7 +406,7 @@ RX_TEST_CASE(tests, test_string_offset_ptr_offset_found, .fixture = test_fixture
     u64 string_ptr1 = string->load("192.168.0.111");
     u64 string_ptr2 = string->load("8.0.");
     u64 last_matched_ptr1 = string->offset(string_ptr1, string_ptr2);
-    RX_ASSERT(last_matched_ptr1 != 0);
+    RX_ASSERT(strcmp(string->unsafe(last_matched_ptr1), "111") == 0);
     string->free(last_matched_ptr1);
     string->free(string_ptr1);
     string->free(string_ptr2);
@@ -614,18 +614,33 @@ RX_TEST_CASE(tests, test_string_strchr_list, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests, test_string_pointer_strrchr, .fixture = test_fixture) {
-    u64 list_ptr = list->alloc();
     u64 string_ptr = string->load("192.168.0.1");
     u64 dot_ptr = string->load(".");
     u64 string_pointer_ptr1 = string->strrchr(string_ptr, dot_ptr);
     u64 string_pointer_ptr2 = string->match(string_pointer_ptr1, dot_ptr);
     RX_ASSERT(strcmp(string->unsafe(string_pointer_ptr1), ".1") == 0);
     RX_ASSERT(strcmp(string->unsafe(string_pointer_ptr2), "1") == 0);
-    list->push(list_ptr, string_pointer_ptr1);
-    list->push(list_ptr, string_pointer_ptr2);
-    list->push(list_ptr, string_ptr);
+    string->free(string_pointer_ptr1);
+    string->free(string_pointer_ptr2);
+    string->free(string_ptr);
     string->free(dot_ptr);
-    list->free(list_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_string_pointer_strrchr_match_offset, .fixture = test_fixture) {
+    u64 string_ptr = string->load("192.168.0.111");
+    u64 dot_ptr = string->load(".");
+    u64 string_pointer_ptr1 = string->strrchr(string_ptr, dot_ptr);
+    u64 string_pointer_ptr2 = string->match(string_pointer_ptr1, dot_ptr);
+    u64 string_pointer_ptr3 = string->offset(string_ptr, dot_ptr);
+    RX_ASSERT(strcmp(string->unsafe(string_pointer_ptr1), ".111") == 0);
+    RX_ASSERT(strcmp(string->unsafe(string_pointer_ptr2), "111") == 0);
+    RX_ASSERT(strcmp(string->unsafe(string_pointer_ptr3), "111") == 0);
+    string->free(string_pointer_ptr1);
+    string->free(string_pointer_ptr2);
+    string->free(string_pointer_ptr3);
+    string->free(string_ptr);
+    string->free(dot_ptr);
 }
 
 /* test init */
@@ -1054,7 +1069,7 @@ RX_TEST_CASE(tests, test_strcat_alloc_load, .fixture = test_fixture) {
     u64 char_ptr = string->load("/");
     string->strcat(zero_ptr, char_ptr);
     RX_ASSERT(zero_ptr == 0);
-    RX_ASSERT(char_ptr != 0);
+    RX_ASSERT(strcmp(string->unsafe(char_ptr), "/") == 0);
     string->free(zero_ptr);
     string->free(char_ptr);
 }
@@ -1066,9 +1081,9 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_alloc, .fixture = test_fixture) {
     u64 empty_ptr = string->load("\0");
     string->strcat(pattern_ptr, char_ptr);
     string->strcpy(empty_ptr, pattern_ptr);
-    RX_ASSERT(char_ptr != 0);
     RX_ASSERT(pattern_ptr == 0);
     RX_ASSERT(empty_ptr == 0);
+    RX_ASSERT(strcmp(string->unsafe(char_ptr), "/") == 0);
     string->free(empty_ptr);
     string->free(pattern_ptr);
     string->free(char_ptr);
@@ -1079,8 +1094,8 @@ RX_TEST_CASE(tests, test_strcat_load_load, .fixture = test_fixture) {
     u64 char_ptr = string->load("/");
     u64 pattern_ptr = string->load("*");
     string->strcat(pattern_ptr, char_ptr);
-    RX_ASSERT(pattern_ptr != 0);
-    RX_ASSERT(char_ptr != 0);
+    RX_ASSERT(strcmp(string->unsafe(pattern_ptr), "*/") == 0);
+    RX_ASSERT(strcmp(string->unsafe(char_ptr), "/") == 0);
     string->free(pattern_ptr);
     string->free(char_ptr);
 }
@@ -1090,8 +1105,8 @@ RX_TEST_CASE(tests, test_strcpy_load_alloc, .fixture = test_fixture) {
     u64 pattern_ptr = string->load("/");
     u64 empty_ptr = string->load("\0");
     string->strcpy(empty_ptr, pattern_ptr);
-    RX_ASSERT(pattern_ptr != 0);
     RX_ASSERT(empty_ptr == 0);
+    RX_ASSERT(strcmp(string->unsafe(pattern_ptr), "/") == 0);
     string->free(empty_ptr);
     string->free(pattern_ptr);
 }
@@ -1101,8 +1116,8 @@ RX_TEST_CASE(tests, test_strcpy_load_load, .fixture = test_fixture) {
     u64 char_ptr = string->load("/input.txt");
     u64 pattern_ptr = string->load("*");
     string->strcpy(pattern_ptr, char_ptr);
-    RX_ASSERT(pattern_ptr != 0);
-    RX_ASSERT(char_ptr != 0);
+    RX_ASSERT(strcmp(string->unsafe(pattern_ptr), "/input.txt") == 0);
+    RX_ASSERT(strcmp(string->unsafe(char_ptr), "/input.txt") == 0);
     string->free(pattern_ptr);
     string->free(char_ptr);
 }
@@ -1419,7 +1434,7 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixtur
             u64 string_ptr = string->load((char*)file_data);
             list->push(list_ptr, string_ptr);
             char* unsafe = string->unsafe(string_ptr);
-            printf("   .: %016llx ! %16s\n", (u64)unsafe, unsafe);
+            printf("   +: %s\n", unsafe);
             file_data = tmp;
         }
         list->free(list_ptr);
