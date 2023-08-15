@@ -64,6 +64,7 @@ extern void pointer_data_destroy(struct pointer_data** ctx);
 
 extern const struct vm_methods vm_methods_definition;
 
+/* definition */
 extern const struct pointer_methods pointer_methods_definition;
 extern const struct list_methods list_methods_definition;
 extern const struct file_methods file_methods_definition;
@@ -72,6 +73,7 @@ extern const struct user_methods user_methods_definition;
 extern const struct data_methods data_methods_definition;
 extern const struct object_methods object_methods_definition;
 
+/* definition */
 const struct pointer_methods* pointer = &pointer_methods_definition;
 const struct list_methods* list = &list_methods_definition;
 const struct file_methods* file = &file_methods_definition;
@@ -641,6 +643,58 @@ RX_TEST_CASE(tests, test_string_pointer_strrchr_match_offset, .fixture = test_fi
     string->free(string_pointer_ptr3);
     string->free(string_ptr);
     string->free(dot_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_string_pointer_strchr_match_offset, .fixture = test_fixture) {
+    u64 list_ptr = list->alloc();
+    u64 list_match_ptr = list->alloc();
+    u64 string_ptr = string->load("a.bc.bb.ba.a");
+    u64 pattern_ptr = string->load(".b");
+    u64 string_pointer_ptr = 0;
+    u64 match_ptr = string_ptr;
+    u64 current_ptr = match_ptr;
+    while ((string_pointer_ptr = string->strchr(current_ptr, pattern_ptr)) != 0) {
+        list->push(list_ptr, string_pointer_ptr);
+        match_ptr = string->match(string_pointer_ptr, pattern_ptr);
+        list->push(list_match_ptr, match_ptr);
+        current_ptr = match_ptr;
+    }
+    u64 size = list->size(list_ptr);
+    RX_ASSERT(size == 4);
+    u64 string_ptr1 = list->pop(list_ptr);
+    u64 string_ptr2 = list->pop(list_ptr);
+    u64 string_ptr3 = list->pop(list_ptr);
+    u64 string_ptr4 = list->pop(list_ptr);
+    RX_ASSERT(strcmp(string->unsafe(string_ptr1), ".a") == 0);
+    RX_ASSERT(strcmp(string->unsafe(string_ptr2), ".ba.a") == 0);
+    RX_ASSERT(strcmp(string->unsafe(string_ptr3), ".bb.ba.a") == 0);
+    RX_ASSERT(strcmp(string->unsafe(string_ptr4), ".bc.bb.ba.a") == 0);
+    RX_ASSERT(list->size(list_ptr) == 0);
+#ifndef USE_GC
+    u64 match_size = list->size(list_match_ptr);
+    RX_ASSERT(match_size == 3);
+    u64 string_match_ptr1 = list->pop(list_match_ptr);
+    u64 string_match_ptr2 = list->pop(list_match_ptr);
+    u64 string_match_ptr3 = list->pop(list_match_ptr);
+    RX_ASSERT(strcmp(string->unsafe(string_match_ptr1), "a.a") == 0);
+    RX_ASSERT(strcmp(string->unsafe(string_match_ptr2), "b.ba.a") == 0);
+    RX_ASSERT(strcmp(string->unsafe(string_match_ptr3), "c.bb.ba.a") == 0);
+    RX_ASSERT(list->size(list_match_ptr) == 0);
+    string->free(string_ptr1);
+    string->free(string_ptr2);
+    string->free(string_ptr3);
+    string->free(string_ptr4);
+    string->free(string_match_ptr1);
+    string->free(string_match_ptr2);
+    string->free(string_match_ptr3);
+    string->free(string_ptr);
+    string->free(pattern_ptr);
+    list->free(list_match_ptr);
+    list->free(list_ptr);
+#else
+    pointer->gc();
+#endif
 }
 
 /* test init */

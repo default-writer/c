@@ -484,7 +484,7 @@ RX_TEST_CASE(tests, test_list_size, .fixture = test_fixture) {
     u64 list_ptr = list->alloc();
     u64 size = list->size(list_ptr);
     RX_ASSERT(list_ptr != 0);
-    RX_ASSERT(size == 8);
+    RX_ASSERT(size == 0);
 #ifndef USE_GC
     list->free(list_ptr);
 #else
@@ -637,7 +637,7 @@ RX_TEST_CASE(tests, test_alloc_free, .fixture = test_fixture) {
 #else
     pointer->gc();
 #endif
-    RX_ASSERT(list_size == 8);
+    RX_ASSERT(list_size == 0);
     RX_ASSERT(ptr_size == 0);
     RX_ASSERT(null_size == 0);
 }
@@ -646,7 +646,7 @@ RX_TEST_CASE(tests, test_alloc_free, .fixture = test_fixture) {
 RX_TEST_CASE(tests, test_alloc_free_list, .fixture = test_fixture) {
     u64 list_ptr = list->alloc();
     u64 size = list->size(list_ptr);
-    RX_ASSERT(size == 8);
+    RX_ASSERT(size == 0);
     u64 pattern_ptr = string->load("\0");
     list->free(pattern_ptr);
     list->free(list_ptr);

@@ -121,11 +121,15 @@ static void string_free(u64 ptr) {
         return;
     }
     if (data_ptr->id == TYPE_STRING) {
-        return string_vm_free(data_ptr);
+        string_vm_free(data_ptr);
+        return;
     }
     if (data_ptr->id == TYPE_STRING_POINTER) {
-        struct pointer* pointer_ptr = vm->read_type(ptr, TYPE_STRING_POINTER);
-        return string_vm_free(pointer_ptr);
+        struct string_reference* ref = data_ptr->data;
+        struct pointer* pointer_ptr = vm->read_type(ref->address, TYPE_STRING_POINTER);
+        string_vm_free(pointer_ptr);
+        string_vm_free(data_ptr);
+        return;
     }
 }
 
@@ -229,7 +233,7 @@ static u64 string_strrchr(u64 src, u64 match) {
     if (str1 == 0) {
         return 0;
     }
-    offset = (u64)((u8*)str1 - (u8*)data);
+    offset = (u64)(str1 - data);
     struct pointer* data_ptr = virtual->alloc(sizeof(struct string_reference), TYPE_STRING_POINTER);
     struct string_reference* ref = data_ptr->data;
     ref->address = src;
@@ -262,7 +266,7 @@ static u64 string_strchr(u64 src, u64 match) {
     if (str1 == 0) {
         return 0;
     }
-    offset = (u64)((u8*)str1 - (u8*)data);
+    offset = (u64)(str1 - data);
     struct pointer* data_ptr = virtual->alloc(sizeof(struct string_reference), TYPE_STRING_POINTER);
     struct string_reference* ref = data_ptr->data;
     ref->address = src;
