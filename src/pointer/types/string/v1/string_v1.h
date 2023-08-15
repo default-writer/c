@@ -33,6 +33,9 @@ struct string_methods {
     u64 (*copy)(u64 ptr);
     void (*strcpy)(u64 dest, u64 src);
     void (*strcat)(u64 dest, u64 src);
+    u64 (*strrchr)(u64 src_ptr, u64 match_prt);
+    u64 (*strchr)(u64 src_ptr, u64 match_prt);
+    u64 (*match)(u64 src_ptr, u64 match_prt);
     u64 (*offset)(u64 src_ptr, u64 match_prt);
     u64 (*getcwd)(void);
     u64 (*load)(const char* data);

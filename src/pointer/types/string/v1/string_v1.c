@@ -62,6 +62,9 @@ static void string_vm_free(struct pointer* ptr);
 static u64 string_copy(u64 ptr);
 static void string_strcpy(u64 dest_ptr, u64 src_ptr);
 static void string_strcat(u64 dest_ptr, u64 src_ptr);
+static u64 string_strrchr(u64 src_ptr, u64 match_ptr);
+static u64 string_strchr(u64 src_ptr, u64 match_ptr);
+static u64 string_match(u64 src_ptr, u64 match_ptr);
 static u64 string_offset(u64 src_ptr, u64 match_ptr);
 static u64 string_load(const char* data);
 static u64 string_getcwd(void);
@@ -205,14 +208,116 @@ static void string_strcat(u64 dest, u64 src) {
     strcat(data_dest, data_src); /* NOLINT */
 }
 
-/*
-    str1                         str2
-    "7bde84217bde8421" <---> "e1248"
-        ^       ^
-        |       |
-        |       d is the last matching character of str1 string matching str2
-        | d is the rightmost character of str1 string matching str2 (strrchr)
-*/
+static u64 string_strrchr(u64 src, u64 match) {
+    struct pointer* src_ptr = vm->read(src);
+    if (src_ptr == 0) {
+        return 0;
+    }
+    u64 size = 0;
+    u64 offset = 0;
+    char* data = string_pointer_internal(src_ptr, &size, &offset);
+    if (data == 0) {
+        return 0;
+    }
+    data += offset;
+    const struct pointer* match_ptr = vm->read_type(match, id);
+    if (match_ptr == 0) {
+        return 0;
+    }
+    char* str2 = match_ptr->data;
+    char* str1 = strrchr(data, *str2);
+    if (str1 == 0) {
+        return 0;
+    }
+    offset = (u64)((u8*)str1 - (u8*)data);
+    struct pointer* data_ptr = virtual->alloc(sizeof(struct string_reference), TYPE_STRING_POINTER);
+    struct string_reference* ref = data_ptr->data;
+    ref->address = src;
+    ref->offset = offset;
+    u64 pointer = vm->alloc(data_ptr);
+#ifdef USE_GC
+    list->push(&base->gc, (void*)pointer);
+#endif
+    return pointer;
+}
+
+static u64 string_strchr(u64 src, u64 match) {
+    struct pointer* src_ptr = vm->read(src);
+    if (src_ptr == 0) {
+        return 0;
+    }
+    u64 size = 0;
+    u64 offset = 0;
+    char* data = string_pointer_internal(src_ptr, &size, &offset);
+    if (data == 0) {
+        return 0;
+    }
+    data += offset;
+    const struct pointer* match_ptr = vm->read_type(match, id);
+    if (match_ptr == 0) {
+        return 0;
+    }
+    char* str2 = match_ptr->data;
+    char* str1 = strchr(data, *str2);
+    if (str1 == 0) {
+        return 0;
+    }
+    offset = (u64)((u8*)str1 - (u8*)data);
+    struct pointer* data_ptr = virtual->alloc(sizeof(struct string_reference), TYPE_STRING_POINTER);
+    struct string_reference* ref = data_ptr->data;
+    ref->address = src;
+    ref->offset = offset;
+    u64 pointer = vm->alloc(data_ptr);
+#ifdef USE_GC
+    list->push(&base->gc, (void*)pointer);
+#endif
+    return pointer;
+}
+
+static u64 string_match(u64 src, u64 match) {
+    struct pointer* src_ptr = vm->read(src);
+    if (src_ptr == 0) {
+        return 0;
+    }
+    u64 size = 0;
+    u64 offset = 0;
+    char* data = string_pointer_internal(src_ptr, &size, &offset);
+    if (data == 0) {
+        return 0;
+    }
+    data += offset;
+    const struct pointer* match_ptr = vm->read_type(match, id);
+    if (match_ptr == 0) {
+        return 0;
+    }
+    char* str2 = match_ptr->data;
+    char* str1 = strchr(data, *str2);
+    if (str1 == 0) {
+        return 0;
+    }
+    offset = (u64)(str1 - data);
+    while (*str1 != 0 && *str2 != 0 && offset < size) {
+        if (*str1 != *str2) {
+            break;
+        }
+        str1++;
+        str2++;
+        offset++;
+    }
+    if (*str1 == 0 && *str2 != 0) {
+        return 0;
+    }
+    struct pointer* data_ptr = virtual->alloc(sizeof(struct string_reference), TYPE_STRING_POINTER);
+    struct string_reference* ref = data_ptr->data;
+    ref->address = src;
+    ref->offset = offset;
+    u64 pointer = vm->alloc(data_ptr);
+#ifdef USE_GC
+    list->push(&base->gc, (void*)pointer);
+#endif
+    return pointer;
+}
+
 static u64 string_offset(u64 src, u64 match) {
     struct pointer* src_ptr = vm->read(src);
     if (src_ptr == 0) {
@@ -363,7 +468,10 @@ const struct string_methods string_methods_definition = {
     .copy = string_copy,
     .strcpy = string_strcpy,
     .strcat = string_strcat,
+    .strrchr = string_strrchr,
+    .strchr = string_strchr,
     .offset = string_offset,
+    .match = string_match,
     .load = string_load,
     .getcwd = string_getcwd,
     .printf = string_printf,
