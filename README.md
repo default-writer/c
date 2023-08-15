@@ -1,6 +1,9 @@
 # c project description
 
-- virtual machine implementation on C with TDD and safe conding using own API
+- virtual machine implementation on C
+    1. C API
+    2. memory management
+    3. garbage collection
 
 - development environment:
 
