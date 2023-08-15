@@ -671,7 +671,6 @@ RX_TEST_CASE(tests, test_string_pointer_strchr_match_offset, .fixture = test_fix
     RX_ASSERT(strcmp(string->unsafe(string_ptr3), ".bb.ba.a") == 0);
     RX_ASSERT(strcmp(string->unsafe(string_ptr4), ".bc.bb.ba.a") == 0);
     RX_ASSERT(list->size(list_ptr) == 0);
-#ifndef USE_GC
     u64 match_size = list->size(list_match_ptr);
     RX_ASSERT(match_size == 3);
     u64 string_match_ptr1 = list->pop(list_match_ptr);
@@ -681,6 +680,7 @@ RX_TEST_CASE(tests, test_string_pointer_strchr_match_offset, .fixture = test_fix
     RX_ASSERT(strcmp(string->unsafe(string_match_ptr2), "b.ba.a") == 0);
     RX_ASSERT(strcmp(string->unsafe(string_match_ptr3), "c.bb.ba.a") == 0);
     RX_ASSERT(list->size(list_match_ptr) == 0);
+#ifndef USE_GC
     string->free(string_ptr1);
     string->free(string_ptr2);
     string->free(string_ptr3);
