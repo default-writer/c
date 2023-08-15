@@ -1,6 +1,33 @@
 # c project description
 
-![image info](./resources/icons8-ubuntu-96.png)
+- virtual machine implementation on C with TDD and safe conding using own API
+
+- development environment:
+
+    1. WSL2/devcontainers
+    2. Ubuntu 22.04.3 LTS
+
+![ubuntu logo](./resources/icons8-ubuntu-96.png)
+
+![logo](./resources/logo-tiny.png)
+
+## media links
+
+- streaming channels
+
+    1. [twitch.tv](https://www.twitch.tv/defaultwriter/videos)
+    2. [youtube.com](https://www.youtube.com/channel/UCrtPCqirYXdA2gYG8NxbTjA)
+
+## updates
+
+- 2023
+
+    1. added v1 core Virtual Machine (vm1) with types:
+    2. added support including:
+
+        1. file IO
+        2. string manupulation methods
+        3. search
 
 ## features
 
