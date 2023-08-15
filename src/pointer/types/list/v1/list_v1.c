@@ -63,12 +63,14 @@ static u64 list_size(u64 ptr);
 
 /* implementation */
 struct list_handler {
+    u64 size;
     struct list_data* list;
 };
 
 static u64 list_alloc(void) {
     struct pointer* ptr = virtual->alloc(sizeof(struct list_handler), id);
     struct list_handler* handler = ptr->data;
+    handler->size = 0;
     list->init(&handler->list);
     u64 data = vm->alloc(ptr);
 #ifdef USE_GC
@@ -87,6 +89,7 @@ static void list_free(u64 ptr) {
 
 static void list_vm_free(struct pointer* ptr) {
     struct list_handler* handler = ptr->data;
+    handler->size = 0;
     virtual->cleanup(&handler->list);
     list->destroy(&handler->list);
     virtual->free(ptr);
@@ -108,6 +111,7 @@ static void list_push(u64 ptr_list, u64 ptr) {
     }
     struct list_handler* handler = data_ptr->data;
     list->push(&handler->list, (void*)ptr);
+    handler->size++;
 #ifdef USE_GC
     list->push(&base->gc, (void*)ptr);
 #endif
@@ -129,7 +133,11 @@ static u64 list_pop(u64 ptr) {
         return 0;
     }
     struct list_handler* handler = data_ptr->data;
+    if (handler->size == 0) {
+        return 0;
+    }
     u64 data = (u64)list->pop(&handler->list);
+    handler->size--;
     return data;
 }
 
@@ -138,7 +146,8 @@ static u64 list_size(u64 ptr) {
     if (data_ptr == 0) {
         return 0;
     }
-    u64 size = data_ptr->size;
+    struct list_handler* handler = data_ptr->data;
+    u64 size = handler->size;
     return size;
 }
 
