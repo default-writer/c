@@ -30,6 +30,7 @@
 #include "pointer/types/data/v1/data_v1.h"
 #include "pointer/types/file/v1/file_v1.h"
 #include "pointer/types/list/v1/list_v1.h"
+#include "pointer/types/os/v1/os_v1.h"
 #include "pointer/types/string/v1/string_v1.h"
 #include "pointer/types/string_pointer/v1/string_pointer_v1.h"
 #include "pointer/v1/pointer_v1.h"
@@ -56,6 +57,7 @@ extern const struct file_methods file_methods_definition;
 extern const struct string_methods string_methods_definition;
 extern const struct string_pointer_methods string_pointer_methods_definition;
 extern const struct data_methods data_methods_definition;
+extern const struct os_methods os_methods_definition;
 
 const struct pointer_methods* pointer = &pointer_methods_definition;
 const struct list_methods* list = &list_methods_definition;
@@ -63,6 +65,7 @@ const struct file_methods* file = &file_methods_definition;
 const struct string_methods* string = &string_methods_definition;
 const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
 const struct data_methods* data = &data_methods_definition;
+const struct os_methods* os = &os_methods_definition;
 
 typedef struct test_data {
     struct pointer_data* ctx;
@@ -84,12 +87,12 @@ extern inline void source1(void) {
     string->free(mode_ptr);
     u64 data_ptr = file->data(f_ptr);
     file->free(f_ptr);
-    string->printf(data_ptr);
+    os->printf(data_ptr);
     data->free(data_ptr);
 }
 
 extern inline void source2(void) {
-    u64 file_path_ptr = string->getcwd();
+    u64 file_path_ptr = os->getcwd();
     u64 file_name_ptr = string->load("/all_english_words.txt");
     string->strcat(file_path_ptr, file_name_ptr);
     string->free(file_name_ptr);
@@ -113,7 +116,7 @@ extern inline void source2(void) {
             u64 string_ptr = string->load(file_data);
             list->push(list_ptr, string_ptr);
             char* unsafe = string->unsafe(string_ptr);
-            printf("   +: %s\n", unsafe);
+            printf("   .: %s\n", unsafe);
             file_data = tmp;
         }
         list->free(list_ptr);

@@ -23,24 +23,14 @@
  * SOFTWARE.
  *
  */
-#ifndef _POINTER_TYPES_STRING_H_
-#define _POINTER_TYPES_STRING_H_
+#ifndef _POINTER_TYPES_OS_H_
+#define _POINTER_TYPES_OS_H_
 
 #include "std/common.h"
 
-struct string_methods {
-    void (*free)(u64 ptr);
-    u64 (*copy)(u64 ptr);
-    void (*strcpy)(u64 dest, u64 src);
-    void (*strcat)(u64 dest, u64 src);
-    u64 (*strrchr)(u64 src_ptr, u64 match_prt);
-    u64 (*strchr)(u64 src_ptr, u64 match_prt);
-    u64 (*match)(u64 src_ptr, u64 match_prt);
-    u64 (*offset)(u64 src_ptr, u64 match_prt);
-    u64 (*load)(const char* data);
-    void (*put_char)(u64 ptr, char value);
-    char* (*unsafe)(u64 ptr);
-    u64 (*size)(u64 ptr);
+struct os_methods {
+    u64 (*getcwd)(void);
+    void (*printf)(u64 ptr);
 };
 
-#endif /* _POINTER_TYPES_STRING_H_ */
+#endif /* _POINTER_TYPES_OS_H_ */

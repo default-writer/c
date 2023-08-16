@@ -622,7 +622,7 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixtur
             u64 data = pointer->load(file_data);
             list->push(list_ptr, data);
             char* unsafe = pointer->unsafe(data);
-            printf("   +: %s\n", unsafe);
+            printf("   .: %s\n", unsafe);
             file_data = tmp;
         }
         list->free(list_ptr);

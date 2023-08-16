@@ -272,6 +272,7 @@ set(LIB_STD_FILE1_SOURCE src/pointer/types/file/v1/file_v1.c)
 set(LIB_STD_STRING1_SOURCE src/pointer/types/string/v1/string_v1.c)
 set(LIB_STD_STRING_POINTER1_SOURCE src/pointer/types/string_pointer/v1/string_pointer_v1.c)
 set(LIB_STD_OBJECT1_SOURCE src/pointer/types/object/v1/object_v1.c)
+set(LIB_STD_OS1_SOURCE src/pointer/types/os/v1/os_v1.c)
 set(LIB_STD_TYPES1_SOURCE
     src/pointer/types/void/v1/void_v1.c
     src/pointer/types/data/v1/data_v1.c
@@ -279,7 +280,8 @@ set(LIB_STD_TYPES1_SOURCE
     src/pointer/types/string_pointer/v1/string_pointer_v1.c
     src/pointer/types/file/v1/file_v1.c
     src/pointer/types/list/v1/list_v1.c
-    src/pointer/types/object/v1/object_v1.c)
+    src/pointer/types/object/v1/object_v1.c
+    src/pointer/types/os/v1/os_v1.c)
 
 set(LIB_LINKED_LIST_SOURCE
     src/stl/linked_list.c
@@ -383,7 +385,7 @@ add_library(std-file1 SHARED ${LIB_STD_FILE1_SOURCE})
 add_library(std-string1 SHARED ${LIB_STD_STRING1_SOURCE})
 add_library(std-string-pointer1 SHARED ${LIB_STD_STRING_POINTER1_SOURCE})
 add_library(std-data1 SHARED ${LIB_STD_DATA1_SOURCE})
-
+add_library(std-os1 SHARED ${LIB_STD_OS1_SOURCE})
 add_library(std-object1 SHARED ${LIB_STD_OBJECT1_SOURCE})
 
 # test

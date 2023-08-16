@@ -45,7 +45,7 @@ enum type {
     TYPE_LIST = 6,
     /* value used for object type - object */
     TYPE_OBJECT = 7,
-    /* value used for user type - user (id: +1, +2, +3, ...) */
+    /* value used for user type - user (id: +0, +1, +2, +3, ...) */
     TYPE_USER = 8
 };
 

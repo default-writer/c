@@ -130,7 +130,7 @@ static u64 type_count = TYPE_USER;
 
 static u64 vm_types_init(u64 id, const struct vm_type* type) {
     struct vm_types* next = global_alloc(sizeof(struct vm_types));
-    next->id = id > TYPE_USER ? type_count++ : id;
+    next->id = id == TYPE_NULL || id >= TYPE_USER ? type_count++ : id;
     next->free = type->free;
     next->next = vm_types;
     vm_types = next;

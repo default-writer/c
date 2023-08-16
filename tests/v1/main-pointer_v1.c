@@ -107,7 +107,7 @@ RX_TEST_CASE(tests, test_list_push_list_peek_list_pop, .fixture = test_fixture) 
         u64 ch = list->pop(list_ptr);
         string->free(ch);
     }
-    printf("   +: %s\n", buffer);
+    printf("   .: %s\n", buffer);
     memory->free(buffer, size);
     memory->free(dest, size);
     list->free(list_ptr);
@@ -138,7 +138,7 @@ RX_TEST_CASE(tests, test_list_push_list_peek_list_pop_free, .fixture = test_fixt
         string->free(ch);
     }
     string->free(list_ptr);
-    printf("   +: %s\n", buffer);
+    printf("   .: %s\n", buffer);
     memory->free(buffer, size);
     memory->free(dest, size);
     list->free(list_ptr);
@@ -206,7 +206,7 @@ RX_TEST_CASE(tests, test_list_peek_0, .fixture = test_fixture) {
         *(buffer + i) = *string_ptr;
         string->free(i + 1);
     }
-    printf("   +: %s\n", buffer);
+    printf("   .: %s\n", buffer);
     memory->free(buffer, size);
     memory->free(dest, size);
 }

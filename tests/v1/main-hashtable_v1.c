@@ -30,6 +30,7 @@
 #include "pointer/types/file/v1/file_v1.h"
 #include "pointer/types/list/v1/list_v1.h"
 #include "pointer/types/object/v1/object_v1.h"
+#include "pointer/types/os/v1/os_v1.h"
 #include "pointer/types/string/v1/string_v1.h"
 #include "pointer/types/string_pointer/v1/string_pointer_v1.h"
 #include "pointer/v1/pointer_v1.h"
@@ -59,6 +60,7 @@ extern const struct string_methods string_methods_definition;
 extern const struct string_pointer_methods string_pointer_methods_definition;
 extern const struct data_methods data_methods_definition;
 extern const struct object_methods object_methods_definition;
+extern const struct os_methods os_methods_definition;
 
 static const struct hashtable* hashtable = &hashtable_definition_v1;
 static const struct pointer_methods* pointer = &pointer_methods_definition;
@@ -68,6 +70,7 @@ static const struct string_methods* string = &string_methods_definition;
 static const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
 static const struct data_methods* data = &data_methods_definition;
 static const struct object_methods* object = &object_methods_definition;
+static const struct os_methods* os = &os_methods_definition;
 
 typedef struct test_data {
     struct pointer_data* ctx;
@@ -408,7 +411,7 @@ RX_TEST_CASE(tests, test_hashtable_alloc_set_get, .fixture = test_fixture) {
 /* test init */
 RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixture) {
     hashtable->init(0xff);
-    u64 file_path_ptr = string->getcwd();
+    u64 file_path_ptr = os->getcwd();
     u64 file_name_ptr = string->load("/all_english_words.txt");
     string->strcat(file_path_ptr, file_name_ptr);
     string->free(file_name_ptr);
@@ -432,12 +435,12 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixtur
             u64 string_ptr = string->load(file_data);
             list->push(list_ptr, string_ptr);
             const char* unsafe = string->unsafe(string_ptr);
-            string->printf(string_ptr);
+            os->printf(string_ptr);
             string->put_char(string_ptr, unsafe[0]);
             u64 pattern_ptr = string->load("b");
             u64 last_match_ptr = string->offset(string_ptr, pattern_ptr);
             u64 leak_ptr = string->offset(string_ptr, last_match_ptr);
-            string->printf(leak_ptr);
+            os->printf(leak_ptr);
             struct hashtable_data* unsafe_tmp = hashtable->alloc(unsafe, 0);
             hashtable->free(unsafe_tmp);
             string->free(pattern_ptr);
@@ -529,7 +532,7 @@ RX_TEST_CASE(tests, test_improper_use_of_different_calls, .fixture = test_fixtur
     u64 idx5 = 0;
     u64 idx6 = 0;
     u64 idx7 = 0;
-    u64 file_path_ptr = string->getcwd();
+    u64 file_path_ptr = os->getcwd();
     u64 file_name_ptr = string->load("/all_english_words.txt");
     string->strcat(file_path_ptr, file_name_ptr);
     u64 mode_ptr = string->load("rb");
@@ -661,7 +664,7 @@ RX_TEST_CASE(tests, test_alloc_free_list, .fixture = test_fixture) {
 RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable_default_hash, .fixture = test_fixture) {
     hashtable->init(0x3);
     hashtable->setup(murmurhash3);
-    u64 file_path_ptr = string->getcwd();
+    u64 file_path_ptr = os->getcwd();
     u64 file_name_ptr = string->load("/all_english_words.txt");
     string->strcat(file_path_ptr, file_name_ptr);
     string->free(file_name_ptr);
@@ -714,7 +717,7 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable_default_hash, .fixture 
 
 /* test init */
 RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable_murmurhash3_hash, .fixture = test_fixture) {
-    u64 file_path_ptr = string->getcwd();
+    u64 file_path_ptr = os->getcwd();
     u64 file_name_ptr = string->load("/all_english_words.txt");
     string->strcat(file_path_ptr, file_name_ptr);
     string->free(file_name_ptr);
@@ -736,8 +739,7 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable_murmurhash3_hash, .fixt
             *tmp++ = '\0';
             u64 string_ptr = string->load(file_data);
             list->push(list_ptr, string_ptr);
-            char* unsafe = string->unsafe(string_ptr);
-            printf("   +: %s\n", unsafe);
+            os->printf(string_ptr);
             file_data = tmp;
         }
         list->free(list_ptr);

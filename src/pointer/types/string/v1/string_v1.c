@@ -389,37 +389,6 @@ static u64 string_load(const char* src_data) {
     return pointer;
 }
 
-static u64 string_getcwd(void) {
-    char cwd[PATH_MAX];
-    u64 data_ptr;
-    getcwd(cwd, sizeof(cwd));
-    u64 size = strlen(cwd) + 1;
-    char* data = memory->alloc(size);
-    strcpy(data, cwd); /* NOLINT */
-    data_ptr = string_load(data);
-    memory->free(data, size);
-    return data_ptr;
-}
-
-static void string_printf(u64 ptr) {
-    struct pointer* data_ptr = vm->read(ptr);
-    if (data_ptr == 0) {
-        return;
-    }
-    u64 size = 0;
-    u64 offset = 0;
-    const char* data = string_pointer_internal(data_ptr, &size, &offset);
-    if (data == 0) {
-        return;
-    }
-    data += offset;
-#ifdef USE_MEMORY_DEBUG_INFO
-    void* ptr_data = data_ptr->data;
-    printf("   .: %016llx > %016llx\n", (u64)data_ptr, (u64)ptr_data);
-#endif
-    puts(data);
-}
-
 static void string_put_char(u64 src, char value) {
     struct pointer* data_ptr = vm->read(src);
     if (data_ptr == 0) {
@@ -483,8 +452,6 @@ const struct string_methods string_methods_definition = {
     .offset = string_offset,
     .match = string_match,
     .load = string_load,
-    .getcwd = string_getcwd,
-    .printf = string_printf,
     .put_char = string_put_char,
     .unsafe = string_unsafe,
     .size = string_size
