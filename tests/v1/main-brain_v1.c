@@ -515,17 +515,21 @@ RX_TEST_CASE(tests, test_string_offset_ptr_offset_found, .fixture = test_fixture
 
 /* test init */
 RX_TEST_CASE(tests, test_string_pointer_free_list, .fixture = test_fixture) {
+#ifndef USE_GC
     u64 list_ptr = list->alloc();
     u64 string_ptr = string->load("hello");
     u64 e_ptr = string->load("e");
     u64 string_pointer_ptr = string->offset(string_ptr, e_ptr);
-#ifndef USE_GC
     string->free(list_ptr);
     string->free(string_pointer_ptr);
     string->free(string_ptr);
     string->free(e_ptr);
     list->free(list_ptr);
 #else
+    list->alloc();
+    u64 string_ptr = string->load("hello");
+    u64 e_ptr = string->load("e");
+    string->offset(string_ptr, e_ptr);
     pointer->gc();
 #endif
 }
@@ -662,12 +666,15 @@ RX_TEST_CASE(tests, test_string_pointer_match_0, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests, test_string_pointer_match_0_0, .fixture = test_fixture) {
+#ifndef USE_GC
     u64 string_ptr = string->load("192.168.0.1");
     u64 string_pointer_ptr = string->match(0, 0);
     RX_ASSERT(string_pointer_ptr == 0);
-#ifndef USE_GC
     string->free(string_ptr);
 #else
+    string->load("192.168.0.1");
+    u64 string_pointer_ptr = string->match(0, 0);
+    RX_ASSERT(string_pointer_ptr == 0);
     pointer->gc();
 #endif
 }
@@ -749,12 +756,15 @@ RX_TEST_CASE(tests, test_string_pointer_strchr_0, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests, test_string_pointer_strchr_0_0, .fixture = test_fixture) {
+#ifndef USE_GC
     u64 string_ptr = string->load("192.168.0.1");
     u64 string_pointer_ptr = string->strchr(0, 0);
     RX_ASSERT(string_pointer_ptr == 0);
-#ifndef USE_GC
     string->free(string_ptr);
 #else
+    string->load("192.168.0.1");
+    u64 string_pointer_ptr = string->strchr(0, 0);
+    RX_ASSERT(string_pointer_ptr == 0);
     pointer->gc();
 #endif
 }
@@ -907,12 +917,15 @@ RX_TEST_CASE(tests, test_string_pointer_strrchr_0, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests, test_string_pointer_strrchr_0_0, .fixture = test_fixture) {
+#ifndef USE_GC
     u64 string_ptr = string->load("192.168.0.1");
     u64 string_pointer_ptr = string->strrchr(0, 0);
     RX_ASSERT(string_pointer_ptr == 0);
-#ifndef USE_GC
     string->free(string_ptr);
 #else
+    string->load("192.168.0.1");
+    u64 string_pointer_ptr = string->strrchr(0, 0);
+    RX_ASSERT(string_pointer_ptr == 0);
     pointer->gc();
 #endif
 }
@@ -990,14 +1003,18 @@ RX_TEST_CASE(tests, test_list_push_string, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests, test_list_size_string, .fixture = test_fixture) {
+#ifndef USE_GC
     u64 string_ptr = string->load("@");
     u64 list_ptr = list->alloc();
     u64 value = list->size(string_ptr);
     RX_ASSERT(value == 0);
-#ifndef USE_GC
     list->free(list_ptr);
     string->free(string_ptr);
 #else
+    u64 string_ptr = string->load("@");
+    list->alloc();
+    u64 value = list->size(string_ptr);
+    RX_ASSERT(value == 0);
     pointer->gc();
 #endif
 }
@@ -1733,13 +1750,15 @@ RX_TEST_CASE(tests, test_offset_strcat, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests, test_file_read_invalid_type, .fixture = test_fixture) {
+#ifndef USE_GC
     u64 list_ptr = list->alloc();
     u64 data_ptr = file->data(list_ptr);
-#ifndef USE_GC
     data->free(data_ptr);
     file->free(list_ptr);
     list->free(list_ptr);
 #else
+    u64 list_ptr = list->alloc();
+    file->data(list_ptr);
     pointer->gc();
 #endif
 }

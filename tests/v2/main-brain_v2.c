@@ -234,8 +234,8 @@ RX_TEST_CASE(tests, test_strcpy, .fixture = test_fixture) {
     RX_ASSERT(path1_len > 0);
     RX_ASSERT(path2_len > 0);
     char* buf = calloc(1, path1_len + path2_len + 1);
-    strcpy(buf, path1);
-    strcat(buf, path2);
+    strcpy(buf, path1); /* NOLINT */
+    strcat(buf, path2); /* NOLINT */
     char* path_copy = pointer->unsafe(path_copy_ptr);
     RX_ASSERT(strlen(path_copy) == strlen(buf));
     RX_ASSERT(strcmp(path_copy, buf) == 0);
