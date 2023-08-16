@@ -67,8 +67,6 @@ static u64 string_strchr(u64 src_ptr, u64 match_ptr);
 static u64 string_match(u64 src_ptr, u64 match_ptr);
 static u64 string_offset(u64 src_ptr, u64 match_ptr);
 static u64 string_load(const char* data);
-static u64 string_getcwd(void);
-static void string_printf(u64 ptr);
 static void string_put_char(u64 ptr, char value);
 static char* string_unsafe(u64 ptr);
 static u64 string_size(u64 ptr);

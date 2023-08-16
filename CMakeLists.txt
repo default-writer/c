@@ -274,8 +274,10 @@ set(LIB_STD_STRING_POINTER1_SOURCE src/pointer/types/string_pointer/v1/string_po
 set(LIB_STD_OBJECT1_SOURCE src/pointer/types/object/v1/object_v1.c)
 set(LIB_STD_OS1_SOURCE src/pointer/types/os/v1/os_v1.c)
 set(LIB_STD_TYPES1_SOURCE
+    src/pointer/v1/pointer_v1.c
     src/pointer/types/void/v1/void_v1.c
     src/pointer/types/data/v1/data_v1.c
+    src/pointer/types/user/v1/user_v1.c
     src/pointer/types/string/v1/string_v1.c
     src/pointer/types/string_pointer/v1/string_pointer_v1.c
     src/pointer/types/file/v1/file_v1.c
@@ -371,6 +373,12 @@ add_library(list-class STATIC ${LIB_CLASS_SOURCE})
 add_library(list-brain STATIC ${LIB_BRAIN_SOURCE})
 add_library(list-pointer1 STATIC ${LIB_POINTER1_SOURCE})
 add_library(list-pointer2 STATIC ${LIB_POINTER2_SOURCE})
+add_library(c-types STATIC
+    ${LIB_COMMON_SOURCE}
+    ${LIB_MICRO_SOURCE}
+    ${LIB_VM1_SOURCE}
+    ${LIB_STD_TYPES1_SOURCE}
+    ${LIB_POINTER1_SOURCE})
 add_library(memory-list1 STATIC ${LIB_MEMORY_LIST1_SOURCE})
 add_library(memory-list2 STATIC ${LIB_MEMORY_LIST2_SOURCE})
 add_library(memory-list3 STATIC ${LIB_MEMORY_LIST3_SOURCE})
@@ -423,7 +431,8 @@ add_executable(main-structs3 ${TEST_STRUCTS3_SOURCE})
 add_executable(main-tests-vm1 ${MAIN_TESTS_VM1_SOURCE})
 add_executable(main-tests-vm2 ${MAIN_TESTS_VM2_SOURCE})
 
-# links
+# examples
+add_executable(c-substrings examples/substrings/main.c)
 
 # all
 target_link_libraries(hashtable1 PRIVATE list-lcg)
@@ -443,6 +452,7 @@ target_link_libraries(memory-ref3 PRIVATE memory-list3 list-micro list-common)
 target_link_libraries(list-pointer2 PRIVATE vm-v2)
 target_link_libraries(structs-v3 PRIVATE list-class)
 target_link_libraries(stl-linked-list PRIVATE list-common)
+target_link_libraries(c-substrings PRIVATE c-types)
 
 # test
 target_link_libraries(tests PRIVATE list-alloc list-parameters)
@@ -514,17 +524,20 @@ if(TARGETS)
     get_property(main_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
     get_property(test_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
     get_property(gtk_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
+    get_property(c_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
 
     list(FILTER main_target_names INCLUDE REGEX "^main-")
     list(FILTER test_target_names INCLUDE REGEX "^test-")
     list(FILTER gtk_target_names INCLUDE REGEX "^gtk-")
+    list(FILTER c_target_names INCLUDE REGEX "^c-")
 
     string(REGEX REPLACE ";" " " main_target_names "${main_target_names}")
     string(REGEX REPLACE ";" " " test_target_names "${test_target_names}")
     string(REGEX REPLACE ";" " " gtk_target_names "${gtk_target_names}")
+    string(REGEX REPLACE ";" " " c_target_names "${c_target_names}")
 
     FILE(WRITE ${CMAKE_BINARY_DIR}/targets.txt
-        "${main_target_names} ${test_target_names}"
+        "${main_target_names} ${test_target_names} ${c_target_names}"
     )
 
     FILE(WRITE ${CMAKE_BINARY_DIR}/gtktargets.txt
@@ -543,7 +556,7 @@ if(TARGETS)
         endforeach()
     endforeach()
 
-    file(GLOB_RECURSE SOURCE_FILES "src/*.c" "src/*.h")
+    file(GLOB_RECURSE SOURCE_FILES "src/*.c" "src/*.h" "examples/*.c" "examples/*.h")
     file(WRITE ${CMAKE_BINARY_DIR}/sources.txt "")
     foreach(source_file ${SOURCE_FILES})
         file(APPEND ${CMAKE_BINARY_DIR}/sources.txt "${source_file}\n")

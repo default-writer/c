@@ -68,3 +68,4 @@ callgrind.out.*
 appwrite/.env
 wget.log*
 doxygen/
+libs*/
