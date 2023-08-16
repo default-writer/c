@@ -28,6 +28,10 @@
 
 #include "std/common.h"
 
+/*! @file list_v1.h
+ *  @brief C API / list
+ */
+
 struct list_methods {
     u64 (*alloc)(void);
     void (*free)(u64 ptr);

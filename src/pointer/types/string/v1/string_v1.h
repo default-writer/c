@@ -28,6 +28,10 @@
 
 #include "std/common.h"
 
+/*! @file string_v1.h
+ *  @brief C API / string
+ */
+
 struct string_methods {
     void (*free)(u64 ptr);
     u64 (*copy)(u64 ptr);

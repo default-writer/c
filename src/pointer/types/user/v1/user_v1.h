@@ -28,6 +28,10 @@
 
 #include "std/common.h"
 
+/*! @file user_v1.h
+ *  @brief C API / user
+ */
+
 struct user_methods {
     u64 (*alloc)(void);
     void (*free)(u64 ptr);

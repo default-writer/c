@@ -28,6 +28,10 @@
 
 #include "std/common.h"
 
+/*! @file os_v1.h
+ *  @brief C API / os
+ */
+
 struct os_methods {
     u64 (*getcwd)(void);
     void (*printf)(u64 ptr);

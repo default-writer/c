@@ -29,6 +29,10 @@
 #include "pointer/types/data/v1/data_v1.h"
 #include "std/common.h"
 
+/*! @file file_v1.h
+ *  @brief C API / file
+ */
+
 struct file_methods {
     u64 (*alloc)(u64 file_path_ptr, u64 mode_ptr);
     void (*free)(u64 ptr);

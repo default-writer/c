@@ -28,6 +28,10 @@
 
 #include "std/common.h"
 
+/*! @file void_v1.h
+ *  @brief C API / void
+ */
+
 struct void_methods {
     u64 (*alloc)(u64 size);
     void (*free)(u64 ptr);

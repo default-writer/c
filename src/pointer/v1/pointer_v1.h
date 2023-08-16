@@ -28,6 +28,10 @@
 
 #include "std/common.h"
 
+/*! @file pointer_v1.h
+ *  @brief C API / pointer
+ */
+
 enum type {
     /* value used for ephemeral type - null */
     TYPE_NULL = 0,
