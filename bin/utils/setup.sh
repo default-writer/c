@@ -75,7 +75,7 @@ case "${install}" in
     "--doxygen") # installs doxygen
         update ${updateflags}
         apt install -y --only-upgrade libsmbclient libwbclient0 samba-libs
-        apt install -y flex bison libc6 doxygen
+        apt install -y flex bison libc6 doxygen graphviz texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra
         upgrade ${updgradeflags}
         ;;
 

@@ -1,6 +1,7 @@
 # c project description
 
 - virtual machine implementation on C
+
     1. C API
     2. memory management
     3. garbage collection
@@ -9,6 +10,10 @@
 
     1. WSL2/devcontainers
     2. Ubuntu 22.04.3 LTS
+
+- C API generated docs (doxygen):
+
+    1. [docs](./docs/refman.pdf)
 
 ![ubuntu logo](./resources/icons8-ubuntu-96.png)
 
