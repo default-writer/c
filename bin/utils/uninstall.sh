@@ -39,15 +39,15 @@ case "${install}" in
         git config --global --unset pull.rebase
         ;;
 
-    "--submodule-rexo") # uninstalls git submodule rexo and cleans up rexo directories
+    "--submodule-rexo") # uninstalls rexoas git submodule
         submodule-uninstall ${pwd} .deps/rexo
         ;;
 
-    "--submodule-musl") # uninstalls git submodule musl and cleans up rexo directories
+    "--submodule-musl") # uninstalls muslas git submodule
         submodule-uninstall ${pwd} .deps/musl
         ;;
 
-    "--submodule-vcpkg") # uninstalls rexo as git submodule
+    "--submodule-vcpkg") # uninstalls vcpkg as git submodule
         submodule-uninstall ${pwd} .deps/vcpkg
         ;;
 

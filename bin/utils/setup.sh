@@ -66,6 +66,19 @@ case "${install}" in
         upgrade ${updgradeflags}
         ;;
 
+    "--wsl2") # fixes wsl error /sbin/ldconfig.real: /usr/lib/wsl/lib/libcuda.so.1 is not a symbolic link
+        mkdir /usr/lib/wsl/lib2
+        ln -s /usr/lib/wsl/lib/* /usr/lib/wsl/lib2
+        echo /usr/lib/wsl/lib2 | tee /etc/ld.so.conf.d/ld.wsl.conf
+        ;;
+
+    "--doxygen") # installs doxygen
+        update ${updateflags}
+        apt install -y --only-upgrade libsmbclient libwbclient0 samba-libs
+        apt install -y flex bison libc6 doxygen
+        upgrade ${updgradeflags}
+        ;;
+
     "--zip") # installs unzip
         update ${updateflags}
         apt install -y unzip

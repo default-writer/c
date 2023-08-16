@@ -21,6 +21,7 @@ sudo "${pwd}/bin/utils/setup.sh" --cmake --no-update --no-upgrade
 sudo "${pwd}/bin/utils/setup.sh" --gtk4 --no-update --no-upgrade
 sudo "${pwd}/bin/utils/setup.sh" --nodejs-ppa --no-update --no-upgrade
 sudo "${pwd}/bin/utils/setup.sh" --raylib --no-update --no-upgrade
+sudo "${pwd}/bin/utils/setup.sh" --doxygen --no-update --no-upgrade
 sudo "${pwd}/bin/utils/setup.sh" --upgrade
 
 "${pwd}/bin/cleanup.sh" --all

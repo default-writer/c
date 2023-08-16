@@ -35,6 +35,7 @@
     "ms-vscode.cpptools-extension-pack",
     "zchrissirhcz.cmake-highlight",
     "xaver.clang-format",
-    "gruntfuggly.todo-tree"
+    "gruntfuggly.todo-tree",
+    "github.vscode-github-actions"
   ]
 }
