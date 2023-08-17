@@ -22,7 +22,7 @@ if [ -f "${pwd}/.args" ]; then args=$(cat "${pwd}/.args"); fi
 "${pwd}/bin/cmake.sh" $args
 "${pwd}/bin/build.sh" $args
 "${pwd}/bin/logs.sh" $args
-"${pwd}/bin/coverage.sh" $args
+"${pwd}/bin/coverageall.sh" $args
 
 [[ $SHLVL -gt 2 ]] || echo OK
 
