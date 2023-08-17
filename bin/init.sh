@@ -23,7 +23,7 @@ sudo "${pwd}/bin/setup.sh"
 "${pwd}/bin/utils/install.sh" --submodule-vcpkg
 "${pwd}/bin/utils/install.sh" --submodule-raylib
 
-"${pwd}/bin/utils/build.sh" --all
+"${pwd}/bin/utils/init.sh" --all
 
 [[ $SHLVL -gt 2 ]] || echo OK
 
