@@ -105,7 +105,7 @@ if [ "${silent}" == "--silent" ]; then
     exec 2>&1 >/dev/null
 fi
 
-build="coverage"
+build="coverage-${source}"
 
 if [[ ! "${dir}" == "" ]]; then
     build="${dir}"
@@ -155,14 +155,14 @@ if [[ -f "${build}/${target}.info" ]]; then
 fi
 
 coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" "*.info" )
-for f in ${coverage}; do
+for f in ${coverage[@]}; do
     find "${build}" -type f -name "${f}" -delete
 done
 
 export LCOV_PATH=$(which lcov)
 export GENHTML_PATH==$(which genhtml)
 export MAKEFLAGS=-j8
-export LD_LIBRARY_PATH=/usr/local/lib
+export LD_LIBRARY_PATH="${pwd}/lib"
 
 ${cmake} \
     -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
@@ -185,17 +185,21 @@ for target in ${targets[@]}; do
     else
         ${cmake} --build "${build}" --target "${target}" || (echo ERROR: "${target}" && exit 1)
     fi
-    case "${target}" in main-*)
-        timeout --foreground 180 $(cmake-valgrind-options) "${build}/${target}" 2>&1 >"${output}/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
-        lcov --capture --directory "${build}/" --output-file "${build}/${target}.info" &>/dev/null
-        lcov --remove "${build}/${target}.info" "${pwd}/.deps/*" -o "${build}/${target}.info"
+    case "${target}" in 
+        c-*) ;& main-*) ;& test-*)
+            timeout --foreground 180 $(cmake-valgrind-options) "${build}/${target}" 2>&1 >"${output}/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
+            lcov --capture --directory "${build}/" --output-file "${build}/${target}.info" &>/dev/null
+            lcov --remove "${build}/${target}.info" "${pwd}/.deps/*" -o "${build}/${target}.info"
+            ;;
+        *)
+            ;;
     esac
 done
 
 find "${build}" -type f -name "*.info" -exec echo -a {} \; | xargs lcov -o "${build}/lcov.info"
 
 main=$(find "${build}" -type f -name "*.s" -exec echo {} \;)
-for i in $main; do
+for i in ${main[@]}; do
     path="${pwd}/$(echo $i | sed -n -e 's/^.*.dir\/\(.*\)$/\1/p')"
     cp "${i}" "${path}"
 done

@@ -151,12 +151,12 @@ for target in ${targets[@]}; do
 done
 
 coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" "*.info" )
-for f in ${coverage}; do
+for f in ${coverage[@]}; do
     find "${build}" -type f -name "${f}" -delete
 done
 
 export MAKEFLAGS=-j8
-export LD_LIBRARY_PATH=/usr/local/lib
+export LD_LIBRARY_PATH="${pwd}/lib"
 
 ${cmake} \
     -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
@@ -176,13 +176,17 @@ for target in ${targets[@]}; do
     else
         ${cmake} --build "${build}" --target "${target}" || (echo ERROR: "${target}" && exit 1)
     fi
-    case "${target}" in main-*)
-        timeout --foreground 180 $(cmake-valgrind-options) "${build}/${target}" 2>&1 >"${output}/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
+    case "${target}" in
+        c-*) ;& main-*) ;& test-*)
+            timeout --foreground 180 $(cmake-valgrind-options) "${build}/${target}" 2>&1 >"${output}/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
+            ;;
+        *)
+            ;;
     esac
 done
 
 main=$(find "${build}" -type f -name "*.s" -exec echo {} \;)
-for i in $main; do
+for i in ${main[@]}; do
     path="${pwd}/$(echo $i | sed -n -e 's/^.*.dir\/\(.*\)$/\1/p')"
     cp "${i}" "${path}"
 done

@@ -80,7 +80,7 @@ fi
 coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" "*.info" )
 directories=( "build-v1" "build-v2" "build-v3" "build-v4" "build-v5" "build-v6" )
 for directory in ${directories[@]}; do
-    for f in ${coverage}; do
+    for f in ${coverage[@]}; do
         [[ -d "${directory}" ]] && find "${directory}" -type f -name "${f}" -delete
     done
 done

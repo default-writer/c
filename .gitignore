@@ -44,7 +44,6 @@ report
 .history
 .venv
 .args
-gtk*/
 build*/
 coverage*/
 cmake*/

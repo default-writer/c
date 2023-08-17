@@ -21,6 +21,8 @@ extern const struct user_methods user_methods_definition;
 extern const struct data_methods data_methods_definition;
 extern const struct object_methods object_methods_definition;
 extern const struct os_methods os_methods_definition;
+extern const struct string_pointer_methods string_pointer_methods_definition;
+extern const struct memory memory_definition;
 
 /* definition */
 static const struct pointer_methods* pointer = &pointer_methods_definition;
@@ -31,9 +33,13 @@ static const struct user_methods* user = &user_methods_definition;
 static const struct data_methods* data = &data_methods_definition;
 static const struct object_methods* object = &object_methods_definition;
 static const struct os_methods* os = &os_methods_definition;
+static const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
+static const struct memory* memory = &memory_definition;
 
 int main(void) {
+#ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();
+#endif
     pointer->init(8);
     u64 list_ptr = list->alloc();
     u64 list_match_ptr = list->alloc();
@@ -55,6 +61,7 @@ int main(void) {
     u64 string_match_ptr1 = list->pop(list_match_ptr);
     u64 string_match_ptr2 = list->pop(list_match_ptr);
     u64 string_match_ptr3 = list->pop(list_match_ptr);
+#ifndef USE_GC
     string->free(string_ptr1);
     string->free(string_ptr2);
     string->free(string_ptr3);
@@ -66,10 +73,12 @@ int main(void) {
     string->free(pattern_ptr);
     list->free(list_match_ptr);
     list->free(list_ptr);
-#ifdef USE_GC
+#else
     pointer->gc();
 #endif
     pointer->destroy();
+#ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();
+#endif
     return 0;
 }

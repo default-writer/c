@@ -345,5 +345,6 @@
   "chat.editor.fontSize": 12,
   "[jsonc]": {
     "editor.defaultFormatter": "trunk.io"
-  }
+  },
+  "files.refactoring.autoSave": false
 }

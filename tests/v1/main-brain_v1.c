@@ -50,15 +50,12 @@ extern const struct test_suite list_alloc_test_suite_definition;
 extern const struct test_suite list_micro_test_suite_definition;
 extern const struct test_suite list_test_suite_definition;
 extern const struct test_suite vm_v1_test_suite_definition;
-extern const struct string_pointer_methods string_pointer_methods_definition;
-extern const struct os_methods os_methods_definition;
 
 /* definition */
 static const struct test_suite* list_alloc_tests = &list_alloc_test_suite_definition;
 static const struct test_suite* list_micro_tests = &list_micro_test_suite_definition;
 static const struct test_suite* list_tests = &list_test_suite_definition;
 static const struct test_suite* vm_v1_tests = &vm_v1_test_suite_definition;
-static const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
 
 /* definition */
 extern struct pointer_data* pointer_data_init(u64 size);
@@ -74,6 +71,8 @@ extern const struct string_methods string_methods_definition;
 extern const struct user_methods user_methods_definition;
 extern const struct data_methods data_methods_definition;
 extern const struct object_methods object_methods_definition;
+extern const struct os_methods os_methods_definition;
+extern const struct string_pointer_methods string_pointer_methods_definition;
 
 /* definition */
 const struct pointer_methods* pointer = &pointer_methods_definition;
@@ -84,6 +83,7 @@ const struct user_methods* user = &user_methods_definition;
 const struct data_methods* data = &data_methods_definition;
 const struct object_methods* object = &object_methods_definition;
 const struct os_methods* os = &os_methods_definition;
+const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
 
 typedef struct test_data {
     struct pointer_data* ctx;

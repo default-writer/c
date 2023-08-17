@@ -32,6 +32,7 @@
 #include "pointer/types/object/v1/object_v1.h"
 #include "pointer/types/string/v1/string_v1.h"
 #include "pointer/types/string_pointer/v1/string_pointer_v1.h"
+#include "pointer/types/user/v1/user_v1.h"
 #include "pointer/v1/pointer_v1.h"
 #include "vm/v1/vm_v1.h"
 
@@ -48,6 +49,8 @@ extern const struct string_methods string_methods_definition;
 extern const struct user_methods user_methods_definition;
 extern const struct data_methods data_methods_definition;
 extern const struct object_methods object_methods_definition;
+extern const struct os_methods os_methods_definition;
+extern const struct string_pointer_methods string_pointer_methods_definition;
 extern const struct memory memory_definition;
 
 /* definition */
@@ -58,6 +61,8 @@ static const struct string_methods* string = &string_methods_definition;
 static const struct user_methods* user = &user_methods_definition;
 static const struct data_methods* data = &data_methods_definition;
 static const struct object_methods* object = &object_methods_definition;
+static const struct os_methods* os = &os_methods_definition;
+static const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
 static const struct memory* memory = &memory_definition;
 
 /* internal */

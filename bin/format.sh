@@ -69,7 +69,7 @@ case "${install}" in
 esac
 
 main=$(find "${pwd}/src" -type f -name "*.[c|h]" -exec echo {} \; | grep -v -s "rexo" | sed -n -e 's/^.*\/\(src.*\)$/\1/p')
-for i in $main; do
+for i in ${main[@]}; do
     clang-format -i "${pwd}/$i" --style="{BasedOnStyle: ${format}, IndentWidth: 4}"
 done
 
