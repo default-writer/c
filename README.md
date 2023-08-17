@@ -82,10 +82,6 @@ UI_MODE=--ui ./build/gtk-experiment1
 
 ## history
 
-## CPU temperature countrol gists
-
-- [widows](https://gist.github.com/default-writer/7257a734def25a2f3b6c636c8fb463d7)
-
 ### 2023
 
 - added GC implementation
@@ -97,11 +93,11 @@ UI_MODE=--ui ./build/gtk-experiment1
 
 ## documentation
 
-doxygen generated documentation:
+### doxygen generated documentation
 
 [C API](docs/refman.pdf) PDF([refman.pdf][refman])
 
-### referentional documentation
+### referential documentation
 
 - [memory](docs/memory.md) PDF([memory.pdf][memory])
 - [list](docs/list.md) PDF([list.pdf][list])
@@ -127,6 +123,10 @@ doxygen generated documentation:
 ## requirements
 
 - [rexo](https://github.com/christophercrouzet/rexo)
+
+## gists
+
+- [cpu frequency cotrol (widows)](https://gist.github.com/default-writer/7257a734def25a2f3b6c636c8fb463d7)
 
 [refman]: docs/refman.pdf
 [memory]: docs/pdf/memory.pdf
