@@ -134,7 +134,10 @@
 		"zchrissirhcz.cmake-highlight",
 		"xaver.clang-format",
 		"Gruntfuggly.todo-tree",
-		"github.vscode-github-actions"
+		"github.vscode-github-actions",
+		"CS128.cs128-clang-tidy",
+		"CS50.vscode-presentation-mode",
+		"jdsteinbach.custom-presentation-mode"
 	]
     }
   }
