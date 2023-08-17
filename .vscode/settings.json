@@ -133,7 +133,7 @@
     "window.zoomLevel": 0
   },
   "presentation-mode.configBackup": {
-    "window.zoomLevel": 0
+    "window.zoomLevel": 2
   },
   "grammarly.files.include": ["**/*.md"],
   "grammarly.files.exclude": ["**/*.txt"],
