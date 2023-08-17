@@ -38,6 +38,7 @@
     "gruntfuggly.todo-tree",
     "github.vscode-github-actions",
     "cs128.cs128-clang-tidy",
-    "cs50.vscode-presentation-mode"
+    "cs50.vscode-presentation-mode",
+    "emeraldwalk.runonsave"
   ]
 }
