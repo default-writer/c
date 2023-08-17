@@ -379,12 +379,6 @@ add_library(ctypes SHARED
     ${LIB_VM1_SOURCE}
     ${LIB_STD_TYPES1_SOURCE}
     ${LIB_POINTER1_SOURCE})
-add_library(ctypes-static STATIC
-    ${LIB_COMMON_SOURCE}
-    ${LIB_MICRO_SOURCE}
-    ${LIB_VM1_SOURCE}
-    ${LIB_STD_TYPES1_SOURCE}
-    ${LIB_POINTER1_SOURCE})
 add_library(memory-list1 STATIC ${LIB_MEMORY_LIST1_SOURCE})
 add_library(memory-list2 STATIC ${LIB_MEMORY_LIST2_SOURCE})
 add_library(memory-list3 STATIC ${LIB_MEMORY_LIST3_SOURCE})
@@ -455,7 +449,7 @@ target_link_libraries(memory-ref3 PRIVATE memory-list3 list-micro list-common)
 target_link_libraries(list-pointer2 PRIVATE vm-v2)
 target_link_libraries(structs-v3 PRIVATE list-class)
 target_link_libraries(stl-linked-list PRIVATE list-common)
-target_link_libraries(c-substrings PRIVATE ctypes-static)
+target_link_libraries(c-substrings PRIVATE ctypes)
 
 # test
 target_link_libraries(tests PRIVATE list-alloc list-parameters)
@@ -492,6 +486,9 @@ target_link_libraries(main-tests-vm2 PRIVATE list-micro list-pointer2 tests-vm-v
 
 configure_file(all_english_words.txt ${CMAKE_BINARY_DIR}/all_english_words.txt COPYONLY)
 configure_file(file.txt ${CMAKE_BINARY_DIR}/file.txt COPYONLY)
+
+configure_file(${CMAKE_BINARY_DIR}/compile_commands.json ${CMAKE_SOURCE_DIR}/src/compile_commands.json COPYONLY)
+configure_file(${CMAKE_BINARY_DIR}/compile_commands.json ${CMAKE_SOURCE_DIR}/compile_commands.json COPYONLY)
 
 FILE(WRITE ${CMAKE_BINARY_DIR}/input.txt
     "fopen<\"input.txt\",\"rb\">f (? f==0 perror<\"file not found\" exit<1 : print<\"all ok\")"

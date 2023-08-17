@@ -112,8 +112,8 @@ endif()
 
 set(SUBSTRINGS substrings/main.c)
 
-include_directories( $ENV{C_INCLUDE_PATH} )
-link_directories( $ENV{C_LIBRARY_PATH} )
+include_directories( $ENV{C_INCLUDE_PATH} ${CMAKE_SOURCE_DIR}../src )
+link_directories( $ENV{C_LIBRARY_PATH} ${CMAKE_SOURCE_DIR}../lib )
 
 add_executable(c-substrings ${SUBSTRINGS})
 

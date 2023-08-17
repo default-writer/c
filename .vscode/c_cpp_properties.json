@@ -1,6 +1,6 @@
 {
   "env": {
-    "myDefaultIncludePath": ["${workspaceFolder}", "${workspaceFolder}/src"],
+    "myDefaultIncludePath": ["${workspaceFolder}/src"],
     "myCompilerPath": "/usr/bin/gcc"
   },
   "configurations": [

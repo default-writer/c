@@ -65,7 +65,7 @@
 		"clangd.onConfigChanged": "restart",
 		"clangd.detectExtensionConflicts": true,
 		"clangd.arguments": [
-			"--compile-commands-dir=${workspaceFolder}/gtk",
+			"--compile-commands-dir=${workspaceFolder}/src",
 			"-j=8",
 			"--limit-results=0",
 			"--background-index",

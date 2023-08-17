@@ -54,6 +54,7 @@ int main(void) {
         list->push(list_match_ptr, match_ptr);
         current_ptr = match_ptr;
     }
+#ifndef USE_GC
     u64 string_ptr1 = list->pop(list_ptr);
     u64 string_ptr2 = list->pop(list_ptr);
     u64 string_ptr3 = list->pop(list_ptr);
@@ -61,7 +62,6 @@ int main(void) {
     u64 string_match_ptr1 = list->pop(list_match_ptr);
     u64 string_match_ptr2 = list->pop(list_match_ptr);
     u64 string_match_ptr3 = list->pop(list_match_ptr);
-#ifndef USE_GC
     string->free(string_ptr1);
     string->free(string_ptr2);
     string->free(string_ptr3);
