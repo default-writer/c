@@ -226,7 +226,7 @@ function cmake-options() {
     fi
 
     if [ "${gc}" == "--gc" ]; then
-        gc_options=-DGC:BOOL=TRUE
+        gc_options=-DCONFIG_GC:BOOL=TRUE
     fi
 
     if [ "${debug}" == "--debug" ]; then

@@ -54,7 +54,6 @@ int main(void) {
         match_ptr = string->match(string_pointer_ptr, pattern_ptr);
         u64 distance = string->diff(string_pointer_ptr, match_ptr);
         list->push(list_match_ptr, match_ptr);
-        os->putc(match_ptr);
         current_ptr = match_ptr;
     }
 #ifndef USE_GC

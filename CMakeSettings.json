@@ -33,7 +33,7 @@
       "variables": [
         {
           "name": "CONFIG_MEMORY_DEBUG_INFO",
-          "value": "ON",
+          "value": "OFF",
           "type": "BOOL"
         },
         {
@@ -42,8 +42,13 @@
           "type": "BOOL"
         },
         {
+          "name": "CONFIG_GC",
+          "value": "OFF",
+          "type": "BOOL"
+        },        
+        {
           "name": "CODE_SANITIZER",
-          "value": "ON",
+          "value": "OFF",
           "type": "BOOL"
         }
       ],
@@ -62,17 +67,22 @@
       "variables": [
         {
           "name": "CONFIG_MEMORY_DEBUG_INFO",
-          "value": "False",
+          "value": "OFF",
           "type": "BOOL"
         },
         {
           "name": "CONFIG_MEMORY_CLEANUP",
-          "value": "False",
+          "value": "OFF",
           "type": "BOOL"
         },
         {
+          "name": "CONFIG_GC",
+          "value": "OFF",
+          "type": "BOOL"
+        },        
+        {
           "name": "CODE_SANITIZER",
-          "value": "False",
+          "value": "OFF",
           "type": "BOOL"
         }
       ],
@@ -91,7 +101,7 @@
       "variables": [
         {
           "name": "CONFIG_MEMORY_DEBUG_INFO",
-          "value": "ON",
+          "value": "OFF",
           "type": "BOOL"
         },
         {
@@ -100,8 +110,13 @@
           "type": "BOOL"
         },
         {
+          "name": "CONFIG_GC",
+          "value": "OFF",
+          "type": "BOOL"
+        },        
+        {
           "name": "CODE_SANITIZER",
-          "value": "ON",
+          "value": "OFF",
           "type": "BOOL"
         }
       ],
@@ -121,17 +136,22 @@
       "variables": [
         {
           "name": "CONFIG_MEMORY_DEBUG_INFO",
-          "value": "False",
+          "value": "OFF",
           "type": "BOOL"
         },
         {
           "name": "CONFIG_MEMORY_CLEANUP",
-          "value": "False",
+          "value": "OFF",
+          "type": "BOOL"
+        },
+        {
+          "name": "CONFIG_GC",
+          "value": "OFF",
           "type": "BOOL"
         },
         {
           "name": "CODE_SANITIZER",
-          "value": "False",
+          "value": "OFF",
           "type": "BOOL"
         }
       ],

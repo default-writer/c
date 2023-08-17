@@ -44,14 +44,14 @@
 #endif
 #endif
 
-#ifdef GC
-#if GC == 1
+#ifdef CONFIG_GC
+#if CONFIG_GC == 1
 #define USE_GC
 #endif
 #endif
 
-#ifdef MOCKS
-#if MOCKS == 1
+#ifdef CONFIG_MOCKS
+#if CONFIG_MOCKS == 1
 #define USE_MOCKS
 #endif
 #endif

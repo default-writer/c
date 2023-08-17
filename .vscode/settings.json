@@ -179,7 +179,6 @@
     "editor.fontSize": 12,
     "editor.matchBrackets": "undefined",
     "editor.minimap.enabled": "undefined",
-    "editor.scrollbar.verticalScrollbarSize": "undefined",
     "workbench.activityBar.visible": "undefined",
     "workbench.statusBar.visible": "undefined",
     "workbench.colorTheme": "Yitzchok (rainglow)",
@@ -230,7 +229,7 @@
           "long": "Disable optimizations - include debug information.",
           "buildType": "Debug",
           "settings": {
-            "GC": "1"
+            "CONFIG_GC": "0"
           }
         },
         "release": {
@@ -294,6 +293,7 @@
   "cmake.configureArgs": [
     // "CONFIG_MEMORY_DEBUG_INFO",
     "CONFIG_MEMORY_CLEANUP",
+    "CONFIG_GC",
     "CODE_SANITIZER"
   ],
   /* https://manpages.ubuntu.com/manpages/jammy/man1/clangd-11.1.html */
