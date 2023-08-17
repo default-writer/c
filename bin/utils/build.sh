@@ -105,7 +105,7 @@ if [ "${silent}" == "--silent" ]; then
     exec 2>&1 >/dev/null
 fi
 
-build="build-${source}"
+build="build"
 
 if [[ ! "${dir}" == "" ]]; then
     build="${dir}"
