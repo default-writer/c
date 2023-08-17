@@ -493,7 +493,6 @@ configure_file(file.txt ${CMAKE_BINARY_DIR}/file.txt COPYONLY)
 
 if(NOT TARGETS)
     configure_file(${CMAKE_BINARY_DIR}/compile_commands.json ${CMAKE_SOURCE_DIR}/src/compile_commands.json COPYONLY)
-    configure_file(${CMAKE_BINARY_DIR}/compile_commands.json ${CMAKE_SOURCE_DIR}/compile_commands.json COPYONLY)
 endif()
 
 FILE(WRITE ${CMAKE_BINARY_DIR}/input.txt
