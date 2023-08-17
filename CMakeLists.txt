@@ -487,8 +487,10 @@ target_link_libraries(main-tests-vm2 PRIVATE list-micro list-pointer2 tests-vm-v
 configure_file(all_english_words.txt ${CMAKE_BINARY_DIR}/all_english_words.txt COPYONLY)
 configure_file(file.txt ${CMAKE_BINARY_DIR}/file.txt COPYONLY)
 
-configure_file(${CMAKE_BINARY_DIR}/compile_commands.json ${CMAKE_SOURCE_DIR}/src/compile_commands.json COPYONLY)
-configure_file(${CMAKE_BINARY_DIR}/compile_commands.json ${CMAKE_SOURCE_DIR}/compile_commands.json COPYONLY)
+if(!TARGETS)
+    configure_file(${CMAKE_BINARY_DIR}/compile_commands.json ${CMAKE_SOURCE_DIR}/src/compile_commands.json COPYONLY)
+    configure_file(${CMAKE_BINARY_DIR}/compile_commands.json ${CMAKE_SOURCE_DIR}/compile_commands.json COPYONLY)
+endif()
 
 FILE(WRITE ${CMAKE_BINARY_DIR}/input.txt
     "fopen<\"input.txt\",\"rb\">f (? f==0 perror<\"file not found\" exit<1 : print<\"all ok\")"

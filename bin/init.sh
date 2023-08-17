@@ -31,7 +31,7 @@ sudo "${pwd}/bin/utils/setup.sh" --upgrade
 "${pwd}/bin/utils/install.sh" --submodule-rexo
 "${pwd}/bin/utils/install.sh" --submodule-vcpkg
 "${pwd}/bin/utils/install.sh" --submodule-raylib
-"${pwd}/bin/utils/runme.sh"
+"${pwd}/bin/utils/runme.sh" --all
 
 [[ $SHLVL -gt 2 ]] || echo OK
 
