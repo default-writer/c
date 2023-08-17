@@ -9,11 +9,12 @@ trap 'err_report $LINENO' ERR
 
 uid=$(id -u)
 
+if [ "${uid}" -eq 0 ]; then
+    echo "Please run as user"
+    exit
+fi
+
 pwd=$(pwd)
-
-sudo "${pwd}/bin/setup.sh"
-
-"${pwd}/bin/utils/cleanup.sh" --all
 
 "${pwd}/bin/utils/install.sh" --hooks
 "${pwd}/bin/utils/install.sh" --clangd
@@ -22,8 +23,6 @@ sudo "${pwd}/bin/setup.sh"
 "${pwd}/bin/utils/install.sh" --submodule-rexo
 "${pwd}/bin/utils/install.sh" --submodule-vcpkg
 "${pwd}/bin/utils/install.sh" --submodule-raylib
-
-"${pwd}/bin/utils/build.sh" --all
 
 [[ $SHLVL -gt 2 ]] || echo OK
 
