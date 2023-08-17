@@ -5,7 +5,7 @@
 	path = .deps/rexo
 	url = https://github.com/default-writer/rexo.git
 [submodule "raylib"]
-	path = raylib
+	path = .deps/raylib
 	url = https://github.com/raysan5/raylib.git
 [submodule ".deps/raylib"]
 	path = .deps/raylib
