@@ -251,7 +251,7 @@
     "**/gtk/**": true
   },
   "cmake.configureArgs": [
-    "CONFIG_MEMORY_DEBUG_INFO",
+    // "CONFIG_MEMORY_DEBUG_INFO",
     "CONFIG_MEMORY_CLEANUP",
     "CODE_SANITIZER"
   ],
