@@ -140,7 +140,7 @@ for linked_target in ${targets[@]}; do
     case ${linked_target} in
         c-*) ;& main-*) ;& test-*)
             if [[ " ${targets[*]} " == *" ${linked_target} "* ]]; then
-                ${pwd}/bin/utils/coverageall.sh --target ${linked_target} ${opts[@]}
+                ${pwd}/bin/utils/coverage.sh --target ${linked_target} ${opts[@]}
             fi
             ;;
         *)
