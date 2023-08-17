@@ -70,3 +70,5 @@ lcov.info
 **/*tests/*.
 appwrite/.env
 wget.log*
+compile_commands.json
+src/compile_commands.json
