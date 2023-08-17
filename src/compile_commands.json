@@ -516,11 +516,6 @@
 },
 {
   "directory": "/home/user/c/cmake",
-  "command": "/usr/bin/gcc -DCONFIG_MEMORY_CLEANUP -DCONFIG_MEMORY_DEBUG_INFO -DGC -D_POSIX_C_SOURCE=199309L -I/home/user/c/src -g -save-temps -std=gnu89 -fgnu89-inline -fsanitize=address,undefined,leak,pointer-compare,pointer-subtract,float-cast-overflow,float-divide-by-zero -fsanitize-undefined-trap-on-error -fno-sanitize-recover=all -Winline -Werror -Wall -Wextra -Waggregate-return -Wcast-align -Wcast-qual -Wconversion -Wfloat-equal -Wpointer-arith -Wshadow -Wstrict-overflow=5 -Wswitch -Wswitch-default -Wundef -Wunreachable-code -Wwrite-strings -Wformat-nonliteral -Wno-implicit-fallthrough -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -std=c99 -o CMakeFiles/main-zen.dir/src/playground/zen/zen.c.o -c /home/user/c/src/playground/zen/zen.c",
-  "file": "/home/user/c/src/playground/zen/zen.c"
-},
-{
-  "directory": "/home/user/c/cmake",
   "command": "/usr/bin/gcc -DCONFIG_MEMORY_CLEANUP -DCONFIG_MEMORY_DEBUG_INFO -DGC -D_POSIX_C_SOURCE=199309L -I/home/user/c/src -g -save-temps -std=gnu89 -fgnu89-inline -fsanitize=address,undefined,leak,pointer-compare,pointer-subtract,float-cast-overflow,float-divide-by-zero -fsanitize-undefined-trap-on-error -fno-sanitize-recover=all -Winline -Werror -Wall -Wextra -Waggregate-return -Wcast-align -Wcast-qual -Wconversion -Wfloat-equal -Wpointer-arith -Wshadow -Wstrict-overflow=5 -Wswitch -Wswitch-default -Wundef -Wunreachable-code -Wwrite-strings -Wformat-nonliteral -Wno-implicit-fallthrough -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -std=c99 -o CMakeFiles/main-linked-list.dir/tests/main-linked-list.c.o -c /home/user/c/tests/main-linked-list.c",
   "file": "/home/user/c/tests/main-linked-list.c"
 },
@@ -558,5 +553,10 @@
   "directory": "/home/user/c/cmake",
   "command": "/usr/bin/gcc -DCONFIG_MEMORY_CLEANUP -DCONFIG_MEMORY_DEBUG_INFO -DGC -D_POSIX_C_SOURCE=199309L -I/home/user/c/src -g -save-temps -std=gnu89 -fgnu89-inline -fsanitize=address,undefined,leak,pointer-compare,pointer-subtract,float-cast-overflow,float-divide-by-zero -fsanitize-undefined-trap-on-error -fno-sanitize-recover=all -Winline -Werror -Wall -Wextra -Waggregate-return -Wcast-align -Wcast-qual -Wconversion -Wfloat-equal -Wpointer-arith -Wshadow -Wstrict-overflow=5 -Wswitch -Wswitch-default -Wundef -Wunreachable-code -Wwrite-strings -Wformat-nonliteral -Wno-implicit-fallthrough -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -std=c99 -o CMakeFiles/c-substrings.dir/examples/substrings/main.c.o -c /home/user/c/examples/substrings/main.c",
   "file": "/home/user/c/examples/substrings/main.c"
+},
+{
+  "directory": "/home/user/c/cmake",
+  "command": "/usr/bin/gcc -DCONFIG_MEMORY_CLEANUP -DCONFIG_MEMORY_DEBUG_INFO -DGC -D_POSIX_C_SOURCE=199309L -I/home/user/c/src -g -save-temps -std=gnu89 -fgnu89-inline -fsanitize=address,undefined,leak,pointer-compare,pointer-subtract,float-cast-overflow,float-divide-by-zero -fsanitize-undefined-trap-on-error -fno-sanitize-recover=all -Winline -Werror -Wall -Wextra -Waggregate-return -Wcast-align -Wcast-qual -Wconversion -Wfloat-equal -Wpointer-arith -Wshadow -Wstrict-overflow=5 -Wswitch -Wswitch-default -Wundef -Wunreachable-code -Wwrite-strings -Wformat-nonliteral -Wno-implicit-fallthrough -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -std=c99 -o CMakeFiles/zen.dir/zen/zen.c.o -c /home/user/c/zen/zen.c",
+  "file": "/home/user/c/zen/zen.c"
 }
 ]

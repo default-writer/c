@@ -23,7 +23,7 @@
  * SOFTWARE.
  *
  */
-#include "playground/zen/zen.h"
+#include "zen.h"
 
 int main(void) {
     return 0;

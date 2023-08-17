@@ -328,9 +328,11 @@ set(MAIN_HASHTABLE1_SOURCE tests/v1/main-hashtable_v1.c)
 set(MAIN_HASHTABLE2_SOURCE tests/v2/main-hashtable_v2.c)
 set(MAIN_VM1_SOURCE tests/v1/main-vm1.c)
 set(MAIN_VM2_SOURCE tests/v2/main-vm2.c)
-set(MAIN_ZEN_SOURCE src/playground/zen/zen.c)
 set(MAIN_TESTS_VM1_SOURCE tests/v1/main-tests_v1.c)
 set(MAIN_TESTS_VM2_SOURCE tests/v2/main-tests_v2.c)
+
+#zen
+set(ZEN_SOURCE zen/zen.c)
 
 include_directories(src)
 
@@ -419,7 +421,6 @@ add_executable(main-hashtable1 ${MAIN_HASHTABLE1_SOURCE})
 add_executable(main-hashtable2 ${MAIN_HASHTABLE2_SOURCE})
 add_executable(main-vm1 ${MAIN_VM1_SOURCE})
 add_executable(main-vm2 ${MAIN_VM2_SOURCE})
-add_executable(main-zen ${MAIN_ZEN_SOURCE})
 add_executable(main-linked-list ${TEST_LINKED_LIST_SOURCE})
 add_executable(main-linked-list-static-enumerator ${TEST_LINKED_LIST_STATIC_ENUMERATOR_SOURCE})
 add_executable(main-structs1 ${TEST_STRUCTS1_SOURCE})
@@ -430,6 +431,9 @@ add_executable(main-tests-vm2 ${MAIN_TESTS_VM2_SOURCE})
 
 # examples
 add_executable(c-substrings examples/substrings/main.c)
+
+#zen
+add_executable(zen ${ZEN_SOURCE})
 
 # all
 target_link_libraries(hashtable1 PRIVATE list-lcg)
