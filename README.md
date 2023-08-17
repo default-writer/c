@@ -97,6 +97,12 @@ UI_MODE=--ui ./build/gtk-experiment1
 
 ## documentation
 
+doxygen generated documentation:
+
+[C API](docs/refman.pdf) PDF([refman.pdf][refman])
+
+### referentional documentation
+
 - [memory](docs/memory.md) PDF([memory.pdf][memory])
 - [list](docs/list.md) PDF([list.pdf][list])
 - [class](docs/class.md) PDF([class.pdf][class])
@@ -122,6 +128,7 @@ UI_MODE=--ui ./build/gtk-experiment1
 
 - [rexo](https://github.com/christophercrouzet/rexo)
 
+[refman]: docs/refman.pdf
 [memory]: docs/pdf/memory.pdf
 [list]: docs/pdf/list.pdf
 [class]: docs/pdf/class.pdf
