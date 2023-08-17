@@ -67,19 +67,24 @@ run
 
 ## GTK GUI app development
 
-run
-
-- ./bin/gtkbuild.sh --target gtk-experiment --clean
-- UI_MODE=--ui ./gtk/gtk-experiment
+```bash
+cd gtk
+./bin/build.sh --target gtk-experiment1 --clean
+UI_MODE=--ui ./build/gtk-experiment1
+```
 
 ## shell scripting documentation
 
-- all shell (mostly bash) scripts located in ./bin folder
+- all shell scripts located in ./bin folder
 - all shell scripts from ./bin and ./bin/utils/ can be used and run as self-documented scripts, with embedded help
-- all shell scripts knows how to execute as user or root (sudo)
+- all shell scripts correctly detectes execution as user or root (sudo)
 - all shell scripts have required command-line options and optional [] parameters
 
 ## history
+
+## CPU temperature countrol gists
+
+- [widows](https://gist.github.com/default-writer/7257a734def25a2f3b6c636c8fb463d7)
 
 ### 2023
 
