@@ -105,7 +105,7 @@ if [ "${silent}" == "--silent" ]; then
     exec 2>&1 >/dev/null
 fi
 
-build="build"
+build="build-${source}"
 
 if [[ ! "${dir}" == "" ]]; then
     build="${dir}"
@@ -166,10 +166,6 @@ ${cmake} \
     -S"${pwd}" \
     -B"${build}" \
     -G "Ninja" 2>&1 >/dev/null
-
-    if [[ -f "${build}/compile_commands.json" ]]; then
-        cp "${build}/compile_commands.json" "${pwd}/src/" 2>&1 >/dev/null
-    fi
 
 for target in ${targets[@]}; do
     echo building ${target}
