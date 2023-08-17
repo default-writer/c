@@ -9,6 +9,11 @@ trap 'err_report $LINENO' ERR
 
 uid=$(id -u)
 
+if [ ! "${uid}" -eq 0 ]; then
+    echo "Please run as root"
+    exit
+fi
+
 pwd=$(pwd)
 
 "${pwd}/bin/utils/install.sh" --hooks
