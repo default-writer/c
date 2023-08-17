@@ -72,8 +72,12 @@ void use(const struct memory_allocator_v2* allocator) {
 }
 
 int main(void) {
+#ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();
+#endif
     use(&memory_allocator_v5);
+#ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();
+#endif
     return 0;
 }

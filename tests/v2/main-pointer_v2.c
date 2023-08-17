@@ -47,12 +47,16 @@ extern const struct list list_micro_definition;
 extern const struct pointer_methods pointer_methods_definition;
 extern const struct list_methods list_methods_definition;
 extern const struct file_methods file_methods_definition;
+#ifdef USE_MEMORY_DEBUG_INFO
 extern const struct debug_methods debug_methods_definition;
+#endif
 
 static const struct pointer_methods* pointer = &pointer_methods_definition;
 static const struct list_methods* list = &list_methods_definition;
 static const struct file_methods* file = &file_methods_definition;
+#ifdef USE_MEMORY_DEBUG_INFO
 static const struct debug_methods* debug = &debug_methods_definition;
+#endif
 
 typedef struct test_data {
     struct pointer_data* ctx;
@@ -176,7 +180,9 @@ RX_TEST_CASE(tests, test_list_peek_0, .fixture = test_fixture) {
 }
 
 int main(int argc, char** argv) {
+#ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();
+#endif
     CLEAN(argc)
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- acceptance test code\n");
@@ -193,6 +199,8 @@ int main(int argc, char** argv) {
 #endif
     /* Execute the main function that runs the test cases found. */
     int result = rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
+#ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();
+#endif
     return result;
 }

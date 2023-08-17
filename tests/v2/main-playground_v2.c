@@ -133,13 +133,17 @@ RX_TEST_CASE(tests, test_class_push_pop_get_set_data_v2, .fixture = test_fixture
 }
 
 int main(void) {
+#ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();
+#endif
 #ifdef USE_MEMORY_ALLOC
     memory_init(void);
     memory_destroy(void);
 #endif
     /* Execute the main function that runs the test cases found. */
     int result = rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
+#ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();
+#endif
     return result;
 }

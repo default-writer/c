@@ -844,7 +844,9 @@ RX_TEST_CASE(tests, test_hashtable_alloc_set_get_default_count, .fixture = test_
 }
 
 int main(int argc, char** argv) {
+#ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();
+#endif
     CLEAN(argc)
     CLEAN(argv)
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -857,6 +859,8 @@ int main(int argc, char** argv) {
 #endif
     /* Execute the main function that runs the test cases found. */
     int result = rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
+#ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();
+#endif
     return result;
 }

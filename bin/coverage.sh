@@ -115,7 +115,6 @@ fi
 
 if [ "${clean}" == "--clean" ]; then
     rm -rf "${build}"
-    mkdir "${build}"
 fi
 
 find "${pwd}" -type f -name "callgrind.out.*" -delete

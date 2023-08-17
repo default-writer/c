@@ -32,9 +32,13 @@ extern const struct test_suite list_experimental_test_suite_definition;
 static const struct test_suite* list_experimental_tests = &list_experimental_test_suite_definition;
 
 int main(void) {
+#ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();
+#endif
     TEST_RUN(alloc, list_alloc_tests);
     TEST_RUN(result, list_experimental_tests);
+#ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();
+#endif
     return alloc | result;
 }

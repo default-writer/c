@@ -42,7 +42,9 @@
 extern const struct pointer_methods pointer_methods_definition;
 extern const struct list_methods list_methods_definition;
 extern const struct file_methods file_methods_definition;
+#ifdef USE_MEMORY_DEBUG_INFO
 extern const struct debug_methods debug_methods_definition;
+#endif
 extern const struct vm_methods vm_methods_definition;
 extern const struct test_suite list_micro_test_suite_definition;
 extern const struct test_suite list_alloc_test_suite_definition;
@@ -50,7 +52,9 @@ extern const struct test_suite list_alloc_test_suite_definition;
 static const struct pointer_methods* pointer = &pointer_methods_definition;
 static const struct list_methods* list = &list_methods_definition;
 static const struct file_methods* file = &file_methods_definition;
+#ifdef USE_MEMORY_DEBUG_INFO
 static const struct debug_methods* debug = &debug_methods_definition;
+#endif
 static const struct vm_methods* vm = &vm_methods_definition;
 static const struct test_suite* list_micro_tests = &list_micro_test_suite_definition;
 static const struct test_suite* list_alloc_tests = &list_alloc_test_suite_definition;

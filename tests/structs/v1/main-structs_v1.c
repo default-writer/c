@@ -55,7 +55,11 @@ struct typeinfo {
 
 struct object_typeinfo {
     const object object;
+#ifdef USE_MEMORY_DEBUG_INFO
     const typeinfo typeinfo;
+#else
+    u64 size;
+#endif
 };
 
 const struct base base_methods = {
@@ -74,12 +78,16 @@ object base_create(const typeinfo t) {
 void base_destroy(const object_typeinfo ptr) {
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("deleting type %s of size %ld\n", ptr->typeinfo->name, ptr->typeinfo->size);
-#endif
     memory->free(ptr->object, ptr->typeinfo->size);
+#else
+    memory->free(ptr->object, ptr->size);
+#endif
 }
 
 int main(void) {
+#ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();
+#endif
     typedef struct B _B;
     typedef _B* B;
 
@@ -112,10 +120,14 @@ int main(void) {
         .object = (object)b,
 #ifdef USE_MEMORY_DEBUG_INFO
         .typeinfo = &ti
+#else
+        .size = ti.size
 #endif
     };
 
     base->destroy(&obj);
+#ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();
+#endif
     return 0;
 }

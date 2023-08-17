@@ -1945,7 +1945,9 @@ extern inline void source2(void) {
 }
 
 int main(int argc, char** argv) {
+#ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();
+#endif
     CLEAN(argc)
     TEST_RUN(alloc, list_alloc_tests);
     TEST_RUN(micro, list_micro_tests);
@@ -1971,6 +1973,8 @@ int main(int argc, char** argv) {
 
     /* Execute the main function that runs the test cases found. */
     int result = rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
+#ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();
+#endif
     return alloc | tests | micro | vm_v1 | result;
 }
