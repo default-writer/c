@@ -151,12 +151,11 @@
   },
   "presentation-mode.active": {
     "commands": [],
-    "editor.fontSize": 18,
+    "editor.fontSize": 16,
     "editor.matchBrackets": "never",
-    "editor.minimap.enabled": false,
-    "editor.scrollbar.verticalScrollbarSize": 0,
-    "workbench.activityBar.visible": false,
-    "workbench.statusBar.visible": false,
+    "editor.minimap.enabled": true,
+    "workbench.activityBar.visible": true,
+    "workbench.statusBar.visible": true,
     "workbench.colorTheme": "Yitzchok (rainglow)",
     "workbench.colorCustomizations": {
       "[Yitzchok (rainglow)]": {
@@ -170,7 +169,7 @@
         "terminal.background": "#000"
       }
     },
-    "window.zoomLevel": 4
+    "window.zoomLevel": 3
   },
 
   "presentation-mode.inactive": {
