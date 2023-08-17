@@ -52,7 +52,7 @@ int main(void) {
         os->putc(string_pointer_ptr);
         list->push(list_ptr, string_pointer_ptr);
         match_ptr = string->match(string_pointer_ptr, pattern_ptr);
-        u64 distance = string->diff(string_pointer_ptr, match_ptr);
+        string->diff(string_pointer_ptr, match_ptr);
         list->push(list_match_ptr, match_ptr);
         current_ptr = match_ptr;
     }
