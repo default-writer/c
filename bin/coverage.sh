@@ -97,10 +97,10 @@ fi
 
 "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v1 --valgrind ${silent} ${opts[@]}
 "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v2 --sanitize ${silent} ${opts[@]}
-"${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v3 ${silent}
+"${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v3 ${silent} ${opts[@]}
 "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v4 --gc --valgrind ${silent} ${opts[@]}
 "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v5 --gc --sanitize ${silent} ${opts[@]}
-"${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v6 --gc ${silent}
+"${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v6 --gc ${silent} ${opts[@]}
 
 directories=( "coverage-v1" "coverage-v2" "coverage-v3" "coverage-v4" "coverage-v5" "coverage-v6" )
 for directory in ${directories[@]}; do
