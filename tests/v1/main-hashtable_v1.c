@@ -435,12 +435,12 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixtur
             u64 string_ptr = string->load(file_data);
             list->push(list_ptr, string_ptr);
             const char* unsafe = string->unsafe(string_ptr);
-            os->printf(string_ptr);
+            os->putc(string_ptr);
             string->put_char(string_ptr, unsafe[0]);
             u64 pattern_ptr = string->load("b");
             u64 last_match_ptr = string->offset(string_ptr, pattern_ptr);
             u64 leak_ptr = string->offset(string_ptr, last_match_ptr);
-            os->printf(leak_ptr);
+            os->putc(leak_ptr);
             struct hashtable_data* unsafe_tmp = hashtable->alloc(unsafe, 0);
             hashtable->free(unsafe_tmp);
             string->free(pattern_ptr);
@@ -739,7 +739,7 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable_murmurhash3_hash, .fixt
             *tmp++ = '\0';
             u64 string_ptr = string->load(file_data);
             list->push(list_ptr, string_ptr);
-            os->printf(string_ptr);
+            os->putc(string_ptr);
             file_data = tmp;
         }
         list->free(list_ptr);

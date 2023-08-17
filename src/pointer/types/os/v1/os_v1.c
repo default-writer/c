@@ -69,7 +69,7 @@ static const struct memory* memory = &memory_definition;
 
 /* declaration */
 static u64 os_getcwd(void);
-static void os_printf(u64 ptr);
+static void os_putc(u64 ptr);
 
 static u64 os_getcwd(void) {
     char* src = memory->alloc(PATH_MAX);
@@ -79,19 +79,16 @@ static u64 os_getcwd(void) {
     return data_ptr;
 }
 
-static void os_printf(u64 ptr) {
+static void os_putc(u64 ptr) {
     const char* unsafe_data = string->unsafe(ptr);
     if (unsafe_data == 0) {
         return;
     }
-#ifdef USE_MEMORY_DEBUG_INFO
-    printf("   .: %s\n", unsafe_data);
-#endif
     puts(unsafe_data);
 }
 
 /* public */
 const struct os_methods os_methods_definition = {
     .getcwd = os_getcwd,
-    .printf = os_printf
+    .putc = os_putc
 };

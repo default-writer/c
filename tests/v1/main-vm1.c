@@ -87,7 +87,7 @@ extern inline void source1(void) {
     string->free(mode_ptr);
     u64 data_ptr = file->data(f_ptr);
     file->free(f_ptr);
-    os->printf(data_ptr);
+    os->putc(data_ptr);
     data->free(data_ptr);
 }
 

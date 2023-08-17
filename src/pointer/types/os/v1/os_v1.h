@@ -34,7 +34,7 @@
 
 struct os_methods {
     u64 (*getcwd)(void);
-    void (*printf)(u64 ptr);
+    void (*putc)(u64 ptr);
 };
 
 #endif /* _POINTER_TYPES_OS_H_ */

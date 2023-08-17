@@ -43,15 +43,17 @@ int main(void) {
     pointer->init(8);
     u64 list_ptr = list->alloc();
     u64 list_match_ptr = list->alloc();
-    u64 string_ptr = string->load("a.bc.bb.ba.a");
+    u64 string_ptr = string->load("a.bc.bb.ba.a.b");
     u64 pattern_ptr = string->load(".b");
     u64 string_pointer_ptr = 0;
     u64 match_ptr = string_ptr;
     u64 current_ptr = match_ptr;
     while ((string_pointer_ptr = string->strchr(current_ptr, pattern_ptr)) != 0) {
+        os->putc(string_pointer_ptr);
         list->push(list_ptr, string_pointer_ptr);
         match_ptr = string->match(string_pointer_ptr, pattern_ptr);
         list->push(list_match_ptr, match_ptr);
+        os->putc(match_ptr);
         current_ptr = match_ptr;
     }
 #ifndef USE_GC

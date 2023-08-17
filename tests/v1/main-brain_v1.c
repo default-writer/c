@@ -107,7 +107,7 @@ RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tea
 
 /* test init */
 RX_TEST_CASE(tests, test_print_0, .fixture = test_fixture) {
-    os->printf(0);
+    os->putc(0);
 }
 
 /* test init */
@@ -136,7 +136,7 @@ RX_TEST_CASE(tests, test_load_empty, .fixture = test_fixture) {
 /* test init */
 RX_TEST_CASE(tests, test_print_load_empty, .fixture = test_fixture) {
     u64 empty_ptr = string->load("");
-    os->printf(empty_ptr);
+    os->putc(empty_ptr);
     RX_ASSERT(empty_ptr == 0);
 #ifndef USE_GC
     string->free(empty_ptr);
@@ -1157,13 +1157,13 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     u64 data_ptr3 = string->copy(string_ptr);
     u64 data_ptr4 = string->copy(none_ptr);
 
-    os->printf(string_ptr);
-    os->printf(zero_ptr);
-    os->printf(data_ptr);
-    os->printf(list_ptr);
-    os->printf(empty_ptr);
-    os->printf(null_ptr);
-    os->printf(none_ptr);
+    os->putc(string_ptr);
+    os->putc(zero_ptr);
+    os->putc(data_ptr);
+    os->putc(list_ptr);
+    os->putc(empty_ptr);
+    os->putc(null_ptr);
+    os->putc(none_ptr);
 
     string->put_char(string_ptr, 'a');
     string->put_char(zero_ptr, 'a');
@@ -1543,13 +1543,13 @@ RX_TEST_CASE(tests, test_offset_strcpy_free, .fixture = test_fixture) {
 RX_TEST_CASE(tests, test_print_free, .fixture = test_fixture) {
     u64 printing_ptr = string->load("hello, world!");
     string->free(printing_ptr);
-    os->printf(printing_ptr);
+    os->putc(printing_ptr);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_print, .fixture = test_fixture) {
     u64 printing_ptr = string->load("hello, world!");
-    os->printf(printing_ptr);
+    os->putc(printing_ptr);
 #ifndef USE_GC
     string->free(printing_ptr);
 #else
@@ -1562,7 +1562,7 @@ RX_TEST_CASE(tests, test_print_string_pointer, .fixture = test_fixture) {
     u64 printing_ptr = string->load("hello, world!");
     u64 comma_ptr = string->load(",");
     u64 substring_index_ptr = string->offset(printing_ptr, comma_ptr);
-    os->printf(substring_index_ptr);
+    os->putc(substring_index_ptr);
 #ifndef USE_GC
     string->free(printing_ptr);
     string->free(substring_index_ptr);
@@ -1645,7 +1645,7 @@ RX_TEST_CASE(tests, teststring_pointer_unsafe, .fixture = test_fixture) {
     RX_ASSERT(strcmp(expected_value, actual_value) == 0);
 
     string->free(substring_index_ptr);
-    os->printf(substring_index_ptr);
+    os->putc(substring_index_ptr);
 #ifndef USE_GC
     string->free(printing_ptr);
     string->free(comma_ptr);
@@ -1706,7 +1706,7 @@ RX_TEST_CASE(tests, test_print_string_pointer_free, .fixture = test_fixture) {
     u64 comma_ptr = string->load(",");
     u64 substring_index_ptr = string->offset(printing_ptr, comma_ptr);
     string->free(substring_index_ptr);
-    os->printf(substring_index_ptr);
+    os->putc(substring_index_ptr);
 #ifndef USE_GC
     string->free(printing_ptr);
     string->free(comma_ptr);
@@ -1781,7 +1781,7 @@ RX_TEST_CASE(tests, test_load_open_match_last_unsafe_free, .fixture = test_fixtu
     string->free(mode_ptr);
     u64 data_ptr = file->data(f_ptr);
     file->free(f_ptr);
-    os->printf(data_ptr);
+    os->putc(data_ptr);
 #ifndef USE_GC
     data->free(data_ptr);
 #else
@@ -1839,7 +1839,7 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixtur
             *tmp++ = '\0';
             u64 string_ptr = string->load((char*)file_data);
             list->push(list_ptr, string_ptr);
-            os->printf(string_ptr);
+            os->putc(string_ptr);
             file_data = tmp;
         }
         list->free(list_ptr);
@@ -1901,7 +1901,7 @@ extern inline void source1(void) {
     string->free(mode_ptr);
     u64 data_ptr = file->data(f_ptr);
     file->free(f_ptr);
-    os->printf(data_ptr);
+    os->putc(data_ptr);
     data->free(data_ptr);
 }
 
@@ -1929,7 +1929,7 @@ extern inline void source2(void) {
             *tmp++ = '\0';
             u64 string_ptr = string->load((char*)file_data);
             list->push(list_ptr, string_ptr);
-            os->printf(string_ptr);
+            os->putc(string_ptr);
             file_data = tmp;
         }
         list->free(list_ptr);
