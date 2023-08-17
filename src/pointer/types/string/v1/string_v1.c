@@ -70,6 +70,7 @@ static u64 string_load(const char* data);
 static void string_put_char(u64 ptr, char value);
 static char* string_unsafe(u64 ptr);
 static u64 string_size(u64 ptr);
+static u64 string_diff(u64 src, u64 dest);
 
 /* definition */
 extern const struct memory memory_definition;
@@ -431,6 +432,10 @@ static u64 string_size(u64 ptr) {
     return size;
 }
 
+static u64 string_diff(u64 src, u64 dest) {
+    return 0;
+}
+
 static const struct vm_type type_definition = {
     .free = string_vm_free
 };
@@ -452,7 +457,8 @@ const struct string_methods string_methods_definition = {
     .load = string_load,
     .put_char = string_put_char,
     .unsafe = string_unsafe,
-    .size = string_size
+    .size = string_size,
+    .diff = string_diff
 };
 
 #ifndef ATTRIBUTE
