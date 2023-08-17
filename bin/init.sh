@@ -11,7 +11,7 @@ uid=$(id -u)
 
 pwd=$(pwd)
 
-if [ ! "${uid}" -eq 0 ]; then
+if [ "${uid}" -eq 0 ]; then
     sudo "${pwd}/bin/utils/setup.sh" --update
     sudo "${pwd}/bin/utils/setup.sh" --zip --no-update --no-upgrade
     sudo "${pwd}/bin/utils/setup.sh" --configuration --no-update --no-upgrade
