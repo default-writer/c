@@ -126,9 +126,32 @@
   },
   "sonarlint.testFilePattern": "{**/test/**,**/*test*,**/*Test*,**/rexo/**}",
   "sonarlint.pathToCompileCommands": "${workspaceFolder}/cmake/compile_commands.json",
+  "editor.useTabStops": false,
+  "editor.insertSpaces": true,
+  "editor.dropIntoEditor.enabled": true,
+  "editor.trimAutoWhitespace": true,
+  "workbench.editor.restoreViewState": true,
+  "workbench.editor.autoLockGroups": {
+    "default": true,
+    "hexEditor.hexedit": false,
+    "workbench.editorinputs.searchEditorInput": false,
+    "workbench.editor.chatSession": false,
+    "imagePreview.previewEditor": false,
+    "vscode.audioPreview": false,
+    "vscode.videoPreview": false,
+    "jsProfileVisualizer.cpuprofile.table": false,
+    "jsProfileVisualizer.heapprofile.table": false,
+    "pdf.view": false,
+    "pdf.preview": false,
+    "workbench.editors.gettingStartedInput": false,
+    "jupyter-notebook": false,
+    "terminalEditor": true,
+    "workbench.input.interactive": false,
+    "mainThreadWebview-markdown.preview": false
+  },
   "presentation-mode.active": {
     "commands": [],
-    "editor.fontSize": 16,
+    "editor.fontSize": 18,
     "editor.matchBrackets": "never",
     "editor.minimap.enabled": false,
     "editor.scrollbar.verticalScrollbarSize": 0,
@@ -147,13 +170,21 @@
         "terminal.background": "#000"
       }
     },
-    "window.zoomLevel": 2
+    "window.zoomLevel": 4
   },
 
   "presentation-mode.inactive": {
     "window.zoomLevel": 0
   },
   "presentation-mode.configBackup": {
+    "editor.fontSize": 12,
+    "editor.matchBrackets": "undefined",
+    "editor.minimap.enabled": "undefined",
+    "editor.scrollbar.verticalScrollbarSize": "undefined",
+    "workbench.activityBar.visible": "undefined",
+    "workbench.statusBar.visible": "undefined",
+    "workbench.colorTheme": "Yitzchok (rainglow)",
+    "workbench.colorCustomizations": "undefined",
     "window.zoomLevel": 2
   },
   "grammarly.files.include": ["**/*.md"],
@@ -231,7 +262,7 @@
     "ghs",
     "diab"
   ],
-  "editor.formatOnSave": true,
+  "editor.formatOnSave": false,
   "editor.fontWeight": "normal",
   "cmake.additionalKits": ["${workspaceFolder}/.vscode", "${workspaceFolder}"],
   "cmake.useCMakePresets": "always",
