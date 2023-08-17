@@ -39,12 +39,14 @@ const struct memory_info* base = &memory_info;
 static void* memory_alloc(u64 size);
 static void memory_free(void* ptr, u64 size);
 
+#ifdef USE_MEMORY_DEBUG_INFO
 const struct memory_info* global_memory_info(void) {
     memory_info.alloc = memory_info.used > memory_info.alloc ? memory_info.used : memory_info.alloc;
     memory_info.free = total_free;
     memory_info.used = total_alloc - total_free;
     return base;
 }
+#endif
 
 void* global_alloc(u64 size) {
     void* ptr = 0;
