@@ -27,6 +27,8 @@ set(CONFIG_MEMCPY OFF)
 
 link_directories( $ENV{LD_LIBRARY_PATH} )
 
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY $ENV{LD_LIBRARY_PATH})
+
 # Check the operating system version
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
 
@@ -274,8 +276,10 @@ set(LIB_STD_STRING_POINTER1_SOURCE src/pointer/types/string_pointer/v1/string_po
 set(LIB_STD_OBJECT1_SOURCE src/pointer/types/object/v1/object_v1.c)
 set(LIB_STD_OS1_SOURCE src/pointer/types/os/v1/os_v1.c)
 set(LIB_STD_TYPES1_SOURCE
+    src/pointer/v1/pointer_v1.c
     src/pointer/types/void/v1/void_v1.c
     src/pointer/types/data/v1/data_v1.c
+    src/pointer/types/user/v1/user_v1.c
     src/pointer/types/string/v1/string_v1.c
     src/pointer/types/string_pointer/v1/string_pointer_v1.c
     src/pointer/types/file/v1/file_v1.c
@@ -303,9 +307,6 @@ set(TESTS_SRC_LIST_ALLOC tests/src/test_list-alloc/test_list-alloc.c)
 set(TESTS_SRC_LIST_EXPERIMENTAL tests/src/test_list-experimental/test_list-experimental.c)
 set(TESTS_SRC_VM_V1 tests/src/vm/v1/vm_v1.c)
 set(TESTS_SRC_VM_V2 tests/src/vm/v2/vm_v2.c)
-
-# gtk
-set(GTK_EXPERIMENT src/ui/gtk-experiment.c)
 
 # main
 set(MAIN_STANDARD_SOURCE tests/main-default.c)
@@ -338,7 +339,8 @@ add_library(tests STATIC
     ${TESTS_SRC_LIST}
     ${TESTS_SRC_LIST_ALLOC}
     ${TESTS_SRC_LIST_EXPERIMENTAL}
-    ${TESTS_SRC_LIST_MICRO})
+    ${TESTS_SRC_LIST_MICRO}
+)
 
 add_library(tests-vm-v1 STATIC ${TESTS_SRC_VM_V1})
 add_library(tests-vm-v2 STATIC ${TESTS_SRC_VM_V2})
@@ -371,6 +373,12 @@ add_library(list-class STATIC ${LIB_CLASS_SOURCE})
 add_library(list-brain STATIC ${LIB_BRAIN_SOURCE})
 add_library(list-pointer1 STATIC ${LIB_POINTER1_SOURCE})
 add_library(list-pointer2 STATIC ${LIB_POINTER2_SOURCE})
+add_library(ctypes SHARED
+    ${LIB_COMMON_SOURCE}
+    ${LIB_MICRO_SOURCE}
+    ${LIB_VM1_SOURCE}
+    ${LIB_STD_TYPES1_SOURCE}
+    ${LIB_POINTER1_SOURCE})
 add_library(memory-list1 STATIC ${LIB_MEMORY_LIST1_SOURCE})
 add_library(memory-list2 STATIC ${LIB_MEMORY_LIST2_SOURCE})
 add_library(memory-list3 STATIC ${LIB_MEMORY_LIST3_SOURCE})
@@ -390,9 +398,6 @@ add_library(std-object1 SHARED ${LIB_STD_OBJECT1_SOURCE})
 
 # test
 add_executable(test-hashes ${TEST_HASHES_SOURCE})
-
-# gtk
-add_executable(gtk-experiment ${GTK_EXPERIMENT})
 
 # main 
 add_executable(main-default ${MAIN_STANDARD_SOURCE})
@@ -423,7 +428,8 @@ add_executable(main-structs3 ${TEST_STRUCTS3_SOURCE})
 add_executable(main-tests-vm1 ${MAIN_TESTS_VM1_SOURCE})
 add_executable(main-tests-vm2 ${MAIN_TESTS_VM2_SOURCE})
 
-# links
+# examples
+add_executable(c-substrings examples/substrings/main.c)
 
 # all
 target_link_libraries(hashtable1 PRIVATE list-lcg)
@@ -434,7 +440,7 @@ target_link_libraries(list-memory3 PRIVATE list-common)
 target_link_libraries(list-memory4 PRIVATE list-common)
 target_link_libraries(list-class PRIVATE list-common)
 target_link_libraries(list-alloc PRIVATE list-parameters)
-target_link_libraries(list-pointer1 PRIVATE list-common list-micro std-types1 user1)
+target_link_libraries(list-pointer1 PRIVATE list-common list-micro std-types1)
 target_link_libraries(list-pointer2 PRIVATE list-common)
 target_link_libraries(list-experimental PRIVATE list-parameters)
 target_link_libraries(memory-ref1 PRIVATE memory-list1 list-micro list-common)
@@ -443,6 +449,7 @@ target_link_libraries(memory-ref3 PRIVATE memory-list3 list-micro list-common)
 target_link_libraries(list-pointer2 PRIVATE vm-v2)
 target_link_libraries(structs-v3 PRIVATE list-class)
 target_link_libraries(stl-linked-list PRIVATE list-common)
+target_link_libraries(c-substrings PRIVATE ctypes)
 
 # test
 target_link_libraries(tests PRIVATE list-alloc list-parameters)
@@ -467,68 +474,39 @@ target_link_libraries(main-pointer1 PRIVATE list-pointer1 list-micro vm-v1)
 target_link_libraries(main-pointer2 PRIVATE list-pointer2 list-micro)
 target_link_libraries(main-hashtable1 PRIVATE list-pointer1 list-micro vm-v1 hashtable1 std-string-pointer1)
 target_link_libraries(main-hashtable2 PRIVATE list-pointer2 list-micro hashtable2)
-target_link_libraries(main-vm1 PRIVATE tests tests-vm-v1 list-alloc list-light vm-v1 user1)
+target_link_libraries(main-vm1 PRIVATE tests tests-vm-v1 list-alloc list-light vm-v1)
 target_link_libraries(main-vm2 PRIVATE tests tests-vm-v2 list-alloc list-light vm-v2 list-pointer2 list-micro)
 target_link_libraries(main-structs1 PRIVATE list-common)
 target_link_libraries(main-structs2 PRIVATE list-class)
 target_link_libraries(main-structs3 PRIVATE structs-v3)
 target_link_libraries(main-linked-list PRIVATE stl-linked-list)
 target_link_libraries(main-linked-list-static-enumerator PRIVATE stl-linked-list)
-target_link_libraries(main-tests-vm1 PRIVATE list-micro list-pointer1 tests-vm-v1 vm-v1 user1)
+target_link_libraries(main-tests-vm1 PRIVATE list-micro list-pointer1 tests-vm-v1 vm-v1)
 target_link_libraries(main-tests-vm2 PRIVATE list-micro list-pointer2 tests-vm-v2 vm-v2 list-pointer2 list-micro)
 
 configure_file(all_english_words.txt ${CMAKE_BINARY_DIR}/all_english_words.txt COPYONLY)
 configure_file(file.txt ${CMAKE_BINARY_DIR}/file.txt COPYONLY)
 
+configure_file(${CMAKE_BINARY_DIR}/compile_commands.json ${CMAKE_SOURCE_DIR}/src/compile_commands.json COPYONLY)
+configure_file(${CMAKE_BINARY_DIR}/compile_commands.json ${CMAKE_SOURCE_DIR}/compile_commands.json COPYONLY)
+
 FILE(WRITE ${CMAKE_BINARY_DIR}/input.txt
     "fopen<\"input.txt\",\"rb\">f (? f==0 perror<\"file not found\" exit<1 : print<\"all ok\")"
 )
-
-if(TARGET "gtk-experiment")
-    find_package(PkgConfig REQUIRED)
-    pkg_check_modules(GTK4 REQUIRED IMPORTED_TARGET gtk4)
-    target_link_libraries(gtk-experiment PRIVATE PkgConfig::GTK4)
-
-    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/gtk-4.0)
-    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/glib-2.0)
-    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/gio-unix-2.0)
-    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/cairo)
-    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/pango-1.0)
-    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/harfbuzz)
-    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/fribidi)
-    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/gdk-pixbuf-2.0)
-    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/pixman-1)
-    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/uuid)
-    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/freetype2)
-    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/libpng16)
-    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/graphene-1.0)
-    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/libmount)
-    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/include/blkid)
-    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/lib/x86_64-linux-gnu/glib-2.0/include)
-    target_include_directories(gtk-experiment SYSTEM PUBLIC /usr/lib/x86_64-linux-gnu/graphene-1.0/include)
-
-endif()
 
 if(TARGETS)
 
     get_property(main_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
     get_property(test_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
-    get_property(gtk_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
 
     list(FILTER main_target_names INCLUDE REGEX "^main-")
     list(FILTER test_target_names INCLUDE REGEX "^test-")
-    list(FILTER gtk_target_names INCLUDE REGEX "^gtk-")
 
     string(REGEX REPLACE ";" " " main_target_names "${main_target_names}")
     string(REGEX REPLACE ";" " " test_target_names "${test_target_names}")
-    string(REGEX REPLACE ";" " " gtk_target_names "${gtk_target_names}")
 
     FILE(WRITE ${CMAKE_BINARY_DIR}/targets.txt
         "${main_target_names} ${test_target_names}"
-    )
-
-    FILE(WRITE ${CMAKE_BINARY_DIR}/gtktargets.txt
-        "${gtk_target_names}"
     )
 
     get_property(target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
@@ -543,7 +521,7 @@ if(TARGETS)
         endforeach()
     endforeach()
 
-    file(GLOB_RECURSE SOURCE_FILES "src/*.c" "src/*.h")
+    file(GLOB_RECURSE SOURCE_FILES "src/*.c" "src/*.h" "examples/*.c" "examples/*.h")
     file(WRITE ${CMAKE_BINARY_DIR}/sources.txt "")
     foreach(source_file ${SOURCE_FILES})
         file(APPEND ${CMAKE_BINARY_DIR}/sources.txt "${source_file}\n")

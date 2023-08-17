@@ -54,10 +54,10 @@
       "initCommands": ["settings set target.disable-aslr false"]
     },
     {
-      "name": "(gdb) list",
+      "name": "(gdb) c-substrings",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/coverage/main",
+      "program": "${workspaceFolder}/cmake/c-substrings",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",

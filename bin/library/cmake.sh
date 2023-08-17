@@ -92,48 +92,6 @@ function get-cmake-targets() {
     fi
 }
 
-function get-gtktargets() {
-    local array=()
-    local source=$0
-    local script="$(basename "$(test -L "${source}" && readlink "${source}" || echo "${source}")")"
-    local commands=$(echo $(cat ${source} | sed -e 's/^[ \t]*//;' | sed -e '/^[ \t]*$/d' | sed -n -e 's/^"--\(.*\)".*/\1/p') | sed -n -e 's/^\(.*\)\sall\s.*$/\1/p')
-    local targets=$(echo ${commands})
-
-    for target in ${targets[@]}; do
-        if [ "${target}" != "target" ]; then
-            array+=( "${target}" )
-        fi
-    done
-
-    [ ! -d "${pwd}/config" ] && mkdir "${pwd}/config"
-
-    cmake=$(get-cmake)
-    if [[ "${cmake}" == "" ]]; then
-        return
-    fi
-
-    if [[ ! -d "${pwd}/config" ]]; then
-        exec 2>&1 >/dev/null
-
-        ${cmake} \
-            -DTARGETS:BOOL=ON \
-            -S"${pwd}" \
-            -B"${pwd}/config" \
-            -G "Ninja" 2>&1 >/dev/null
-
-        exec 1>&2 2>&-
-    fi
-
-    if [ -f "${pwd}/config/gtktargets.txt" ]; then
-        gtktargets=$(cat "${pwd}/config/gtktargets.txt")
-        for target in ${gtktargets[@]}; do
-            array+=("${target}")
-        done
-    fi
-
-    printf '%s\n' "${array[@]}"
-}
-
 function get-source-targets() {
     local source=$1
     local cmake
@@ -190,7 +148,7 @@ function get-source-targets() {
             done <  $file
         done
     else
-        targets=$(echo "$targets[@]" | sed 's/\bgtk-[^ ]*//g')
+        targets=$(echo "${targets[@]}")
     fi
 
     printf '%s\n' "${targets[@]}"
@@ -314,7 +272,6 @@ export -f get-cmake
 export -f get-targets
 export -f get-linked-targets
 export -f get-source-targets
-export -f get-gtktargets
 export -f get-cmake-targets
 export -f get-options
 export -f cmake-options

@@ -7,12 +7,12 @@ err_report() {
 
 trap 'err_report $LINENO' ERR
 
-function get-libs() {
-    local libs=$(find "${pwd}/bin/libs" -type f -name "*.sh" -exec echo {} \;)
-    for i in $libs; do
-        local import="$(echo $i | sed -n -e 's/^.*bin\/libs\/\(.*\)$/\1/p')"
-        . "${pwd}/bin/libs/${import}"
+function get-scripts() {
+    local scripts=$(find "${pwd}/bin/library" -type f -name "*.sh" -exec echo {} \;)
+    for i in ${scripts[@]}; do
+        local import="$(echo $i | sed -n -e 's/^.*bin\/library\/\(.*\)$/\1/p')"
+        . "${pwd}/bin/library/${import}"
     done
 }
 
-get-libs
+get-scripts

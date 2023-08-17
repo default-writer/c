@@ -44,7 +44,6 @@ report
 .history
 .venv
 .args
-gtk*/
 build*/
 coverage*/
 cmake*/
@@ -68,3 +67,4 @@ callgrind.out.*
 appwrite/.env
 wget.log*
 doxygen/
+libs*/

@@ -257,7 +257,7 @@
   ],
   /* https://manpages.ubuntu.com/manpages/jammy/man1/clangd-11.1.html */
   "clangd.arguments": [
-    "--compile-commands-dir=${workspaceFolder}/gtk",
+    "--compile-commands-dir=${workspaceFolder}/src",
     "-j=8",
     "--limit-results=0",
     "--background-index",
@@ -345,5 +345,7 @@
   "chat.editor.fontSize": 12,
   "[jsonc]": {
     "editor.defaultFormatter": "trunk.io"
-  }
+  },
+  "files.refactoring.autoSave": false,
+  "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools"
 }

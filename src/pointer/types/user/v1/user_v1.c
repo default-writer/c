@@ -31,7 +31,7 @@
 
 #define DEFAULT_SIZE 0x100
 
-static enum type id = TYPE_NULL;
+static u64 id = TYPE_NULL;
 
 /* api */
 const struct user_methods user_methods_definition;

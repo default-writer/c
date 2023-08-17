@@ -138,7 +138,7 @@ fi
 
 for linked_target in ${targets[@]}; do
     case ${linked_target} in
-        main-*) ;& test-*)
+        c-*) ;& main-*) ;& test-*)
             if [[ " ${targets[*]} " == *" ${linked_target} "* ]]; then
                 ${pwd}/bin/coverageall.sh --target ${linked_target} ${opts[@]}
             fi
@@ -153,7 +153,7 @@ find "${pwd}/coverage" -type f -name "*.info" -exec echo -a {} \; | xargs lcov -
 
 for linked_target in ${targets[@]}; do
     case ${linked_target} in
-        main-*) ;& test-*)
+        c-*) ;& main-*) ;& test-*)
             if [[ -f "${pwd}/coverage/${linked_target}.info" ]]; then
                rm "${pwd}/coverage/${linked_target}.info"
             fi
