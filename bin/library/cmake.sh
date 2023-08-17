@@ -104,6 +104,7 @@ function get-source-targets() {
     local line
     local targets
     local cmake
+    local build
 
     cmake=$(get-cmake)
     if [[ "${cmake}" == "" ]]; then
@@ -113,10 +114,12 @@ function get-source-targets() {
     if [[ ! -d "${pwd}/config" ]]; then
         exec 2>&1 >/dev/null
 
+        build="${pwd}/config"
         ${cmake} \
+            -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
             -DTARGETS:BOOL=ON \
             -S"${pwd}" \
-            -B"${pwd}/config" \
+            -B"${build}" \
             -G "Ninja" 2>&1 >/dev/null
 
         exec 1>&2 2>&-

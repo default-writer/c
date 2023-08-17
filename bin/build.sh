@@ -168,6 +168,10 @@ ${cmake} \
     -B"${build}" \
     -G "Ninja" 2>&1 >/dev/null
 
+    if [[ -f "${build}/compile_commands.json" ]]; then
+        cp "${build}/compile_commands.json" "${pwd}/src/" 2>&1 >/dev/null
+    fi
+
 for target in ${targets[@]}; do
     echo building ${target}
     echo options $(cmake-options)
