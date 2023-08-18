@@ -90,6 +90,14 @@
       "priority": 1003,
       "id": "statusbar.twitch.open",
       "command": "twitch.open"
+    },
+    {
+      "text": ".P",
+      "tooltip": "Presentation mode switch",
+      "alignment": "right",
+      "priority": 1004,
+      "id": "presentation-mode.toggle",
+      "command": "twitch.open"
     }
   ],
   "window.zoomLevel": 0,
