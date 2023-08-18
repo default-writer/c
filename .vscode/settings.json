@@ -160,7 +160,7 @@
   "editor.matchBrackets": "always",
   "presentation-mode.active": {
     "commands": [],
-    "editor.fontSize": 16,
+    "editor.fontSize": 12,
     "editor.matchBrackets": "never",
     "editor.minimap.enabled": false,
     "workbench.activityBar.visible": false,
@@ -177,7 +177,7 @@
   },
   "presentation-mode.configBackup": {
     "editor.fontSize": 12,
-    "editor.matchBrackets": "undefined",
+    "editor.matchBrackets": "always",
     "editor.minimap.enabled": "undefined",
     "workbench.activityBar.visible": "undefined",
     "workbench.statusBar.visible": "undefined",
