@@ -80,7 +80,7 @@
       "tooltip": "Toggle clandg inlay type hints ON/OFF",
       "alignment": "right",
       "priority": 1002,
-      "id": "statusbar.cland.hints",
+      "id": "statusbar.inlayHints.toggle",
       "command": "clangd.inlayHints.toggle"
     },
     {
@@ -96,8 +96,8 @@
       "tooltip": "Presentation mode switch",
       "alignment": "right",
       "priority": 1004,
-      "id": "presentation-mode.toggle",
-      "command": "twitch.open"
+      "id": "statusbarpresentation-mode.toggle",
+      "command": "presentation-mode.toggle"
     }
   ],
   "window.zoomLevel": 0,
