@@ -106,7 +106,6 @@ vscode-icons-team.vscode-icons
 waderyan.gitblame
 wayou.vscode-todo-highlight
 wk-j.save-and-run
-xaver.clang-format
 yzane.markdown-pdf
 yzhang.markdown-all-in-one
 ziglang.vscode-zig
