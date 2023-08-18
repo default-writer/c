@@ -42,38 +42,37 @@ int main(void) {
 #endif
     pointer->init(8);
     u64 list_ptr = list->alloc();
-    u64 list_match_ptr = list->alloc();
-    u64 string_ptr = string->load("a.bc.bb.ba.a.b");
-    u64 pattern_ptr = string->load(".b");
+    u64 string_ptr = string->load("aaa");
+    u64 pattern_ptr = string->load("aa");
+    u64 size = string->size(pattern_ptr);
     u64 string_pointer_ptr = 0;
-    u64 match_ptr = string_ptr;
-    u64 current_ptr = match_ptr;
+    u64 current_ptr = string_ptr;
+    os->putc(string_ptr);
     while ((string_pointer_ptr = string->strchr(current_ptr, pattern_ptr)) != 0) {
-        os->putc(string_pointer_ptr);
         list->push(list_ptr, string_pointer_ptr);
-        match_ptr = string->match(string_pointer_ptr, pattern_ptr);
-        string->diff(string_pointer_ptr, match_ptr);
-        list->push(list_match_ptr, match_ptr);
+        u64 match_ptr = string->match(string_pointer_ptr, pattern_ptr);
+        if (match_ptr == 0) {
+            break;
+        }       
+        u64 match_start_ptr = string->left(match_ptr, size);
+        u64 distance = string->diff(string_ptr, match_start_ptr);
+        u64 i = 0;
+        while (i++ < distance) {
+            printf(" ");
+        }
+        os->putc(match_start_ptr);
+        printf("match found at index %lld\n", distance);
+        list->push(list_ptr, match_ptr);
+        list->push(list_ptr, match_start_ptr);        
         current_ptr = match_ptr;
     }
 #ifndef USE_GC
-    u64 string_ptr1 = list->pop(list_ptr);
-    u64 string_ptr2 = list->pop(list_ptr);
-    u64 string_ptr3 = list->pop(list_ptr);
-    u64 string_ptr4 = list->pop(list_ptr);
-    u64 string_match_ptr1 = list->pop(list_match_ptr);
-    u64 string_match_ptr2 = list->pop(list_match_ptr);
-    u64 string_match_ptr3 = list->pop(list_match_ptr);
-    string->free(string_ptr1);
-    string->free(string_ptr2);
-    string->free(string_ptr3);
-    string->free(string_ptr4);
-    string->free(string_match_ptr1);
-    string->free(string_match_ptr2);
-    string->free(string_match_ptr3);
     string->free(string_ptr);
     string->free(pattern_ptr);
-    list->free(list_match_ptr);
+    u64 ptr;
+    while((ptr = list->pop(list_ptr)) != 0) {
+        string->free(ptr);
+    }
     list->free(list_ptr);
 #else
     pointer->gc();

@@ -241,7 +241,7 @@ RX_TEST_CASE(tests, test_pointer_size_empty, .fixture = test_fixture) {
     u64 char_ptr = string->load(" ");
     u64 pattern_ptr = string->load("\0");
     u64 string_size = string->size(char_ptr);
-    RX_ASSERT(string_size == 2);
+    RX_ASSERT(string_size == 1);
     RX_ASSERT(pattern_ptr == 0);
     RX_ASSERT(strcmp(string->unsafe(char_ptr), " ") == 0);
 #ifndef USE_GC
@@ -1661,7 +1661,7 @@ RX_TEST_CASE(tests, test_string_pointer_size, .fixture = test_fixture) {
     u64 substring_index_ptr = string->offset(printing_ptr, comma_ptr);
     u64 substring_ptr = string->copy(substring_index_ptr);
 
-    u64 size_expected = strlen(" world!") + 1; /* adds one 0 to termination byte */
+    u64 size_expected = strlen(" world!"); /* adds one 0 to termination byte */
     u64 size_actual = string->size(substring_ptr);
     RX_ASSERT(size_expected == size_actual);
 
@@ -1684,7 +1684,7 @@ RX_TEST_CASE(tests, test_string_offset_subsearch, .fixture = test_fixture) {
     u64 substring_index_ptr2 = string->offset(substring_index_ptr1, w_ptr);
     u64 substring_ptr = string->copy(substring_index_ptr2);
 
-    u64 size_expected = strlen("orld!") + 1; /* adds one 0 to termination byte */
+    u64 size_expected = strlen("orld!"); /* adds one 0 to termination byte */
     u64 size_actual = string->size(substring_ptr);
     RX_ASSERT(size_expected == size_actual);
 

@@ -55,6 +55,7 @@ static const struct vm_type* type = &type_definition;
 
 /* internal */
 static char* string_pointer_internal(struct pointer* data_ptr, u64* data_size, u64* data_offset);
+static char* string_strrchr_internal(char* data, char* str2, u64* size, u64* offset);
 
 /* declaration */
 static void string_free(u64 ptr);
@@ -70,7 +71,9 @@ static u64 string_load(const char* data);
 static void string_put_char(u64 ptr, char value);
 static char* string_unsafe(u64 ptr);
 static u64 string_size(u64 ptr);
-static u64 string_diff(u64 src, u64 dest);
+static u64 string_diff(u64 src, u64 dst);
+static u64 string_left(u64 src, u64 shift);
+static u64 string_right(u64 src, u64 shift);
 
 /* definition */
 extern const struct memory memory_definition;
@@ -183,6 +186,44 @@ static void string_strcpy(u64 dest, u64 src) {
     strcpy(data_dest, data); /* NOLINT */
 }
 
+static char* string_strrchr_internal(char* data, char* str2, u64* size, u64* offset) {
+    char* str1 = data;
+    char* ptr = str1;
+    char* last = 0;
+    u64 rsize = *size - 1;
+    while (rsize > *offset && *ptr != 0) {
+        if (*ptr == *str2) {
+            last = ptr;
+        }
+        ++ptr;
+        rsize--;
+    }
+    if (last == 0) {
+        return 0;
+    }
+    str1 = last;
+    return str1;
+}
+
+static char* string_strchr_internal(char* data, char* str2, u64* size, u64* offset) {
+    char* str1 = data;
+    char* ptr = str1;
+    char* last = 0;
+    u64 rsize = *size - 1;
+    while (rsize > *offset && *ptr != 0 && last == 0) {
+        if (*ptr == *str2) {
+            last = ptr;
+        }
+        ++ptr;
+        rsize--;
+    }
+    if (last == 0) {
+        return 0;
+    }
+    str1 = last;
+    return str1;
+}
+
 static void string_strcat(u64 dest, u64 src) {
     if (src == dest) {
         return;
@@ -228,7 +269,7 @@ static u64 string_strrchr(u64 src, u64 match) {
         return 0;
     }
     char* str2 = match_ptr->data;
-    char* str1 = strrchr(data, *str2);
+    char* str1 = string_strrchr_internal(data, str2, &size, &offset);
     if (str1 == 0) {
         return 0;
     }
@@ -261,7 +302,7 @@ static u64 string_strchr(u64 src, u64 match) {
         return 0;
     }
     char* str2 = match_ptr->data;
-    char* str1 = strchr(data, *str2);
+    char* str1 = string_strchr_internal(data, str2, &size, &offset);
     if (str1 == 0) {
         return 0;
     }
@@ -293,26 +334,38 @@ static u64 string_match(u64 src, u64 match) {
     if (match_ptr == 0) {
         return 0;
     }
+    u64 match_size = match_ptr->size;
     char* str2 = match_ptr->data;
-    char* str1 = strchr(data, *str2);
-    if (str1 == 0) {
-        return 0;
-    }
-    offset = (u64)(str1 - data);
-    while (*str1 != 0 && *str2 != 0 && offset < size) {
-        if (*str1 != *str2) {
+    char* str1 = data;
+    char* ptr2 = str2;
+    size -= offset;
+    while (size > 0) {
+        while (size > 0 && *str1 != 0 && *str1 != *str2) {
+            str1++;
+            size--;
+        }
+        if (size < match_size) {
+            return 0;
+        }
+        if (str1 == 0) {
+            return 0;
+        }
+        char* ptr1 = str1;
+        while (*str1 != 0 && *str2 != 0) {
+            if (*str1 != *str2) {
+                str1 = ++ptr1;
+                size--;
+                break;
+            }
+            str1++;
+            str2++;
+        }
+        if (*str1 == 0 || *str2 == 0) {
             break;
         }
-        str1++;
-        str2++;
-        offset++;
+        str2 = ptr2;
     }
-    if (*str1 == 0 && *str2 != 0) {
-        return 0;
-    }
-    if (*str2 != 0 && *str2 != *str1) {
-        return 0;
-    }
+    offset = (u64)(str1 - data);
     struct pointer* data_ptr = virtual->alloc(sizeof(struct string_reference), TYPE_STRING_POINTER);
     struct string_reference* ref = data_ptr->data;
     ref->address = src;
@@ -340,26 +393,53 @@ static u64 string_offset(u64 src, u64 match) {
     if (match_ptr == 0) {
         return 0;
     }
+    u64 match_size = match_ptr->size;
     char* str2 = match_ptr->data;
-    char* str1 = strrchr(data, *str2);
+    char* str1 = data;
+    char* ptr = str1;
+    char* last = 0;
+    u64 orig_size = size - offset;
+    while (orig_size > 0 && *ptr != 0) {
+        if (*ptr == *str2) {
+            last = ptr;
+        }
+        ++ptr;
+    }
+    size = orig_size;
+    str1 = last;
     if (str1 == 0) {
         return 0;
     }
     offset = (u64)(str1 - data);
-    while (*str1 != 0 && *str2 != 0 && offset < size) {
-        if (*str1 != *str2) {
+    char* ptr2 = str2;
+    size -= offset;
+    while (size > 0) {
+        while (size > 0 && *str1 != 0 && *str1 != *str2) {
+            str1++;
+            size--;
+        }
+        if (size < match_size) {
+            return 0;
+        }
+        if (str1 == 0) {
+            return 0;
+        }
+        char* ptr1 = str1;
+        while (*str1 != 0 && *str2 != 0) {
+            if (*str1 != *str2) {
+                str1 = ++ptr1;
+                size--;
+                break;
+            }
+            str1++;
+            str2++;
+        }
+        if (*str1 == 0 || *str2 == 0) {
             break;
         }
-        str1++;
-        str2++;
-        offset++;
+        str2 = ptr2;
     }
-    if (*str1 == 0 && *str2 != 0) {
-        return 0;
-    }
-    if (*str2 != 0 && *str2 != *str1) {
-        return 0;
-    }
+    offset = (u64)(str1 - data);
     struct pointer* data_ptr = virtual->alloc(sizeof(struct string_reference), TYPE_STRING_POINTER);
     struct string_reference* ref = data_ptr->data;
     ref->address = src;
@@ -429,11 +509,90 @@ static u64 string_size(u64 ptr) {
     if (data == 0) {
         return 0;
     }
-    return size;
+    return size - 1;
 }
 
-static u64 string_diff(u64 src, u64 dest) {
-    return 0;
+static u64 string_diff(u64 src, u64 dst) {
+    if (src == dst) {
+        return 0;
+    }
+    struct pointer* src_ptr = vm->read(src);
+    if (src_ptr == 0) {
+        return 0;
+    }
+    struct pointer* dst_ptr = vm->read(dst);
+    if (dst_ptr == 0) {
+        return 0;
+    }
+    u64 src_size = 0;
+    u64 src_offset = 0;
+    char* src_data = string_pointer_internal(src_ptr, &src_size, &src_offset);
+    if (src_data == 0) {
+        return 0;
+    }
+    u64 dst_size = 0;
+    u64 dst_offset = 0;
+    char* dst_data = string_pointer_internal(dst_ptr, &dst_size, &dst_offset);
+    if (dst_data == 0) {
+        return 0;
+    }
+    if (dst_data != src_data) {
+        return 0;
+    }
+    if (src_offset > dst_offset) {
+        return 0;
+    }
+    return (u64)(dst_offset - src_offset);
+}
+
+static u64 string_left(u64 src, u64 shift) {
+    struct pointer* src_ptr = vm->read(src);
+    if (src_ptr == 0) {
+        return 0;
+    }
+    u64 size = 0;
+    u64 offset = 0;
+    char* data = string_pointer_internal(src_ptr, &size, &offset);
+    if (data == 0) {
+        return 0;
+    }
+    if (offset < shift) {
+        return 0;
+    }
+    struct pointer* data_ptr = virtual->alloc(sizeof(struct string_reference), TYPE_STRING_POINTER);
+    struct string_reference* ref = data_ptr->data;
+    ref->address = src;
+    ref->offset = 0 - shift;
+    u64 pointer = vm->alloc(data_ptr);
+#ifdef USE_GC
+    list->push(&base->gc, (void*)pointer);
+#endif
+    return pointer;
+}
+
+static u64 string_right(u64 src, u64 shift) {
+    struct pointer* src_ptr = vm->read(src);
+    if (src_ptr == 0) {
+        return 0;
+    }
+    u64 size = 0;
+    u64 offset = 0;
+    char* data = string_pointer_internal(src_ptr, &size, &offset);
+    if (data == 0) {
+        return 0;
+    }
+    if (offset + shift >= size) {
+        return 0;
+    }
+    struct pointer* data_ptr = virtual->alloc(sizeof(struct string_reference), TYPE_STRING_POINTER);
+    struct string_reference* ref = data_ptr->data;
+    ref->address = src;
+    ref->offset = shift;
+    u64 pointer = vm->alloc(data_ptr);
+#ifdef USE_GC
+    list->push(&base->gc, (void*)pointer);
+#endif
+    return pointer;
 }
 
 static const struct vm_type type_definition = {
@@ -458,7 +617,9 @@ const struct string_methods string_methods_definition = {
     .put_char = string_put_char,
     .unsafe = string_unsafe,
     .size = string_size,
-    .diff = string_diff
+    .diff = string_diff,
+    .right = string_right,
+    .left = string_left
 };
 
 #ifndef ATTRIBUTE

@@ -46,6 +46,8 @@ struct string_methods {
     char* (*unsafe)(u64 ptr);
     u64 (*size)(u64 ptr);
     u64 (*diff)(u64 src, u64 dest);
+    u64 (*left)(u64 src, u64 offset);
+    u64 (*right)(u64 src, u64 offset);
 };
 
 #endif /* _POINTER_TYPES_STRING_H_ */
