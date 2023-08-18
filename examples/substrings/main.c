@@ -41,19 +41,21 @@ int main(void) {
     global_statistics();
 #endif
     pointer->init(8);
-    u64 list_ptr = list->alloc();
+    u64 gc = list->alloc();
     u64 string_ptr = string->load("aaa");
-    u64 pattern_ptr = string->load("aa");
+    list->push(gc, string_ptr);
+    u64 pattern_ptr = string->load("aaa");
+    list->push(gc, pattern_ptr);
     u64 size = string->size(pattern_ptr);
     u64 string_pointer_ptr = 0;
     u64 current_ptr = string_ptr;
     os->putc(string_ptr);
     while ((string_pointer_ptr = string->strchr(current_ptr, pattern_ptr)) != 0) {
-        list->push(list_ptr, string_pointer_ptr);
+        list->push(gc, string_pointer_ptr);
         u64 match_ptr = string->match(string_pointer_ptr, pattern_ptr);
         if (match_ptr == 0) {
             break;
-        }       
+        }
         u64 match_start_ptr = string->left(match_ptr, size);
         u64 distance = string->diff(string_ptr, match_start_ptr);
         u64 i = 0;
@@ -62,18 +64,16 @@ int main(void) {
         }
         os->putc(match_start_ptr);
         printf("match found at index %lld\n", distance);
-        list->push(list_ptr, match_ptr);
-        list->push(list_ptr, match_start_ptr);        
+        list->push(gc, match_ptr);
+        list->push(gc, match_start_ptr);
         current_ptr = match_ptr;
     }
 #ifndef USE_GC
-    string->free(string_ptr);
-    string->free(pattern_ptr);
     u64 ptr;
-    while((ptr = list->pop(list_ptr)) != 0) {
+    while ((ptr = list->pop(gc)) != 0) {
         string->free(ptr);
     }
-    list->free(list_ptr);
+    list->free(gc);
 #else
     pointer->gc();
 #endif
