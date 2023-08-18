@@ -42,9 +42,9 @@ int main(void) {
 #endif
     pointer->init(8);
     u64 gc = list->alloc();
-    u64 string_ptr = string->load("aaa");
+    u64 string_ptr = string->load("aaabaaaa");
     list->push(gc, string_ptr);
-    u64 pattern_ptr = string->load("aaaa");
+    u64 pattern_ptr = string->load("aa");
     list->push(gc, pattern_ptr);
     u64 size = string->size(pattern_ptr);
     u64 string_pointer_ptr = 0;
