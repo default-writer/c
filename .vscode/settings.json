@@ -100,7 +100,6 @@
       "command": "presentation-mode.toggle"
     }
   ],
-  "window.zoomLevel": 0,
   "workbench.editor.enablePreview": true,
   "workbench.colorTheme": "Yitzchok (rainglow)",
   "editor.tokenColorCustomizations": {
@@ -157,14 +156,14 @@
     "workbench.input.interactive": false,
     "mainThreadWebview-markdown.preview": false
   },
-  "editor.matchBrackets": "always",
+  "editor.matchBrackets": "near",
   "presentation-mode.active": {
     "commands": [],
-    "editor.fontSize": 12,
-    "editor.matchBrackets": "never",
+    "editor.fontSize": 18,
+    "editor.matchBrackets": "near",
     "editor.minimap.enabled": false,
-    "workbench.activityBar.visible": false,
-    "workbench.statusBar.visible": false,
+    "workbench.activityBar.visible": true,
+    "workbench.statusBar.visible": true,
     "workbench.colorTheme": "Yitzchok (rainglow)",
     "workbench.colorCustomizations": {
       "[Yitzchok (rainglow)]": {}
@@ -183,7 +182,7 @@
     "workbench.statusBar.visible": "undefined",
     "workbench.colorTheme": "Yitzchok (rainglow)",
     "workbench.colorCustomizations": "undefined",
-    "window.zoomLevel": 0
+    "window.zoomLevel": "undefined"
   },
   "grammarly.files.include": ["**/*.md"],
   "grammarly.files.exclude": ["**/*.txt"],
@@ -388,13 +387,9 @@
     ]
   },
   "git.suggestSmartCommit": false,
-  "customPresentationMode.backup": {
-    "workbench.colorTheme": "Yitzchok (rainglow)",
-    "editor.fontWeight": "normal",
-    "window.zoomLevel": 0
-  },
   "[jsonc]": {
     "editor.defaultFormatter": "trunk.io"
   },
-  "files.refactoring.autoSave": false
+  "files.refactoring.autoSave": false,
+  "editor.fontVariations": false
 }
