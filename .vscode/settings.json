@@ -92,7 +92,7 @@
       "command": "twitch.open"
     }
   ],
-  "window.zoomLevel": 2,
+  "window.zoomLevel": 0,
   "workbench.editor.enablePreview": true,
   "workbench.colorTheme": "Yitzchok (rainglow)",
   "editor.tokenColorCustomizations": {
@@ -149,27 +149,19 @@
     "workbench.input.interactive": false,
     "mainThreadWebview-markdown.preview": false
   },
+  "editor.matchBrackets": "always",
   "presentation-mode.active": {
     "commands": [],
     "editor.fontSize": 16,
     "editor.matchBrackets": "never",
-    "editor.minimap.enabled": true,
-    "workbench.activityBar.visible": true,
-    "workbench.statusBar.visible": true,
+    "editor.minimap.enabled": false,
+    "workbench.activityBar.visible": false,
+    "workbench.statusBar.visible": false,
     "workbench.colorTheme": "Yitzchok (rainglow)",
     "workbench.colorCustomizations": {
-      "[Yitzchok (rainglow)]": {
-        "activityBar.background": "#000",
-        "editor.background": "#000",
-        "editor.lineHighlightBackground": "#0000",
-        "editor.lineHighlightBorder": "#0000",
-        "editorWhitespace.foreground": "#59A5FC",
-        "panel.background": "#000",
-        "sideBar.background": "#000",
-        "terminal.background": "#000"
-      }
+      "[Yitzchok (rainglow)]": {}
     },
-    "window.zoomLevel": 3
+    "window.zoomLevel": 2
   },
 
   "presentation-mode.inactive": {
@@ -183,7 +175,7 @@
     "workbench.statusBar.visible": "undefined",
     "workbench.colorTheme": "Yitzchok (rainglow)",
     "workbench.colorCustomizations": "undefined",
-    "window.zoomLevel": 2
+    "window.zoomLevel": 0
   },
   "grammarly.files.include": ["**/*.md"],
   "grammarly.files.exclude": ["**/*.txt"],
