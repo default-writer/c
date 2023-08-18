@@ -55,8 +55,8 @@ static const struct vm_type* type = &type_definition;
 
 /* internal */
 static char* string_pointer_internal(struct pointer* data_ptr, u64* data_size, u64* data_offset);
-static char* string_strrchr_internal(char* data, char* str2, u64* size, u64* offset);
-static char* string_strchr_internal(char* data, char* str2, u64* size, u64* offset);
+static char* string_strrchr_internal(char* data, char* str2, u64 size, u64 offset);
+static char* string_strchr_internal(char* data, char* str2, u64 size, u64 offset);
 
 /* declaration */
 static void string_free(u64 ptr);
@@ -187,12 +187,12 @@ static void string_strcpy(u64 dest, u64 src) {
     strcpy(data_dest, data); /* NOLINT */
 }
 
-static char* string_strrchr_internal(char* data, char* str2, u64* size, u64* offset) {
+static char* string_strrchr_internal(char* data, char* str2, u64 size, u64 offset) {
     char* str1 = data;
     char* ptr = str1;
     char* last = 0;
-    u64 rsize = *size - 1;
-    while (rsize > *offset && *ptr != 0) {
+    u64 rsize = size - 1;
+    while (rsize > offset && *ptr != 0) {
         if (*ptr == *str2) {
             last = ptr;
         }
@@ -206,12 +206,12 @@ static char* string_strrchr_internal(char* data, char* str2, u64* size, u64* off
     return str1;
 }
 
-static char* string_strchr_internal(char* data, char* str2, u64* size, u64* offset) {
+static char* string_strchr_internal(char* data, char* str2, u64 size, u64 offset) {
     char* str1 = data;
     char* ptr = str1;
     char* last = 0;
-    u64 rsize = *size - 1;
-    while (rsize > *offset && *ptr != 0 && last == 0) {
+    u64 rsize = size - 1;
+    while (rsize > offset && *ptr != 0 && last == 0) {
         if (*ptr == *str2) {
             last = ptr;
         }
@@ -270,7 +270,7 @@ static u64 string_strrchr(u64 src, u64 match) {
         return 0;
     }
     char* str2 = match_ptr->data;
-    char* str1 = string_strrchr_internal(data, str2, &size, &offset);
+    char* str1 = string_strrchr_internal(data, str2, size, offset);
     if (str1 == 0) {
         return 0;
     }
@@ -303,7 +303,7 @@ static u64 string_strchr(u64 src, u64 match) {
         return 0;
     }
     char* str2 = match_ptr->data;
-    char* str1 = string_strchr_internal(data, str2, &size, &offset);
+    char* str1 = string_strchr_internal(data, str2, size, offset);
     if (str1 == 0) {
         return 0;
     }
