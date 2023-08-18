@@ -56,6 +56,7 @@ static const struct vm_type* type = &type_definition;
 /* internal */
 static char* string_pointer_internal(struct pointer* data_ptr, u64* data_size, u64* data_offset);
 static char* string_strrchr_internal(char* data, char* str2, u64* size, u64* offset);
+static char* string_strchr_internal(char* data, char* str2, u64* size, u64* offset);
 
 /* declaration */
 static void string_free(u64 ptr);
