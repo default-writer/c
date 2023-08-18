@@ -44,18 +44,18 @@ int main(void) {
     u64 gc = list->alloc();
     u64 string_ptr = string->load("aaa");
     list->push(gc, string_ptr);
-    u64 pattern_ptr = string->load("aaa");
+    u64 pattern_ptr = string->load("aaaa");
     list->push(gc, pattern_ptr);
     u64 size = string->size(pattern_ptr);
     u64 string_pointer_ptr = 0;
     u64 current_ptr = string_ptr;
-    os->putc(string_ptr);
     while ((string_pointer_ptr = string->strchr(current_ptr, pattern_ptr)) != 0) {
         list->push(gc, string_pointer_ptr);
         u64 match_ptr = string->match(string_pointer_ptr, pattern_ptr);
         if (match_ptr == 0) {
             break;
         }
+        os->putc(string_ptr);
         u64 match_start_ptr = string->left(match_ptr, size);
         u64 distance = string->diff(string_ptr, match_start_ptr);
         u64 i = 0;
