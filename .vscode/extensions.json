@@ -34,11 +34,10 @@
     "fougas.msys2",
     "ms-vscode.cpptools-extension-pack",
     "zchrissirhcz.cmake-highlight",
-    "xaver.clang-format",
     "gruntfuggly.todo-tree",
     "github.vscode-github-actions",
     "cs128.cs128-clang-tidy",
     "cs50.vscode-presentation-mode",
-    "emeraldwalk.runonsave"
+    "trunk.io"
   ]
 }

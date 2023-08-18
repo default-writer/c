@@ -12,7 +12,7 @@
   "testFilesOnSave.languageId": "c",
   "testFilesOnSave.testCommands": [
     {
-      "c": "./bin/src.sh --target ${relativeFile}"
+      "c": "./bin/src.sh --target ${relativeFile} --clean"
     }
   ],
   "koverage.coverageFileNames": ["lcov.info"],
@@ -260,7 +260,7 @@
     "ghs",
     "diab"
   ],
-  "editor.formatOnSave": false,
+  "editor.formatOnSave": true,
   "editor.fontWeight": "normal",
   "cmake.additionalKits": ["${workspaceFolder}/.vscode", "${workspaceFolder}"],
   "cmake.useCMakePresets": "always",
@@ -273,7 +273,6 @@
       }
     ]
   },
-  "memory-view.showMemoryPanel": true,
   "editor.defaultFormatter": "ms-vscode.cpptools",
   "[c]": {
     "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
