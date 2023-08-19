@@ -392,5 +392,6 @@
   "workbench.statusBar.visible": true,
   "workbench.colorCustomizations": {
     "[Yitzchok (rainglow)]": {}
-  }
+  },
+  "workbench.quickOpen.closeOnFocusLost": false
 }

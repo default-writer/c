@@ -10,11 +10,11 @@
       "name": "bash-debug",
       "terminalKind": "integrated",
       "cwd": "${workspaceFolder}",
-      "program": "./bin/utils/coverage.sh",
+      "program": "./bin/src.sh",
       "args": [
         "--target",
-        "c-substrings",
-        "--dir=coverage-v1",
+        "examples/substrings/main.c",
+        "--gc",
         "--valgrind"
       ]
     },

@@ -36,6 +36,7 @@ function get-cmake() {
 function get-targets() {
     local file
     local files
+    local target
     local targets
     local cmake
     local target
@@ -73,21 +74,25 @@ function get-targets() {
 }
 
 function search() {
-    local target
-    local targets
-    
-    target=$1
-    
-    printf '%s\n' "${target[@]}"
-    targets=$(sed -n "s#target_link_libraries(\([^ ]*\) .*${target}.*)#\1#p" CMakeLists.txt)
-    for target in ${targets[@]}; do
-        search ${target}
-    done
+    local target_src
+    local target_dest
+    local target_link
+    local source
+    source=$1
+    target_src=$(sed -n "s#target_link_libraries(\([^ ]*\) .*${source}.*)#\1#p" CMakeLists.txt)
+    target_dest=$(sed -n "s#target_link_libraries(${source}* .* \(.*\))#\1#p" CMakeLists.txt)
+    if [[ ! "${target_dest[@]}" == "" ]]; then
+        for target_link in "${target_dest[@]}"; do
+            search ${target_link}
+        done
+        printf '%s\n' "${target_dest[@]}"
+    fi
 }
 
 function get-linked-targets() {
-    local target=$1
-    search ${target}
+    local link
+    link=$1
+    search ${link}
 }
 
 function get-cmake-targets() {
@@ -124,6 +129,7 @@ function get-cmake-targets() {
 function get-source-targets() {
     local source
     local cmake
+    local target
     local targets
     local array
     local target
@@ -132,8 +138,6 @@ function get-source-targets() {
     local link
     local linked_targets
     local line
-    local targets
-    local cmake
     local build
     local file
     local files
