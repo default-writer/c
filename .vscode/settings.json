@@ -9,13 +9,13 @@
     }
   },
   "testFilesOnSave.enabled": true,
-  "testFilesOnSave.languageId": "c",
+  "testFilesOnSave.languageId": "any",
   "testFilesOnSave.testCommands": [
     {
       "c": "./bin/src.sh --target ${relativeFile} --gc --sanitize"
     },
     {
-      "h": "./bin/docs.h"
+      "h": "./bin/docs.sh"
     }
   ],
   "koverage.coverageFileNames": ["lcov.info"],
@@ -314,7 +314,7 @@
   "clang-tidy.compilerArgs": ["-I/usr/include/gtk-4.0"],
   "editor.tabSize": 4,
   "editor.indentSize": "tabSize",
-  "editor.fontSize": 14,
+  "editor.fontSize": 12,
   "screencastMode.fontSize": 20,
   "window.zoomLevel": 2,
   "editor.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
@@ -322,13 +322,13 @@
   "editor.codeLensFontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
   "editor.fontLigatures": true,
   "debug.console.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
-  "debug.console.fontSize": 14,
+  "debug.console.fontSize": 12,
   "scm.inputFontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
   "chat.editor.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
-  "chat.editor.fontSize": 14,
+  "chat.editor.fontSize": 12,
   "notebook.output.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
   "terminal.integrated.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
-  "terminal.integrated.fontSize": 14,
+  "terminal.integrated.fontSize": 12,
   "terminal.integrated.enablePersistentSessions": true,
   "terminal.integrated.persistentSessionReviveProcess": "onExitAndWindowClose",
   "terminal.integrated.shellIntegration.history": 1000,
@@ -340,7 +340,7 @@
   "C_Cpp.intelliSenseEngineFallback": "enabled",
   "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
   "interactiveSession.editor.fontSize": 12,
-  "scm.inputFontSize": 14,
+  "scm.inputFontSize": 12,
   "workbench.editorLargeFileConfirmation": 16,
   "terminal.integrated.tabStopWidth": 8,
   "fileHeaderComment.parameter": {
@@ -395,5 +395,6 @@
   "workbench.colorCustomizations": {
     "[Yitzchok (rainglow)]": {}
   },
-  "workbench.quickOpen.closeOnFocusLost": false
+  "workbench.quickOpen.closeOnFocusLost": false,
+  "twitch.fontSize": "12px"
 }
