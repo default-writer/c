@@ -1,11 +1,31 @@
 #!/usr/bin/env bash
 set -e
 
-err_report() {
-    echo "ERROR: on line $*: $(cat $0 | sed $1!d)" >&2
+
+function get_stack () {
+   STACK=""
+   local i message="${1:-""}"
+   local stack_size=${#FUNCNAME[@]}
+   # to avoid noise we start with 1 to skip the get_stack function
+   for (( i=1; i<stack_size; i++ )); do
+      local func="${FUNCNAME[$i]}"
+      [[ $func = "" ]] && func=MAIN
+      local linen="${BASH_LINENO[$(( i - 1 ))]}"
+      local src="${BASH_SOURCE[$i]}"
+      [[ "$src" = "" ]] && src=non_file_source
+
+      STACK+=$'\n'"   at: $func $src "$linen
+   done
+   STACK="${message}${STACK}"
 }
 
-trap 'err_report $LINENO' ERR
+err_report() {
+    get_stack
+    echo "ERROR: on line $*: $(cat $0 | sed $1!d)" >&2
+    exit 8
+}
+
+trap 'get_stack' ERR
 
 uid=$(id -u)
 
@@ -14,11 +34,9 @@ if [ "${uid}" -eq 0 ]; then
     exit
 fi
 
-pwd=$(pwd)
-
 install="$1"
 
-. "${pwd}/bin/scripts/load.sh"
+. "$(pwd)/bin/scripts/load.sh"
 
 ## Formats sources based on provided style guide
 ## Usage: ${script} <option>
@@ -54,7 +72,7 @@ case "${install}" in
         format=("GNU")
         ;;
  
-    "--all") # Use the .clang-format file from the parent directory
+    "--clang-format") # Use the .clang-format file from the parent directory
         format=("InheritParentConfig")
         ;;
 
@@ -68,11 +86,11 @@ case "${install}" in
 
 esac
 
-main=$(find "${pwd}/src" -type f -name "*.[c|h]" -exec echo {} \; | grep -v -s "rexo" | sed -n -e 's/^.*\/\(src.*\)$/\1/p')
+main=$(find "$(pwd)/src" -type f -name "*.[c|h]" -exec echo {} \; | grep -v -s "rexo" | sed -n -e 's/^.*\/\(src.*\)$/\1/p')
 for i in ${main[@]}; do
-    clang-format -i "${pwd}/$i" --style="{BasedOnStyle: ${format}, IndentWidth: 4}"
+    clang-format -i "$(pwd)/$i" --style="{BasedOnStyle: ${format}, IndentWidth: 4}"
 done
 
 [[ $SHLVL -gt 2 ]] || echo OK
 
-cd "${pwd}"
+cd "$(pwd)"

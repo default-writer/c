@@ -5,6 +5,20 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "type": "bashdb",
+      "request": "launch",
+      "name": "bash-debug",
+      "terminalKind": "integrated",
+      "cwd": "${workspaceFolder}",
+      "program": "./bin/utils/coverage.sh",
+      "args": [
+        "--target",
+        "c-substrings",
+        "--dir=coverage-v1",
+        "--valgrind"
+      ]
+    },
+    {
       "name": "(lldb) list",
       "type": "lldb",
       "request": "launch",

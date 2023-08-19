@@ -1,64 +1,84 @@
 #!/usr/bin/env bash
 set -e
 
-err_report() {
-    echo "ERROR: on line $*: $(cat $0 | sed $1!d)" >&2
+function get_stack () {
+   STACK=""
+   local i message="${1:-""}"
+   local stack_size=${#FUNCNAME[@]}
+   # to avoid noise we start with 1 to skip the get_stack function
+   for (( i=1; i<stack_size; i++ )); do
+      local func="${FUNCNAME[$i]}"
+      [[ $func = "" ]] && func=MAIN
+      local linen="${BASH_LINENO[$(( i - 1 ))]}"
+      local src="${BASH_SOURCE[$i]}"
+      [[ "$src" = "" ]] && src=non_file_source
+
+      STACK+=$'\n'"   at: $func $src "$linen
+   done
+   STACK="${message}${STACK}"
 }
 
-trap 'err_report $LINENO' ERR
+err_report() {
+    get_stack
+    echo "ERROR: on line $*: $(cat $0 | sed $1!d)" >&2
+    exit 8
+}
+
+trap 'get_stack' ERR
+
 
 function get-cmake() {
     local cmake
-    [ -d "${pwd}/.tools/cmake-3.25/bin" ] && cmake=${pwd}/.tools/cmake-3.25/bin/cmake || cmake=${cmake}
+    [ -d "$(pwd)/.tools/cmake-3.25/bin" ] && cmake=$(pwd)/.tools/cmake-3.25/bin/cmake || cmake=${cmake}
     echo ${cmake}
 }
 
 function get-targets() {
-    local array=()
-    local source=$0
-    local script="$(basename "$(test -L "${source}" && readlink "${source}" || echo "${source}")")"
-    local commands=$(echo $(cat ${source} | sed -e 's/^[ \t]*//;' | sed -e '/^[ \t]*$/d' | sed -n -e 's/^"--\(.*\)".*/\1/p') | sed -n -e 's/^\(.*\)\sall\s.*$/\1/p')
-    local targets=$(echo ${commands})
+    local file
+    local files
+    local targets
+    local cmake
+    local target
+    local array
+    local sources
 
-    for target in ${targets[@]}; do
-        if [ "${target}" != "target" ]; then
-            array+=( "${target}" )
-        fi
-    done
-
-    [ ! -d "${pwd}/config" ] && mkdir "${pwd}/config"
-
-    cmake=$(get-cmake)
-    if [[ "${cmake}" == "" ]]; then
-        return
-    fi
-
-    if [[ ! -d "${pwd}/config" ]]; then
+    if [[ ! -d "$(pwd)/config" ]]; then
         exec 2>&1 >/dev/null
+
+        cmake=$(get-cmake)
+        if [[ "${cmake}" == "" ]]; then
+            return
+        fi
 
         ${cmake} \
             -DTARGETS:BOOL=ON \
-            -S"${pwd}" \
-            -B"${pwd}/config" \
+            -S"$(pwd)" \
+            -B"$(pwd)/config" \
             -G "Ninja" 2>&1 >/dev/null
 
         exec 1>&2 2>&-
     fi
 
-    if [ -f "${pwd}/config/targets.txt" ]; then
-        targets=$(cat "${pwd}/config/targets.txt")
-        for target in ${targets[@]}; do
-            array+=("${target}")
+    files=()
+    if [[ -d "$(pwd)/config" ]]; then
+        files=$(find "$(pwd)/config" -type f -name "sources.txt")
+        for file in ${files[@]}; do
+            array+=( $(basename $(dirname "${file}") ) )
         done
     fi
 
-    printf '%s\n' "${array[@]}"
+    sources=$(echo "${array[@]}" | xargs -n1 | sort -u | xargs)
+
+    printf '%s\n' "${sources[@]}"
 }
 
 function search() {
-    local target=$1
+    local target
     local targets
-    printf '%s\n' "${target}"
+    
+    target=$1
+    
+    printf '%s\n' "${target[@]}"
     targets=$(sed -n "s#target_link_libraries(\([^ ]*\) .*${target}.*)#\1#p" CMakeLists.txt)
     for target in ${targets[@]}; do
         search ${target}
@@ -71,29 +91,38 @@ function get-linked-targets() {
 }
 
 function get-cmake-targets() {
-    local target=$1
+    local target
     local targets
+    local source
+    local sources
     local lib
     local exe
-
+    local array
+    
+    target=$1
     targets=( $(get-targets) )
 
-    lib=$(sed -n "s#add_library(\([^ ]*\) .*#\1#p" CMakeLists.txt)
-    exe=$(sed -n "s#add_executable(\([^ ]*\) .*#\1#p" CMakeLists.txt)
-
-    targets=$(echo "${lib[@]} ${exe[@]}" | xargs -n1 | sort -u | xargs)
-
-    if [[ ! "${target}" == "" ]]; then
-        if [[ " ${targets[*]} " == *" ${target} "* ]]; then
-            printf '%s\n' "${target}"
-        fi
-    else
+    if [[ "${target}" == "all" ]]; then
         printf '%s\n' "${targets[@]}"
+    else
+        lib=$(sed -n "s#add_library(\([^ ]*\)\s.*#\1#p" CMakeLists.txt)
+        exe=$(sed -n "s#add_executable(\([^ ]*\) .*#\1#p" CMakeLists.txt)
+
+        array+=( ${lib[@]} )
+        array+=( ${exe[@]} )
+
+        sources=$(echo "${array[@]}" | xargs -n1 | sort -u | xargs)
+
+        for source in ${sources[@]}; do
+            if [[ " ${targets[*]} " == *" ${source} "* ]]; then
+                printf '%s\n' "${source[@]}"
+            fi
+        done
     fi
 }
 
 function get-source-targets() {
-    local source=$1
+    local source
     local cmake
     local targets
     local array
@@ -101,60 +130,62 @@ function get-source-targets() {
     local source
     local sources
     local link
+    local linked_targets
     local line
     local targets
     local cmake
     local build
+    local file
+    local files
+
+    source=$1
 
     cmake=$(get-cmake)
     if [[ "${cmake}" == "" ]]; then
         return
     fi
 
-    if [[ ! -d "${pwd}/config" ]]; then
+    if [[ ! -d "$(pwd)/config" ]]; then
         exec 2>&1 >/dev/null
 
-        build="${pwd}/config"
+        build="$(pwd)/config"
         ${cmake} \
             -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
             -DTARGETS:BOOL=ON \
-            -S"${pwd}" \
+            -S"$(pwd)" \
             -B"${build}" \
             -G "Ninja" 2>&1 >/dev/null
 
         exec 1>&2 2>&-
     fi
 
-    targets=( $(get-cmake-targets) )
+    targets=( $(get-targets) )
 
-    if [[ ! "${source}" == "all" ]]; then
-
+    array=()
+    if [[ "${source}" == "all" ]]; then
+        array+=( ${targets[@]} )
+    else
         for target in ${targets[@]}; do
             if [ "${target}" == "${source}" ]; then 
-                array=( "${target}" )
+                array+=( ${target} )
                 break
             fi
+            files=$(find "$(pwd)/config/${target}" -type f -name "sources.txt")
+            for file in ${files[@]}; do
+                while IFS= read -r line; do
+                    if [[ "${source}" == "${line}" ]]; then
+                        link=$(basename $(dirname "${file}"))
+                        linked_targets=$(get-linked-targets ${link})
+                        array+=( $(echo "${link} ${linked_targets[@]}") )
+                    fi
+                done <  $file
+            done
         done
-
-        targets=( "${array[@]}" )
-
-        files=$(find "${pwd}/config" -type f -name "sources.txt")
-
-        for file in ${files[@]}; do
-            while IFS= read -r line; do
-                if [[ "${source}" == "${line}" ]]; then
-                    link=$(basename $(dirname "${file}"))
-                    linked_targets=$(get-linked-targets ${link})
-                    targets=$(echo "${link} ${linked_targets[@]}" | xargs -n1 | sort -u | xargs)
-                    break
-                fi
-            done <  $file
-        done
-    else
-        targets=$(echo "${targets[@]}")
     fi
 
-    printf '%s\n' "${targets[@]}"
+    sources=$(echo "${array[@]}" | xargs -n1 | sort -u | xargs)
+
+    printf '%s\n' "${sources[@]}"
 }
 
 function get-options() {
@@ -185,15 +216,15 @@ function get-options() {
                 silent="--silent"
                 ;;
 
-            "--valgrind") # [optional] runs using valgrind (disables --sanitize on build)
+            "--valgrind") # [optional] runs using valgrind
                 valgrind="--valgrind"
                 ;;
 
-            "--callgrind") # [optional] runs using valgrind with tool callgrind (disables --sanitize on build)
+            "--callgrind") # [optional] runs using valgrind with tool callgrind
                 callgrind="--callgrind"
                 ;;
 
-            "--debug") # [optional] runs using debug memory debug info
+            "--debug") # [optional] runs using debug messaging
                 debug="--debug"
                 ;;
 

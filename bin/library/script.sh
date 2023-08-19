@@ -1,15 +1,32 @@
 #!/usr/bin/env bash
 set -e
 
-err_report() {
-    if [ $? -ge 8 ] && [ $? -le 64 ]; then
-        echo OK
-    else
-        echo "ERROR: on line $*: $(cat $0 | sed $1!d)" >&2
-    fi
+
+function get_stack () {
+   STACK=""
+   local i message="${1:-""}"
+   local stack_size=${#FUNCNAME[@]}
+   # to avoid noise we start with 1 to skip the get_stack function
+   for (( i=1; i<stack_size; i++ )); do
+      local func="${FUNCNAME[$i]}"
+      [[ $func = "" ]] && func=MAIN
+      local linen="${BASH_LINENO[$(( i - 1 ))]}"
+      local src="${BASH_SOURCE[$i]}"
+      [[ "$src" = "" ]] && src=non_file_source
+
+      STACK+=$'\n'"   at: $func $src "$linen
+   done
+   STACK="${message}${STACK}"
 }
 
-trap 'err_report $LINENO' ERR
+err_report() {
+    get_stack
+    echo "ERROR: on line $*: $(cat $0 | sed $1!d)" >&2
+    exit 8
+}
+
+trap 'get_stack' ERR
+
 
 function help() {
     local source=$0

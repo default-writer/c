@@ -511,15 +511,18 @@ if(TARGETS)
 
     get_property(main_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
     get_property(test_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
+    get_property(c_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
 
     list(FILTER main_target_names INCLUDE REGEX "^main-")
     list(FILTER test_target_names INCLUDE REGEX "^test-")
+    list(FILTER test_target_names INCLUDE REGEX "^c-")
 
     string(REGEX REPLACE ";" " " main_target_names "${main_target_names}")
     string(REGEX REPLACE ";" " " test_target_names "${test_target_names}")
+    string(REGEX REPLACE ";" " " c_target_names "${c_target_names}")
 
     FILE(WRITE ${CMAKE_BINARY_DIR}/targets.txt
-        "${main_target_names} ${test_target_names}"
+        "${main_target_names} ${test_target_names} ${c_target_names}"
     )
 
     get_property(target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
@@ -535,9 +538,9 @@ if(TARGETS)
     endforeach()
 
     file(GLOB_RECURSE SOURCE_FILES "src/*.c" "src/*.h" "examples/*.c" "examples/*.h")
-    file(WRITE ${CMAKE_BINARY_DIR}/sources.txt "")
+    file(WRITE ${CMAKE_BINARY_DIR}/all-sources.txt "")
     foreach(source_file ${SOURCE_FILES})
-        file(APPEND ${CMAKE_BINARY_DIR}/sources.txt "${source_file}\n")
+        file(APPEND ${CMAKE_BINARY_DIR}/all-sources.txt "${source_file}\n")
     endforeach()
 
 endif()

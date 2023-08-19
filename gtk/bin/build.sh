@@ -1,24 +1,24 @@
 #!/usr/bin/env bash
 set -e
 
+
 export LCOV_PATH=$(which lcov)
 export GENHTML_PATH==$(which genhtml)
 export MAKEFLAGS=-j8
-export LD_LIBRARY_PATH="${pwd}/lib"
+export LD_LIBRARY_PATH="$(pwd)/lib"
 
-pwd=$(pwd)
-logs="${pwd}/logs"
-build="${pwd}/build"
+logs="$(pwd)/logs"
+build="$(pwd)/build"
 target=gtk-experiment1
 
-[ ! -d "${logs}" ] && mkdir "${logs}"
+[[ ! -d "${logs}" ]] && mkdir "${logs}"
 
 cmake \
     -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
     -DCMAKE_BUILD_TYPE:STRING=Debug \
     -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
     -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
-    -S"${pwd}" \
+    -S"$(pwd)" \
     -B"${build}" \
     -G "Ninja" 2>&1 >/dev/null
 

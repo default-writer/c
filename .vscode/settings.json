@@ -12,7 +12,7 @@
   "testFilesOnSave.languageId": "c",
   "testFilesOnSave.testCommands": [
     {
-      "c": "./bin/src.sh --target ${relativeFile} --clean"
+      "c": "./bin/src.sh --target ${relativeFile}"
     }
   ],
   "koverage.coverageFileNames": ["lcov.info"],
@@ -159,7 +159,7 @@
   "editor.matchBrackets": "near",
   "presentation-mode.active": {
     "commands": [],
-    "editor.fontSize": 18,
+    "editor.fontSize": 12,
     "editor.matchBrackets": "near",
     "editor.minimap.enabled": false,
     "workbench.activityBar.visible": true,
@@ -170,19 +170,12 @@
     },
     "window.zoomLevel": 2
   },
-
   "presentation-mode.inactive": {
     "window.zoomLevel": 0
   },
   "presentation-mode.configBackup": {
     "editor.fontSize": 12,
-    "editor.matchBrackets": "always",
-    "editor.minimap.enabled": "undefined",
-    "workbench.activityBar.visible": "undefined",
-    "workbench.statusBar.visible": "undefined",
-    "workbench.colorTheme": "Yitzchok (rainglow)",
-    "workbench.colorCustomizations": "undefined",
-    "window.zoomLevel": "undefined"
+    "editor.matchBrackets": "near"
   },
   "grammarly.files.include": ["**/*.md"],
   "grammarly.files.exclude": ["**/*.txt"],
@@ -259,7 +252,7 @@
     "ghs",
     "diab"
   ],
-  "editor.formatOnSave": true,
+  "editor.formatOnSave": false,
   "editor.fontWeight": "normal",
   "cmake.additionalKits": ["${workspaceFolder}/.vscode", "${workspaceFolder}"],
   "cmake.useCMakePresets": "always",
@@ -272,7 +265,7 @@
       }
     ]
   },
-  "editor.defaultFormatter": "ms-vscode.cpptools",
+  "editor.defaultFormatter": "trunk.io",
   "[c]": {
     "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
   },
@@ -319,6 +312,8 @@
   "editor.tabSize": 4,
   "editor.indentSize": "tabSize",
   "editor.fontSize": 12,
+  "screencastMode.fontSize": 20,
+  "window.zoomLevel": 2,
   "editor.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
   "editor.inlayHints.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
   "editor.codeLensFontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
@@ -391,5 +386,11 @@
     "editor.defaultFormatter": "trunk.io"
   },
   "files.refactoring.autoSave": false,
-  "editor.fontVariations": false
+  "editor.fontVariations": false,
+  "editor.minimap.enabled": false,
+  "workbench.activityBar.visible": true,
+  "workbench.statusBar.visible": true,
+  "workbench.colorCustomizations": {
+    "[Yitzchok (rainglow)]": {}
+  }
 }

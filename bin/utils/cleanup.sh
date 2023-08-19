@@ -1,19 +1,37 @@
 #!/usr/bin/env bash
 set -e
 
-err_report() {
-    echo "ERROR: on line $*: $(cat $0 | sed $1!d)" >&2
+
+function get_stack () {
+   STACK=""
+   local i message="${1:-""}"
+   local stack_size=${#FUNCNAME[@]}
+   # to avoid noise we start with 1 to skip the get_stack function
+   for (( i=1; i<stack_size; i++ )); do
+      local func="${FUNCNAME[$i]}"
+      [[ $func = "" ]] && func=MAIN
+      local linen="${BASH_LINENO[$(( i - 1 ))]}"
+      local src="${BASH_SOURCE[$i]}"
+      [[ "$src" = "" ]] && src=non_file_source
+
+      STACK+=$'\n'"   at: $func $src "$linen
+   done
+   STACK="${message}${STACK}"
 }
 
-trap 'err_report $LINENO' ERR
+err_report() {
+    get_stack
+    echo "ERROR: on line $*: $(cat $0 | sed $1!d)" >&2
+    exit 8
+}
 
-uid=$(id -u)
+trap 'get_stack' ERR
 
-pwd=$(pwd)
+id=$(id -u)
 
 install="$1"
 
-. "${pwd}/bin/scripts/load.sh"
+. "$(pwd)/bin/scripts/load.sh"
 
 ## Cleans up directories
 ## Usage: ${script} <option>
@@ -21,7 +39,8 @@ install="$1"
 
 case "${install}" in
 
-    "--all") # cleans up uncommited changes and non-gited files and folders
+    "--help") # [optional] shows command desctiption
+        help
         ;;
 
     *)
@@ -34,4 +53,4 @@ git clean -f -q -d -x
 
 [[ $SHLVL -gt 2 ]] || echo OK
 
-cd "${pwd}"
+cd "$(pwd)"

@@ -1,11 +1,31 @@
 #!/usr/bin/env bash
 set -e
 
-err_report() {
-    echo "ERROR: on line $*: $(cat $0 | sed $1!d)" >&2
+
+function get_stack () {
+   STACK=""
+   local i message="${1:-""}"
+   local stack_size=${#FUNCNAME[@]}
+   # to avoid noise we start with 1 to skip the get_stack function
+   for (( i=1; i<stack_size; i++ )); do
+      local func="${FUNCNAME[$i]}"
+      [[ $func = "" ]] && func=MAIN
+      local linen="${BASH_LINENO[$(( i - 1 ))]}"
+      local src="${BASH_SOURCE[$i]}"
+      [[ "$src" = "" ]] && src=non_file_source
+
+      STACK+=$'\n'"   at: $func $src "$linen
+   done
+   STACK="${message}${STACK}"
 }
 
-trap 'err_report $LINENO' ERR
+err_report() {
+    get_stack
+    echo "ERROR: on line $*: $(cat $0 | sed $1!d)" >&2
+    exit 8
+}
+
+trap 'get_stack' ERR
 
 uid=$(id -u)
 
@@ -14,13 +34,11 @@ if [ "${uid}" -eq 0 ]; then
     exit
 fi
 
-pwd=$(pwd)
-
 install="$1"
 
 opts=( "${@:2}" )
 
-. "${pwd}/bin/scripts/load.sh"
+. "$(pwd)/bin/scripts/load.sh"
 
 ## Builds binaries
 ## Usage: ${script} <option> [optional]
@@ -40,6 +58,10 @@ case "${install}" in
     "--all") # builds and runs specified target
         source="all"
         opts=( "${@:2}" )
+        ;;
+
+    "--help") # [optional] shows command desctiption
+        help
         ;;
 
     *)
@@ -78,15 +100,15 @@ for opt in ${opts[@]}; do
             silent="--silent"
             ;;
 
-        "--valgrind") # [optional] runs using valgrind (disables --sanitize on build)
+        "--valgrind") # [optional] runs using valgrind
             valgrind="--valgrind"
             ;;
 
-        "--callgrind") # [optional] runs using valgrind with tool callgrind (disables --sanitize on build)
+        "--callgrind") # [optional] runs using valgrind with tool callgrind
             callgrind="--callgrind"
             ;;
 
-        "--debug") # [optional] runs using debug memory debug info
+        "--debug") # [optional] runs using debug messaging
             debug="--debug"
             ;;
 
@@ -101,7 +123,7 @@ for opt in ${opts[@]}; do
     esac
 done
 
-if [ "${silent}" == "--silent" ]; then
+if [[ "${silent}" == "--silent" ]]; then
     exec 2>&1 >/dev/null
 fi
 
@@ -111,21 +133,10 @@ if [[ ! "${dir}" == "" ]]; then
     build="${dir}"
 fi
 
-[ ! -d "${build}" ] && mkdir "${build}"
-
-if [ "${clean}" == "--clean" ]; then
-    rm -rf "${build}"
-fi
-
-find "${pwd}" -type f -name "callgrind.out.*" -delete
-find "${pwd}/src" -type f -name "*.s" -delete
-find "${pwd}/tests" -type f -name "*.s" -delete
-
-cmake=$(get-cmake)
-
-if [[ "${cmake}" == "" ]]; then
-    echo cmake not found. please run "$(pwd)/bin/utils/install.sh" --cmake
-    exit 8
+if [[ "${clean}" == "--clean" ]]; then
+    if [[ -d "${dir}" ]]; then
+        rm -rf "${dir}"
+    fi
 fi
 
 targets=( $(get-source-targets ${source}) )
@@ -134,14 +145,21 @@ if [[ "${targets[@]}" == "" ]]; then
     if [[ "${help}" == "--help" ]]; then
         help
     fi
-    echo ERROR
+    echo no source targets: ${source} >&2
     exit 8
 fi
 
-[ ! -d "${build}" ] && mkdir "${build}"
+cmake=$(get-cmake)
 
-output="${pwd}/output"
-[ ! -d "${output}" ] && mkdir "${output}"
+if [[ "${cmake}" == "" ]]; then
+    echo cmake not found. please run "$(pwd)/bin/utils/install.sh" --cmake
+    exit 8
+fi
+
+[[ ! -d "${build}" ]] && mkdir "${build}"
+
+output="$(pwd)/output"
+[[ ! -d "${output}" ]] && mkdir "${output}"
 
 for target in ${targets[@]}; do
     if [[ -f "${output}/log-${target}.txt" ]]; then
@@ -149,13 +167,22 @@ for target in ${targets[@]}; do
     fi
 done
 
+find "$(pwd)" -type f -name "callgrind.out.*" -delete
+find "$(pwd)/src" -type f -name "*.s" -delete
+find "$(pwd)/tests" -type f -name "*.s" -delete
+
 coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" "*.info" )
+
 for f in ${coverage[@]}; do
-    find "${build}" -type f -name "${f}" -delete
+    if [[ -d "${build}" ]]; then
+        find "${build}" -type f -name "callgrind.out.*" -delete
+        find "${build}" -type f -name "*.s" -delete
+        find "${build}" -type f -name "${f}" -delete
+    fi
 done
 
 export MAKEFLAGS=-j8
-export LD_LIBRARY_PATH="${pwd}/lib"
+export LD_LIBRARY_PATH="$(pwd)/lib"
 
 ${cmake} \
     -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
@@ -163,18 +190,18 @@ ${cmake} \
     -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
     -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
     $(cmake-options) \
-    -S"${pwd}" \
+    -S"$(pwd)" \
     -B"${build}" \
     -G "Ninja" 2>&1 >/dev/null
 
     if [[ -f "${build}/compile_commands.json" ]]; then
-        cp "${build}/compile_commands.json" "${pwd}/src" 2>&1 >/dev/null
+        cp "${build}/compile_commands.json" "$(pwd)/src" 2>&1 >/dev/null
     fi
 
 for target in ${targets[@]}; do
     echo building ${target}
     echo options $(cmake-options)
-    if [ "${silent}" == "--silent" ]; then
+    if [[ "${silent}" == "--silent" ]]; then
         ${cmake} --build "${build}" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
     else
         ${cmake} --build "${build}" --target "${target}" || (echo ERROR: "${target}" && exit 1)
@@ -190,14 +217,14 @@ done
 
 main=$(find "${build}" -type f -name "*.s" -exec echo {} \;)
 for i in ${main[@]}; do
-    path="${pwd}/$(echo $i | sed -n -e 's/^.*.dir\/\(.*\)$/\1/p')"
+    path="$(pwd)/$(echo $i | sed -n -e 's/^.*.dir\/\(.*\)$/\1/p')"
     cp "${i}" "${path}"
 done
 
-if [ "${silent}" == "--silent" ]; then
+if [[ "${silent}" == "--silent" ]]; then
     exec 1>&2 2>&-
 fi
 
 [[ $SHLVL -gt 2 ]] || echo OK
 
-cd "${pwd}"
+cd "$(pwd)"

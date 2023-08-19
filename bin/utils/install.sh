@@ -1,11 +1,31 @@
 #!/usr/bin/env bash
 set -e
 
-err_report() {
-    echo "ERROR: on line $*: $(cat $0 | sed $1!d)" >&2
+
+function get_stack () {
+   STACK=""
+   local i message="${1:-""}"
+   local stack_size=${#FUNCNAME[@]}
+   # to avoid noise we start with 1 to skip the get_stack function
+   for (( i=1; i<stack_size; i++ )); do
+      local func="${FUNCNAME[$i]}"
+      [[ $func = "" ]] && func=MAIN
+      local linen="${BASH_LINENO[$(( i - 1 ))]}"
+      local src="${BASH_SOURCE[$i]}"
+      [[ "$src" = "" ]] && src=non_file_source
+
+      STACK+=$'\n'"   at: $func $src "$linen
+   done
+   STACK="${message}${STACK}"
 }
 
-trap 'err_report $LINENO' ERR
+err_report() {
+    get_stack
+    echo "ERROR: on line $*: $(cat $0 | sed $1!d)" >&2
+    exit 8
+}
+
+trap 'get_stack' ERR
 
 uid=$(id -u)
 
@@ -14,11 +34,9 @@ if [ "${uid}" -eq 0 ]; then
     exit
 fi
 
-pwd=$(pwd)
-
 install="$1"
 
-. "${pwd}/bin/scripts/load.sh"
+. "$(pwd)/bin/scripts/load.sh"
 
 ## Installs optional dependencies
 ## Usage: ${script} <option>
@@ -35,7 +53,7 @@ case "${install}" in
         ;;
 
     "--appwrite-start") # starts appwrite docker
-        docker compose -f "${pwd}/appwrite/docker-compose.yml" up -d --remove-orphans --renew-anon-volumes
+        docker compose -f "$(pwd)/appwrite/docker-compose.yml" up -d --remove-orphans --renew-anon-volumes
         ;;
 
     "--rustc") # installs rustc
@@ -49,21 +67,21 @@ case "${install}" in
         ;;
 
     "--clangd") # installs clangd 16.0.2
-        [ ! -d "${pwd}/.tools" ] && mkdir "${pwd}/.tools"
-        [ ! -d "${pwd}/.tools/clangd_16.0.2" ] && mkdir "${pwd}/.tools/clangd_16.0.2"
+        [[ ! -d "$(pwd)/.tools" ]] && mkdir "$(pwd)/.tools"
+        [[ ! -d "$(pwd)/.tools/clangd_16.0.2" ]] && mkdir "$(pwd)/.tools/clangd_16.0.2"
         wget https://github.com/clangd/clangd/releases/download/16.0.2/clangd-linux-16.0.2.zip -qO "/tmp/clangd-linux-16.0.2.zip"
         unzip -o -q "/tmp/clangd-linux-16.0.2.zip" -d "/tmp"
-        cp -r "/tmp/clangd_16.0.2/." "${pwd}/.tools/clangd_16.0.2"
+        cp -r "/tmp/clangd_16.0.2/." "$(pwd)/.tools/clangd_16.0.2"
         rm -rf "/tmp/clangd-linux-16.0.2"
         rm -f "/tmp/clangd-linux-16.0.2.zip"
         ;;
 
     "--cmake") # installs cmake
-        [ ! -d "${pwd}/.tools" ] && mkdir "${pwd}/.tools"
-        [ ! -d "${pwd}/.tools/cmake-3.25" ] && mkdir "${pwd}/.tools/cmake-3.25"
+        [[ ! -d "$(pwd)/.tools" ]] && mkdir "$(pwd)/.tools"
+        [[ ! -d "$(pwd)/.tools/cmake-3.25" ]] && mkdir "$(pwd)/.tools/cmake-3.25"
         wget https://github.com/Kitware/CMake/releases/download/v3.25.3/cmake-3.25.3-linux-x86_64.sh -qO "/tmp/cmake-3.25.3-linux-x86_64.sh"
         chmod +x "/tmp/cmake-3.25.3-linux-x86_64.sh"
-        DEBIAN_FRONTEND=noninteractive /tmp/cmake-3.25.3-linux-x86_64.sh --prefix=${pwd}/.tools/cmake-3.25 --skip-license
+        DEBIAN_FRONTEND=noninteractive /tmp/cmake-3.25.3-linux-x86_64.sh --prefix=$(pwd)/.tools/cmake-3.25 --skip-license
         rm "/tmp/cmake-3.25.3-linux-x86_64.sh"
         ;;
 
@@ -87,13 +105,13 @@ case "${install}" in
         ;;
 
     "--git") # installs git variables
-        git config --global --add safe.directory "${pwd}"
+        git config --global --add safe.directory "$(pwd)"
         git config --global pull.rebase false
         ;;
 
     "--args") # install test .args file
         args=( '--all' '--clean' '--silent' '--sanitize' )
-        printf '%s\n' "${args[@]}" > "${pwd}/.args"
+        printf '%s\n' "${args[@]}" > "$(pwd)/.args"
         ;;
 
     "--submodule-rexo") # installs rexo as git submodule
@@ -117,8 +135,8 @@ case "${install}" in
         ;;
 
     "--hooks") # installs git hooks
-        cp "${pwd}/.hooks/prepare-commit-msg" "${pwd}/.git/hooks/prepare-commit-msg"
-        chmod u+x "${pwd}/.git/hooks/prepare-commit-msg"
+        cp "$(pwd)/.hooks/prepare-commit-msg" "$(pwd)/.git/hooks/prepare-commit-msg"
+        chmod u+x "$(pwd)/.git/hooks/prepare-commit-msg"
         ;;
 
     "--pyenv") # downloads and installs pyenv
@@ -163,4 +181,4 @@ esac
 
 [[ $SHLVL -gt 2 ]] || echo OK
 
-cd "${pwd}"
+cd "$(pwd)"

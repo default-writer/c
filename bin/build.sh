@@ -1,11 +1,31 @@
 #!/usr/bin/env bash
 set -e
 
-err_report() {
-    echo "ERROR: on line $*: $(cat $0 | sed $1!d)" >&2
+
+function get_stack () {
+   STACK=""
+   local i message="${1:-""}"
+   local stack_size=${#FUNCNAME[@]}
+   # to avoid noise we start with 1 to skip the get_stack function
+   for (( i=1; i<stack_size; i++ )); do
+      local func="${FUNCNAME[$i]}"
+      [[ $func = "" ]] && func=MAIN
+      local linen="${BASH_LINENO[$(( i - 1 ))]}"
+      local src="${BASH_SOURCE[$i]}"
+      [[ "$src" = "" ]] && src=non_file_source
+
+      STACK+=$'\n'"   at: $func $src "$linen
+   done
+   STACK="${message}${STACK}"
 }
 
-trap 'err_report $LINENO' ERR
+err_report() {
+    get_stack
+    echo "ERROR: on line $*: $(cat $0 | sed $1!d)" >&2
+    exit 8
+}
+
+trap 'get_stack' ERR
 
 uid=$(id -u)
 
@@ -14,13 +34,11 @@ if [ "${uid}" -eq 0 ]; then
     exit
 fi
 
-pwd=$(pwd)
-
 install="$1"
 
 opts=( "${@:2}" )
 
-. "${pwd}/bin/scripts/load.sh"
+. "$(pwd)/bin/scripts/load.sh"
 
 ## Builds binaries
 ## Usage: ${script} <option> [optional]
@@ -42,6 +60,10 @@ case "${install}" in
         opts=( "${@:2}" )
         ;;
 
+    "--help") # [optional] shows command desctiption
+        help
+        ;;
+
     *)
         help
         ;;
@@ -54,12 +76,40 @@ for opt in ${opts[@]}; do
         "")
             ;;
 
+        "--dir="*) # [optional] build directory
+            dir=${opt#*=}
+            ;;
+
         "--clean") # [optional] cleans up directories before build
             clean="--clean"
             ;;
 
+        "--sanitize") # [optional] builds using sanitizer
+            sanitize="--sanitize"
+            ;;
+
+        "--mocks") # [optional] builds with mocks
+            mocks="--mocks"
+            ;;
+
+        "--gc") # [optional] builds with garbage collector
+            gc="--gc"
+            ;;
+
         "--silent") # [optional] suppress verbose output
             silent="--silent"
+            ;;
+
+        "--valgrind") # [optional] runs using valgrind
+            valgrind="--valgrind"
+            ;;
+
+        "--callgrind") # [optional] runs using valgrind with tool callgrind
+            callgrind="--callgrind"
+            ;;
+
+        "--debug") # [optional] runs using debug messaging
+            debug="--debug"
             ;;
 
         "--help") # [optional] shows command desctiption
@@ -77,36 +127,63 @@ if [[ "${silent}" == "--silent" ]]; then
     exec 2>&1 >/dev/null
 fi
 
+build=( "build-v1" "build-v2" "build-v3" "build-v4" "build-v5" "build-v6" )
+
+if [[ ! "${dir}" == "" ]]; then
+    build="${dir}"
+fi
+
+if [[ "${clean}" == "--clean" ]]; then
+    if [[ -d "${dir}" ]]; then
+        rm -rf "${dir}"
+    fi
+fi
+
+targets=( $(get-source-targets ${source}) )
+
+if [[ "${targets[@]}" == "" ]]; then
+    if [[ "${help}" == "--help" ]]; then
+        help
+    fi
+    echo no source targets: ${source} >&2
+    exit 8
+fi
+
+directories=${build[@]}
+
 coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" "*.info" )
-directories=( "build-v1" "build-v2" "build-v3" "build-v4" "build-v5" "build-v6" )
+
 for directory in ${directories[@]}; do
     for f in ${coverage[@]}; do
-        [[ -d "${directory}" ]] && find "${directory}" -type f -name "${f}" -delete
+        if [[ -d "${directory}" ]]; then
+            find "${directory}" -type f -name "callgrind.out.*" -delete
+            find "${directory}" -type f -name "*.s" -delete
+            find "${directory}" -type f -name "${f}" -delete
+        fi
     done
 done
 
-[ ! -d "${pwd}/build" ] && mkdir "${pwd}/build"
+[[ ! -d "$(pwd)/build" ]] && mkdir "$(pwd)/build"
 
-"${pwd}/bin/utils/build.sh" --target ${source} --dir=build-v1 --valgrind ${silent} ${opts[@]}
-"${pwd}/bin/utils/build.sh" --target ${source} --dir=build-v2 --sanitize ${silent} ${opts[@]}
-"${pwd}/bin/utils/build.sh" --target ${source} --dir=build-v3 ${silent}
-"${pwd}/bin/utils/build.sh" --target ${source} --dir=build-v4 --gc --valgrind ${silent} ${opts[@]}
-"${pwd}/bin/utils/build.sh" --target ${source} --dir=build-v5 --gc --sanitize ${silent} ${opts[@]}
-"${pwd}/bin/utils/build.sh" --target ${source} --dir=build-v6 --gc ${silent}
+"$(pwd)/bin/utils/build.sh" --target ${source} --dir=build-v1 --valgrind ${silent} ${opts[@]}
+"$(pwd)/bin/utils/build.sh" --target ${source} --dir=build-v2 --sanitize ${silent} ${opts[@]}
+"$(pwd)/bin/utils/build.sh" --target ${source} --dir=build-v3 ${silent}
+"$(pwd)/bin/utils/build.sh" --target ${source} --dir=build-v4 --gc --valgrind ${silent} ${opts[@]}
+"$(pwd)/bin/utils/build.sh" --target ${source} --dir=build-v5 --gc --sanitize ${silent} ${opts[@]}
+"$(pwd)/bin/utils/build.sh" --target ${source} --dir=build-v6 --gc ${silent}
 
-directories=( "build-v1" "build-v2" "build-v3" "build-v4" "build-v5" "build-v6" )
 for directory in ${directories[@]}; do
     files=$(find "${directory}" -type f -name "log-*.txt" -exec echo {} \;)
     for file in ${files[@]}; do
         link=$(basename $(dirname "${file}"))
-        cp "${file}" "${pwd}/build/${link}-$(basename ${file})"
+        cp "${file}" "$(pwd)/build/${link}-$(basename ${file})"
     done
 done
 
-if [ "${silent}" == "--silent" ]; then
+if [[ "${silent}" == "--silent" ]]; then
     exec 1>&2 2>&-
 fi
 
 [[ $SHLVL -gt 2 ]] || echo OK
 
-cd "${pwd}"
+cd "$(pwd)"

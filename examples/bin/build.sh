@@ -1,19 +1,19 @@
 #!/usr/bin/env bash
 set -e
 
+
 export LCOV_PATH=$(which lcov)
 export GENHTML_PATH==$(which genhtml)
 export MAKEFLAGS=-j8
 
-pwd=$(pwd)
-logs="${pwd}/logs"
-build="${pwd}/build"
+logs="$(pwd)/logs"
+build="$(pwd)/build"
 target=c-substrings
 
-[ ! -d "${logs}" ] && mkdir "${logs}"
+[[ ! -d "${logs}" ]] && mkdir "${logs}"
 
-export C_INCLUDE_PATH=$(readlink -m "${pwd}/../src")
-export C_LIBRARY_PATH=$(readlink -m "${pwd}/../lib")
+export C_INCLUDE_PATH=$(readlink -m "$(pwd)/../src")
+export C_LIBRARY_PATH=$(readlink -m "$(pwd)/../lib")
 
 cmake \
     -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
@@ -22,7 +22,7 @@ cmake \
     -DCONFIG_GC:BOOL=TRUE \
     -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
     -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
-    -S"${pwd}" \
+    -S"$(pwd)" \
     -B"${build}" \
     -G "Ninja" 2>&1 >/dev/null
 
