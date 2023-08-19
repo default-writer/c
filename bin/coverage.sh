@@ -172,12 +172,24 @@ for target in ${targets[@]}; do
     fi
 done
 
-"$(pwd)/bin/utils/coverage.sh" --target ${source} --dir=coverage-v1 ${silent} ${opts[@]}
-"$(pwd)/bin/utils/coverage.sh" --target ${source} --dir=coverage-v2 --gc ${silent} ${opts[@]}
-"$(pwd)/bin/utils/coverage.sh" --target ${source} --dir=coverage-v3 --sanitize ${silent} ${opts[@]}
-"$(pwd)/bin/utils/coverage.sh" --target ${source} --dir=coverage-v4 --gc --sanitize ${silent} ${opts[@]}
-"$(pwd)/bin/utils/coverage.sh" --target ${source} --dir=coverage-v6 --valgrind ${silent} ${opts[@]}
-"$(pwd)/bin/utils/coverage.sh" --target ${source} --dir=coverage-v5 --gc --valgrind ${silent} ${opts[@]}
+if [[ "${opts[@]}" == "" || ("${gc}" == "" && "${sanitize}" == "" && "${valgrind}" == "") ]]; then
+    "$(pwd)/bin/utils/coverage.sh" --target ${source} --dir=coverage-v1 ${silent} ${opts[@]}
+fi
+if [[ "${opts[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "" && "${valgrind}" == "") ]]; then
+    "$(pwd)/bin/utils/coverage.sh" --target ${source} --dir=coverage-v2 --gc ${silent} ${opts[@]}
+fi
+if [[ "${opts[@]}" == "" || ("${gc}" == "" && "${sanitize}" == "--sanitize" && "${valgrind}" == "") ]]; then
+    "$(pwd)/bin/utils/coverage.sh" --target ${source} --dir=coverage-v3 --sanitize ${silent} ${opts[@]}
+fi
+if [[ "${opts[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "--sanitize" && "${valgrind}" == "") ]]; then
+    "$(pwd)/bin/utils/coverage.sh" --target ${source} --dir=coverage-v4 --gc --sanitize ${silent} ${opts[@]}
+fi
+if [[ "${opts[@]}" == "" || ("${gc}" == "" && "${sanitize}" == "" && "${valgrind}" == "--valgrind") ]]; then
+    "$(pwd)/bin/utils/coverage.sh" --target ${source} --dir=coverage-v6 --valgrind ${silent} ${opts[@]}
+fi
+if [[ "${opts[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "" && "${valgrind}" == "--valgrind") ]]; then
+    "$(pwd)/bin/utils/coverage.sh" --target ${source} --dir=coverage-v5 --gc --valgrind ${silent} ${opts[@]}
+fi
 
 for directory in ${directories[@]}; do
     files=()
