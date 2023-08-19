@@ -52,9 +52,6 @@ int main(void) {
     while ((string_pointer_ptr = string->strchr(current_ptr, pattern_ptr)) != 0) {
         list->push(gc, string_pointer_ptr);
         u64 match_ptr = string->match(string_pointer_ptr, pattern_ptr);
-        if (match_ptr == 0) {
-            break;
-        }
         os->putc(string_ptr);
         u64 match_start_ptr = string->left(match_ptr, size);
         u64 distance = string->diff(string_ptr, match_start_ptr);
