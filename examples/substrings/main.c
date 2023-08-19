@@ -41,16 +41,24 @@ int main(void) {
     global_statistics();
 #endif
     pointer->init(8);
+#ifndef USE_GC
     u64 gc = list->alloc();
+#endif
     u64 string_ptr = string->load("aaabaaaa");
+#ifndef USE_GC
     list->push(gc, string_ptr);
+#endif
     u64 pattern_ptr = string->load("aa");
+#ifndef USE_GC
     list->push(gc, pattern_ptr);
+#endif
     u64 size = string->size(pattern_ptr);
     u64 string_pointer_ptr = 0;
     u64 current_ptr = string_ptr;
     while ((string_pointer_ptr = string->strchr(current_ptr, pattern_ptr)) != 0) {
+#ifndef USE_GC
         list->push(gc, string_pointer_ptr);
+#endif
         u64 match_ptr = string->match(string_pointer_ptr, pattern_ptr);
         os->putc(string_ptr);
         u64 match_start_ptr = string->left(match_ptr, size);
@@ -61,8 +69,10 @@ int main(void) {
         }
         os->putc(match_start_ptr);
         printf("match found at index %lld\n", distance);
+#ifndef USE_GC
         list->push(gc, match_ptr);
         list->push(gc, match_start_ptr);
+#endif
         current_ptr = match_ptr;
     }
 #ifndef USE_GC
