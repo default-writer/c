@@ -99,12 +99,12 @@ int main(void) {
             if (match_ptr == 0) {
                 break;
             }
-            if (string->lt(string_pointer_ptr, match_ptr)) {
+            if (string->lessthan(string_pointer_ptr, match_ptr)) {
                 u64 match_start_ptr = string->left(match_ptr, size);
                 if (match_start_ptr == 0) {
                     break;
                 }
-                u64 distance = string->lt(string_ptr, match_start_ptr);
+                u64 distance = string->lessthan(string_ptr, match_start_ptr);
                 if (distance > 0) {
                     u64 i = 0;
                     while (i++ < distance) {

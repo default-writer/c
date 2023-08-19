@@ -72,13 +72,13 @@ static u64 string_load(const char* data);
 static void string_put_char(u64 ptr, char value);
 static char* string_unsafe(u64 ptr);
 static u64 string_size(u64 ptr);
-static u64 string_lt(u64 src, u64 dst);
-static u64 string_gt(u64 src, u64 dst);
-static u64 string_eq(u64 src, u64 dst);
-static u64 string_ptr(u64 src, u64 dst);
+static u64 string_lessthan(u64 src, u64 dst);
+static u64 string_greaterthan(u64 src, u64 dst);
+static u64 string_equals(u64 src, u64 dst);
+static u64 string_compare(u64 src, u64 dst);
 static u64 string_left(u64 src, u64 shift);
 static u64 string_strncpy(u64 src, u64 nbytes);
-static u64 string_left_strncpy(u64 src, u64 shift);
+static u64 string_left_strncpy(u64 src, u64 nbytes);
 static u64 string_right(u64 src, u64 shift);
 
 /* definition */
@@ -518,7 +518,7 @@ static u64 string_size(u64 ptr) {
     return size - 1;
 }
 
-static u64 string_lt(u64 src, u64 dst) {
+static u64 string_lessthan(u64 src, u64 dst) {
     if (src == dst) {
         return 0;
     }
@@ -551,7 +551,7 @@ static u64 string_lt(u64 src, u64 dst) {
     return (u64)(dst_offset - src_offset);
 }
 
-static u64 string_gt(u64 src, u64 dst) {
+static u64 string_greaterthan(u64 src, u64 dst) {
     if (src == dst) {
         return 0;
     }
@@ -584,7 +584,7 @@ static u64 string_gt(u64 src, u64 dst) {
     return (u64)(src_offset - dst_offset);
 }
 
-static u64 string_eq(u64 src, u64 dst) {
+static u64 string_equals(u64 src, u64 dst) {
     if (src == dst) {
         return 0;
     }
@@ -617,7 +617,7 @@ static u64 string_eq(u64 src, u64 dst) {
     return (u64)(0 - 1);
 }
 
-static u64 string_ptr(u64 src, u64 dst) {
+static u64 string_compare(u64 src, u64 dst) {
     if (src == dst) {
         return 0;
     }
@@ -771,10 +771,10 @@ const struct string_methods string_methods_definition = {
     .put_char = string_put_char,
     .unsafe = string_unsafe,
     .size = string_size,
-    .lt = string_lt,
-    .gt = string_gt,
-    .eq = string_eq,
-    .ptr = string_ptr,
+    .lessthan = string_lessthan,
+    .greaterthan = string_greaterthan,
+    .equals = string_equals,
+    .compare = string_compare,
     .left = string_left,
     .strncpy = string_strncpy,
     .left_strncpy = string_left_strncpy,
