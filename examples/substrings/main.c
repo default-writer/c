@@ -62,16 +62,18 @@ int main(void) {
         u64 match_ptr = string->match(string_pointer_ptr, pattern_ptr);
         os->putc(string_ptr);
         u64 match_start_ptr = string->left(match_ptr, size);
+        u64 str_ncpy = string->strncpy(match_start_ptr, size);
         u64 distance = string->diff(string_ptr, match_start_ptr);
         u64 i = 0;
         while (i++ < distance) {
             printf(" ");
         }
-        os->putc(match_start_ptr);
+        os->putc(str_ncpy);
         printf("match found at index %lld\n", distance);
 #ifndef USE_GC
         list->push(gc, match_ptr);
         list->push(gc, match_start_ptr);
+        list->push(gc, str_ncpy);
 #endif
         current_ptr = match_ptr;
     }
