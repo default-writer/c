@@ -541,10 +541,10 @@ static u64 string_diff(u64 src, u64 dst) {
     if (dst_data != src_data) {
         return 0;
     }
-    if (src_offset > dst_offset) {
+    if (src_offset >= dst_offset) {
         return 0;
     }
-    return (u64)(dst_offset - src_offset);
+    return (u64)(dst_offset - src_offset + 1);
 }
 
 static u64 string_left(u64 src, u64 shift) {

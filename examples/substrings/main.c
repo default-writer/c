@@ -45,10 +45,10 @@ int main(void) {
     char buffer[100];
     char ch = 0;
     while (quit == 0) {
+        memset(&buffer, 0, 100);
         for (int i = 0; i < 100; i++) {
             ch = (char)getchar();
             if (ch == EOF || ch == '\n') {
-                buffer[i] = 0;
                 break;
             }
             buffer[i] = ch;
@@ -59,10 +59,10 @@ int main(void) {
             continue;
         }
         os->putc(string_ptr);
+        memset(&buffer, 0, 100);
         for (int i = 0; i < 100; i++) {
             ch = (char)getchar();
             if (ch == EOF || ch == '\n') {
-                buffer[i] = 0;
                 break;
             }
             buffer[i] = ch;
@@ -85,21 +85,33 @@ int main(void) {
         u64 size = string->size(pattern_ptr);
         u64 string_pointer_ptr = 0;
         u64 current_ptr = string_ptr;
+        os->putc(string_ptr);
         while ((string_pointer_ptr = string->strchr(current_ptr, pattern_ptr)) != 0) {
 #ifndef USE_GC
             list->push(gc, string_pointer_ptr);
 #endif
             u64 match_ptr = string->match(string_pointer_ptr, pattern_ptr);
-            os->putc(string_ptr);
+            if (match_ptr == 0) {
+                break;
+            }
             u64 match_start_ptr = string->left(match_ptr, size);
+            if (match_start_ptr == 0) {
+                continue;
+            }
             u64 str_ncpy = string->strncpy(match_start_ptr, size);
+            if (str_ncpy == 0) {
+                continue;
+            }
             u64 distance = string->diff(string_ptr, match_start_ptr);
+            if (distance == 0) {
+                continue;
+            }
             u64 i = 0;
-            while (i++ < distance) {
+            while (i++ < distance - 1) {
                 printf(" ");
             }
             os->putc(str_ncpy);
-            printf("match found at index %lld\n", distance);
+            printf("match found at index %lld\n", distance - 1);
 #ifndef USE_GC
             list->push(gc, match_ptr);
             list->push(gc, match_start_ptr);
