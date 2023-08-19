@@ -40,15 +40,34 @@ int main(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();
 #endif
-    pointer->init(8);
+    pointer->init(8);    
+    char ch = 0;
+    char buffer1[100];
+    for (int i=0; i < 100; i++) {
+        ch = (char)getchar();
+        if (ch == EOF || ch =='\n') {
+            break;
+        }
+        buffer1[i] = ch;
+    }
+    u64 string_ptr = string->load((const char* )&buffer1);
+    os->putc(string_ptr);
+    char buffer2[100];
+    for (int i=0; i < 100; i++) {
+        ch = (char)getchar();
+        if (ch == EOF || ch =='\n') {
+            break;
+        }
+        buffer2[i] = ch;
+    }
+    u64 pattern_ptr = string->load((const char* )&buffer2);
+    os->putc(pattern_ptr);
 #ifndef USE_GC
     u64 gc = list->alloc();
 #endif
-    u64 string_ptr = string->load("aaabaaaa");
 #ifndef USE_GC
     list->push(gc, string_ptr);
 #endif
-    u64 pattern_ptr = string->load("aa");
 #ifndef USE_GC
     list->push(gc, pattern_ptr);
 #endif
