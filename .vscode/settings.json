@@ -13,6 +13,9 @@
   "testFilesOnSave.testCommands": [
     {
       "c": "./bin/src.sh --target ${relativeFile} --gc --sanitize"
+    },
+    {
+      "h": "./bin/docs.h"
     }
   ],
   "koverage.coverageFileNames": ["lcov.info"],

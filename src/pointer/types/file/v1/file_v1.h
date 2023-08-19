@@ -31,6 +31,7 @@
 
 /*! @file file_v1.h
  *  @brief C API / file
+ *  This header file contains definition of file type methods.
  */
 
 struct file_methods {
