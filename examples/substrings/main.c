@@ -104,16 +104,16 @@ int main(void) {
                 if (match_start_ptr == 0) {
                     break;
                 }
-                u64 str_ncpy = string->strncpy(match_start_ptr, size);
-                if (str_ncpy == 0) {
-                    break;
-                }
                 u64 distance = string->lt(string_ptr, match_start_ptr);
                 if (distance > 0) {
                     u64 i = 0;
                     while (i++ < distance) {
                         printf(" ");
                     }
+                }
+                u64 str_ncpy = string->strncpy(match_start_ptr, size);
+                if (str_ncpy == 0) {
+                    break;
                 }
                 printf("%s[%lld]\n", string->unsafe(str_ncpy), distance);
             }

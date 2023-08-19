@@ -77,8 +77,9 @@ static u64 string_gt(u64 src, u64 dst);
 static u64 string_eq(u64 src, u64 dst);
 static u64 string_ptr(u64 src, u64 dst);
 static u64 string_left(u64 src, u64 shift);
-static u64 string_right(u64 src, u64 shift);
 static u64 string_strncpy(u64 src, u64 nbytes);
+static u64 string_left_strncpy(u64 src, u64 shift);
+static u64 string_right(u64 src, u64 shift);
 
 /* definition */
 extern const struct memory memory_definition;
@@ -699,6 +700,30 @@ static u64 string_strncpy(u64 src, u64 nbytes) {
     return pointer;
 }
 
+static u64 string_left_strncpy(u64 src, u64 shift) {
+    struct pointer* src_ptr = vm->read(src);
+    if (src_ptr == 0) {
+        return 0;
+    }
+    u64 size = 0;
+    u64 offset = 0;
+    char* data = string_pointer_internal(src_ptr, &size, &offset);
+    if (data == 0) {
+        return 0;
+    }
+    if (offset < shift) {
+        return 0;
+    }
+    data -= (offset - shift);
+    struct pointer* data_ptr = virtual->alloc(shift + 1, id);
+    memcpy(data_ptr->data, data, shift); /* NOLINT */
+    u64 pointer = vm->alloc(data_ptr);
+#ifdef USE_GC
+    list->push(&base->gc, (void*)pointer);
+#endif
+    return pointer;
+}
+
 static u64 string_right(u64 src, u64 shift) {
     struct pointer* src_ptr = vm->read(src);
     if (src_ptr == 0) {
@@ -750,9 +775,10 @@ const struct string_methods string_methods_definition = {
     .gt = string_gt,
     .eq = string_eq,
     .ptr = string_ptr,
-    .right = string_right,
     .left = string_left,
-    .strncpy = string_strncpy
+    .strncpy = string_strncpy,
+    .left_strncpy = string_left_strncpy,
+    .right = string_right
 };
 
 #ifndef ATTRIBUTE
