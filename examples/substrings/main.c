@@ -46,6 +46,7 @@ int main(void) {
     char ch = 0;
     while (quit == 0) {
         memset(&buffer, 0, 100);
+        printf(">[string]:\n");
         for (int i = 0; i < 100; i++) {
             ch = (char)getchar();
             if (ch == EOF || ch == '\n') {
@@ -56,9 +57,12 @@ int main(void) {
         u64 string_ptr = string->load((const char*)&buffer);
         if (string->size(string_ptr) == 0) {
             quit = 1;
+            printf(">[quit]\n");
             continue;
         }
+        printf(">[accepted]:\n");
         os->putc(string_ptr);
+        printf(">[pattern]:\n");
         memset(&buffer, 0, 100);
         for (int i = 0; i < 100; i++) {
             ch = (char)getchar();
@@ -70,8 +74,10 @@ int main(void) {
         u64 pattern_ptr = string->load((const char*)&buffer);
         if (string->size(pattern_ptr) == 0) {
             quit = 1;
+            printf(">[quit]\n");
             continue;
         }
+        printf(">[accepted]:\n");
         os->putc(pattern_ptr);
 #ifndef USE_GC
         u64 gc = list->alloc();
@@ -85,7 +91,6 @@ int main(void) {
         u64 size = string->size(pattern_ptr);
         u64 string_pointer_ptr = 0;
         u64 current_ptr = string_ptr;
-        os->putc(string_ptr);
         while ((string_pointer_ptr = string->strchr(current_ptr, pattern_ptr)) != 0) {
 #ifndef USE_GC
             list->push(gc, string_pointer_ptr);
@@ -94,24 +99,24 @@ int main(void) {
             if (match_ptr == 0) {
                 break;
             }
-            u64 match_start_ptr = string->left(match_ptr, size);
-            if (match_start_ptr == 0) {
-                continue;
+            if (string->lt(string_pointer_ptr, match_ptr)) {
+                u64 match_start_ptr = string->left(match_ptr, size);
+                if (match_start_ptr == 0) {
+                    break;
+                }
+                u64 str_ncpy = string->strncpy(match_start_ptr, size);
+                if (str_ncpy == 0) {
+                    break;
+                }
+                u64 distance = string->lt(string_ptr, match_start_ptr);
+                if (distance > 0) {
+                    u64 i = 0;
+                    while (i++ < distance) {
+                        printf(" ");
+                    }
+                }
+                printf("%s[%lld]\n", string->unsafe(str_ncpy), distance);
             }
-            u64 str_ncpy = string->strncpy(match_start_ptr, size);
-            if (str_ncpy == 0) {
-                continue;
-            }
-            u64 distance = string->diff(string_ptr, match_start_ptr);
-            if (distance == 0) {
-                continue;
-            }
-            u64 i = 0;
-            while (i++ < distance - 1) {
-                printf(" ");
-            }
-            os->putc(str_ncpy);
-            printf("match found at index %lld\n", distance - 1);
 #ifndef USE_GC
             list->push(gc, match_ptr);
             list->push(gc, match_start_ptr);
@@ -119,6 +124,7 @@ int main(void) {
 #endif
             current_ptr = match_ptr;
         }
+        printf(">[done]\n");
 #ifndef USE_GC
         u64 ptr;
         while ((ptr = list->pop(gc)) != 0) {

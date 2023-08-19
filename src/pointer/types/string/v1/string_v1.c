@@ -72,7 +72,10 @@ static u64 string_load(const char* data);
 static void string_put_char(u64 ptr, char value);
 static char* string_unsafe(u64 ptr);
 static u64 string_size(u64 ptr);
-static u64 string_diff(u64 src, u64 dst);
+static u64 string_lt(u64 src, u64 dst);
+static u64 string_gt(u64 src, u64 dst);
+static u64 string_eq(u64 src, u64 dst);
+static u64 string_ptr(u64 src, u64 dst);
 static u64 string_left(u64 src, u64 shift);
 static u64 string_right(u64 src, u64 shift);
 static u64 string_strncpy(u64 src, u64 nbytes);
@@ -514,7 +517,7 @@ static u64 string_size(u64 ptr) {
     return size - 1;
 }
 
-static u64 string_diff(u64 src, u64 dst) {
+static u64 string_lt(u64 src, u64 dst) {
     if (src == dst) {
         return 0;
     }
@@ -544,7 +547,103 @@ static u64 string_diff(u64 src, u64 dst) {
     if (src_offset >= dst_offset) {
         return 0;
     }
-    return (u64)(dst_offset - src_offset + 1);
+    return (u64)(dst_offset - src_offset);
+}
+
+static u64 string_gt(u64 src, u64 dst) {
+    if (src == dst) {
+        return 0;
+    }
+    struct pointer* src_ptr = vm->read(src);
+    if (src_ptr == 0) {
+        return 0;
+    }
+    struct pointer* dst_ptr = vm->read(dst);
+    if (dst_ptr == 0) {
+        return 0;
+    }
+    u64 src_size = 0;
+    u64 src_offset = 0;
+    char* src_data = string_pointer_internal(src_ptr, &src_size, &src_offset);
+    if (src_data == 0) {
+        return 0;
+    }
+    u64 dst_size = 0;
+    u64 dst_offset = 0;
+    char* dst_data = string_pointer_internal(dst_ptr, &dst_size, &dst_offset);
+    if (dst_data == 0) {
+        return 0;
+    }
+    if (dst_data != src_data) {
+        return 0;
+    }
+    if (src_offset <= dst_offset) {
+        return 0;
+    }
+    return (u64)(src_offset - dst_offset);
+}
+
+static u64 string_eq(u64 src, u64 dst) {
+    if (src == dst) {
+        return 0;
+    }
+    struct pointer* src_ptr = vm->read(src);
+    if (src_ptr == 0) {
+        return 0;
+    }
+    struct pointer* dst_ptr = vm->read(dst);
+    if (dst_ptr == 0) {
+        return 0;
+    }
+    u64 src_size = 0;
+    u64 src_offset = 0;
+    char* src_data = string_pointer_internal(src_ptr, &src_size, &src_offset);
+    if (src_data == 0) {
+        return 0;
+    }
+    u64 dst_size = 0;
+    u64 dst_offset = 0;
+    char* dst_data = string_pointer_internal(dst_ptr, &dst_size, &dst_offset);
+    if (dst_data == 0) {
+        return 0;
+    }
+    if (dst_data != src_data) {
+        return 0;
+    }
+    if (src_offset != dst_offset) {
+        return 0;
+    }
+    return (u64)(0 - 1);
+}
+
+static u64 string_ptr(u64 src, u64 dst) {
+    if (src == dst) {
+        return 0;
+    }
+    struct pointer* src_ptr = vm->read(src);
+    if (src_ptr == 0) {
+        return 0;
+    }
+    struct pointer* dst_ptr = vm->read(dst);
+    if (dst_ptr == 0) {
+        return 0;
+    }
+    u64 src_size = 0;
+    u64 src_offset = 0;
+    char* src_data = string_pointer_internal(src_ptr, &src_size, &src_offset);
+    if (src_data == 0) {
+        return 0;
+    }
+    u64 dst_size = 0;
+    u64 dst_offset = 0;
+    char* dst_data = string_pointer_internal(dst_ptr, &dst_size, &dst_offset);
+    if (dst_data == 0) {
+        return 0;
+    }
+    if (dst_data != src_data) {
+        return 0;
+    }
+    return (u64)(0 - 1);
 }
 
 static u64 string_left(u64 src, u64 shift) {
@@ -647,7 +746,10 @@ const struct string_methods string_methods_definition = {
     .put_char = string_put_char,
     .unsafe = string_unsafe,
     .size = string_size,
-    .diff = string_diff,
+    .lt = string_lt,
+    .gt = string_gt,
+    .eq = string_eq,
+    .ptr = string_ptr,
     .right = string_right,
     .left = string_left,
     .strncpy = string_strncpy
