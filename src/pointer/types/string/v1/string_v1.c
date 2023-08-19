@@ -700,7 +700,7 @@ static u64 string_strncpy(u64 src, u64 nbytes) {
     return pointer;
 }
 
-static u64 string_left_strncpy(u64 src, u64 shift) {
+static u64 string_left_strncpy(u64 src, u64 nbytes) {
     struct pointer* src_ptr = vm->read(src);
     if (src_ptr == 0) {
         return 0;
@@ -711,12 +711,12 @@ static u64 string_left_strncpy(u64 src, u64 shift) {
     if (data == 0) {
         return 0;
     }
-    if (offset < shift) {
+    if (offset < nbytes) {
         return 0;
     }
-    data -= (offset - shift);
-    struct pointer* data_ptr = virtual->alloc(shift + 1, id);
-    memcpy(data_ptr->data, data, shift); /* NOLINT */
+    data -= (offset - nbytes);
+    struct pointer* data_ptr = virtual->alloc(nbytes + 1, id);
+    memcpy(data_ptr->data, data, nbytes); /* NOLINT */
     u64 pointer = vm->alloc(data_ptr);
 #ifdef USE_GC
     list->push(&base->gc, (void*)pointer);
