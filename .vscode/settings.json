@@ -252,7 +252,7 @@
     "ghs",
     "diab"
   ],
-  "editor.formatOnSave": false,
+  "editor.formatOnSave": true,
   "editor.fontWeight": "normal",
   "cmake.additionalKits": ["${workspaceFolder}/.vscode", "${workspaceFolder}"],
   "cmake.useCMakePresets": "always",
@@ -267,7 +267,7 @@
   },
   "editor.defaultFormatter": "trunk.io",
   "[c]": {
-    "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
+    "editor.defaultFormatter": "trunk.io"
   },
   "files.watcherExclude": {
     "**/.git/objects/**": true,

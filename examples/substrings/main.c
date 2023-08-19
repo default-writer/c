@@ -40,71 +40,83 @@ int main(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();
 #endif
-    pointer->init(8);    
+    pointer->init(8);
+    u64 quit = 0;
+    char buffer[100];
     char ch = 0;
-    char buffer1[100];
-    for (int i=0; i < 100; i++) {
-        ch = (char)getchar();
-        if (ch == EOF || ch =='\n') {
-            break;
+    while (quit == 0) {
+        for (int i = 0; i < 100; i++) {
+            ch = (char)getchar();
+            if (ch == EOF || ch == '\n') {
+                buffer[i] = 0;
+                break;
+            }
+            buffer[i] = ch;
         }
-        buffer1[i] = ch;
-    }
-    u64 string_ptr = string->load((const char* )&buffer1);
-    os->putc(string_ptr);
-    char buffer2[100];
-    for (int i=0; i < 100; i++) {
-        ch = (char)getchar();
-        if (ch == EOF || ch =='\n') {
-            break;
+        u64 string_ptr = string->load((const char*)&buffer);
+        if (string->size(string_ptr) == 0) {
+            quit = 1;
+            continue;
         }
-        buffer2[i] = ch;
-    }
-    u64 pattern_ptr = string->load((const char* )&buffer2);
-    os->putc(pattern_ptr);
-#ifndef USE_GC
-    u64 gc = list->alloc();
-#endif
-#ifndef USE_GC
-    list->push(gc, string_ptr);
-#endif
-#ifndef USE_GC
-    list->push(gc, pattern_ptr);
-#endif
-    u64 size = string->size(pattern_ptr);
-    u64 string_pointer_ptr = 0;
-    u64 current_ptr = string_ptr;
-    while ((string_pointer_ptr = string->strchr(current_ptr, pattern_ptr)) != 0) {
-#ifndef USE_GC
-        list->push(gc, string_pointer_ptr);
-#endif
-        u64 match_ptr = string->match(string_pointer_ptr, pattern_ptr);
         os->putc(string_ptr);
-        u64 match_start_ptr = string->left(match_ptr, size);
-        u64 str_ncpy = string->strncpy(match_start_ptr, size);
-        u64 distance = string->diff(string_ptr, match_start_ptr);
-        u64 i = 0;
-        while (i++ < distance) {
-            printf(" ");
+        for (int i = 0; i < 100; i++) {
+            ch = (char)getchar();
+            if (ch == EOF || ch == '\n') {
+                buffer[i] = 0;
+                break;
+            }
+            buffer[i] = ch;
         }
-        os->putc(str_ncpy);
-        printf("match found at index %lld\n", distance);
+        u64 pattern_ptr = string->load((const char*)&buffer);
+        if (string->size(pattern_ptr) == 0) {
+            quit = 1;
+            continue;
+        }
+        os->putc(pattern_ptr);
 #ifndef USE_GC
-        list->push(gc, match_ptr);
-        list->push(gc, match_start_ptr);
-        list->push(gc, str_ncpy);
+        u64 gc = list->alloc();
 #endif
-        current_ptr = match_ptr;
-    }
 #ifndef USE_GC
-    u64 ptr;
-    while ((ptr = list->pop(gc)) != 0) {
-        string->free(ptr);
-    }
-    list->free(gc);
+        list->push(gc, string_ptr);
+#endif
+#ifndef USE_GC
+        list->push(gc, pattern_ptr);
+#endif
+        u64 size = string->size(pattern_ptr);
+        u64 string_pointer_ptr = 0;
+        u64 current_ptr = string_ptr;
+        while ((string_pointer_ptr = string->strchr(current_ptr, pattern_ptr)) != 0) {
+#ifndef USE_GC
+            list->push(gc, string_pointer_ptr);
+#endif
+            u64 match_ptr = string->match(string_pointer_ptr, pattern_ptr);
+            os->putc(string_ptr);
+            u64 match_start_ptr = string->left(match_ptr, size);
+            u64 str_ncpy = string->strncpy(match_start_ptr, size);
+            u64 distance = string->diff(string_ptr, match_start_ptr);
+            u64 i = 0;
+            while (i++ < distance) {
+                printf(" ");
+            }
+            os->putc(str_ncpy);
+            printf("match found at index %lld\n", distance);
+#ifndef USE_GC
+            list->push(gc, match_ptr);
+            list->push(gc, match_start_ptr);
+            list->push(gc, str_ncpy);
+#endif
+            current_ptr = match_ptr;
+        }
+#ifndef USE_GC
+        u64 ptr;
+        while ((ptr = list->pop(gc)) != 0) {
+            string->free(ptr);
+        }
+        list->free(gc);
 #else
-    pointer->gc();
+        pointer->gc();
 #endif
+    }
     pointer->destroy();
 #ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();
