@@ -39,10 +39,7 @@ static const struct memory* memory = &memory_definition;
 static u64 load_data() {
     u64 list_ptr = list->alloc();
     u64 reversed_list_ptr = list->alloc();
-    u64 file_path_ptr = os->getcwd();
-    u64 file_name_ptr = string->load("/c-substrings.txt");
-    string->strcat(file_path_ptr, file_name_ptr);
-    string->free(file_name_ptr);
+    u64 file_path_ptr = string->load("c-substrings.txt");
     u64 mode_ptr = string->load("rb");
     u64 f_ptr = file->alloc(file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
