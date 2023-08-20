@@ -8,7 +8,7 @@ export MAKEFLAGS=-j8
 
 logs="$(pwd)/logs"
 build="$(pwd)/build"
-target=c-substrings
+target="$1"
 
 [[ ! -d "${logs}" ]] && mkdir "${logs}"
 
