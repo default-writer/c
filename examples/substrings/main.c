@@ -91,7 +91,11 @@ static u64 read_data(u64 list_ptr, const char* prompt) {
         }
         data_ptr = string->load((const char*)&buffer);
     } else {
+        printf(">%s:\n", prompt);
         data_ptr = list->pop(list_ptr);
+        if (data_ptr == 0) {
+            printf("\n");
+        }
     }
     return data_ptr;
 }

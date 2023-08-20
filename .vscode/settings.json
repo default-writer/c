@@ -349,7 +349,7 @@
   "editor.indentSize": "tabSize",
   "editor.fontSize": 12,
   "screencastMode.fontSize": 20,
-  "window.zoomLevel": 0,
+  "window.zoomLevel": 2,
   "editor.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
   "editor.inlayHints.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
   "editor.codeLensFontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
@@ -440,5 +440,9 @@
   "diffEditor.experimental.showEmptyDecorations": false,
   "editor.find.seedSearchStringFromSelection": "selection",
   "search.seedOnFocus": true,
-  "search.seedWithNearestWord": true
+  "search.seedWithNearestWord": true,
+  "editor.cursorSmoothCaretAnimation": "on",
+  "workbench.list.smoothScrolling": true,
+  "editor.mouseWheelScrollSensitivity": 2,
+  "editor.smoothScrolling": true
 }
