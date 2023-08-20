@@ -61,12 +61,13 @@ static u64 list_peek(u64 ptr);
 static u64 list_pop(u64 ptr);
 static u64 list_size(u64 ptr);
 
-/* implementation */
+/* definition */
 struct list_handler {
     u64 size;
     struct list_data* list;
 };
 
+/* implementation */
 static u64 list_alloc(void) {
     struct pointer* ptr = virtual->alloc(sizeof(struct list_handler), id);
     struct list_handler* handler = ptr->data;

@@ -152,7 +152,6 @@
     "jsProfileVisualizer.cpuprofile.table": false,
     "jsProfileVisualizer.heapprofile.table": false,
     "pdf.view": false,
-    "pdf.preview": false,
     "workbench.editors.gettingStartedInput": false,
     "jupyter-notebook": false,
     "terminalEditor": true,
@@ -403,6 +402,9 @@
   "workbench.preferredLightColorTheme": "Yitzchok Light (rainglow)",
   "window.autoDetectColorScheme": true,
   "diffEditor.codeLens": true,
-  "editor.find.autoFindInSelection": "always",
-  "diffEditor.experimental.showEmptyDecorations": false
+  "editor.find.autoFindInSelection": "multiline",
+  "diffEditor.experimental.showEmptyDecorations": false,
+  "editor.find.seedSearchStringFromSelection": "selection",
+  "search.seedOnFocus": true,
+  "search.seedWithNearestWord": true
 }

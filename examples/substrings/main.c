@@ -41,6 +41,12 @@ int main(void) {
     global_statistics();
 #endif
     pointer->init(8);
+    u64 gc_ptr = list->alloc();
+    if (string->gc(gc_ptr) == 0) {
+        printf("no garbage collector for string type available\n");
+        pointer->destroy();
+        return 0;
+    }
     u64 quit = 0;
     char buffer[100];
     char ch = 0;
@@ -79,22 +85,10 @@ int main(void) {
         }
         printf(">[accepted]:\n");
         os->putc(pattern_ptr);
-#ifndef USE_GC
-        u64 gc = list->alloc();
-#endif
-#ifndef USE_GC
-        list->push(gc, string_ptr);
-#endif
-#ifndef USE_GC
-        list->push(gc, pattern_ptr);
-#endif
         u64 size = string->size(pattern_ptr);
         u64 string_pointer_ptr = 0;
         u64 current_ptr = string_ptr;
         while ((string_pointer_ptr = string->strchr(current_ptr, pattern_ptr)) != 0) {
-#ifndef USE_GC
-            list->push(gc, string_pointer_ptr);
-#endif
             u64 match_ptr = string->match(string_pointer_ptr, pattern_ptr);
             if (match_ptr == 0) {
                 break;
@@ -117,21 +111,11 @@ int main(void) {
                 }
                 printf("%s[%lld]\n", string->unsafe(str_ncpy), distance);
             }
-#ifndef USE_GC
-            list->push(gc, match_ptr);
-            list->push(gc, match_start_ptr);
-            list->push(gc, str_ncpy);
-#endif
             current_ptr = match_ptr;
         }
         printf(">[done]\n");
-#ifndef USE_GC
-        u64 ptr;
-        while ((ptr = list->pop(gc)) != 0) {
-            string->free(ptr);
-        }
-        list->free(gc);
-#else
+        list->free(gc_ptr);
+#ifdef USE_GC
         pointer->gc();
 #endif
     }

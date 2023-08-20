@@ -65,12 +65,11 @@ static const struct os_methods* os = &os_methods_definition;
 static const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
 static const struct memory* memory = &memory_definition;
 
-/* internal */
-
-/* declaration */
+/* definition */
 static u64 os_getcwd(void);
 static void os_putc(u64 ptr);
 
+/* implementation */
 static u64 os_getcwd(void) {
     char* src = memory->alloc(PATH_MAX);
     getcwd(src, PATH_MAX);
