@@ -271,6 +271,11 @@
   "[c]": {
     "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
   },
+  "[shellscript]": {
+    "editor.defaultFormatter": null,
+    "files.encoding": "utf8",
+    "files.eol": "\n"
+  },
   "files.watcherExclude": {
     "**/.git/objects/**": true,
     "**/.git/subtree-cache/**": true,

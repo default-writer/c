@@ -39,6 +39,9 @@ install="$1"
 
 case "${install}" in
 
+    *)
+        ;;
+
     "--help") # [optional] shows command desctiption
         help
         ;;

@@ -24,6 +24,13 @@ lint:
     - trivy@0.44.0
     - trufflehog@3.46.3
     - yamllint@1.32.0
+
+lint:
+  ignore:
+    - linters: [ALL]
+      paths:
+        - bin
+
 runtimes:
   enabled:
     - go@1.19.5
