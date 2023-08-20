@@ -444,5 +444,6 @@
   "editor.cursorSmoothCaretAnimation": "on",
   "workbench.list.smoothScrolling": true,
   "editor.mouseWheelScrollSensitivity": 2,
-  "editor.smoothScrolling": true
+  "editor.smoothScrolling": true,
+  "terminal.integrated.confirmOnKill": "never"
 }
