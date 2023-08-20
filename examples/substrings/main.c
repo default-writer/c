@@ -100,9 +100,10 @@ static u64 read_data(u64 list_ptr, const char* prompt) {
     return data_ptr;
 }
 
+const char* ascii_code = "\x1b[1;32m";
+const char* reset_code = "\x1b[0m";
+
 static void launch_game(void) {
-    const char* ascii_code = "\x1b[1;32m";
-    const char* reset_code = "\x1b[0m";
     printf("%syou won!%s\n", ascii_code, reset_code);
 }
 
@@ -134,7 +135,7 @@ int main(void) {
             printf(">[quit]\n");
             continue;
         }
-        printf(">[accepted]:\n");
+        printf(">[%saccepted%s]:\n", ascii_code, reset_code);
         os->putc(string_ptr);
         u64 pattern_ptr = read_data(list_data_ptr, "[pattern]");
         if (string->size(pattern_ptr) == 0) {
@@ -142,7 +143,7 @@ int main(void) {
             printf(">[quit]\n");
             continue;
         }
-        printf(">[accepted]:\n");
+        printf(">[%saccepted%s]:\n", ascii_code, reset_code);
         os->putc(pattern_ptr);
         u64 size = string->size(pattern_ptr);
         u64 string_pointer_ptr = 0;
