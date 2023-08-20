@@ -207,9 +207,6 @@
   "C_Cpp.intelliSenseEngine": "disabled",
   "C_Cpp.default.cStandard": "c89",
   "cmake.allowUnsupportedPresetsVersions": true,
-  "cmake.environment": {
-    "UI_MODE": ""
-  },
   "cmake.debugConfig": {
     "MIMode": "gdb",
     "miDebuggerPath": "/usr/bin/gdb",
@@ -223,10 +220,10 @@
     "console": "integratedTerminal",
     "cwd": "${workspaceRoot}/cmake",
     "environment": [
-      {
-        "name": "UI_MODE",
-        "value": "--ui"
-      }
+      // {
+      //   "name": "UI_MODE",
+      //   "value": "--ui"
+      // }
     ]
   },
   "cmake.autoSelectActiveFolder": true,
