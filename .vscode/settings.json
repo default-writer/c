@@ -18,19 +18,28 @@
       "h": "./bin/docs.sh"
     }
   ],
-  "koverage.coverageFileNames": ["lcov.info"],
-  "coverage-gutters.coverageFileNames": ["lcov.info"],
+  "koverage.coverageFileNames": [
+    "lcov.info"
+  ],
+  "coverage-gutters.coverageFileNames": [
+    "lcov.info"
+  ],
   "coverage-gutters.coverageBaseDir": "coverage",
   "coverage-gutters.showLineCoverage": true,
   "coverage-gutters.showGutterCoverage": false,
   "cSpell.checkOnlyEnabledFileTypes": true,
-  "cSpell.enableFiletypes": ["c", "!jsonc"],
+  "cSpell.enableFiletypes": [
+    "c",
+    "!jsonc"
+  ],
   "files.autoSave": "off",
   "files.associations": {
     "*.h": "c",
     "*.c": "c"
   },
-  "files.watcherInclude": ["."],
+  "files.watcherInclude": [
+    "."
+  ],
   "files.exclude": {},
   "pdf-preview.default.scale": "page-fit",
   "cmake.showConsoleAutomatically": true,
@@ -177,15 +186,30 @@
   },
   "presentation-mode.configBackup": {
     "editor.fontSize": 12,
-    "editor.matchBrackets": "near"
+    "editor.matchBrackets": "near",
+    "editor.minimap.enabled": false,
+    "workbench.activityBar.visible": true,
+    "workbench.statusBar.visible": true,
+    "workbench.colorTheme": "Yitzchok (rainglow)",
+    "workbench.colorCustomizations": {
+      "[Yitzchok (rainglow)]": {}
+    },
+    "window.zoomLevel": 0
   },
-  "grammarly.files.include": ["**/*.md"],
-  "grammarly.files.exclude": ["**/*.txt"],
+  "grammarly.files.include": [
+    "**/*.md"
+  ],
+  "grammarly.files.exclude": [
+    "**/*.txt"
+  ],
   "C_Cpp.dimInactiveRegions": true,
   "C_Cpp.errorSquiggles": "disabled",
   "C_Cpp.intelliSenseEngine": "disabled",
   "C_Cpp.default.cStandard": "c89",
   "cmake.allowUnsupportedPresetsVersions": true,
+  "cmake.environment": {
+    "UI_MODE": ""
+  },
   "cmake.debugConfig": {
     "MIMode": "gdb",
     "miDebuggerPath": "/usr/bin/gdb",
@@ -256,7 +280,10 @@
   ],
   "editor.formatOnSave": true,
   "editor.fontWeight": "normal",
-  "cmake.additionalKits": ["${workspaceFolder}/.vscode", "${workspaceFolder}"],
+  "cmake.additionalKits": [
+    "${workspaceFolder}/.vscode",
+    "${workspaceFolder}"
+  ],
   "cmake.useCMakePresets": "always",
   "emeraldwalk.runonsave": {
     "commands": [
@@ -318,7 +345,9 @@
   "clang-format.style": "{BasedOnStyle: WebKit, IndentWidth: 4, BreakBeforeBraces: Attach}",
   "clang-format.language.c.enable": true,
   "clang-tidy.lintOnSave": true,
-  "clang-tidy.compilerArgs": ["-I/usr/include/gtk-4.0"],
+  "clang-tidy.compilerArgs": [
+    "-I/usr/include/gtk-4.0"
+  ],
   "editor.tabSize": 4,
   "editor.indentSize": "tabSize",
   "editor.fontSize": 12,
