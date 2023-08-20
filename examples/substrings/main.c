@@ -40,84 +40,87 @@ int main(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();
 #endif
-    pointer->init(8);
-    u64 gc_ptr = list->alloc();
-    if (string->gc(gc_ptr) == 0) {
-        printf("no garbage collector for string type available\n");
-        pointer->destroy();
-        return 0;
-    }
-    u64 quit = 0;
-    char buffer[100];
-    char ch = 0;
-    while (quit == 0) {
-        memset(&buffer, 0, 100);
-        printf(">[string]:\n");
-        for (int i = 0; i < 100; i++) {
-            ch = (char)getchar();
-            if (ch == EOF || ch == '\n') {
-                break;
-            }
-            buffer[i] = ch;
+    const char* ui_mode = getenv("UI_MODE");
+    if (ui_mode != 0 && strcmp(ui_mode, "--ui") == 0) {
+        pointer->init(8);
+        u64 gc_ptr = list->alloc();
+        if (string->gc(gc_ptr) == 0) {
+            printf("no garbage collector for string type available\n");
+            pointer->destroy();
+            return 0;
         }
-        u64 string_ptr = string->load((const char*)&buffer);
-        if (string->size(string_ptr) == 0) {
-            quit = 1;
-            printf(">[quit]\n");
-            continue;
-        }
-        printf(">[accepted]:\n");
-        os->putc(string_ptr);
-        printf(">[pattern]:\n");
-        memset(&buffer, 0, 100);
-        for (int i = 0; i < 100; i++) {
-            ch = (char)getchar();
-            if (ch == EOF || ch == '\n') {
-                break;
-            }
-            buffer[i] = ch;
-        }
-        u64 pattern_ptr = string->load((const char*)&buffer);
-        if (string->size(pattern_ptr) == 0) {
-            quit = 1;
-            printf(">[quit]\n");
-            continue;
-        }
-        printf(">[accepted]:\n");
-        os->putc(pattern_ptr);
-        u64 size = string->size(pattern_ptr);
-        u64 string_pointer_ptr = 0;
-        u64 current_ptr = string_ptr;
-        while ((string_pointer_ptr = string->strchr(current_ptr, pattern_ptr)) != 0) {
-            u64 match_ptr = string->match(string_pointer_ptr, pattern_ptr);
-            if (match_ptr == 0) {
-                break;
-            }
-            if (string->lessthan(string_pointer_ptr, match_ptr)) {
-                u64 match_start_ptr = string->left(match_ptr, size);
-                if (match_start_ptr == 0) {
+        u64 quit = 0;
+        char buffer[100];
+        char ch = 0;
+        while (quit == 0) {
+            memset(&buffer, 0, 100);
+            printf(">[string]:\n");
+            for (int i = 0; i < 100; i++) {
+                ch = (char)getchar();
+                if (ch == EOF || ch == '\n') {
                     break;
                 }
-                u64 distance = string->lessthan(string_ptr, match_start_ptr);
-                if (distance > 0) {
-                    u64 i = 0;
-                    while (i++ < distance) {
-                        printf(" ");
+                buffer[i] = ch;
+            }
+            u64 string_ptr = string->load((const char*)&buffer);
+            if (string->size(string_ptr) == 0) {
+                quit = 1;
+                printf(">[quit]\n");
+                continue;
+            }
+            printf(">[accepted]:\n");
+            os->putc(string_ptr);
+            printf(">[pattern]:\n");
+            memset(&buffer, 0, 100);
+            for (int i = 0; i < 100; i++) {
+                ch = (char)getchar();
+                if (ch == EOF || ch == '\n') {
+                    break;
+                }
+                buffer[i] = ch;
+            }
+            u64 pattern_ptr = string->load((const char*)&buffer);
+            if (string->size(pattern_ptr) == 0) {
+                quit = 1;
+                printf(">[quit]\n");
+                continue;
+            }
+            printf(">[accepted]:\n");
+            os->putc(pattern_ptr);
+            u64 size = string->size(pattern_ptr);
+            u64 string_pointer_ptr = 0;
+            u64 current_ptr = string_ptr;
+            while ((string_pointer_ptr = string->strchr(current_ptr, pattern_ptr)) != 0) {
+                u64 match_ptr = string->match(string_pointer_ptr, pattern_ptr);
+                if (match_ptr == 0) {
+                    break;
+                }
+                if (string->lessthan(string_pointer_ptr, match_ptr)) {
+                    u64 match_start_ptr = string->left(match_ptr, size);
+                    if (match_start_ptr == 0) {
+                        break;
                     }
+                    u64 distance = string->lessthan(string_ptr, match_start_ptr);
+                    if (distance > 0) {
+                        u64 i = 0;
+                        while (i++ < distance) {
+                            printf(" ");
+                        }
+                    }
+                    u64 str_ncpy = string->strncpy(match_start_ptr, size);
+                    if (str_ncpy == 0) {
+                        break;
+                    }
+                    printf("%s[%lld]\n", string->unsafe(str_ncpy), distance);
                 }
-                u64 str_ncpy = string->strncpy(match_start_ptr, size);
-                if (str_ncpy == 0) {
-                    break;
-                }
-                printf("%s[%lld]\n", string->unsafe(str_ncpy), distance);
+                current_ptr = match_ptr;
             }
-            current_ptr = match_ptr;
-        }
-        printf(">[done]\n");
-        list->release(gc_ptr);
+            printf(">[done]\n");
+            list->release(gc_ptr);
 #ifdef USE_GC
-        pointer->gc();
+            pointer->gc();
 #endif
+        }
     }
     pointer->destroy();
 #ifdef USE_MEMORY_DEBUG_INFO

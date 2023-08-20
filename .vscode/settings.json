@@ -268,11 +268,14 @@
     ]
   },
   "editor.defaultFormatter": "trunk.io",
+  "files.insertFinalNewline": true,
   "[c]": {
-    "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
+    "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
+    "files.insertFinalNewline": true,
   },
   "[shellscript]": {
     "editor.defaultFormatter": null,
+    "files.insertFinalNewline": true,
     "files.encoding": "utf8",
     "files.eol": "\n"
   },
