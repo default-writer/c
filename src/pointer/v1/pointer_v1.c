@@ -81,7 +81,7 @@ void pointer_data_destroy(struct pointer_data** ctx);
 static struct pointer* pointer_vm_alloc(u64 size, u64 id);
 static void pointer_vm_realloc(struct pointer* ptr, u64 size);
 static void pointer_vm_free(struct pointer* ptr);
-static void pointer_vm_cleanup(struct list_data** current);
+static void pointer_vm_release(struct list_data** current);
 
 static void pointer_push(u64 ptr);
 static u64 pointer_peek(void);
@@ -184,7 +184,7 @@ static void pointer_free_internal(u64 ptr) {
     }
 }
 
-static void pointer_vm_cleanup(struct list_data** current) {
+static void pointer_vm_release(struct list_data** current) {
     u64 ptr = 0;
     while ((ptr = (u64)list->pop(current)) != 0) {
         pointer_free_internal(ptr);
@@ -283,7 +283,7 @@ static void pointer_destroy(void) {
 
 #ifdef USE_GC
 static void pointer_gc(void) {
-    pointer_vm_cleanup(&base->gc);
+    pointer_vm_release(&base->gc);
 }
 #endif
 
@@ -329,7 +329,7 @@ const struct pointer_vm_methods pointer_vm_methods_definition = {
     .alloc = pointer_vm_alloc,
     .realloc = pointer_vm_realloc,
     .free = pointer_vm_free,
-    .cleanup = pointer_vm_cleanup
+    .release = pointer_vm_release
 };
 
 const struct pointer_methods pointer_methods_definition = {

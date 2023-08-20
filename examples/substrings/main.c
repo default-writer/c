@@ -114,7 +114,7 @@ int main(void) {
             current_ptr = match_ptr;
         }
         printf(">[done]\n");
-        list->free(gc_ptr);
+        list->release(gc_ptr);
 #ifdef USE_GC
         pointer->gc();
 #endif

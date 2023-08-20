@@ -76,7 +76,7 @@ struct pointer_vm_methods {
     struct pointer* (*alloc)(u64 size, u64 id);
     void (*realloc)(struct pointer* ptr, u64 size);
     void (*free)(struct pointer* ptr);
-    void (*cleanup)(struct list_data** current);
+    void (*release)(struct list_data** current);
 };
 
 struct pointer_methods {

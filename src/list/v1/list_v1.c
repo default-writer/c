@@ -49,9 +49,9 @@ static void _delete(struct list_v1* ptr) {
     memory->free(ptr, _size);
 }
 
-/* gets chunk's next item. external code ensures ptr is not 0 */
+/* ptr is not 0 */
 static struct list_v1* list_next(struct list_v1* ptr) {
-    /* external code ensures prt is not 0 */
+    /* ptr is not 0 */
     return ptr->next;
 }
 

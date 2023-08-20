@@ -62,15 +62,15 @@ static void _delete(struct list_data* ptr) {
     memory->free(ptr, _size);
 }
 
-/* gets chunk's next item. external code ensures ptr is not 0 */
+/* ptr is not 0 */
 static struct list_data* list_next(struct list_data* ptr) {
-    /* external code ensures prt is not 0 */
+    /* ptr is not 0 */
     return ptr->next;
 }
 
-/* gets chunk's payload. external code ensures ptr is not 0 */
+/* ptr is not 0 */
 static void* list_data(struct list_data* ptr) {
-    /* external code ensures prt is not 0 */
+    /* ptr is not 0 */
     return ptr->data;
 }
 

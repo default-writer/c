@@ -349,7 +349,7 @@ RX_TEST_CASE(list_tests, test_alloc_and_prev_next_equals_0, .fixture = test_fixt
     list->push(ctx, tmp);
     /* peeks from the list */
     const struct list_v1* head = list->peek(ctx);
-    /* ensures peek does data cleanup */
+    /* ensures peek does data release */
     RX_ASSERT(head->prev == 0);
     /* pops from the list */
     struct list_v1* current = list->pop(ctx);
@@ -360,9 +360,9 @@ RX_TEST_CASE(list_tests, test_alloc_and_prev_next_equals_0, .fixture = test_fixt
     /* ensures data is added to the list */
     RX_ASSERT(head_payload == payload);
 #ifdef USE_MEMORY_CLEANUP
-    /* ensures peek does data cleanup */
+    /* ensures peek does data release */
     RX_ASSERT(prev == 0);
-    /* ensures peek does data cleanup */
+    /* ensures peek does data release */
     RX_ASSERT(next == 0);
 #endif
 }

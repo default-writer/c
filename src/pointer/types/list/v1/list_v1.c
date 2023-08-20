@@ -80,6 +80,16 @@ static u64 list_alloc(void) {
     return data;
 }
 
+static void list_release(u64 ptr) {
+    struct pointer* data_ptr = vm->read_type(ptr, id);
+    if (data_ptr == 0) {
+        return;
+    }
+    struct list_handler* handler = data_ptr->data;
+    handler->size = 0;
+    virtual->release(&handler->list);
+}
+
 static void list_free(u64 ptr) {
     struct pointer* data_ptr = vm->read_type(ptr, id);
     if (data_ptr == 0) {
@@ -91,7 +101,7 @@ static void list_free(u64 ptr) {
 static void list_vm_free(struct pointer* ptr) {
     struct list_handler* handler = ptr->data;
     handler->size = 0;
-    virtual->cleanup(&handler->list);
+    virtual->release(&handler->list);
     list->destroy(&handler->list);
     virtual->free(ptr);
 }
@@ -167,7 +177,8 @@ const struct list_methods list_methods_definition = {
     .push = list_push,
     .peek = list_peek,
     .pop = list_pop,
-    .size = list_size
+    .size = list_size,
+    .release = list_release
 };
 
 #ifndef ATTRIBUTE
