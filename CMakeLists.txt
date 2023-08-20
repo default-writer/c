@@ -507,6 +507,13 @@ FILE(WRITE ${CMAKE_BINARY_DIR}/input.txt
     "fopen<\"input.txt\",\"rb\">f (? f==0 perror<\"file not found\" exit<1 : print<\"all ok\")"
 )
 
+FILE(WRITE ${CMAKE_BINARY_DIR}/c-substrings.txt
+    "asadadasdasaasdadsdaasdadsad\n"
+    "sda\n"
+    "aadada\n"
+    "aa\n"
+)
+
 if(TARGETS)
 
     get_property(main_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
