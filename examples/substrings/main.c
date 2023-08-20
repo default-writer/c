@@ -100,6 +100,12 @@ static u64 read_data(u64 list_ptr, const char* prompt) {
     return data_ptr;
 }
 
+static void launch_game(void) {
+    const char* ascii_code = "\x1b[1;32m";
+    const char* reset_code = "\x1b[0m";
+    printf("%syou won!%s\n", ascii_code, reset_code);
+}
+
 int main(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();
@@ -114,9 +120,16 @@ int main(void) {
     u64 list_data_ptr = load_data();
     list->push(gc_ptr, list_data_ptr);
     u64 quit = 0;
+    u64 secret_ptr = string->load("tic tak toe");
     while (quit == 0) {
         u64 string_ptr = read_data(list_data_ptr, "[string]");
         if (string->size(string_ptr) == 0) {
+            quit = 1;
+            printf(">[quit]\n");
+            continue;
+        }
+        if (string->strcmp(string_ptr, secret_ptr) != 0) {
+            launch_game();
             quit = 1;
             printf(">[quit]\n");
             continue;
