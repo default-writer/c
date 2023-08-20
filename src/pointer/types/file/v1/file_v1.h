@@ -26,14 +26,21 @@
 #ifndef _POINTER_TYPES_FILE_H_
 #define _POINTER_TYPES_FILE_H_
 
-#include "pointer/types/data/v1/data_v1.h"
 #include "std/common.h"
 
-/*! @file file_v1.h
- *  @brief C API / file
- *  This header file contains definition of file type methods.
- */
+/*!
+    @file file_v1.h
+    @brief C API / file
+    @image latex global-distribution.png width=5cm
 
+    ```
+    struct file_methods {
+        u64 (*alloc)(u64 file_path_ptr, u64 mode_ptr);
+        void (*free)(u64 ptr);
+        u64 (*data)(u64 ptr);
+    };
+    ```
+*/
 struct file_methods {
     u64 (*alloc)(u64 file_path_ptr, u64 mode_ptr);
     void (*free)(u64 ptr);

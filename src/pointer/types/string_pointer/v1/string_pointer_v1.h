@@ -26,7 +26,6 @@
 #ifndef _POINTER_TYPES_STRING_POINTER_H_
 #define _POINTER_TYPES_STRING_POINTER_H_
 
-#include "pointer/v1/pointer_v1.h"
 #include "std/common.h"
 
 /*! @file string_pointer_v1.h

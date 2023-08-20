@@ -26,6 +26,7 @@
 #include "pointer/types/file/v1/file_v1.h"
 #include "common/alloc.h"
 #include "list-micro/data.h"
+#include "pointer/types/data/v1/data_v1.h"
 #include "pointer/v1/pointer_v1.h"
 #include "vm/v1/vm_v1.h"
 
@@ -148,6 +149,7 @@ static void INIT init() {
 }
 
 /* public */
+/*! definition (initialization) of file_methods structure */
 const struct file_methods file_methods_definition = {
     .alloc = file_alloc,
     .data = file_data,

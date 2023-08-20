@@ -2,18 +2,18 @@
 
 - virtual machine implementation on C
 
-    1. C API
-    2. memory management
-    3. garbage collection
+  1. C API
+  2. memory management
+  3. garbage collection
 
 - development environment:
 
-    1. WSL2/devcontainers
-    2. Ubuntu 22.04.3 LTS
+  1. WSL2/devcontainers
+  2. Ubuntu 22.04.3 LTS
 
 - C API generated docs (doxygen):
 
-    1. [docs](./docs/refman.pdf)
+  1. [docs](./docs/refman.pdf)
 
 ![ubuntu logo](./resources/icons8-ubuntu-96.png)
 
@@ -23,19 +23,19 @@
 
 - streaming channels
 
-    1. [twitch.tv](https://www.twitch.tv/defaultwriter/videos)
-    2. [youtube.com](https://www.youtube.com/channel/UCrtPCqirYXdA2gYG8NxbTjA)
+  1. [twitch.tv](https://www.twitch.tv/defaultwriter/videos)
+  2. [youtube.com](https://www.youtube.com/channel/UCrtPCqirYXdA2gYG8NxbTjA)
 
 ## updates
 
 - 2023
 
-    1. added v1 core Virtual Machine (vm1) with types:
-    2. added support including:
+  1. added v1 core Virtual Machine (vm1) with types:
+  2. added support including:
 
-        1. file IO
-        2. string manupulation methods
-        3. search
+     1. file IO
+     2. string manupulation methods
+     3. search
 
 ## features
 
@@ -86,7 +86,7 @@ UI_MODE=--ui ./build/gtk-experiment1
 
 - added GC implementation
 - added several list implementations
-  
+
 ### 2022
 
 - playing around with visibility in class declarations
@@ -109,6 +109,8 @@ UI_MODE=--ui ./build/gtk-experiment1
 ## resources
 
 - [ubuntu](https://icons8.com/icon/63208/ubuntu") icon by [icons8](https://icons8.com)
+- [logistics icons](https://www.flaticon.com/free-icons/logistics) Logistics icons created by [vectorsmarket15](https://www.flaticon.com/authors/vectorsmarket15) - [Flaticon](https://www.flaticon.com)
+- [ecommerce icons](https://www.flaticon.com/free-icons/ecommerce) Ecommerce icons created by [vectorsmarket15](https://www.flaticon.com/authors/vectorsmarket15) - [Flaticon](https://www.flaticon.com)
 
 ## links
 

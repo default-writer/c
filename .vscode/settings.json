@@ -32,7 +32,7 @@
   },
   "files.watcherInclude": ["."],
   "files.exclude": {},
-  "pdf-preview.default.scale": "page-width",
+  "pdf-preview.default.scale": "page-fit",
   "cmake.showConsoleAutomatically": true,
   "cmake.configureOnStart": true,
   "cmake.sourceDirectory": "${workspaceFolder}",
@@ -316,7 +316,7 @@
   "editor.indentSize": "tabSize",
   "editor.fontSize": 12,
   "screencastMode.fontSize": 20,
-  "window.zoomLevel": 2,
+  "window.zoomLevel": 0,
   "editor.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
   "editor.inlayHints.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
   "editor.codeLensFontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
@@ -396,5 +396,13 @@
     "[Yitzchok (rainglow)]": {}
   },
   "workbench.quickOpen.closeOnFocusLost": false,
-  "twitch.fontSize": "12px"
+  "twitch.fontSize": "12px",
+  "pdf-preview.default.sidebar": true,
+  "workbench.preferredDarkColorTheme": "Yitzchok (rainglow)",
+  "workbench.preferredHighContrastColorTheme": "Yitzchok Contrast (rainglow)",
+  "workbench.preferredLightColorTheme": "Yitzchok Light (rainglow)",
+  "window.autoDetectColorScheme": true,
+  "diffEditor.codeLens": true,
+  "editor.find.autoFindInSelection": "always",
+  "diffEditor.experimental.showEmptyDecorations": false
 }

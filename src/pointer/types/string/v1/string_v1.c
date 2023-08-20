@@ -80,6 +80,8 @@ static u64 string_left(u64 src, u64 shift);
 static u64 string_strncpy(u64 src, u64 nbytes);
 static u64 string_left_strncpy(u64 src, u64 nbytes);
 static u64 string_right(u64 src, u64 shift);
+static u64 string_move_left(u64 src, u64 shift);
+static u64 string_move_right(u64 src, u64 shift);
 
 /* definition */
 extern const struct memory memory_definition;
@@ -724,7 +726,7 @@ static u64 string_left_strncpy(u64 src, u64 nbytes) {
     return pointer;
 }
 
-static u64 string_right(u64 src, u64 shift) {
+static u64 string_right(u64 src, u64 nbytes) {
     struct pointer* src_ptr = vm->read(src);
     if (src_ptr == 0) {
         return 0;
@@ -735,18 +737,59 @@ static u64 string_right(u64 src, u64 shift) {
     if (data == 0) {
         return 0;
     }
-    if (offset + shift >= size) {
+    if (offset + nbytes >= size) {
         return 0;
     }
     struct pointer* data_ptr = virtual->alloc(sizeof(struct string_reference), TYPE_STRING_POINTER);
     struct string_reference* ref = data_ptr->data;
     ref->address = src;
-    ref->offset = shift;
+    ref->offset = nbytes;
     u64 pointer = vm->alloc(data_ptr);
 #ifdef USE_GC
     list->push(&base->gc, (void*)pointer);
 #endif
     return pointer;
+}
+
+static u64 string_move_left(u64 src, u64 nbytes) {
+    struct pointer* src_ptr = vm->read(src);
+    if (src_ptr == 0) {
+        return 0;
+    }
+    if (src_ptr->id != TYPE_STRING_POINTER) {
+        return 0;
+    }
+    u64 size = 0;
+    u64 offset = 0;
+    char* data = string_pointer_internal(src_ptr, &size, &offset);
+    if (data == 0) {
+        return 0;
+    }
+    if (offset < nbytes) {
+        return 0;
+    }
+    struct string_reference* ref = src_ptr->data;
+    ref->offset -= nbytes;
+    return (u64)(0 - 1);
+}
+
+static u64 string_move_right(u64 src, u64 nbytes) {
+    struct pointer* src_ptr = vm->read(src);
+    if (src_ptr == 0) {
+        return 0;
+    }
+    u64 size = 0;
+    u64 offset = 0;
+    char* data = string_pointer_internal(src_ptr, &size, &offset);
+    if (data == 0) {
+        return 0;
+    }
+    if (offset + nbytes >= size) {
+        return 0;
+    }
+    struct string_reference* ref = src_ptr->data;
+    ref->offset += nbytes;
+    return (u64)(0 - 1);
 }
 
 static const struct vm_type type_definition = {
