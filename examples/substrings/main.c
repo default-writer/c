@@ -72,24 +72,29 @@ static u64 load_data() {
     return reversed_list_ptr;
 }
 
+static u64 read_input(const char* prompt) {
+    char buffer[100];
+    global_memset(&buffer, 0, 100);
+    printf(">%s:\n", prompt);
+    char ch = 0;
+    for (int i = 0; i < 100; i++) {
+        ch = (char)getchar();
+        if (ch == EOF || ch == '\n') {
+            break;
+        }
+        buffer[i] = ch;
+    }
+    u64 data_ptr = string->load((const char*)&buffer);
+    return data_ptr;
+}
+
 static u64 read_data(u64 list_ptr, const char* prompt) {
     u64 data_ptr = 0;
     u64 ui_mode_ptr = string->load("UI_MODE");
     u64 mode_ptr = string->load("--ui");
     u64 value_ptr = os->getenv(ui_mode_ptr);
     if (ui_mode_ptr != 0 && string->strcmp(value_ptr, mode_ptr) != 0) {
-        char buffer[100];
-        global_memset(&buffer, 0, 100);
-        printf(">%s:\n", prompt);
-        char ch = 0;
-        for (int i = 0; i < 100; i++) {
-            ch = (char)getchar();
-            if (ch == EOF || ch == '\n') {
-                break;
-            }
-            buffer[i] = ch;
-        }
-        data_ptr = string->load((const char*)&buffer);
+        data_ptr = read_input(prompt);
     } else {
         printf(">%s:\n", prompt);
         data_ptr = list->pop(list_ptr);
@@ -104,7 +109,22 @@ const char* ascii_code = "\x1b[1;32m";
 const char* reset_code = "\x1b[0m";
 
 static void launch_game(void) {
-    printf("%syou won!%s\n", ascii_code, reset_code);
+    u64 quit = 0;
+    u64 answer = string->load("42");
+    u64 message = string->load("it was a joke, now you will play in guess the number game!");
+    os->putc(message);
+
+    const char* prompt = "guess the number";
+
+    while (quit == 0) {
+        u64 data_ptr = read_input(prompt);
+        if (string->strcmp(data_ptr, answer) != 0) {
+            quit = 1;
+            printf("%syou won!%s\n", ascii_code, reset_code);
+            continue;
+        }
+        printf("%syou are wrong! try again!%s\n", ascii_code, reset_code);
+    }
 }
 
 int main(void) {
@@ -130,9 +150,8 @@ int main(void) {
             continue;
         }
         if (string->strcmp(string_ptr, secret_ptr) != 0) {
+            printf(">[%sentering secret chat%s]\n", ascii_code, reset_code);
             launch_game();
-            quit = 1;
-            printf(">[quit]\n");
             continue;
         }
         printf(">[%saccepted%s]:\n", ascii_code, reset_code);
