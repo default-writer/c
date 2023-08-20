@@ -77,10 +77,12 @@ static u64 load_data() {
 
 static u64 read_data(u64 list_ptr, const char* prompt) {
     u64 data_ptr = 0;
-    const char* ui_mode = getenv("UI_MODE");
-    if (ui_mode != 0 && strcmp(ui_mode, "--ui") == 0) {
+    u64 ui_mode_ptr = string->load("UI_MODE");
+    u64 value_ptr = os->getenv(ui_mode_ptr);
+    u64 mode_ptr = string->load("--ui");
+    if (ui_mode_ptr != 0 && string->strcmp(value_ptr, mode_ptr) != 0) {
         char buffer[100];
-        memset(&buffer, 0, 100);
+        global_memset(&buffer, 0, 100);
         printf(">%s:\n", prompt);
         char ch = 0;
         for (int i = 0; i < 100; i++) {
@@ -156,12 +158,12 @@ int main(void) {
             }
             current_ptr = match_ptr;
         }
-        printf(">[done]\n");
-        list->release(gc_ptr);
-#ifdef USE_GC
-        pointer->gc();
-#endif
     }
+    printf(">[done]\n");
+    list->release(gc_ptr);
+#ifdef USE_GC
+    pointer->gc();
+#endif
     pointer->destroy();
 #ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();

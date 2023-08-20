@@ -84,6 +84,7 @@ static u64 string_left_strncpy(u64 src, u64 nbytes);
 static u64 string_right(u64 src, u64 shift);
 static u64 string_move_left(u64 src, u64 shift);
 static u64 string_move_right(u64 src, u64 shift);
+static u64 string_strcmp(u64 src, u64 dest);
 
 /* definition */
 extern const struct memory memory_definition;
@@ -839,6 +840,36 @@ static u64 string_move_right(u64 src, u64 nbytes) {
     return (u64)(0 - 1);
 }
 
+static u64 string_strcmp(u64 src, u64 dest) {
+    if (src == dest) {
+        return 0;
+    }
+    struct pointer* src_ptr = vm->read(src);
+    if (src_ptr == 0) {
+        return 0;
+    }
+    u64 src_size = 0;
+    u64 src_offset = 0;
+    char* src_data = string_pointer_internal(src_ptr, &src_size, &src_offset);
+    if (src_data == 0) {
+        return 0;
+    }
+    struct pointer* dest_ptr = vm->read(dest);
+    if (src_ptr == 0) {
+        return 0;
+    }
+    u64 dest_size = 0;
+    u64 dest_offset = 0;
+    char* dest_data = string_pointer_internal(dest_ptr, &dest_size, &dest_offset);
+    if (dest_data == 0) {
+        return 0;
+    }
+    if (strcmp(src_data, dest_data) != 0) {
+        return 0;
+    }
+    return (u64)(0 - 1);
+}
+
 static const struct vm_type type_definition = {
     .free = string_vm_free
 };
@@ -871,7 +902,9 @@ const struct string_methods string_methods_definition = {
     .left_strncpy = string_left_strncpy,
     .right = string_right,
     .move_left = string_move_left,
-    .move_right = string_move_right
+    .move_right = string_move_right,
+    .strcmp = string_strcmp
+
 };
 
 #ifndef ATTRIBUTE

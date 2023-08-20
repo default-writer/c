@@ -56,6 +56,7 @@ struct string_methods {
     u64 (*right)(u64 src, u64 offset);
     u64 (*move_left)(u64 src, u64 nbytes);
     u64 (*move_right)(u64 src, u64 nbytes);
+    u64 (*strcmp)(u64 src, u64 dest);
 };
 
 #endif /* _POINTER_TYPES_STRING_H_ */

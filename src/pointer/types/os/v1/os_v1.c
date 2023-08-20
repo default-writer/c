@@ -52,6 +52,7 @@ extern const struct object_methods object_methods_definition;
 extern const struct os_methods os_methods_definition;
 extern const struct string_pointer_methods string_pointer_methods_definition;
 extern const struct memory memory_definition;
+extern const struct vm_methods vm_methods_definition;
 
 /* definition */
 static const struct pointer_methods* pointer = &pointer_methods_definition;
@@ -64,12 +65,27 @@ static const struct object_methods* object = &object_methods_definition;
 static const struct os_methods* os = &os_methods_definition;
 static const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
 static const struct memory* memory = &memory_definition;
+static const struct vm_methods* vm = &vm_methods_definition;
 
 /* definition */
+static u64 os_getenv(u64 name);
 static u64 os_getcwd(void);
 static void os_putc(u64 ptr);
 
 /* implementation */
+static u64 os_getenv(u64 name) {
+    if (name == 0) {
+        return 0;
+    }
+    struct pointer* name_ptr = vm->read_type(name, TYPE_STRING);
+    if (name_ptr == 0) {
+        return 0;
+    }
+    const char* name_data = name_ptr->data;
+    u64 value = string->load(getenv(name_data));
+    return value;
+}
+
 static u64 os_getcwd(void) {
     char* src = memory->alloc(PATH_MAX);
     getcwd(src, PATH_MAX);
@@ -88,6 +104,7 @@ static void os_putc(u64 ptr) {
 
 /* public */
 const struct os_methods os_methods_definition = {
+    .getenv = os_getenv,
     .getcwd = os_getcwd,
     .putc = os_putc
 };

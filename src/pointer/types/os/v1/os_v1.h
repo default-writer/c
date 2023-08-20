@@ -33,6 +33,7 @@
  */
 
 struct os_methods {
+    u64 (*getenv)(u64 name);
     u64 (*getcwd)(void);
     void (*putc)(u64 ptr);
 };
