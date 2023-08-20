@@ -78,8 +78,8 @@ static u64 load_data() {
 static u64 read_data(u64 list_ptr, const char* prompt) {
     u64 data_ptr = 0;
     u64 ui_mode_ptr = string->load("UI_MODE");
-    u64 value_ptr = os->getenv(ui_mode_ptr);
     u64 mode_ptr = string->load("--ui");
+    u64 value_ptr = os->getenv(ui_mode_ptr);
     if (ui_mode_ptr != 0 && string->strcmp(value_ptr, mode_ptr) != 0) {
         char buffer[100];
         global_memset(&buffer, 0, 100);
