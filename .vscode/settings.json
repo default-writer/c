@@ -170,7 +170,7 @@
   "editor.matchBrackets": "near",
   "presentation-mode.active": {
     "commands": [],
-    "editor.fontSize": 12,
+    "editor.fontSize": 14,
     "editor.matchBrackets": "near",
     "editor.minimap.enabled": false,
     "workbench.activityBar.visible": true,
@@ -185,7 +185,7 @@
     "window.zoomLevel": 0
   },
   "presentation-mode.configBackup": {
-    "editor.fontSize": 12,
+    "editor.fontSize": 14,
     "editor.matchBrackets": "near",
     "editor.minimap.enabled": false,
     "workbench.activityBar.visible": true,
@@ -347,9 +347,9 @@
   ],
   "editor.tabSize": 4,
   "editor.indentSize": "tabSize",
-  "editor.fontSize": 12,
+  "editor.fontSize": 14,
   "screencastMode.fontSize": 20,
-  "window.zoomLevel": 2,
+  "window.zoomLevel": 3,
   "editor.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
   "editor.inlayHints.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
   "editor.codeLensFontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
