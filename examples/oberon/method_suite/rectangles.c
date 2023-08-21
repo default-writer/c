@@ -4,14 +4,13 @@
 #include "figures.h"
 #include "rectangles.h"
 
-interface rectangle_i;
+static interface i;
 
 extern void figure_init(figure f, interface i);
 
 void rectangle_new(rectangle* r) {
     *r = calloc(1, sizeof(rectangle_desc));
-    rectangle s = *r;
-    figure_init((figure)s, rectangle_i);
+    figure_init((figure)*r, i);
 }
 
 static void rectangle_draw(figure f) {
@@ -27,11 +26,11 @@ static void rectangle_move(figure f, int dx, int dy) {
 }
 
 static void __attribute__((constructor)) rectangle_init() {
-    rectangle_i = calloc(1, sizeof(interface_desc));
-    rectangle_i->draw = rectangle_draw;
-    rectangle_i->move = rectangle_move;
+    i = calloc(1, sizeof(interface_desc));
+    i->draw = rectangle_draw;
+    i->move = rectangle_move;
 }
 
 static void __attribute__((destructor)) rectangle_free() {
-    free(rectangle_i);
+    free(i);
 }
