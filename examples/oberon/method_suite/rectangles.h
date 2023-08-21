@@ -1,5 +1,4 @@
 typedef struct rectangle_desc* rectangle;
-typedef struct figure_desc* figure;
 
 typedef struct rectangle_desc {
     int x, y, w, h;
