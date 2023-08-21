@@ -10,7 +10,8 @@ extern void figure_init(figure f, interface i);
 
 void rectangle_new(rectangle* r) {
     *r = calloc(1, sizeof(rectangle_desc));
-    figure_init((figure)*r, rectangle_i);
+    rectangle s = *r;
+    figure_init((figure)s, rectangle_i);
 }
 
 static void rectangle_draw(figure f) {
