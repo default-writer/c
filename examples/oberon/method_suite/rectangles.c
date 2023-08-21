@@ -1,7 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-
-#include "figures.h"
 #include "rectangles.h"
 
 static interface i;
