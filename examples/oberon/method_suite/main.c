@@ -4,9 +4,10 @@
 #include "figures.h"
 #include "rectangles.h"
 
-extern interface i;
+extern interface rectangle_i;
 
 int main(void) {
+    interface i = rectangle_i;
     rectangle r = 0;
     rectangle_new(&r);
     r->x = 1;
@@ -16,6 +17,5 @@ int main(void) {
     i->draw((figure)r);
     i->move((figure)r, 10, 20);
     free(r);
-    free(i);
     return 0;
 }
