@@ -126,15 +126,10 @@ else()
 endif()
 
 set(SUBSTRINGS substrings/main.c)
-set(OBERON 
-    oberon/method_suite/figures.c
-    oberon/method_suite/rectangles.c
-    oberon/method_suite/main.c)
 
 include_directories( $ENV{C_INCLUDE_PATH} ${CMAKE_SOURCE_DIR}../src )
 link_directories( $ENV{C_LIBRARY_PATH} ${CMAKE_SOURCE_DIR}../lib )
 
 add_executable(c-substrings ${SUBSTRINGS})
-add_executable(c-oberon ${OBERON})
 
 target_link_libraries(c-substrings PRIVATE ctypes)
