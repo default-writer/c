@@ -1,0 +1,2 @@
+// #define INHERITANCE
+#define EMBEDDED_INHERITANCE
