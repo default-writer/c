@@ -44,8 +44,9 @@ void rectangle_delete(rectangle_pointer pointer) {
 }
 
 void rectangle_draw(rectangle_pointer r) {
-    figure_type_pointer f = (figure_type_pointer)r->type;
-    f->draw((figure_data_pointer)&r->data);
+    figure_type_pointer type = (figure_type_pointer)r->type;
+    figure_data_pointer data = (figure_data_pointer)&r->data;
+    type->draw(data);
 }
 
 void rectangle_move(rectangle_pointer r, int dx, int dy) {
