@@ -3,6 +3,8 @@
 
 #include "config.h"
 
+typedef struct figure* figure_pointer;
+
 typedef struct figure_type* figure_type_pointer;
 typedef struct figure_data* figure_data_pointer;
 

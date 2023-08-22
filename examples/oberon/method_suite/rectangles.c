@@ -3,20 +3,6 @@
 #include "figures.h"
 #include "new.h"
 
-typedef struct rectangle_type* rectangle_type_pointer;
-typedef struct rectangle_data* rectangle_data_pointer;
-
-typedef struct rectangle_type {
-    figure_type figure;
-    void (*draw)(rectangle_data_pointer f);
-    void (*move)(rectangle_data_pointer f, int dx, int dy);
-} rectangle_type;
-
-typedef struct rectangle_data {
-    figure_data figure;
-    int x, y, w, h;
-} rectangle_data;
-
 typedef struct rectangle {
     rectangle_type_pointer type;
     rectangle_data_pointer data;
