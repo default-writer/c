@@ -25,17 +25,17 @@ typedef struct rectangle {
 rectangle_type_pointer rectangle_type_instance;
 
 extern figure_type_pointer figure_type_instance;
-extern void figure_init(figure_type* type, figure_data* data);
+extern void figure_init(figure_data* data);
 
-void rectangle_init(rectangle_type_pointer type, rectangle_data_pointer data) {
-    *type = *rectangle_type_instance;
+void rectangle_init(rectangle_data_pointer data) {
     data->w = 42;
-    figure_init((figure_type_pointer)type, (figure_data_pointer)data);
+    figure_init((figure_data_pointer)data);
 }
 
 rectangle_pointer rectangle_new() {
     rectangle_pointer pointer = calloc(1, sizeof(rectangle));
-    rectangle_init(pointer->type, &pointer->data);
+    pointer->type = rectangle_type_instance;
+    rectangle_init(&pointer->data);
     return pointer;
 }
 
@@ -44,7 +44,7 @@ void rectangle_delete(rectangle_pointer pointer) {
 }
 
 void rectangle_draw(rectangle_pointer r) {
-    figure_type_pointer f = (figure_type_pointer)r;
+    figure_type_pointer f = (figure_type_pointer)r->type;
     f->draw((figure_data_pointer)&r->data);
 }
 

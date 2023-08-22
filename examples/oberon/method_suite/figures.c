@@ -11,14 +11,14 @@ typedef struct figure {
 
 figure_type_pointer figure_type_instance;
 
-void figure_init(figure_type* type, figure_data* data) {
-    *type = *figure_type_instance;
+void figure_init(figure_data* data) {
     data->version = 1;
 }
 
 figure_pointer figure_new() {
     figure_pointer pointer = calloc(1, sizeof(figure));
-    figure_init(pointer->type, &pointer->data);
+    pointer->type = figure_type_instance;
+    figure_init(&pointer->data);
     return pointer;
 }
 
