@@ -15,7 +15,6 @@ int main(void) {
     rectangle_pointer r = rectangle_new();
     r->data.x = 3;
     r->data.y = 4;
-    r->data.w = 11;
     r->data.h = 20;
     rectangle_draw(r);
     rectangle_move(r, 10, 20);
