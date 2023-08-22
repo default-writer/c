@@ -13,9 +13,6 @@ extern void rectangle_move(rectangle_pointer r, int dx, int dy);
 
 int main(void) {
     rectangle_pointer r = rectangle_new();
-    r->data.x = 3;
-    r->data.y = 4;
-    r->data.h = 20;
     rectangle_draw(r);
     rectangle_move(r, 10, 20);
     rectangle_delete(r);

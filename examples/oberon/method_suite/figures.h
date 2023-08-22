@@ -3,9 +3,8 @@
 
 #include "config.h"
 
-typedef struct figure_data* figure_data_pointer;
 typedef struct figure_type* figure_type_pointer;
-typedef struct figure* figure_pointer;
+typedef struct figure_data* figure_data_pointer;
 
 typedef struct figure_type {
     void (*draw)(figure_data_pointer f);
@@ -15,10 +14,5 @@ typedef struct figure_type {
 typedef struct figure_data {
     int version;
 } figure_data;
-
-typedef struct figure {
-    figure_type type;
-    figure_data data;
-} figure;
 
 #endif // _FIGURES_H_

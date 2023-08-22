@@ -2,6 +2,13 @@
 #include "config.h"
 #include "new.h"
 
+typedef struct figure* figure_pointer;
+
+typedef struct figure {
+    figure_type type;
+    figure_data data;
+} figure;
+
 figure_type_pointer figure_type_instance;
 
 void figure_init(figure_type* type, figure_data* data) {

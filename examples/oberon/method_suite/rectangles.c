@@ -4,6 +4,25 @@
 #include "new.h"
 #include <assert.h>
 
+typedef struct rectangle_type* rectangle_type_pointer;
+typedef struct rectangle_data* rectangle_data_pointer;
+
+typedef struct rectangle_type {
+    figure_type figure;
+    void (*draw)(rectangle_data_pointer f);
+    void (*move)(rectangle_data_pointer f, int dx, int dy);
+} rectangle_type;
+
+typedef struct rectangle_data {
+    figure_data figure;
+    int x, y, w, h;
+} rectangle_data;
+
+typedef struct rectangle {
+    rectangle_type type;
+    rectangle_data data;
+} rectangle;
+
 rectangle_type_pointer rectangle_type_instance;
 
 extern figure_type_pointer figure_type_instance;
