@@ -1,6 +1,6 @@
 # c project description
 
-<img style='height:128px' src='./resources/microprocessor.png'>
+<a href="" target="blank"><img style='height:128px' src='./resources/microprocessor.png'></a>
 
 - virtual machine implementation on C
 
@@ -22,7 +22,7 @@
 
 ## media links
 
-<img style='height:128px' src='./resources/data-science.png'>
+<a href="" target="blank"><img style='height:128px' src='./resources/data-science.png'></a>
 
 - streaming channels
 
@@ -31,7 +31,7 @@
 
 ## updates
 
-<img style='height:128px' src='./resources/checklist.png'>
+<a href="" target="blank"><img style='height:128px' src='./resources/checklist.png'></a>
 
 - 2023
 
@@ -44,7 +44,7 @@
 
 ## features
 
-<img style='height:128px' src='./resources/global-distribution.png'>
+<a href="" target="blank"><img style='height:128px' src='./resources/global-distribution.png'></a>
 
 - `List<T>` implementations
 - code coverage
@@ -55,7 +55,7 @@
 
 ## readme
 
-<img style='height:128px' src='./resources/digital-library.png'>
+<a href="" target="blank"><img style='height:128px' src='./resources/digital-library.png'></a>
 
 repo is ready to run on containers, WSL, remote hosts.
 
