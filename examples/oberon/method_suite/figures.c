@@ -11,7 +11,7 @@ typedef struct figure {
 
 figure_type_pointer figure_type_instance;
 
-void figure_init(figure_data* data) {
+void figure_init(figure_data_pointer data) {
     data->version = 1;
 }
 

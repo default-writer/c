@@ -25,7 +25,7 @@ typedef struct rectangle {
 rectangle_type_pointer rectangle_type_instance;
 
 extern figure_type_pointer figure_type_instance;
-extern void figure_init(figure_data* data);
+extern void figure_init(figure_data_pointer data);
 
 void rectangle_init(rectangle_data_pointer data) {
     data->w = 42;
