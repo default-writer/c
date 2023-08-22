@@ -38,6 +38,7 @@
     "cs128.cs128-clang-tidy",
     "cs50.vscode-presentation-mode",
     "trunk.io",
-    "mathematic.vscode-pdf"
+    "mathematic.vscode-pdf",
+    "pomber.git-file-history"
   ]
 }
