@@ -1,5 +1,6 @@
 #include "rectangles.h"
 #include "config.h"
+#include "figures.h"
 #include "new.h"
 #include <assert.h>
 
@@ -12,6 +13,13 @@ void rectangle_new(rectangle* r) {
     figure f = (figure)new_r;
     figure_init(f, rectangle_i);
     *r = new_r;
+}
+
+void rectangle_delete(rectangle* r) {
+    if (*r != 0) {
+        free(*r);
+        *r = 0;
+    }
 }
 
 static void rectangle_draw(figure f) {

@@ -7,6 +7,7 @@
 #include "rectangles.h"
 
 extern void rectangle_new(rectangle* r);
+extern void rectangle_delete(rectangle* r);
 
 int main(void) {
     rectangle r = 0;
@@ -23,6 +24,6 @@ int main(void) {
     if (i && i->move) {
         i->move((figure)r, 10, 20);
     }
-    free(r);
+    rectangle_delete(&r);
     return 0;
 }
