@@ -1,5 +1,7 @@
 # c project description
 
+<img style='height:128px' src='./resources/microprocessor.png'>
+
 - virtual machine implementation on C
 
   1. C API
@@ -15,11 +17,12 @@
 
   1. [docs](./docs/refman.pdf)
 
-![ubuntu logo](./resources/icons8-ubuntu-96.png)
 
 ![logo](./resources/logo-tiny.png)
 
 ## media links
+
+<img style='height:128px' src='./resources/data-science.png'>
 
 - streaming channels
 
@@ -27,6 +30,8 @@
   2. [youtube.com](https://www.youtube.com/channel/UCrtPCqirYXdA2gYG8NxbTjA)
 
 ## updates
+
+<img style='height:128px' src='./resources/checklist.png'>
 
 - 2023
 
@@ -39,6 +44,8 @@
 
 ## features
 
+<img style='height:128px' src='./resources/global-distribution.png'>
+
 - `List<T>` implementations
 - code coverage
 - coverage hot-reload
@@ -47,6 +54,8 @@
 - GTK GUI app demo ready to run on containerized environment
 
 ## readme
+
+<img style='height:128px' src='./resources/digital-library.png'>
 
 repo is ready to run on containers, WSL, remote hosts.
 
@@ -123,8 +132,9 @@ support this project [become a sponsor](https://opencollective.com/default-write
 ## resources
 
 - [ubuntu](https://icons8.com/icon/63208/ubuntu") icon by [icons8](https://icons8.com)
-- [logistics icons](https://www.flaticon.com/free-icons/logistics) Logistics icons created by [vectorsmarket15](https://www.flaticon.com/authors/vectorsmarket15) - [Flaticon](https://www.flaticon.com)
-- [ecommerce icons](https://www.flaticon.com/free-icons/ecommerce) Ecommerce icons created by [vectorsmarket15](https://www.flaticon.com/authors/vectorsmarket15) - [Flaticon](https://www.flaticon.com)
+- [vectorsmarket15](https://www.flaticon.com/authors/vectorsmarket15)
+- [ecommerce icons](https://www.flaticon.com/free-icons/ecommerce)
+- [flaticon](https://www.flaticon.com)
 
 ## links
 
