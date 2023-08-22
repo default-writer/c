@@ -6,24 +6,19 @@
 #include "figures.h"
 #include "rectangles.h"
 
-extern void rectangle_new(rectangle* r);
-extern void rectangle_delete(rectangle* r);
+extern rectangle_pointer rectangle_new();
+extern void rectangle_delete(rectangle_pointer r);
+extern void rectangle_draw(rectangle_pointer r);
+extern void rectangle_move(rectangle_pointer r, int dx, int dy);
 
 int main(void) {
-    rectangle r = 0;
-    rectangle_new(&r);
-    r->x = 3;
-    r->y = 4;
-    r->w = 11;
-    r->h = 20;
-    figure f = (figure)r;
-    interface i = (interface)f->i;
-    if (i && i->draw) {
-        i->draw((figure)r);
-    }
-    if (i && i->move) {
-        i->move((figure)r, 10, 20);
-    }
-    rectangle_delete(&r);
+    rectangle_pointer r = rectangle_new();
+    r->data.x = 3;
+    r->data.y = 4;
+    r->data.w = 11;
+    r->data.h = 20;
+    rectangle_draw(r);
+    rectangle_move(r, 10, 20);
+    rectangle_delete(r);
     return 0;
 }

@@ -3,20 +3,22 @@
 
 #include "config.h"
 
-typedef struct figure_desc* figure;
-typedef struct interface_desc* interface;
+typedef struct figure_data* figure_data_pointer;
+typedef struct figure_type* figure_type_pointer;
+typedef struct figure* figure_pointer;
 
-typedef struct interface_desc {
-#if defined(INHERITANCE)
-    interface i; // interface ineritance
-#endif
-    void (*draw)(figure f);
-    void (*move)(figure f, int dx, int dy);
-} interface_desc;
+typedef struct figure_type {
+    void (*draw)(figure_data_pointer f);
+    void (*move)(figure_data_pointer f, int dx, int dy);
+} figure_type;
 
-typedef struct figure_desc {
+typedef struct figure_data {
     int version;
-    interface i;
-} figure_desc;
+} figure_data;
+
+typedef struct figure {
+    figure_type type;
+    figure_data data;
+} figure;
 
 #endif // _FIGURES_H_

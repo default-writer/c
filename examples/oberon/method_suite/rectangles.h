@@ -4,11 +4,24 @@
 #include "config.h"
 #include "figures.h"
 
-typedef struct rectangle_desc* rectangle;
+typedef struct rectangle_data* rectangle_data_pointer;
+typedef struct rectangle_type* rectangle_type_pointer;
+typedef struct rectangle* rectangle_pointer;
 
-typedef struct rectangle_desc {
-    figure_desc i;
+typedef struct rectangle_type {
+    figure_type figure;
+    void (*draw)(rectangle_data_pointer f);
+    void (*move)(rectangle_data_pointer f, int dx, int dy);
+} rectangle_type;
+
+typedef struct rectangle_data {
+    figure_data figure;
     int x, y, w, h;
-} rectangle_desc;
+} rectangle_data;
+
+typedef struct rectangle {
+    rectangle_type type;
+    rectangle_data data;
+} rectangle;
 
 #endif // _RECTANGLES_H_
