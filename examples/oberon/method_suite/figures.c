@@ -5,7 +5,7 @@
 typedef struct figure* figure_pointer;
 
 typedef struct figure {
-    figure_type type;
+    figure_type_pointer type;
     figure_data data;
 } figure;
 
@@ -18,7 +18,7 @@ void figure_init(figure_type* type, figure_data* data) {
 
 figure_pointer figure_new() {
     figure_pointer pointer = calloc(1, sizeof(figure));
-    figure_init(&pointer->type, &pointer->data);
+    figure_init(pointer->type, &pointer->data);
     return pointer;
 }
 
