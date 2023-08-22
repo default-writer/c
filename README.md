@@ -90,10 +90,10 @@ You can use c project for local git repos with the [CLI](https://github.com/defa
 
 ### sponsorship
 
-support this project [[become a sponsor](https://opencollective.com/default-writer#sponsor)]
+support this project [become a sponsor](https://opencollective.com/default-writer#sponsor)
 
+[![img](https://opencollective.com/default-writer/sponsor/0/avatar.svg)](https://opencollective.com/default-writer/sponsor/0/website)
 
-<a href="https://opencollective.com/default-writer/sponsor/0/website" target="_blank"><img src="https://opencollective.com/default-writer/sponsor/0/avatar.svg"></a>
 
 ### 2023
 
