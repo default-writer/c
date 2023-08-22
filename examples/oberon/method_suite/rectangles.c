@@ -2,7 +2,6 @@
 #include "config.h"
 #include "figures.h"
 #include "new.h"
-#include <assert.h>
 
 typedef struct rectangle_type* rectangle_type_pointer;
 typedef struct rectangle_data* rectangle_data_pointer;
@@ -19,7 +18,7 @@ typedef struct rectangle_data {
 } rectangle_data;
 
 typedef struct rectangle {
-    rectangle_type type;
+    rectangle_type_pointer type;
     rectangle_data data;
 } rectangle;
 
@@ -36,7 +35,7 @@ void rectangle_init(rectangle_type_pointer type, rectangle_data_pointer data) {
 
 rectangle_pointer rectangle_new() {
     rectangle_pointer pointer = calloc(1, sizeof(rectangle));
-    rectangle_init(&pointer->type, &pointer->data);
+    rectangle_init(pointer->type, &pointer->data);
     return pointer;
 }
 
@@ -50,7 +49,7 @@ void rectangle_draw(rectangle_pointer r) {
 }
 
 void rectangle_move(rectangle_pointer r, int dx, int dy) {
-    r->type.move(&r->data, dx, dy);
+    r->type->move(&r->data, dx, dy);
 }
 
 static void rectangle_type_draw(rectangle_data_pointer r) {
