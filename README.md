@@ -82,8 +82,22 @@ UI_MODE=--ui ./build/gtk-experiment1
 
 ## history
 
+## local repos
+
+You can use c project for local git repos with the [CLI](https://github.com/default-writer/tree/master/cli) or [git](https://github.com/default-writer/c.git).
+
+## support C project
+
+### sponsorship
+
+support this project [[become a sponsor](https://opencollective.com/default-writer#sponsor)]
+
+
+<a href="https://opencollective.com/default-writer/sponsor/0/website" target="_blank"><img src="https://opencollective.com/default-writer/sponsor/0/avatar.svg"></a>
+
 ### 2023
 
+- added support for classes / inheritance (oberon exaple)
 - added GC implementation
 - added several list implementations
 
