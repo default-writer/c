@@ -7,7 +7,6 @@
 typedef struct rectangle_desc* rectangle;
 
 typedef struct rectangle_desc {
-    /* changes in figure_desc allowed */
     figure_desc i;
     int x, y, w, h;
 } rectangle_desc;
