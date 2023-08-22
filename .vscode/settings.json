@@ -110,7 +110,15 @@
       "priority": 1004,
       "id": "statusbarpresentation-mode.toggle",
       "command": "presentation-mode.toggle"
-    }
+    },
+    {
+      "text": ".F",
+      "tooltip": "File history switch",
+      "alignment": "right",
+      "priority": 1005,
+      "id": "statusbarpresentation-extension.git-file-history",
+      "command": "extension.git-file-history"
+    }    
   ],
   "workbench.editor.enablePreview": true,
   "workbench.colorTheme": "Yitzchok (rainglow)",
