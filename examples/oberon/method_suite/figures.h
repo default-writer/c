@@ -1,8 +1,6 @@
 #ifndef _FIGURES_H_
 #define _FIGURES_H_
 
-#include "config.h"
-
 typedef struct figure* figure_pointer;
 
 typedef struct figure_data {

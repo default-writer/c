@@ -1,5 +1,4 @@
 #include "rectangles.h"
-#include "config.h"
 #include "figures.h"
 #include "new.h"
 

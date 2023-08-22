@@ -1,5 +1,4 @@
 #include "figures.h"
-#include "config.h"
 #include "new.h"
 
 typedef struct figure {
