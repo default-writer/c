@@ -29,6 +29,12 @@
   1. [twitch.tv](https://www.twitch.tv/defaultwriter/videos)
   2. [youtube.com](https://www.youtube.com/channel/UCrtPCqirYXdA2gYG8NxbTjA)
 
+## music credits
+
+- [imperss](https://soundcloud.com/imperss)
+
+- [Adrian von Ziegler](https://soundcloud.com/adrian-von-ziegler)
+
 ## updates
 
 <a href="" target="blank"><img style='height:128px' src='./resources/checklist.png'></a>
