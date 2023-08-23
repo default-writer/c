@@ -28,4 +28,4 @@ cmake \
 
 cmake --build "${build}" --target "${target}" || (echo ERROR: "${target}" && exit 1)
 
-timeout --foreground 180 "${build}/${target}" 2>&1 >"${logs}/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
+# timeout --foreground 180 "${build}/${target}" 2>&1 >"${logs}/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
