@@ -56,7 +56,7 @@ void _q(char **c) {
 char* input = 0;
 
 static void read_input() {
-    memset(input, 0, 100);
+    memset(input, 0, 101);
     printf(">");
     char ch = 0;
     for (int i = 0; i < 100; i++) {
@@ -69,7 +69,7 @@ static void read_input() {
 }
 
 int main(void) {
-    input = calloc(1, 100);
+    input = calloc(1, 101);
     while (1) {
         read_input();
         if (*input == 'q') {
