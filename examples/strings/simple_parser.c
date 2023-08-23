@@ -45,7 +45,7 @@ void _b(char** c) {
 }
 
 void _c(char** c) {
-    if (**c++ == '\0') {
+    if (**c == '\0') {
         result = 1;
         _ = _q;
     } else {
