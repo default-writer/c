@@ -15,10 +15,4 @@ set(OBERON
     oberon/method_suite/rectangles.c
     oberon/method_suite/main.c)
 
-set(OBERON 
-    oberon/data_first/figures.c
-    oberon/data_first/rectangles.c
-    oberon/data_first/main.c)
-
 add_executable(c-oberon-method-suite ${OBERON})
-add_executable(c-oberon-data-first ${OBERON})
