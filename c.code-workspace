@@ -199,6 +199,9 @@
 		"workbench.list.horizontalScrolling": false,
 		"terminal.integrated.fastScrollSensitivity": 2,
 		"workbench.list.fastScrollSensitivity": 2,
-		"workbench.editor.showTabs": true
+		"workbench.editor.showTabs": true,
+		"debug.console.wordWrap": false,
+		"diffEditor.wordWrap": "off",
+		"terminal.integrated.copyOnSelection": true
 	}
 }
