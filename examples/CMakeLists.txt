@@ -21,4 +21,4 @@ set(OBERON
     oberon/data_first/main.c)
 
 add_executable(c-oberon-method-suite ${OBERON})
-add_executable(c-oberon-data-fist ${OBERON})
+add_executable(c-oberon-data-first ${OBERON})
