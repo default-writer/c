@@ -55,7 +55,7 @@ void _q(char **c) {
 
 char* input = 0;
 
-static char* read_input() {
+static void read_input() {
     memset(input, 0, 100);
     printf(">");
     char ch = 0;
