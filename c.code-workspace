@@ -262,6 +262,9 @@
 		"workbench.editor.showTabs": true,
 		"debug.console.wordWrap": false,
 		"diffEditor.wordWrap": "off",
-		"terminal.integrated.copyOnSelection": true
+		"terminal.integrated.copyOnSelection": true,
+		"editor.smoothScrolling": true,
+		"editor.stickyScroll.enabled": false,
+		"editor.mouseWheelScrollSensitivity": 1
 	}
 }
