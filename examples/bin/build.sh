@@ -10,16 +10,16 @@ logs="$(pwd)/logs"
 build="$(pwd)/build"
 target="$1"
 
-[[ ! -d "${logs}" ]] && mkdir "${logs}"
+if [[ "${target}" == "" ]]; then
+    echo script needs a target name to build
+    exit
+fi
 
-export C_INCLUDE_PATH=$(readlink -m "$(pwd)/../src")
-export C_LIBRARY_PATH=$(readlink -m "$(pwd)/../lib")
+[[ ! -d "${logs}" ]] && mkdir "${logs}"
 
 cmake \
     -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
     -DCMAKE_BUILD_TYPE:STRING=Debug \
-    -DCONFIG_MEMORY_DEBUG_INFO:BOOL=FALSE \
-    -DCONFIG_GC:BOOL=TRUE \
     -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
     -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
     -S"$(pwd)" \
