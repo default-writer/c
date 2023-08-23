@@ -76,6 +76,9 @@ int main(void) {
     input = calloc(1, 100);
     while (1) {
         read_input();
+        if (*input == 'q') {
+            break;
+        }
         _ = _a;
         while(_ != 0) {
             _(&input);
@@ -84,6 +87,7 @@ int main(void) {
             result = 0;
         }
         printf("%d\n",result);
+        result = 0;
     }
     return 0;
 }
