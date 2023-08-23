@@ -2,10 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-
-char c_1 = '(';
-char c_2 = '(';
-
 typedef void (*f)(char** c);
 
 f _;
