@@ -1,0 +1,204 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "examples"
+		}
+	],
+	"settings": {
+		"terminal.integrated.smoothScrolling": true,
+		"terminal.integrated.cursorBlinking": true,
+		"terminal.integrated.enableFileLinks": "on",
+		"terminal.integrated.defaultProfile.linux": "bash",
+		"terminal.integrated.profiles.linux": {
+			"bash": {
+				"path": "/bin/bash"
+			}
+		},
+		"testFilesOnSave.enabled": true,
+		"testFilesOnSave.languageId": "any",
+		"testFilesOnSave.testCommands": [
+			{
+				"c": "./bin/src.sh --target ${relativeFile} --gc --sanitize"
+			},
+			{
+				"h": "./bin/docs.sh"
+			}
+		],
+		"files.autoSave": "off",
+		"files.associations": {
+			"*.h": "c",
+			"*.c": "c"
+		},
+		"cmake.statusbar.visibility": "compact",
+		"workbench.editor.enablePreview": true,
+		"workbench.colorTheme": "Yitzchok (rainglow)",
+		"editor.tokenColorCustomizations": {
+			"textMateRules": [
+				{
+					"scope": "comment",
+					"settings": {
+						"foreground": "#70a870",
+						"fontStyle": "bold"
+					}
+				},
+				{
+					"scope": "comment.block",
+					"settings": {
+						"foreground": "#70a870"
+					}
+				},
+				{
+					"scope": "comment.line",
+					"settings": {
+						"foreground": "#70a870",
+						"fontStyle": "bold"
+					}
+				}
+			]
+		},
+		"workbench.editor.autoLockGroups": {
+			"default": true,
+			"hexEditor.hexedit": false,
+			"workbench.editorinputs.searchEditorInput": false,
+			"workbench.editor.chatSession": false,
+			"imagePreview.previewEditor": false,
+			"vscode.audioPreview": false,
+			"vscode.videoPreview": false,
+			"jsProfileVisualizer.cpuprofile.table": false,
+			"jsProfileVisualizer.heapprofile.table": false,
+			"pdf.view": false,
+			"workbench.editors.gettingStartedInput": false,
+			"jupyter-notebook": false,
+			"terminalEditor": true,
+			"workbench.input.interactive": false,
+			"mainThreadWebview-markdown.preview": false
+		},
+		"presentation-mode.active": {
+			"commands": [],
+			"editor.fontSize": 14,
+			"editor.matchBrackets": "near",
+			"editor.minimap.enabled": false,
+			"workbench.activityBar.visible": true,
+			"workbench.statusBar.visible": true,
+			"workbench.colorTheme": "Yitzchok (rainglow)",
+			"workbench.colorCustomizations": {
+				"[Yitzchok (rainglow)]": {}
+			},
+			"window.zoomLevel": 2
+		},
+		"presentation-mode.inactive": {
+			"window.zoomLevel": 0
+		},
+		"presentation-mode.configBackup": {
+			"editor.fontSize": 14,
+			"editor.matchBrackets": "near",
+			"editor.minimap.enabled": false,
+			"workbench.activityBar.visible": true,
+			"workbench.statusBar.visible": true,
+			"workbench.colorTheme": "Yitzchok (rainglow)",
+			"workbench.colorCustomizations": {
+				"[Yitzchok (rainglow)]": {}
+			},
+			"window.zoomLevel": 0
+		},
+		"cmake.autoSelectActiveFolder": true,
+		"clangd.arguments": [
+			"--compile-commands-dir=${workspaceFolder}/src",
+			"-j=8",
+			"--limit-results=0",
+			"--background-index",
+			"--all-scopes-completion",
+			"--log=info",
+			"--pch-storage=memory",
+			"--clang-tidy",
+			"--fallback-style=WebKit"
+		],
+		"clangd.checkUpdates": true,
+		"clangd.restartAfterCrash": true,
+		"clangd.onConfigChanged": "restart",
+		"clangd.detectExtensionConflicts": true,
+		"clang-tidy.lintOnSave": true,
+		"clang-tidy.compilerArgs": [
+			"-I/usr/include/gtk-4.0"
+		],
+		"screencastMode.fontSize": 20,
+		"window.zoomLevel": 2,
+		"debug.console.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
+		"debug.console.fontSize": 14,
+		"chat.editor.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
+		"chat.editor.fontSize": 14,
+		"notebook.output.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
+		"terminal.integrated.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
+		"terminal.integrated.fontSize": 14,
+		"terminal.integrated.enablePersistentSessions": true,
+		"terminal.integrated.persistentSessionReviveProcess": "onExitAndWindowClose",
+		"terminal.integrated.shellIntegration.history": 1000,
+		"terminal.integrated.tabStopWidth": 8,
+		"fileHeaderComment.parameter": {
+			"*": {
+				"commentbegin": "/*",
+				"commentprefix": " *",
+				"commentend": " */",
+				"author": "Artur Mustafin",
+				"license_mit": [
+					"MIT License",
+					"",
+					" Copyright (c) ${year} ${author}",
+					"",
+					" Permission is hereby granted, free of charge, to any person obtaining a copy",
+					" of this software and associated documentation files (the \"Software\"), to deal",
+					" in the Software without restriction, including without limitation the rights",
+					" to use, copy, modify, merge, publish, distribute, sublicense, and/or sell",
+					" copies of the Software, and to permit persons to whom the Software is",
+					" furnished to do so, subject to the following conditions:",
+					"",
+					" The above copyright notice and this permission notice shall be included in all",
+					" copies or substantial portions of the Software.",
+					"",
+					" THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR",
+					" IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,",
+					" FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE",
+					" AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER",
+					" LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,",
+					" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE",
+					" SOFTWARE."
+				]
+			}
+		},
+		"fileHeaderComment.template": {
+			"*": [
+				"${commentbegin}",
+				"${commentprefix}",
+				"${commentprefix} ${license_mit}",
+				"${commentprefix}",
+				"${commentend}"
+			]
+		},
+		"files.refactoring.autoSave": false,
+		"workbench.activityBar.visible": true,
+		"workbench.statusBar.visible": true,
+		"workbench.colorCustomizations": {
+			"[Yitzchok (rainglow)]": {}
+		},
+		"workbench.quickOpen.closeOnFocusLost": false,
+		"twitch.fontSize": "14px",
+		"workbench.preferredDarkColorTheme": "Yitzchok (rainglow)",
+		"workbench.preferredHighContrastColorTheme": "Yitzchok Contrast (rainglow)",
+		"workbench.preferredLightColorTheme": "Yitzchok Light (rainglow)",
+		"window.autoDetectColorScheme": true,
+		"search.seedOnFocus": true,
+		"search.seedWithNearestWord": true,
+		"workbench.list.smoothScrolling": true,
+		"terminal.integrated.confirmOnKill": "never",
+		"terminal.integrated.mouseWheelScrollSensitivity": 0,
+		"workbench.list.mouseWheelScrollSensitivity": 0,
+		"workbench.editor.scrollToSwitchTabs": false,
+		"workbench.list.horizontalScrolling": false,
+		"terminal.integrated.fastScrollSensitivity": 2,
+		"workbench.list.fastScrollSensitivity": 2,
+		"workbench.editor.showTabs": true
+	}
+}
