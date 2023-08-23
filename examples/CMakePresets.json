@@ -15,31 +15,7 @@
       "cacheVariables": {
         "CMAKE_C_COMPILER": "/usr/bin/gcc",
         "CMAKE_CXX_COMPILER": "/usr/bin/g++",
-        "CMAKE_BUILD_TYPE": "Debug",
-        "CONFIG_MEMORY_DEBUG_INFO": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "CONFIG_MEMORY_CLEANUP": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "CONFIG_MEMORY_ALLOC": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "CONFIG_MEMCPY": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "CODE_SANITIZER": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "CONFIG_GC": {
-          "type": "BOOL",
-          "value": "ON"
-        }
+        "CMAKE_BUILD_TYPE": "Debug"
       }
     },
     {
@@ -51,33 +27,10 @@
       "cacheVariables": {
         "CMAKE_C_COMPILER": "c:/tools/msys64/ucrt64/bin/gcc.exe",
         "CMAKE_CXX_COMPILER": "c:/tools/msys64/ucrt64/bin/g++.exe",
-        "CMAKE_BUILD_TYPE": "Debug",
-        "CONFIG_MEMORY_DEBUG_INFO": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "CONFIG_MEMORY_CLEANUP": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "CONFIG_MEMORY_ALLOC": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "CONFIG_MEMCPY": {
-          "type": "BOOL",
-          "value": "OFF"
-        },
-        "CODE_SANITIZER": {
-          "type": "BOOL",
-          "value": "ON"
-        },
-        "CONFIG_GC": {
-          "type": "BOOL",
-          "value": "ON"
-        }
+        "CMAKE_BUILD_TYPE": "Debug"
       }
-    }  ],
+    }
+  ],
   "buildPresets": [
     {
       "name": "default",
