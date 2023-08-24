@@ -253,8 +253,8 @@
 		"search.seedWithNearestWord": true,
 		"workbench.list.smoothScrolling": true,
 		"terminal.integrated.confirmOnKill": "never",
-		"terminal.integrated.mouseWheelScrollSensitivity": 0,
-		"workbench.list.mouseWheelScrollSensitivity": 0,
+		"terminal.integrated.mouseWheelScrollSensitivity": 1,
+		"workbench.list.mouseWheelScrollSensitivity": 1,
 		"workbench.editor.scrollToSwitchTabs": false,
 		"workbench.list.horizontalScrolling": false,
 		"terminal.integrated.fastScrollSensitivity": 2,
@@ -265,6 +265,8 @@
 		"terminal.integrated.copyOnSelection": true,
 		"editor.smoothScrolling": true,
 		"editor.stickyScroll.enabled": false,
-		"editor.mouseWheelScrollSensitivity": 1
+		"editor.mouseWheelScrollSensitivity": 1,
+		"task.quickOpen.history": 30,
+		"git.untrackedChanges": "mixed"
 	}
 }
