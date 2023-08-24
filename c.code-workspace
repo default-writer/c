@@ -138,7 +138,7 @@
 		},
 		"presentation-mode.active": {
 			"commands": [],
-			"editor.fontSize": 14,
+			"editor.fontSize": 24,
 			"editor.matchBrackets": "near",
 			"editor.minimap.enabled": false,
 			"workbench.activityBar.visible": true,
@@ -147,15 +147,15 @@
 			"workbench.colorCustomizations": {
 				"[Yitzchok (rainglow)]": {}
 			},
-			"window.zoomLevel": 2
+			"window.zoomLevel": 0
 		},
 		"presentation-mode.inactive": {
 			"window.zoomLevel": 0
 		},
 		"presentation-mode.configBackup": {
-			"editor.fontSize": 14,
-			"editor.matchBrackets": "near",
-			"editor.minimap.enabled": false,
+			"editor.fontSize": "undefined",
+			"editor.matchBrackets": "undefined",
+			"editor.minimap.enabled": "undefined",
 			"workbench.activityBar.visible": true,
 			"workbench.statusBar.visible": true,
 			"workbench.colorTheme": "Yitzchok (rainglow)",
@@ -185,14 +185,14 @@
 			"-I/usr/include/gtk-4.0"
 		],
 		"screencastMode.fontSize": 20,
-		"window.zoomLevel": 2,
+		"window.zoomLevel": 0,
 		"debug.console.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
-		"debug.console.fontSize": 14,
+		"debug.console.fontSize": 12,
 		"chat.editor.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
-		"chat.editor.fontSize": 14,
+		"chat.editor.fontSize": 12,
 		"notebook.output.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
 		"terminal.integrated.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
-		"terminal.integrated.fontSize": 14,
+		"terminal.integrated.fontSize": 12,
 		"terminal.integrated.enablePersistentSessions": true,
 		"terminal.integrated.persistentSessionReviveProcess": "onExitAndWindowClose",
 		"terminal.integrated.shellIntegration.history": 1000,
@@ -244,7 +244,7 @@
 			"[Yitzchok (rainglow)]": {}
 		},
 		"workbench.quickOpen.closeOnFocusLost": false,
-		"twitch.fontSize": "14px",
+		"twitch.fontSize": "12px",
 		"workbench.preferredDarkColorTheme": "Yitzchok (rainglow)",
 		"workbench.preferredHighContrastColorTheme": "Yitzchok Contrast (rainglow)",
 		"workbench.preferredLightColorTheme": "Yitzchok Light (rainglow)",

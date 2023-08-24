@@ -56,7 +56,7 @@
 		},
 		"customPresentationMode.overrides": {
 			"editor.fontWeight": "normal",
-			"window.zoomLevel": 2,
+			"window.zoomLevel": 0,
 			"workbench.colorTheme": "Yitzchok (rainglow)"
 		},
 		"cmake.autoSelectActiveFolder": true,
