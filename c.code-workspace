@@ -138,9 +138,10 @@
 		},
 		"presentation-mode.active": {
 			"commands": [],
-			"editor.fontSize": 24,
-			"terminal.integrated.fontSize": 24,
-			"debug.console.fontSize": 24,
+			"editor.fontSize": 12,
+			"window.zoomLevel": 2,
+			"terminal.integrated.fontSize": 12,
+			"debug.console.fontSize": 12,
 			"editor.matchBrackets": "near",
 			"editor.minimap.enabled": false,
 			"workbench.activityBar.visible": true,
@@ -148,14 +149,14 @@
 			"workbench.colorTheme": "Yitzchok (rainglow)",
 			"workbench.colorCustomizations": {
 				"[Yitzchok (rainglow)]": {}
-			},
-			"window.zoomLevel": 0
+			}
 		},
 		"presentation-mode.inactive": {
 			"window.zoomLevel": 0
 		},
 		"presentation-mode.configBackup": {
 			"editor.fontSize": "undefined",
+			"window.zoomLevel": 0,
 			"terminal.integrated.fontSize": "undefined",
 			"debug.console.fontSize": "undefined",
 			"editor.matchBrackets": "undefined",
@@ -165,8 +166,7 @@
 			"workbench.colorTheme": "Yitzchok (rainglow)",
 			"workbench.colorCustomizations": {
 				"[Yitzchok (rainglow)]": {}
-			},
-			"window.zoomLevel": 0
+			}
 		},
 		"cmake.autoSelectActiveFolder": true,
 		"clangd.arguments": [
