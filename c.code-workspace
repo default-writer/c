@@ -267,6 +267,13 @@
 		"editor.stickyScroll.enabled": false,
 		"editor.mouseWheelScrollSensitivity": 1,
 		"task.quickOpen.history": 30,
-		"git.untrackedChanges": "mixed"
+		"git.untrackedChanges": "mixed",
+		"editor.fontSize": 12,
+		"editor.matchBrackets": "near",
+		"editor.minimap.enabled": false,
+		"notebook.output.fontSize": 12,
+		"scm.inputFontSize": 12,
+		"notebook.markup.fontSize": 12,
+		"markdown.preview.fontSize": 12
 	}
 }
