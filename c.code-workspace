@@ -139,6 +139,8 @@
 		"presentation-mode.active": {
 			"commands": [],
 			"editor.fontSize": 24,
+			"terminal.integrated.fontSize": 24,
+			"debug.console.fontSize": 24,
 			"editor.matchBrackets": "near",
 			"editor.minimap.enabled": false,
 			"workbench.activityBar.visible": true,
@@ -154,6 +156,8 @@
 		},
 		"presentation-mode.configBackup": {
 			"editor.fontSize": "undefined",
+			"terminal.integrated.fontSize": "undefined",
+			"debug.console.fontSize": "undefined",
 			"editor.matchBrackets": "undefined",
 			"editor.minimap.enabled": "undefined",
 			"workbench.activityBar.visible": true,
@@ -187,12 +191,9 @@
 		"screencastMode.fontSize": 20,
 		"window.zoomLevel": 0,
 		"debug.console.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
-		"debug.console.fontSize": 12,
 		"chat.editor.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
-		"chat.editor.fontSize": 12,
 		"notebook.output.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
 		"terminal.integrated.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
-		"terminal.integrated.fontSize": 12,
 		"terminal.integrated.enablePersistentSessions": true,
 		"terminal.integrated.persistentSessionReviveProcess": "onExitAndWindowClose",
 		"terminal.integrated.shellIntegration.history": 1000,
@@ -267,10 +268,6 @@
 		"editor.stickyScroll.enabled": false,
 		"editor.mouseWheelScrollSensitivity": 1,
 		"task.quickOpen.history": 30,
-		"git.untrackedChanges": "mixed",
-		"notebook.output.fontSize": 12,
-		"scm.inputFontSize": 12,
-		"notebook.markup.fontSize": 12,
-		"markdown.preview.fontSize": 12
+		"git.untrackedChanges": "mixed"
 	}
 }
