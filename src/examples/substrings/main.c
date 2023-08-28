@@ -195,6 +195,7 @@ int main(void) {
     }
     printf(">[done]\n");
     list->release(gc_ptr);
+    list->free(gc_ptr);
 #ifdef USE_GC
     pointer->gc();
 #endif
