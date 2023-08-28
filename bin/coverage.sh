@@ -176,22 +176,24 @@ for target in ${targets[@]}; do
     fi
 done
 
-if [[ "${opts[@]}" == "" || ("${gc}" == "" && "${sanitize}" == "" && "${valgrind}" == "") ]]; then
+registered=$(echo "${sanitize} ${gc} ${valgrind} ${callgrind}" | xargs)
+
+if [[ "${registered[@]}" == "" || ("${gc}" == "" && "${sanitize}" == "" && "${valgrind}" == "") ]]; then
     "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v1 ${silent} ${opts[@]}
 fi
-if [[ "${opts[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "" && "${valgrind}" == "") ]]; then
+if [[ "${registered[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "" && "${valgrind}" == "") ]]; then
     "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v2 --gc ${silent} ${opts[@]}
 fi
-if [[ "${opts[@]}" == "" || ("${gc}" == "" && "${sanitize}" == "--sanitize" && "${valgrind}" == "") ]]; then
+if [[ "${registered[@]}" == "" || ("${gc}" == "" && "${sanitize}" == "--sanitize" && "${valgrind}" == "") ]]; then
     "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v3 --sanitize ${silent} ${opts[@]}
 fi
-if [[ "${opts[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "--sanitize" && "${valgrind}" == "") ]]; then
+if [[ "${registered[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "--sanitize" && "${valgrind}" == "") ]]; then
     "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v4 --gc --sanitize ${silent} ${opts[@]}
 fi
-if [[ "${opts[@]}" == "" || ("${gc}" == "" && "${sanitize}" == "" && "${valgrind}" == "--valgrind") ]]; then
+if [[ "${registered[@]}" == "" || ("${gc}" == "" && "${sanitize}" == "" && "${valgrind}" == "--valgrind") ]]; then
     "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v5 --valgrind ${silent} ${opts[@]}
 fi
-if [[ "${opts[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "" && "${valgrind}" == "--valgrind") ]]; then
+if [[ "${registered[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "" && "${valgrind}" == "--valgrind") ]]; then
     "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v6 --gc --valgrind ${silent} ${opts[@]}
 fi
 

@@ -165,24 +165,26 @@ for directory in ${directories[@]}; do
     done
 done
 
+registered=$(echo "${sanitize} ${gc} ${valgrind} ${callgrind}" | xargs)
+
 [[ ! -d "${pwd}/build" ]] && mkdir "${pwd}/build"
 
-if [[ "${opts[@]}" == "" || ("${gc}" == "" && "${sanitize}" == "" && "${valgrind}" == "") ]]; then
+if [[ "${registered[@]}" == "" || ("${gc}" == "" && "${sanitize}" == "" && "${valgrind}" == "") ]]; then
     "${pwd}/bin/utils/build.sh" --target ${source} --dir=build-v1 ${silent} ${opts[@]}
 fi
-if [[ "${opts[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "" && "${valgrind}" == "") ]]; then
+if [[ "${registered[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "" && "${valgrind}" == "") ]]; then
     "${pwd}/bin/utils/build.sh" --target ${source} --dir=build-v2 --gc ${silent} ${opts[@]}
 fi
-if [[ "${opts[@]}" == "" || ("${gc}" == "" && "${sanitize}" == "--sanitize" && "${valgrind}" == "") ]]; then
+if [[ "${registered[@]}" == "" || ("${gc}" == "" && "${sanitize}" == "--sanitize" && "${valgrind}" == "") ]]; then
     "${pwd}/bin/utils/build.sh" --target ${source} --dir=build-v3 --sanitize ${silent} ${opts[@]}
 fi
-if [[ "${opts[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "--sanitize" && "${valgrind}" == "") ]]; then
+if [[ "${registered[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "--sanitize" && "${valgrind}" == "") ]]; then
     "${pwd}/bin/utils/build.sh" --target ${source} --dir=build-v4 --gc --sanitize ${silent} ${opts[@]}
 fi
-if [[ "${opts[@]}" == "" || ("${gc}" == "" && "${sanitize}" == "" && "${valgrind}" == "--valgrind") ]]; then
+if [[ "${registered[@]}" == "" || ("${gc}" == "" && "${sanitize}" == "" && "${valgrind}" == "--valgrind") ]]; then
     "${pwd}/bin/utils/build.sh" --target ${source} --dir=build-v5 --valgrind ${silent} ${opts[@]}
 fi
-if [[ "${opts[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "" && "${valgrind}" == "--valgrind") ]]; then
+if [[ "${registered[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "" && "${valgrind}" == "--valgrind") ]]; then
     "${pwd}/bin/utils/build.sh" --target ${source} --dir=build-v6 --gc --valgrind ${silent} ${opts[@]}
 fi
 
