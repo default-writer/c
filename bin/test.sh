@@ -25,7 +25,7 @@ err_report() {
     exit 8
 }
 
-trap 'get_stack' ERR
+trap 'err_report $LINENO' ERR
 
 uid=$(id -u)
 
@@ -34,11 +34,13 @@ if [ "${uid}" -eq 0 ]; then
     exit
 fi
 
+pwd=$(cd "$(dirname $(dirname "${BASH_SOURCE[0]}"))" &> /dev/null && pwd)
+
 install="$1"
 
 opts=( "${@:2}" )
 
-. "$(pwd)/bin/scripts/load.sh"
+. "${pwd}/bin/scripts/load.sh"
 
 ## Builds and tests binaries
 ## Usage: ${script} <option>
@@ -53,8 +55,8 @@ opts=( "${@:2}" )
 case "${install}" in
 
     "--args") # builds and runs with args from .args file
-        if [ -f "$(pwd)/.args" ]; then args=$(cat "$(pwd)/.args"); fi
-        "$(pwd)/bin/coverage.sh" $args ${opts[@]}
+        if [ -f "${pwd}/.args" ]; then args=$(cat "${pwd}/.args"); fi
+        "${pwd}/bin/coverage.sh" $args ${opts[@]}
         ;;
 
     *)
@@ -63,4 +65,3 @@ case "${install}" in
         ;;
 
 esac
-

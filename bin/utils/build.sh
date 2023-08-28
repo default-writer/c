@@ -25,7 +25,7 @@ err_report() {
     exit 8
 }
 
-trap 'get_stack' ERR
+trap 'err_report $LINENO' ERR
 
 uid=$(id -u)
 
@@ -34,11 +34,13 @@ if [ "${uid}" -eq 0 ]; then
     exit
 fi
 
+pwd=$(cd "$(dirname $(dirname $(dirname "${BASH_SOURCE[0]}")))" &> /dev/null && pwd)
+
 install="$1"
 
 opts=( "${@:2}" )
 
-. "$(pwd)/bin/scripts/load.sh"
+. "${pwd}/bin/scripts/load.sh"
 
 ## Builds binaries
 ## Usage: ${script} <option> [optional]
@@ -127,10 +129,10 @@ if [[ "${silent}" == "--silent" ]]; then
     exec 2>&1 >/dev/null
 fi
 
-build="build"
+build="${pwd}/build"
 
 if [[ ! "${dir}" == "" ]]; then
-    build="${dir}"
+    build="${pwd}/${dir}"
 fi
 
 if [[ "${clean}" == "--clean" ]]; then
@@ -152,11 +154,11 @@ fi
 cmake=$(get-cmake)
 
 if [[ "${cmake}" == "" ]]; then
-    echo cmake not found. please run "$(pwd)/bin/utils/install.sh" --cmake
+    echo cmake not found. please run "${pwd}/bin/utils/install.sh" --cmake
     exit 8
 fi
 
-output="$(pwd)/output"
+output="${pwd}/output"
 [[ ! -d "${output}" ]] && mkdir "${output}"
 
 for target in ${targets[@]}; do
@@ -176,7 +178,7 @@ for f in ${coverage[@]}; do
 done
 
 export MAKEFLAGS=-j8
-export LD_LIBRARY_PATH="$(pwd)/lib"
+export LD_LIBRARY_PATH="${pwd}/lib"
 
 ${cmake} \
     -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
@@ -184,7 +186,7 @@ ${cmake} \
     -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
     -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
     $(cmake-options) \
-    -S"$(pwd)" \
+    -S"${pwd}" \
     -B"${build}" \
     -G "Ninja" 2>&1 >/dev/null
 
@@ -194,6 +196,7 @@ for target in ${targets[@]}; do
     if [[ "${silent}" == "--silent" ]]; then
         ${cmake} --build "${build}" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
     else
+        echo ${cmake} --build "${build}" --target "${target}" || (echo ERROR: "${target}" && exit 1)
         ${cmake} --build "${build}" --target "${target}" || (echo ERROR: "${target}" && exit 1)
     fi
     case "${target}" in
@@ -207,7 +210,7 @@ done
 
 main=$(find "${build}" -type f -name "*.s" -exec echo {} \;)
 for i in ${main[@]}; do
-    path="$(pwd)/$(echo $i | sed -n -e 's/^.*.dir\/\(.*\)$/\1/p')"
+    path="${pwd}/$(echo $i | sed -n -e 's/^.*.dir\/\(.*\)$/\1/p')"
     cp "${i}" "${path}"
 done
 
@@ -217,4 +220,4 @@ fi
 
 [[ $SHLVL -gt 2 ]] || echo OK
 
-cd "$(pwd)"
+cd "${pwd}"

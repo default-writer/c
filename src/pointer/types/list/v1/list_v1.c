@@ -53,14 +53,16 @@ static const struct vm_type type_definition;
 static const struct vm_type* type = &type_definition;
 
 /* internal */
+static struct pointer* list_alloc_internal(void);
 static u64 list_alloc(void);
 static void list_free(u64 ptr);
 static void list_vm_free(struct pointer* ptr);
 static void list_push(u64 ptr, u64 data_ptr);
 static u64 list_peek(u64 ptr);
+static u64 list_peekn(u64 list_ptr, u64 nelements);
 static u64 list_pop(u64 ptr);
+static u64 list_popn(u64 list_ptr, u64 nelements);
 static u64 list_size(u64 ptr);
-
 /* definition */
 struct list_handler {
     u64 size;
@@ -68,11 +70,16 @@ struct list_handler {
 };
 
 /* implementation */
-static u64 list_alloc(void) {
+static struct pointer* list_alloc_internal(void) {
     struct pointer* ptr = virtual->alloc(sizeof(struct list_handler), id);
     struct list_handler* handler = ptr->data;
     handler->size = 0;
     list->init(&handler->list);
+    return ptr;
+}
+
+static u64 list_alloc(void) {
+    struct pointer* ptr = list_alloc_internal();
     u64 data = vm->alloc(ptr);
 #ifdef USE_GC
     list->push(&base->gc, (void*)data);
@@ -138,6 +145,31 @@ static u64 list_peek(u64 ptr) {
     return data;
 }
 
+static u64 list_peekn(u64 list_ptr, u64 nelements) {
+    struct pointer* data_ptr = vm->read_type(list_ptr, id);
+    if (data_ptr == 0) {
+        return 0;
+    }
+    struct list_handler* src_handler = data_ptr->data;
+    u64 size = src_handler->size;
+    if (size < nelements) {
+        return 0;
+    }
+    struct pointer* dst_ptr = list_alloc_internal();
+    u64 i = nelements;
+    while (i-- > 0) {
+        struct list_data* current = src_handler->list;
+        u64 data = (u64)list->peek(&current);
+        list->push(&src_handler->list, (void*)data);
+        current = current->next;
+    }
+    u64 dst_data = vm->alloc(dst_ptr);
+#ifdef USE_GC
+    list->push(&base->gc, (void*)dst_data);
+#endif
+    return dst_data;
+}
+
 static u64 list_pop(u64 ptr) {
     struct pointer* data_ptr = vm->read_type(ptr, id);
     if (data_ptr == 0) {
@@ -150,6 +182,29 @@ static u64 list_pop(u64 ptr) {
     u64 data = (u64)list->pop(&handler->list);
     handler->size--;
     return data;
+}
+
+static u64 list_popn(u64 list_ptr, u64 nelements) {
+    struct pointer* data_ptr = vm->read_type(list_ptr, id);
+    if (data_ptr == 0) {
+        return 0;
+    }
+    struct list_handler* src_handler = data_ptr->data;
+    u64 size = src_handler->size;
+    if (size < nelements) {
+        return 0;
+    }
+    struct pointer* dst_ptr = list_alloc_internal();
+    u64 i = nelements;
+    while (i-- > 0) {
+        u64 data = (u64)list->pop(&src_handler->list);
+        list->push(&src_handler->list, (void*)data);
+    }
+    u64 dst_data = vm->alloc(dst_ptr);
+#ifdef USE_GC
+    list->push(&base->gc, (void*)dst_data);
+#endif
+    return dst_data;
 }
 
 static u64 list_size(u64 ptr) {
@@ -176,7 +231,9 @@ const struct list_methods list_methods_definition = {
     .free = list_free,
     .push = list_push,
     .peek = list_peek,
+    .peekn = list_peekn,
     .pop = list_pop,
+    .popn = list_popn,
     .size = list_size,
     .release = list_release
 };

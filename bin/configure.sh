@@ -25,15 +25,17 @@ err_report() {
     exit 8
 }
 
-trap 'get_stack' ERR
+trap 'err_report $LINENO' ERR
 
 uid=$(id -u)
+
+pwd=$(cd "$(dirname $(dirname "${BASH_SOURCE[0]}"))" &> /dev/null && pwd)
 
 install="$1"
 
 opts=( "${@:2}" )
 
-. "$(pwd)/bin/scripts/load.sh"
+. "${pwd}/bin/scripts/load.sh"
 
 ## Builds binaries and creates coverage info
 ## Usage: ${script} <option> [optional]
@@ -97,7 +99,7 @@ if [[ "${source}" == "musl" ]]; then
         exit
     fi
 
-    cd "$(pwd)/.deps/musl"
+    cd "${pwd}/.deps/musl"
     ./configure 2>&1
     make
     make install
@@ -123,4 +125,4 @@ fi
 
 [[ $SHLVL -gt 2 ]] || echo OK
 
-cd "$(pwd)"
+cd "${pwd}"

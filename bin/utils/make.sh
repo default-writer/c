@@ -25,7 +25,7 @@ err_report() {
     exit 8
 }
 
-trap 'get_stack' ERR
+trap 'err_report $LINENO' ERR
 
 uid=$(id -u)
 
@@ -34,9 +34,11 @@ if [ ! "${uid}" -eq 0 ]; then
     exit
 fi
 
+pwd=$(cd "$(dirname $(dirname $(dirname "${BASH_SOURCE[0]}")))" &> /dev/null && pwd)
+
 install="$1"
 
-. "$(pwd)/bin/scripts/load.sh"
+. "${pwd}/bin/scripts/load.sh"
 
 ## Build optional dependencies
 ## Usage: ${script} <option>
@@ -45,7 +47,7 @@ install="$1"
 case "${install}" in
 
     "--musl") # builds musl as git submodule
-        cd "$(pwd)/.deps/musl"
+        cd "${pwd}/.deps/musl"
         make
         make install
         ;;
@@ -59,4 +61,4 @@ esac
 
 [[ $SHLVL -gt 2 ]] || echo OK
 
-cd "$(pwd)"
+cd "${pwd}"

@@ -25,7 +25,7 @@ err_report() {
     exit 8
 }
 
-trap 'get_stack' ERR
+trap 'err_report $LINENO' ERR
 
 uid=$(id -u)
 
@@ -34,11 +34,13 @@ if [ "${uid}" -eq 0 ]; then
     exit
 fi
 
+pwd=$(cd "$(dirname $(dirname "${BASH_SOURCE[0]}"))" &> /dev/null && pwd)
+
 install="$1"
 
 opts=( "${@:2}" )
 
-. "$(pwd)/bin/scripts/load.sh"
+. "${pwd}/bin/scripts/load.sh"
 
 ## Builds binaries
 ## Usage: ${script} <option> [optional]
@@ -152,13 +154,13 @@ fi
 cmake=$(get-cmake)
 
 if [[ "${cmake}" == "" ]]; then
-    echo cmake not found. please run "$(pwd)/bin/utils/install.sh" --cmake
+    echo cmake not found. please run "${pwd}/bin/utils/install.sh" --cmake
     exit 8
 fi
 
 [[ ! -d "${build}" ]] && mkdir "${build}"
 
-output="$(pwd)/output"
+output="${pwd}/output"
 [[ ! -d "${output}" ]] && mkdir "${output}"
 
 for target in ${targets[@]}; do
@@ -167,9 +169,9 @@ for target in ${targets[@]}; do
     fi
 done
 
-find "$(pwd)" -type f -name "callgrind.out.*" -delete
-find "$(pwd)/src" -type f -name "*.s" -delete
-find "$(pwd)/tests" -type f -name "*.s" -delete
+find "${pwd}" -type f -name "callgrind.out.*" -delete
+find "${pwd}/src" -type f -name "*.s" -delete
+find "${pwd}/tests" -type f -name "*.s" -delete
 
 coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" "*.info" )
 
@@ -182,7 +184,7 @@ for f in ${coverage[@]}; do
 done
 
 export MAKEFLAGS=-j8
-export LD_LIBRARY_PATH="$(pwd)/lib"
+export LD_LIBRARY_PATH="${pwd}/lib"
 
 ${cmake} \
     -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
@@ -190,7 +192,7 @@ ${cmake} \
     -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
     -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
     $(cmake-options) \
-    -S"$(pwd)" \
+    -S"${pwd}" \
     -B"${build}" \
     -G "Ninja" 2>&1 >/dev/null
 
@@ -213,7 +215,7 @@ done
 
 main=$(find "${build}" -type f -name "*.s" -exec echo {} \;)
 for i in ${main[@]}; do
-    path="$(pwd)/$(echo $i | sed -n -e 's/^.*.dir\/\(.*\)$/\1/p')"
+    path="${pwd}/$(echo $i | sed -n -e 's/^.*.dir\/\(.*\)$/\1/p')"
     cp "${i}" "${path}"
 done
 
@@ -223,4 +225,4 @@ fi
 
 [[ $SHLVL -gt 2 ]] || echo OK
 
-cd "$(pwd)"
+cd "${pwd}"

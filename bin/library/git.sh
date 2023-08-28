@@ -25,7 +25,7 @@ err_report() {
     exit 8
 }
 
-trap 'get_stack' ERR
+trap 'err_report $LINENO' ERR
 
 
 function submodule-install() {

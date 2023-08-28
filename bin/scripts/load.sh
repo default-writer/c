@@ -25,16 +25,16 @@ err_report() {
     exit 8
 }
 
-trap 'get_stack' ERR
+trap 'err_report $LINENO' ERR
 
 function get-scripts() {
     local script
     local scripts
     local import
-    scripts=$(find "$(pwd)/bin/library" -type f -name "*.sh" -exec echo {} \;)
+    scripts=$(find "${pwd}/bin/library" -type f -name "*.sh" -exec echo {} \;)
     for script in ${scripts[@]}; do
         import="$(echo ${script} | sed -n -e 's/^.*bin\/library\/\(.*\)$/\1/p')"
-        . "$(pwd)/bin/library/${import}"
+        . "${pwd}/bin/library/${import}"
     done
 }
 

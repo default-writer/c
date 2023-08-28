@@ -25,7 +25,7 @@ err_report() {
     exit 8
 }
 
-trap 'get_stack' ERR
+trap 'err_report $LINENO' ERR
 
 uid=$(id -u)
 
@@ -34,11 +34,13 @@ if [ "${uid}" -eq 0 ]; then
     exit
 fi
 
+pwd=$(cd "$(dirname $(dirname "${BASH_SOURCE[0]}"))" &> /dev/null && pwd)
+
 install="$1"
 
 opts=( "${@:2}" )
 
-. "$(pwd)/bin/scripts/load.sh"
+. "${pwd}/bin/scripts/load.sh"
 
 ## Finds targets by file relative path/name and executes them
 ## Usage: ${script} <option> [optional]
@@ -150,38 +152,38 @@ if [[ "${targets[@]}" == "" ]]; then
 fi
 
 for target in ${targets[@]}; do
-    find "$(pwd)" -type f -name "${target}-*.info" -delete
+    find "${pwd}" -type f -name "${target}-*.info" -delete
 done
 
-[[ ! -d "$(pwd)/coverage" ]] && mkdir "$(pwd)/coverage"
+[[ ! -d "${pwd}/coverage" ]] && mkdir "${pwd}/coverage"
 
-if [[ -f "$(pwd)/coverage/lcov.info" ]]; then 
-    rm "$(pwd)/coverage/lcov.info"
+if [[ -f "${pwd}/coverage/lcov.info" ]]; then 
+    rm "${pwd}/coverage/lcov.info"
 fi
 
 for linked_target in ${targets[@]}; do
     case ${linked_target} in
         c-*) ;& main-*) ;& test-*)
             if [[ " ${targets[*]} " == *" ${linked_target} "* ]]; then
-                $(pwd)/bin/coverage.sh --target ${linked_target} ${opts[@]}
+                ${pwd}/bin/coverage.sh --target ${linked_target} ${opts[@]}
             fi
             ;;
         *)
-            $(pwd)/bin/build.sh --target ${linked_target} ${opts[@]}
+            ${pwd}/bin/build.sh --target ${linked_target} ${opts[@]}
             ;;
     esac
 done
 
-files=$(find "$(pwd)/coverage" -type f -name "*.info" -exec echo {} \;)
+files=$(find "${pwd}/coverage" -type f -name "*.info" -exec echo {} \;)
 if [[ ! "${files[@]}" == "" ]]; then
-    find "$(pwd)/coverage" -type f -name "*.info" -exec echo -a {} \; | xargs lcov -o "$(pwd)/coverage/lcov.info"
+    find "${pwd}/coverage" -type f -name "*.info" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
 fi
 
 for linked_target in ${targets[@]}; do
     case ${linked_target} in
         c-*) ;& main-*) ;& test-*)
-            if [[ -f "$(pwd)/coverage/${linked_target}.info" ]]; then
-               rm "$(pwd)/coverage/${linked_target}.info"
+            if [[ -f "${pwd}/coverage/${linked_target}.info" ]]; then
+               rm "${pwd}/coverage/${linked_target}.info"
             fi
             ;;
         *)
@@ -195,4 +197,4 @@ fi
 
 [[ $SHLVL -gt 2 ]] || echo OK
 
-cd "$(pwd)"
+cd "${pwd}"

@@ -25,7 +25,7 @@ err_report() {
     exit 8
 }
 
-trap 'get_stack' ERR
+trap 'err_report $LINENO' ERR
 
 uid=$(id -u)
 
@@ -33,6 +33,8 @@ if [ "${uid}" -eq 0 ]; then
     echo "Please run as user"
     exit
 fi
+
+pwd=$(cd "$(dirname $(dirname $(dirname "${BASH_SOURCE[0]}")))" &> /dev/null && pwd)
 
 install="$1"
 
@@ -65,4 +67,4 @@ esac
 
 [[ $SHLVL -gt 2 ]] || echo OK
 
-cd "$(pwd)"
+cd "${pwd}"

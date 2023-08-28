@@ -25,7 +25,7 @@ err_report() {
     exit 8
 }
 
-trap 'get_stack' ERR
+trap 'err_report $LINENO' ERR
 
 uid=$(id -u)
 
@@ -34,17 +34,17 @@ if [ ! "${uid}" -eq 0 ]; then
     exit
 fi
 
-"$(pwd)/bin/utils/setup.sh" --update
-"$(pwd)/bin/utils/setup.sh" --zip --no-update --no-upgrade
-"$(pwd)/bin/utils/setup.sh" --configuration --no-update --no-upgrade
-"$(pwd)/bin/utils/setup.sh" --clang-format --no-update --no-upgrade
-"$(pwd)/bin/utils/setup.sh" --cmake --no-update --no-upgrade
-"$(pwd)/bin/utils/setup.sh" --gtk4 --no-update --no-upgrade
-"$(pwd)/bin/utils/setup.sh" --nodejs-ppa --no-update --no-upgrade
-"$(pwd)/bin/utils/setup.sh" --raylib --no-update --no-upgrade
-"$(pwd)/bin/utils/setup.sh" --doxygen --no-update --no-upgrade
-"$(pwd)/bin/utils/setup.sh" --upgrade
+"${pwd}/bin/utils/setup.sh" --update
+"${pwd}/bin/utils/setup.sh" --zip --no-update --no-upgrade
+"${pwd}/bin/utils/setup.sh" --configuration --no-update --no-upgrade
+"${pwd}/bin/utils/setup.sh" --clang-format --no-update --no-upgrade
+"${pwd}/bin/utils/setup.sh" --cmake --no-update --no-upgrade
+"${pwd}/bin/utils/setup.sh" --gtk4 --no-update --no-upgrade
+"${pwd}/bin/utils/setup.sh" --nodejs-ppa --no-update --no-upgrade
+"${pwd}/bin/utils/setup.sh" --raylib --no-update --no-upgrade
+"${pwd}/bin/utils/setup.sh" --doxygen --no-update --no-upgrade
+"${pwd}/bin/utils/setup.sh" --upgrade
 
 [[ $SHLVL -gt 2 ]] || echo OK
 
-cd "$(pwd)"
+cd "${pwd}"

@@ -30,13 +30,22 @@
 
 /*! @file list_v1.h
  *  @brief C API / list
+ *
+ *  structure for organizing @ref list_methods functions
+ *
  */
-
 struct list_methods {
     u64 (*alloc)(void);
     void (*free)(u64 ptr);
     u64 (*peek)(u64 list_ptr);
+    /*! returns a list of picked items
+        @param list_ptr a list to get items from
+        @param nelements number of elements to peek from the list
+        @return returns new list which contains n elements from the list in reverse order
+    */
+    u64 (*peekn)(u64 list_ptr, u64 nelements);
     u64 (*pop)(u64 list_ptr);
+    u64 (*popn)(u64 list_ptr, u64 nelements);
     void (*push)(u64 list_ptr, u64 ptr);
     u64 (*size)(u64 ptr);
     void (*release)(u64 ptr);

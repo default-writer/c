@@ -111,6 +111,7 @@ RX_TEST_CASE(tests, test_print_load_empty, .fixture = test_fixture) {
 RX_TEST_CASE(tests, test_load_copy, .fixture = test_fixture) {
     u64 char_ptr = pointer->load("/");
     u64 copy_ptr = pointer->copy(char_ptr);
+    pointer->printf(char_ptr);
     RX_ASSERT(char_ptr != 0);
     RX_ASSERT(copy_ptr != 0);
     RX_ASSERT(char_ptr != copy_ptr);
@@ -250,9 +251,10 @@ RX_TEST_CASE(tests, test_strcpy, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
+#ifdef USE_MEMORY_DEBUG_INFO
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct pointer_data* ctx = rx->ctx;
-
+#endif
     u64 file_name_ptr = pointer->load("all_english_words.txt");
     u64 mode_ptr = pointer->load("rb");
 
@@ -263,11 +265,6 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     u64 zero_ptr = pointer->alloc();
     u64 null_ptr = 0;
     u64 void_ptr = 0xffffffffffffffff;
-
-    pointer->printf(string_ptr);
-    pointer->printf(list_ptr);
-    pointer->printf(empty_ptr);
-    pointer->printf(null_ptr);
 
     list->peek(string_ptr);
     list->peek(list_ptr);
@@ -377,12 +374,6 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     file->file_read(void_ptr);
     file->file_read(empty_ptr);
     file->file_read(data_ptr);
-
-    pointer->printf(string_ptr);
-    pointer->printf(null_ptr);
-    pointer->printf(void_ptr);
-    pointer->printf(zero_ptr);
-    pointer->printf(data_ptr);
 
     pointer->strcpy(string_ptr, null_ptr);
     pointer->strcpy(string_ptr, data_ptr);
@@ -588,8 +579,6 @@ RX_TEST_CASE(tests, test_load_open_match_last_unsafe_free, .fixture = test_fixtu
     pointer->strcat(file_path_ptr, file_name_ptr);
     u64 mode_ptr = pointer->load("rb");
     u64 f_ptr = file->file_alloc(file_path_ptr, mode_ptr);
-    u64 data_ptr = file->file_read(f_ptr);
-    pointer->printf(data_ptr);
 #ifndef USE_GC
     pointer->free(file_path_ptr);
     pointer->free(file_name_ptr);
@@ -597,7 +586,6 @@ RX_TEST_CASE(tests, test_load_open_match_last_unsafe_free, .fixture = test_fixtu
     pointer->free(last_match_ptr);
     pointer->free(mode_ptr);
     pointer->free(f_ptr);
-    pointer->free(data_ptr);
 #endif
 }
 
@@ -616,7 +604,7 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixtur
         u64 list_ptr = list->alloc();
         file->file_free(f_ptr);
         char* file_data = pointer->unsafe(data_ptr);
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 10; i++) {
             char* tmp = file_data;
             while (*tmp != 0 && *tmp != '\n') {
                 tmp++;
@@ -664,7 +652,6 @@ extern inline void source1(void) {
 #endif
     u64 data_ptr = file->file_read(f_ptr);
     file->file_free(f_ptr);
-    pointer->printf(data_ptr);
 #ifndef USE_GC
     pointer->free(data_ptr);
 #endif

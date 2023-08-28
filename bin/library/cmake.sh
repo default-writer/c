@@ -24,12 +24,12 @@ err_report() {
     exit 8
 }
 
-trap 'get_stack' ERR
+trap 'err_report $LINENO' ERR
 
 
 function get-cmake() {
     local cmake
-    [ -d "$(pwd)/.tools/cmake-3.25/bin" ] && cmake=$(pwd)/.tools/cmake-3.25/bin/cmake || cmake=${cmake}
+    [ -d "${pwd}/.tools/cmake-3.25/bin" ] && cmake=${pwd}/.tools/cmake-3.25/bin/cmake || cmake=${cmake}
     echo ${cmake}
 }
 
@@ -43,7 +43,7 @@ function get-targets() {
     local array
     local sources
 
-    if [[ ! -d "$(pwd)/config" ]]; then
+    if [[ ! -d "${pwd}/config" ]]; then
         exec 2>&1 >/dev/null
 
         cmake=$(get-cmake)
@@ -53,16 +53,16 @@ function get-targets() {
 
         ${cmake} \
             -DTARGETS:BOOL=ON \
-            -S"$(pwd)" \
-            -B"$(pwd)/config" \
+            -S"${pwd}" \
+            -B"${pwd}/config" \
             -G "Ninja" 2>&1 >/dev/null
 
         exec 1>&2 2>&-
     fi
 
     files=()
-    if [[ -d "$(pwd)/config" ]]; then
-        files=$(find "$(pwd)/config" -type f -name "sources.txt")
+    if [[ -d "${pwd}/config" ]]; then
+        files=$(find "${pwd}/config" -type f -name "sources.txt")
         for file in ${files[@]}; do
             array+=( $(basename $(dirname "${file}") ) )
         done
@@ -149,14 +149,14 @@ function get-source-targets() {
         return
     fi
 
-    if [[ ! -d "$(pwd)/config" ]]; then
+    if [[ ! -d "${pwd}/config" ]]; then
         exec 2>&1 >/dev/null
 
-        build="$(pwd)/config"
+        build="${pwd}/config"
         ${cmake} \
             -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
             -DTARGETS:BOOL=ON \
-            -S"$(pwd)" \
+            -S"${pwd}" \
             -B"${build}" \
             -G "Ninja" 2>&1 >/dev/null
 
@@ -174,7 +174,7 @@ function get-source-targets() {
                 array+=( ${target} )
                 break
             fi
-            files=$(find "$(pwd)/config/${target}" -type f -name "sources.txt")
+            files=$(find "${pwd}/config/${target}" -type f -name "sources.txt")
             for file in ${files[@]}; do
                 while IFS= read -r line; do
                     if [[ "${source}" == "${line}" ]]; then

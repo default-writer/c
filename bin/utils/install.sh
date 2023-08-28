@@ -25,7 +25,7 @@ err_report() {
     exit 8
 }
 
-trap 'get_stack' ERR
+trap 'err_report $LINENO' ERR
 
 uid=$(id -u)
 
@@ -34,9 +34,11 @@ if [ "${uid}" -eq 0 ]; then
     exit
 fi
 
+pwd=$(cd "$(dirname $(dirname $(dirname "${BASH_SOURCE[0]}")))" &> /dev/null && pwd)
+
 install="$1"
 
-. "$(pwd)/bin/scripts/load.sh"
+. "${pwd}/bin/scripts/load.sh"
 
 ## Installs optional dependencies
 ## Usage: ${script} <option>
@@ -47,13 +49,13 @@ case "${install}" in
     "--appwrite") # installs appwrite. appwrite is a self-hosted backend-as-a-service platform that provides developers with all the core APIs required to build any application.
         docker run -it --rm \
             --volume /var/run/docker.sock:/var/run/docker.sock \
-            --volume "$(pwd)"/appwrite:/usr/src/code/appwrite:rw \
+            --volume "${pwd}"/appwrite:/usr/src/code/appwrite:rw \
             --entrypoint="install" \
             appwrite/appwrite:1.3.1
         ;;
 
     "--appwrite-start") # starts appwrite docker
-        docker compose -f "$(pwd)/appwrite/docker-compose.yml" up -d --remove-orphans --renew-anon-volumes
+        docker compose -f "${pwd}/appwrite/docker-compose.yml" up -d --remove-orphans --renew-anon-volumes
         ;;
 
     "--rustc") # installs rustc
@@ -67,21 +69,21 @@ case "${install}" in
         ;;
 
     "--clangd") # installs clangd 16.0.2
-        [[ ! -d "$(pwd)/.tools" ]] && mkdir "$(pwd)/.tools"
-        [[ ! -d "$(pwd)/.tools/clangd_16.0.2" ]] && mkdir "$(pwd)/.tools/clangd_16.0.2"
+        [[ ! -d "${pwd}/.tools" ]] && mkdir "${pwd}/.tools"
+        [[ ! -d "${pwd}/.tools/clangd_16.0.2" ]] && mkdir "${pwd}/.tools/clangd_16.0.2"
         wget https://github.com/clangd/clangd/releases/download/16.0.2/clangd-linux-16.0.2.zip -qO "/tmp/clangd-linux-16.0.2.zip"
         unzip -o -q "/tmp/clangd-linux-16.0.2.zip" -d "/tmp"
-        cp -r "/tmp/clangd_16.0.2/." "$(pwd)/.tools/clangd_16.0.2"
+        cp -r "/tmp/clangd_16.0.2/." "${pwd}/.tools/clangd_16.0.2"
         rm -rf "/tmp/clangd-linux-16.0.2"
         rm -f "/tmp/clangd-linux-16.0.2.zip"
         ;;
 
     "--cmake") # installs cmake
-        [[ ! -d "$(pwd)/.tools" ]] && mkdir "$(pwd)/.tools"
-        [[ ! -d "$(pwd)/.tools/cmake-3.25" ]] && mkdir "$(pwd)/.tools/cmake-3.25"
+        [[ ! -d "${pwd}/.tools" ]] && mkdir "${pwd}/.tools"
+        [[ ! -d "${pwd}/.tools/cmake-3.25" ]] && mkdir "${pwd}/.tools/cmake-3.25"
         wget https://github.com/Kitware/CMake/releases/download/v3.25.3/cmake-3.25.3-linux-x86_64.sh -qO "/tmp/cmake-3.25.3-linux-x86_64.sh"
         chmod +x "/tmp/cmake-3.25.3-linux-x86_64.sh"
-        DEBIAN_FRONTEND=noninteractive /tmp/cmake-3.25.3-linux-x86_64.sh --prefix=$(pwd)/.tools/cmake-3.25 --skip-license
+        DEBIAN_FRONTEND=noninteractive /tmp/cmake-3.25.3-linux-x86_64.sh --prefix=${pwd}/.tools/cmake-3.25 --skip-license
         rm "/tmp/cmake-3.25.3-linux-x86_64.sh"
         ;;
 
@@ -105,13 +107,13 @@ case "${install}" in
         ;;
 
     "--git") # installs git variables
-        git config --global --add safe.directory "$(pwd)"
+        git config --global --add safe.directory "${pwd}"
         git config --global pull.rebase false
         ;;
 
     "--args") # install test .args file
         args=( '--all' '--clean' '--silent' '--sanitize' )
-        printf '%s\n' "${args[@]}" > "$(pwd)/.args"
+        printf '%s\n' "${args[@]}" > "${pwd}/.args"
         ;;
 
     "--submodule-rexo") # installs rexo as git submodule
@@ -135,8 +137,8 @@ case "${install}" in
         ;;
 
     "--hooks") # installs git hooks
-        cp "$(pwd)/.hooks/prepare-commit-msg" "$(pwd)/.git/hooks/prepare-commit-msg"
-        chmod u+x "$(pwd)/.git/hooks/prepare-commit-msg"
+        cp "${pwd}/.hooks/prepare-commit-msg" "${pwd}/.git/hooks/prepare-commit-msg"
+        chmod u+x "${pwd}/.git/hooks/prepare-commit-msg"
         ;;
 
     "--pyenv") # downloads and installs pyenv
@@ -181,4 +183,4 @@ esac
 
 [[ $SHLVL -gt 2 ]] || echo OK
 
-cd "$(pwd)"
+cd "${pwd}"

@@ -24,7 +24,7 @@ err_report() {
 	exit 8
 }
 
-trap 'get_stack' ERR
+trap 'err_report $LINENO' ERR
 
 uid=$(id -u)
 
@@ -33,13 +33,18 @@ if [ "${uid}" -eq 0 ]; then
 	exit
 fi
 
+pwd="${pwd}"
+
+rm -rf "${pwd}/doxygen"
+
 doxygen Doxyfile
 
-pwd=$(pwd)
-
 cd "${pwd}/doxygen/latex"
+
 make
+
 cd "${pwd}"
+
 cp "${pwd}/doxygen/latex/refman.pdf" "${pwd}/docs/"
 
 [[ $SHLVL -gt 2 ]] || echo OK

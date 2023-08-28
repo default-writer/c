@@ -25,7 +25,7 @@ err_report() {
     exit 8
 }
 
-trap 'get_stack' ERR
+trap 'err_report $LINENO' ERR
 
 uid=$(id -u)
 
@@ -34,9 +34,11 @@ if [ "${uid}" -eq 0 ]; then
     exit
 fi
 
+pwd=$(cd "$(dirname $(dirname $(dirname "${BASH_SOURCE[0]}")))" &> /dev/null && pwd)
+
 install="$1"
 
-. "$(pwd)/bin/scripts/load.sh"
+. "${pwd}/bin/scripts/load.sh"
 
 ## Uninstalls optional dependencies
 ## Usage: ${script} <option>
@@ -45,11 +47,11 @@ install="$1"
 case "${install}" in
 
     "--clangd") # uninstalls clangd 16.0.2
-        rm -rf "$(pwd)/clangd"
+        rm -rf "${pwd}/clangd"
         ;;
 
     "--cmake") # uninstalls cmake cmake 3.25.3
-        rm -rf "$(pwd)/cmake-3.25"
+        rm -rf "${pwd}/cmake-3.25"
         ;;
 
     "--git") # unsets git config global environment variables
@@ -58,23 +60,23 @@ case "${install}" in
         ;;
 
     "--submodule-rexo") # uninstalls rexoas git submodule
-        submodule-uninstall $(pwd) .deps/rexo
+        submodule-uninstall ${pwd} .deps/rexo
         ;;
 
     "--submodule-musl") # uninstalls muslas git submodule
-        submodule-uninstall $(pwd) .deps/musl
+        submodule-uninstall ${pwd} .deps/musl
         ;;
 
     "--submodule-vcpkg") # uninstalls vcpkg as git submodule
-        submodule-uninstall $(pwd) .deps/vcpkg
+        submodule-uninstall ${pwd} .deps/vcpkg
         ;;
 
     "--submodule-raylib") # uninstalls rexo as raylib submodule
-        submodule-uninstall $(pwd) .deps/raylib
+        submodule-uninstall ${pwd} .deps/raylib
         ;;
 
     "--submodule-lldb-mi") # uninstalls lldb-mi as git submodule
-        submodule-uninstall $(pwd) .deps/lldb-mi
+        submodule-uninstall ${pwd} .deps/lldb-mi
         ;;
 
     "--hooks") # removes prepare-commit-msg hook from .git
@@ -113,4 +115,4 @@ esac
 
 [[ $SHLVL -gt 2 ]] || echo OK
 
-cd "$(pwd)"
+cd "${pwd}"

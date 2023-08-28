@@ -25,7 +25,7 @@ err_report() {
     exit 8
 }
 
-trap 'get_stack' ERR
+trap 'err_report $LINENO' ERR
 
 uid=$(id -u)
 
@@ -34,11 +34,13 @@ if [ ! "${uid}" -eq 0 ]; then
     exit
 fi
 
+pwd=$(cd "$(dirname $(dirname $(dirname "${BASH_SOURCE[0]}")))" &> /dev/null && pwd)
+
 install="$1"
 
 opts=( "${@:2}" )
 
-. "$(pwd)/bin/scripts/load.sh"
+. "${pwd}/bin/scripts/load.sh"
 
 ## Installs build system dependencies
 ## Usage: ${script} <option> [optional]
@@ -329,9 +331,9 @@ case "${install}" in
 
     "--gh-cli") # installs github cli
         update ${updateflags}
-        [[ ! -d "$(pwd)/gh" ]] && mkdir "$(pwd)/gh"
-        curl -L "https://github.com/cli/cli/releases/download/v2.22.0/gh_2.22.0_linux_amd64.deb" -o "$(pwd)/gh/gh_2.22.0_linux_amd64.deb"
-        dpkg -i "$(pwd)/gh/gh_2.22.0_linux_amd64.deb"
+        [[ ! -d "${pwd}/gh" ]] && mkdir "${pwd}/gh"
+        curl -L "https://github.com/cli/cli/releases/download/v2.22.0/gh_2.22.0_linux_amd64.deb" -o "${pwd}/gh/gh_2.22.0_linux_amd64.deb"
+        dpkg -i "${pwd}/gh/gh_2.22.0_linux_amd64.deb"
         ;;
 
     *)
@@ -343,4 +345,4 @@ esac
 
 [[ $SHLVL -gt 2 ]] || echo OK
 
-cd "$(pwd)"
+cd "${pwd}"

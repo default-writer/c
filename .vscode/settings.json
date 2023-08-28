@@ -355,7 +355,6 @@
   ],
   "editor.tabSize": 4,
   "editor.indentSize": "tabSize",
-  "editor.fontSize": 12,
   "screencastMode.fontSize": 20,
   "window.zoomLevel": 0,
   "editor.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
@@ -426,7 +425,7 @@
   },
   "git.suggestSmartCommit": false,
   "[jsonc]": {
-    "editor.defaultFormatter": "trunk.io"
+    "editor.defaultFormatter": "vscode.json-language-features"
   },
   "files.refactoring.autoSave": false,
   "editor.fontVariations": false,
@@ -461,5 +460,6 @@
   "workbench.list.horizontalScrolling": false,
   "terminal.integrated.fastScrollSensitivity": 2,
   "workbench.list.fastScrollSensitivity": 2,
-  "workbench.editor.showTabs": true
+  "workbench.editor.showTabs": true,
+  "editor.fontSize": 12
 }

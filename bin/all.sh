@@ -25,7 +25,7 @@ err_report() {
     exit 8
 }
 
-trap 'get_stack' ERR
+trap 'err_report $LINENO' ERR
 
 uid=$(id -u)
 
@@ -34,11 +34,13 @@ if [ "${uid}" -eq 0 ]; then
     exit
 fi
 
+pwd=$(cd "$(dirname $(dirname "${BASH_SOURCE[0]}"))" &> /dev/null && pwd)
+
 install="$1"
 
 opts=( "${@:2}" )
 
-. "$(pwd)/bin/scripts/load.sh"
+. "${pwd}/bin/scripts/load.sh"
 
 ## Builds binaries
 ## Usage: ${script} <option> [optional]
@@ -72,15 +74,15 @@ esac
 
 COMMAND_LINE_OPTIONS=$(get-options ${opts[@]})
 if [ $? -eq 0 ]; then
-    "$(pwd)/bin/build.sh" ${COMMAND_LINE_OPTIONS}
+    "${pwd}/bin/build.sh" ${COMMAND_LINE_OPTIONS}
 fi
 if [ $? -eq 0 ]; then
-    "$(pwd)/bin/coverage.sh" ${COMMAND_LINE_OPTIONS}
+    "${pwd}/bin/coverage.sh" ${COMMAND_LINE_OPTIONS}
 fi
 if [ $? -eq 0 ]; then
-    "$(pwd)/bin/logs.sh" ${COMMAND_LINE_OPTIONS}
+    "${pwd}/bin/logs.sh" ${COMMAND_LINE_OPTIONS}
 fi
 
 [[ $SHLVL -gt 2 ]] || echo OK
 
-cd "$(pwd)"
+cd "${pwd}"

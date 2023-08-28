@@ -25,7 +25,7 @@ err_report() {
     exit 8
 }
 
-trap 'get_stack' ERR
+trap 'err_report $LINENO' ERR
 
 uid=$(id -u)
 
@@ -34,11 +34,13 @@ if [ "${uid}" -eq 0 ]; then
     exit
 fi
 
+pwd=$(cd "$(dirname $(dirname "${BASH_SOURCE[0]}"))" &> /dev/null && pwd)
+
 install="$1"
 
 opts=( "${@:2}" )
 
-. "$(pwd)/bin/scripts/load.sh"
+. "${pwd}/bin/scripts/load.sh"
 
 ## Builds binaries and creates coverage info
 ## Usage: ${script} <option> [optional]
@@ -163,32 +165,34 @@ for directory in ${directories[@]}; do
     done
 done
 
-[[ ! -d "$(pwd)/coverage" ]] && mkdir "$(pwd)/coverage"
+[[ ! -d "${pwd}/coverage" ]] && mkdir "${pwd}/coverage"
+
+find "${pwd}/coverage" -type f -name "lcov.info" -delete
 
 targets=( $(get-source-targets ${source}) )
 for target in ${targets[@]}; do
-    if [[ -f "$(pwd)/coverage/${target}.info" ]]; then
-        rm "$(pwd)/coverage/${target}.info"
+    if [[ -f "${pwd}/coverage/${target}.info" ]]; then
+        rm "${pwd}/coverage/${target}.info"
     fi
 done
 
 if [[ "${opts[@]}" == "" || ("${gc}" == "" && "${sanitize}" == "" && "${valgrind}" == "") ]]; then
-    "$(pwd)/bin/utils/coverage.sh" --target ${source} --dir=coverage-v1 ${silent} ${opts[@]}
+    "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v1 ${silent} ${opts[@]}
 fi
 if [[ "${opts[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "" && "${valgrind}" == "") ]]; then
-    "$(pwd)/bin/utils/coverage.sh" --target ${source} --dir=coverage-v2 --gc ${silent} ${opts[@]}
+    "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v2 --gc ${silent} ${opts[@]}
 fi
 if [[ "${opts[@]}" == "" || ("${gc}" == "" && "${sanitize}" == "--sanitize" && "${valgrind}" == "") ]]; then
-    "$(pwd)/bin/utils/coverage.sh" --target ${source} --dir=coverage-v3 --sanitize ${silent} ${opts[@]}
+    "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v3 --sanitize ${silent} ${opts[@]}
 fi
 if [[ "${opts[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "--sanitize" && "${valgrind}" == "") ]]; then
-    "$(pwd)/bin/utils/coverage.sh" --target ${source} --dir=coverage-v4 --gc --sanitize ${silent} ${opts[@]}
+    "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v4 --gc --sanitize ${silent} ${opts[@]}
 fi
 if [[ "${opts[@]}" == "" || ("${gc}" == "" && "${sanitize}" == "" && "${valgrind}" == "--valgrind") ]]; then
-    "$(pwd)/bin/utils/coverage.sh" --target ${source} --dir=coverage-v6 --valgrind ${silent} ${opts[@]}
+    "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v5 --valgrind ${silent} ${opts[@]}
 fi
 if [[ "${opts[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "" && "${valgrind}" == "--valgrind") ]]; then
-    "$(pwd)/bin/utils/coverage.sh" --target ${source} --dir=coverage-v5 --gc --valgrind ${silent} ${opts[@]}
+    "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v6 --gc --valgrind ${silent} ${opts[@]}
 fi
 
 for directory in ${directories[@]}; do
@@ -200,17 +204,17 @@ for directory in ${directories[@]}; do
         link=$(basename $(dirname "${file}"))
         targets=( $(get-source-targets ${source}) )
         for target in ${targets[@]}; do
-            cp "${file}" "$(pwd)/coverage/${target}-${link}-$(basename ${file})"
+            cp "${file}" "${pwd}/coverage/${target}-${link}-$(basename ${file})"
         done
     done
 done
 
 targets=( $(get-source-targets ${source}) )
 for target in ${targets[@]}; do
-    files=$(find "$(pwd)/coverage" -type f -name "${target}-*.info" -exec echo {} \;)
+    files=$(find "${pwd}/coverage" -type f -name "${target}-*.info" -exec echo {} \;)
     for file in ${files[@]}; do
-        find "$(pwd)/coverage" -type f -name "${target}-*.info" -exec echo -a {} \; | xargs lcov -o "$(pwd)/coverage/${target}.info"
-        lcov --remove "$(pwd)/coverage/${target}.info" "$(pwd)/.deps/*" -o "$(pwd)/coverage/${target}.info"
+        find "${pwd}/coverage" -type f -name "${target}-*.info" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/${target}.info"
+        lcov --remove "${pwd}/coverage/${target}.info" "${pwd}/.deps/*" -o "${pwd}/coverage/${target}.info"
     done
 done
 
@@ -224,20 +228,28 @@ for directory in ${directories[@]}; do
         link=$(basename $(dirname "${file}"))
         targets=( $(get-source-targets ${source}) )
         for target in ${targets[@]}; do
-            if [[ -f "$(pwd)/coverage/${target}-${link}-$(basename ${file})" ]]; then
-                rm "$(pwd)/coverage/${target}-${link}-$(basename ${file})"
+            if [[ -f "${pwd}/coverage/${target}-${link}-$(basename ${file})" ]]; then
+                rm "${pwd}/coverage/${target}-${link}-$(basename ${file})"
             fi
         done
     done
 done
 
-if [[ "${source}" == "all" ]]; then
-    files=$(find "$(pwd)/coverage" -type f -name "*.info" -exec echo {} \;)
-    if [[ ! "${files}" == "" ]]; then
-        lcov --remove "$(pwd)/coverage/all.info" -o "$(pwd)/coverage/lcov.info"
-        rm "$(pwd)/coverage/all.info"
-    fi
+files=()
+if [[ -d "${directory}" ]]; then
+    files=$(find "${pwd}/coverage" -type f -name "*.info" -exec echo {} \;)
 fi
+if [[ -f "${pwd}/coverage/lcov.info" ]]; then
+    rm "${pwd}/coverage/lcov.info"
+fi    
+for file in ${files[@]}; do
+    lcov --remove "${pwd}/coverage/$(basename ${file})" -o "${pwd}/coverage/lcov.info"
+    rm "${pwd}/coverage/$(basename ${file})"
+done
+if [[ -f "${pwd}/coverage/lcov.info" ]]; then
+    lcov --remove "${pwd}/coverage/lcov.info" "*/examples/*" -o "${pwd}/coverage/lcov.info"
+fi
+
 
 if [[ "${silent}" == "--silent" ]]; then
     exec 1>&2 2>&-
@@ -245,4 +257,4 @@ fi
 
 [[ $SHLVL -gt 2 ]] || echo OK
 
-cd "$(pwd)"
+cd "${pwd}"

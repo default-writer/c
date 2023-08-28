@@ -25,7 +25,7 @@ err_report() {
     exit 8
 }
 
-trap 'get_stack' ERR
+trap 'err_report $LINENO' ERR
 
 uid=$(id -u)
 
@@ -34,14 +34,14 @@ if [ "${uid}" -eq 0 ]; then
     exit
 fi
 
-"$(pwd)/bin/utils/install.sh" --hooks
-"$(pwd)/bin/utils/install.sh" --clangd
-"$(pwd)/bin/utils/install.sh" --cmake
-"$(pwd)/bin/utils/install.sh" --submodule-musl
-"$(pwd)/bin/utils/install.sh" --submodule-rexo
-"$(pwd)/bin/utils/install.sh" --submodule-vcpkg
-"$(pwd)/bin/utils/install.sh" --submodule-raylib
+"${pwd}/bin/utils/install.sh" --hooks
+"${pwd}/bin/utils/install.sh" --clangd
+"${pwd}/bin/utils/install.sh" --cmake
+"${pwd}/bin/utils/install.sh" --submodule-musl
+"${pwd}/bin/utils/install.sh" --submodule-rexo
+"${pwd}/bin/utils/install.sh" --submodule-vcpkg
+"${pwd}/bin/utils/install.sh" --submodule-raylib
 
 [[ $SHLVL -gt 2 ]] || echo OK
 
-cd "$(pwd)"
+cd "${pwd}"

@@ -25,7 +25,7 @@ err_report() {
     exit 8
 }
 
-trap 'get_stack' ERR
+trap 'err_report $LINENO' ERR
 
 uid=$(id -u)
 
@@ -34,11 +34,13 @@ if [ "${uid}" -eq 0 ]; then
     exit
 fi
 
+pwd=$(cd "$(dirname $(dirname "${BASH_SOURCE[0]}"))" &> /dev/null && pwd)
+
 install="$1"
 
 opts=( "${@:2}" )
 
-. "$(pwd)/bin/scripts/load.sh"
+. "${pwd}/bin/scripts/load.sh"
 
 ## Builds binaries
 ## Usage: ${script} <option> [optional]
@@ -163,20 +165,35 @@ for directory in ${directories[@]}; do
     done
 done
 
-[[ ! -d "$(pwd)/build" ]] && mkdir "$(pwd)/build"
+[[ ! -d "${pwd}/build" ]] && mkdir "${pwd}/build"
 
-"$(pwd)/bin/utils/build.sh" --target ${source} --dir=build-v1 --valgrind ${silent} ${opts[@]}
-"$(pwd)/bin/utils/build.sh" --target ${source} --dir=build-v2 --sanitize ${silent} ${opts[@]}
-"$(pwd)/bin/utils/build.sh" --target ${source} --dir=build-v3 ${silent}
-"$(pwd)/bin/utils/build.sh" --target ${source} --dir=build-v4 --gc --valgrind ${silent} ${opts[@]}
-"$(pwd)/bin/utils/build.sh" --target ${source} --dir=build-v5 --gc --sanitize ${silent} ${opts[@]}
-"$(pwd)/bin/utils/build.sh" --target ${source} --dir=build-v6 --gc ${silent}
+if [[ "${opts[@]}" == "" || ("${gc}" == "" && "${sanitize}" == "" && "${valgrind}" == "") ]]; then
+    "${pwd}/bin/utils/build.sh" --target ${source} --dir=build-v1 ${silent} ${opts[@]}
+fi
+if [[ "${opts[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "" && "${valgrind}" == "") ]]; then
+    "${pwd}/bin/utils/build.sh" --target ${source} --dir=build-v2 --gc ${silent} ${opts[@]}
+fi
+if [[ "${opts[@]}" == "" || ("${gc}" == "" && "${sanitize}" == "--sanitize" && "${valgrind}" == "") ]]; then
+    "${pwd}/bin/utils/build.sh" --target ${source} --dir=build-v3 --sanitize ${silent} ${opts[@]}
+fi
+if [[ "${opts[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "--sanitize" && "${valgrind}" == "") ]]; then
+    "${pwd}/bin/utils/build.sh" --target ${source} --dir=build-v4 --gc --sanitize ${silent} ${opts[@]}
+fi
+if [[ "${opts[@]}" == "" || ("${gc}" == "" && "${sanitize}" == "" && "${valgrind}" == "--valgrind") ]]; then
+    "${pwd}/bin/utils/build.sh" --target ${source} --dir=build-v5 --valgrind ${silent} ${opts[@]}
+fi
+if [[ "${opts[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "" && "${valgrind}" == "--valgrind") ]]; then
+    "${pwd}/bin/utils/build.sh" --target ${source} --dir=build-v6 --gc --valgrind ${silent} ${opts[@]}
+fi
 
 for directory in ${directories[@]}; do
-    files=$(find "${directory}" -type f -name "log-*.txt" -exec echo {} \;)
+    files=()
+    if [[ -d "${directory}" ]]; then
+        files=$(find "${directory}" -type f -name "log-*.txt" -exec echo {} \;)
+    fi
     for file in ${files[@]}; do
         link=$(basename $(dirname "${file}"))
-        cp "${file}" "$(pwd)/build/${link}-$(basename ${file})"
+        cp "${file}" "${pwd}/build/${link}-$(basename ${file})"
     done
 done
 
@@ -186,4 +203,4 @@ fi
 
 [[ $SHLVL -gt 2 ]] || echo OK
 
-cd "$(pwd)"
+cd "${pwd}"
