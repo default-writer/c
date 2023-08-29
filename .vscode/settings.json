@@ -118,7 +118,7 @@
       "priority": 1005,
       "id": "statusbarpresentation-extension.git-file-history",
       "command": "extension.git-file-history"
-    }    
+    }
   ],
   "workbench.editor.enablePreview": true,
   "workbench.colorTheme": "Yitzchok (rainglow)",
@@ -324,7 +324,7 @@
     "**/gtk/**": true
   },
   "cmake.configureArgs": [
-    // "CONFIG_MEMORY_DEBUG_INFO",
+    "CONFIG_MEMORY_DEBUG_INFO",
     "CONFIG_MEMORY_CLEANUP",
     "CONFIG_GC",
     "CODE_SANITIZER"

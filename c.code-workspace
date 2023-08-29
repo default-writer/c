@@ -273,6 +273,12 @@
 		"editor.fontSize": 12,
 		"terminal.integrated.fontSize": 12,
 		"debug.console.fontSize": 12,
+		"cmake.configureArgs": [
+			"CONFIG_MEMORY_DEBUG_INFO",
+			"CONFIG_MEMORY_CLEANUP",
+			"CONFIG_GC",
+			"CODE_SANITIZER"
+		],
 		"koverage.coverageCommand": "bash -e /home/user/c/bin/coverage.sh --all --clean",
 		"koverage.coverageFileNames": [
 			"lcov.info"
