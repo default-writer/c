@@ -29,6 +29,8 @@ trap 'err_report $LINENO' ERR
 
 uid=$(id -u)
 
+pwd=$(cd "$(dirname $(dirname "${BASH_SOURCE[0]}"))" &> /dev/null && pwd)
+
 sudo "${pwd}/bin/setup.sh"
 
 "${pwd}/bin/utils/cleanup.sh" --all

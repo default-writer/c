@@ -34,6 +34,8 @@ if [ ! "${uid}" -eq 0 ]; then
     exit
 fi
 
+pwd=$(cd "$(dirname $(dirname "${BASH_SOURCE[0]}"))" &> /dev/null && pwd)
+
 "${pwd}/bin/utils/setup.sh" --update
 "${pwd}/bin/utils/setup.sh" --zip --no-update --no-upgrade
 "${pwd}/bin/utils/setup.sh" --configuration --no-update --no-upgrade
