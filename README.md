@@ -5,7 +5,9 @@
 
 ## vision
 
-C project targets to extend vision of C programming language as the the C programming language powered with API without complex pointer arithmetic, pointers, safe to use and friendly for programming new modern applications.
+
+- C project targets to extend vision of C programming language as the C programming language library powered with API without complex pointer arithmetic, pointers, safe to use and friendly for programming new modern applications.
+
 
 - virtual machine implementation on C
 
