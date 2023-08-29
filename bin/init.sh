@@ -38,10 +38,7 @@ sudo "${pwd}/bin/setup.sh"
 "${pwd}/bin/utils/install.sh" --hooks
 "${pwd}/bin/utils/install.sh" --clangd
 "${pwd}/bin/utils/install.sh" --cmake
-# "${pwd}/bin/utils/install.sh" --submodule-musl
 "${pwd}/bin/utils/install.sh" --submodule-rexo
-# "${pwd}/bin/utils/install.sh" --submodule-vcpkg
-# "${pwd}/bin/utils/install.sh" --submodule-raylib
 
 "${pwd}/bin/utils/init.sh" --all
 

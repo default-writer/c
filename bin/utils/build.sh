@@ -196,7 +196,6 @@ for target in ${targets[@]}; do
     if [[ "${silent}" == "--silent" ]]; then
         ${cmake} --build "${build}" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
     else
-        echo ${cmake} --build "${build}" --target "${target}" || (echo ERROR: "${target}" && exit 1)
         ${cmake} --build "${build}" --target "${target}" || (echo ERROR: "${target}" && exit 1)
     fi
     case "${target}" in
