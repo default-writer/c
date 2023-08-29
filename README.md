@@ -2,6 +2,11 @@
 
 <a href="" target="blank"><img style='height:128px' src='./resources/microprocessor.png'></a>
 
+
+## vision
+
+C project targets to extend vision of C programming language as the the C programming language powered with API without complex pointer arithmetic, pointers, safe to use and friendly for programming new modern applications.
+
 - virtual machine implementation on C
 
   1. C API
