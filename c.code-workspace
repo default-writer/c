@@ -283,5 +283,12 @@
 		"koverage.coverageFileNames": [
 			"lcov.info"
 		]
+	},
+	"extensions": {
+		"recommendations": [
+			"saber2pr.file-git-history",
+			"huizhou.githd",
+			"exelord.git-commits"
+		]
 	}
 }

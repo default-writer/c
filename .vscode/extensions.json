@@ -1,7 +1,6 @@
 {
   "recommendations": [
     "mhutchie.git-graph",
-    "donjayamanne.githistory",
     "codezombiech.gitignore",
     "sonarsource.sonarlint-vscode",
     "tenninebt.vscode-koverage",
@@ -39,6 +38,8 @@
     "cs50.vscode-presentation-mode",
     "trunk.io",
     "mathematic.vscode-pdf",
-    "pomber.git-file-history"
+    "saber2pr.file-git-history",
+    "huizhou.githd",
+    "exelord.git-commits"
   ]
 }
