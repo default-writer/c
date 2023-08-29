@@ -66,8 +66,8 @@ static u64 load_data() {
         while ((data_ptr = list->pop(list_ptr)) != 0) {
             list->push(reversed_list_ptr, data_ptr);
         }
-        list->free(list_ptr);
     }
+    list->free(list_ptr);
     string->free(mode_ptr);
     return reversed_list_ptr;
 }
