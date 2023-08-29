@@ -36,13 +36,83 @@ fi
 
 pwd=$(cd "$(dirname $(dirname "${BASH_SOURCE[0]}"))" &> /dev/null && pwd)
 
-"${pwd}/bin/utils/install.sh" --hooks
-"${pwd}/bin/utils/install.sh" --clangd
-"${pwd}/bin/utils/install.sh" --cmake
-"${pwd}/bin/utils/install.sh" --submodule-musl
-"${pwd}/bin/utils/install.sh" --submodule-rexo
-"${pwd}/bin/utils/install.sh" --submodule-vcpkg
-"${pwd}/bin/utils/install.sh" --submodule-raylib
+install="$1"
+
+. "${pwd}/bin/scripts/load.sh"
+
+## Installs dependecies and hooks
+## Usage: ${script} <option> [optional]
+## ${commands}
+
+case "${install}" in
+
+    "")
+        source="all"
+        ;;
+
+    "--all") # installs everything
+        source="all"
+        ;;
+
+    "--hooks") # installs hooks
+        hooks="--hooks"
+        ;;
+
+    "--clangd") # installs clangd
+        clangd="--clangd"
+        ;;
+
+    "--cmake") # installs cmake
+        cmake="--cmake"
+        ;;
+
+    "--submodule-musl") # installs musl
+        musl="--submodule-musl"
+        ;;
+
+    "--submodule-rexo") # installs rexo
+        rexo="--submodule-rexo"
+        ;;
+
+    "--submodule-vcpkg") # installs vcpkg
+        vcpkg="--submodule-vcpkg"
+        ;;
+
+    "--submodule-raylib") # installs raylib
+        raylib="--submodule-raylib"
+        ;;
+
+    "--help") # shows command desctiption
+        help
+        ;;
+
+    *)
+        help
+        ;;
+
+esac
+
+if [[ "${source}" == "all" || "${hooks}" == "--hooks" ]]; then
+    "${pwd}/bin/utils/install.sh" --hooks
+fi
+if [[ "${source}" == "all" || "${cclangd}" == "--clangd" ]]; then
+    "${pwd}/bin/utils/install.sh" --clangd
+fi
+if [[ "${source}" == "all" || "${cmake}" == "--cmake" ]]; then
+    "${pwd}/bin/utils/install.sh" --cmake
+fi
+if [[ "${source}" == "all" || "${musl}" == "--submodule-musl" ]]; then
+    "${pwd}/bin/utils/install.sh" --submodule-musl
+fi
+if [[ "${source}" == "all" || "${rexo}" == "--submodule-rexo" ]]; then
+    "${pwd}/bin/utils/install.sh" --submodule-rexo
+fi
+if [[ "${source}" == "all" || "${vcpkg}" == "--submodule-vcpkg" ]]; then
+    "${pwd}/bin/utils/install.sh" --submodule-vcpkg
+fi
+if [[ "${source}" == "all" || "${raylib}" == "--submodule-raylib" ]]; then
+    "${pwd}/bin/utils/install.sh" --submodule-raylib
+fi
 
 [[ $SHLVL -gt 2 ]] || echo OK
 
