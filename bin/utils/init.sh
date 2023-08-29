@@ -34,6 +34,8 @@ if [ "${uid}" -eq 0 ]; then
     exit
 fi
 
+pwd=$(cd "$(dirname $(dirname $(dirname "${BASH_SOURCE[0]}")))" &> /dev/null && pwd)
+
 if [ -f "${pwd}/.args" ]; then args=$(cat "${pwd}/.args"); fi
 
 "${pwd}/bin/format.sh" --clang-format
