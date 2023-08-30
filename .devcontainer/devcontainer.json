@@ -136,7 +136,10 @@
 		"CS128.cs128-clang-tidy",
 		"CS50.vscode-presentation-mode",
 		"trunk.io",
-		"pomber.git-file-history"
+		"pomber.git-file-history",
+		"GuodongSun.vscode-git-cruise",
+		"huizhou.githd",
+		"saber2pr.file-git-history"
 	]
     }
   }

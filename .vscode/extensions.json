@@ -40,6 +40,8 @@
     "mathematic.vscode-pdf",
     "saber2pr.file-git-history",
     "huizhou.githd",
-    "exelord.git-commits"
+    "exelord.git-commits",
+    "donjayamanne.githistory",
+    "guodongsun.vscode-git-cruise"
   ]
 }
