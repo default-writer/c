@@ -87,7 +87,7 @@ const struct string_pointer_methods* string_pointer = &string_pointer_methods_de
 
 typedef struct test_data {
     struct pointer_data* ctx;
-}* TEST_DATA;
+} * TEST_DATA;
 
 RX_SET_UP(test_set_up) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
@@ -882,6 +882,8 @@ RX_TEST_CASE(tests, test_string_pointer_strchr_match_offset, .fixture = test_fix
     list->free(list_match_ptr);
     list->free(list_ptr);
 #else
+    /* memory leak: list_ptr is not freed, use pointer->release(); */
+    pointer->release();
     pointer->gc();
 #endif
 }
