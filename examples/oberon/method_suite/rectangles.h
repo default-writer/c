@@ -16,4 +16,4 @@ typedef struct rectangle_type {
     void (*move)(rectangle_data_pointer f, int dx, int dy);
 } *rectangle_type_pointer, rectangle_type;
 
-#endif // _RECTANGLES_H_
+#endif /* _RECTANGLES_H_ */

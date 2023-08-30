@@ -12,4 +12,4 @@ typedef struct figure_type {
     void (*move)(figure_data_pointer f, int dx, int dy);
 } *figure_type_pointer, figure_type;
 
-#endif // _FIGURES_H_
+#endif /* _FIGURES_H_ */
