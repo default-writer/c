@@ -23,7 +23,7 @@
  * SOFTWARE.
  *
  */
-// #include "A.h"
+/* #include "A.h" */
 #include "B.h"
 #include "class/class.h"
 #include "common/alloc.h"
