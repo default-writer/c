@@ -1,6 +1,17 @@
 # c project description
 
-<a href="" target="blank"><img style='height:128px' src='./resources/microprocessor.png'></a>
+<a href="" target="blank"><img style='height:128px' src='./resources/ecommerce.png'></a>
+
+
+## vision
+
+
+- C project targets to extend vision of C programming language as the C programming language library powered with API without complex pointer arithmetic, pointers, safe to use and friendly for programming new modern applications.
+
+## description
+
+<a href="" target="blank"><img style='height:128px' src='./resources/api.png'></a>
+
 
 - virtual machine implementation on C
 
@@ -105,9 +116,9 @@ You can use c project for local git repos with the [CLI](https://github.com/defa
 
 ### sponsorship
 
-support this project [become a sponsor](https://opencollective.com/default-writer#sponsor)
+support this project [become a sponsor](https://opencollective.com/c-vm#sponsor)
 
-[![img](https://opencollective.com/default-writer/sponsor/0/avatar.svg)](https://opencollective.com/default-writer/sponsor/0/website)
+[![img](https://opencollective.com/default-writer/sponsor/0/avatar.svg)](https://opencollective.com/c-vm/sponsor/0/website)
 
 
 ### 2023
