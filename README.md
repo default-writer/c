@@ -112,9 +112,9 @@ You can use c project for local git repos with the [CLI](https://github.com/defa
 
 ### sponsorship
 
-support this project [become a sponsor](https://opencollective.com/default-writer#sponsor)
+support this project [become a sponsor](https://opencollective.com/c-vmr#sponsor)
 
-[![img](https://opencollective.com/default-writer/sponsor/0/avatar.svg)](https://opencollective.com/default-writer/sponsor/0/website)
+[![img](https://opencollective.com/default-writer/sponsor/0/avatar.svg)](https://opencollective.com/c-vm/sponsor/0/website)
 
 
 ### 2023
