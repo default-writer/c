@@ -10,16 +10,19 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+option(CONFIG_VM_DEBUG_INFO "Enables memory vm debug information")
 option(CONFIG_MEMORY_DEBUG_INFO "Enables memory debug information")
 option(CONFIG_MEMORY_CLEANUP "Enables memory cleanup")
 option(CONFIG_MEMORY_ALLOC "Enables memory allocator")
 option(CONFIG_MEMCPY "Enables use of memcpy")
 
-set(CONFIG_MEMORY_DEBUG_INFO OFF CACHE BOOL "Enable debug information?")
+set(CONFIG_VM_DEBUG_INFO ON CACHE BOOL "Enable debug information?")
+set(CONFIG_MEMORY_DEBUG_INFO ON CACHE BOOL "Enable debug information?")
 set(CONFIG_MEMORY_CLEANUP ON CACHE BOOL "Enable memory cleanup?")
 set(CONFIG_MEMORY_ALLOC OFF CACHE BOOL "Enable memory allocator?")
 set(CONFIG_MEMCPY OFF CACHE BOOL "Enable use of memcpy?")
 
+set(CONFIG_VM_DEBUG_INFO ON)
 set(CONFIG_MEMORY_DEBUG_INFO ON)
 set(CONFIG_MEMORY_CLEANUP ON)
 set(CONFIG_MEMORY_ALLOC OFF)
@@ -101,6 +104,14 @@ set(STRICT
     -Wmissing-prototypes
     -Wold-style-definition
 )
+
+if(CONFIG_VM_DEBUG_INFO)
+    if(VERBOSE)
+        message(STATUS "configure with vm memory debug information")
+    endif()
+    add_compile_definitions(CONFIG_VM_DEBUG_INFO)
+    add_definitions(-DCONFIG_VM_DEBUG_INFO)
+endif()
 
 if(CONFIG_MEMORY_DEBUG_INFO)
     if(VERBOSE)

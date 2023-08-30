@@ -114,6 +114,10 @@ for opt in ${opts[@]}; do
             debug="--debug"
             ;;
 
+        "--vm-debug") # [optional] runs using vm debug messaging
+            vm_debug="--vm-debug"
+            ;;
+
         "--help") # [optional] shows command desctiption
             help
             ;;

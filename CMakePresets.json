@@ -16,6 +16,10 @@
         "CMAKE_C_COMPILER": "/usr/bin/gcc",
         "CMAKE_CXX_COMPILER": "/usr/bin/g++",
         "CMAKE_BUILD_TYPE": "Debug",
+        "CONFIG_VM_DEBUG_INFO": {
+          "type": "BOOL",
+          "value": "ON"
+        },
         "CONFIG_MEMORY_DEBUG_INFO": {
           "type": "BOOL",
           "value": "ON"
@@ -52,6 +56,10 @@
         "CMAKE_C_COMPILER": "c:/tools/msys64/ucrt64/bin/gcc.exe",
         "CMAKE_CXX_COMPILER": "c:/tools/msys64/ucrt64/bin/g++.exe",
         "CMAKE_BUILD_TYPE": "Debug",
+        "CONFIG_VM_DEBUG_INFO": {
+          "type": "BOOL",
+          "value": "ON"
+        },
         "CONFIG_MEMORY_DEBUG_INFO": {
           "type": "BOOL",
           "value": "ON"

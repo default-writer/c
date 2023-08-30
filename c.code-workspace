@@ -274,6 +274,7 @@
 		"terminal.integrated.fontSize": 12,
 		"debug.console.fontSize": 12,
 		"cmake.configureArgs": [
+			"CONFIG_VM_DEBUG_INFO",
 			"CONFIG_MEMORY_DEBUG_INFO",
 			"CONFIG_MEMORY_CLEANUP",
 			"CONFIG_GC",

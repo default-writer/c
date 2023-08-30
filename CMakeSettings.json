@@ -32,6 +32,11 @@
       "ctestCommandArgs": "",
       "variables": [
         {
+          "name": "CONFIG_VM_DEBUG_INFO",
+          "value": "ON",
+          "type": "BOOL"
+        },
+        {
           "name": "CONFIG_MEMORY_DEBUG_INFO",
           "value": "ON",
           "type": "BOOL"
@@ -65,6 +70,11 @@
       "buildCommandArgs": "-v",
       "ctestCommandArgs": "",
       "variables": [
+        {
+          "name": "CONFIG_VM_DEBUG_INFO",
+          "value": "ON",
+          "type": "BOOL"
+        },
         {
           "name": "CONFIG_MEMORY_DEBUG_INFO",
           "value": "ON",
@@ -100,6 +110,11 @@
       "ctestCommandArgs": "",
       "variables": [
         {
+          "name": "CONFIG_VM_DEBUG_INFO",
+          "value": "ON",
+          "type": "BOOL"
+        },
+        {
           "name": "CONFIG_MEMORY_DEBUG_INFO",
           "value": "ON",
           "type": "BOOL"
@@ -134,6 +149,11 @@
       "ctestCommandArgs": "",
       "addressSanitizerEnabled": false,
       "variables": [
+        {
+          "name": "CONFIG_VM_DEBUG_INFO",
+          "value": "ON",
+          "type": "BOOL"
+        },
         {
           "name": "CONFIG_MEMORY_DEBUG_INFO",
           "value": "ON",

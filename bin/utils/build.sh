@@ -114,6 +114,10 @@ for opt in ${opts[@]}; do
             debug="--debug"
             ;;
 
+        "--vm-debug") # [optional] runs using vm debug messaging
+            vm_debug="--vm-debug"
+            ;;
+
         "--help") # [optional] shows command desctiption
             help
             ;;
@@ -192,7 +196,7 @@ ${cmake} \
 
 for target in ${targets[@]}; do
     echo building ${target}
-    echo options $(cmake-options)
+    echo options $(cmake-options[@])
     if [[ "${silent}" == "--silent" ]]; then
         ${cmake} --build "${build}" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
     else

@@ -324,6 +324,7 @@
     "**/gtk/**": true
   },
   "cmake.configureArgs": [
+    "CONFIG_VM_DEBUG_INFO",
     "CONFIG_MEMORY_DEBUG_INFO",
     "CONFIG_MEMORY_CLEANUP",
     "CONFIG_GC",
