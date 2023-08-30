@@ -87,7 +87,7 @@ static void pointer_push(u64 ptr);
 static u64 pointer_peek(void);
 static u64 pointer_pop(void);
 
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
 static void pointer_dump(struct pointer* ptr);
 static void pointer_dump_ref(void** ptr);
 #endif
@@ -108,6 +108,10 @@ struct list_handler {
     struct list_data* list;
 };
 
+static void pointer_init(u64 size);
+static void pointer_destroy(void);
+static void pointer_release(void);
+
 static void pointer_init_internal(struct pointer_data* ptr, u64 size);
 static void pointer_destroy_internal(struct pointer_data* ptr);
 static void pointer_data_init_internal(struct pointer_data* ptr, u64 size);
@@ -117,7 +121,7 @@ static void copy_internal(struct pointer_data* dest, struct pointer_data* src);
 /* free */
 static u64 vm_types_init(u64 id, const struct vm_type* type);
 static void vm_types_destroy(void);
-static void pointer_free_internal(u64 ptr);
+static void pointer_free_internal(struct pointer* ptr);
 
 /* internal */
 u64 pointer_vm_register_type(u64 id, const struct vm_type* type) {
@@ -173,21 +177,21 @@ static void pointer_vm_free(struct pointer* ptr) {
     memory->free(ptr, POINTER_SIZE);
 }
 
-static void pointer_free_internal(u64 ptr) {
-    struct pointer* data_ptr = vm->read(ptr);
-    if (data_ptr == 0) {
-        return;
-    }
-    const struct vm_types* type_ptr = types + data_ptr->id;
+static void pointer_free_internal(struct pointer* ptr) {
+    const struct vm_types* type_ptr = types + ptr->id;
     if (type_ptr->free) {
-        type_ptr->free(data_ptr);
+        type_ptr->free(ptr);
     }
 }
 
 static void pointer_vm_release(struct list_data** current) {
     u64 ptr = 0;
     while ((ptr = (u64)list->pop(current)) != 0) {
-        pointer_free_internal(ptr);
+        struct pointer* data_ptr = vm->read(ptr);
+        if (data_ptr == 0) {
+            return;
+        }
+        pointer_free_internal(data_ptr);
     }
 }
 
@@ -255,7 +259,7 @@ struct pointer_data* pointer_data_init(u64 size) {
 }
 
 void pointer_data_destroy(struct pointer_data** ctx) {
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
     vm->dump_ref();
     vm->dump();
 #endif
@@ -271,7 +275,7 @@ static void pointer_init(u64 size) {
 }
 
 static void pointer_destroy(void) {
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
     vm->dump_ref();
     vm->dump();
 #endif
@@ -279,6 +283,22 @@ static void pointer_destroy(void) {
     pointer_gc();
 #endif
     pointer_destroy_internal(base);
+}
+
+static void pointer_release(void) {
+    vm->enumerator_init();
+    void** ptr = 0;
+    while ((ptr = vm->enumerator_next()) != 0) {
+        if (ptr == 0) {
+            continue;
+        }
+        struct pointer* data_ptr = *ptr;
+        if (data_ptr == 0) {
+            continue;
+        }
+        pointer_free_internal(data_ptr);
+    }
+    vm->enumerator_destroy();
 }
 
 #ifdef USE_GC
@@ -301,7 +321,7 @@ static u64 pointer_pop(void) {
     return (u64)list->pop(&base->list);
 }
 
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
 static void pointer_dump(struct pointer* ptr) {
     if (ptr == 0) {
         return;
@@ -335,10 +355,11 @@ const struct pointer_vm_methods pointer_vm_methods_definition = {
 const struct pointer_methods pointer_methods_definition = {
     .init = pointer_init,
     .destroy = pointer_destroy,
+    .release = pointer_release,
     .peek = pointer_peek,
     .push = pointer_push,
     .pop = pointer_pop,
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
     .dump = pointer_dump,
     .dump_ref = pointer_dump_ref,
 #endif

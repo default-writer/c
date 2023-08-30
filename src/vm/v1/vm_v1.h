@@ -43,7 +43,10 @@ struct vm_methods {
     void (*free)(struct pointer* ptr);
     struct pointer* (*read)(u64 address);
     struct pointer* (*read_type)(u64 address, u64 id);
-#ifdef VM_DEBUG_INFO
+    void (*enumerator_init)(void);
+    void (*enumerator_destroy)(void);
+    void* (*enumerator_next)(void);
+#ifdef USE_VM_DEBUG_INFO
     void (*dump)(void);
     void (*dump_ref)(void);
 #endif

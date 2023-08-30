@@ -83,67 +83,67 @@ static void list_using(struct list_v1** current) {
     RX_ASSERT(0 == is_null[1]);
     struct list_v1* tmp1 = list->alloc(payload);
     list->push(current, tmp1);
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
     list->print_head(current);
 #endif
     struct list_v1* tmp2 = list->alloc(++payload);
     list->push(current, tmp2);
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
     list->print_head(current);
 #endif
     struct list_v1* tmp3 = list->alloc(++payload);
     list->push(current, tmp3);
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
     list->print_head(current);
 #endif
     struct list_v1* tmp4 = list->alloc(++payload);
     list->push(current, tmp4);
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
     list->print_head(current);
 #endif
     struct list_v1* tmp5 = list->alloc(++payload);
     list->push(current, tmp5);
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
     list->print_head(current);
 #endif
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
     list->print(current);
 #endif
     struct list_v1* q_pop0 = list->pop(current);
     list->free(&q_pop0);
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
     list->print(current);
 #endif
     struct list_v1* q_pop1 = list->pop(current);
     list->free(&q_pop1);
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
     list->print(current);
 #endif
     struct list_v1* q_pop2 = list->pop(current);
     list->free(&q_pop2);
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
     list->print(current);
 #endif
     struct list_v1* q_pop3 = list->pop(current);
     list->push(current, q_pop3);
     q_pop3 = list->pop(current);
     list->free(&q_pop3);
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
     list->print(current);
 #endif
     struct list_v1* q_pop4 = list->pop(current);
     list->free(&q_pop4);
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
     list->print(current);
 #endif
     struct list_v1* q_pop5 = list->peek(current);
     list->free(&q_pop5);
     list->push(current, q_pop0);
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
     list->print(current);
 #endif
     list->free(&q_pop0);
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
     list->print(current);
 #endif
 }
@@ -151,7 +151,7 @@ static void list_using(struct list_v1** current) {
 /* Data structure to use at the core of our fixture. */
 typedef struct test_data {
     struct list_v1* ctx;
-}* TEST_DATA;
+} * TEST_DATA;
 
 /* Initialize the data structure. Its allocation is handled by Rexo. */
 RX_SET_UP(test_set_up) {

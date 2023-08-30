@@ -82,10 +82,11 @@ struct pointer_vm_methods {
 struct pointer_methods {
     void (*init)(u64 size);
     void (*destroy)(void);
+    void (*release)(void);
     u64 (*peek)(void);
     void (*push)(u64 ptr);
     u64 (*pop)(void);
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
     void (*dump)(struct pointer* ptr);
     void (*dump_ref)(void** ptr);
 #endif

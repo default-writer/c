@@ -232,7 +232,7 @@ static struct pointer* vm_free(struct vm_data** current, u64 address) {
         void** ptr = vm_read_internal(current, address);
         if (ptr != 0) {
             data = *ptr;
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
             printf("  >-: %016llx ! %016llx > %016llx\n", address, (u64)data, (u64)ptr);
 #endif
             *ptr = 0;
@@ -247,7 +247,7 @@ static struct pointer* vm_read(struct vm_data** current, u64 address) {
         void** ptr = vm_read_internal(current, address);
         if (ptr != 0) {
             data = *ptr;
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
             printf("  <v: %016llx ! %016llx > %016llx\n", address, (u64)data, (u64)ptr);
 #endif
         }
@@ -262,7 +262,7 @@ static u64 vm_write(struct vm_data** current, struct pointer* data) {
         void** ptr = to_real_address_internal(vm, address);
         if (ptr != 0) {
             *ptr = data;
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
             printf("  >v: %016llx ! %016llx > %016llx\n", address, (u64)data, (u64)ptr);
 #endif
         }

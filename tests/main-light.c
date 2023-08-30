@@ -89,42 +89,42 @@ static void list_using(struct list_data** current) {
     RX_ASSERT(0 == is_null[0]);
     RX_ASSERT(0 == is_null[1]);
     list->push(current, payload);
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
     list->print_head(current);
 #endif
     list->push(current, ++payload);
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
     list->print_head(current);
 #endif
     list->push(current, ++payload);
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
     list->print_head(current);
 #endif
     list->push(current, ++payload);
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
     list->print_head(current);
 #endif
     list->push(current, ++payload);
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
     list->print_head(current);
 #endif
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
     list->print(current);
 #endif
     const void* q_peek0 = list->peek(current);
     CLEAN(q_peek0)
     void* q_pop0 = list->pop(current);
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
     list->print(current);
 #endif
     const void* q_pop1 = list->pop(current);
     CLEAN(q_pop1)
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
     list->print(current);
 #endif
     const void* q_pop2 = list->pop(current);
     CLEAN(q_pop2)
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
     list->print(current);
 #endif
     const void* q_peek1 = list->peek(current);
@@ -137,33 +137,33 @@ static void list_using(struct list_data** current) {
     RX_ASSERT(q_peek1 == q_peek3);
     const void* q_pop4 = list->pop(current);
     CLEAN(q_pop4)
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
     list->print(current);
 #endif
     const void* q_pop5 = list->pop(current);
     CLEAN(q_pop5)
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
     list->print(current);
 #endif
     const void* q_peek4 = list->peek(current);
     list->push(current, q_pop0);
     CLEAN(q_peek4)
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
     list->print(current);
 #endif
     const void* q_pop6 = list->pop(current);
     CLEAN(q_pop6)
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
     list->print(current);
 #endif
     const void* q_pop7 = list->pop(current);
     CLEAN(q_pop7)
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
     list->print(current);
 #endif
     const void* q_peek5 = list->peek(current);
     CLEAN(q_peek5)
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
     list->print(current);
 #endif
 }
@@ -171,7 +171,7 @@ static void list_using(struct list_data** current) {
 /* Data structure to use at the core of our fixture. */
 typedef struct test_data {
     struct list_data* ctx;
-}* TEST_DATA;
+} * TEST_DATA;
 
 /* Initialize the data structure. Its allocation is handled by Rexo. */
 RX_SET_UP(test_set_up) {

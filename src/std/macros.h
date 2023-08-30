@@ -42,10 +42,6 @@
 #define FALL_THROUGH ((void)0)
 #endif /* __GNUC__ >= 7 */
 
-#ifdef VM_DEBUG_INFO
-#undef VM_DEBUG_INFO
-#endif
-
 #define RXP_DEBUG_TESTS
 
 #endif /* _STD_MACROS_H_ */

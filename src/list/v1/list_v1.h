@@ -52,7 +52,7 @@ struct list_methods_v1 {
     struct list_v1* (*pop)(struct list_v1** current);
     /* peek item on current context (stack) */
     struct list_v1* (*peek)(struct list_v1** current);
-#ifdef VM_DEBUG_INFO
+#ifdef USE_VM_DEBUG_INFO
     /* print head */
     void (*print_head)(struct list_v1** current);
     /* print */
