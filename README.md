@@ -1,12 +1,16 @@
 # c project description
 
-<a href="" target="blank"><img style='height:128px' src='./resources/microprocessor.png'></a>
+<a href="" target="blank"><img style='height:128px' src='./resources/ecommerce.png'></a>
 
 
 ## vision
 
 
 - C project targets to extend vision of C programming language as the C programming language library powered with API without complex pointer arithmetic, pointers, safe to use and friendly for programming new modern applications.
+
+## description
+
+<a href="" target="blank"><img style='height:128px' src='./resources/api.png'></a>
 
 
 - virtual machine implementation on C
