@@ -202,12 +202,12 @@ if [[ "${registered[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "" && "
 fi
 
 for directory in ${directories[@]}; do
+    link=${directory}
     files=()
     if [[ -d "${directory}" ]]; then
         files=$(find "${directory}" -type f -name "lcov.info" -exec echo {} \;)
     fi
     for file in ${files[@]}; do
-        link=$(basename $(dirname "${file}"))
         targets=( $(get-source-targets ${source}) )
         for target in ${targets[@]}; do
             cp "${file}" "${pwd}/coverage/${target}-${link}-$(basename ${file})"
@@ -224,20 +224,16 @@ for target in ${targets[@]}; do
     done
 done
 
-directories=( "coverage-v1" "coverage-v2" "coverage-v3" "coverage-v4" "coverage-v5" "coverage-v6" )
 for directory in ${directories[@]}; do
+    link=${directory}
     files=()
     if [[ -d "${directory}" ]]; then
         files=$(find "${directory}" -type f -name "lcov.info" -exec echo {} \;)
     fi
     for file in ${files[@]}; do
-        link=$(basename $(dirname "${file}"))
-        targets=( $(get-source-targets ${source}) )
-        for target in ${targets[@]}; do
-            if [[ -f "${pwd}/coverage/${target}-${link}-$(basename ${file})" ]]; then
-                rm "${pwd}/coverage/${target}-${link}-$(basename ${file})"
-            fi
-        done
+        if [[ -f "${pwd}/coverage/${target}-${link}-$(basename ${file})" ]]; then
+            rm "${pwd}/coverage/${target}-${link}-$(basename ${file})"
+        fi
     done
 done
 

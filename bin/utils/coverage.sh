@@ -133,10 +133,10 @@ if [[ "${silent}" == "--silent" ]]; then
     exec 2>&1 >/dev/null
 fi
 
-build="coverage"
+build="${pwd}/coverage"
 
 if [[ ! "${dir}" == "" ]]; then
-    build="${dir}"
+    build="${pwd}/${dir}"
 fi
 
 if [[ "${clean}" == "--clean" ]]; then

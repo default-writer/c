@@ -133,10 +133,10 @@ if [[ "${silent}" == "--silent" ]]; then
     exec 2>&1 >/dev/null
 fi
 
-build="cmake"
+build="${pwd}/cmake"
 
 if [[ ! "${dir}" == "" ]]; then
-    build="${dir}"
+    build="${pwd}/${dir}"
 fi
 
 if [[ "${clean}" == "--clean" ]]; then
@@ -202,7 +202,8 @@ ${cmake} \
 
 for target in ${targets[@]}; do
     echo building ${target}
-    echo options "$(cmake-options | xargs -n1 | sort -u | xargs)"    if [[ "${silent}" == "--silent" ]]; then
+    echo options "$(cmake-options | xargs -n1 | sort -u | xargs)"
+    if [[ "${silent}" == "--silent" ]]; then
         ${cmake} --build "${build}" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
     else
         ${cmake} --build "${build}" --target "${target}" || (echo ERROR: "${target}" && exit 1)
