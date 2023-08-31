@@ -218,40 +218,22 @@ done
 targets=( $(get-source-targets ${source}) )
 for target in ${targets[@]}; do
     files=$(find "${pwd}/coverage" -type f -name "${target}-*.info" -exec echo {} \;)
-    for file in ${files[@]}; do
-        find "${pwd}/coverage" -type f -name "${target}-*.info" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/${target}.info"
-        lcov --remove "${pwd}/coverage/${target}.info" "${pwd}/.deps/*" -o "${pwd}/coverage/${target}.info"
-    done
-done
-
-for directory in ${directories[@]}; do
-    link=${directory}
-    files=()
-    if [[ -d "${directory}" ]]; then
-        files=$(find "${directory}" -type f -name "lcov.info" -exec echo {} \;)
+    if [[ ! "${files[@]}" == "" ]]; then
+        for file in ${files[@]}; do
+            lcov --remove "${file}" "*/.deps/*" -o "${pwd}/coverage/${target}.info"
+            lcov --remove "${file}" "*/examples/*" -o "${pwd}/coverage/${target}.info"
+        done
+        find "${pwd}/coverage" -type f -name "${target}-*.info" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
+        rm "${file}"
     fi
-    for file in ${files[@]}; do
-        if [[ -f "${pwd}/coverage/${target}-${link}-$(basename ${file})" ]]; then
-            rm "${pwd}/coverage/${target}-${link}-$(basename ${file})"
-        fi
-    done
 done
 
-files=()
-if [[ -d "${directory}" ]]; then
-    files=$(find "${pwd}/coverage" -type f -name "*.info" -exec echo {} \;)
-fi
-if [[ -f "${pwd}/coverage/lcov.info" ]]; then
-    rm "${pwd}/coverage/lcov.info"
-fi    
-for file in ${files[@]}; do
-    lcov --remove "${pwd}/coverage/$(basename ${file})" -o "${pwd}/coverage/lcov.info"
-    rm "${pwd}/coverage/$(basename ${file})"
-done
-if [[ -f "${pwd}/coverage/lcov.info" ]]; then
-    lcov --remove "${pwd}/coverage/lcov.info" "*/examples/*" -o "${pwd}/coverage/lcov.info"
+files=$(find "${pwd}/coverage" -type f -name "*.info" -exec echo {} \;)
+if [[ ! "${files[@]}" == "" ]]; then
+    find "${pwd}/coverage" -type f -name "*.info" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
 fi
 
+$(find "$(pwd)/coverage" -type f -not -name "lcov.info" -exec rm {} \;)
 
 if [[ "${silent}" == "--silent" ]]; then
     exec 1>&2 2>&-
