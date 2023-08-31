@@ -202,30 +202,15 @@ if [[ "${registered[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "" && "
 fi
 
 for directory in ${directories[@]}; do
-    link=${directory}
-    files=()
-    if [[ -d "${directory}" ]]; then
-        files=$(find "${directory}" -type f -name "lcov.info" -exec echo {} \;)
-    fi
+    files=$(find "${directory}" -type f -name "lcov.info" -exec echo {} \;)
     for file in ${files[@]}; do
         targets=( $(get-source-targets ${source}) )
         for target in ${targets[@]}; do
-            cp "${file}" "${pwd}/coverage/${target}-${link}-$(basename ${file})"
+            cp "${file}" "${pwd}/coverage/${target}.info"
+            lcov --remove "${pwd}/coverage/${target}.info" "*/.deps/*" -o "${pwd}/coverage/${target}.info"
+            lcov --remove "${pwd}/coverage/${target}.info" "*/examples/*" -o "${pwd}/coverage/${target}.info"
         done
     done
-done
-
-targets=( $(get-source-targets ${source}) )
-for target in ${targets[@]}; do
-    files=$(find "${pwd}/coverage" -type f -name "${target}-*.info" -exec echo {} \;)
-    if [[ ! "${files[@]}" == "" ]]; then
-        for file in ${files[@]}; do
-            lcov --remove "${file}" "*/.deps/*" -o "${pwd}/coverage/${target}.info"
-            lcov --remove "${file}" "*/examples/*" -o "${pwd}/coverage/${target}.info"
-        done
-        find "${pwd}/coverage" -type f -name "${target}-*.info" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
-        rm "${file}"
-    fi
 done
 
 files=$(find "${pwd}/coverage" -type f -name "*.info" -exec echo {} \;)
