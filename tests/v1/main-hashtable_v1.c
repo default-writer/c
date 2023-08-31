@@ -74,7 +74,7 @@ static const struct os_methods* os = &os_methods_definition;
 
 typedef struct test_data {
     struct pointer_data* ctx;
-}* TEST_DATA;
+} * TEST_DATA;
 
 RX_SET_UP(test_set_up) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
@@ -750,6 +750,7 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable_murmurhash3_hash, .fixt
     string->free(file_name_ptr);
     string->free(file_path_ptr);
 #endif
+    pointer->release();
 }
 
 /* test init */

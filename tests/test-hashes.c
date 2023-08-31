@@ -52,7 +52,7 @@ struct hash_functions {
 /* Data structure to use at the core of our fixture. */
 typedef struct test_data {
     struct hash_functions* ctx;
-}* TEST_DATA;
+} * TEST_DATA;
 
 RX_SET_UP(test_set_up) {
     return RX_SUCCESS;
@@ -284,7 +284,6 @@ void get_hash(int hash_id) {
     while (current != 0) {
         char* data = current->data;
         uint32_t hash = apply_hash(hash_id, data, current->size);
-        printf("%08x\n", hash);
         current = current->next;
     }
 }
