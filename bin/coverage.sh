@@ -207,8 +207,6 @@ for directory in ${directories[@]}; do
         targets=( $(get-source-targets ${source}) )
         for target in ${targets[@]}; do
             cp "${file}" "${pwd}/coverage/${target}.info"
-            lcov --remove "${pwd}/coverage/${target}.info" "*/.deps/*" -o "${pwd}/coverage/${target}.info"
-            lcov --remove "${pwd}/coverage/${target}.info" "*/examples/*" -o "${pwd}/coverage/${target}.info"
         done
     done
 done

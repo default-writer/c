@@ -218,7 +218,8 @@ for target in ${targets[@]}; do
         c-*) ;& main-*) ;& test-*)
             timeout --foreground 180 $(cmake-valgrind-options) "${build}/${target}" 2>&1 >"${output}/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
             lcov --capture --directory "${build}/" --output-file "${build}/${target}.info" &>/dev/null
-            lcov --remove "${build}/${target}.info" "${pwd}/.deps/*" -o "${build}/${target}.info"
+            lcov --remove "${build}/${target}.info" "*/.deps/*" -o "${build}/${target}.info"
+            lcov --remove "${build}/${target}.info" "*/examples/*" -o "${build}/${target}.info"
             ;;
         *)
             ;;
