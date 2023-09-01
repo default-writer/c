@@ -289,9 +289,6 @@ static void pointer_release(void) {
     vm->enumerator_init();
     void** ptr = 0;
     while ((ptr = vm->enumerator_next()) != 0) {
-        if (ptr == 0) {
-            continue;
-        }
         struct pointer* data_ptr = *ptr;
         if (data_ptr == 0) {
             continue;
