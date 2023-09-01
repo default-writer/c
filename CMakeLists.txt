@@ -316,6 +316,7 @@ set(LIB_LINKED_LIST_SOURCE
     src/stl/linked_list_static_enumerator.c)
 
 # test
+set(TEST_POINTER_SOURCE tests/test-pointer.c)
 set(TEST_HASHES_SOURCE tests/test-hashes.c)
 set(TEST_LINKED_LIST_SOURCE tests/main-linked-list.c)
 set(TEST_LINKED_LIST_STATIC_ENUMERATOR_SOURCE tests/main-linked-list-static-enumerator.c)
@@ -330,6 +331,7 @@ set(TESTS_SRC_LIST_ALLOC tests/src/test_list-alloc/test_list-alloc.c)
 set(TESTS_SRC_LIST_EXPERIMENTAL tests/src/test_list-experimental/test_list-experimental.c)
 set(TESTS_SRC_VM_V1 tests/src/vm/v1/vm_v1.c)
 set(TESTS_SRC_VM_V2 tests/src/vm/v2/vm_v2.c)
+set(TESTS_SRC_POINTER tests/src/test_pointer/test_pointer.c)
 
 # main
 set(MAIN_STANDARD_SOURCE tests/main-default.c)
@@ -370,6 +372,7 @@ add_library(tests STATIC
     ${TESTS_SRC_LIST_ALLOC}
     ${TESTS_SRC_LIST_EXPERIMENTAL}
     ${TESTS_SRC_LIST_MICRO}
+    ${TESTS_SRC_POINTER}
 )
 
 add_library(tests-vm-v1 STATIC ${TESTS_SRC_VM_V1})
@@ -428,6 +431,7 @@ add_library(std-object1 SHARED ${LIB_STD_OBJECT1_SOURCE})
 
 # test
 add_executable(test-hashes ${TEST_HASHES_SOURCE})
+add_executable(test-pointer ${TEST_POINTER_SOURCE})
 
 # main 
 add_executable(main-default ${MAIN_STANDARD_SOURCE})
@@ -485,6 +489,7 @@ target_link_libraries(stl-linked-list PRIVATE list-common)
 target_link_libraries(c-substrings PRIVATE ctypes)
 
 # test
+target_link_libraries(test-pointer PRIVATE tests ctypes)
 target_link_libraries(tests PRIVATE list-alloc list-parameters)
 target_link_libraries(tests-vm-v1 PRIVATE tests list-common list-micro list-pointer1)
 target_link_libraries(tests-vm-v2 PRIVATE tests list-common list-micro list-pointer2)
