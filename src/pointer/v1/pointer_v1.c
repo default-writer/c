@@ -320,9 +320,6 @@ static u64 pointer_pop(void) {
 
 #ifdef USE_VM_DEBUG_INFO
 static void pointer_dump(struct pointer* ptr) {
-    if (ptr == 0) {
-        return;
-    }
     if (ptr->data == 0) {
         return;
     }
@@ -330,9 +327,6 @@ static void pointer_dump(struct pointer* ptr) {
 }
 
 static void pointer_dump_ref(void** ptr) {
-    if (ptr == 0) {
-        return;
-    }
     if (*ptr == 0) {
         return;
     }
