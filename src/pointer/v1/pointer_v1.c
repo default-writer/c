@@ -70,12 +70,9 @@ static const struct list* list = &list_micro_definition;
 
 /* definition */
 static struct pointer_data* base = &vm_pointer;
-static struct vm* vm_ptr;
 
 /* api */
 const struct pointer_vm_methods pointer_vm_methods_definition;
-struct pointer_data* pointer_data_init(u64 size);
-void pointer_data_destroy(struct pointer_data** ctx);
 
 /* internal */
 static struct pointer* pointer_vm_alloc(u64 size, u64 id);
@@ -114,9 +111,6 @@ static void pointer_release(void);
 
 static void pointer_init_internal(struct pointer_data* ptr, u64 size);
 static void pointer_destroy_internal(struct pointer_data* ptr);
-static void pointer_data_init_internal(struct pointer_data* ptr, u64 size);
-static void pointer_data_destroy_internal(struct pointer_data* ptr);
-static void copy_internal(struct pointer_data* dest, struct pointer_data* src);
 
 /* free */
 static u64 vm_types_init(u64 id, const struct vm_type* type);
@@ -197,8 +191,7 @@ static void pointer_vm_release(struct list_data** current) {
 
 /* implementation */
 static void pointer_init_internal(struct pointer_data* ptr, u64 size) {
-    vm_ptr = vm->init(size);
-    list->init(&ptr->list);
+    ptr->vm = vm->init(size);
 #ifdef USE_GC
     list->init(&ptr->gc);
 #endif
@@ -228,46 +221,10 @@ static void pointer_destroy_internal(struct pointer_data* ptr) {
 #ifdef USE_GC
     list->destroy(&ptr->gc);
 #endif
-    list->destroy(&ptr->list);
-    vm->destroy(&vm_ptr);
+    vm->destroy(&ptr->vm);
 #ifndef ATTRIBUTE
     vm_types_destroy();
 #endif
-}
-
-static void copy_internal(struct pointer_data* dest, struct pointer_data* src) {
-    dest->list = src->list;
-#ifdef USE_GC
-    dest->gc = src->gc;
-#endif
-}
-
-static void pointer_data_init_internal(struct pointer_data* ptr, u64 size) {
-    copy_internal(base, ptr);
-    pointer_init_internal(base, size);
-}
-
-static void pointer_data_destroy_internal(struct pointer_data* ptr) {
-    copy_internal(ptr, base);
-    pointer_destroy_internal(base);
-}
-
-struct pointer_data* pointer_data_init(u64 size) {
-    struct pointer_data* context = memory->alloc(POINTER_DATA_SIZE);
-    pointer_data_init_internal(context, size);
-    return context;
-}
-
-void pointer_data_destroy(struct pointer_data** ctx) {
-#ifdef USE_VM_DEBUG_INFO
-    vm->dump_ref();
-    vm->dump();
-#endif
-#ifdef USE_GC
-    pointer_gc();
-#endif
-    pointer_data_destroy_internal(*ctx);
-    memory->free(*ctx, POINTER_DATA_SIZE);
 }
 
 static void pointer_init(u64 size) {
@@ -275,10 +232,6 @@ static void pointer_init(u64 size) {
 }
 
 static void pointer_destroy(void) {
-#ifdef USE_VM_DEBUG_INFO
-    vm->dump_ref();
-    vm->dump();
-#endif
 #ifdef USE_GC
     pointer_gc();
 #endif
@@ -286,6 +239,10 @@ static void pointer_destroy(void) {
 }
 
 static void pointer_release(void) {
+#ifdef USE_VM_DEBUG_INFO
+    vm->dump_ref();
+    vm->dump();
+#endif
     vm->enumerator_init();
     void** ptr = 0;
     while ((ptr = vm->enumerator_next()) != 0) {
@@ -303,20 +260,6 @@ static void pointer_gc(void) {
     pointer_vm_release(&base->gc);
 }
 #endif
-
-static void pointer_push(u64 ptr) {
-    if (ptr != 0) {
-        list->push(&base->list, (void*)ptr);
-    }
-}
-
-static u64 pointer_peek(void) {
-    return (u64)list->peek(&base->list);
-}
-
-static u64 pointer_pop(void) {
-    return (u64)list->pop(&base->list);
-}
 
 #ifdef USE_VM_DEBUG_INFO
 static void pointer_dump(struct pointer* ptr) {
@@ -347,9 +290,6 @@ const struct pointer_methods pointer_methods_definition = {
     .init = pointer_init,
     .destroy = pointer_destroy,
     .release = pointer_release,
-    .peek = pointer_peek,
-    .push = pointer_push,
-    .pop = pointer_pop,
 #ifdef USE_VM_DEBUG_INFO
     .dump = pointer_dump,
     .dump_ref = pointer_dump_ref,

@@ -33,7 +33,6 @@
  */
 
 struct string_methods {
-    u64 (*gc)(u64 ptr);
     void (*free)(u64 ptr);
     u64 (*copy)(u64 ptr);
     void (*strcpy)(u64 dest, u64 src);

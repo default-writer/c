@@ -42,6 +42,7 @@
 const struct os_methods os_methods_definition;
 
 /* definition */
+extern const struct vm_methods vm_methods_definition;
 extern const struct pointer_methods pointer_methods_definition;
 extern const struct list_methods list_methods_definition;
 extern const struct file_methods file_methods_definition;
@@ -52,9 +53,9 @@ extern const struct object_methods object_methods_definition;
 extern const struct os_methods os_methods_definition;
 extern const struct string_pointer_methods string_pointer_methods_definition;
 extern const struct memory memory_definition;
-extern const struct vm_methods vm_methods_definition;
 
 /* definition */
+static const struct vm_methods* vm = &vm_methods_definition;
 static const struct pointer_methods* pointer = &pointer_methods_definition;
 static const struct list_methods* list = &list_methods_definition;
 static const struct file_methods* file = &file_methods_definition;
@@ -65,7 +66,6 @@ static const struct object_methods* object = &object_methods_definition;
 static const struct os_methods* os = &os_methods_definition;
 static const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
 static const struct memory* memory = &memory_definition;
-static const struct vm_methods* vm = &vm_methods_definition;
 
 /* definition */
 static u64 os_getenv(u64 name);

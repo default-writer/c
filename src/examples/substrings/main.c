@@ -22,7 +22,6 @@ extern const struct data_methods data_methods_definition;
 extern const struct object_methods object_methods_definition;
 extern const struct os_methods os_methods_definition;
 extern const struct string_pointer_methods string_pointer_methods_definition;
-extern const struct memory memory_definition;
 
 /* definition */
 static const struct pointer_methods* pointer = &pointer_methods_definition;
@@ -34,7 +33,6 @@ static const struct data_methods* data = &data_methods_definition;
 static const struct object_methods* object = &object_methods_definition;
 static const struct os_methods* os = &os_methods_definition;
 static const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
-static const struct memory* memory = &memory_definition;
 
 static u64 load_data() {
     u64 list_ptr = list->alloc();
@@ -136,11 +134,6 @@ int main(void) {
 #endif
     pointer->init(8);
     u64 gc_ptr = list->alloc();
-    if (string->gc(gc_ptr) == 0) {
-        printf("no garbage collector for string type available\n");
-        pointer->destroy();
-        return 0;
-    }
     u64 list_data_ptr = load_data();
     list->push(gc_ptr, list_data_ptr);
     u64 quit = 0;

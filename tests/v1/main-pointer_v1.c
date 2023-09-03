@@ -46,45 +46,58 @@ extern const struct memory memory_definition;
 static const struct memory* memory = &memory_definition;
 
 /* definition */
-extern struct pointer_data* pointer_data_init(u64 size);
-extern void pointer_data_destroy(struct pointer_data** ctx);
-
 extern const struct vm_methods vm_methods_definition;
 
+/* definition */
 extern const struct pointer_methods pointer_methods_definition;
 extern const struct list_methods list_methods_definition;
-extern const struct string_methods string_methods_definition;
 extern const struct file_methods file_methods_definition;
+extern const struct string_methods string_methods_definition;
+extern const struct user_methods user_methods_definition;
 extern const struct data_methods data_methods_definition;
+extern const struct object_methods object_methods_definition;
+extern const struct os_methods os_methods_definition;
+extern const struct string_pointer_methods string_pointer_methods_definition;
 
+/* definition */
 static const struct pointer_methods* pointer = &pointer_methods_definition;
 static const struct list_methods* list = &list_methods_definition;
-static const struct string_methods* string = &string_methods_definition;
 static const struct file_methods* file = &file_methods_definition;
+static const struct string_methods* string = &string_methods_definition;
+static const struct user_methods* user = &user_methods_definition;
 static const struct data_methods* data = &data_methods_definition;
+static const struct object_methods* object = &object_methods_definition;
+static const struct os_methods* os = &os_methods_definition;
+static const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
 
 typedef struct test_data {
     struct pointer_data* ctx;
 }* TEST_DATA;
 
 RX_SET_UP(test_set_up) {
-    TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct pointer_data** ctx = &rx->ctx;
-    *ctx = pointer_data_init(8);
     return RX_SUCCESS;
 }
 
 RX_TEAR_DOWN(test_tear_down) {
-    TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct pointer_data** ctx = &rx->ctx;
-    pointer_data_destroy(ctx);
 }
 
 /* Define the fixture. */
 RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tear_down);
 
 /* test init */
+RX_TEST_CASE(tests, test_list_unsafe, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 data_ptr = data->alloc(256);
+    u64 data_size = data->size(data_ptr);
+    RX_ASSERT(data_size == 256);
+    data->free(data_ptr);
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
 RX_TEST_CASE(tests, test_list_push_list_peek_list_pop, .fixture = test_fixture) {
+    pointer->init(8);
     u64 list_ptr = list->alloc();
     const char* source = "Hello, world!";
     u64 size = strlen(source) + 1;
@@ -111,10 +124,13 @@ RX_TEST_CASE(tests, test_list_push_list_peek_list_pop, .fixture = test_fixture) 
     memory->free(buffer, size);
     memory->free(dest, size);
     list->free(list_ptr);
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_list_push_list_peek_list_pop_free, .fixture = test_fixture) {
+    pointer->init(8);
     u64 list_ptr = list->alloc();
     const char* source = "Hello, world!";
     u64 size = strlen(source) + 1;
@@ -142,10 +158,13 @@ RX_TEST_CASE(tests, test_list_push_list_peek_list_pop_free, .fixture = test_fixt
     memory->free(buffer, size);
     memory->free(dest, size);
     list->free(list_ptr);
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_list_push_0_list_peek_0_list_pop_0_list_free_0, .fixture = test_fixture) {
+    pointer->init(8);
     u64 list_ptr = list->alloc();
     list->push(list_ptr, 0);
     list->push(0, 0);
@@ -183,10 +202,13 @@ RX_TEST_CASE(tests, test_list_push_0_list_peek_0_list_pop_0_list_free_0, .fixtur
     string->free(list_ptr);
     string->free(str1);
     list->free(list_ptr);
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_list_peek_0, .fixture = test_fixture) {
+    pointer->init(8);
     const char* source = "Hello, world! A very long string do not fit in 8 bytes.";
     u64 size = strlen(source) + 1;
     char* dest = memory->alloc(size);
@@ -196,9 +218,8 @@ RX_TEST_CASE(tests, test_list_peek_0, .fixture = test_fixture) {
         char* tmp = ptr + 1;
         char ch = *tmp;
         *tmp = 0;
-        u64 string_ptr = string->load(ptr);
+        string->load(ptr);
         *tmp = ch;
-        pointer->push(string_ptr);
     }
     char* buffer = memory->alloc(size);
     for (u64 i = 0; i < size - 1; i++) {
@@ -209,6 +230,8 @@ RX_TEST_CASE(tests, test_list_peek_0, .fixture = test_fixture) {
     printf("   .: %s\n", buffer);
     memory->free(buffer, size);
     memory->free(dest, size);
+    pointer->release();
+    pointer->destroy();
 }
 
 int main(int argc, char** argv) {
@@ -216,14 +239,6 @@ int main(int argc, char** argv) {
     global_statistics();
 #endif
     CLEAN(argc)
-#ifdef USE_MEMORY_DEBUG_INFO
-    printf("---- acceptance test code\n");
-#endif
-    pointer->init(DEFAULT_SIZE);
-    u64 argv_ptr = string->load(argv[0]);
-    pointer->push(argv_ptr);
-    string->free(argv_ptr);
-    pointer->destroy();
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- rexo unit test code\n");
 #endif

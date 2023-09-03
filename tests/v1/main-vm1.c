@@ -49,30 +49,35 @@ static const struct test_suite* list_alloc_tests = &list_alloc_test_suite_defini
 #define DEFAULT_SIZE 0x100
 
 /* definition */
-extern const struct vm_methods vm_methods_definition;
-
 extern const struct pointer_methods pointer_methods_definition;
 extern const struct list_methods list_methods_definition;
 extern const struct file_methods file_methods_definition;
 extern const struct string_methods string_methods_definition;
-extern const struct string_pointer_methods string_pointer_methods_definition;
+extern const struct user_methods user_methods_definition;
 extern const struct data_methods data_methods_definition;
+extern const struct object_methods object_methods_definition;
 extern const struct os_methods os_methods_definition;
+extern const struct string_pointer_methods string_pointer_methods_definition;
 
+/* definition */
 const struct pointer_methods* pointer = &pointer_methods_definition;
 const struct list_methods* list = &list_methods_definition;
 const struct file_methods* file = &file_methods_definition;
 const struct string_methods* string = &string_methods_definition;
-const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
+const struct user_methods* user = &user_methods_definition;
 const struct data_methods* data = &data_methods_definition;
+const struct object_methods* object = &object_methods_definition;
 const struct os_methods* os = &os_methods_definition;
+const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
 
 typedef struct test_data {
     struct pointer_data* ctx;
 }* TEST_DATA;
 
-extern inline void source1(void) {
-    u64 file_path_ptr = pointer->pop();
+u64 _list_ptr;
+
+extern inline void source1() {
+    u64 file_path_ptr = list->pop(_list_ptr);
     u64 file_name_ptr = string->load("/input.txt");
     u64 pattern_ptr = string->load("/");
     u64 last_match_ptr = string->offset(file_path_ptr, pattern_ptr);
@@ -136,11 +141,13 @@ int main(int argc, char** argv) {
     TEST_RUN(vm_v1, vm_v1_tests);
     CLEAN(argc)
     pointer->init(DEFAULT_SIZE);
+    _list_ptr = list->alloc();
     u64 argv_ptr = string->load(argv[0]);
-    pointer->push(argv_ptr);
+    list->push(_list_ptr, argv_ptr);
     source1();
     source2();
     string->free(argv_ptr);
+    list->free(_list_ptr);
     pointer->destroy();
 #ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();

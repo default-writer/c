@@ -58,9 +58,6 @@ static const struct test_suite* list_tests = &list_test_suite_definition;
 static const struct test_suite* vm_v1_tests = &vm_v1_test_suite_definition;
 
 /* definition */
-extern struct pointer_data* pointer_data_init(u64 size);
-extern void pointer_data_destroy(struct pointer_data** ctx);
-
 extern const struct vm_methods vm_methods_definition;
 
 /* definition */
@@ -86,20 +83,13 @@ const struct os_methods* os = &os_methods_definition;
 const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
 
 typedef struct test_data {
-    struct pointer_data* ctx;
-} * TEST_DATA;
+}* TEST_DATA;
 
 RX_SET_UP(test_set_up) {
-    TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct pointer_data** ctx = &rx->ctx;
-    *ctx = pointer_data_init(8);
     return RX_SUCCESS;
 }
 
 RX_TEAR_DOWN(test_tear_down) {
-    TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct pointer_data** ctx = &rx->ctx;
-    pointer_data_destroy(ctx);
 }
 
 /* Define the fixture. */
@@ -107,48 +97,62 @@ RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tea
 
 /* test init */
 RX_TEST_CASE(tests, test_print_0, .fixture = test_fixture) {
+    pointer->init(8);
     os->putc(0);
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_load_0, .fixture = test_fixture) {
+    pointer->init(8);
     u64 empty_ptr = string->load("\0");
     RX_ASSERT(empty_ptr == 0);
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_load_null, .fixture = test_fixture) {
+    pointer->init(8);
     u64 empty_ptr = string->load(0);
     RX_ASSERT(empty_ptr == 0);
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_load_empty, .fixture = test_fixture) {
+    pointer->init(8);
     u64 empty_ptr = string->load("");
     RX_ASSERT(empty_ptr == 0);
 #ifndef USE_GC
     string->free(empty_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_print_load_empty, .fixture = test_fixture) {
+    pointer->init(8);
     u64 empty_ptr = string->load("");
     os->putc(empty_ptr);
     RX_ASSERT(empty_ptr == 0);
 #ifndef USE_GC
     string->free(empty_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_load_copy, .fixture = test_fixture) {
+    pointer->init(8);
     u64 char_ptr = string->load("/");
     u64 copy_ptr = string->copy(char_ptr);
     RX_ASSERT(strcmp(string->unsafe(char_ptr), "/") == 0);
@@ -158,44 +162,43 @@ RX_TEST_CASE(tests, test_load_copy, .fixture = test_fixture) {
     string->free(char_ptr);
     string->free(copy_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_load_push_peek_pop, .fixture = test_fixture) {
+    pointer->init(8);
     u64 char_ptr = string->load("/");
-    pointer->push(char_ptr);
-    u64 peek_ptr = pointer->peek();
-    u64 pop_ptr = pointer->pop();
     RX_ASSERT(strcmp(string->unsafe(char_ptr), "/") == 0);
-    RX_ASSERT(strcmp(string->unsafe(peek_ptr), "/") == 0);
-    RX_ASSERT(strcmp(string->unsafe(pop_ptr), "/") == 0);
 #ifndef USE_GC
     string->free(char_ptr);
-    string->free(peek_ptr);
-    string->free(pop_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 RX_TEST_CASE(tests, test_load_free_free, .fixture = test_fixture) {
+    pointer->init(8);
     u64 char_ptr = string->load("/");
     RX_ASSERT(strcmp(string->unsafe(char_ptr), "/") == 0);
 #ifndef USE_GC
     string->free(char_ptr);
     string->free(char_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_strcat_load_alloc, .fixture = test_fixture) {
+    pointer->init(8);
     u64 char_ptr = string->load("/");
     u64 pattern_ptr = string->load("\0");
     string->strcat(pattern_ptr, char_ptr);
@@ -205,13 +208,15 @@ RX_TEST_CASE(tests, test_strcat_load_alloc, .fixture = test_fixture) {
     string->free(char_ptr);
     string->free(pattern_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_string_size, .fixture = test_fixture) {
+    pointer->init(8);
     u64 char_ptr = string->load("/");
     u64 pattern_ptr = string->load("\0");
     u64 string_size = data->size(pattern_ptr);
@@ -223,12 +228,14 @@ RX_TEST_CASE(tests, test_string_size, .fixture = test_fixture) {
     string->free(pattern_ptr);
 #else
     pointer->gc();
-    pointer->release();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_pointer_size_0, .fixture = test_fixture) {
+    pointer->init(8);
     u64 char_ptr = string->load("/");
     u64 pattern_ptr = string->load("\0");
     u64 string_size = string->size(0);
@@ -239,13 +246,15 @@ RX_TEST_CASE(tests, test_pointer_size_0, .fixture = test_fixture) {
     string->free(char_ptr);
     string->free(pattern_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_pointer_size_empty, .fixture = test_fixture) {
+    pointer->init(8);
     u64 char_ptr = string->load(" ");
     u64 pattern_ptr = string->load("\0");
     u64 string_size = string->size(char_ptr);
@@ -256,13 +265,15 @@ RX_TEST_CASE(tests, test_pointer_size_empty, .fixture = test_fixture) {
     string->free(char_ptr);
     string->free(pattern_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_pointer_size_object, .fixture = test_fixture) {
+    pointer->init(8);
     u64 object_ptr = object->alloc(1);
     u64 pattern_ptr = string->load("\0");
     u64 object_size = object->size(object_ptr);
@@ -274,13 +285,15 @@ RX_TEST_CASE(tests, test_pointer_size_object, .fixture = test_fixture) {
     string->free(pattern_ptr);
     object->free(object_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_object_0, .fixture = test_fixture) {
+    pointer->init(8);
     u64 object_ptr = object->alloc(0);
     u64 pattern_ptr = string->load("\0");
     u64 object_size = object->size(object_ptr);
@@ -292,13 +305,15 @@ RX_TEST_CASE(tests, test_object_0, .fixture = test_fixture) {
     string->free(pattern_ptr);
     object->free(object_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_object_alloc_0, .fixture = test_fixture) {
+    pointer->init(8);
     u64 object_ptr = object->alloc(0);
     u64 pattern_ptr = string->load("\0");
     u64 object_size = object->size(object_ptr);
@@ -310,13 +325,15 @@ RX_TEST_CASE(tests, test_object_alloc_0, .fixture = test_fixture) {
     string->free(pattern_ptr);
     object->free(object_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_object_load_0, .fixture = test_fixture) {
+    pointer->init(8);
     u64 object_ptr = object->load(0, 0x01234567);
     u64 pattern_ptr = string->load("\0");
     u64 object_size = object->size(object_ptr);
@@ -328,13 +345,15 @@ RX_TEST_CASE(tests, test_object_load_0, .fixture = test_fixture) {
     string->free(pattern_ptr);
     object->free(object_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_object_load_string_0, .fixture = test_fixture) {
+    pointer->init(8);
     const char* test_data = "Hello, world!";
     const void* ptr = (const void*)test_data;
     u64 object_ptr = object->load(ptr, 0);
@@ -348,13 +367,15 @@ RX_TEST_CASE(tests, test_object_load_string_0, .fixture = test_fixture) {
     string->free(pattern_ptr);
     object->free(object_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_object_load_string, .fixture = test_fixture) {
+    pointer->init(8);
     const char* test_data = "Hello, world!";
     const void* ptr = (const void*)test_data;
     u64 object_ptr = object->load(ptr, strlen(ptr));
@@ -368,13 +389,15 @@ RX_TEST_CASE(tests, test_object_load_string, .fixture = test_fixture) {
     string->free(pattern_ptr);
     object->free(object_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_object_load_string_unsafe_alloc_0, .fixture = test_fixture) {
+    pointer->init(8);
     u64 object_ptr = object->alloc(0);
     u64 pattern_ptr = string->load("\0");
     u64 object_size = object->size(object_ptr);
@@ -388,13 +411,15 @@ RX_TEST_CASE(tests, test_object_load_string_unsafe_alloc_0, .fixture = test_fixt
     string->free(pattern_ptr);
     object->free(object_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_object_load_string_unsafe_string, .fixture = test_fixture) {
+    pointer->init(8);
     u64 object_ptr = object->alloc(0);
     u64 pattern_ptr = string->load("\0");
     u64 object_size = object->size(object_ptr);
@@ -408,13 +433,15 @@ RX_TEST_CASE(tests, test_object_load_string_unsafe_string, .fixture = test_fixtu
     string->free(pattern_ptr);
     object->free(object_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_object_load_string_unsafe_0, .fixture = test_fixture) {
+    pointer->init(8);
     const char* test_data = "Hello, world!";
     const void* ptr = (const void*)test_data;
     u64 object_ptr = object->load(ptr, strlen(ptr));
@@ -430,13 +457,15 @@ RX_TEST_CASE(tests, test_object_load_string_unsafe_0, .fixture = test_fixture) {
     string->free(pattern_ptr);
     object->free(object_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_object_load_string_unsafe, .fixture = test_fixture) {
+    pointer->init(8);
     const char* test_data = "Hello, world!";
     const void* ptr = (const void*)test_data;
     u64 object_ptr = object->load(ptr, strlen(ptr));
@@ -452,13 +481,15 @@ RX_TEST_CASE(tests, test_object_load_string_unsafe, .fixture = test_fixture) {
     string->free(pattern_ptr);
     object->free(object_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_strcat_alloc_alloc, .fixture = test_fixture) {
+    pointer->init(8);
     u64 char_ptr = string->load("\0");
     u64 pattern_ptr = string->load("\0");
     string->strcat(pattern_ptr, char_ptr);
@@ -468,13 +499,15 @@ RX_TEST_CASE(tests, test_strcat_alloc_alloc, .fixture = test_fixture) {
     string->free(char_ptr);
     string->free(pattern_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_string_offset_ptr_diff, .fixture = test_fixture) {
+    pointer->init(8);
     u64 string_ptr1 = string->load("192.168.0.111");
     u64 string_ptr2 = string->load("192.168.0.12");
     u64 last_matched_ptr1 = string->offset(string_ptr1, string_ptr2);
@@ -484,13 +517,15 @@ RX_TEST_CASE(tests, test_string_offset_ptr_diff, .fixture = test_fixture) {
     string->free(string_ptr1);
     string->free(string_ptr2);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_string_offset_ptr_less, .fixture = test_fixture) {
+    pointer->init(8);
     u64 string_ptr1 = string->load("192.168.0.11");
     u64 string_ptr2 = string->load("8.0.112");
     u64 last_matched_ptr1 = string->offset(string_ptr1, string_ptr2);
@@ -500,13 +535,15 @@ RX_TEST_CASE(tests, test_string_offset_ptr_less, .fixture = test_fixture) {
     string->free(string_ptr1);
     string->free(string_ptr2);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_string_offset_ptr_offset, .fixture = test_fixture) {
+    pointer->init(8);
     u64 string_ptr1 = string->load("192.168.0.11");
     u64 string_ptr2 = string->load("8.0.12");
     u64 last_matched_ptr1 = string->offset(string_ptr1, string_ptr2);
@@ -516,13 +553,15 @@ RX_TEST_CASE(tests, test_string_offset_ptr_offset, .fixture = test_fixture) {
     string->free(string_ptr1);
     string->free(string_ptr2);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_string_offset_ptr_offset_found, .fixture = test_fixture) {
+    pointer->init(8);
     u64 string_ptr1 = string->load("192.168.0.111");
     u64 string_ptr2 = string->load("8.0.");
     u64 last_matched_ptr1 = string->offset(string_ptr1, string_ptr2);
@@ -532,13 +571,15 @@ RX_TEST_CASE(tests, test_string_offset_ptr_offset_found, .fixture = test_fixture
     string->free(string_ptr1);
     string->free(string_ptr2);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_string_pointer_free_list, .fixture = test_fixture) {
+    pointer->init(8);
 #ifndef USE_GC
     u64 list_ptr = list->alloc();
     u64 string_ptr = string->load("hello");
@@ -554,13 +595,15 @@ RX_TEST_CASE(tests, test_string_pointer_free_list, .fixture = test_fixture) {
     u64 string_ptr = string->load("hello");
     u64 e_ptr = string->load("e");
     string->offset(string_ptr, e_ptr);
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_string_pointer_free, .fixture = test_fixture) {
+    pointer->init(8);
     u64 list_ptr = list->alloc();
     u64 string_ptr = string->load("hello");
     u64 e_ptr = string->load("e");
@@ -571,13 +614,15 @@ RX_TEST_CASE(tests, test_string_pointer_free, .fixture = test_fixture) {
     string->free(e_ptr);
     list->free(list_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_string_offset_list, .fixture = test_fixture) {
+    pointer->init(8);
     u64 list_ptr = list->alloc();
     u64 string_ptr = string->load("hello");
     u64 last_matched_ptr = string->offset(list_ptr, string_ptr);
@@ -586,13 +631,15 @@ RX_TEST_CASE(tests, test_string_offset_list, .fixture = test_fixture) {
     string->free(string_ptr);
     list->free(list_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_string_pointer_match, .fixture = test_fixture) {
+    pointer->init(8);
     u64 list_ptr = list->alloc();
     u64 string_ptr = string->load("192.192.0.1");
     u64 dot_ptr = string->load("192.");
@@ -607,13 +654,15 @@ RX_TEST_CASE(tests, test_string_pointer_match, .fixture = test_fixture) {
     string->free(dot_ptr);
     list->free(list_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_string_pointer_match_miss, .fixture = test_fixture) {
+    pointer->init(8);
     u64 list_ptr = list->alloc();
     u64 string_ptr = string->load("192.168.0.1");
     u64 dot_ptr = string->load(":");
@@ -625,13 +674,15 @@ RX_TEST_CASE(tests, test_string_pointer_match_miss, .fixture = test_fixture) {
     string->free(dot_ptr);
     list->free(list_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_string_pointer_match_pattern, .fixture = test_fixture) {
+    pointer->init(8);
     u64 list_ptr = list->alloc();
     u64 string_ptr = string->load("192.168.0.112");
     u64 dot_ptr = string->load("192.168.0.");
@@ -643,13 +694,15 @@ RX_TEST_CASE(tests, test_string_pointer_match_pattern, .fixture = test_fixture) 
     string->free(dot_ptr);
     list->free(list_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_string_pointer_match_patter_0, .fixture = test_fixture) {
+    pointer->init(8);
     u64 list_ptr = list->alloc();
     u64 string_ptr = string->load("192.168.0.112");
     u64 dot_ptr = string->load("193");
@@ -661,13 +714,15 @@ RX_TEST_CASE(tests, test_string_pointer_match_patter_0, .fixture = test_fixture)
     string->free(dot_ptr);
     list->free(list_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_string_pointer_match_patter_none, .fixture = test_fixture) {
+    pointer->init(8);
     u64 list_ptr = list->alloc();
     u64 string_ptr = string->load("192.168.0.11");
     u64 dot_ptr = string->load("192.168.0.111");
@@ -679,26 +734,30 @@ RX_TEST_CASE(tests, test_string_pointer_match_patter_none, .fixture = test_fixtu
     string->free(dot_ptr);
     list->free(list_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_string_pointer_match_0, .fixture = test_fixture) {
+    pointer->init(8);
     u64 string_ptr = string->load("192.168.0.1");
     u64 string_pointer_ptr = string->match(string_ptr, 0);
     RX_ASSERT(string_pointer_ptr == 0);
 #ifndef USE_GC
     string->free(string_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_string_pointer_match_0_0, .fixture = test_fixture) {
+    pointer->init(8);
 #ifndef USE_GC
     u64 string_ptr = string->load("192.168.0.1");
     u64 string_pointer_ptr = string->match(0, 0);
@@ -708,26 +767,30 @@ RX_TEST_CASE(tests, test_string_pointer_match_0_0, .fixture = test_fixture) {
     string->load("192.168.0.1");
     u64 string_pointer_ptr = string->match(0, 0);
     RX_ASSERT(string_pointer_ptr == 0);
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_string_pointer_match_0_string, .fixture = test_fixture) {
+    pointer->init(8);
     u64 string_ptr = string->load("192.168.0.1");
     u64 string_pointer_ptr = string->match(0, string_ptr);
     RX_ASSERT(string_pointer_ptr == 0);
 #ifndef USE_GC
     string->free(string_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_string_match_list, .fixture = test_fixture) {
+    pointer->init(8);
     u64 list_ptr = list->alloc();
     u64 string_ptr = string->load("hello");
     u64 last_matched_ptr = string->match(list_ptr, string_ptr);
@@ -736,13 +799,15 @@ RX_TEST_CASE(tests, test_string_match_list, .fixture = test_fixture) {
     string->free(string_ptr);
     list->free(list_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_string_pointer_strchr, .fixture = test_fixture) {
+    pointer->init(8);
     u64 list_ptr = list->alloc();
     u64 string_ptr = string->load("192.168.0.1");
     u64 dot_ptr = string->load(".");
@@ -757,13 +822,15 @@ RX_TEST_CASE(tests, test_string_pointer_strchr, .fixture = test_fixture) {
     string->free(dot_ptr);
     list->free(list_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_string_pointer_strchr_miss, .fixture = test_fixture) {
+    pointer->init(8);
     u64 list_ptr = list->alloc();
     u64 string_ptr = string->load("192.168.0.1");
     u64 dot_ptr = string->load(":");
@@ -775,26 +842,30 @@ RX_TEST_CASE(tests, test_string_pointer_strchr_miss, .fixture = test_fixture) {
     string->free(dot_ptr);
     list->free(list_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_string_pointer_strchr_0, .fixture = test_fixture) {
+    pointer->init(8);
     u64 string_ptr = string->load("192.168.0.1");
     u64 string_pointer_ptr = string->strchr(string_ptr, 0);
     RX_ASSERT(string_pointer_ptr == 0);
 #ifndef USE_GC
     string->free(string_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_string_pointer_strchr_0_0, .fixture = test_fixture) {
+    pointer->init(8);
 #ifndef USE_GC
     u64 string_ptr = string->load("192.168.0.1");
     u64 string_pointer_ptr = string->strchr(0, 0);
@@ -804,26 +875,30 @@ RX_TEST_CASE(tests, test_string_pointer_strchr_0_0, .fixture = test_fixture) {
     string->load("192.168.0.1");
     u64 string_pointer_ptr = string->strchr(0, 0);
     RX_ASSERT(string_pointer_ptr == 0);
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_string_pointer_strchr_0_string, .fixture = test_fixture) {
+    pointer->init(8);
     u64 string_ptr = string->load("192.168.0.1");
     u64 string_pointer_ptr = string->strchr(0, string_ptr);
     RX_ASSERT(string_pointer_ptr == 0);
 #ifndef USE_GC
     string->free(string_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_string_strchr_list, .fixture = test_fixture) {
+    pointer->init(8);
     u64 list_ptr = list->alloc();
     u64 string_ptr = string->load("hello");
     u64 last_matched_ptr = string->strchr(list_ptr, string_ptr);
@@ -834,10 +909,13 @@ RX_TEST_CASE(tests, test_string_strchr_list, .fixture = test_fixture) {
 #else
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_string_pointer_strrchr, .fixture = test_fixture) {
+    pointer->init(8);
     u64 string_ptr = string->load("192.168.0.1");
     u64 dot_ptr = string->load(".");
     u64 string_pointer_ptr1 = string->strrchr(string_ptr, dot_ptr);
@@ -850,13 +928,15 @@ RX_TEST_CASE(tests, test_string_pointer_strrchr, .fixture = test_fixture) {
     string->free(string_ptr);
     string->free(dot_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_string_pointer_strrchr_match_offset, .fixture = test_fixture) {
+    pointer->init(8);
     u64 string_ptr = string->load("192.168.0.111");
     u64 dot_ptr = string->load(".");
     u64 string_pointer_ptr1 = string->strrchr(string_ptr, dot_ptr);
@@ -872,13 +952,15 @@ RX_TEST_CASE(tests, test_string_pointer_strrchr_match_offset, .fixture = test_fi
     string->free(string_ptr);
     string->free(dot_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_string_pointer_strchr_match_offset, .fixture = test_fixture) {
+    pointer->init(8);
     u64 list_ptr = list->alloc();
     u64 list_match_ptr = list->alloc();
     u64 string_ptr = string->load("a.bc.bb.ba.a");
@@ -926,13 +1008,15 @@ RX_TEST_CASE(tests, test_string_pointer_strchr_match_offset, .fixture = test_fix
     list->free(list_ptr);
 #else
     /* memory leak: list_ptr is not freed, use pointer->release(); */
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_string_pointer_strrchr_miss, .fixture = test_fixture) {
+    pointer->init(8);
     u64 list_ptr = list->alloc();
     u64 string_ptr = string->load("192.168.0.1");
     u64 dot_ptr = string->load(":");
@@ -944,26 +1028,30 @@ RX_TEST_CASE(tests, test_string_pointer_strrchr_miss, .fixture = test_fixture) {
     string->free(dot_ptr);
     list->free(list_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_string_pointer_strrchr_0, .fixture = test_fixture) {
+    pointer->init(8);
     u64 string_ptr = string->load("192.168.0.1");
     u64 string_pointer_ptr = string->strrchr(string_ptr, 0);
     RX_ASSERT(string_pointer_ptr == 0);
 #ifndef USE_GC
     string->free(string_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_string_pointer_strrchr_0_0, .fixture = test_fixture) {
+    pointer->init(8);
 #ifndef USE_GC
     u64 string_ptr = string->load("192.168.0.1");
     u64 string_pointer_ptr = string->strrchr(0, 0);
@@ -973,26 +1061,30 @@ RX_TEST_CASE(tests, test_string_pointer_strrchr_0_0, .fixture = test_fixture) {
     string->load("192.168.0.1");
     u64 string_pointer_ptr = string->strrchr(0, 0);
     RX_ASSERT(string_pointer_ptr == 0);
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_string_pointer_strrchr_0_string, .fixture = test_fixture) {
+    pointer->init(8);
     u64 string_ptr = string->load("192.168.0.1");
     u64 string_pointer_ptr = string->strrchr(0, string_ptr);
     RX_ASSERT(string_pointer_ptr == 0);
 #ifndef USE_GC
     string->free(string_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_string_strrchr_list, .fixture = test_fixture) {
+    pointer->init(8);
     u64 list_ptr = list->alloc();
     u64 string_ptr = string->load("hello");
     u64 last_matched_ptr = string->strrchr(list_ptr, string_ptr);
@@ -1001,47 +1093,59 @@ RX_TEST_CASE(tests, test_string_strrchr_list, .fixture = test_fixture) {
     string->free(string_ptr);
     list->free(list_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_list_push_0_1, .fixture = test_fixture) {
+    pointer->init(8);
     list->push(0, 1);
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_list_push_1_0, .fixture = test_fixture) {
+    pointer->init(8);
     list->push(1, 0);
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_list_push_0, .fixture = test_fixture) {
+    pointer->init(8);
     u64 list_ptr = list->alloc();
     list->push(list_ptr, 0);
 #ifndef USE_GC
     list->free(list_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_list_push_list, .fixture = test_fixture) {
+    pointer->init(8);
     u64 list_ptr = list->alloc();
     list->push(list_ptr, list_ptr);
 #ifndef USE_GC
     list->free(list_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_list_push_string, .fixture = test_fixture) {
+    pointer->init(8);
     u64 string_ptr = string->load("@");
     u64 list_ptr = list->alloc();
     list->push(string_ptr, list_ptr);
@@ -1049,13 +1153,15 @@ RX_TEST_CASE(tests, test_list_push_string, .fixture = test_fixture) {
     list->free(list_ptr);
     string->free(string_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_list_size_string, .fixture = test_fixture) {
+    pointer->init(8);
 #ifndef USE_GC
     u64 string_ptr = string->load("@");
     u64 list_ptr = list->alloc();
@@ -1068,13 +1174,15 @@ RX_TEST_CASE(tests, test_list_size_string, .fixture = test_fixture) {
     list->alloc();
     u64 value = list->size(string_ptr);
     RX_ASSERT(value == 0);
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_list_push_size, .fixture = test_fixture) {
+    pointer->init(8);
     u64 string_ptr = string->load("@");
     u64 list_ptr = list->alloc();
     list->push(list_ptr, string_ptr);
@@ -1084,38 +1192,48 @@ RX_TEST_CASE(tests, test_list_push_size, .fixture = test_fixture) {
     list->free(list_ptr);
     string->free(string_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_list_pop_0_1, .fixture = test_fixture) {
+    pointer->init(8);
     u64 value_ptr = list->pop(0);
     RX_ASSERT(value_ptr == 0);
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_list_pop_1_0, .fixture = test_fixture) {
+    pointer->init(8);
     u64 value_ptr = list->pop(1);
     RX_ASSERT(value_ptr == 0);
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_list_pop_list, .fixture = test_fixture) {
+    pointer->init(8);
     u64 list_ptr = list->alloc();
     u64 value_ptr = list->pop(list_ptr);
     RX_ASSERT(value_ptr == 0);
 #ifndef USE_GC
     list->free(list_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_list_pop_string, .fixture = test_fixture) {
+    pointer->init(8);
     u64 string_ptr = string->load("@");
     u64 list_ptr = list->alloc();
     list->push(list_ptr, string_ptr);
@@ -1125,38 +1243,48 @@ RX_TEST_CASE(tests, test_list_pop_string, .fixture = test_fixture) {
     list->free(list_ptr);
     string->free(string_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_list_peek_0_1, .fixture = test_fixture) {
+    pointer->init(8);
     u64 value_ptr = list->peek(0);
     RX_ASSERT(value_ptr == 0);
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_list_peek_1_0, .fixture = test_fixture) {
+    pointer->init(8);
     u64 value_ptr = list->peek(1);
     RX_ASSERT(value_ptr == 0);
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_list_peek_list, .fixture = test_fixture) {
+    pointer->init(8);
     u64 list_ptr = list->alloc();
     u64 value_ptr = list->peek(list_ptr);
     RX_ASSERT(value_ptr == 0);
 #ifndef USE_GC
     list->free(list_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_list_peek_string, .fixture = test_fixture) {
+    pointer->init(8);
     u64 string_ptr = string->load("@");
     u64 list_ptr = list->alloc();
     list->push(list_ptr, string_ptr);
@@ -1166,13 +1294,15 @@ RX_TEST_CASE(tests, test_list_peek_string, .fixture = test_fixture) {
     list->free(list_ptr);
     string->free(string_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_strcpy, .fixture = test_fixture) {
+    pointer->init(8);
     u64 path_ptr1 = string->load("/");
     u64 path_ptr2 = string->load("@");
     u64 path_copy_ptr = string->copy(path_ptr1);
@@ -1196,13 +1326,15 @@ RX_TEST_CASE(tests, test_strcpy, .fixture = test_fixture) {
     string->free(path_ptr2);
     string->free(path_copy_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
+    pointer->init(8);
     u64 string_ptr = string->load("/all_english_words.txt");
     u64 zero_ptr = string->load("\0");
     u64 data_ptr = data->alloc(1);
@@ -1430,13 +1562,15 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     list->free(list_ptr);
     list->free(none_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_strcat_alloc_load, .fixture = test_fixture) {
+    pointer->init(8);
     u64 zero_ptr = string->load("\0");
     u64 char_ptr = string->load("/");
     string->strcat(zero_ptr, char_ptr);
@@ -1446,13 +1580,15 @@ RX_TEST_CASE(tests, test_strcat_alloc_load, .fixture = test_fixture) {
     string->free(zero_ptr);
     string->free(char_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_strcat_load_alloc_alloc, .fixture = test_fixture) {
+    pointer->init(8);
     u64 char_ptr = string->load("/");
     u64 pattern_ptr = string->load("\0");
     u64 empty_ptr = string->load("\0");
@@ -1466,13 +1602,15 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_alloc, .fixture = test_fixture) {
     string->free(pattern_ptr);
     string->free(char_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_strcat_load_load, .fixture = test_fixture) {
+    pointer->init(8);
     u64 char_ptr = string->load("/");
     u64 pattern_ptr = string->load("*");
     string->strcat(pattern_ptr, char_ptr);
@@ -1482,13 +1620,15 @@ RX_TEST_CASE(tests, test_strcat_load_load, .fixture = test_fixture) {
     string->free(pattern_ptr);
     string->free(char_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_strcpy_load_alloc, .fixture = test_fixture) {
+    pointer->init(8);
     u64 pattern_ptr = string->load("/");
     u64 empty_ptr = string->load("\0");
     string->strcpy(empty_ptr, pattern_ptr);
@@ -1498,13 +1638,15 @@ RX_TEST_CASE(tests, test_strcpy_load_alloc, .fixture = test_fixture) {
     string->free(empty_ptr);
     string->free(pattern_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_strcpy_load_load, .fixture = test_fixture) {
+    pointer->init(8);
     u64 char_ptr = string->load("/input.txt");
     u64 pattern_ptr = string->load("*");
     string->strcpy(pattern_ptr, char_ptr);
@@ -1514,13 +1656,15 @@ RX_TEST_CASE(tests, test_strcpy_load_load, .fixture = test_fixture) {
     string->free(pattern_ptr);
     string->free(char_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_load_open_file_close_file, .fixture = test_fixture) {
+    pointer->init(8);
     u64 file_path_ptr = os->getcwd();
     u64 file_name_ptr = string->load("/nonexistent.txt");
     string->strcat(file_path_ptr, file_name_ptr);
@@ -1537,13 +1681,15 @@ RX_TEST_CASE(tests, test_load_open_file_close_file, .fixture = test_fixture) {
     string->free(file_name_ptr);
     string->free(file_path_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_offset_strcpy, .fixture = test_fixture) {
+    pointer->init(8);
     u64 name_ptr = string->load("name");
     u64 at_ptr = string->load("@");
     u64 domain_ptr = string->load("domain.org");
@@ -1570,13 +1716,15 @@ RX_TEST_CASE(tests, test_offset_strcpy, .fixture = test_fixture) {
     string->free(domain_ptr);
     string->free(at_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_offset_strcpy_free, .fixture = test_fixture) {
+    pointer->init(8);
     u64 name_ptr = string->load("name");
     u64 at_ptr = string->load("@");
     u64 domain_ptr = string->load("domain.org");
@@ -1603,20 +1751,25 @@ RX_TEST_CASE(tests, test_offset_strcpy_free, .fixture = test_fixture) {
     string->free(domain_ptr);
     string->free(at_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_print_free, .fixture = test_fixture) {
+    pointer->init(8);
     u64 printing_ptr = string->load("hello, world!");
     string->free(printing_ptr);
     os->putc(printing_ptr);
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_print, .fixture = test_fixture) {
+    pointer->init(8);
     u64 printing_ptr = string->load("hello, world!");
     os->putc(printing_ptr);
 #ifndef USE_GC
@@ -1624,10 +1777,13 @@ RX_TEST_CASE(tests, test_print, .fixture = test_fixture) {
 #else
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_print_string_pointer, .fixture = test_fixture) {
+    pointer->init(8);
     u64 printing_ptr = string->load("hello, world!");
     u64 comma_ptr = string->load(",");
     u64 substring_index_ptr = string->offset(printing_ptr, comma_ptr);
@@ -1637,13 +1793,15 @@ RX_TEST_CASE(tests, test_print_string_pointer, .fixture = test_fixture) {
     string->free(substring_index_ptr);
     string->free(comma_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_print_string_pointer_copy, .fixture = test_fixture) {
+    pointer->init(8);
     const char* substring_expected = " world!";
     u64 printing_ptr = string->load("hello, world!");
     u64 comma_ptr = string->load(",");
@@ -1659,13 +1817,15 @@ RX_TEST_CASE(tests, test_print_string_pointer_copy, .fixture = test_fixture) {
     string->free(substring_index_ptr);
     string->free(substring_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_list_size, .fixture = test_fixture) {
+    pointer->init(8);
     u64 list_ptr = list->alloc();
     u64 size_actual = string->size(list_ptr);
     u64 size_expected = 0;
@@ -1673,13 +1833,15 @@ RX_TEST_CASE(tests, test_list_size, .fixture = test_fixture) {
 #ifndef USE_GC
     list->free(list_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_list_unsafe, .fixture = test_fixture) {
+    pointer->init(8);
     u64 list_ptr = list->alloc();
     char* ptr_actual = string->unsafe(list_ptr);
     char* ptr_expected = 0;
@@ -1687,13 +1849,15 @@ RX_TEST_CASE(tests, test_list_unsafe, .fixture = test_fixture) {
 #ifndef USE_GC
     list->free(list_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_list_offset, .fixture = test_fixture) {
+    pointer->init(8);
     u64 string_ptr = string->load("himem.sys");
     u64 list_ptr = list->alloc();
     u64 size_actual = string->offset(string_ptr, list_ptr);
@@ -1703,13 +1867,15 @@ RX_TEST_CASE(tests, test_list_offset, .fixture = test_fixture) {
     list->free(list_ptr);
     string->free(string_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, teststring_pointer_unsafe, .fixture = test_fixture) {
+    pointer->init(8);
     u64 printing_ptr = string->load("hello, world!");
     u64 comma_ptr = string->load(",");
     u64 substring_index_ptr = string->offset(printing_ptr, comma_ptr);
@@ -1724,13 +1890,15 @@ RX_TEST_CASE(tests, teststring_pointer_unsafe, .fixture = test_fixture) {
     string->free(printing_ptr);
     string->free(comma_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_string_pointer_size, .fixture = test_fixture) {
+    pointer->init(8);
     u64 printing_ptr = string->load("hello, world!");
     u64 comma_ptr = string->load(",");
     u64 substring_index_ptr = string->offset(printing_ptr, comma_ptr);
@@ -1746,13 +1914,15 @@ RX_TEST_CASE(tests, test_string_pointer_size, .fixture = test_fixture) {
     string->free(substring_index_ptr);
     string->free(substring_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_string_offset_subsearch, .fixture = test_fixture) {
+    pointer->init(8);
     u64 printing_ptr = string->load("hello, world!");
     u64 comma_ptr = string->load(",");
     u64 w_ptr = string->load("w");
@@ -1772,13 +1942,15 @@ RX_TEST_CASE(tests, test_string_offset_subsearch, .fixture = test_fixture) {
     string->free(substring_ptr);
     string->free(w_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_print_string_pointer_free, .fixture = test_fixture) {
+    pointer->init(8);
     u64 printing_ptr = string->load("hello, world!");
     u64 comma_ptr = string->load(",");
     u64 substring_index_ptr = string->offset(printing_ptr, comma_ptr);
@@ -1788,13 +1960,15 @@ RX_TEST_CASE(tests, test_print_string_pointer_free, .fixture = test_fixture) {
     string->free(printing_ptr);
     string->free(comma_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_offset_strcat, .fixture = test_fixture) {
+    pointer->init(8);
     u64 name_ptr = string->load("name");
     u64 at_ptr = string->load("@");
     string->strcat(name_ptr, at_ptr);
@@ -1822,13 +1996,15 @@ RX_TEST_CASE(tests, test_offset_strcat, .fixture = test_fixture) {
     string->free(name_ptr);
     string->free(at_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_file_read_invalid_type, .fixture = test_fixture) {
+    pointer->init(8);
 #ifndef USE_GC
     u64 list_ptr = list->alloc();
     u64 data_ptr = file->data(list_ptr);
@@ -1838,13 +2014,15 @@ RX_TEST_CASE(tests, test_file_read_invalid_type, .fixture = test_fixture) {
 #else
     u64 list_ptr = list->alloc();
     file->data(list_ptr);
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_load_open_match_last_unsafe_free, .fixture = test_fixture) {
+    pointer->init(8);
     u64 file_path_ptr = os->getcwd();
     u64 file_name_ptr = string->load("/all_english_words.txt//");
     string->strcat(file_path_ptr, file_name_ptr);
@@ -1865,13 +2043,15 @@ RX_TEST_CASE(tests, test_load_open_match_last_unsafe_free, .fixture = test_fixtu
 #ifndef USE_GC
     data->free(data_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_load_open_match_last_unsafe_free_unsuppported_calls, .fixture = test_fixture) {
+    pointer->init(8);
     u64 ptr1 = string->load("qwerty//u");
     u64 ptr2 = string->load("asdfghjkl");
     u64 pattern_ptr = string->load("/u");
@@ -1884,25 +2064,29 @@ RX_TEST_CASE(tests, test_load_open_match_last_unsafe_free_unsuppported_calls, .f
     string->free(ptr2);
     string->free(last_match_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_user, .fixture = test_fixture) {
+    pointer->init(8);
 #ifndef USE_GC
     u64 ptr1 = user->alloc();
     user->free(ptr1);
 #else
     user->alloc();
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixture) {
+    pointer->init(8);
     u64 file_path_ptr = os->getcwd();
     u64 file_name_ptr = string->load("/all_english_words.txt");
     string->strcat(file_path_ptr, file_name_ptr);
@@ -1933,12 +2117,14 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixtur
     string->free(file_name_ptr);
     string->free(file_path_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 RX_TEST_CASE(tests, test_load_load_match_last, .fixture = test_fixture) {
+    pointer->init(8);
     u64 str_ptr = string->load("Hello, world!");
     u64 ch_ptr = string->load("z");
     u64 last_match_ptr = string->offset(str_ptr, ch_ptr);
@@ -1948,13 +2134,16 @@ RX_TEST_CASE(tests, test_load_load_match_last, .fixture = test_fixture) {
     string->free(str_ptr);
     string->free(ch_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
+u64 _list_ptr;
+
 extern inline void source1(void) {
-    u64 file_path_ptr = pointer->pop();
+    u64 file_path_ptr = list->pop(_list_ptr);
     u64 file_name_ptr = string->load("input.txt");
     u64 pattern_ptr = string->load("/");
     u64 path_ptr = string->load("/");
@@ -2024,9 +2213,6 @@ extern inline void source2(void) {
     string->free(mode_ptr);
     string->free(file_name_ptr);
     string->free(file_path_ptr);
-#else
-    pointer->release();
-    pointer->gc();
 #endif
 }
 
@@ -2043,16 +2229,18 @@ int main(int argc, char** argv) {
     printf("---- acceptance test code\n");
 #endif
     pointer->init(DEFAULT_SIZE);
+    _list_ptr = list->alloc();
     u64 argv_ptr = string->load(argv[0]);
-    pointer->push(argv_ptr);
+    list->push(_list_ptr, argv_ptr);
     source1();
     source2();
+    list->free(_list_ptr);
 #ifndef USE_GC
     string->free(argv_ptr);
 #else
-    pointer->release();
     pointer->gc();
 #endif
+    pointer->release();
     pointer->destroy();
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- rexo unit test code\n");

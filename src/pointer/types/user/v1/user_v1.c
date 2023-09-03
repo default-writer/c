@@ -37,9 +37,9 @@ static u64 id = TYPE_NULL;
 const struct user_methods user_methods_definition;
 void user_type_init();
 
-/* definition */
 extern u64 pointer_vm_register_type(u64 id, const struct vm_type* type);
-extern struct pointer_data vm_pointer;
+
+/* definition */
 extern const struct vm_methods vm_methods_definition;
 extern const struct list list_micro_definition;
 extern const struct pointer_vm_methods pointer_vm_methods_definition;
@@ -48,7 +48,12 @@ extern const struct pointer_vm_methods pointer_vm_methods_definition;
 static const struct vm_methods* vm = &vm_methods_definition;
 static const struct list* list = &list_micro_definition;
 static const struct pointer_vm_methods* virtual = &pointer_vm_methods_definition;
+
+/* definition */
+extern struct pointer_data vm_pointer;
 static struct pointer_data* base = &vm_pointer;
+
+/* definition */
 static struct vm_type type_definition;
 static const struct vm_type* type = &type_definition;
 

@@ -23,7 +23,7 @@
  * SOFTWARE.
  *
  */
-#include "vm_v2.h"
+#include "test_vm_v2.h"
 #include "common/alloc.h"
 #include "list-micro/data.h"
 #include "playground/brain/brain.h"
@@ -133,6 +133,9 @@ RX_TEST_CASE(tests, test_load_copy, .fixture = test_fixture) {
 /* test init */
 RX_TEST_CASE(tests, test_load_push_peek_pop, .fixture = test_fixture) {
     u64 char_ptr = pointer->load("/");
+    u64 file_name_ptr = pointer->load("input.txt");
+    u64 file_mode_ptr = pointer->load("rb");
+    u64 file_data_ptr = file->file_alloc(file_name_ptr, file_mode_ptr);
     pointer->push(char_ptr);
     u64 peek_ptr = pointer->peek();
     u64 pop_ptr = pointer->pop();
@@ -140,10 +143,14 @@ RX_TEST_CASE(tests, test_load_push_peek_pop, .fixture = test_fixture) {
     RX_ASSERT(peek_ptr != 0);
     RX_ASSERT(pop_ptr != 0);
 #ifndef USE_GC
+    pointer->free(file_name_ptr);
+    pointer->free(file_mode_ptr);
+    pointer->free(file_data_ptr);
     pointer->free(char_ptr);
     pointer->free(peek_ptr);
     pointer->free(pop_ptr);
 #endif
+    file->file_free(file_data_ptr);
 }
 
 RX_TEST_CASE(tests, test_load_free_free, .fixture = test_fixture) {

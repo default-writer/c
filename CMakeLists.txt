@@ -300,7 +300,6 @@ set(LIB_STD_OBJECT1_SOURCE src/pointer/types/object/v1/object_v1.c)
 set(LIB_STD_OS1_SOURCE src/pointer/types/os/v1/os_v1.c)
 set(LIB_STD_TYPES1_SOURCE
     src/pointer/v1/pointer_v1.c
-    src/pointer/types/void/v1/void_v1.c
     src/pointer/types/data/v1/data_v1.c
     src/pointer/types/user/v1/user_v1.c
     src/pointer/types/string/v1/string_v1.c
@@ -329,8 +328,8 @@ set(TESTS_SRC_LIST tests/src/test_list/test_list.c)
 set(TESTS_SRC_LIST_MICRO tests/src/test_list-micro/test_list-micro.c)
 set(TESTS_SRC_LIST_ALLOC tests/src/test_list-alloc/test_list-alloc.c)
 set(TESTS_SRC_LIST_EXPERIMENTAL tests/src/test_list-experimental/test_list-experimental.c)
-set(TESTS_SRC_VM_V1 tests/src/vm/v1/vm_v1.c)
-set(TESTS_SRC_VM_V2 tests/src/vm/v2/vm_v2.c)
+set(TESTS_SRC_VM_V1 tests/src/test_vm/v1/test_vm_v1.c)
+set(TESTS_SRC_VM_V2 tests/src/test_vm/v2/test_vm_v2.c)
 set(TESTS_SRC_POINTER tests/src/test_pointer/test_pointer.c)
 
 # main
@@ -484,7 +483,7 @@ target_link_libraries(stl-linked-list PRIVATE list-common)
 target_link_libraries(c-substrings PRIVATE ctypes)
 
 # test
-target_link_libraries(test-pointer PRIVATE tests ctypes)
+target_link_libraries(test-pointer PRIVATE tests list-default ctypes tests-vm-v1 vm-v1)
 target_link_libraries(tests PRIVATE list-alloc list-parameters)
 target_link_libraries(tests-vm-v1 PRIVATE tests list-common list-micro list-pointer1)
 target_link_libraries(tests-vm-v2 PRIVATE tests list-common list-micro list-pointer2)
@@ -535,18 +534,15 @@ if(TARGETS)
 
     get_property(main_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
     get_property(test_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
-    get_property(c_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
 
     list(FILTER main_target_names INCLUDE REGEX "^main-")
     list(FILTER test_target_names INCLUDE REGEX "^test-")
-    list(FILTER test_target_names INCLUDE REGEX "^c-")
 
     string(REGEX REPLACE ";" " " main_target_names "${main_target_names}")
     string(REGEX REPLACE ";" " " test_target_names "${test_target_names}")
-    string(REGEX REPLACE ";" " " c_target_names "${c_target_names}")
 
     FILE(WRITE ${CMAKE_BINARY_DIR}/targets.txt
-        "${main_target_names} ${test_target_names} ${c_target_names}"
+        "${main_target_names} ${test_target_names}"
     )
 
     get_property(target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)

@@ -24,6 +24,7 @@
  *
  */
 #include "test_list.h"
+#include "list/v1/list_v1.h"
 
 extern const struct list_methods_v1 list_definition;
 
@@ -151,7 +152,7 @@ static void list_using(struct list_v1** current) {
 /* Data structure to use at the core of our fixture. */
 typedef struct test_data {
     struct list_v1* ctx;
-} * TEST_DATA;
+}* TEST_DATA;
 
 /* Initialize the data structure. Its allocation is handled by Rexo. */
 RX_SET_UP(test_set_up) {

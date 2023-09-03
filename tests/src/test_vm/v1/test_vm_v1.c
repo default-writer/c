@@ -23,9 +23,10 @@
  * SOFTWARE.
  *
  */
-#include "vm_v1.h"
+#include "test_vm_v1.h"
 #include "vm/v1/vm_v1.h"
 
+#include "pointer/types/data/v1/data_v1.h"
 #include "pointer/types/list/v1/list_v1.h"
 #include "pointer/types/user/v1/user_v1.h"
 #include "pointer/v1/pointer_v1.h"
@@ -178,10 +179,6 @@ RX_TEST_CASE(tests, test_vm_read_type_write_1_read_2, .fixture = test_fixture) {
  * -------------------------------------------------------- */
 
 /* definition */
-extern struct pointer_data* pointer_data_init(u64 size);
-extern void pointer_data_destroy(struct pointer_data** ctx);
-
-/* definition */
 extern const struct pointer_methods pointer_methods_definition;
 extern const struct list_methods list_methods_definition;
 extern const struct file_methods file_methods_definition;
@@ -191,7 +188,6 @@ extern const struct data_methods data_methods_definition;
 extern const struct object_methods object_methods_definition;
 extern const struct os_methods os_methods_definition;
 extern const struct string_pointer_methods string_pointer_methods_definition;
-extern const struct memory memory_definition;
 
 /* definition */
 static const struct pointer_methods* pointer = &pointer_methods_definition;
@@ -203,23 +199,15 @@ static const struct data_methods* data = &data_methods_definition;
 static const struct object_methods* object = &object_methods_definition;
 static const struct os_methods* os = &os_methods_definition;
 static const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
-static const struct memory* memory = &memory_definition;
 
 typedef struct test_pointer_data {
-    struct pointer_data* ctx;
 }* TEST_POINTER_DATA;
 
 RX_SET_UP(test_pointer_set_up) {
-    TEST_POINTER_DATA rx = (TEST_POINTER_DATA)RX_DATA;
-    struct pointer_data** ctx = &rx->ctx;
-    *ctx = pointer_data_init(8);
     return RX_SUCCESS;
 }
 
 RX_TEAR_DOWN(test_pointer_tear_down) {
-    TEST_POINTER_DATA rx = (TEST_POINTER_DATA)RX_DATA;
-    struct pointer_data** ctx = &rx->ctx;
-    pointer_data_destroy(ctx);
 }
 
 /* Define the fixture. */
@@ -227,31 +215,55 @@ RX_FIXTURE(test_pointer_fixture, TEST_POINTER_DATA, .set_up = test_pointer_set_u
 
 /* test init */
 RX_TEST_CASE(tests, test_list, .fixture = test_pointer_fixture) {
+    pointer->init(8);
     u64 list_ptr = list->alloc();
     list->free(list_ptr);
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_list_user, .fixture = test_pointer_fixture) {
+    pointer->init(8);
     u64 list_ptr = list->alloc();
     u64 user_ptr = user->alloc();
     list->push(list_ptr, user_ptr);
     user->free(user_ptr);
     list->free(list_ptr);
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_list_data, .fixture = test_pointer_fixture) {
+    pointer->init(8);
+    u64 list_ptr = list->alloc();
+    u64 data_ptr = data->alloc(1024);
+    list->push(list_ptr, data_ptr);
+    data->free(data_ptr);
+    list->free(list_ptr);
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_list_free_user_free, .fixture = test_pointer_fixture) {
+    pointer->init(8);
     u64 list_ptr = list->alloc();
     u64 user_ptr = user->alloc();
     list->push(list_ptr, user_ptr);
     list->free(list_ptr);
     user->free(user_ptr);
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_user_free_0, .fixture = test_pointer_fixture) {
+    pointer->init(8);
     user->free(0);
+    pointer->release();
+    pointer->destroy();
 }
 
 static int run(void) {

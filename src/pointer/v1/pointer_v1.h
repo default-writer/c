@@ -35,22 +35,20 @@
 enum type {
     /* value used for ephemeral type - null */
     TYPE_NULL = 0,
-    /* value used for void type - void */
-    TYPE_VOID = 1,
     /* value used for pointer type - ref */
-    TYPE_DATA = 2,
+    TYPE_DATA = 1,
     /* value used for string type - string */
-    TYPE_STRING = 3,
+    TYPE_STRING = 2,
     /* value used for string ref type - string ref */
-    TYPE_STRING_POINTER = 4,
+    TYPE_STRING_POINTER = 3,
     /* value used for file type - file */
-    TYPE_FILE = 5,
+    TYPE_FILE = 4,
     /* value used for list type - list */
-    TYPE_LIST = 6,
+    TYPE_LIST = 5,
     /* value used for object type - object */
-    TYPE_OBJECT = 7,
+    TYPE_OBJECT = 6,
     /* value used for user type - user (id: +0, +1, +2, +3, ...) */
-    TYPE_USER = 8
+    TYPE_USER = 7
 };
 
 struct vm_data;
@@ -66,7 +64,7 @@ struct pointer {
 };
 
 struct pointer_data {
-    struct list_data* list;
+    struct vm* vm;
 #ifdef USE_GC
     struct list_data* gc;
 #endif
@@ -83,9 +81,6 @@ struct pointer_methods {
     void (*init)(u64 size);
     void (*destroy)(void);
     void (*release)(void);
-    u64 (*peek)(void);
-    void (*push)(u64 ptr);
-    u64 (*pop)(void);
 #ifdef USE_VM_DEBUG_INFO
     void (*dump)(struct pointer* ptr);
     void (*dump_ref)(void** ptr);
@@ -94,8 +89,5 @@ struct pointer_methods {
     void (*gc)(void);
 #endif
 };
-
-struct pointer_data* pointer_data_init(u64 size);
-void pointer_data_destroy(struct pointer_data** ctx);
 
 #endif /* _POINTER_V1_H_ */

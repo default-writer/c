@@ -47,9 +47,6 @@ extern const struct memory memory_definition;
 static const struct memory* memory = &memory_definition;
 
 /* definition */
-extern struct pointer_data* pointer_data_init(u64 size);
-extern void pointer_data_destroy(struct pointer_data** ctx);
-
 extern const struct vm_methods vm_methods_definition;
 
 extern const struct hashtable hashtable_definition_v1;
@@ -74,19 +71,13 @@ static const struct os_methods* os = &os_methods_definition;
 
 typedef struct test_data {
     struct pointer_data* ctx;
-} * TEST_DATA;
+}* TEST_DATA;
 
 RX_SET_UP(test_set_up) {
-    TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct pointer_data** ctx = &rx->ctx;
-    *ctx = pointer_data_init(DEFAULT_SIZE);
     return RX_SUCCESS;
 }
 
 RX_TEAR_DOWN(test_tear_down) {
-    TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct pointer_data** ctx = &rx->ctx;
-    pointer_data_destroy(ctx);
 }
 
 /* Define the fixture. */
@@ -410,6 +401,7 @@ RX_TEST_CASE(tests, test_hashtable_alloc_set_get, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixture) {
+    pointer->init(8);
     hashtable->init(0xff);
     u64 file_path_ptr = os->getcwd();
     u64 file_name_ptr = string->load("/all_english_words.txt");
@@ -469,10 +461,13 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixtur
     string->free(file_name_ptr);
     string->free(file_path_ptr);
     hashtable->destroy();
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_list_push, .fixture = test_fixture) {
+    pointer->init(8);
     u64 list_ptr = list->alloc();
     RX_ASSERT(list_ptr != 0);
 #ifndef USE_GC
@@ -480,10 +475,13 @@ RX_TEST_CASE(tests, test_list_push, .fixture = test_fixture) {
 #else
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_list_size, .fixture = test_fixture) {
+    pointer->init(8);
     u64 list_ptr = list->alloc();
     u64 size = list->size(list_ptr);
     RX_ASSERT(list_ptr != 0);
@@ -493,10 +491,13 @@ RX_TEST_CASE(tests, test_list_size, .fixture = test_fixture) {
 #else
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_list_size_null, .fixture = test_fixture) {
+    pointer->init(8);
     u64 list_ptr = data->alloc(0);
     u64 size = list->size(list_ptr);
     data->free(list_ptr);
@@ -507,23 +508,32 @@ RX_TEST_CASE(tests, test_list_size_null, .fixture = test_fixture) {
 #else
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_list_size_0, .fixture = test_fixture) {
+    pointer->init(8);
     u64 size = list->size(0);
     RX_ASSERT(size == 0);
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_free, .fixture = test_fixture) {
+    pointer->init(8);
     u64 list_ptr = list->alloc();
     list->free(list_ptr);
     list->free(list_ptr);
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_improper_use_of_different_calls, .fixture = test_fixture) {
+    pointer->init(8);
     u64 idx0 = 0;
     u64 idx1 = 0;
     u64 idx2 = 0;
@@ -615,6 +625,8 @@ RX_TEST_CASE(tests, test_improper_use_of_different_calls, .fixture = test_fixtur
 #ifdef USE_GC
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
     RX_ASSERT(idx0 == 0);
     RX_ASSERT(idx1 == 0);
     RX_ASSERT(idx2 == 0);
@@ -627,6 +639,7 @@ RX_TEST_CASE(tests, test_improper_use_of_different_calls, .fixture = test_fixtur
 
 /* test init */
 RX_TEST_CASE(tests, test_alloc_free, .fixture = test_fixture) {
+    pointer->init(8);
     u64 list_ptr = list->alloc();
     u64 pattern_ptr = string->load("\0");
     u64 list_size = list->size(list_ptr);
@@ -640,6 +653,8 @@ RX_TEST_CASE(tests, test_alloc_free, .fixture = test_fixture) {
 #else
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
     RX_ASSERT(list_size == 0);
     RX_ASSERT(ptr_size == 0);
     RX_ASSERT(null_size == 0);
@@ -647,6 +662,7 @@ RX_TEST_CASE(tests, test_alloc_free, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests, test_alloc_free_list, .fixture = test_fixture) {
+    pointer->init(8);
     u64 list_ptr = list->alloc();
     u64 size = list->size(list_ptr);
     RX_ASSERT(size == 0);
@@ -658,10 +674,13 @@ RX_TEST_CASE(tests, test_alloc_free_list, .fixture = test_fixture) {
 #ifdef USE_GC
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable_default_hash, .fixture = test_fixture) {
+    pointer->init(8);
     hashtable->init(0x3);
     hashtable->setup(murmurhash3);
     u64 file_path_ptr = os->getcwd();
@@ -709,14 +728,21 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable_default_hash, .fixture 
         list->free(list_ptr);
         data->free(data_ptr);
     }
+    hashtable->destroy();
+#ifndef USE_GC
     string->free(mode_ptr);
     string->free(file_name_ptr);
     string->free(file_path_ptr);
-    hashtable->destroy();
+#else
+    pointer->gc();
+#endif
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable_murmurhash3_hash, .fixture = test_fixture) {
+    pointer->init(8);
     u64 file_path_ptr = os->getcwd();
     u64 file_name_ptr = string->load("/all_english_words.txt");
     string->strcat(file_path_ptr, file_name_ptr);
@@ -749,12 +775,16 @@ RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable_murmurhash3_hash, .fixt
     string->free(mode_ptr);
     string->free(file_name_ptr);
     string->free(file_path_ptr);
+#else
+    pointer->gc();
 #endif
     pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_hashtable_alloc_set_get_count, .fixture = test_fixture) {
+    pointer->init(8);
     hashtable->init(HASHTABLE_SIZE);
     char* key1 = memory->alloc(2);
     char* key2 = memory->alloc(2);
@@ -796,10 +826,13 @@ RX_TEST_CASE(tests, test_hashtable_alloc_set_get_count, .fixture = test_fixture)
     memory->free(value1, 2);
     memory->free(value2, 2);
     memory->free(value3, 2);
+    pointer->release();
+    pointer->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_hashtable_alloc_set_get_default_count, .fixture = test_fixture) {
+    pointer->init(8);
     hashtable->init(HASHTABLE_SIZE);
     hashtable->setup(0);
     char* key1 = memory->alloc(2);
@@ -842,6 +875,8 @@ RX_TEST_CASE(tests, test_hashtable_alloc_set_get_default_count, .fixture = test_
     memory->free(value1, 2);
     memory->free(value2, 2);
     memory->free(value3, 2);
+    pointer->release();
+    pointer->destroy();
 }
 
 int main(int argc, char** argv) {
