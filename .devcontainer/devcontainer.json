@@ -139,7 +139,8 @@
 		"pomber.git-file-history",
 		"GuodongSun.vscode-git-cruise",
 		"huizhou.githd",
-		"saber2pr.file-git-history"
+		"saber2pr.file-git-history",
+		"rogalmic.bash-debug"
 	]
     }
   }

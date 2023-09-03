@@ -291,7 +291,8 @@
 			"huizhou.githd",
 			"exelord.git-commits",
 			"donjayamanne.githistory",
-			"guodongsun.vscode-git-cruise"
+			"guodongsun.vscode-git-cruise",
+			"rogalmic.bash-debug"
 		]
 	}
 }

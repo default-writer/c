@@ -91,10 +91,18 @@ RX_TEST_CASE(tests, test_load_0, .fixture = test_fixture) {
 /* test init */
 RX_TEST_CASE(tests, test_load_empty, .fixture = test_fixture) {
     u64 empty_ptr = pointer->load("");
+    u64 file_name_ptr = pointer->load("input.txt");
+    u64 file_mode_ptr = pointer->load("rb");
+    u64 file_data_ptr = file->file_alloc(file_name_ptr, file_mode_ptr);
     RX_ASSERT(empty_ptr != 0);
 #ifndef USE_GC
+    pointer->free(0);
+    pointer->free(file_data_ptr);
     pointer->free(empty_ptr);
+    pointer->free(file_name_ptr);
+    pointer->free(file_mode_ptr);
 #endif
+    file->file_free(file_data_ptr);
 }
 
 /* test init */
