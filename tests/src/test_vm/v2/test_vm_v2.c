@@ -24,6 +24,7 @@
  *
  */
 #include "test_vm_v2.h"
+
 #include "common/alloc.h"
 #include "list-micro/data.h"
 #include "playground/brain/brain.h"
@@ -31,9 +32,7 @@
 #include "pointer/v2/pointer_v2.h"
 #include "vm/v2/vm_v2.h"
 
-#define RXP_DEBUG_TESTS
-
-#include "../.deps/rexo/include/rexo.h"
+#include "../tests/src/test.h"
 
 #define DEFAULT_SIZE 0x100
 
@@ -88,18 +87,18 @@ RX_TEAR_DOWN(test_tear_down) {
 RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tear_down);
 
 /* test init */
-RX_TEST_CASE(tests, test_print_0, .fixture = test_fixture) {
+RX_TEST_CASE(tests_v2, test_print_0, .fixture = test_fixture) {
     pointer->printf(0);
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_load_0, .fixture = test_fixture) {
+RX_TEST_CASE(tests_v2, test_load_0, .fixture = test_fixture) {
     u64 empty_ptr = pointer->load(0);
     RX_ASSERT(empty_ptr == 0);
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_load_empty, .fixture = test_fixture) {
+RX_TEST_CASE(tests_v2, test_load_empty, .fixture = test_fixture) {
     u64 empty_ptr = pointer->load("");
     RX_ASSERT(empty_ptr != 0);
 #ifndef USE_GC
@@ -108,7 +107,7 @@ RX_TEST_CASE(tests, test_load_empty, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_print_load_empty, .fixture = test_fixture) {
+RX_TEST_CASE(tests_v2, test_print_load_empty, .fixture = test_fixture) {
     u64 empty_ptr = pointer->load("");
     pointer->printf(empty_ptr);
     RX_ASSERT(empty_ptr != 0);
@@ -118,7 +117,7 @@ RX_TEST_CASE(tests, test_print_load_empty, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_load_copy, .fixture = test_fixture) {
+RX_TEST_CASE(tests_v2, test_load_copy, .fixture = test_fixture) {
     u64 char_ptr = pointer->load("/");
     u64 copy_ptr = pointer->copy(char_ptr);
     RX_ASSERT(char_ptr != 0);
@@ -131,7 +130,7 @@ RX_TEST_CASE(tests, test_load_copy, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_load_push_peek_pop, .fixture = test_fixture) {
+RX_TEST_CASE(tests_v2, test_load_push_peek_pop, .fixture = test_fixture) {
     u64 char_ptr = pointer->load("/");
     u64 file_name_ptr = pointer->load("input.txt");
     u64 file_mode_ptr = pointer->load("rb");
@@ -153,7 +152,7 @@ RX_TEST_CASE(tests, test_load_push_peek_pop, .fixture = test_fixture) {
     file->file_free(file_data_ptr);
 }
 
-RX_TEST_CASE(tests, test_load_free_free, .fixture = test_fixture) {
+RX_TEST_CASE(tests_v2, test_load_free_free, .fixture = test_fixture) {
     u64 char_ptr = pointer->load("/");
     RX_ASSERT(char_ptr != 0);
 #ifndef USE_GC
@@ -163,7 +162,7 @@ RX_TEST_CASE(tests, test_load_free_free, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_strcat_load_alloc, .fixture = test_fixture) {
+RX_TEST_CASE(tests_v2, test_strcat_load_alloc, .fixture = test_fixture) {
     u64 char_ptr = pointer->load("/");
     u64 pattern_ptr = pointer->alloc();
     pointer->strcat(pattern_ptr, char_ptr);
@@ -176,7 +175,7 @@ RX_TEST_CASE(tests, test_strcat_load_alloc, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_push_pop_peek, .fixture = test_fixture) {
+RX_TEST_CASE(tests_v2, test_push_pop_peek, .fixture = test_fixture) {
     u64 list_ptr = list->alloc();
     pointer->push(0);
     u64 value_ptr1 = pointer->peek();
@@ -190,7 +189,7 @@ RX_TEST_CASE(tests, test_push_pop_peek, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_api_0, .fixture = test_fixture) {
+RX_TEST_CASE(tests_v2, test_api_0, .fixture = test_fixture) {
     u64 value_ptr1 = pointer->peek();
     u64 value_ptr2 = pointer->pop();
     u64 value_ptr3 = pointer->copy(0);
@@ -200,7 +199,7 @@ RX_TEST_CASE(tests, test_api_0, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_pointer_unsafe, .fixture = test_fixture) {
+RX_TEST_CASE(tests_v2, test_pointer_unsafe, .fixture = test_fixture) {
     u64 zero_ptr = pointer->alloc();
     u64 data_ptr1 = pointer->alloc();
 
@@ -238,7 +237,7 @@ RX_TEST_CASE(tests, test_pointer_unsafe, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
+RX_TEST_CASE(tests_v2, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct pointer_data* ctx = rx->ctx;
 
@@ -483,7 +482,7 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_strcat_alloc_load, .fixture = test_fixture) {
+RX_TEST_CASE(tests_v2, test_strcat_alloc_load, .fixture = test_fixture) {
     u64 zero_ptr = pointer->alloc();
     u64 char_ptr = pointer->load("/");
     pointer->strcat(zero_ptr, char_ptr);
@@ -496,7 +495,7 @@ RX_TEST_CASE(tests, test_strcat_alloc_load, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_strcat_load_alloc_alloc, .fixture = test_fixture) {
+RX_TEST_CASE(tests_v2, test_strcat_load_alloc_alloc, .fixture = test_fixture) {
     u64 char_ptr = pointer->load("/");
     u64 pattern_ptr = pointer->alloc();
     u64 empty_ptr = pointer->alloc();
@@ -513,7 +512,7 @@ RX_TEST_CASE(tests, test_strcat_load_alloc_alloc, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_strcat_load_load, .fixture = test_fixture) {
+RX_TEST_CASE(tests_v2, test_strcat_load_load, .fixture = test_fixture) {
     u64 char_ptr = pointer->load("/");
     u64 pattern_ptr = pointer->load("*");
     pointer->strcat(pattern_ptr, char_ptr);
@@ -526,7 +525,7 @@ RX_TEST_CASE(tests, test_strcat_load_load, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_strcpy_load_alloc, .fixture = test_fixture) {
+RX_TEST_CASE(tests_v2, test_strcpy_load_alloc, .fixture = test_fixture) {
     u64 pattern_ptr = pointer->load("/");
     u64 empty_ptr = pointer->alloc();
     pointer->strcpy(empty_ptr, pattern_ptr);
@@ -539,7 +538,7 @@ RX_TEST_CASE(tests, test_strcpy_load_alloc, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_strcpy_load_load, .fixture = test_fixture) {
+RX_TEST_CASE(tests_v2, test_strcpy_load_load, .fixture = test_fixture) {
     u64 char_ptr = pointer->load("/input.txt");
     u64 pattern_ptr = pointer->load("*");
     pointer->strcpy(pattern_ptr, char_ptr);
@@ -552,7 +551,7 @@ RX_TEST_CASE(tests, test_strcpy_load_load, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_load_open_file_close_file, .fixture = test_fixture) {
+RX_TEST_CASE(tests_v2, test_load_open_file_close_file, .fixture = test_fixture) {
     u64 file_path_ptr = pointer->getcwd();
     u64 file_name_ptr = pointer->load("/nonexistent.txt");
     pointer->strcat(file_path_ptr, file_name_ptr);
@@ -574,7 +573,7 @@ RX_TEST_CASE(tests, test_load_open_file_close_file, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_file_read_invalid_type, .fixture = test_fixture) {
+RX_TEST_CASE(tests_v2, test_file_read_invalid_type, .fixture = test_fixture) {
     u64 list_ptr = list->alloc();
     u64 data_ptr = file->file_read(list_ptr);
     list->free(data_ptr);
@@ -586,7 +585,7 @@ RX_TEST_CASE(tests, test_file_read_invalid_type, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_load_open_match_last_unsafe_free, .fixture = test_fixture) {
+RX_TEST_CASE(tests_v2, test_load_open_match_last_unsafe_free, .fixture = test_fixture) {
     u64 file_path_ptr = pointer->getcwd();
     u64 file_name_ptr = pointer->load("/all_english_words.txt//");
     pointer->strcat(file_path_ptr, file_name_ptr);
@@ -610,7 +609,7 @@ RX_TEST_CASE(tests, test_load_open_match_last_unsafe_free, .fixture = test_fixtu
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_load_open_file_unsafe_hashtable, .fixture = test_fixture) {
+RX_TEST_CASE(tests_v2, test_load_open_file_unsafe_hashtable, .fixture = test_fixture) {
     u64 file_path_ptr = pointer->getcwd();
     u64 file_name_ptr = pointer->load("/all_english_words.txt");
     pointer->strcat(file_path_ptr, file_name_ptr);

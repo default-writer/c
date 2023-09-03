@@ -23,12 +23,15 @@
  * SOFTWARE.
  *
  */
+#ifndef _REXO_TESTS_
+#define _REXO_TESTS_
+#define RXP_DEBUG_TESTS
+#include "../.deps/rexo/include/rexo.h"
+#endif
+
 #include "common/alloc.h"
 #include "playground/class/v1/class_v1.h"
 #include "playground/list/v1/list_v1.h"
-#define RXP_DEBUG_TESTS
-
-#include "../.deps/rexo/include/rexo.h"
 
 #ifdef USE_MEMORY_ALLOC
 #include "playground/memory/memory.h"

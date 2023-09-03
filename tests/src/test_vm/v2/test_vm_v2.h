@@ -30,6 +30,4 @@
 #include "pointer/v2/pointer_v2.h"
 #include "vm/v2/vm_v2.h"
 
-#include "../tests/src/test.h"
-
 #endif /* _TESTS_SRC_VM_V2_H_ */

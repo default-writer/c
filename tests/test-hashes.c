@@ -23,6 +23,11 @@
  * SOFTWARE.
  *
  */
+#ifndef _REXO_TESTS_
+#define _REXO_TESTS_
+#define RXP_DEBUG_TESTS
+#include "../.deps/rexo/include/rexo.h"
+#endif
 
 #include <limits.h>
 #include <stdint.h>
@@ -32,14 +37,10 @@
 
 #define SEED 0x12345678
 
-#define RXP_DEBUG_TESTS
-
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wsign-conversion"
 #pragma GCC diagnostic ignored "-Wunknown-pragmas"
 #pragma GCC diagnostic ignored "-Wunused-parameter"
-
-#include "../.deps/rexo/include/rexo.h"
 
 void get_hash_from_file(int hash_id);
 
@@ -52,7 +53,7 @@ struct hash_functions {
 /* Data structure to use at the core of our fixture. */
 typedef struct test_data {
     struct hash_functions* ctx;
-} * TEST_DATA;
+}* TEST_DATA;
 
 RX_SET_UP(test_set_up) {
     return RX_SUCCESS;

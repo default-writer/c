@@ -26,9 +26,11 @@
 #ifndef _TESTS_COMMON_H_
 #define _TESTS_COMMON_H_
 
+#ifndef _REXO_TESTS_
+#define _REXO_TESTS_
 #define RXP_DEBUG_TESTS
-
 #include "../.deps/rexo/include/rexo.h"
+#endif
 
 struct test_suite {
     int (*run)(void);

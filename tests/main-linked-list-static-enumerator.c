@@ -23,9 +23,11 @@
  * SOFTWARE.
  *
  */
+#ifndef _REXO_TESTS_
+#define _REXO_TESTS_
 #define RXP_DEBUG_TESTS
-
 #include "../.deps/rexo/include/rexo.h"
+#endif
 
 #include "stl/linked_list.h"
 #include "stl/linked_list_static_enumerator.h"

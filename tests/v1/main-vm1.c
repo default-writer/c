@@ -35,6 +35,8 @@
 #include "pointer/types/string_pointer/v1/string_pointer_v1.h"
 #include "pointer/v1/pointer_v1.h"
 
+#define RXP_DEBUG_TESTS
+
 #include "../tests/src/test.h"
 
 extern const struct test_suite vm_v1_test_suite_definition;

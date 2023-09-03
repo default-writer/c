@@ -171,7 +171,7 @@ static void list_using(struct list_data** current) {
 /* Data structure to use at the core of our fixture. */
 typedef struct test_data {
     struct list_data* ctx;
-} * TEST_DATA;
+}* TEST_DATA;
 
 /* Initialize the data structure. Its allocation is handled by Rexo. */
 RX_SET_UP(test_set_up) {

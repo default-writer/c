@@ -23,6 +23,12 @@
  * SOFTWARE.
  *
  */
+#ifndef _REXO_TESTS_
+#define _REXO_TESTS_
+#define RXP_DEBUG_TESTS
+#include "../.deps/rexo/include/rexo.h"
+#endif
+
 #include "common/alloc.h"
 #include "list-micro/data.h"
 #include "playground/hashtable/v1/hashtable_v1.h"
@@ -34,10 +40,6 @@
 #include "pointer/types/string/v1/string_v1.h"
 #include "pointer/types/string_pointer/v1/string_pointer_v1.h"
 #include "pointer/v1/pointer_v1.h"
-
-#define RXP_DEBUG_TESTS
-
-#include "../.deps/rexo/include/rexo.h"
 
 #define HASHTABLE_SIZE 101
 #define DEFAULT_SIZE 0x100

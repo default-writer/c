@@ -23,12 +23,15 @@
  * SOFTWARE.
  *
  */
+#ifndef _REXO_TESTS_
+#define _REXO_TESTS_
+#define RXP_DEBUG_TESTS
+#include "../.deps/rexo/include/rexo.h"
+#endif
+
 #include "common/alloc.h"
 #include "playground/class/v2/class_v2.h"
 #include "playground/list/v2/list_v2.h"
-#define RXP_DEBUG_TESTS
-
-#include "../.deps/rexo/include/rexo.h"
 
 #define DEFAULT_SIZE 0xffff /* 64K bytes */
 
