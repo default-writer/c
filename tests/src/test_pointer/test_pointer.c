@@ -71,15 +71,15 @@ extern const struct os_methods os_methods_definition;
 extern const struct string_pointer_methods string_pointer_methods_definition;
 
 /* definition */
-const struct pointer_methods* pointer = &pointer_methods_definition;
-const struct list_methods* list = &list_methods_definition;
-const struct file_methods* file = &file_methods_definition;
-const struct string_methods* string = &string_methods_definition;
-const struct user_methods* user = &user_methods_definition;
-const struct data_methods* data = &data_methods_definition;
-const struct object_methods* object = &object_methods_definition;
-const struct os_methods* os = &os_methods_definition;
-const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
+static const struct pointer_methods* pointer = &pointer_methods_definition;
+static const struct list_methods* list = &list_methods_definition;
+static const struct file_methods* file = &file_methods_definition;
+static const struct string_methods* string = &string_methods_definition;
+static const struct user_methods* user = &user_methods_definition;
+static const struct data_methods* data = &data_methods_definition;
+static const struct object_methods* object = &object_methods_definition;
+static const struct os_methods* os = &os_methods_definition;
+static const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
 
 /* Data structure to use at the core of our fixture. */
 typedef struct test_data {

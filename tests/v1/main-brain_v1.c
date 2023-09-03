@@ -47,12 +47,14 @@ extern const struct test_suite list_alloc_test_suite_definition;
 extern const struct test_suite list_micro_test_suite_definition;
 extern const struct test_suite list_test_suite_definition;
 extern const struct test_suite vm_v1_test_suite_definition;
+extern const struct test_suite pointer_test_suite_definition;
 
 /* definition */
 static const struct test_suite* list_alloc_tests = &list_alloc_test_suite_definition;
 static const struct test_suite* list_micro_tests = &list_micro_test_suite_definition;
 static const struct test_suite* list_tests = &list_test_suite_definition;
 static const struct test_suite* vm_v1_tests = &vm_v1_test_suite_definition;
+static const struct test_suite* pointer_tests = &pointer_test_suite_definition;
 
 /* definition */
 extern const struct vm_methods vm_methods_definition;
@@ -2222,6 +2224,7 @@ int main(int argc, char** argv) {
     TEST_RUN(micro, list_micro_tests);
     TEST_RUN(tests, list_tests);
     TEST_RUN(vm_v1, vm_v1_tests);
+    TEST_RUN(pointer_v1, pointer_tests);
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- acceptance test code\n");
 #endif
@@ -2248,5 +2251,5 @@ int main(int argc, char** argv) {
 #ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();
 #endif
-    return alloc | tests | micro | vm_v1 | result;
+    return alloc | tests | micro | vm_v1 | pointer_v1 | result;
 }
