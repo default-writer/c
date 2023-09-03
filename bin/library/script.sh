@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-set -e
-
+if [[ "${BASHOPTS}" != *extdebug* ]]; then
+    set -e
+fi
 
 function get_stack () {
    STACK=""
@@ -25,8 +26,9 @@ err_report() {
     exit 8
 }
 
-trap 'err_report $LINENO' ERR
-
+if [[ "${BASHOPTS}" != *extdebug* ]]; then
+    trap 'err_report $LINENO' ERR
+fi
 
 function help() {
     local source=$0

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-set -e
-
+if [[ "${BASHOPTS}" != *extdebug* ]]; then
+    set -e
+fi
 
 export LCOV_PATH=$(which lcov)
 export GENHTML_PATH==$(which genhtml)

@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
-set -e
+if [[ "${BASHOPTS}" != *extdebug* ]]; then
+    set -e
+fi
 
-# https://stackoverflow.com/questions/22009364/is-there-a-try-catch-command-in-bash
+# echo https://stackoverflow.com/questions/22009364/is-there-a-try-catch-command-in-bash
 
 function get_stack () {
    STACK=""
@@ -26,7 +28,9 @@ err_report() {
     exit 8
 }
 
-trap 'err_report $LINENO' ERR
+if [[ "${BASHOPTS}" != *extdebug* ]]; then
+    trap 'err_report $LINENO' ERR
+fi
 
 function try()
 {
