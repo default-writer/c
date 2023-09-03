@@ -206,7 +206,7 @@ for directory in ${directories[@]}; do
     for file in ${files[@]}; do
         targets=( $(get-source-targets ${source}) )
         for target in ${targets[@]}; do
-            cp "${file}" "${pwd}/coverage/${target}.info"
+            cp "${file}" "${pwd}/coverage/${directory}-${source}.info"
         done
     done
 done
