@@ -2193,6 +2193,189 @@ RX_TEST_CASE(pointer_tests, test_pointer_strings, .fixture = test_fixture) {
 #endif
 }
 
+/* test init */
+RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_0_0, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 error_ptr = string->lessthan(0, 0);
+    RX_ASSERT(error_ptr == 0);
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_0_1, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 error_ptr = string->lessthan(0, 1);
+    RX_ASSERT(error_ptr == 0);
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_1_0, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 quantum_str_ptr = string->load("");
+    u64 error_ptr = string->lessthan(1, 0);
+    RX_ASSERT(error_ptr == 0);
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_1_2, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 quantum_str_ptr1 = string->load("a");
+    u64 quantum_str_ptr2 = string->load("b");
+    u64 error_ptr = string->lessthan(1, 2);
+    RX_ASSERT(error_ptr == 0);
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_1_3, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 quantum_str_ptr1 = string->load("a");
+    u64 quantum_str_ptr2 = string->load("b");
+    u64 error_ptr = string->lessthan(1, 2);
+    RX_ASSERT(error_ptr == 0);
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_2_1, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 quantum_str_ptr1 = string->load("a");
+    u64 quantum_str_ptr2 = string->load("b");
+    u64 error_ptr = string->lessthan(2, 1);
+    RX_ASSERT(error_ptr == 0);
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_0_0, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 error_ptr = string->greaterthan(0, 0);
+    RX_ASSERT(error_ptr == 0);
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_0_1, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 error_ptr = string->greaterthan(0, 1);
+    RX_ASSERT(error_ptr == 0);
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_1_0, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 quantum_str_ptr = string->load("");
+    u64 error_ptr = string->greaterthan(1, 0);
+    RX_ASSERT(error_ptr == 0);
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_1_2, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 quantum_str_ptr1 = string->load("a");
+    u64 quantum_str_ptr2 = string->load("b");
+    u64 error_ptr = string->greaterthan(1, 2);
+    RX_ASSERT(error_ptr == 0);
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_1_3, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 quantum_str_ptr1 = string->load("a");
+    u64 quantum_str_ptr2 = string->load("b");
+    u64 error_ptr = string->greaterthan(1, 3);
+    RX_ASSERT(error_ptr == 0);
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_2_1, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 quantum_str_ptr1 = string->load("a");
+    u64 quantum_str_ptr2 = string->load("b");
+    u64 error_ptr = string->greaterthan(2, 1);
+    RX_ASSERT(error_ptr == 0);
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(pointer_tests, test_pointer_string_equals_0_0, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 error_ptr = string->equals(0, 0);
+    RX_ASSERT(error_ptr == 0);
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(pointer_tests, test_pointer_string_equals_0_1, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 error_ptr = string->equals(0, 1);
+    RX_ASSERT(error_ptr == 0);
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(pointer_tests, test_pointer_string_equals_1_0, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 quantum_str_ptr = string->load("");
+    u64 error_ptr = string->equals(1, 0);
+    RX_ASSERT(error_ptr == 0);
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(pointer_tests, test_pointer_string_equals_1_2, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 quantum_str_ptr1 = string->load("a");
+    u64 quantum_str_ptr2 = string->load("b");
+    u64 error_ptr = string->equals(1, 2);
+    RX_ASSERT(error_ptr == 0);
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(pointer_tests, test_pointer_string_equals_1_3, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 quantum_str_ptr1 = string->load("a");
+    u64 quantum_str_ptr2 = string->load("b");
+    u64 error_ptr = string->equals(1, 3);
+    RX_ASSERT(error_ptr == 0);
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(pointer_tests, test_pointer_string_equals_2_1, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 quantum_str_ptr1 = string->load("a");
+    u64 quantum_str_ptr2 = string->load("b");
+    u64 error_ptr = string->equals(2, 1);
+    RX_ASSERT(error_ptr == 0);
+    pointer->release();
+    pointer->destroy();
+}
+
 static void parse_text(u64 text_string_ptr) {
     u64 gc_ptr = list->alloc();
     u64 text_size = string->size(text_string_ptr);
