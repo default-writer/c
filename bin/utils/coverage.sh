@@ -211,7 +211,7 @@ ${cmake} \
 
 for target in ${targets[@]}; do
     echo building ${target}
-    echo options "$(cmake-options | xargs -n1 | sort -u | xargs)"
+    echo options "$(cmake-options)"
     if [[ "${silent}" == "--silent" ]]; then
         ${cmake} --build "${build}" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
     else

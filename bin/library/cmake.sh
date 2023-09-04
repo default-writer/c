@@ -45,7 +45,6 @@ function get-targets() {
     local cmake
     local target
     local array
-    local sources
 
     if [[ ! -d "${pwd}/config" ]]; then
         exec 2>&1 >/dev/null
@@ -72,9 +71,7 @@ function get-targets() {
         done
     fi
 
-    sources=$(echo "${array[@]}" | xargs -n1 | sort -u | xargs)
-
-    printf '%s\n' "${sources[@]}"
+    printf '%s\n' ${array[@]} | cat -n | sort -uk2 | sort -nk1 | cut -f2-
 }
 
 function search() {
@@ -84,7 +81,7 @@ function search() {
     local source
     source=$1
     target_src=$(sed -n "s#target_link_libraries(\([^ ]*\) .*${source}.*)#\1#p" CMakeLists.txt)
-    target_dest=$(sed -n "s#target_link_libraries(${source}* .* \(.*\))#\1#p" CMakeLists.txt)
+    target_dest=$(sed -n "s#target_link_libraries(${source}* \w* \(.*\))#\1#p" CMakeLists.txt)
     if [[ ! "${target_dest[@]}" == "" ]]; then
         for target_link in "${target_dest[@]}"; do
             search ${target_link}
@@ -120,8 +117,8 @@ function get-cmake-targets() {
         array+=( ${lib[@]} )
         array+=( ${exe[@]} )
 
-        sources=$(echo "${array[@]}" | xargs -n1 | sort -u | xargs)
-
+        sources=$(echo "$(printf '%s\n' ${array[@]} | cat -n | sort -uk2 | sort -nk1 | cut -f2-)")
+                        
         for source in ${sources[@]}; do
             if [[ " ${targets[*]} " == *" ${source} "* ]]; then
                 printf '%s\n' "${source[@]}"
@@ -138,7 +135,6 @@ function get-source-targets() {
     local array
     local target
     local source
-    local sources
     local link
     local linked_targets
     local line
@@ -184,16 +180,14 @@ function get-source-targets() {
                     if [[ "${source}" == "${line}" ]]; then
                         link=$(basename $(dirname "${file}"))
                         linked_targets=$(get-linked-targets ${link})
-                        array+=( $(echo "${link} ${linked_targets[@]}") )
+                        array+=( $(echo ${link} ${linked_targets[@]}) )
                     fi
                 done <  $file
             done
         done
     fi
 
-    sources=$(echo "${array[@]}" | xargs -n1 | sort -u | xargs)
-
-    printf '%s\n' "${sources[@]}"
+    printf '%s\n' ${array[@]} | cat -n | sort -uk2 | sort -nk1 | cut -f2-
 }
 
 function get-options() {

@@ -10,10 +10,10 @@
       "name": "bash-debug",
       "terminalKind": "integrated",
       "cwd": "${workspaceFolder}",
-      "program": "./bin/coverage.sh",
+      "program": "./bin/src.sh",
       "args": [
         "--target",
-        "main-brain2"
+        "tests/v1/main-brain_v1.c"
       ]
     },
     {

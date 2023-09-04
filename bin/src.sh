@@ -171,15 +171,26 @@ fi
 for linked_target in ${targets[@]}; do
     case ${linked_target} in
         c-*) ;& main-*) ;& test-*)
-            if [[ " ${targets[*]} " == *" ${linked_target} "* ]]; then
-                ${pwd}/bin/coverage.sh --target ${linked_target} ${opts[@]}
-            fi
             ;;
         *)
             ${pwd}/bin/build.sh --target ${linked_target} ${opts[@]}
             ;;
     esac
 done
+
+
+for linked_target in ${targets[@]}; do
+    case ${linked_target} in
+        c-*) ;& main-*) ;& test-*)
+            if [[ " ${targets[*]} " == *" ${linked_target} "* ]]; then
+                ${pwd}/bin/coverage.sh --target ${linked_target} ${opts[@]}
+            fi
+            ;;
+        *)
+            ;;
+    esac
+done
+
 
 files=$(find "${pwd}/coverage" -type f -name "*.info" -exec echo {} \;)
 if [[ ! "${files[@]}" == "" ]]; then
