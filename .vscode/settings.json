@@ -72,6 +72,14 @@
       "command": "disasexpl.show"
     },
     {
+      "text": ".coverage",
+      "tooltip": "Toggle code coverage",
+      "alignment": "right",
+      "priority": 1100,
+      "id": "statusbar.coverage-gutters.toggleCoverage",
+      "command": "coverage-gutters.toggleCoverage"
+    },
+    {
       "text": ".c",
       "tooltip": "Toggle code coverage OFF",
       "alignment": "right",

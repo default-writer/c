@@ -45,6 +45,14 @@
 				"command": "disasexpl.show"
 			},
 			{
+				"text": ".coverage",
+				"tooltip": "Toggle code coverage",
+				"alignment": "right",
+				"priority": 1100,
+				"id": "statusbar.coverage-gutters.toggleCoverage",
+				"command": "coverage-gutters.toggleCoverage"
+			},
+			{
 				"text": ".c",
 				"tooltip": "Toggle code coverage OFF",
 				"alignment": "right",
@@ -283,7 +291,13 @@
 		"koverage.coverageCommand": "bash -e /home/user/c/bin/coverage.sh --all --clean",
 		"koverage.coverageFileNames": [
 			"lcov.info"
-		]
+		],
+		"coverage-gutters.coverageFileNames": [
+			"lcov.info"
+		],
+		"terminal.integrated.scrollback": 65536,
+		"coverage-gutters.customizable.status-bar-toggler-watchCoverageAndVisibleEditors-enabled": true,
+		"coverage-gutters.showLineCoverage": true
 	},
 	"extensions": {
 		"recommendations": [
