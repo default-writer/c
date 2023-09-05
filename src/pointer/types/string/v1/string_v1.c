@@ -818,7 +818,7 @@ static u64 string_strcmp(u64 src, u64 dest) {
         return 0;
     }
     struct pointer* dest_ptr = vm->read(dest);
-    if (src_ptr == 0) {
+    if (dest_ptr == 0) {
         return 0;
     }
     u64 dest_size = 0;
