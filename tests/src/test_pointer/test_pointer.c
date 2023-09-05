@@ -2292,7 +2292,6 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_a_string_free, .fixture
     pointer->destroy();
 }
 
-
 /* test init */
 RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_string_free_b, .fixture = test_fixture) {
     pointer->init(8);

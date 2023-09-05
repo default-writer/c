@@ -1,15 +1,30 @@
 version: 0.1
 cli:
-  version: 1.13.0
+  version: 1.14.2
 plugins:
   sources:
     - id: trunk
-      ref: v1.1.0
+      ref: v1.2.1
       uri: https://github.com/trunk-io/plugins
 lint:
   disabled:
     - shellcheck@0.9.0
   enabled:
+    - checkov@2.4.9
+    - clang-format@16.0.3
+    - clang-tidy@16.0.3
+    - dotenv-linter@3.3.0
+    - git-diff-check
+    - hadolint@2.12.0
+    - markdownlint@0.36.0
+    - oxipng@8.0.0
+    - prettier@3.0.3
+    - shellcheck@0.9.0
+    - shfmt@3.6.0
+    - terrascan@1.18.3
+    - trivy@0.44.1
+    - trufflehog@3.54.3
+    - yamllint@1.32.0
     - checkov@2.3.359
     - clang-format@16.0.3
     - clang-tidy@16.0.3
