@@ -1654,6 +1654,15 @@ RX_TEST_CASE(tests_v1, test_strcpy_load_load, .fixture = test_fixture) {
 }
 
 /* test init */
+RX_TEST_CASE(tests_v1, test_os_getenv, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 ui_mode_ptr = string->load("UI_MODE");
+    u64 file_path_ptr = os->getenv(ui_mode_ptr);
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
 RX_TEST_CASE(tests_v1, test_load_open_file_close_file, .fixture = test_fixture) {
     pointer->init(8);
     u64 file_path_ptr = os->getcwd();
