@@ -263,9 +263,6 @@ static void pointer_gc(void) {
 
 #ifdef USE_VM_DEBUG_INFO
 static void pointer_dump(struct pointer* ptr) {
-    if (ptr->data == 0) {
-        return;
-    }
     printf("   ^: %016llx > %016llx\n", (u64)ptr, (u64)ptr->data);
 }
 

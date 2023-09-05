@@ -1663,6 +1663,23 @@ RX_TEST_CASE(tests_v1, test_os_getenv, .fixture = test_fixture) {
 }
 
 /* test init */
+RX_TEST_CASE(tests_v1, test_os_getenv_0, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 file_path_ptr = os->getenv(0);
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(tests_v1, test_os_getenv_list, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 list_ptr = list->alloc();
+    u64 file_path_ptr = os->getenv(list_ptr);
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
 RX_TEST_CASE(tests_v1, test_load_open_file_close_file, .fixture = test_fixture) {
     pointer->init(8);
     u64 file_path_ptr = os->getcwd();
@@ -2258,6 +2275,31 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_2_1, .fixture = test_fi
     u64 quantum_str_ptr1 = string->load("a");
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->lessthan(2, 1);
+    RX_ASSERT(error_ptr == 0);
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_a_string_free, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 quantum_str_ptr1 = string->load("a");
+    u64 quantum_str_ptr2 = string->load("b");
+    string->free(quantum_str_ptr2);
+    u64 error_ptr = string->lessthan(quantum_str_ptr1, quantum_str_ptr2);
+    RX_ASSERT(error_ptr == 0);
+    pointer->release();
+    pointer->destroy();
+}
+
+
+/* test init */
+RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_string_free_b, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 quantum_str_ptr1 = string->load("a");
+    u64 quantum_str_ptr2 = string->load("b");
+    string->free(quantum_str_ptr1);
+    u64 error_ptr = string->lessthan(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
     pointer->release();
     pointer->destroy();

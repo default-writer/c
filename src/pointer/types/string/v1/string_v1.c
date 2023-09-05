@@ -109,6 +109,9 @@ struct list_handler {
 static char* string_pointer_internal(struct pointer* data_ptr, u64* data_size, u64* data_offset) {
     u64 offset = 0;
     struct pointer* ptr = 0;
+    if (data_ptr->id != TYPE_STRING && data_ptr->id != TYPE_STRING_POINTER) {
+        return 0;
+    }
     if (data_ptr->id == TYPE_STRING) {
         ptr = data_ptr;
     }
@@ -126,9 +129,6 @@ static char* string_pointer_internal(struct pointer* data_ptr, u64* data_size, u
             return 0;
         }
         offset += ref->offset;
-    }
-    if (ptr == 0) {
-        return 0;
     }
     *data_size = ptr->size;
     *data_offset = offset;
