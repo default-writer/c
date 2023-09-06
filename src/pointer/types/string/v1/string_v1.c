@@ -773,6 +773,9 @@ static u64 string_move_left(u64 src, u64 nbytes) {
     }
     u64 size = 0;
     u64 offset = 0;
+    if (ptr->id != TYPE_STRING_POINTER) {
+        return 0;
+    }
     char* data = string_pointer_internal(ptr, &size, &offset);
     if (data == 0) {
         return 0;
@@ -792,11 +795,14 @@ static u64 string_move_right(u64 src, u64 nbytes) {
     }
     u64 size = 0;
     u64 offset = 0;
+    if (ptr->id != TYPE_STRING_POINTER) {
+        return 0;
+    }
     char* data = string_pointer_internal(ptr, &size, &offset);
     if (data == 0) {
         return 0;
     }
-    if (offset + nbytes + 1 >= size) {
+    if (offset + nbytes >= size) {
         return 0;
     }
     struct string_reference* ref = ptr->data;
