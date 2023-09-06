@@ -283,16 +283,17 @@ static u64 string_strrchr(u64 src, u64 match) {
     if (data == 0) {
         return 0;
     }
-    data += offset;
     const struct pointer* match_ptr = vm->read_type(match, id);
     if (match_ptr == 0) {
         return 0;
     }
+    char* text = data + offset;
     char* str2 = match_ptr->data;
-    char* str1 = string_strrchr_internal(data, str2, size, offset);
+    char* str1 = string_strrchr_internal(text, str2, size, offset);
     if (str1 == 0) {
         return 0;
     }
+    data += offset;
     offset = (u64)(str1 - data);
     struct pointer* data_ptr = virtual->alloc(sizeof(struct string_reference), TYPE_STRING_POINTER);
     struct string_reference* ref = data_ptr->data;
@@ -316,16 +317,17 @@ static u64 string_strchr(u64 src, u64 match) {
     if (data == 0) {
         return 0;
     }
-    data += offset;
     const struct pointer* match_ptr = vm->read_type(match, id);
     if (match_ptr == 0) {
         return 0;
     }
+    char* text = data + offset;
     char* str2 = match_ptr->data;
-    char* str1 = string_strchr_internal(data, str2, size, offset);
+    char* str1 = string_strchr_internal(text, str2, size, offset);
     if (str1 == 0) {
         return 0;
     }
+    data += offset;
     offset = (u64)(str1 - data);
     struct pointer* data_ptr = virtual->alloc(sizeof(struct string_reference), TYPE_STRING_POINTER);
     struct string_reference* ref = data_ptr->data;
@@ -349,11 +351,11 @@ static u64 string_match(u64 src, u64 match) {
     if (data == 0) {
         return 0;
     }
-    data += offset;
     const struct pointer* match_ptr = vm->read_type(match, id);
     if (match_ptr == 0) {
         return 0;
     }
+    data += offset;
     u64 match_size = match_ptr->size;
     char* str2 = match_ptr->data;
     char* str1 = data;
@@ -408,11 +410,11 @@ static u64 string_offset(u64 src, u64 match) {
     if (data == 0) {
         return 0;
     }
-    data += offset;
     const struct pointer* match_ptr = vm->read_type(match, id);
     if (match_ptr == 0) {
         return 0;
     }
+    data += offset;
     u64 match_size = match_ptr->size;
     char* str2 = match_ptr->data;
     char* str1 = data;
@@ -697,14 +699,10 @@ static u64 string_strncpy(u64 src, u64 nbytes) {
     if (data == 0) {
         return 0;
     }
+    if (offset + nbytes >= size) {
+        return 0;
+    }
     data += offset;
-    if (offset + nbytes > size - 1) {
-        return 0;
-    }
-    u64 text_size = strlen(data);
-    if (nbytes > text_size) {
-        return 0;
-    }
     struct pointer* data_ptr = virtual->alloc(nbytes + 1, id);
     memcpy(data_ptr->data, data, nbytes); /* NOLINT */
     u64 pointer = vm->alloc(data_ptr);
@@ -728,7 +726,7 @@ static u64 string_left_strncpy(u64 src, u64 nbytes) {
     if (offset < nbytes) {
         return 0;
     }
-    data -= (offset - nbytes);
+    data += (offset - nbytes);
     struct pointer* data_ptr = virtual->alloc(nbytes + 1, id);
     memcpy(data_ptr->data, data, nbytes); /* NOLINT */
     u64 pointer = vm->alloc(data_ptr);
@@ -773,9 +771,6 @@ static u64 string_move_left(u64 src, u64 nbytes) {
     }
     u64 size = 0;
     u64 offset = 0;
-    if (ptr->id != TYPE_STRING_POINTER) {
-        return 0;
-    }
     char* data = string_pointer_internal(ptr, &size, &offset);
     if (data == 0) {
         return 0;
