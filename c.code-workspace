@@ -45,10 +45,18 @@
 				"command": "disasexpl.show"
 			},
 			{
+				"text": ".watch",
+				"tooltip": "Toggle code coverage watch",
+				"alignment": "right",
+				"priority": 1100,
+				"id": "statusbar.coverage-gutters.watchCoverageAndVisibleEditors",
+				"command": "coverage-gutters.watchCoverageAndVisibleEditors"
+			},
+			{
 				"text": ".coverage",
 				"tooltip": "Toggle code coverage",
 				"alignment": "right",
-				"priority": 1100,
+				"priority": 1200,
 				"id": "statusbar.coverage-gutters.toggleCoverage",
 				"command": "coverage-gutters.toggleCoverage"
 			},
@@ -297,7 +305,8 @@
 		],
 		"terminal.integrated.scrollback": 65536,
 		"coverage-gutters.customizable.status-bar-toggler-watchCoverageAndVisibleEditors-enabled": true,
-		"coverage-gutters.showLineCoverage": true
+		"coverage-gutters.showLineCoverage": true,
+		"coverage-gutters.showGutterCoverage": false
 	},
 	"extensions": {
 		"recommendations": [
