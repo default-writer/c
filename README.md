@@ -13,7 +13,9 @@
 <a href="" target="blank"><img style='height:128px' src='./resources/api.png'></a>
 
 
-- virtual machine implementation on C
+- managed types / virtual machine types / C API
+
+- suport of user types / extensibility
 
   1. C API
   2. memory management
