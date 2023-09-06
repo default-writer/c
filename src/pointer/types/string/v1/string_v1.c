@@ -366,10 +366,10 @@ static u64 string_match(u64 src, u64 match) {
             str1++;
             size--;
         }
-        if (size < match_size) {
+        if (*str1 == 0) {
             return 0;
         }
-        if (str1 == 0) {
+        if (size < match_size) {
             return 0;
         }
         char* ptr1 = str1;
@@ -440,10 +440,10 @@ static u64 string_offset(u64 src, u64 match) {
             str1++;
             size--;
         }
-        if (size < match_size) {
+        if (*str1 == 0) {
             return 0;
         }
-        if (str1 == 0) {
+        if (size < match_size) {
             return 0;
         }
         char* ptr1 = str1;

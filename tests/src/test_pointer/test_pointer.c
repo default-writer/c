@@ -694,7 +694,7 @@ RX_TEST_CASE(tests_v1, test_string_pointer_match_pattern, .fixture = test_fixtur
 }
 
 /* test init */
-RX_TEST_CASE(tests_v1, test_string_pointer_match_patter_0, .fixture = test_fixture) {
+RX_TEST_CASE(tests_v1, test_string_pointer_match_pattern_0, .fixture = test_fixture) {
     pointer->init(8);
     u64 list_ptr = list->alloc();
     u64 string_ptr = string->load("192.168.0.112");
@@ -714,7 +714,7 @@ RX_TEST_CASE(tests_v1, test_string_pointer_match_patter_0, .fixture = test_fixtu
 }
 
 /* test init */
-RX_TEST_CASE(tests_v1, test_string_pointer_match_patter_none, .fixture = test_fixture) {
+RX_TEST_CASE(tests_v1, test_string_pointer_match_pattern_none, .fixture = test_fixture) {
     pointer->init(8);
     u64 list_ptr = list->alloc();
     u64 string_ptr = string->load("192.168.0.11");
@@ -729,6 +729,37 @@ RX_TEST_CASE(tests_v1, test_string_pointer_match_patter_none, .fixture = test_fi
 #else
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(tests_v1, test_list_release_string, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 string_ptr = string->load("192.168.0.11");
+    list->release(string_ptr);
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(tests_v1, test_string_pointer_match_pattern_load_0, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 string_ptr = string->load("192.168.0.1");
+    u64 dot_ptr = string->load("57.34.7.2");
+    u64 error_ptr = string->match(string_ptr, dot_ptr);
+    RX_ASSERT(error_ptr == 0);
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(tests_v1, test_string_pointer_offset_pattern_load_0, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 string_ptr = string->load("192.168.0.1");
+    u64 dot_ptr = string->load("57.34.7.2");
+    u64 error_ptr = string->offset(string_ptr, dot_ptr);
+    RX_ASSERT(error_ptr == 0);
     pointer->release();
     pointer->destroy();
 }
@@ -947,6 +978,102 @@ RX_TEST_CASE(tests_v1, test_string_pointer_strrchr_match_offset, .fixture = test
 #else
     pointer->gc();
 #endif
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(tests_v1, test_list_peekn_0_0, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 list_ptr = list->alloc();
+    u64 error_ptr = list->peekn(0, 0);
+    RX_ASSERT(error_ptr == 0);
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(tests_v1, test_list_peekn_0, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 list_ptr = list->alloc();
+    u64 error_ptr = list->peekn(list_ptr, 0);
+    RX_ASSERT(error_ptr == 0);
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(tests_v1, test_list_peekn_1, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 list_ptr1 = list->alloc();
+    u64 string_ptr1 = string->load("192.168.0.1");
+    list->push(list_ptr1, string_ptr1);
+    u64 list_ptr2 = list->peekn(list_ptr1, 1);
+    RX_ASSERT(list_ptr2 != 0);
+    RX_ASSERT(list->size(list_ptr2) != 0);
+    u64 string_ptr2 = list->peek(list_ptr2);
+    RX_ASSERT(string_ptr2 != 0);
+    RX_ASSERT(string_ptr1 == string_ptr2);
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(tests_v1, test_list_peekn_2, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 string_ptr = string->load("192.168.0.1");
+    u64 list_ptr = list->alloc();
+    list->push(list_ptr, string_ptr);
+    u64 error_ptr = list->peekn(list_ptr, 2);
+    RX_ASSERT(error_ptr == 0);
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(tests_v1, test_list_popn_0_0, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 list_ptr = list->alloc();
+    u64 error_ptr = list->popn(0, 0);
+    RX_ASSERT(error_ptr == 0);
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(tests_v1, test_list_popn_0, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 list_ptr = list->alloc();
+    u64 error_ptr = list->popn(list_ptr, 0);
+    RX_ASSERT(error_ptr == 0);
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(tests_v1, test_list_popn_1, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 list_ptr1 = list->alloc();
+    u64 string_ptr1 = string->load("192.168.0.1");
+    list->push(list_ptr1, string_ptr1);
+    u64 list_ptr2 = list->popn(list_ptr1, 1);
+    RX_ASSERT(list_ptr2 != 0);
+    RX_ASSERT(list->size(list_ptr2) != 0);
+    u64 string_ptr2 = list->peek(list_ptr2);
+    RX_ASSERT(string_ptr2 != 0);
+    RX_ASSERT(string_ptr1 == string_ptr2);
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(tests_v1, test_list_popn_2, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 string_ptr = string->load("192.168.0.1");
+    u64 list_ptr = list->alloc();
+    list->push(list_ptr, string_ptr);
+    u64 error_ptr = list->popn(list_ptr, 2);
+    RX_ASSERT(error_ptr == 0);
     pointer->release();
     pointer->destroy();
 }
@@ -2196,21 +2323,31 @@ RX_TEST_CASE(pointer_tests, test_pointer_init_string_load_9, .fixture = test_fix
 /* test init */
 RX_TEST_CASE(pointer_tests, test_pointer_strings, .fixture = test_fixture) {
     pointer->init(8);
-    u64 text_string_ptr1 = string->load("adadadsadsadad\ndad\nadsaddasaddad\nsad\n");
-    u64 text_string_ptr2 = string->load("ab\ndad\nabcd\nbcd\n");
-    u64 text_string_ptr3 = string->load("ab\nc\nabc\nbcd\n");
-    u64 text_string_ptr4 = string->load("abc\nabcd\nbcde\nabc\n");
-    u64 text_string_ptr5 = string->load("abc\n\n");
+    u64 text_string_ptr0 = string->load("a");
+    u64 text_string_ptr1 = string->load("a\nb");
+    u64 text_string_ptr2 = string->load("ab\nabc\n");
+    u64 text_string_ptr3 = string->load("adadadsadsadad\ndad\nadsaddasaddad\nsad\n");
+    u64 text_string_ptr4 = string->load("ab\ndad\nabcd\nbcd\n");
+    u64 text_string_ptr5 = string->load("ab\nc\nabc\nbcd\n");
+    u64 text_string_ptr6 = string->load("abc\nabcd\nbcde\nabc\n");
+    u64 text_string_ptr7 = string->load("abc\n\n");
+    parse_text(0);
+    parse_text(text_string_ptr0);
     parse_text(text_string_ptr1);
     parse_text(text_string_ptr2);
     parse_text(text_string_ptr3);
     parse_text(text_string_ptr4);
     parse_text(text_string_ptr5);
+    parse_text(text_string_ptr6);
+    parse_text(text_string_ptr7);
+    string->free(text_string_ptr0);
     string->free(text_string_ptr1);
     string->free(text_string_ptr2);
     string->free(text_string_ptr3);
     string->free(text_string_ptr4);
     string->free(text_string_ptr5);
+    string->free(text_string_ptr6);
+    string->free(text_string_ptr7);
 #ifdef USE_GC
     pointer->gc();
 #endif
@@ -4038,14 +4175,20 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_list_string, .fixture = 
 static void parse_text(u64 text_string_ptr) {
     u64 gc_ptr = list->alloc();
     u64 text_size = string->size(text_string_ptr);
+    if (text_string_ptr == 0) {
+        return;
+    }
     u64 list_ptr = list->alloc();
-    u64 list_data_ptr = list->alloc();
     char* text = string->unsafe(text_string_ptr);
     char* tmp = text;
     while (*tmp != 0 && text_size > 0) {
-        while (*tmp != 0 && *tmp != '\n') {
+        while (*tmp != 0 && *tmp != '\n' && text_size > 0) {
             tmp++;
             text_size--;
+        }
+        if (text_size == 0) {
+            list->free(list_ptr);
+            return;
         }
         *tmp++ = '\0';
         text_size--;
@@ -4054,6 +4197,7 @@ static void parse_text(u64 text_string_ptr) {
         text = tmp;
     }
     u64 data_ptr = 0;
+    u64 list_data_ptr = list->alloc();
     while ((data_ptr = list->pop(list_ptr)) != 0) {
         list->push(list_data_ptr, data_ptr);
     }
@@ -4086,13 +4230,7 @@ static void parse_text(u64 text_string_ptr) {
             }
             if (string->lessthan(string_pointer_ptr, match_ptr)) {
                 u64 match_start_ptr = string->left(match_ptr, size);
-                if (match_start_ptr == 0) {
-                    break;
-                }
                 u64 str_ncpy = string->strncpy(match_start_ptr, size);
-                if (str_ncpy == 0) {
-                    break;
-                }
                 u64 distance = string->lessthan(string_ptr, match_start_ptr);
                 if (distance > 0) {
                     u64 i = 0;
