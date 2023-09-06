@@ -2377,6 +2377,30 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_1_1, .fixture = test
 }
 
 /* test init */
+RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_a_b, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 pattern_ptr = string->load("b");
+    u64 quantum_str_ptr1 = string->load("abba");
+    u64 quantum_str_ptr2 = string->offset(quantum_str_ptr1, pattern_ptr);
+    u64 error_ptr = string->greaterthan(quantum_str_ptr1, quantum_str_ptr2);
+    RX_ASSERT(error_ptr == 0);
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_b_a, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 pattern_ptr = string->load("b");
+    u64 quantum_str_ptr1 = string->load("abba");
+    u64 quantum_str_ptr2 = string->offset(quantum_str_ptr1, pattern_ptr);
+    u64 error_ptr = string->greaterthan(quantum_str_ptr2, quantum_str_ptr1);
+    RX_ASSERT(error_ptr != 0);
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
 RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_1_2, .fixture = test_fixture) {
     pointer->init(8);
     u64 quantum_str_ptr1 = string->load("a");
