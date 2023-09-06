@@ -2,20 +2,22 @@
 
 <a href="" target="blank"><img style='height:128px' src='./resources/ecommerce.png'></a>
 
-
 ## vision
 
-
-- C project targets to extend vision of C programming language as the C programming language library powered with API without complex pointer arithmetic, pointers, safe to use and friendly for programming new modern applications.
+- managed (C programming language model)
+- safe
+- friendly
+- extensibe
+- simple
+- tested (100% code coverage)
 
 ## description
 
 <a href="" target="blank"><img style='height:128px' src='./resources/api.png'></a>
 
+- VM managed types / C API
 
-- managed types / virtual machine types / C API
-
-- suport of user types / extensibility
+- user defined types / extensibility system
 
   1. C API
   2. memory management
@@ -29,7 +31,6 @@
 - C API generated docs (doxygen):
 
   1. [docs](./docs/refman.pdf)
-
 
 ![logo](./resources/logo-tiny.png)
 
@@ -121,7 +122,6 @@ You can use c project for local git repos with the [CLI](https://github.com/defa
 support this project [become a sponsor](https://opencollective.com/c-vm#sponsor)
 
 [![img](https://opencollective.com/default-writer/sponsor/0/avatar.svg)](https://opencollective.com/c-vm/sponsor/0/website)
-
 
 ### 2023
 
