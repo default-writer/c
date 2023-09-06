@@ -16,8 +16,8 @@ int result = 0;
 /*
     a -> (b
     b -> )c
-    c -> \0_
-      -> a
+    c -> \0.
+    c -> a
 */
 
 void _a(char** c) {
