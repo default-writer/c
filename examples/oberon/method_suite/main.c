@@ -1,18 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "figures.h"
-#include "rectangles.h"
-
-extern rectangle_pointer rectangle_new();
-extern void rectangle_delete(rectangle_pointer r);
-extern void rectangle_draw(rectangle_pointer r);
-extern void rectangle_move(rectangle_pointer r, int dx, int dy);
+#include "rectangle/type.h"
 
 int main(void) {
-    rectangle_pointer r = rectangle_new();
-    rectangle_draw(r);
-    rectangle_move(r, 10, 20);
-    rectangle_delete(r);
+    rectangle_pointer r = rectangle->create();
+    rectangle->draw(r);
+    rectangle->move(r, 10, 20);
+    rectangle->destroy(r);
     return 0;
 }

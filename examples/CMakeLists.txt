@@ -11,8 +11,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(OBERON 
-    oberon/method_suite/figures.c
-    oberon/method_suite/rectangles.c
+    oberon/method_suite/object/object.c
+    oberon/method_suite/figure/figure.c
+    oberon/method_suite/rectangle/rectangle.c
     oberon/method_suite/main.c)
 set(SIMPLER_PARSER
     strings/simple_parser.c)
