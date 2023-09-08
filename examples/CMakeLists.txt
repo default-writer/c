@@ -14,8 +14,15 @@ set(OBERON
     oberon/method_suite/figures.c
     oberon/method_suite/rectangles.c
     oberon/method_suite/main.c)
+
+set(CLASSES
+    oberon/classes/figures.c
+    oberon/classes/rectangles.c
+    oberon/classes/main.c)
+
 set(SIMPLER_PARSER
     strings/simple_parser.c)
 
 add_executable(c-oberon-method-suite ${OBERON})
+add_executable(c-classes ${CLASSES})
 add_executable(c-simple-parser ${SIMPLER_PARSER})
