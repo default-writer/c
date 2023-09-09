@@ -14,10 +14,10 @@ struct func_struct {
     char* input;
     int result;
     function _;
-    function _a;
-    function _b;
-    function _c;
-    function _d;
+    const function _a;
+    const function _b;
+    const function _c;
+    const function _d;
 };
 
 static func_struct finite_automata = {
