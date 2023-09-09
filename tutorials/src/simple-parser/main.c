@@ -55,7 +55,7 @@ static void _c(func_struct_pointer self) {
 }
 
 static void read_input(func_struct_pointer self) {
-    memset(self->input, 0, 100);
+    memset(self->input, 0, 101);
     printf(">");
     char ch = 0;
     for (int i = 0; i < 100; i++) {
@@ -69,7 +69,7 @@ static void read_input(func_struct_pointer self) {
 
 int main(void) {
     func_struct_pointer ptr = &finite_automata;
-    char* buffer = calloc(1, 100);
+    char* buffer = calloc(1, 101);
     while (1) {
         ptr->input = buffer;
         read_input(ptr);
