@@ -21,8 +21,9 @@ function get_stack () {
 }
 
 err_report() {
+    cd ${source}
     get_stack
-    echo "ERROR: on line $*: $(cat $0 | sed $1!d)" >&2
+    echo "ERROR: on line $*: $(cat $(test -L "$0" && readlink "$0" || echo $0) | sed $1!d)" >&2
     exit 8
 }
 
@@ -36,6 +37,8 @@ if [ ! "${uid}" -eq 0 ]; then
     echo "Please run as root"
     exit
 fi
+
+source=$(pwd)
 
 pwd=$(cd "$(dirname $(dirname $(dirname "${BASH_SOURCE[0]}")))" &> /dev/null && pwd)
 

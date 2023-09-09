@@ -21,8 +21,9 @@ function get_stack () {
 }
 
 err_report() {
+    cd ${source}
     get_stack
-    echo "ERROR: on line $*: $(cat $0 | sed $1!d)" >&2
+    echo "ERROR: on line $*: $(cat $(test -L "$0" && readlink "$0" || echo $0) | sed $1!d)" >&2
     exit 8
 }
 
@@ -30,12 +31,18 @@ if [[ "${BASHOPTS}" != *extdebug* ]]; then
     trap 'err_report $LINENO' ERR
 fi
 
+source=$(pwd)
+
+pwd=$(cd "$(dirname $(dirname "${BASH_SOURCE[0]}"))" &> /dev/null && pwd)
+
+cd "${pwd}"
+
 export LCOV_PATH=$(which lcov)
 export GENHTML_PATH==$(which genhtml)
 export MAKEFLAGS=-j8
 
-logs="$(pwd)/logs"
-build="$(pwd)/build"
+logs="${pwd}/logs"
+build="${pwd}/build"
 target="$1"
 
 if [[ "${target}" == "" ]]; then
@@ -55,5 +62,3 @@ cmake \
     -G "Ninja" 2>&1 >/dev/null
 
 cmake --build "${build}" --target "${target}" || (echo ERROR: "${target}" && exit 1)
-
-# timeout --foreground 180 "${build}/${target}" 2>&1 >"${logs}/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
