@@ -2,6 +2,11 @@
 
 <a href="" target="blank"><img style='height:128px' src='./resources/ecommerce.png'></a>
 
+## inspiration
+
+- [Konstantin Vladimirov repository](https://github.com/tilir/c-graduate)
+- [Konstantin Vladimirov. Introduction to C](https://www.youtube.com/watch?v=7YhRFx-oyW4&ab_channel=KonstantinVladimirov)
+
 ## vision
 
 - managed (C programming language model)
