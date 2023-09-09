@@ -1,6 +1,6 @@
-void func_done(int a) {}
-
 struct func_struct {};
+
+void func_done(int a) {}
 
 int main(void) {
     int a = 42;

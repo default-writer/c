@@ -1,10 +1,10 @@
 #include <stdio.h>
 
+struct func_struct {};
+
 void func_done(void* ptr) {
     printf("done %016llx\n", (unsigned long long)ptr);
 }
-
-struct func_struct {};
 
 int main(void) {
     int a = 42;
