@@ -174,10 +174,10 @@
 			"window.zoomLevel": 0
 		},
 		"presentation-mode.configBackup": {
-			"editor.fontSize": "undefined",
+			"editor.fontSize": 12,
 			"window.zoomLevel": 0,
-			"terminal.integrated.fontSize": "undefined",
-			"debug.console.fontSize": "undefined",
+			"terminal.integrated.fontSize": 12,
+			"debug.console.fontSize": 12,
 			"editor.matchBrackets": "undefined",
 			"editor.minimap.enabled": "undefined",
 			"workbench.activityBar.visible": true,
@@ -208,7 +208,7 @@
 			"-I/usr/include/gtk-4.0"
 		],
 		"screencastMode.fontSize": 20,
-		"window.zoomLevel": 0,
+		"window.zoomLevel": 2,
 		"debug.console.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
 		"chat.editor.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
 		"notebook.output.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
@@ -289,9 +289,9 @@
 		"task.quickOpen.history": 30,
 		"git.untrackedChanges": "mixed",
 		"editor.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
-		"editor.fontSize": 12,
-		"terminal.integrated.fontSize": 12,
-		"debug.console.fontSize": 12,
+		"editor.fontSize": 16,
+		"terminal.integrated.fontSize": 16,
+		"debug.console.fontSize": 16,
 		"cmake.configureArgs": [
 			"CONFIG_VM_DEBUG_INFO",
 			"CONFIG_MEMORY_DEBUG_INFO",
@@ -309,7 +309,9 @@
 		"terminal.integrated.scrollback": 65536,
 		"coverage-gutters.customizable.status-bar-toggler-watchCoverageAndVisibleEditors-enabled": true,
 		"coverage-gutters.showLineCoverage": true,
-		"coverage-gutters.showGutterCoverage": false
+		"coverage-gutters.showGutterCoverage": false,
+		"editor.matchBrackets": "near",
+		"editor.minimap.enabled": false
 	},
 	"extensions": {
 		"recommendations": [
