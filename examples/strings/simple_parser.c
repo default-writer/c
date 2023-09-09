@@ -67,7 +67,9 @@ static void read_input() {
 }
 
 int main(void) {
-    input = calloc(1, 101);
+    char buffer[101]; 
+    input = &buffer[0];
+    memset(input, 0, 101);
     while (1) {
         read_input();
         if (*input == 'q') {
