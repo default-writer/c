@@ -72,7 +72,7 @@ int main(void) {
     while (1) {
         ptr->input = buffer;
         read_input(ptr);
-        if (*ptr->input == 'q') {
+        if (*ptr->input == 'q' || *ptr->input == 0) {
             break;
         }
         ptr->_ = _a;
