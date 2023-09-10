@@ -5,51 +5,51 @@
 typedef struct func_struct *func_struct_pointer, func_struct;
 typedef void (*function)(func_struct_pointer self);
 
-static void _a(func_struct_pointer self);
-static void _b(func_struct_pointer self);
-static void _c(func_struct_pointer self);
+static void a(func_struct_pointer self);
+static void b(func_struct_pointer self);
+static void c(func_struct_pointer self);
 
 struct func_struct {
     char* input;
     int result;
-    function _;
-    const function _a;
-    const function _b;
-    const function _c;
+    function next;
+    const function a;
+    const function b;
+    const function c;
 };
 
 static func_struct finite_automata = {
     .result = 0,
-    ._ = 0,
-    ._a = _a,
-    ._b = _b,
-    ._c = _c
+    .next = 0,
+    .a = a,
+    .b = b,
+    .c = c
 };
 
 static void _a(func_struct_pointer self) {
     if (*self->input == '(') {
-        self->_ = self->_b;
+        self->next = self->b;
         self->input++;
     } else {
-        self->_ = 0;
+        self->next = 0;
     }
 }
 
 static void _b(func_struct_pointer self) {
     if (*self->input == ')') {
-        self->_ = self->_c;
+        self->next = self->c;
         self->input++;
     } else {
-        self->_ = 0;
+        self->next = 0;
     }
 }
 
 static void _c(func_struct_pointer self) {
     if (*self->input == '\0') {
         self->result = 1;
-        self->_ = 0;
+        self->next = 0;
     } else {
-        self->_ = self->_a;
+        self->next = self->a;
     }
 }
 
@@ -75,9 +75,9 @@ int main(void) {
         if (*ptr->input == 'q' || *ptr->input == 0) {
             break;
         }
-        ptr->_ = _a;
-        while(ptr->_ != 0) {
-            ptr->_(&finite_automata);
+        ptr->next = ptr->a;
+        while(ptr->next != 0) {
+            ptr->next(ptr);
         }
         if (*ptr->input != '\0') {
             ptr->result = 0;
