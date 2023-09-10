@@ -26,7 +26,7 @@ static func_struct finite_automata = {
     .c = c
 };
 
-static void _a(func_struct_pointer self) {
+static void a(func_struct_pointer self) {
     if (*self->input == '(') {
         self->next = self->b;
         self->input++;
@@ -35,7 +35,7 @@ static void _a(func_struct_pointer self) {
     }
 }
 
-static void _b(func_struct_pointer self) {
+static void b(func_struct_pointer self) {
     if (*self->input == ')') {
         self->next = self->c;
         self->input++;
@@ -44,7 +44,7 @@ static void _b(func_struct_pointer self) {
     }
 }
 
-static void _c(func_struct_pointer self) {
+static void c(func_struct_pointer self) {
     if (*self->input == '\0') {
         self->result = 1;
         self->next = 0;
