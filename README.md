@@ -4,7 +4,7 @@
 
 ## usage
 
-- [C memory management]
+- C memory management
 
 ```c
 static u64 read_data(u64 list_ptr, const char* prompt) {
