@@ -2,6 +2,10 @@
 
 <a href="" target="blank"><img style='height:128px' src='./resources/ecommerce.png'></a>
 
+## articles
+
+-[C memory management with ease](https://www.codeproject.com/script/Articles/ArticleVersion.aspx?waid=4278552&aid=5368080)
+
 ## inspiration
 
 - [Konstantin Vladimirov repository](https://github.com/tilir/c-graduate)
