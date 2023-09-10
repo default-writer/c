@@ -31,16 +31,18 @@ if [[ "${BASHOPTS}" != *extdebug* ]]; then
     trap 'err_report $LINENO' ERR
 fi
 
+source=$(pwd)
+
+pwd=$(cd "$(dirname $(dirname "${BASH_SOURCE[0]}"))" &> /dev/null && pwd)
+
+cd "${pwd}"
+
 uid=$(id -u)
 
 if [ "${uid}" -eq 0 ]; then
     echo "Please run as user"
     exit
 fi
-
-source=$(pwd)
-
-pwd=$(cd "$(dirname $(dirname "${BASH_SOURCE[0]}"))" &> /dev/null && pwd)
 
 install="$1"
 

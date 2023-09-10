@@ -21,15 +21,19 @@ function get_stack () {
 }
 
 err_report() {
-    cd ${source}
     get_stack
-    echo "ERROR: on line $*: $(cat $(test -L "$0" && readlink "$0" || echo $0) | sed $1!d)" >&2
+    echo "ERROR: on line $*: $(cat $(test -L "${source}/$0" && readlink "${source}/$0" || echo ${source}/$0) | sed $1!d)" >&2
     exit 8
 }
 
 if [[ "${BASHOPTS}" != *extdebug* ]]; then
     trap 'err_report $LINENO' ERR
 fi
+
+source=$(pwd)
+
+pwd=$(cd "$(dirname $(dirname $(dirname "${BASH_SOURCE[0]}")))" &> /dev/null && pwd)
+
 function get-scripts() {
     local script
     local scripts

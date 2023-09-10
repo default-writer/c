@@ -31,11 +31,13 @@ if [[ "${BASHOPTS}" != *extdebug* ]]; then
     trap 'err_report $LINENO' ERR
 fi
 
-uid=$(id -u)
-
 source=$(pwd)
 
 pwd=$(cd "$(dirname $(dirname "${BASH_SOURCE[0]}"))" &> /dev/null && pwd)
+
+cd "${pwd}"
+
+uid=$(id -u)
 
 sudo "${pwd}/bin/setup.sh"
 
