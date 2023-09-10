@@ -110,7 +110,7 @@ UI_MODE=--ui ./build/gtk-experiment1
 ## shell scripting documentation
 
 - all shell scripts located in ./bin folder
-- all shell scripts from ./bin and ./bin/utils/ can be used and run as self-documented scripts, with embedded help
+- all shell scripts from ./bin folders are self-documented
 - all shell scripts correctly detectes execution as user or root (sudo)
 - all shell scripts have required command-line options and optional [] parameters
 
@@ -118,7 +118,7 @@ UI_MODE=--ui ./build/gtk-experiment1
 
 ## local repos
 
-You can use c project for local git repos with the [CLI](https://github.com/default-writer/tree/master/cli) or [git](https://github.com/default-writer/c.git).
+Use [CLI](https://github.com/default-writer/tree/master/cli) or [git](https://github.com/default-writer/c.git).
 
 ## support C project
 
