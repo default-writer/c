@@ -4,7 +4,7 @@
 
 ## articles
 
--[C memory management with ease](https://www.codeproject.com/script/Articles/ArticleVersion.aspx?waid=4278552&aid=5368080)
+- [C memory management with ease](https://www.codeproject.com/script/Articles/ArticleVersion.aspx?waid=4278552&aid=5368080)
 
 ## inspiration
 
