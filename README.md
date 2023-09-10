@@ -109,10 +109,12 @@ UI_MODE=--ui ./build/gtk-experiment1
 
 ## shell scripting documentation
 
-- all shell scripts located in ./bin folder
-- all shell scripts from ./bin folders are self-documented
-- all shell scripts correctly detectes execution as user or root (sudo)
-- all shell scripts have required command-line options and optional [] parameters
+### all shell scripts
+
+- are self-documented
+- placed in ./bin folders
+- detects execution as user or root (sudo)
+- runs with required and optional command-line parameters
 
 ## history
 
