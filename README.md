@@ -27,7 +27,6 @@ static u64 read_data(u64 list_ptr, const char* prompt) {
 
 ```c
 int main(void) {
-
     pointer->init(8); // initializes virtual memory manager with chunk size of 8 elements
 
     // some work with standard classes: os, string, data, etc.
