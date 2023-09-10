@@ -2,14 +2,46 @@
 
 <a href="" target="blank"><img style='height:128px' src='./resources/ecommerce.png'></a>
 
-## articles
+## usage
 
-- [C memory management with ease](https://www.codeproject.com/script/Articles/ArticleVersion.aspx?waid=4278552&aid=5368080)
+- [C memory management]
+
+```c
+static u64 read_data(u64 list_ptr, const char* prompt) {
+    u64 data_ptr = 0;
+    u64 ui_mode_ptr = string->load("UI_MODE");
+    u64 mode_ptr = string->load("--ui");
+    u64 value_ptr = os->getenv(ui_mode_ptr);
+    if (ui_mode_ptr != 0 && string->strcmp(value_ptr, mode_ptr) != 0) {
+        data_ptr = read_input(prompt);
+    } else {
+        printf(">%s:\n", prompt);
+        data_ptr = list->pop(list_ptr);
+        if (data_ptr == 0) {
+            printf("\n");
+        }
+    }
+    return data_ptr;
+}
+```
+
+```c
+int main(void) {
+
+    pointer->init(8); // initializes virtual memory manager with chunk size of 8 elements
+
+    // some work with standard classes: os, string, data, etc.
+
+    pointer->release(); // releases all not freed memory
+    pointer->gc();      // releases all resources particularly added to GC
+    pointer->destroy(); // releases all memory used by memory manager
+    return 0;
+}
+```
 
 ## inspiration
 
-- [Konstantin Vladimirov repository](https://github.com/tilir/c-graduate)
-- [Konstantin Vladimirov. Introduction to C](https://www.youtube.com/watch?v=7YhRFx-oyW4&ab_channel=KonstantinVladimirov)
+- [Konstantin Vladimirov](https://github.com/tilir/c-graduate) [Introduction to C](https://www.youtube.com/watch?v=7YhRFx-oyW4&ab_channel=KonstantinVladimirov)
 
 ## vision
 
