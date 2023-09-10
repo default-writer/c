@@ -44,7 +44,6 @@ if [ ! "${uid}" -eq 0 ]; then
     exit
 fi
 
-"${pwd}/bin/utils/setup.sh" --wsl2
 "${pwd}/bin/utils/setup.sh" --update
 "${pwd}/bin/utils/setup.sh" --zip --no-update --no-upgrade
 "${pwd}/bin/utils/setup.sh" --configuration --no-update --no-upgrade
