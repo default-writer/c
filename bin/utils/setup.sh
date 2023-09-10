@@ -144,12 +144,14 @@ case "${install}" in
         upgrade ${updgradeflags}
         ;;
 
-    "--nodejs-ppa") # installs nodejs ppa
+    "--nodejs-bin") # installs nodejs using binary distribution
         update ${updateflags}
-        curl -sL https://deb.nodesource.com/setup_18.x -o /tmp/nodesource_setup.sh
-        chmod +x /tmp/nodesource_setup.sh
-        bash /tmp/nodesource_setup.sh
-        rm -f /tmp/nodesource_setup.sh
+        apt install -y --only-upgrade libsmbclient libwbclient0 qemu-block-extra qemu-system-common qemu-system-data qemu-system-gui qemu-system-x86 qemu-utils samba-libs
+        apt-get install -y ca-certificates curl gnupg
+        mkdir -p /etc/apt/keyrings        
+        curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+        apt update -y
+        chmod a+r /etc/apt/keyrings/nodesource.gpg
         apt install -y nodejs
         upgrade ${updgradeflags}
         ;;

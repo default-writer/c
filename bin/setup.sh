@@ -44,13 +44,14 @@ if [ ! "${uid}" -eq 0 ]; then
     exit
 fi
 
+"${pwd}/bin/utils/setup.sh" --wsl2
 "${pwd}/bin/utils/setup.sh" --update
 "${pwd}/bin/utils/setup.sh" --zip --no-update --no-upgrade
 "${pwd}/bin/utils/setup.sh" --configuration --no-update --no-upgrade
 "${pwd}/bin/utils/setup.sh" --clang-format --no-update --no-upgrade
 "${pwd}/bin/utils/setup.sh" --cmake --no-update --no-upgrade
 "${pwd}/bin/utils/setup.sh" --gtk4 --no-update --no-upgrade
-"${pwd}/bin/utils/setup.sh" --nodejs-ppa --no-update --no-upgrade
+"${pwd}/bin/utils/setup.sh" --nodejs --no-update --no-upgrade
 "${pwd}/bin/utils/setup.sh" --raylib --no-update --no-upgrade
 "${pwd}/bin/utils/setup.sh" --doxygen --no-update --no-upgrade
 "${pwd}/bin/utils/setup.sh" --upgrade
