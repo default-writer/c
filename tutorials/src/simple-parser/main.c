@@ -19,7 +19,6 @@ struct func_struct {
 };
 
 static func_struct finite_automata = {
-    .input = 0,
     .result = 0,
     ._ = 0,
     ._a = _a,

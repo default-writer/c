@@ -9,15 +9,14 @@ f _;
 void _a(char** c);
 void _b(char** c);
 void _c(char** c);
-void _q(char** c);
 
 int result = 0;
 
 /*
     a -> (b
     b -> )c
-    c -> \0.
     c -> a
+    c -> \0.
 */
 
 void _a(char** c) {
@@ -25,7 +24,7 @@ void _a(char** c) {
         _ = _b;
         (*c)++;
     } else {
-        _ = _q;
+        _ = 0;
     }
 }
 
@@ -34,21 +33,17 @@ void _b(char** c) {
         _ = _c;
         (*c)++;
     } else {
-        _ = _q;
+        _ = 0;
     }
 }
 
 void _c(char** c) {
     if (**c == '\0') {
         result = 1;
-        _ = _q;
+        _ = 0;
     } else {
         _ = _a;
     }
-}
-
-void _q(char **c) {
-    _ = 0;
 }
 
 char* input = 0;
@@ -72,7 +67,7 @@ int main(void) {
     memset(input, 0, 101);
     while (1) {
         read_input();
-        if (*input == 'q') {
+        if (*input == 'q' || *input == 0) {
             break;
         }
         _ = _a;
