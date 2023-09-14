@@ -67,7 +67,7 @@ int main(void) {
     memset(input, 0, 101);
     while (1) {
         read_input();
-        if (*input == 'q' || *input == 0) {
+        if (*input == 0) {
             break;
         }
         _ = _a;
