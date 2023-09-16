@@ -46,38 +46,36 @@ void _c(char** c) {
     }
 }
 
-char* input = 0;
-
-static void read_input() {
-    memset(input, 0, 101);
-    printf(">");
+static void read_input(char* input, int size) {
     char ch = 0;
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i < size - 1; i++) {
         ch = (char)getchar();
         if (ch == EOF || ch == '\n') {
             break;
         }
-        input[i] = ch;
+        *(input + i) = ch;
     }
 }
 
 int main(void) {
-    char buffer[101]; 
-    input = &buffer[0];
-    memset(input, 0, 101);
+    int size = 101;
+    char buffer[size];
     while (1) {
-        read_input();
+        char* input = &buffer[0];
+        memset(input, 0, size);
+        printf(">");
+        read_input(buffer, size);
         if (*input == 0) {
             break;
         }
         _ = _a;
-        while(_ != 0) {
+        while (_ != 0) {
             _(&input);
         }
         if (*input != '\0') {
             result = 0;
         }
-        printf("%d\n",result);
+        printf("%d\n", result);
         result = 0;
     }
     return 0;
