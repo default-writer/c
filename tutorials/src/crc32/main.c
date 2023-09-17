@@ -5,9 +5,8 @@
 
 uint32_t crc32b(const uint8_t* str, unsigned long size) {
     /* Source: https://stackoverflow.com/a/21001712 */
-    unsigned int byte, crc, mask, i = 0;
-    crc = 0xffffffff;
-    while (--size > 0 && str[i] != 0) {
+    unsigned int byte, mask, i = 0, crc = 0xffffffff;
+    while (--size > 0) {
         byte = str[i];
         crc = crc ^ byte;
         for (unsigned int j = 8; j > 0; j--) {
@@ -18,6 +17,7 @@ uint32_t crc32b(const uint8_t* str, unsigned long size) {
     }
     return ~crc;
 }
+
 int main() {
     const char* str = "zyzzyvas\n";
     uint32_t result = crc32b((const uint8_t*)str, strlen(str));
