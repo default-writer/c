@@ -76,7 +76,7 @@ int main(void) {
             break;
         }
         ptr->next = ptr->a;
-        while(ptr->next != 0) {
+        while (ptr->next != 0) {
             ptr->next(ptr);
         }
         if (*ptr->input != '\0') {
