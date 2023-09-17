@@ -167,14 +167,13 @@ uint32_t Jenkins_one_at_a_time_hash(const char* str, size_t len) {
 
 uint32_t crc32b(const uint8_t* str, unsigned long size) {
     /* Source: https://stackoverflow.com/a/21001712 */
-    unsigned int byte, crc, mask;
-    int i = 0, j;
+    unsigned int byte, crc, mask, i = 0;
     crc = 0xffffffff;
     while (--size > 0 && str[i] != 0) {
         byte = str[i];
         crc = crc ^ byte;
-        for (j = 7; j >= 0; j--) {
-            mask = -(crc & 1);
+        for (unsigned int j = 8; j > 0; j--) {
+            mask = ~(crc & 1) + 1;
             crc = (crc >> 1) ^ (0xEDB88320 & mask);
         }
         i = i + 1;
