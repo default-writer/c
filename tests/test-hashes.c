@@ -270,7 +270,6 @@ void get_data() {
     memset(input, 0, PATH_MAX);
     char* ch = &buffer[0];
     while (fgets(input, PATH_MAX - 1, f)) {
-        *(ch + strcspn(input, "\n")) = '\0'; /* strip newline */
         unsigned long size = ((strlen(input) >> 3) | 1) << 3;
         struct list* current = calloc(1, sizeof(struct list));
         current->data = calloc(1, size);
