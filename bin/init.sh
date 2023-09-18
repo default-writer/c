@@ -85,8 +85,8 @@ case "${install}" in
         help
         ;;
 
-    esac
-done
+esac
+
 
 if [[ "${silent}" == "--silent" ]]; then
     exec 2>&1 >/dev/null
