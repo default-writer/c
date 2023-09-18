@@ -59,7 +59,7 @@ case "${install}" in
     "")
         ;;
 
-    "--help") # [optional] shows command description
+    "--help") # shows command description
         help
         ;;
 
@@ -83,11 +83,11 @@ for opt in ${opts[@]}; do
             setup="--setup"
             ;;
 
-        "--hooks") # installs git hooks
+        "--hooks") # [optional] installs git hooks
             hooks="--hooks"
             ;;
 
-        "--optional") # installs optional dependencies
+        "--optional") # [optional] installs optional dependencies
             optional="--optional"
             ;;
 
