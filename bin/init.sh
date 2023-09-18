@@ -39,10 +39,9 @@ cd "${pwd}"
 
 uid=$(id -u)
 
-sudo "${pwd}/bin/setup.sh"
+# sudo "${pwd}/bin/setup.sh"
 
 "${pwd}/bin/utils/cleanup.sh" --all
-
 "${pwd}/bin/utils/install.sh" --hooks
 "${pwd}/bin/utils/install.sh" --clangd
 "${pwd}/bin/utils/install.sh" --cmake
