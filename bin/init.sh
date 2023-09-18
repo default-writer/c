@@ -75,8 +75,20 @@ for opt in ${opts[@]}; do
         "")
             ;;
 
+        "--clean") # [optional] cleans up directories before build
+            clean="--clean"
+            ;;
+
         "--setup") # [optional] installs required dependencies setup
             setup="--setup"
+            ;;
+
+        "--hooks") # installs git hooks
+            hooks="--hooks"
+            ;;
+
+        "--optional") # installs optional dependencies
+            optional="--optional"
             ;;
 
         "--silent") # [optional] suppress verbose output
@@ -98,10 +110,19 @@ if [[ "${silent}" == "--silent" ]]; then
     exec 2>&1 >/dev/null
 fi
 
+if [[ "${clean}" == "--clean" ]]; then
+    "${pwd}/bin/utils/cleanup.sh" --all
+fi
+
 if [[ "${setup}" == "--setup" ]]; then
     sudo "${pwd}/bin/setup.sh"
-    "${pwd}/bin/utils/cleanup.sh" --all
+fi
+
+if [[ "${hooks}" == "--hooks" ]]; then
     "${pwd}/bin/utils/install.sh" --hooks
+fi
+
+if [[ "${optional}" == "--optional" ]]; then
     "${pwd}/bin/utils/install.sh" --clangd
     "${pwd}/bin/utils/install.sh" --cmake
     "${pwd}/bin/utils/install.sh" --submodule-rexo
