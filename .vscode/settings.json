@@ -8,6 +8,7 @@
       "path": "/bin/bash"
     }
   },
+  "sonar.coverageReportPaths": "${workspaceFolder}/coverage",
   "testFilesOnSave.enabled": true,
   "testFilesOnSave.languageId": "any",
   "testFilesOnSave.testCommands": [
