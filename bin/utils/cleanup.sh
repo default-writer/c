@@ -46,16 +46,15 @@ install="$1"
 ## ${commands}
 
 case "${install}" in
-
-    *)
+    
+    "")
         ;;
-
-    "--help") # [optional] shows command description
+ 
+    "--help") # shows command description
         help
         ;;
 
     *)
-        help
         ;;
 
 esac
