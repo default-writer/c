@@ -46,8 +46,6 @@ fi
 
 install="$1"
 
-opts=( "${@:2}" )
-
 . "${pwd}/bin/scripts/load.sh"
 
 ## Installs project dependencies
@@ -59,49 +57,33 @@ case "${install}" in
     "")
         ;;
 
-    "--help") # shows command description
+    "--clean") # [optional] cleans up directories before build
+        clean="--clean"
+        ;;
+
+    "--setup") # [optional] installs required dependencies setup
+        setup="--setup"
+        ;;
+
+    "--hooks") # [optional] installs git hooks
+        hooks="--hooks"
+        ;;
+
+    "--optional") # [optional] installs optional dependencies
+        optional="--optional"
+        ;;
+
+    "--silent") # [optional] suppress verbose output
+        silent="--silent"
+        ;;
+
+    "--help") # [optional] shows command description
         help
         ;;
 
     *)
         help
         ;;
-
-esac
-
-for opt in ${opts[@]}; do
-    case ${opt} in
-
-        "")
-            ;;
-
-        "--clean") # [optional] cleans up directories before build
-            clean="--clean"
-            ;;
-
-        "--setup") # [optional] installs required dependencies setup
-            setup="--setup"
-            ;;
-
-        "--hooks") # [optional] installs git hooks
-            hooks="--hooks"
-            ;;
-
-        "--optional") # [optional] installs optional dependencies
-            optional="--optional"
-            ;;
-
-        "--silent") # [optional] suppress verbose output
-            silent="--silent"
-            ;;
-
-        "--help") # [optional] shows command description
-            help
-            ;;
-
-        *)
-            help
-            ;;
 
     esac
 done
