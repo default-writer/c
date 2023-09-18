@@ -46,39 +46,22 @@ fi
 
 install="$1"
 
+opts=( "${@:2}" )
+
 . "${pwd}/bin/scripts/load.sh"
 
 ## Installs project dependencies
-## Usage: ${script} [optional]
+## Usage: ${script} <option> [optional]
 ## ${commands}
 
 case "${install}" in
 
     "")
+        init="--init"
         ;;
 
-    "--clean") # [optional] cleans up directories before build
-        clean="--clean"
-        ;;
-
-    "--setup") # [optional] installs required dependencies setup
-        setup="--setup"
-        ;;
-
-    "--hooks") # [optional] installs git hooks
-        hooks="--hooks"
-        ;;
-
-    "--optional") # [optional] installs optional dependencies
-        optional="--optional"
-        ;;
-
-    "--silent") # [optional] suppress verbose output
-        silent="--silent"
-        ;;
-
-    "--help") # [optional] shows command description
-        help
+    "--init") # initializes project dependencies
+        init="--init"
         ;;
 
     *)
@@ -86,6 +69,39 @@ case "${install}" in
         ;;
 
 esac
+
+for opt in ${opts[@]}; do
+    case ${opt} in
+
+        "")
+            ;;
+
+        "--clean") # [optional] cleans up directories before build
+            clean="--clean"
+            ;;
+
+        "--setup") # [optional] installs required dependencies setup
+            setup="--setup"
+            ;;
+
+        "--hooks") # [optional] installs git hooks
+            hooks="--hooks"
+            ;;
+
+        "--optional") # [optional] installs optional dependencies
+            optional="--optional"
+            ;;
+
+        "--silent") # [optional] suppress verbose output
+            silent="--silent"
+            ;;
+
+        "--help") # [optional] shows command description
+            help
+            ;;
+
+    esac
+done
 
 
 if [[ "${silent}" == "--silent" ]]; then
@@ -110,7 +126,9 @@ if [[ "${optional}" == "--optional" ]]; then
     "${pwd}/bin/utils/install.sh" --submodule-rexo
 fi
 
-# "${pwd}/bin/utils/init.sh" --all
+if [[ "${init}" == "--init" ]]; then
+    "${pwd}/bin/utils/init.sh" --all
+fi
 
 if [[ "${silent}" == "--silent" ]]; then
     exec 1>&2 2>&-
