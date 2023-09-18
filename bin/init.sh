@@ -63,8 +63,13 @@ case "${install}" in
     "--init") # initializes project dependencies
         init="--init"
         ;;
+ 
+    "--help") # shows command description
+        help
+        ;;
 
     *)
+        help
         ;;
 
 esac
@@ -96,6 +101,10 @@ for opt in ${opts[@]}; do
             ;;
 
         "--help") # [optional] shows command description
+            help
+            ;;
+
+        *)
             help
             ;;
 

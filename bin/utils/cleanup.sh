@@ -55,6 +55,7 @@ case "${install}" in
         ;;
 
     *)
+        help
         ;;
 
 esac
