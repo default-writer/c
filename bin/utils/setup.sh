@@ -66,7 +66,7 @@ for opt in ${opts[@]}; do
             updgradeflags="--no-upgrade"
             ;;
 
-        "--help") # [optional] shows command desctiption
+        "--help") # [optional] shows command description
             help
             ;;
 

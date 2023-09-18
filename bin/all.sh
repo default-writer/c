@@ -74,7 +74,7 @@ case "${install}" in
         opts=( "${@:2}" )
         ;;
 
-    "--help") # [optional] shows command desctiption
+    "--help") # [optional] shows command description
         help
         ;;
 

@@ -68,7 +68,7 @@ case "${install}" in
         opts=( "${@:2}" )
         ;;
 
-    "--help") # [optional] shows command desctiption
+    "--help") # [optional] shows command description
         help
         ;;
 
@@ -124,7 +124,7 @@ for opt in ${opts[@]}; do
             vm_debug="--vm-debug"
             ;;
 
-        "--help") # [optional] shows command desctiption
+        "--help") # [optional] shows command description
             help
             ;;
 
@@ -167,6 +167,8 @@ if [[ "${cmake}" == "" ]]; then
     echo cmake not found. please run "${pwd}/bin/utils/install.sh" --cmake
     exit 8
 fi
+
+[[ ! -d "${build}" ]] && mkdir "${build}"
 
 output="${pwd}/output"
 [[ ! -d "${output}" ]] && mkdir "${output}"

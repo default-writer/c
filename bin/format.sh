@@ -86,7 +86,7 @@ case "${install}" in
         format=("InheritParentConfig")
         ;;
 
-    "--help") # [optional] shows command desctiption
+    "--help") # [optional] shows command description
         help
         ;;
 

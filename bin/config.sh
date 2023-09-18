@@ -70,7 +70,7 @@ case "${install}" in
         opts=( "${@:2}" )
         ;;
 
-    "--help") # [optional] shows command desctiption
+    "--help") # [optional] shows command description
         help
         ;;
 
@@ -126,7 +126,7 @@ for opt in ${opts[@]}; do
             vm_debug="--vm-debug"
             ;;
 
-        "--help") # [optional] shows command desctiption
+        "--help") # [optional] shows command description
             help
             ;;
 
@@ -141,7 +141,11 @@ if [[ "${silent}" == "--silent" ]]; then
     exec 2>&1 >/dev/null
 fi
 
-build="${pwd}/config-${source}"
+build="${pwd}/config"
+
+if [[ "${source}" == "all" ]]; then
+    build="${pwd}/config"
+fi
 
 if [[ ! "${dir}" == "" ]]; then
     build="${pwd}/${dir}"

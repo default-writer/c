@@ -39,15 +39,79 @@ cd "${pwd}"
 
 uid=$(id -u)
 
-# sudo "${pwd}/bin/setup.sh"
+if [ "${uid}" -eq 0 ]; then
+    echo "Please run as user"
+    exit
+fi
 
-"${pwd}/bin/utils/cleanup.sh" --all
-"${pwd}/bin/utils/install.sh" --hooks
-# "${pwd}/bin/utils/install.sh" --clangd
-# "${pwd}/bin/utils/install.sh" --cmake
-"${pwd}/bin/utils/install.sh" --submodule-rexo
+install="$1"
+
+opts=( "${@:2}" )
+
+. "${pwd}/bin/scripts/load.sh"
+
+## Installs project dependencies
+## Usage: ${script} [optional]
+## ${commands}
+
+case "${install}" in
+
+    "")
+        ;;
+
+    "--help") # [optional] shows command description
+        help
+        ;;
+
+    *)
+        help
+        ;;
+
+esac
+
+for opt in ${opts[@]}; do
+    case ${opt} in
+
+        "")
+            ;;
+
+        "--setup") # [optional] installs required dependencies setup
+            setup="--setup"
+            ;;
+
+        "--silent") # [optional] suppress verbose output
+            silent="--silent"
+            ;;
+
+        "--help") # [optional] shows command description
+            help
+            ;;
+
+        *)
+            help
+            ;;
+
+    esac
+done
+
+if [[ "${silent}" == "--silent" ]]; then
+    exec 2>&1 >/dev/null
+fi
+
+if [[ "${setup}" == "--setup" ]]; then
+    sudo "${pwd}/bin/setup.sh"
+    "${pwd}/bin/utils/cleanup.sh" --all
+    "${pwd}/bin/utils/install.sh" --hooks
+    "${pwd}/bin/utils/install.sh" --clangd
+    "${pwd}/bin/utils/install.sh" --cmake
+    "${pwd}/bin/utils/install.sh" --submodule-rexo
+fi
 
 "${pwd}/bin/utils/init.sh" --all
+
+if [[ "${silent}" == "--silent" ]]; then
+    exec 1>&2 2>&-
+fi
 
 [[ $SHLVL -gt 2 ]] || echo OK
 

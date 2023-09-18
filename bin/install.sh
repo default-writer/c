@@ -90,7 +90,7 @@ case "${install}" in
         raylib="--submodule-raylib"
         ;;
 
-    "--help") # shows command desctiption
+    "--help") # shows command description
         help
         ;;
 

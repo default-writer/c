@@ -37,6 +37,9 @@ pwd=$(cd "$(dirname $(dirname $(dirname "${BASH_SOURCE[0]}")))" &> /dev/null && 
 function get-cmake() {
     local cmake
     [ -d "${pwd}/.tools/cmake-3.25/bin" ] && cmake=${pwd}/.tools/cmake-3.25/bin/cmake || cmake=${cmake}
+    if [[ "${cmake}" == "" ]]; then
+        cmake=$(command -v cmake)
+    fi
     echo ${cmake}
 }
 
@@ -237,7 +240,7 @@ function get-options() {
                 vm_debug="--vm-debug"
                 ;;
 
-            "--help") # [optional] shows command desctiption
+            "--help") # [optional] shows command description
                 help="--help"
                 ;;
 

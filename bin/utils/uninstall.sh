@@ -109,7 +109,7 @@ case "${install}" in
         code --log error --uninstall-extension emeraldwalk.RunOnSave &>/dev/null
         ;;
 
-    "--help") # [optional] shows command desctiption
+    "--help") # [optional] shows command description
         help
         ;;
 
