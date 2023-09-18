@@ -37,7 +37,7 @@ static const struct string_pointer_methods* string_pointer = &string_pointer_met
 static u64 load_data() {
     u64 list_ptr = list->alloc();
     u64 reversed_list_ptr = list->alloc();
-    u64 file_path_ptr = string->load("c-substrings.txt");
+    u64 file_path_ptr = string->load("input-substrings.txt");
     u64 mode_ptr = string->load("rb");
     u64 f_ptr = file->alloc(file_path_ptr, mode_ptr);
     if (f_ptr != 0) {

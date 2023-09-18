@@ -110,7 +110,7 @@ if [[ "${optional}" == "--optional" ]]; then
     "${pwd}/bin/utils/install.sh" --submodule-rexo
 fi
 
-"${pwd}/bin/utils/init.sh" --all
+# "${pwd}/bin/utils/init.sh" --all
 
 if [[ "${silent}" == "--silent" ]]; then
     exec 1>&2 2>&-

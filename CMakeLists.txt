@@ -523,7 +523,7 @@ FILE(WRITE ${CMAKE_BINARY_DIR}/input.txt
     "fopen<\"input.txt\",\"rb\">f (? f==0 perror<\"file not found\" exit<1 : print<\"all ok\")"
 )
 
-FILE(WRITE ${CMAKE_BINARY_DIR}/c-substrings.txt
+FILE(WRITE ${CMAKE_BINARY_DIR}/input-substrings.txt
     "adadadsadsadad\n"
     "dad\n"
     "adsaddasaddad\n"
