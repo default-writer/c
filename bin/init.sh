@@ -43,8 +43,8 @@ uid=$(id -u)
 
 "${pwd}/bin/utils/cleanup.sh" --all
 "${pwd}/bin/utils/install.sh" --hooks
-"${pwd}/bin/utils/install.sh" --clangd
-"${pwd}/bin/utils/install.sh" --cmake
+# "${pwd}/bin/utils/install.sh" --clangd
+# "${pwd}/bin/utils/install.sh" --cmake
 "${pwd}/bin/utils/install.sh" --submodule-rexo
 
 "${pwd}/bin/utils/init.sh" --all
