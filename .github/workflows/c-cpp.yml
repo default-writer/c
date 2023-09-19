@@ -13,9 +13,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: configure
-      run: ./bin/init.sh --init
     - name: init
       run: ./bin/config.sh --all
+    - name: configure
+      run: ./bin/init.sh --init
     - name: coverage
       run: ./bin/coverage.sh --all
