@@ -314,7 +314,8 @@
       "exelord.git-commits",
       "donjayamanne.githistory",
       "guodongsun.vscode-git-cruise",
-      "rogalmic.bash-debug"
+      "rogalmic.bash-debug",
+      "circleci.circleci"
     ]
   }
 }
