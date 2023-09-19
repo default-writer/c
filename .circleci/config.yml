@@ -16,7 +16,7 @@ jobs:
       - checkout
       - run:
           name: "init"
-          command: ./bin/init.sh --init
+          command: ./bin/init.sh --init --optional
       - run:
           name: "coverage"
           command: ./bin/covereage.sh --all
