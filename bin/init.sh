@@ -44,80 +44,61 @@ if [ "${uid}" -eq 0 ]; then
     exit
 fi
 
-install="$1"
-
-opts=( "${@:2}" )
-
 . "${pwd}/bin/scripts/load.sh"
 
 ## Installs project dependencies
 ## Usage: ${script} <option> [optional]
 ## ${commands}
 
-case "${install}" in
-
-    "")
-        init="--init"
-        ;;
-
-    "--init") # initializes project dependencies
-        init="--init"
-        ;;
- 
-    "--help") # shows command description
-        help
-        ;;
-
-    *)
-        help
-        ;;
-
-esac
-
-for opt in ${opts[@]}; do
-    case ${opt} in
+while (($#)); do
+    case "$1" in
 
         "")
+            init="--init"
             ;;
 
-        "--clean") # [optional] cleans up directories before build
+        "--init") # initializes project dependencies
+            init="--init"
+            ;;
+     
+        "--clean") # cleans up directories before build
             clean="--clean"
             ;;
 
-        "--setup") # [optional] installs required dependencies setup
+        "--setup") # installs required dependencies setup
             setup="--setup"
             ;;
 
-        "--hooks") # [optional] installs git hooks
+        "--hooks") # installs git hooks
             hooks="--hooks"
             ;;
 
-        "--optional") # [optional] installs optional dependencies
+        "--optional") # installs optional dependencies
             optional="--optional"
             ;;
 
-        "--silent") # [optional] suppress verbose output
+        "--silent") # suppress verbose output
             silent="--silent"
+            shift
             ;;
 
-        "--help") # [optional] shows command description
+        "--help") # shows command description
             help
             ;;
 
         *)
             help
             ;;
-
     esac
+    shift
 done
-
 
 if [[ "${silent}" == "--silent" ]]; then
     exec 2>&1 >/dev/null
 fi
 
 if [[ "${clean}" == "--clean" ]]; then
-    "${pwd}/bin/utils/cleanup.sh" --all
+    "${pwd}/bin/utils/cleanup.sh"
 fi
 
 if [[ "${setup}" == "--setup" ]]; then
