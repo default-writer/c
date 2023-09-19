@@ -55,7 +55,6 @@ report*/
 
 # Files
 dump.txt
-Makefile
 callgrind.out.*
 lcov.info
 .args
