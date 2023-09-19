@@ -202,9 +202,11 @@ ${cmake} \
     -B"${build}" \
     -G "Ninja" 2>&1 >/dev/null
 
-for target in ${targets[@]}; do
+for config in ${targets[@]}; do
+    target="${config#*-}"
     echo building ${target}
     echo options "$(cmake-options)"
+    echo cmake ${cmake} --build "${build}" --target "${target}"
     if [[ "${silent}" == "--silent" ]]; then
         ${cmake} --build "${build}" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
     else

@@ -47,11 +47,6 @@ if [ -f "${pwd}/.args" ]; then args=$(cat "${pwd}/.args"); fi
 "${pwd}/bin/format.sh" --clang-format
 "${pwd}/bin/config.sh" $args
 
-# "${pwd}/bin/cmake.sh"  $args
-# "${pwd}/bin/logs.sh" $args
-# "${pwd}/bin/build.sh"  --all
-"${pwd}/bin/coverage.sh" --all
-
 [[ $SHLVL -gt 2 ]] || echo OK
 
 cd "${pwd}"
