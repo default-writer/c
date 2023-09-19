@@ -548,7 +548,7 @@ if(TARGETS)
     get_property(target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
     foreach(target_name ${target_names})
         get_target_property(TARGET_SOURCES ${target_name} SOURCES)
-        set(output_dir "${CMAKE_BINARY_DIR}/${target_name}")
+        set(output_dir "${CMAKE_BINARY_DIR}/config-${target_name}")
         file(MAKE_DIRECTORY ${output_dir})
 
         file(WRITE ${output_dir}/sources.txt "")
