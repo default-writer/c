@@ -1,4 +1,4 @@
 init:
 	./bin/init.sh
-all:
+coverage:
 	./bin/coverage.sh --all
