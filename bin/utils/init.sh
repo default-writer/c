@@ -44,7 +44,6 @@ pwd=$(cd "$(dirname $(dirname $(dirname "${BASH_SOURCE[0]}")))" &> /dev/null && 
 
 if [ -f "${pwd}/.args" ]; then args=$(cat "${pwd}/.args"); fi
 
-"${pwd}/bin/format.sh" --clang-format
 "${pwd}/bin/config.sh" $args
 
 [[ $SHLVL -gt 2 ]] || echo OK
