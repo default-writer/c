@@ -13,7 +13,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: init
-      run: make init
+    - name: configure
+      run: ./bin/init.sh --init
     - name: coverage
-      run: make coverage
+      run: ./bin/coverage.sh --all
