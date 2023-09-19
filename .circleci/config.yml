@@ -19,7 +19,7 @@ jobs:
           command: ./bin/init.sh --init --setup --optional
       - run:
           name: "coverage"
-          command: ./bin/covereage.sh --all
+          command: ./bin/coverage.sh --all
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
