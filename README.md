@@ -2,7 +2,11 @@
 
 <a href="" target="blank"><img style='height:128px' src='./resources/ecommerce.png'></a>
 
-## usage
+## status
+
+[![C/C++ CI](https://github.com/default-writer/c/actions/workflows/c-cpp.yml/badge.svg?branch=master)](https://github.com/default-writer/c/actions/workflows/c-cpp.yml)
+
+## description
 
 - C memory management
 
