@@ -22,6 +22,8 @@ jobs:
           command: ./bin/coverage.sh --all
       - setup_remote_docker:
           docker_layer_caching: true      
+      - store_artifacts:
+          path: coverage
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
