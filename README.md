@@ -5,6 +5,7 @@
 ## status
 
 [![C/C++ CI](https://github.com/default-writer/c/actions/workflows/c-cpp.yml/badge.svg?branch=master)](https://github.com/default-writer/c/actions/workflows/c-cpp.yml)
+[![Coverage Status](https://coveralls.io/repos/github/default-writer/c/badge.svg?branch=master)](https://coveralls.io/github/default-writer/c?branch=master)
 
 ## description
 

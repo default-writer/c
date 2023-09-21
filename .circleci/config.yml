@@ -2,6 +2,9 @@
 # See: https://circleci.com/docs/configuration-reference
 version: 2.1
 
+orbs:
+  coveralls: coveralls/coveralls@2.2.1
+
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/configuration-reference/#jobs
 jobs:
@@ -24,6 +27,8 @@ jobs:
           docker_layer_caching: true      
       - store_artifacts:
           path: coverage
+      - coveralls/upload:
+          coverage_file: ./coverage/lcov.info
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
