@@ -31,13 +31,13 @@ static u64 read_data(u64 list_ptr, const char* prompt) {
 
 ```c
 int main(void) {
-    pointer->init(8); // initializes virtual memory manager with chunk size of 8 elements
+    pointer->init(8); // initializes virtual memory manager with chunk size of 8
 
     // some work with standard classes: os, string, data, etc.
 
     pointer->release(); // releases all not freed memory
-    pointer->gc();      // releases all resources particularly added to GC
-    pointer->destroy(); // releases all memory used by memory manager
+    pointer->gc();      // releases all resources added to GC
+    pointer->destroy(); // releases virtual memory manager
     return 0;
 }
 ```
