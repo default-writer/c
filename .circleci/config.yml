@@ -17,14 +17,14 @@ jobs:
     # See: https://circleci.com/docs/configuration-reference/#steps
     steps:
       - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
           name: "init"
           command: ./bin/init.sh --init --setup --optional
       - run:
           name: "coverage"
           command: ./bin/coverage.sh --all
-      - setup_remote_docker:
-          docker_layer_caching: true      
       - store_artifacts:
           path: coverage
       - coveralls/upload:
