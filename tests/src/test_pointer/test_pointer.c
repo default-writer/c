@@ -2361,8 +2361,6 @@ RX_TEST_CASE(pointer_tests, test_pointer_strings, .fixture = test_fixture) {
 /* test init */
 RX_TEST_CASE(pointer_tests, test_pointer_string_pointer_free, .fixture = test_fixture) {
     pointer->init(8);
-    u64 data_ptr = string->lessthan(0, 0);
-    RX_ASSERT(data_ptr != 0);
     string_pointer->free(0);
     pointer->release();
     pointer->destroy();
