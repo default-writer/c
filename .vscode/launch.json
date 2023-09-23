@@ -10,7 +10,8 @@
       "name": "bash-debug",
       "terminalKind": "integrated",
       "cwd": "${workspaceFolder}",
-      "program": "./bin/config.sh"
+      "program": "./bin/build.sh",
+      "args": ["--target", "c-substrings", "--gc", "--sanitize"]
     },
     {
       "name": "(lldb) list",

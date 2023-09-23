@@ -51,6 +51,7 @@ function get-targets() {
     local cmake
     local target
     local array
+    local config
 
     if [[ ! -d "${pwd}/config" ]]; then
         exec 2>&1 >/dev/null
@@ -69,37 +70,49 @@ function get-targets() {
         exec 1>&2 2>&-
     fi
 
+    array=()
     files=()
     if [[ -d "${pwd}/config" ]]; then
         files=$(find "${pwd}/config" -type f -name "sources.txt")
         for file in ${files[@]}; do
-            array+=( $(basename $(dirname "${file}") ) )
+            config=$(basename $(dirname "${file}"))
+            array+=( ${config#*-} )
         done
     fi
 
     printf '%s\n' ${array[@]} | cat -n | sort -uk2 | sort -nk1 | cut -f2-
 }
 
-function search() {
+function search-link() {
     local target_src
     local target_dest
     local target_link
+    local array
     local source
+    local result
+
+    array=()
     source=$1
     target_src=$(sed -n "s#target_link_libraries(\([^ ]*\) .*${source}.*)#\1#p" CMakeLists.txt)
     target_dest=$(sed -n "s#target_link_libraries(${source}* \w* \(.*\))#\1#p" CMakeLists.txt)
-    if [[ ! "${target_dest[@]}" == "" ]]; then
-        for target_link in "${target_dest[@]}"; do
-            search ${target_link}
+    while [[ ! "${target_dest[@]}" == "" ]]; do
+        for target_link in ${target_dest[@]}; do
+            array+=( ${target_link} )
+            source="${target_link}"
         done
-        printf '%s\n' "${target_dest[@]}"
-    fi
+        target_src=$(sed -n "s#target_link_libraries(\([^ ]*\) .*${source}.*)#\1#p" CMakeLists.txt)
+        target_dest=$(sed -n "s#target_link_libraries(${source}* \w* \(.*\))#\1#p" CMakeLists.txt)
+    done
+    printf '%s\n' ${array[@]} | cat -n | sort -uk2 | sort -nk1 | cut -f2-
 }
 
 function get-linked-targets() {
     local link
+    local linked_targets
+    linked_targets=()
     link=$1
-    search ${link}
+    linked_targets+=( $(search-link ${link}) )
+    printf '%s\n' ${linked_targets[@]}
 }
 
 function get-cmake-targets() {
@@ -180,16 +193,20 @@ function get-source-targets() {
                 array+=( ${target} )
                 break
             fi
-            files=$(find "${pwd}/config/${target}" -type f -name "sources.txt")
-            for file in ${files[@]}; do
-                while IFS= read -r line; do
-                    if [[ "${source}" == "${line}" ]]; then
-                        link=$(basename $(dirname "${file}"))
-                        linked_targets=$(get-linked-targets ${link})
-                        array+=( $(echo ${link} ${linked_targets[@]}) )
-                    fi
-                done <  $file
-            done
+            if [[ -d "${pwd}/config/config-${target}" ]]; then
+                files=$(find "${pwd}/config/config-${target}" -type f -name "sources.txt")
+                for file in ${files[@]}; do
+                    while IFS= read -r line; do
+                        if [[ "${source}" == "${line}" ]]; then
+                            config=$(basename $(dirname "${file}"))
+                            link=${config#*-}
+                            linked_targets=$(get-linked-targets ${link})
+                            array+=( ${config#*-} )
+                            array+=( ${linked_targets[@]} )
+                        fi
+                    done <  $file
+                done
+            fi
         done
     fi
 

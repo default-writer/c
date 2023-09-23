@@ -217,7 +217,7 @@ ${cmake} \
     fi
 
 for config in ${targets[@]}; do
-    target="${config#*-}"
+    target="${config}"
     echo building ${target}
     echo options "$(cmake-options)"
     echo cmake ${cmake} --build "${build}" --target "${target}"
