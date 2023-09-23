@@ -140,7 +140,8 @@ int main(void) {
     u64 secret_ptr = string->load("tic tak toe");
     while (quit == 0) {
         u64 string_ptr = read_data(list_data_ptr, "[string]");
-        if (string->size(string_ptr) == 0) {
+        u64 input_size = string->size(string_ptr);
+        if (input_size == 0) {
             quit = 1;
             printf(">[quit]\n");
             continue;
@@ -151,7 +152,9 @@ int main(void) {
             continue;
         }
         printf(">[%saccepted%s]:\n", ascii_code, reset_code);
-        os->putc(string_ptr);
+        char* source_data = string->unsafe(string_ptr);
+        printf("[%s]\n", source_data);
+        // os->putc(string_ptr);
         u64 pattern_ptr = read_data(list_data_ptr, "[pattern]");
         if (string->size(pattern_ptr) == 0) {
             quit = 1;
@@ -159,8 +162,10 @@ int main(void) {
             continue;
         }
         printf(">[%saccepted%s]:\n", ascii_code, reset_code);
-        os->putc(pattern_ptr);
-        u64 size = string->size(pattern_ptr);
+        char* pattern_data = string->unsafe(pattern_ptr);
+        printf("[%s]\n", pattern_data);
+        // os->putc(pattern_ptr);
+        u64 pattern_size = string->size(pattern_ptr);
         u64 string_pointer_ptr = 0;
         u64 current_ptr = string_ptr;
         while ((string_pointer_ptr = string->strchr(current_ptr, pattern_ptr)) != 0) {
@@ -169,23 +174,35 @@ int main(void) {
                 break;
             }
             if (string->lessthan(string_pointer_ptr, match_ptr)) {
-                u64 match_start_ptr = string->left(match_ptr, size);
+                u64 match_start_ptr = string->left(match_ptr, pattern_size);
                 if (match_start_ptr == 0) {
                     break;
                 }
                 u64 distance = string->lessthan(string_ptr, match_start_ptr);
+                u64 str_ncpy = string->strncpy(match_start_ptr, pattern_size);
+                if (str_ncpy == 0) {
+                    break;
+                }
+                char* str_data = string->unsafe(str_ncpy);
+                printf("[");
                 if (distance > 0) {
                     u64 i = 0;
                     while (i++ < distance) {
                         printf(" ");
                     }
                 }
-                u64 str_ncpy = string->strncpy(match_start_ptr, size);
-                if (str_ncpy == 0) {
-                    break;
+                printf("%s", str_data);
+                if (input_size > pattern_size + distance) {
+                    u64 j = input_size - pattern_size - distance;
+                    while (j-- > 0) {
+                        printf(" ");
+                    }
                 }
-                printf("%s[%lld]\n", string->unsafe(str_ncpy), distance);
+                printf("] at position: %lld\n", distance);
+                string_pointer->free(match_start_ptr);
+                string_pointer->free(str_ncpy);
             }
+            string_pointer->free(string_pointer_ptr);
             current_ptr = match_ptr;
         }
     }

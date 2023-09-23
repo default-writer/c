@@ -2359,6 +2359,29 @@ RX_TEST_CASE(pointer_tests, test_pointer_strings, .fixture = test_fixture) {
 }
 
 /* test init */
+RX_TEST_CASE(pointer_tests, test_pointer_string_pointer_free, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 data_ptr = string->lessthan(0, 0);
+    RX_ASSERT(data_ptr != 0);
+    string_pointer->free(0);
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(pointer_tests, test_pointer_string_pointer_lessthan_free, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 pattern_ptr = string->load("b");
+    u64 quantum_str_ptr1 = string->load("abba");
+    u64 quantum_str_ptr2 = string->offset(quantum_str_ptr1, pattern_ptr);
+    u64 data_ptr = string->lessthan(quantum_str_ptr1, quantum_str_ptr2);
+    RX_ASSERT(data_ptr != 0);
+    string_pointer->free(data_ptr);
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
 RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_0_0, .fixture = test_fixture) {
     pointer->init(8);
     u64 error_ptr = string->lessthan(0, 0);
@@ -4239,7 +4262,10 @@ static void parse_text(u64 text_string_ptr) {
                     }
                 }
                 printf("%s[%lld]\n", string->unsafe(str_ncpy), distance);
+                string_pointer->free(match_start_ptr);
+                string_pointer->free(str_ncpy);
             }
+            string_pointer->free(string_pointer_ptr);
             current_ptr = match_ptr;
         }
     }
