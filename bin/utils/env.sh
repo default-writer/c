@@ -79,6 +79,12 @@ case "${install}" in
         grep -qxF '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"' $HOME/.bashrc || echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"' >> $HOME/.bashrc
         ;;
 
+    "--bazel") # installs bazel environment variables in .bashrc
+        grep -qxF '# bazel' $HOME/.bashrc || (tail -1 $HOME/.bashrc | grep -qxF '' || echo '' >> $HOME/.bashrc && echo '# bazel' >> $HOME/.bashrc)
+        grep -qxF 'export BAZEL_ROOT="$HOME/.bazel"' $HOME/.bashrc || echo 'export BAZEL_ROOT="$HOME/.bazel"' >> $HOME/.bashrc
+        grep -qxF 'export PATH="$BAZEL_ROOT:$BAZEL_ROOT/tools:$PATH"' $HOME/.bashrc || echo 'export PATH="$BAZEL_ROOT:$BAZEL_ROOT/tools:$PATH"' >> $HOME/.bashrc
+        ;;
+
     "--gtk") # installs GTK 4 environment variables in .bashrc
         GTK_INCLUDE_DIRS=$(echo $(pkg-config --cflags gtk4))
         GTK_LIBRARY_DIRS=$(echo $(pkg-config --libs gtk4))
@@ -88,11 +94,9 @@ case "${install}" in
         ;;
 
     "--dotnet") # installs dotnet environment variables in .bashrc
-        DOTNET_ROOT=$HOME/.dotnet
-        DOTNET_PATH=$PATH:$HOME/.dotnet:$HOME/.dotnet/tools
         grep -qxF '# dotnet 7' $HOME/.bashrc || (tail -1 $HOME/.bashrc | grep -qxF '' || echo '' >> $HOME/.bashrc && echo '# dotnet 7' >> $HOME/.bashrc)
-        grep -qxF 'export DOTNET_ROOT="' $HOME/.bashrc || echo 'export DOTNET_ROOT="' ${DOTNET_ROOT} '"' >> $HOME/.bashrc
-        grep -qxF 'export PATH="' $HOME/.bashrc || echo 'export PATH="' ${DOTNET_PATH} '"' >> $HOME/.bashrc
+        grep -qxF 'export DOTNET_ROOT="$HOME/.dotnet"' $HOME/.bashrc || echo 'export DOTNET_ROOT="$HOME/.dotnet"' >> $HOME/.bashrc
+        grep -qxF 'export PATH="$DOTNET_ROOT:$DOTNET_ROOT/tools:$PATH"' $HOME/.bashrc || echo 'export PATH="$DOTNET_ROOT:$DOTNET_ROOT/tools:$PATH"' >> $HOME/.bashrc
         ;;
 
     *)
