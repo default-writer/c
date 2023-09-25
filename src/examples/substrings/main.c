@@ -204,6 +204,8 @@ int main(void) {
                 string_pointer->free(str_ncpy);
             }
             string_pointer->free(string_pointer_ptr);
+            // pointer->release() frees memory used by string reference pointers keeping memory footprint low
+            pointer->release();
             current_ptr = match_ptr;
         }
     }
