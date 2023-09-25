@@ -462,6 +462,5 @@
   "workbench.list.fastScrollSensitivity": 2,
   "workbench.editor.showTabs": true,
   "editor.fontSize": 12,
-  "bsv.bazel.buildFlags": ["--config=clang_config"],
-  "bsv.cc.compdb.targets": ["//main/hello-world"]
+  "markdownlint.ignore": [".bazelrc"]
 }
