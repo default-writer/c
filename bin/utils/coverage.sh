@@ -219,11 +219,7 @@ for config in ${targets[@]}; do
     echo building ${target}
     echo options "$(cmake-options)"
     echo cmake ${cmake} --build "${build}" --target "${target}"
-    if [[ "${silent}" == "--silent" ]]; then
-        ${cmake} --build "${build}" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
-    else
-        ${cmake} --build "${build}" --target "${target}" || (echo ERROR: "${target}" && exit 1)
-    fi
+    ${cmake} --build "${build}" --target "${target}" 2>&1 >/dev/null || (echo ERROR: "${target}" && exit 1)
     case "${target}" in 
         c-*) ;& main-*) ;& test-*)
             timeout --foreground 180 $(cmake-valgrind-options) "${build}/${target}" 2>&1 >"${output}/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
