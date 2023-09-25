@@ -85,10 +85,6 @@ for opt in ${opts[@]}; do
             silent="--silent"
             ;;
 
-        "--help") # [optional] shows command description
-            help
-            ;;
-
         *)
             help
             ;;
