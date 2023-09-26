@@ -78,8 +78,8 @@ static u64 read_input(const char* prompt) {
     global_memset(&buffer, 0, 100);
     printf(">%s:\n", prompt);
     char ch = 0;
-    int i;
-    for (i = 0; i < 100; i++) {
+    int i = 0;
+    for (; i < 100; i++) {
         ch = (char)getchar();
         if (ch == EOF || ch == '\n') {
             break;
