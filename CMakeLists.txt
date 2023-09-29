@@ -358,6 +358,7 @@ set(MAIN_TESTS_VM2_SOURCE tests/v2/main-tests_v2.c)
 #examples
 set(SUBSTRINGS src/examples/substrings/main.c)
 set(LEETCODE_VALID_PARENTHESES src/examples/leetcode/valid-parentheses.c)
+set(LEETCODE_LONGEST_VALID_PARENTHESES src/examples/leetcode/longest-valid-parentheses.c)
 
 #zen
 set(ZEN_SOURCE zen/zen.c)
@@ -462,6 +463,7 @@ add_executable(main-tests-vm2 ${MAIN_TESTS_VM2_SOURCE})
 # examples
 add_executable(c-substrings ${SUBSTRINGS})
 add_executable(c-valid-parentheses ${LEETCODE_VALID_PARENTHESES})
+add_executable(c-longest-valid-parentheses ${LEETCODE_LONGEST_VALID_PARENTHESES})
 
 #zen
 add_executable(zen ${ZEN_SOURCE})
