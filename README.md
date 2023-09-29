@@ -137,7 +137,7 @@ run (as co-owner or contributor)
 
 run
 
-- ./bin/init.sh
+- ./bin/init.sh --setup
 
 ## GTK GUI app development
 
@@ -181,6 +181,14 @@ support this project [become a sponsor](https://opencollective.com/c-vm#sponsor)
 - playing around with visibility in class declarations
 
 ## documentation
+
+### initialization
+
+```bash
+- ./bin/init.sh --setup
+- ./bin/init.sh --hooks
+- ./bin/init.sh --optional
+```
 
 ### doxygen generated documentation
 
