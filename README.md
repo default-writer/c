@@ -137,6 +137,10 @@ git config --global user.email "$USER_EMAIL"
 git clone https://github.com/default-writer/c.git
 ```
 
+## clang
+
+[docs](https://manpages.ubuntu.com/manpages/jammy/man1/clangd-11.1.html)
+
 ## containers
 
 <a href="" target="blank"><img style='height:128px' src='./resources/digital-library.png'></a>
@@ -162,6 +166,21 @@ Sets up primary/optional tools and git hooks
 ## GTK GUI app development
 
 <a href="" target="blank"><img style='height:128px' src='./resources/digital-library.png'></a>
+
+### setup
+
+- add/update Visual Studio Code environment settings:
+
+```json
+"environment": [
+  {
+    "name": "UI_MODE",
+    "value": "--ui"
+  }
+]
+```
+
+- run command line build
 
 ```bash
 cd gtk

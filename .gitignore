@@ -74,3 +74,6 @@ src/compile_commands.json
 
 bazel-*/
 bazel-*
+
+.vscode/settings.json
+.vscode/settings.local.json

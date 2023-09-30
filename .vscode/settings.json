@@ -231,12 +231,7 @@
     ],
     "console": "integratedTerminal",
     "cwd": "${workspaceRoot}/cmake",
-    "environment": [
-      // {
-      //   "name": "UI_MODE",
-      //   "value": "--ui"
-      // }
-    ]
+    "environment": []
   },
   "cmake.autoSelectActiveFolder": true,
   "cmake.default.generator": "Ninja",
@@ -331,7 +326,6 @@
     "CONFIG_GC",
     "CODE_SANITIZER"
   ],
-  /* https://manpages.ubuntu.com/manpages/jammy/man1/clangd-11.1.html */
   "clangd.arguments": [
     "--compile-commands-dir=${workspaceFolder}/src",
     "-j=8",
@@ -343,7 +337,7 @@
     "--clang-tidy",
     "--fallback-style=WebKit"
   ],
-  "clangd.path": "${workspaceFolder}/.tools/clangd_16.0.2/bin/clangd",
+  "clangd.path": "",
   "clangd.checkUpdates": true,
   "clangd.restartAfterCrash": true,
   "clangd.onConfigChanged": "restart",
@@ -425,7 +419,7 @@
   },
   "git.suggestSmartCommit": false,
   "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "trunk.io"
   },
   "files.refactoring.autoSave": false,
   "editor.fontVariations": false,
