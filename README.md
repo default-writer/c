@@ -161,6 +161,8 @@ Sets up primary/optional tools and git hooks
 
 ## GTK GUI app development
 
+<a href="" target="blank"><img style='height:128px' src='./resources/digital-library.png'></a>
+
 ```bash
 cd gtk
 ./bin/build.sh --target gtk-experiment1 --clean
@@ -177,6 +179,8 @@ UI_MODE=--ui ./build/gtk-experiment1
 - runs with required and optional command-line parameters
 
 ## history
+
+<a href="" target="blank"><img style='height:128px' src='./resources/digital-library.png'></a>
 
 ## local repos
 
@@ -210,7 +214,9 @@ support this project [become a sponsor](https://opencollective.com/c-vm#sponsor)
 - ./bin/init.sh --optional
 ```
 
-### doxygen generated documentation
+## doxygen generated documentation
+
+<a href="" target="blank"><img style='height:128px' src='./resources/digital-library.png'></a>
 
 [C API](docs/refman.pdf) PDF([refman.pdf][refman])
 
@@ -225,12 +231,16 @@ support this project [become a sponsor](https://opencollective.com/c-vm#sponsor)
 
 ## resources
 
+<a href="" target="blank"><img style='height:128px' src='./resources/digital-library.png'></a>
+
 - [ubuntu](https://icons8.com/icon/63208/ubuntu") icon by [icons8](https://icons8.com)
 - [vectorsmarket15](https://www.flaticon.com/authors/vectorsmarket15)
 - [ecommerce icons](https://www.flaticon.com/free-icons/ecommerce)
 - [flaticon](https://www.flaticon.com)
 
 ## links
+
+<a href="" target="blank"><img style='height:128px' src='./resources/digital-library.png'></a>
 
 - [git](https://git-scm.com)
 - [pyenv](https://github.com/pyenv/pyenv)
@@ -242,11 +252,9 @@ support this project [become a sponsor](https://opencollective.com/c-vm#sponsor)
 
 ## requirements
 
+<a href="" target="blank"><img style='height:128px' src='./resources/digital-library.png'></a>
+
 - [rexo](https://github.com/christophercrouzet/rexo)
-
-## gists
-
-- [cpu frequency cotrol (widows)](https://gist.github.com/default-writer/7257a734def25a2f3b6c636c8fb463d7)
 
 [refman]: docs/refman.pdf
 [memory]: docs/pdf/memory.pdf
