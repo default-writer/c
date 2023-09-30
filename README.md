@@ -45,7 +45,9 @@ int main(void) {
 
 ## inspiration
 
-- [Konstantin Vladimirov](https://github.com/tilir/c-graduate) [Introduction to C](https://www.youtube.com/watch?v=7YhRFx-oyW4&ab_channel=KonstantinVladimirov)
+- [tilir](https://github.com/tilir/c-graduate)
+- [introduction to C (ru)](https://www.youtube.com/watch?v=7YhRFx-oyW4&ab_channel=KonstantinVladimirov)
+- [practice C bash/linux/gcc (ru)](https://youtu.be/KLv-5jWlKjM)
 
 ## vision
 
