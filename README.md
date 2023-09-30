@@ -126,18 +126,38 @@ repo is ready to run on containers, WSL, remote hosts.
 
 ### remote development
 
-run (as co-owner or contributor)
+- installation from git repo (manually)
 
-- eval `ssh-agent -s`
-- git config --global user.name "$USER_NAME"
-- git config --global user.email "$USER_EMAIL"
-- git clone [https://github.com/default-writer/c.git](https://github.com/default-writer/c.git)
+Installs sources from git [repo](https://github.com/default-writer/c.git)
 
-### containers
+```bash
+eval `ssh-agent -s`
+git config --global user.name "$USER_NAME"
+git config --global user.email "$USER_EMAIL"
+git clone https://github.com/default-writer/c.git
+```
 
-run
+## containers
 
-- ./bin/init.sh --setup
+<a href="" target="blank"><img style='height:128px' src='./resources/digital-library.png'></a>
+
+### manual installation (minimal install)
+
+- init
+
+Sets up primary/optional tools and git hooks
+
+```bash
+./bin/init.sh --setup
+./bin/init.sh --optional
+./bin/init.sh --hooks
+```
+
+- rexo
+
+```bash
+./bin/utils/install.sh --submodule-rexo
+```
 
 ## GTK GUI app development
 
