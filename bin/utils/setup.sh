@@ -143,6 +143,10 @@ case "${install}" in
         rm -f /tmp/packages-microsoft-prod.deb
         upgrade ${updgradeflags}
         ;;
+        
+    "--curl-openssl") # installs curl development library
+        apt-get install libcurl4-openssl-dev
+        ;;
 
     "--nodejs-bin") # installs nodejs using binary distribution
         update ${updateflags}
