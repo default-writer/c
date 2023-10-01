@@ -24,7 +24,7 @@
  *
  */
 #include "class/class.h"
-#include "common/alloc.h"
+#include "common/memory.h"
 
 extern struct_class class_definition;
 

@@ -24,7 +24,7 @@
  *
  */
 #include "vm/v1/vm_v1.h"
-#include "common/alloc.h"
+#include "common/memory.h"
 #include "list-micro/data.h"
 #include "pointer/v1/pointer_v1.h"
 
@@ -42,10 +42,6 @@ struct vm_pointer {
     struct vm_data* vm;
 };
 #endif
-
-/* definition */
-extern const struct memory memory_definition;
-static const struct memory* memory = &memory_definition;
 
 /* private */
 struct vm {

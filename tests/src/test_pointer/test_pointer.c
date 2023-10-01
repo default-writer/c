@@ -28,7 +28,7 @@
 
 #include "test_pointer.h"
 
-#include "common/alloc.h"
+#include "common/memory.h"
 #include "list-micro/data.h"
 #include "list/v1/list_v1.h"
 #include "playground/brain/brain.h"

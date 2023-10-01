@@ -24,7 +24,7 @@
  *
  */
 #include "pointer/v1/pointer_v1.h"
-#include "common/alloc.h"
+#include "common/memory.h"
 #include "list-micro/data.h"
 #include "vm/v1/vm_v1.h"
 
@@ -35,11 +35,8 @@
 /* public */
 u64 pointer_vm_register_type(u64 id, const struct vm_type* type);
 
-/* definition */
-extern const struct memory memory_definition;
-static const struct memory* memory = &memory_definition;
-
 /* private */
+
 struct vm_types {
     struct vm_types* next;
     u64 id;
@@ -127,7 +124,7 @@ static const struct pointer_vm_methods* virtual = &pointer_vm_methods_definition
 static u64 type_count = TYPE_USER;
 
 static u64 vm_types_init(u64 id, const struct vm_type* type) {
-    struct vm_types* next = global_alloc(sizeof(struct vm_types));
+    struct vm_types* next = memory->alloc(sizeof(struct vm_types));
     next->id = id == TYPE_NULL || id >= TYPE_USER ? type_count++ : id;
     next->free = type->free;
     next->next = vm_types;
@@ -138,7 +135,7 @@ static u64 vm_types_init(u64 id, const struct vm_type* type) {
 static void DESTROY vm_types_destroy() {
     while (vm_types->next != 0) {
         struct vm_types* prev = vm_types->next;
-        global_free(vm_types, sizeof(struct vm_types));
+        memory->free(vm_types, sizeof(struct vm_types));
         vm_types = prev;
     }
 }
@@ -155,7 +152,7 @@ static struct pointer* pointer_vm_alloc(u64 size, u64 id) {
 
 static void pointer_vm_realloc(struct pointer* ptr, u64 size) {
     if (ptr != 0 && ptr->data != 0) {
-        ptr->data = global_realloc(ptr->data, ptr->size, size);
+        ptr->data = memory->realloc(ptr->data, ptr->size, size);
         ptr->size = size;
     }
 }
@@ -204,7 +201,7 @@ static void pointer_init_internal(struct pointer_data* ptr, u64 size) {
     list_init(void);
     object_init(void);
 #endif
-    types = global_alloc(type_count * sizeof(struct vm_types));
+    types = memory->alloc(type_count * sizeof(struct vm_types));
     struct vm_types* current = vm_types;
     while (current->next != 0) {
         struct vm_types* prev = current->next;
@@ -217,7 +214,7 @@ static void pointer_init_internal(struct pointer_data* ptr, u64 size) {
 }
 
 static void pointer_destroy_internal(struct pointer_data* ptr) {
-    global_free(types, type_count * sizeof(struct vm_types));
+    memory->free(types, type_count * sizeof(struct vm_types));
 #ifdef USE_GC
     list->destroy(&ptr->gc);
 #endif

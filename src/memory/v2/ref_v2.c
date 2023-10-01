@@ -24,17 +24,13 @@
  *
  */
 #include "memory/api/v2/ref_v2.h"
-#include "common/alloc.h"
+#include "common/memory.h"
 #include "playground/memory/list/v2/memory_list_v2.h"
 
 /* macros */
 #define PTR_SIZE sizeof(void*) /* size of a pointer */
 #define MEMORY_REF_SIZE sizeof(struct memory_ref)
 #define ALLOC_SIZE(size) (MEMORY_REF_SIZE + size * PTR_SIZE)
-
-/* definition */
-extern const struct memory memory_definition;
-static const struct memory* memory = &memory_definition;
 
 /* declaration */
 

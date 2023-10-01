@@ -24,14 +24,10 @@
  *
  */
 #include "memory_list_v3.h"
-#include "common/alloc.h"
+#include "common/memory.h"
 
 /* macros */
 #define PTR_SIZE sizeof(void*) /* size of a pointer */
-
-/* definition */
-extern const struct memory memory_definition;
-static const struct memory* memory = &memory_definition;
 
 /* private */
 

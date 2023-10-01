@@ -29,7 +29,7 @@
 #include "../.deps/rexo/include/rexo.h"
 #endif
 
-#include "common/alloc.h"
+#include "common/memory.h"
 #include "playground/class/v2/class_v2.h"
 #include "playground/list/v2/list_v2.h"
 

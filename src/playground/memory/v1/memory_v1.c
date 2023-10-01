@@ -23,14 +23,10 @@
  * SOFTWARE.
  *
  */
-#include "common/alloc.h"
+#include "common/memory.h"
 #include "playground/memory/api/memory.h"
 
 #define MAX_MEMORY 0xffff /* 64K bytes */
-
-/* definition */
-extern const struct memory memory_definition;
-static const struct memory* memory = &memory_definition;
 
 /* private */
 

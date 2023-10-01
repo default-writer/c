@@ -23,7 +23,7 @@
  * SOFTWARE.
  *
  */
-#include "common/alloc.h"
+#include "common/memory.h"
 #include "playground/memory/api/memory.h"
 
 extern const struct memory_allocator_v2 memory_allocator_v5;

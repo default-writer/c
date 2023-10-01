@@ -23,7 +23,7 @@
  * SOFTWARE.
  *
  */
-#include "common/alloc.h"
+#include "common/memory.h"
 #include "common/parameters.h"
 #include "list-alloc/data.h"
 
@@ -31,14 +31,10 @@
 #define PTR_SIZE sizeof(void*) /* size of a pointer */
 #define ALLOC_SIZE(n) (((n) + 1) * PTR_SIZE) /* buffer size in bytes = size of 8 items */
 
-/* list parameters definition */
+/* definition */
 extern struct list_parameters list_parameters_definition;
 
 /* implementation */
-
-/* definition */
-extern const struct memory memory_definition;
-static const struct memory* memory = &memory_definition;
 
 /* private */
 
@@ -95,7 +91,7 @@ static void list_push(struct list_data** current, void* payload) {
         /* checks if current data pointer allocated all data */
         if (offset == ptr->size) {
             /* reallocates current data pointer to the new memory location */
-            ptr->data = global_realloc(ptr->data, ptr->size, ptr->size + ALLOC_SIZE(parameters->block_size));
+            ptr->data = memory->realloc(ptr->data, ptr->size, ptr->size + ALLOC_SIZE(parameters->block_size));
             /* updates the size of current data chunk */
             ptr->size += ALLOC_SIZE(parameters->block_size);
             /* updates current data pointer */

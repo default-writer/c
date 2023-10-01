@@ -24,16 +24,12 @@
  *
  */
 #include "playground/list/v2/list_v2.h"
-#include "common/alloc.h"
+#include "common/memory.h"
 
 /* macros */
 #define DEFAULT_SIZE 101
 #define PTR_SIZE sizeof(void*) /* size of a pointer */
 #define ALLOC_SIZE(size) (size * PTR_SIZE)
-
-/* definition */
-extern const struct memory memory_definition;
-static const struct memory* memory = &memory_definition;
 
 /* private */
 

@@ -23,12 +23,8 @@
  * SOFTWARE.
  *
  */
-#include "common/alloc.h"
+#include "common/memory.h"
 #include "list-micro/data.h"
-
-/* definition */
-extern const struct memory memory_definition;
-static const struct memory* memory = &memory_definition;
 
 /* private */
 

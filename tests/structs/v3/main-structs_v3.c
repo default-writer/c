@@ -26,7 +26,7 @@
 /* #include "A.h" */
 #include "B.h"
 #include "class/class.h"
-#include "common/alloc.h"
+#include "common/memory.h"
 
 extern struct_interface_B interface_B_definition;
 static const interface_B instance_interface_B = &interface_B_definition;

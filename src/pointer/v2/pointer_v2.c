@@ -24,7 +24,7 @@
  *
  */
 #include "pointer/v2/pointer_v2.h"
-#include "common/alloc.h"
+#include "common/memory.h"
 #include "list-micro/data.h"
 #include "vm/v2/vm_v2.h"
 
@@ -33,10 +33,6 @@
 /* definition */
 extern const struct vm_methods vm_methods_definition;
 extern const struct list list_micro_definition;
-
-/* definition */
-extern const struct memory memory_definition;
-static const struct memory* memory = &memory_definition;
 
 /* private */
 
@@ -133,7 +129,7 @@ static struct pointer* pointer_alloc_internal(u64 size, enum type type) {
 }
 
 static void pointer_realloc_internal(struct pointer* ptr, u64 size) {
-    ptr->data = global_realloc(ptr->data, ptr->size, size);
+    ptr->data = memory->realloc(ptr->data, ptr->size, size);
     ptr->size = size;
 }
 

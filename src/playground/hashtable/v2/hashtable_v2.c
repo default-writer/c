@@ -24,7 +24,7 @@
  *
  */
 #include "playground/hashtable/v2/hashtable_v2.h"
-#include "common/alloc.h"
+#include "common/memory.h"
 #include "common/lcg.h"
 #include "playground/list/v2/list_v2.h"
 #include "pointer/v2/pointer_v2.h"
@@ -45,10 +45,6 @@ struct hashtable_data { /* table entry: */
 
 /* public */
 u32 default_hash(const char* source);
-
-/* definition */
-extern const struct memory memory_definition;
-static const struct memory* memory = &memory_definition;
 
 /* private */
 

@@ -27,7 +27,7 @@
 #define _A_H_
 
 #include "class/class.h"
-#include "common/alloc.h"
+#include "common/memory.h"
 #include "std/common.h"
 
 typedef struct A {

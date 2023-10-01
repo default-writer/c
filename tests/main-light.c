@@ -26,7 +26,7 @@
 #define RXP_DEBUG_TESTS
 #include "../tests/src/test.h"
 
-#include "common/alloc.h"
+#include "common/memory.h"
 #include "list-light/data.h"
 
 extern const struct test_suite list_micro_test_suite_definition;

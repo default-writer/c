@@ -24,7 +24,7 @@
  *
  */
 #include "vm/v2/vm_v2.h"
-#include "common/alloc.h"
+#include "common/memory.h"
 #include "list-micro/data.h"
 #include "pointer/v2/pointer_v2.h"
 
@@ -35,9 +35,6 @@
 #define ALLOC_SIZE(size) (size * PTR_SIZE)
 
 /* definition */
-/* definition */
-extern const struct memory memory_definition;
-static const struct memory* memory = &memory_definition;
 
 /* private */
 

@@ -24,7 +24,7 @@
  *
  */
 #include "memory_list_v1.h"
-#include "common/alloc.h"
+#include "common/memory.h"
 #include "list-micro/data.h"
 
 /* the idea: */
@@ -77,10 +77,6 @@
 
 /* macros */
 #define PTR_SIZE sizeof(void*) /* size of a pointer */
-
-/* definition */
-extern const struct memory memory_definition;
-static const struct memory* memory = &memory_definition;
 
 /* definition */
 extern const struct list list_micro_definition;

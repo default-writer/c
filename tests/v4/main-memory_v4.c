@@ -23,7 +23,7 @@
  * SOFTWARE.
  *
  */
-#include "common/alloc.h"
+#include "common/memory.h"
 #include "common/lcg.h"
 #include "playground/memory/api/memory.h"
 

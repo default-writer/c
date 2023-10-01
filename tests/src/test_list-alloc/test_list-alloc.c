@@ -33,12 +33,8 @@
 
 /* definition */
 extern const struct list list_alloc_definition;
-/* list parameters definition */
-extern struct list_parameters list_parameters_definition;
-
 /* definition */
-extern const struct memory memory_definition;
-static const struct memory* memory = &memory_definition;
+extern struct list_parameters list_parameters_definition;
 
 /* initializes the new context's head element */
 struct list_data* list_init(void);
@@ -207,7 +203,7 @@ RX_TEST_CASE(list_alloc_tests, test_alloc_free, .fixture = test_fixture) {
         alloc[i] = memory->alloc(i);
     }
     for (u64 i = 0; i < MAX_ALLOC_SIZE; i++) {
-        global_memset(alloc[i], (u8)(i & 0xff), i);
+        memory->set(alloc[i], (u8)(i & 0xff), i);
     }
     for (u64 i = 0; i < MAX_ALLOC_SIZE; i++) {
         memory->free(alloc[i], i);
@@ -311,23 +307,23 @@ RX_TEST_CASE(list_alloc_tests, test_alloc_pop_count_0, .fixture = test_fixture) 
 }
 
 RX_TEST_CASE(list_alloc_tests, test_global_alloc_0, .fixture = test_fixture) {
-    void* data = global_alloc(0);
+    void* data = memory->alloc(0);
     void* expected_value = 0;
     void* actual_value = data;
     RX_ASSERT(expected_value == actual_value);
 }
 
 RX_TEST_CASE(list_alloc_tests, test_global_alloc_1, .fixture = test_fixture) {
-    void* data = global_alloc(1);
+    void* data = memory->alloc(1);
     void* expected_value = 0;
     void* actual_value = data;
     RX_ASSERT(expected_value != actual_value);
-    global_free(data, 1);
+    memory->free(data, 1);
 }
 
 RX_TEST_CASE(list_alloc_tests, test_global_free_1, .fixture = test_fixture) {
-    u64* data = global_alloc(1);
-    global_free(data, 1);
+    u64* data = memory->alloc(1);
+    memory->free(data, 1);
 }
 
 RX_TEST_CASE(list_alloc_tests, test_alloc_pop_payload, .fixture = test_fixture) {

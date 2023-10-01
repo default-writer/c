@@ -24,7 +24,7 @@
  *
  */
 #include "string_v1.h"
-#include "common/alloc.h"
+#include "common/memory.h"
 #include "list-micro/data.h"
 #include "pointer/types/list/v1/list_v1.h"
 #include "pointer/types/string_pointer/v1/string_pointer_v1.h"
@@ -91,12 +91,10 @@ static u64 string_move_right(u64 src, u64 shift);
 static u64 string_strcmp(u64 src, u64 dest);
 
 /* definition */
-extern const struct memory memory_definition;
 extern const struct string_pointer_methods string_pointer_methods_definition;
 extern const struct list_methods list_methods_definition;
 
 /* definition */
-static const struct memory* memory = &memory_definition;
 static const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
 static const struct list_methods* list_type = &list_methods_definition;
 

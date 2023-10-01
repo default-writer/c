@@ -28,10 +28,6 @@
 
 #include "std/common.h"
 
-void* global_alloc(u64 size);
-void global_free(void* ptr, u64 size);
-void* global_realloc(void* ptr, u64 size, u64 new_size);
-void* global_memset(void* dest, u8 c, size_t count);
 #ifdef USE_MEMORY_DEBUG_INFO
 void global_statistics(void);
 #endif
@@ -45,8 +41,16 @@ struct memory_info {
 struct memory {
     void* (*alloc)(u64 size);
     void (*free)(void* ptr, u64 size);
+    void* (*realloc)(void* old_ptr, u64 size, u64 new_size);
+    void (*set)(void* dest, u8 c, size_t count);
 };
 
 const struct memory_info* global_memory_info(void);
+
+/* definition */
+extern const struct memory memory_definition;
+
+/* definition */
+static const struct memory* memory = &memory_definition;
 
 #endif /* _COMMON_ALLOC_H_ */

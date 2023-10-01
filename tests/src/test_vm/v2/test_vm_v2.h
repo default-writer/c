@@ -26,7 +26,7 @@
 #ifndef _TESTS_SRC_VM_V2_H_
 #define _TESTS_SRC_VM_V2_H_
 
-#include "common/alloc.h"
+#include "common/memory.h"
 #include "pointer/v2/pointer_v2.h"
 #include "vm/v2/vm_v2.h"
 

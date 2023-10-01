@@ -24,7 +24,7 @@
  *
  */
 #include "playground/class/v1/class_v1.h"
-#include "common/alloc.h"
+#include "common/memory.h"
 #include "list-micro/data.h"
 
 /* definition */
@@ -40,10 +40,6 @@ struct class_data {
 };
 
 /* implementation */
-
-/* definition */
-extern const struct memory memory_definition;
-static const struct memory* memory = &memory_definition;
 
 /* private */
 

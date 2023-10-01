@@ -28,7 +28,7 @@
 
 #include "test_vm_v2.h"
 
-#include "common/alloc.h"
+#include "common/memory.h"
 #include "list-micro/data.h"
 #include "playground/brain/brain.h"
 #include "playground/hashtable/v2/hashtable_v2.h"

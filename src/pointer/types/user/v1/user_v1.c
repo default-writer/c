@@ -24,7 +24,7 @@
  *
  */
 #include "pointer/types/user/v1/user_v1.h"
-#include "common/alloc.h"
+#include "common/memory.h"
 #include "list-micro/data.h"
 #include "pointer/v1/pointer_v1.h"
 #include "vm/v1/vm_v1.h"

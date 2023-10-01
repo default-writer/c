@@ -29,7 +29,7 @@
 #include "../.deps/rexo/include/rexo.h"
 #endif
 
-#include "common/alloc.h"
+#include "common/memory.h"
 #include "list-micro/data.h"
 #include "playground/brain/brain.h"
 #include "playground/hashtable/v2/hashtable_v2.h"
@@ -37,10 +37,6 @@
 
 #define HASHTABLE_SIZE 101
 #define DEFAULT_SIZE 0x1
-
-/* definition */
-extern const struct memory memory_definition;
-static const struct memory* memory = &memory_definition;
 
 /* definition */
 extern struct hashtable hashtable_definition_v2;

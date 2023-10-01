@@ -26,7 +26,7 @@
 #ifndef _TESTS_SRC_LIST_H_
 #define _TESTS_SRC_LIST_H_
 
-#include "common/alloc.h"
+#include "common/memory.h"
 #include "pointer/types/string/v1/string_v1.h"
 #include "pointer/v1/pointer_v1.h"
 

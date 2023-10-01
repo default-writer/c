@@ -26,7 +26,7 @@
 #ifndef _TESTS_SRC_LIST_MICRO_H_
 #define _TESTS_SRC_LIST_MICRO_H_
 
-#include "common/alloc.h"
+#include "common/memory.h"
 #include "list-micro/data.h"
 
 #include "../tests/src/test.h"

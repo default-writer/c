@@ -24,7 +24,7 @@
  *
  */
 #include "pointer/types/os/v1/os_v1.h"
-#include "common/alloc.h"
+#include "common/memory.h"
 #include "list-micro/data.h"
 #include "pointer/types/data/v1/data_v1.h"
 #include "pointer/types/file/v1/file_v1.h"
@@ -47,7 +47,6 @@ extern const struct vm_methods vm_methods_definition;
 /* definition */
 extern const struct user_methods user_methods_definition;
 extern const struct string_pointer_methods string_pointer_methods_definition;
-extern const struct memory memory_definition;
 
 /* definition */
 static const struct vm_methods* vm = &vm_methods_definition;
@@ -55,7 +54,6 @@ static const struct vm_methods* vm = &vm_methods_definition;
 /* definition */
 static const struct user_methods* user = &user_methods_definition;
 static const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
-static const struct memory* memory = &memory_definition;
 
 /* definition */
 static u64 os_getenv(u64 name);

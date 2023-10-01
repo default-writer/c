@@ -29,7 +29,7 @@
 #include "../.deps/rexo/include/rexo.h"
 #endif
 
-#include "common/alloc.h"
+#include "common/memory.h"
 #include "list-micro/data.h"
 #include "playground/brain/brain.h"
 #include "playground/hashtable/v1/hashtable_v1.h"
@@ -40,12 +40,6 @@
 #include "pointer/v1/pointer_v1.h"
 
 #define DEFAULT_SIZE 0x8
-
-/* definition */
-extern const struct memory memory_definition;
-
-/* definition */
-static const struct memory* memory = &memory_definition;
 
 /* definition */
 extern const struct vm_methods vm_methods_definition;

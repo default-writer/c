@@ -28,7 +28,7 @@
 
 #include "vm/v1/vm_v1.h"
 
-#include "common/alloc.h"
+#include "common/memory.h"
 #include "list-micro/data.h"
 #include "src/test_pointer/test_pointer.h"
 

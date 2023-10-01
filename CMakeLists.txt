@@ -253,7 +253,7 @@ if(UNIX)
     add_definitions(-D_POSIX_C_SOURCE=199309L)
 endif()
 
-set(LIB_COMMON_SOURCE src/common/alloc.c)
+set(LIB_COMMON_SOURCE src/common/memory.c)
 set(LIB_LCG_SOURCE src/common/lcg.c)
 set(LIB_PARAMETERS_SOURCE src/common/parameters.c)
 

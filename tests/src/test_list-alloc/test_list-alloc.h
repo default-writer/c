@@ -26,7 +26,7 @@
 #ifndef _TESTS_SRC_LIST_ALLOC_H_
 #define _TESTS_SRC_LIST_ALLOC_H_
 
-#include "common/alloc.h"
+#include "common/memory.h"
 #include "common/parameters.h"
 #include "list-alloc/data.h"
 

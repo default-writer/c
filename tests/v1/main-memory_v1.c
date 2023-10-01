@@ -23,7 +23,7 @@
  * SOFTWARE.
  *
  */
-#include "common/alloc.h"
+#include "common/memory.h"
 #include "playground/memory/api/memory.h"
 
 extern const union memory_allocator_api memory_allocator_v1;

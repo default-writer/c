@@ -23,14 +23,8 @@
  * SOFTWARE.
  *
  */
-#include "common/alloc.h"
+#include "common/memory.h"
 #include "std/common.h"
-
-/* definition */
-extern const struct memory memory_definition;
-
-/* definition */
-static const struct memory* memory = &memory_definition;
 
 typedef struct object* object;
 typedef const struct typeinfo* typeinfo;

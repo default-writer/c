@@ -24,7 +24,7 @@
  *
  */
 #include "playground/class/v2/class_v2.h"
-#include "common/alloc.h"
+#include "common/memory.h"
 #include "playground/list/v2/list_v2.h"
 
 /* definition */
@@ -42,10 +42,6 @@ struct class_data {
 };
 
 /* implementation */
-
-/* definition */
-extern const struct memory memory_definition;
-static const struct memory* memory = &memory_definition;
 
 /* private */
 

@@ -1,4 +1,4 @@
-#include "common/alloc.h"
+#include "common/memory.h"
 #include "list-micro/data.h"
 #include "list/v1/list_v1.h"
 #include "playground/hashtable/v1/hashtable_v1.h"
@@ -61,7 +61,7 @@ static u64 load_data() {
 
 static u64 read_input(const char* prompt) {
     char buffer[100];
-    global_memset(&buffer, 0, 100);
+    memory->set(&buffer, 0, 100);
     printf(">%s:\n", prompt);
     char ch = 0;
     int i = 0;

@@ -24,14 +24,10 @@
  *
  */
 #include "class/class.h"
-#include "common/alloc.h"
+#include "common/memory.h"
 
 static object_typeinfo class_create(typeinfo ti);
 static void class_destroy(object_typeinfo ptr);
-
-/* definition */
-extern const struct memory memory_definition;
-static const struct memory* memory = &memory_definition;
 
 typedef struct writeable_object_typeinfo {
     object object;

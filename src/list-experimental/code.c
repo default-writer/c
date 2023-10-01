@@ -23,7 +23,7 @@
  * SOFTWARE.
  *
  */
-#include "common/alloc.h"
+#include "common/memory.h"
 #include "common/parameters.h"
 #include "list-experimental/data.h"
 
@@ -34,10 +34,6 @@
 extern const struct list_parameters list_parameters_definition;
 
 /* implementation */
-
-/* definition */
-extern const struct memory memory_definition;
-static const struct memory* memory = &memory_definition;
 
 /* private */
 

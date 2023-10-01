@@ -23,17 +23,13 @@
  * SOFTWARE.
  *
  */
-#include "common/alloc.h"
+#include "common/memory.h"
 #include "playground/memory/api/memory.h"
 
 /* macros */
 #define DEFAULT_SIZE 0x0 /* 0 */
 #define PTR_SIZE sizeof(void*) /* size of a pointer */
 #define ALLOC_SIZE(size) ((size + 3) * PTR_SIZE)
-
-/* definition */
-extern const struct memory memory_definition;
-static const struct memory* memory = &memory_definition;
 
 /* private */
 

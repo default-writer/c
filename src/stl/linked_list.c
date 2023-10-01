@@ -38,10 +38,6 @@ struct linked_list {
     u64 count;
 };
 
-/* definition */
-extern const struct memory memory_definition;
-static const struct memory* memory = &memory_definition;
-
 /* private */
 
 static struct linked_list* linked_list_new(void);

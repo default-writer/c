@@ -32,12 +32,8 @@
 
 /* definition */
 extern const struct list list_experimental_definition;
-/* list parameters definition */
-extern struct list_parameters list_parameters_definition;
-
 /* definition */
-extern const struct memory memory_definition;
-static const struct memory* memory = &memory_definition;
+extern struct list_parameters list_parameters_definition;
 
 /* initializes the new context's head element */
 void list_init(struct list_data** current);

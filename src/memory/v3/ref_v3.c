@@ -24,7 +24,7 @@
  *
  */
 #include "memory/api/v3/ref_v3.h"
-#include "common/alloc.h"
+#include "common/memory.h"
 #include "playground/memory/list/v3/memory_list_v3.h"
 
 /* macros */
@@ -51,10 +51,6 @@ static void memory_ref_free_internal(void* data);
 static void* memory_ref_ptr_internal(struct memory_ref* ptr);
 static void* memory_ref_peek_internal(void);
 static void* memory_ref_pop_internal(void);
-
-/* definition */
-extern const struct memory memory_definition;
-static const struct memory* memory = &memory_definition;
 
 static void* memory_ref_ptr_internal(struct memory_ref* ptr) {
     void* data = 0;

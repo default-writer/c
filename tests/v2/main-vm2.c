@@ -23,7 +23,7 @@
  * SOFTWARE.
  *
  */
-#include "common/alloc.h"
+#include "common/memory.h"
 #include "list-micro/data.h"
 #include "playground/hashtable/v2/hashtable_v2.h"
 #include "pointer/v2/pointer_v2.h"

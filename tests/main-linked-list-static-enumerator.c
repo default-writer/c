@@ -43,12 +43,6 @@ typedef struct test_data {
     struct linked_list* ctx;
 }* TEST_DATA;
 
-/* list parameters definition */
-
-/* definition */
-extern const struct memory memory_definition;
-static const struct memory* memory = &memory_definition;
-
 /* private */
 
 /* Initialize the data structure. Its allocation is handled by Rexo. */
