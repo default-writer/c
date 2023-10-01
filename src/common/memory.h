@@ -32,20 +32,12 @@
 void global_statistics(void);
 #endif
 
-struct memory_info {
-    u64 alloc;
-    u64 used;
-    u64 free;
-};
-
 struct memory {
     void* (*alloc)(u64 size);
     void (*free)(void* ptr, u64 size);
     void* (*realloc)(void* old_ptr, u64 size, u64 new_size);
     void (*set)(void* dest, u8 c, size_t count);
 };
-
-const struct memory_info* global_memory_info(void);
 
 /* definition */
 extern const struct memory memory_definition;
