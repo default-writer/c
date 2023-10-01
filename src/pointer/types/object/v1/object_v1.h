@@ -40,4 +40,14 @@ struct object_methods {
     u64 (*size)(u64 ptr);
 };
 
+/* definition */
+extern const struct object_methods object_methods_definition;
+
+/* definition */
+#if defined(INLINE)
+const struct object_methods* object = &object_methods_definition;
+#else
+static const struct object_methods* object = &object_methods_definition;
+#endif
+
 #endif /* _POINTER_TYPES_OBJECT_H_ */

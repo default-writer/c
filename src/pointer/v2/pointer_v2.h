@@ -90,4 +90,20 @@ struct pointer_methods {
 void pointer_ctx_init(struct pointer_data** ctx, u64 size);
 void pointer_ctx_destroy(struct pointer_data** ctx);
 
+/* definition */
+extern const struct pointer_methods pointer_methods_definition;
+extern const struct file_methods file_methods_definition;
+extern const struct list_methods list_methods_definition;
+
+/* definition */
+#if defined(INLINE)
+const struct pointer_methods* pointer = &pointer_methods_definition;
+const struct file_methods* file = &file_methods_definition;
+const struct list_methods* list = &list_methods_definition;
+#else
+static const struct pointer_methods* pointer = &pointer_methods_definition;
+static const struct file_methods* file = &file_methods_definition;
+static const struct list_methods* list = &list_methods_definition;
+#endif
+
 #endif /* _POINTER_V2_H_ */

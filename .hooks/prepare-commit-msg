@@ -2,7 +2,7 @@
 set -e
 
 err_report() {
-    echo "ERROR: on line $*: $(cat $0 | sed $1!d)" >&2
+    echo "ERROR: $0:$*"
 }
 
 trap 'err_report $LINENO' ERR

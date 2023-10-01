@@ -38,4 +38,14 @@ struct os_methods {
     void (*putc)(u64 ptr);
 };
 
+/* definition */
+extern const struct os_methods os_methods_definition;
+
+/* definition */
+#if defined(INLINE)
+const struct os_methods* os = &os_methods_definition;
+#else
+static const struct os_methods* os = &os_methods_definition;
+#endif
+
 #endif /* _POINTER_TYPES_OS_H_ */

@@ -51,25 +51,11 @@ static const struct memory* memory = &memory_definition;
 extern const struct vm_methods vm_methods_definition;
 
 /* definition */
-extern const struct pointer_methods pointer_methods_definition;
-extern const struct list_methods list_methods_definition;
-extern const struct file_methods file_methods_definition;
-extern const struct string_methods string_methods_definition;
 extern const struct user_methods user_methods_definition;
-extern const struct data_methods data_methods_definition;
-extern const struct object_methods object_methods_definition;
-extern const struct os_methods os_methods_definition;
 extern const struct string_pointer_methods string_pointer_methods_definition;
 
 /* definition */
-static const struct pointer_methods* pointer = &pointer_methods_definition;
-static const struct list_methods* list = &list_methods_definition;
-static const struct file_methods* file = &file_methods_definition;
-static const struct string_methods* string = &string_methods_definition;
 static const struct user_methods* user = &user_methods_definition;
-static const struct data_methods* data = &data_methods_definition;
-static const struct object_methods* object = &object_methods_definition;
-static const struct os_methods* os = &os_methods_definition;
 static const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
 
 typedef struct test_data {
@@ -81,6 +67,7 @@ RX_SET_UP(test_set_up) {
 }
 
 RX_TEAR_DOWN(test_tear_down) {
+    // nothing to cleanup
 }
 
 /* Define the fixture. */

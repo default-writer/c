@@ -330,9 +330,8 @@
     "CONFIG_GC",
     "CODE_SANITIZER"
   ],
-  /* https://manpages.ubuntu.com/manpages/jammy/man1/clangd-11.1.html */
   "clangd.arguments": [
-    "--compile-commands-dir=${workspaceFolder}/src",
+    "--compile-commands-dir=${workspaceFolder}/cmake",
     "-j=8",
     "--limit-results=0",
     "--background-index",
@@ -424,7 +423,7 @@
   },
   "git.suggestSmartCommit": false,
   "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "trunk.io"
   },
   "files.refactoring.autoSave": false,
   "editor.fontVariations": false,

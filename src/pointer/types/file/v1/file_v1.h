@@ -47,4 +47,14 @@ struct file_methods {
     u64 (*data)(u64 ptr);
 };
 
+/* definition */
+extern const struct file_methods file_methods_definition;
+
+/* definition */
+#if defined(INLINE)
+const struct file_methods* file = &file_methods_definition;
+#else
+static const struct file_methods* file = &file_methods_definition;
+#endif
+
 #endif /* _POINTER_TYPES_FILE_H_ */

@@ -23,6 +23,9 @@
  * SOFTWARE.
  *
  */
+#define RXP_DEBUG_TESTS
+#include "../tests/src/test.h"
+
 #include "test_vm_v2.h"
 
 #include "common/alloc.h"
@@ -32,15 +35,9 @@
 #include "pointer/v2/pointer_v2.h"
 #include "vm/v2/vm_v2.h"
 
-#include "../tests/src/test.h"
-
 #define DEFAULT_SIZE 0x100
 
 /* definition */
-
-extern const struct pointer_methods pointer_methods_definition;
-extern const struct list_methods list_methods_definition;
-extern const struct file_methods file_methods_definition;
 #ifdef USE_MEMORY_DEBUG_INFO
 extern const struct debug_methods debug_methods_definition;
 #endif
@@ -48,9 +45,7 @@ extern const struct vm_methods vm_methods_definition;
 extern const struct test_suite list_micro_test_suite_definition;
 extern const struct test_suite list_alloc_test_suite_definition;
 
-static const struct pointer_methods* pointer = &pointer_methods_definition;
-static const struct list_methods* list = &list_methods_definition;
-static const struct file_methods* file = &file_methods_definition;
+/* definition */
 #ifdef USE_MEMORY_DEBUG_INFO
 static const struct debug_methods* debug = &debug_methods_definition;
 #endif

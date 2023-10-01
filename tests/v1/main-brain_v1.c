@@ -23,6 +23,10 @@
  * SOFTWARE.
  *
  */
+#define RXP_DEBUG_TESTS
+#include "../../tests/src/test.h"
+
+#define INLINE
 #include "common/alloc.h"
 #include "list-micro/data.h"
 #include "list/v1/list_v1.h"
@@ -38,7 +42,6 @@
 #include "pointer/types/user/v1/user_v1.h"
 #include "pointer/v1/pointer_v1.h"
 
-#include "../../tests/src/test.h"
 
 #define DEFAULT_SIZE 0x100
 
@@ -60,25 +63,11 @@ static const struct test_suite* pointer_tests = &pointer_test_suite_definition;
 extern const struct vm_methods vm_methods_definition;
 
 /* definition */
-extern const struct pointer_methods pointer_methods_definition;
-extern const struct list_methods list_methods_definition;
-extern const struct file_methods file_methods_definition;
-extern const struct string_methods string_methods_definition;
 extern const struct user_methods user_methods_definition;
-extern const struct data_methods data_methods_definition;
-extern const struct object_methods object_methods_definition;
-extern const struct os_methods os_methods_definition;
 extern const struct string_pointer_methods string_pointer_methods_definition;
 
 /* definition */
-const struct pointer_methods* pointer = &pointer_methods_definition;
-const struct list_methods* list = &list_methods_definition;
-const struct file_methods* file = &file_methods_definition;
-const struct string_methods* string = &string_methods_definition;
 const struct user_methods* user = &user_methods_definition;
-const struct data_methods* data = &data_methods_definition;
-const struct object_methods* object = &object_methods_definition;
-const struct os_methods* os = &os_methods_definition;
 const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
 
 typedef struct test_data {
@@ -89,6 +78,7 @@ RX_SET_UP(test_set_up) {
 }
 
 RX_TEAR_DOWN(test_tear_down) {
+    // nothing to cleanup
 }
 
 /* Define the fixture. */
@@ -323,6 +313,36 @@ RX_TEST_CASE(main_brain1_tests, test_object_alloc_0, .fixture = test_fixture) {
     string->free(object_ptr);
     string->free(pattern_ptr);
     object->free(object_ptr);
+#else
+    pointer->gc();
+#endif
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(main_brain1_tests, test_object_load_free, .fixture = test_fixture) {
+    pointer->init(8);
+    const char* test_data = "Hello, world!";
+    const void* ptr = (const void*)test_data;
+    u64 object_ptr = object->load(ptr, strlen(ptr));
+    object->free(object_ptr);
+#ifndef USE_GC
+    string->free(object_ptr);
+#else
+    pointer->gc();
+#endif
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(main_brain1_tests, test_object_free_0, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 object_ptr = 0;
+    object->free(object_ptr);
+#ifndef USE_GC
+    string->free(object_ptr);
 #else
     pointer->gc();
 #endif
@@ -2220,11 +2240,11 @@ int main(int argc, char** argv) {
     global_statistics();
 #endif
     CLEAN(argc)
-    TEST_RUN(alloc, list_alloc_tests);
-    TEST_RUN(micro, list_micro_tests);
-    TEST_RUN(tests, list_tests);
-    TEST_RUN(vm_v1, vm_v1_tests);
-    TEST_RUN(pointer_v1, pointer_tests);
+    TEST_RUN(list_alloc_result, list_alloc_tests);
+    TEST_RUN(list_micro_result, list_micro_tests);
+    TEST_RUN(list_tests_result, list_tests);
+    TEST_RUN(vm_v1_result, vm_v1_tests);
+    TEST_RUN(pointer_v1_result, pointer_tests);
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- acceptance test code\n");
 #endif
@@ -2247,9 +2267,9 @@ int main(int argc, char** argv) {
 #endif
 
     /* Execute the main function that runs the test cases found. */
-    int result = rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
+    int main_tests_result = rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
 #ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();
 #endif
-    return alloc | tests | micro | vm_v1 | pointer_v1 | result;
+    return list_alloc_result | list_tests_result | list_micro_result | vm_v1_result | pointer_v1_result | main_tests_result;
 }

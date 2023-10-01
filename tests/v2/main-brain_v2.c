@@ -23,15 +23,16 @@
  * SOFTWARE.
  *
  */
+#define RXP_DEBUG_TESTS
+#include "../tests/src/test.h"
 
+#define INLINE
 #include "common/alloc.h"
 #include "list-micro/data.h"
 #include "playground/brain/brain.h"
 #include "playground/hashtable/v2/hashtable_v2.h"
 #include "pointer/v2/pointer_v2.h"
 #include "vm/v2/vm_v2.h"
-
-#include "../tests/src/test.h"
 
 #define DEFAULT_SIZE 0x100
 
@@ -40,15 +41,9 @@ static const struct test_suite* vm_v2_tests = &vm_v2_test_suite_definition;
 
 /* definition */
 extern const struct vm_methods vm_methods_definition;
-extern const struct pointer_methods pointer_methods_definition;
-extern const struct list_methods list_methods_definition;
-extern const struct file_methods file_methods_definition;
 
 /* definition */
 const struct vm_methods* vm = &vm_methods_definition;
-const struct pointer_methods* pointer = &pointer_methods_definition;
-const struct list_methods* list = &list_methods_definition;
-const struct file_methods* file = &file_methods_definition;
 
 struct pointer_data {
     struct vm_data* vm;

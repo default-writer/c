@@ -189,7 +189,7 @@
     },
     "cmake.autoSelectActiveFolder": true,
     "clangd.arguments": [
-      "--compile-commands-dir=${workspaceFolder}/src",
+      "--compile-commands-dir=${workspaceFolder}/cmake",
       "-j=8",
       "--limit-results=0",
       "--background-index",

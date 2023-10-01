@@ -67,11 +67,11 @@ static u64 data_size(u64 ptr);
 /* implementation */
 static u64 data_alloc(u64 size) {
     struct pointer* f_ptr = virtual->alloc(size, id);
-    u64 data = vm->alloc(f_ptr);
+    u64 vm_data = vm->alloc(f_ptr);
 #ifdef USE_GC
-    list->push(&base->gc, (void*)data);
+    list->push(&base->gc, (void*)vm_data);
 #endif
-    return data;
+    return vm_data;
 }
 
 static void data_free(u64 ptr) {
@@ -91,8 +91,8 @@ static void* data_unsafe(u64 ptr) {
     if (data_ptr == 0) {
         return 0;
     }
-    void* data = data_ptr->data;
-    return data;
+    void* vm_data = data_ptr->data;
+    return vm_data;
 }
 
 static u64 data_size(u64 ptr) {

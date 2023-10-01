@@ -23,13 +23,14 @@
  * SOFTWARE.
  *
  */
+#define RXP_DEBUG_TESTS
+#include "../tests/src/test.h"
+
 #include "vm/v1/vm_v1.h"
 
 #include "common/alloc.h"
 #include "list-micro/data.h"
 #include "src/test_pointer/test_pointer.h"
-
-#include "../tests/src/test.h"
 
 extern const struct test_suite pointer_test_suite_definition;
 static const struct test_suite* pointer_tests = &pointer_test_suite_definition;
@@ -47,12 +48,12 @@ int main(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();
 #endif
-    TEST_RUN(alloc, list_alloc_tests);
-    TEST_RUN(micro, list_micro_tests);
-    TEST_RUN(vm_v1, vm_v1_tests);
-    TEST_RUN(pointer, pointer_tests);
+    TEST_RUN(alloc_result, list_alloc_tests);
+    TEST_RUN(micro_result, list_micro_tests);
+    TEST_RUN(vm_v1_result, vm_v1_tests);
+    TEST_RUN(pointer_v1_result, pointer_tests);
 #ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();
 #endif
-    return alloc | micro | vm_v1 | pointer;
+    return alloc_result | micro_result | vm_v1_result | pointer_v1_result;
 }

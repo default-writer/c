@@ -54,12 +54,12 @@ struct pointer_data {
 #endif
 };
 
-static struct pointer_data pointer;
-static struct pointer_data* base = &pointer;
+static struct pointer_data pointer_data;
+static struct pointer_data* base = &pointer_data;
 
 /* definition */
 static const struct vm_methods* vm = &vm_methods_definition;
-static const struct list* list = &list_micro_definition;
+static const struct list* _list = &list_micro_definition;
 
 struct file_handler {
     FILE* file;
@@ -82,7 +82,9 @@ static u64 pointer_copy(u64 ptr);
 static u64 pointer_peek(void);
 static u64 pointer_pop(void);
 static u64 pointer_alloc(void);
+#ifndef USE_GC
 static void pointer_free(u64 ptr);
+#endif
 static u64 pointer_list_alloc(void);
 static void pointer_list_free(u64 ptr);
 static void pointer_list_push(u64 ptr, u64 data_ptr);
@@ -98,6 +100,7 @@ static u64 pointer_getcwd(void);
 static u64 pointer_file_alloc(u64 file_path_ptr, u64 mode_ptr);
 static u64 pointer_file_read(u64 ptr);
 static void pointer_file_free(u64 ptr);
+static void pointer_free_vm(u64 ptr);
 static void pointer_printf(u64 ptr);
 #ifdef USE_MEMORY_DEBUG_INFO
 static void pointer_dump(struct pointer* ptr);
@@ -147,30 +150,30 @@ static void pointer_free_internal(struct pointer* ptr) {
 
 static void pointer_gc_internal(struct list_data** current) {
     u64 ptr = 0;
-    while ((ptr = (u64)list->pop(current)) != 0) {
+    while ((ptr = (u64)_list->pop(current)) != 0) {
         pointer_list_free(ptr);
         pointer_file_free(ptr);
-        pointer_free(ptr);
+        pointer_free_vm(ptr);
     }
 }
 
 static struct pointer* list_alloc_internal(void) {
     struct pointer* ptr = pointer_alloc_internal(sizeof(struct list_handler), TYPE_LIST);
     struct list_handler* handler = ptr->data;
-    list->init(&handler->list);
+    _list->init(&handler->list);
     return ptr;
 }
 
 static void list_free_internal(struct pointer* ptr) {
     struct list_handler* handler = ptr->data;
     pointer_gc_internal(&handler->list);
-    list->destroy(&handler->list);
+    _list->destroy(&handler->list);
 }
 
 static void file_close_internal(struct pointer* ptr) {
     struct file_handler* handler = ptr->data;
-    FILE* file = handler->file;
-    fclose(file);
+    FILE* f = handler->file;
+    fclose(f);
     handler->file = 0;
 }
 
@@ -184,10 +187,10 @@ void pointer_ctx_init(struct pointer_data** ctx, u64 size) {
     vm->init(&ptr->vm, size);
     base->vm = ptr->vm;
     /* list */
-    list->init(&ptr->list);
+    _list->init(&ptr->list);
     base->list = ptr->list;
 #ifdef USE_GC
-    list->init(&ptr->gc);
+    _list->init(&ptr->gc);
     base->gc = ptr->gc;
 #endif
 }
@@ -201,11 +204,11 @@ void pointer_ctx_destroy(struct pointer_data** ctx) {
 #ifdef USE_GC
     pointer_gc();
     ptr->gc = base->gc;
-    list->destroy(&ptr->gc);
+    _list->destroy(&ptr->gc);
 #endif
     /* list */
     ptr->list = base->list;
-    list->destroy(&ptr->list);
+    _list->destroy(&ptr->list);
     /* vm */
     ptr->vm = base->vm;
     vm->destroy(&ptr->vm);
@@ -217,9 +220,9 @@ extern const struct list list_micro_definition;
 
 void pointer_init(u64 size) {
     vm->init(&base->vm, size);
-    list->init(&base->list);
+    _list->init(&base->list);
 #ifdef USE_GC
-    list->init(&base->gc);
+    _list->init(&base->gc);
 #endif
 }
 
@@ -229,9 +232,9 @@ void pointer_destroy(void) {
 #endif
 #ifdef USE_GC
     pointer_gc();
-    list->destroy(&base->gc);
+    _list->destroy(&base->gc);
 #endif
-    list->destroy(&base->list);
+    _list->destroy(&base->list);
     vm->destroy(&base->vm);
 }
 
@@ -243,7 +246,7 @@ static void pointer_gc(void) {
 
 static void pointer_push(u64 ptr) {
     if (ptr != 0) {
-        list->push(&base->list, (void*)ptr);
+        _list->push(&base->list, (void*)ptr);
     }
 }
 
@@ -265,24 +268,24 @@ static u64 pointer_copy(u64 ptr) {
     memcpy(copy_ptr->data, data_ptr->data, copy_ptr->size); /* NOLINT */
     u64 data = vm->write(&base->vm, copy_ptr);
 #ifdef USE_GC
-    list->push(&base->gc, (void*)data);
+    _list->push(&base->gc, (void*)data);
 #endif
     return data;
 }
 
 static u64 pointer_peek(void) {
-    return (u64)list->peek(&base->list);
+    return (u64)_list->peek(&base->list);
 }
 
 static u64 pointer_pop(void) {
-    return (u64)list->pop(&base->list);
+    return (u64)_list->pop(&base->list);
 }
 
 static u64 pointer_list_alloc(void) {
     struct pointer* ptr = list_alloc_internal();
     u64 data = vm->write(&base->vm, ptr);
 #ifdef USE_GC
-    list->push(&base->gc, (void*)data);
+    _list->push(&base->gc, (void*)data);
 #endif
     return data;
 }
@@ -321,9 +324,9 @@ static void pointer_list_push(u64 ptr_list, u64 ptr) {
         return;
     }
     struct list_handler* handler = data_ptr->data;
-    list->push(&handler->list, (void*)ptr);
+    _list->push(&handler->list, (void*)ptr);
 #ifdef USE_GC
-    list->push(&base->gc, (void*)ptr);
+    _list->push(&base->gc, (void*)ptr);
 #endif
 }
 
@@ -339,7 +342,7 @@ static u64 pointer_list_peek(u64 ptr) {
         return 0;
     }
     struct list_handler* handler = data_ptr->data;
-    u64 data = (u64)list->peek(&handler->list);
+    u64 data = (u64)_list->peek(&handler->list);
     return data;
 }
 
@@ -355,7 +358,7 @@ static u64 pointer_list_pop(u64 ptr) {
         return 0;
     }
     struct list_handler* handler = data_ptr->data;
-    u64 data = (u64)list->pop(&handler->list);
+    u64 data = (u64)_list->pop(&handler->list);
     return data;
 }
 
@@ -363,11 +366,21 @@ static u64 pointer_alloc(void) {
     struct pointer* ptr = pointer_alloc_internal(0, TYPE_PTR);
     u64 data = vm->write(&base->vm, ptr);
 #ifdef USE_GC
-    list->push(&base->gc, (void*)data);
+    _list->push(&base->gc, (void*)data);
 #endif
     return data;
 }
 
+static void pointer_free_vm(u64 ptr) {
+    struct pointer* data_ptr = vm->read(&base->vm, ptr);
+    if (data_ptr == 0) {
+        return;
+    }
+    data_ptr = vm->free(&base->vm, ptr);
+    pointer_free_internal(data_ptr);
+}
+
+#ifndef USE_GC
 static void pointer_free(u64 ptr) {
     if (ptr == 0) {
         return;
@@ -382,6 +395,7 @@ static void pointer_free(u64 ptr) {
     data_ptr = vm->free(&base->vm, ptr);
     pointer_free_internal(data_ptr);
 }
+#endif
 
 static char* pointer_unsafe(u64 ptr) {
     if (ptr == 0) {
@@ -524,7 +538,7 @@ static u64 pointer_match_last(u64 src, u64 match) {
     last_match_ptr->data = --data_last;
     u64 data = vm->write(&base->vm, last_match_ptr);
 #ifdef USE_GC
-    list->push(&base->gc, (void*)data);
+    _list->push(&base->gc, (void*)data);
 #endif
     return data;
 }
@@ -538,7 +552,7 @@ static u64 pointer_load(const char* src_data) {
     memcpy(data_ptr->data, src_data, size); /* NOLINT */
     u64 data = vm->write(&base->vm, data_ptr);
 #ifdef USE_GC
-    list->push(&base->gc, (void*)data);
+    _list->push(&base->gc, (void*)data);
 #endif
     return data;
 }
@@ -587,19 +601,19 @@ static u64 pointer_file_alloc(u64 file_path, u64 mode) {
         return 0;
     }
     const char* mode_data = mode_ptr->data;
-    FILE* file = fopen(file_path_data, mode_data); /* NOLINT */
-    if (file == 0) {
+    FILE* f = fopen(file_path_data, mode_data); /* NOLINT */
+    if (f == 0) {
         return 0;
     }
     struct pointer* f_ptr = pointer_alloc_internal(sizeof(struct file_handler), TYPE_FILE);
     struct file_handler* handler = f_ptr->data;
-    handler->file = file;
+    handler->file = f;
 #ifdef USE_MEMORY_DEBUG_INFO
     handler->path = file_path_ptr->data;
 #endif
     u64 data = vm->write(&base->vm, f_ptr);
 #ifdef USE_GC
-    list->push(&base->gc, (void*)data);
+    _list->push(&base->gc, (void*)data);
 #endif
     return data;
 }
@@ -616,15 +630,15 @@ static u64 pointer_file_read(u64 ptr) {
         return 0;
     }
     struct file_handler* handler = data_ptr->data;
-    FILE* file = handler->file;
-    fseek(file, 0, SEEK_END); /* NOLINT */
-    u64 size = (u64)ftell(file);
-    fseek(file, 0, SEEK_SET);
+    FILE* f = handler->file;
+    fseek(f, 0, SEEK_END); /* NOLINT */
+    u64 size = (u64)ftell(f);
+    fseek(f, 0, SEEK_SET);
     data_ptr = pointer_alloc_internal(size + 1, TYPE_PTR);
     fread(data_ptr->data, 1, size, handler->file);
     u64 data = vm->write(&base->vm, data_ptr);
 #ifdef USE_GC
-    list->push(&base->gc, (void*)data);
+    _list->push(&base->gc, (void*)data);
 #endif
     return data;
 }

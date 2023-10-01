@@ -48,7 +48,7 @@ extern const struct pointer_vm_methods pointer_vm_methods_definition;
 
 /* definition */
 static const struct vm_methods* vm = &vm_methods_definition;
-static const struct list* list = &list_micro_definition;
+static const struct list* _list = &list_micro_definition;
 static const struct pointer_vm_methods* virtual = &pointer_vm_methods_definition;
 
 /* definition */
@@ -211,11 +211,11 @@ static u64 string_copy(u64 src) {
     data += offset;
     struct pointer* data_ptr = virtual->alloc(size - offset, id);
     memcpy(data_ptr->data, data, size - offset); /* NOLINT */
-    u64 pointer = vm->alloc(data_ptr);
+    u64 result = vm->alloc(data_ptr);
 #ifdef USE_GC
-    list->push(&base->gc, (void*)pointer);
+    _list->push(&base->gc, (void*)result);
 #endif
-    return pointer;
+    return result;
 }
 
 static void string_strcpy(u64 dest, u64 src) {
@@ -299,11 +299,11 @@ static u64 string_strrchr(u64 src, u64 match) {
     struct string_reference* ref = data_ptr->data;
     ref->address = src;
     ref->offset = offset;
-    u64 pointer = vm->alloc(data_ptr);
+    u64 result = vm->alloc(data_ptr);
 #ifdef USE_GC
-    list->push(&base->gc, (void*)pointer);
+    _list->push(&base->gc, (void*)result);
 #endif
-    return pointer;
+    return result;
 }
 
 static u64 string_strchr(u64 src, u64 match) {
@@ -333,11 +333,11 @@ static u64 string_strchr(u64 src, u64 match) {
     struct string_reference* ref = data_ptr->data;
     ref->address = src;
     ref->offset = offset;
-    u64 pointer = vm->alloc(data_ptr);
+    u64 result = vm->alloc(data_ptr);
 #ifdef USE_GC
-    list->push(&base->gc, (void*)pointer);
+    _list->push(&base->gc, (void*)result);
 #endif
-    return pointer;
+    return result;
 }
 
 static u64 string_match(u64 src, u64 match) {
@@ -392,11 +392,11 @@ static u64 string_match(u64 src, u64 match) {
     struct string_reference* ref = data_ptr->data;
     ref->address = src;
     ref->offset = offset;
-    u64 pointer = vm->alloc(data_ptr);
+    u64 result = vm->alloc(data_ptr);
 #ifdef USE_GC
-    list->push(&base->gc, (void*)pointer);
+    _list->push(&base->gc, (void*)result);
 #endif
-    return pointer;
+    return result;
 }
 
 static u64 string_offset(u64 src, u64 match) {
@@ -466,11 +466,11 @@ static u64 string_offset(u64 src, u64 match) {
     struct string_reference* ref = data_ptr->data;
     ref->address = src;
     ref->offset = offset;
-    u64 pointer = vm->alloc(data_ptr);
+    u64 result = vm->alloc(data_ptr);
 #ifdef USE_GC
-    list->push(&base->gc, (void*)pointer);
+    _list->push(&base->gc, (void*)result);
 #endif
-    return pointer;
+    return result;
 }
 
 static u64 string_load(const char* src_data) {
@@ -483,11 +483,11 @@ static u64 string_load(const char* src_data) {
     u64 size = strlen(src_data) + 1;
     struct pointer* data_ptr = virtual->alloc(size, id);
     memcpy(data_ptr->data, src_data, size); /* NOLINT */
-    u64 pointer = vm->alloc(data_ptr);
+    u64 result = vm->alloc(data_ptr);
 #ifdef USE_GC
-    list->push(&base->gc, (void*)pointer);
+    _list->push(&base->gc, (void*)result);
 #endif
-    return pointer;
+    return result;
 }
 
 static void string_put_char(u64 src, char value) {
@@ -681,11 +681,11 @@ static u64 string_left(u64 src, u64 shift) {
     struct string_reference* ref = data_ptr->data;
     ref->address = src;
     ref->offset = 0 - shift;
-    u64 pointer = vm->alloc(data_ptr);
+    u64 result = vm->alloc(data_ptr);
 #ifdef USE_GC
-    list->push(&base->gc, (void*)pointer);
+    _list->push(&base->gc, (void*)result);
 #endif
-    return pointer;
+    return result;
 }
 
 static u64 string_strncpy(u64 src, u64 nbytes) {
@@ -705,11 +705,11 @@ static u64 string_strncpy(u64 src, u64 nbytes) {
     data += offset;
     struct pointer* data_ptr = virtual->alloc(nbytes + 1, id);
     memcpy(data_ptr->data, data, nbytes); /* NOLINT */
-    u64 pointer = vm->alloc(data_ptr);
+    u64 result = vm->alloc(data_ptr);
 #ifdef USE_GC
-    list->push(&base->gc, (void*)pointer);
+    _list->push(&base->gc, (void*)result);
 #endif
-    return pointer;
+    return result;
 }
 
 static u64 string_left_strncpy(u64 src, u64 nbytes) {
@@ -729,11 +729,11 @@ static u64 string_left_strncpy(u64 src, u64 nbytes) {
     data += (offset - nbytes);
     struct pointer* data_ptr = virtual->alloc(nbytes + 1, id);
     memcpy(data_ptr->data, data, nbytes); /* NOLINT */
-    u64 pointer = vm->alloc(data_ptr);
+    u64 result = vm->alloc(data_ptr);
 #ifdef USE_GC
-    list->push(&base->gc, (void*)pointer);
+    _list->push(&base->gc, (void*)result);
 #endif
-    return pointer;
+    return result;
 }
 
 static u64 string_right(u64 src, u64 nbytes) {
@@ -754,11 +754,11 @@ static u64 string_right(u64 src, u64 nbytes) {
     struct string_reference* ref = data_ptr->data;
     ref->address = src;
     ref->offset = nbytes;
-    u64 pointer = vm->alloc(data_ptr);
+    u64 result = vm->alloc(data_ptr);
 #ifdef USE_GC
-    list->push(&base->gc, (void*)pointer);
+    _list->push(&base->gc, (void*)result);
 #endif
-    return pointer;
+    return result;
 }
 
 static u64 string_move_left(u64 src, u64 nbytes) {

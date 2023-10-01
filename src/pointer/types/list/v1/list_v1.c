@@ -46,7 +46,7 @@ extern const struct pointer_vm_methods pointer_vm_methods_definition;
 
 /* definition */
 static const struct vm_methods* vm = &vm_methods_definition;
-static const struct list* list = &list_micro_definition;
+static const struct list* _list = &list_micro_definition;
 static const struct pointer_vm_methods* virtual = &pointer_vm_methods_definition;
 
 /* definition */
@@ -79,7 +79,7 @@ static struct pointer* list_alloc_internal(void) {
     struct pointer* ptr = virtual->alloc(sizeof(struct list_handler), id);
     struct list_handler* handler = ptr->data;
     handler->size = 0;
-    list->init(&handler->list);
+    _list->init(&handler->list);
     return ptr;
 }
 
@@ -87,7 +87,7 @@ static u64 list_alloc(void) {
     struct pointer* ptr = list_alloc_internal();
     u64 data = vm->alloc(ptr);
 #ifdef USE_GC
-    list->push(&base->gc, (void*)data);
+    _list->push(&base->gc, (void*)data);
 #endif
     return data;
 }
@@ -114,7 +114,7 @@ static void list_vm_free(struct pointer* ptr) {
     struct list_handler* handler = ptr->data;
     handler->size = 0;
     virtual->release(&handler->list);
-    list->destroy(&handler->list);
+    _list->destroy(&handler->list);
     virtual->free(ptr);
 }
 
@@ -133,10 +133,10 @@ static void list_push(u64 ptr_list, u64 ptr) {
         return;
     }
     struct list_handler* handler = data_ptr->data;
-    list->push(&handler->list, (void*)ptr);
+    _list->push(&handler->list, (void*)ptr);
     handler->size++;
 #ifdef USE_GC
-    list->push(&base->gc, (void*)ptr);
+    _list->push(&base->gc, (void*)ptr);
 #endif
 }
 
@@ -146,7 +146,7 @@ static u64 list_peek(u64 ptr) {
         return 0;
     }
     struct list_handler* handler = data_ptr->data;
-    u64 data = (u64)list->peek(&handler->list);
+    u64 data = (u64)_list->peek(&handler->list);
     return data;
 }
 
@@ -168,14 +168,14 @@ static u64 list_peekn(u64 list_ptr, u64 nelements) {
     u64 i = nelements;
     while (i-- > 0) {
         struct list_data* current = src_handler->list;
-        u64 data = (u64)list->peek(&current);
-        list->push(&dst_handler->list, (void*)data);
+        u64 data = (u64)_list->peek(&current);
+        _list->push(&dst_handler->list, (void*)data);
         dst_handler->size++;
         current = current->next;
     }
     u64 dst_data = vm->alloc(dst_ptr);
 #ifdef USE_GC
-    list->push(&base->gc, (void*)dst_data);
+    _list->push(&base->gc, (void*)dst_data);
 #endif
     return dst_data;
 }
@@ -189,7 +189,7 @@ static u64 list_pop(u64 ptr) {
     if (handler->size == 0) {
         return 0;
     }
-    u64 data = (u64)list->pop(&handler->list);
+    u64 data = (u64)_list->pop(&handler->list);
     handler->size--;
     return data;
 }
@@ -211,13 +211,13 @@ static u64 list_popn(u64 list_ptr, u64 nelements) {
     struct list_handler* dst_handler = dst_ptr->data;
     u64 i = nelements;
     while (i-- > 0) {
-        u64 data = (u64)list->pop(&src_handler->list);
-        list->push(&dst_handler->list, (void*)data);
+        u64 data = (u64)_list->pop(&src_handler->list);
+        _list->push(&dst_handler->list, (void*)data);
         dst_handler->size++;
     }
     u64 dst_data = vm->alloc(dst_ptr);
 #ifdef USE_GC
-    list->push(&base->gc, (void*)dst_data);
+    _list->push(&base->gc, (void*)dst_data);
 #endif
     return dst_data;
 }

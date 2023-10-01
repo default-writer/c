@@ -23,11 +23,10 @@
  * SOFTWARE.
  *
  */
-#include "common/alloc.h"
-
 #define RXP_DEBUG_TESTS
-
 #include "../tests/src/test.h"
+
+#include "common/alloc.h"
 
 extern const struct test_suite vm_v1_test_suite_definition;
 static const struct test_suite* vm_v1_tests = &vm_v1_test_suite_definition;

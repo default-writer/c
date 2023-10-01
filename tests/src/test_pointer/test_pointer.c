@@ -23,6 +23,9 @@
  * SOFTWARE.
  *
  */
+#define RXP_DEBUG_TESTS
+#include "../tests/src/test.h"
+
 #include "test_pointer.h"
 
 #include "common/alloc.h"
@@ -39,8 +42,6 @@
 #include "pointer/types/string_pointer/v1/string_pointer_v1.h"
 #include "pointer/types/user/v1/user_v1.h"
 #include "pointer/v1/pointer_v1.h"
-
-#include "../tests/src/test.h"
 
 #define DEFAULT_SIZE 0x100
 
@@ -60,25 +61,11 @@ static const struct test_suite* vm_v1_tests = &vm_v1_test_suite_definition;
 extern const struct vm_methods vm_methods_definition;
 
 /* definition */
-extern const struct pointer_methods pointer_methods_definition;
-extern const struct list_methods list_methods_definition;
-extern const struct file_methods file_methods_definition;
-extern const struct string_methods string_methods_definition;
 extern const struct user_methods user_methods_definition;
-extern const struct data_methods data_methods_definition;
-extern const struct object_methods object_methods_definition;
-extern const struct os_methods os_methods_definition;
 extern const struct string_pointer_methods string_pointer_methods_definition;
 
 /* definition */
-static const struct pointer_methods* pointer = &pointer_methods_definition;
-static const struct list_methods* list = &list_methods_definition;
-static const struct file_methods* file = &file_methods_definition;
-static const struct string_methods* string = &string_methods_definition;
 static const struct user_methods* user = &user_methods_definition;
-static const struct data_methods* data = &data_methods_definition;
-static const struct object_methods* object = &object_methods_definition;
-static const struct os_methods* os = &os_methods_definition;
 static const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
 
 /* Data structure to use at the core of our fixture. */
@@ -90,6 +77,7 @@ RX_SET_UP(test_set_up) {
 }
 
 RX_TEAR_DOWN(test_tear_down) {
+    // nothing to cleanup
 }
 
 /* Define the fixture. */
@@ -317,6 +305,36 @@ RX_TEST_CASE(tests_v1, test_object_alloc_0, .fixture = test_fixture) {
     string->free(object_ptr);
     string->free(pattern_ptr);
     object->free(object_ptr);
+#else
+    pointer->gc();
+#endif
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(tests_v1, test_object_load_free, .fixture = test_fixture) {
+    pointer->init(8);
+    const char* test_data = "Hello, world!";
+    const void* ptr = (const void*)test_data;
+    u64 object_ptr = object->load(ptr, strlen(ptr));
+    object->free(object_ptr);
+#ifndef USE_GC
+    string->free(object_ptr);
+#else
+    pointer->gc();
+#endif
+    pointer->release();
+    pointer->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(tests_v1, test_object_free_0, .fixture = test_fixture) {
+    pointer->init(8);
+    u64 object_ptr = 0;
+    object->free(object_ptr);
+#ifndef USE_GC
+    string->free(object_ptr);
 #else
     pointer->gc();
 #endif

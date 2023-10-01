@@ -35,22 +35,18 @@
 #define ALLOC_SIZE(size) (size * PTR_SIZE)
 
 /* definition */
-
 /* definition */
 extern const struct memory memory_definition;
 static const struct memory* memory = &memory_definition;
 
 /* private */
 
-extern const struct pointer_methods pointer_methods_definition;
-extern const struct list_methods list_methods_definition;
-extern const struct file_methods file_methods_definition;
+/* definition */
 #ifdef USE_MEMORY_DEBUG_INFO
 extern const struct debug_methods debug_methods_definition;
 #endif
-static const struct pointer_methods* pointer = &pointer_methods_definition;
-static const struct list_methods* list = &list_methods_definition;
-static const struct file_methods* file = &file_methods_definition;
+
+/* definition */
 #ifdef USE_MEMORY_DEBUG_INFO
 static const struct debug_methods* debug = &debug_methods_definition;
 #endif

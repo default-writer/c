@@ -39,4 +39,14 @@ struct data_methods {
     u64 (*size)(u64 ptr);
 };
 
+/* definition */
+extern const struct data_methods data_methods_definition;
+
+/* definition */
+#if defined(INLINE)
+const struct data_methods* data = &data_methods_definition;
+#else
+static const struct data_methods* data = &data_methods_definition;
+#endif
+
 #endif /* _POINTER_TYPES_DATA_H_ */

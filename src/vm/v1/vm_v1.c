@@ -65,7 +65,6 @@ static struct vm* vm_ptr = &vm_definition;
 // static struct vm_data* tail = 0;
 
 extern const struct pointer_methods pointer_methods_definition;
-static const struct pointer_methods* pointer = &pointer_methods_definition;
 
 struct vm_data {
     struct pointer** sp; /* stack pointer */

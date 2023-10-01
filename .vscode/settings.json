@@ -160,7 +160,7 @@
     "workbench.colorTheme": "Yitzchok (rainglow)"
   },
   "sonarlint.testFilePattern": "{**/test/**,**/*test*,**/*Test*,**/rexo/**}",
-  "sonarlint.pathToCompileCommands": "${workspaceFolder}/cmake/compile_commands.json",
+  "sonarlint.pathToCompileCommands": "${workspaceFolder}/config/compile_commands.json",
   "editor.useTabStops": false,
   "editor.insertSpaces": true,
   "editor.dropIntoEditor.enabled": true,
@@ -298,7 +298,7 @@
   "editor.defaultFormatter": "trunk.io",
   "files.insertFinalNewline": true,
   "[c]": {
-    "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
+    "editor.defaultFormatter": "trunk.io",
     "files.insertFinalNewline": true
   },
   "[shellscript]": {
@@ -327,7 +327,7 @@
     "CODE_SANITIZER"
   ],
   "clangd.arguments": [
-    "--compile-commands-dir=${workspaceFolder}/src",
+    "--compile-commands-dir=${workspaceFolder}/cmake",
     "-j=8",
     "--limit-results=0",
     "--background-index",

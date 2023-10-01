@@ -60,6 +60,7 @@ RX_SET_UP(test_set_up) {
 }
 
 RX_TEAR_DOWN(test_tear_down) {
+    // nothing to cleanup
 }
 
 /* Define the fixture. */

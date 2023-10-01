@@ -23,10 +23,11 @@
  * SOFTWARE.
  *
  */
+#define RXP_DEBUG_TESTS
+#include "../tests/src/test.h"
+
 #include "common/alloc.h"
 #include "list-light/data.h"
-
-#include "../tests/src/test.h"
 
 extern const struct test_suite list_micro_test_suite_definition;
 static const struct test_suite* list_micro_tests = &list_micro_test_suite_definition;

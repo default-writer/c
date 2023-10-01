@@ -44,13 +44,11 @@ extern u64 pointer_vm_register_type(u64 id, const struct vm_type* type);
 extern const struct vm_methods vm_methods_definition;
 extern const struct list list_micro_definition;
 extern const struct pointer_vm_methods pointer_vm_methods_definition;
-extern const struct data_methods data_methods_definition;
 
 /* definition */
 static const struct vm_methods* vm = &vm_methods_definition;
 static const struct list* list = &list_micro_definition;
 static const struct pointer_vm_methods* virtual = &pointer_vm_methods_definition;
-static const struct data_methods* data = &data_methods_definition;
 
 /* definition */
 extern struct pointer_data vm_pointer;
@@ -91,13 +89,13 @@ static u64 file_alloc(u64 file_path, u64 mode) {
     }
     const char* file_path_data = file_path_ptr->data;
     const char* mode_data = mode_ptr->data;
-    FILE* file = fopen(file_path_data, mode_data); /* NOLINT */
-    if (file == 0) {
+    FILE* f = fopen(file_path_data, mode_data); /* NOLINT */
+    if (f == 0) {
         return 0;
     }
     struct pointer* f_ptr = virtual->alloc(sizeof(struct file_handler), id);
     struct file_handler* handler = f_ptr->data;
-    handler->file = file;
+    handler->file = f;
 #ifdef USE_MEMORY_DEBUG_INFO
     handler->path = file_path_ptr->data;
 #endif
@@ -131,10 +129,10 @@ static u64 file_data(u64 ptr) {
         return 0;
     }
     struct file_handler* handler = data_ptr->data;
-    FILE* file = handler->file;
-    fseek(file, 0, SEEK_END); /* NOLINT */
-    u64 size = (u64)ftell(file);
-    fseek(file, 0, SEEK_SET);
+    FILE* f = handler->file;
+    fseek(f, 0, SEEK_END); /* NOLINT */
+    u64 size = (u64)ftell(f);
+    fseek(f, 0, SEEK_SET);
     u64 data_size = size + 1;
     u64 virtual_data = data->alloc(data_size);
     void* file_data = data->unsafe(virtual_data);

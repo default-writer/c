@@ -58,4 +58,14 @@ struct string_methods {
     u64 (*strcmp)(u64 src, u64 dest);
 };
 
+/* definition */
+extern const struct string_methods string_methods_definition;
+
+/* definition */
+#if defined(INLINE)
+const struct string_methods* string = &string_methods_definition;
+#else
+static const struct string_methods* string = &string_methods_definition;
+#endif
+
 #endif /* _POINTER_TYPES_STRING_H_ */

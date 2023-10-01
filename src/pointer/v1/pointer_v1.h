@@ -90,4 +90,14 @@ struct pointer_methods {
 #endif
 };
 
+/* definition */
+extern const struct pointer_methods pointer_methods_definition;
+
+/* definition */
+#if defined(INLINE)
+const struct pointer_methods* pointer = &pointer_methods_definition;
+#else
+static const struct pointer_methods* pointer = &pointer_methods_definition;
+#endif
+
 #endif /* _POINTER_V1_H_ */

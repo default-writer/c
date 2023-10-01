@@ -23,6 +23,10 @@
  * SOFTWARE.
  *
  */
+#define RXP_DEBUG_TESTS
+#include "../tests/src/test.h"
+
+#define INLINE
 #include "common/alloc.h"
 #include "list-micro/data.h"
 #include "playground/brain/brain.h"
@@ -34,10 +38,6 @@
 #include "pointer/types/string/v1/string_v1.h"
 #include "pointer/types/string_pointer/v1/string_pointer_v1.h"
 #include "pointer/v1/pointer_v1.h"
-
-#define RXP_DEBUG_TESTS
-
-#include "../tests/src/test.h"
 
 extern const struct test_suite vm_v1_test_suite_definition;
 static const struct test_suite* vm_v1_tests = &vm_v1_test_suite_definition;
@@ -51,25 +51,11 @@ static const struct test_suite* list_alloc_tests = &list_alloc_test_suite_defini
 #define DEFAULT_SIZE 0x100
 
 /* definition */
-extern const struct pointer_methods pointer_methods_definition;
-extern const struct list_methods list_methods_definition;
-extern const struct file_methods file_methods_definition;
-extern const struct string_methods string_methods_definition;
 extern const struct user_methods user_methods_definition;
-extern const struct data_methods data_methods_definition;
-extern const struct object_methods object_methods_definition;
-extern const struct os_methods os_methods_definition;
 extern const struct string_pointer_methods string_pointer_methods_definition;
 
 /* definition */
-const struct pointer_methods* pointer = &pointer_methods_definition;
-const struct list_methods* list = &list_methods_definition;
-const struct file_methods* file = &file_methods_definition;
-const struct string_methods* string = &string_methods_definition;
 const struct user_methods* user = &user_methods_definition;
-const struct data_methods* data = &data_methods_definition;
-const struct object_methods* object = &object_methods_definition;
-const struct os_methods* os = &os_methods_definition;
 const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
 
 typedef struct test_data {

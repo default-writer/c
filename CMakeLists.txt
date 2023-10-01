@@ -359,6 +359,7 @@ set(MAIN_TESTS_VM2_SOURCE tests/v2/main-tests_v2.c)
 set(SUBSTRINGS src/examples/substrings/main.c)
 set(LEETCODE_VALID_PARENTHESES src/examples/leetcode/valid-parentheses.c)
 set(LEETCODE_LONGEST_VALID_PARENTHESES src/examples/leetcode/longest-valid-parentheses.c)
+set(URL_GET src/examples/url/main.c)
 
 #zen
 set(ZEN_SOURCE zen/zen.c)
@@ -464,6 +465,7 @@ add_executable(main-tests-vm2 ${MAIN_TESTS_VM2_SOURCE})
 add_executable(c-substrings ${SUBSTRINGS})
 add_executable(c-valid-parentheses ${LEETCODE_VALID_PARENTHESES})
 add_executable(c-longest-valid-parentheses ${LEETCODE_LONGEST_VALID_PARENTHESES})
+add_executable(c-url ${URL_GET})
 
 #zen
 add_executable(zen ${ZEN_SOURCE})
@@ -521,6 +523,9 @@ target_link_libraries(main-linked-list PRIVATE stl-linked-list)
 target_link_libraries(main-linked-list-static-enumerator PRIVATE stl-linked-list)
 target_link_libraries(main-tests-vm1 PRIVATE list-micro list-pointer1 tests-vm-v1 vm-v1)
 target_link_libraries(main-tests-vm2 PRIVATE tests tests-vm-v2 list-micro list-pointer2 vm-v2 list-pointer2 list-micro)
+
+#examples
+target_link_libraries(c-url PRIVATE curl ctypes)
 
 configure_file(all_english_words.txt ${CMAKE_BINARY_DIR}/all_english_words.txt COPYONLY)
 configure_file(file.txt ${CMAKE_BINARY_DIR}/file.txt COPYONLY)
