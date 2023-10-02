@@ -535,10 +535,10 @@ FILE(WRITE ${CMAKE_BINARY_DIR}/input.txt
 )
 
 FILE(WRITE ${CMAKE_BINARY_DIR}/input-substrings.txt
-    "adadadsadsadad\n"
-    "dad\n"
-    "adsaddasaddad\n"
-    "sad\n"
+    "ajuilanadassangesajuilan\n"
+    "juilan\n"
+    "adassangedaassangejuilan\n"
+    "assange\n"
 )
 
 if(TARGETS)
