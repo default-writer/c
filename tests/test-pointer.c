@@ -46,14 +46,18 @@ static const struct test_suite* vm_v1_tests = &vm_v1_test_suite_definition;
 
 int main(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_GLOBAL_DEBUG_INFO)
     global_statistics();
+#endif
 #endif
     TEST_RUN(alloc_result, list_alloc_tests);
     TEST_RUN(micro_result, list_micro_tests);
     TEST_RUN(vm_v1_result, vm_v1_tests);
     TEST_RUN(pointer_v1_result, pointer_tests);
 #ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_GLOBAL_DEBUG_INFO)
     global_statistics();
+#endif
 #endif
     return alloc_result | micro_result | vm_v1_result | pointer_v1_result;
 }

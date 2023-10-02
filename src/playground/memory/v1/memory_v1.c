@@ -55,7 +55,9 @@ static void* memory_alloc(u64 size) {
     void** tmp = ptr;
     ptr += size;
 #ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_ALLOC_DEBUG_INFO)
     printf("  0+: %016llx > %016llx\n", (u64)tmp, (u64)ptr);
+#endif
 #endif
     return tmp;
 }
@@ -64,7 +66,9 @@ static void memory_free(void* data, u64 size) {
     CLEAN(data)
     ptr -= size;
 #ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_ALLOC_DEBUG_INFO)
     printf("  0-: %016llx ! %16lld\n", (u64)ptr, size);
+#endif
 #endif
 }
 

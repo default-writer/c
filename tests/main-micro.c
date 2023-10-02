@@ -33,12 +33,16 @@ static const struct test_suite* list_micro_tests = &list_micro_test_suite_defini
 
 int main(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_GLOBAL_DEBUG_INFO)
     global_statistics();
+#endif
 #endif
     TEST_RUN(alloc, list_alloc_tests);
     TEST_RUN(result, list_micro_tests);
 #ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_GLOBAL_DEBUG_INFO)
     global_statistics();
+#endif
 #endif
     return alloc | result;
 }

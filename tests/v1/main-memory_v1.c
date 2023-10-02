@@ -66,13 +66,17 @@ void use(const union memory_allocator_api* allocator) {
 
 int main(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_GLOBAL_DEBUG_INFO)
     global_statistics();
+#endif
 #endif
     use(&memory_allocator_v1);
     use(&memory_allocator_v2);
     use(&memory_allocator_v3);
 #ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_GLOBAL_DEBUG_INFO)
     global_statistics();
+#endif
 #endif
     return 0;
 }

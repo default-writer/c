@@ -103,11 +103,15 @@ void use(const struct memory_allocator_v3* allocator) {
 
 int main(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_GLOBAL_DEBUG_INFO)
     global_statistics();
+#endif
 #endif
     use(&memory_allocator_v6);
 #ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_GLOBAL_DEBUG_INFO)
     global_statistics();
+#endif
 #endif
     return 0;
 }

@@ -117,7 +117,9 @@ static void launch_game(void) {
 
 int main(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_GLOBAL_DEBUG_INFO)
     global_statistics();
+#endif
 #endif
     pointer->init(8);
     u64 gc_ptr = list->alloc();
@@ -189,9 +191,6 @@ int main(void) {
                 string_pointer->free(match_start_ptr);
                 string_pointer->free(str_ncpy);
             }
-            string_pointer->free(string_pointer_ptr);
-            // pointer->release() frees memory used by string reference pointers keeping memory footprint low
-            pointer->release();
             current_ptr = match_ptr;
         }
     }
@@ -204,7 +203,9 @@ int main(void) {
 #endif
     pointer->destroy();
 #ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_GLOBAL_DEBUG_INFO)
     global_statistics();
+#endif
 #endif
     return 0;
 }

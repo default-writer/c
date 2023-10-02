@@ -2371,9 +2371,6 @@ RX_TEST_CASE(pointer_tests, test_pointer_strings, .fixture = test_fixture) {
 #endif
     pointer->release();
     pointer->destroy();
-#ifdef USE_MEMORY_DEBUG_INFO
-    global_statistics();
-#endif
 }
 
 /* test init */

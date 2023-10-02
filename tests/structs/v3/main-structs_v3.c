@@ -33,13 +33,17 @@ static const interface_B instance_interface_B = &interface_B_definition;
 
 int main(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_GLOBAL_DEBUG_INFO)
     global_statistics();
+#endif
 #endif
     object_typeinfo ptr = instance_interface_B->initialize();
     instance_interface_B->print(ptr);
     instance_interface_B->finalize(ptr);
 #ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_GLOBAL_DEBUG_INFO)
     global_statistics();
+#endif
 #endif
     return 0;
 }

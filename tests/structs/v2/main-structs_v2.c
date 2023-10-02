@@ -32,7 +32,9 @@ const class instance = &class_definition;
 
 int main(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_GLOBAL_DEBUG_INFO)
     global_statistics();
+#endif
 #endif
     typedef struct B* B;
 
@@ -64,7 +66,9 @@ int main(void) {
 
     instance->destroy(class_object);
 #ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_GLOBAL_DEBUG_INFO)
     global_statistics();
+#endif
 #endif
     return 0;
 }

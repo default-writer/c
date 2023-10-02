@@ -260,7 +260,9 @@ static void vm_free(struct pointer* ptr) {
         list->push(cache, vm_pointer_ptr);
 #endif
 #ifdef USE_VM_DEBUG_INFO
+#if defined(VM_ALLOC_DEBUG_INFO)
         printf("  >-: %016llx ! %016llx > %016llx\n", ptr->address, (u64)ptr, (u64)data);
+#endif
 #endif
         *data = 0;
     }
@@ -283,7 +285,9 @@ static struct pointer* vm_read_type(u64 address, u64 id) {
         return 0;
     }
 #ifdef USE_VM_DEBUG_INFO
+#if defined(VM_ACCESS_DEBUG_INFO)
     printf("  <v: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)data);
+#endif
 #endif
     return ptr;
 }
@@ -302,7 +306,9 @@ static struct pointer* vm_read(u64 address) {
         return 0;
     }
 #ifdef USE_VM_DEBUG_INFO
+#if defined(VM_ACCESS_DEBUG_INFO)
     printf("  <v: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)data);
+#endif
 #endif
     return ptr;
 }
@@ -318,7 +324,9 @@ static u64 vm_alloc(struct pointer* ptr) {
     ptr->vm = target;
     ptr->address = address;
 #ifdef USE_VM_DEBUG_INFO
+#if defined(VM_ALLOC_DEBUG_INFO)
     printf("  >v: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)data);
+#endif
 #endif
     return address;
 }

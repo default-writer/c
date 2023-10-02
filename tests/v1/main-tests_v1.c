@@ -38,11 +38,15 @@ typedef struct test_data {
 
 int main(int argc, char** argv) {
 #ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_GLOBAL_DEBUG_INFO)
     global_statistics();
+#endif
 #endif
     TEST_RUN(vm_v1, vm_v1_tests);
 #ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_GLOBAL_DEBUG_INFO)
     global_statistics();
+#endif
 #endif
     return vm_v1;
 }

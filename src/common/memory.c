@@ -58,7 +58,9 @@ static void* memory_alloc(u64 size) {
 #ifdef USE_MEMORY_DEBUG_INFO
         total_alloc += size;
         base->used = total_alloc - total_free;
+#if defined(VM_ALLOC_DEBUG_INFO)
         printf("   +: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_alloc, total_free);
+#endif
 #endif
     }
     return ptr;
@@ -76,7 +78,9 @@ static void memory_free(void* ptr, u64 size) {
 #endif
 #ifdef USE_MEMORY_DEBUG_INFO
         total_free += size;
-    printf("   -: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_alloc, total_free);
+#if defined(VM_ALLOC_DEBUG_INFO)
+        printf("   -: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_alloc, total_free);
+#endif
 #endif
     }
 }
@@ -92,9 +96,13 @@ static void* memory_realloc(void* old_ptr, u64 size, u64 new_size) {
     if (ptr != 0 && new_size > size) {
         ptr = realloc(ptr, new_size);
 #ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_ALLOC_DEBUG_INFO)
         printf("   -: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_alloc, total_free);
+#endif
         total_alloc += new_size - size;
+#if defined(VM_ALLOC_DEBUG_INFO)
         printf("   +: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_alloc, total_free);
+#endif
 #endif
     }
     return ptr;

@@ -668,22 +668,28 @@ static void pointer_printf(u64 ptr) {
     }
     const char* data = data_ptr->data;
 #ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_MEMORY_DEBUG_INFO)
     void* ptr_data = data_ptr->data;
     printf("   .: %016llx > %016llx\n", (u64)data_ptr, (u64)ptr_data);
+#endif
 #endif
     puts(data);
 }
 
 #ifdef USE_MEMORY_DEBUG_INFO
 static void pointer_dump(struct pointer* ptr) {
+#if defined(VM_MEMORY_DEBUG_INFO)
     printf("   ^: %016llx > %016llx\n", (u64)ptr, (u64)ptr->data);
+#endif
 }
 
 static void pointer_dump_ref(void** ptr) {
     if (*ptr == 0) {
         return;
     }
+#if defined(VM_MEMORY_DEBUG_INFO)
     printf("   &: %016llx > %016llx\n", (u64)ptr, (u64)*ptr);
+#endif
 }
 #endif
 

@@ -121,7 +121,9 @@ static void source2(void) {
 
 int main(int argc, char** argv) {
 #ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_GLOBAL_DEBUG_INFO)
     global_statistics();
+#endif
 #endif
     CLEAN(argc)
     pointer->init(DEFAULT_SIZE);
@@ -134,7 +136,9 @@ int main(int argc, char** argv) {
 #endif
     pointer->destroy();
 #ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_GLOBAL_DEBUG_INFO)
     global_statistics();
+#endif
 #endif
     return 0;
 }

@@ -142,7 +142,9 @@ static u64 vm_alloc_internal(struct vm_data** current) {
     ++vm->sp;
     address = to_virtual_address_internal(vm, ptr);
 #ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_ALLOC_DEBUG_INFO)
     printf("  >+: %016llx > %016llx\n", (u64)ptr, address);
+#endif
 #endif
     *current = vm;
     return address;
@@ -226,7 +228,9 @@ static struct pointer* vm_free(struct vm_data** current, u64 address) {
         if (ptr != 0) {
             data = *ptr;
 #ifdef USE_VM_DEBUG_INFO
+#if defined(VM_ALLOC_DEBUG_INFO)
             printf("  >-: %016llx ! %016llx > %016llx\n", address, (u64)data, (u64)ptr);
+#endif
 #endif
             *ptr = 0;
         }
@@ -241,7 +245,9 @@ static struct pointer* vm_read(struct vm_data** current, u64 address) {
         if (ptr != 0) {
             data = *ptr;
 #ifdef USE_VM_DEBUG_INFO
+#if defined(VM_ACCESS_DEBUG_INFO)
             printf("  <v: %016llx ! %016llx > %016llx\n", address, (u64)data, (u64)ptr);
+#endif
 #endif
         }
     }
@@ -256,7 +262,9 @@ static u64 vm_write(struct vm_data** current, struct pointer* data) {
         if (ptr != 0) {
             *ptr = data;
 #ifdef USE_VM_DEBUG_INFO
+#if defined(VM_ACCESS_DEBUG_INFO)
             printf("  >v: %016llx ! %016llx > %016llx\n", address, (u64)data, (u64)ptr);
+#endif
 #endif
         }
     }

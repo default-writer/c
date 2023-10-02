@@ -30,11 +30,15 @@ static const struct test_suite* list_alloc_tests = &list_alloc_test_suite_defini
 
 int main(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_GLOBAL_DEBUG_INFO)
     global_statistics();
+#endif
 #endif
     TEST_RUN(result, list_alloc_tests);
 #ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_GLOBAL_DEBUG_INFO)
     global_statistics();
+#endif
 #endif
     return result;
 }

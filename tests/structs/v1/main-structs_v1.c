@@ -80,7 +80,9 @@ void base_destroy(const object_typeinfo ptr) {
 
 int main(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_GLOBAL_DEBUG_INFO)
     global_statistics();
+#endif
 #endif
     typedef struct B _B;
     typedef _B* B;
@@ -102,7 +104,7 @@ int main(void) {
     };
 
     const struct base* base = &base_methods;
-    const B b = (B)base->create(&ti);
+    const B b = (B)(void*)base->create(&ti);
 
     b->base.counter_a = 1;
     b->counter_b = 2;
@@ -121,7 +123,9 @@ int main(void) {
 
     base->destroy(&obj);
 #ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_GLOBAL_DEBUG_INFO)
     global_statistics();
+#endif
 #endif
     return 0;
 }

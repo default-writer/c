@@ -2237,7 +2237,9 @@ extern inline void source2(void) {
 
 int main(int argc, char** argv) {
 #ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_GLOBAL_DEBUG_INFO)
     global_statistics();
+#endif
 #endif
     CLEAN(argc)
     TEST_RUN(list_alloc_result, list_alloc_tests);
@@ -2269,7 +2271,9 @@ int main(int argc, char** argv) {
     /* Execute the main function that runs the test cases found. */
     int main_tests_result = rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
 #ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_GLOBAL_DEBUG_INFO)
     global_statistics();
+#endif
 #endif
     return list_alloc_result | list_tests_result | list_micro_result | vm_v1_result | pointer_v1_result | main_tests_result;
 }

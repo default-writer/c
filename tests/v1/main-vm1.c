@@ -122,7 +122,9 @@ extern inline void source2(void) {
 
 int main(int argc, char** argv) {
 #ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_GLOBAL_DEBUG_INFO)
     global_statistics();
+#endif
 #endif
     TEST_RUN(alloc, list_alloc_tests);
     TEST_RUN(micro, list_micro_tests);
@@ -138,7 +140,9 @@ int main(int argc, char** argv) {
     list->free(_list_ptr);
     pointer->destroy();
 #ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_GLOBAL_DEBUG_INFO)
     global_statistics();
+#endif
 #endif
     return alloc | micro | vm_v1;
 }

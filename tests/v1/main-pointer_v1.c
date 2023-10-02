@@ -219,7 +219,9 @@ RX_TEST_CASE(tests, test_list_peek_0, .fixture = test_fixture) {
 
 int main(int argc, char** argv) {
 #ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_GLOBAL_DEBUG_INFO)
     global_statistics();
+#endif
 #endif
     CLEAN(argc)
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -228,7 +230,9 @@ int main(int argc, char** argv) {
     /* Execute the main function that runs the test cases found. */
     int result = rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
 #ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_GLOBAL_DEBUG_INFO)
     global_statistics();
+#endif
 #endif
     return result;
 }

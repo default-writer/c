@@ -336,7 +336,9 @@ RX_TEST_CASE(tests, test_list_pop_is_zero, .fixture = test_fixture) {
 
 int main(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_GLOBAL_DEBUG_INFO)
     global_statistics();
+#endif
 #endif
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- acceptance test code\n");
@@ -352,7 +354,9 @@ int main(void) {
     /* Execute the main function that runs the test cases found. */
     int result = rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
 #ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_GLOBAL_DEBUG_INFO)
     global_statistics();
+#endif
 #endif
     return alloc | micro | result;
 }

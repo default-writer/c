@@ -28,6 +28,10 @@
 #include "list-micro/data.h"
 #include "vm/v1/vm_v1.h"
 
+#if defined(USE_MEMORY_DEBUG_INFO)
+#define VM_GLOBAL_DEBUG_INFO
+#endif
+
 #define DEFAULT_SIZE 0x100
 #define POINTER_SIZE sizeof(struct pointer)
 #define POINTER_DATA_SIZE sizeof(struct pointer_data)
@@ -111,7 +115,8 @@ static void pointer_destroy_internal(struct pointer_data* ptr);
 
 /* free */
 static u64 vm_types_init(u64 id, const struct vm_type* type);
-static void vm_types_destroy(void);
+static void vm_init(void);
+static void vm_destroy(void);
 static void pointer_free_internal(struct pointer* ptr);
 
 /* internal */
@@ -132,12 +137,21 @@ static u64 vm_types_init(u64 id, const struct vm_type* type) {
     return vm_types->id;
 }
 
-static void DESTROY vm_types_destroy() {
+static void INIT vm_init() {
+#if defined(VM_GLOBAL_DEBUG_INFO)
+    global_statistics();
+#endif
+}
+
+static void DESTROY vm_destroy() {
     while (vm_types->next != 0) {
         struct vm_types* prev = vm_types->next;
         memory->free(vm_types, sizeof(struct vm_types));
         vm_types = prev;
     }
+#if defined(VM_GLOBAL_DEBUG_INFO)
+    global_statistics();
+#endif
 }
 
 static struct pointer* pointer_vm_alloc(u64 size, u64 id) {
@@ -260,14 +274,18 @@ static void pointer_gc(void) {
 
 #ifdef USE_VM_DEBUG_INFO
 static void pointer_dump(struct pointer* ptr) {
+#if defined(VM_MEMORY_DEBUG_INFO)
     printf("   ^: %016llx > %016llx\n", (u64)ptr, (u64)ptr->data);
+#endif
 }
 
 static void pointer_dump_ref(void** ptr) {
     if (*ptr == 0) {
         return;
     }
+#if defined(VM_MEMORY_DEBUG_INFO)
     printf("   &: %016llx > %016llx\n", (u64)ptr, (u64)*ptr);
+#endif
 }
 #endif
 
