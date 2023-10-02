@@ -189,7 +189,7 @@ int main(void) {
                 }
                 printf("] at position: %lld\n", distance);
                 string_pointer->free(match_start_ptr);
-                string_pointer->free(str_ncpy);
+                string->free(str_ncpy);
             }
             current_ptr = match_ptr;
         }
