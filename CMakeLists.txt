@@ -259,7 +259,7 @@ set(LIB_PARAMETERS_SOURCE src/common/parameters.c)
 
 set(LIB_LIST1_SOURCE src/playground/list/v1/list_v1.c)
 set(LIB_LIST2_SOURCE src/playground/list/v2/list_v2.c)
-set(LIB_VM1_SOURCE src/vm/v1/vm_v1.c)
+set(LIB_VM1_SOURCE src/pointer/v1/virtual_v1.c)
 set(LIB_VM2_SOURCE src/vm/v2/vm_v2.c)
 set(LIB_HASHTABLE1_SOURCE src/playground/hashtable/v1/hashtable_v1.c)
 set(LIB_HASHTABLE2_SOURCE src/playground/hashtable/v2/hashtable_v2.c)
@@ -281,7 +281,8 @@ set(LIB_MEMORY3_SOURCE
 set(LIB_MEMORY4_SOURCE
     src/playground/memory/v6/memory_v6.c)
 set(LIB_BRAIN_SOURCE src/playground/brain/brain.c)
-set(LIB_POINTER1_SOURCE src/pointer/v1/pointer_v1.c)
+set(LIB_POINTER1_SOURCE
+    src/pointer/v1/pointer_v1.c)
 set(LIB_POINTER2_SOURCE src/pointer/v2/pointer_v2.c)
 set(LIB_MEMORY_LIST1_SOURCE src/playground/memory/list/v1/memory_list_v1.c)
 set(LIB_MEMORY_LIST2_SOURCE src/playground/memory/list/v2/memory_list_v2.c)
@@ -297,7 +298,7 @@ set(LIB_STD_FILE1_SOURCE src/pointer/types/file/v1/file_v1.c)
 set(LIB_STD_STRING1_SOURCE src/pointer/types/string/v1/string_v1.c)
 set(LIB_STD_STRING_POINTER1_SOURCE src/pointer/types/string_pointer/v1/string_pointer_v1.c)
 set(LIB_STD_OBJECT1_SOURCE src/pointer/types/object/v1/object_v1.c)
-set(LIB_STD_OS1_SOURCE src/pointer/types/os/v1/os_v1.c)
+set(LIB_STD_OS1_SOURCE src/pointer/os/v1/os_v1.c)
 set(LIB_STD_TYPES1_SOURCE
     src/pointer/v1/pointer_v1.c
     src/pointer/types/data/v1/data_v1.c
@@ -306,8 +307,7 @@ set(LIB_STD_TYPES1_SOURCE
     src/pointer/types/string_pointer/v1/string_pointer_v1.c
     src/pointer/types/file/v1/file_v1.c
     src/pointer/types/list/v1/list_v1.c
-    src/pointer/types/object/v1/object_v1.c
-    src/pointer/types/os/v1/os_v1.c)
+    src/pointer/types/object/v1/object_v1.c)
 
 set(LIB_LINKED_LIST_SOURCE
     src/stl/linked_list.c
@@ -479,7 +479,7 @@ target_link_libraries(list-memory3 PRIVATE list-common)
 target_link_libraries(list-memory4 PRIVATE list-common)
 target_link_libraries(list-class PRIVATE list-common)
 target_link_libraries(list-alloc PRIVATE list-parameters)
-target_link_libraries(list-pointer1 PRIVATE list-common list-micro std-types1)
+target_link_libraries(list-pointer1 PRIVATE std-types1)
 target_link_libraries(list-pointer2 PRIVATE list-common)
 target_link_libraries(list-experimental PRIVATE list-parameters)
 target_link_libraries(memory-ref1 PRIVATE memory-list1 list-micro list-common)
@@ -488,10 +488,11 @@ target_link_libraries(memory-ref3 PRIVATE memory-list3 list-micro list-common)
 target_link_libraries(list-pointer2 PRIVATE vm-v2)
 target_link_libraries(structs-v3 PRIVATE list-class)
 target_link_libraries(stl-linked-list PRIVATE list-common)
-target_link_libraries(c-substrings PRIVATE ctypes)
+target_link_libraries(c-substrings PRIVATE ctypes std-os1)
+target_link_libraries(std-types1 PRIVATE list-common list-micro)
 
 # test
-target_link_libraries(test-pointer PRIVATE tests list-default ctypes tests-vm-v1 vm-v1)
+target_link_libraries(test-pointer PRIVATE tests list-default ctypes tests-vm-v1 vm-v1 std-os1)
 target_link_libraries(tests PRIVATE list-alloc list-parameters)
 target_link_libraries(tests-vm-v1 PRIVATE tests list-common list-micro list-pointer1)
 target_link_libraries(tests-vm-v2 PRIVATE tests list-common list-micro list-pointer2)
@@ -508,13 +509,13 @@ target_link_libraries(main-memory1 PRIVATE list-memory1)
 target_link_libraries(main-memory2 PRIVATE list-memory2 memory-ref1)
 target_link_libraries(main-memory3 PRIVATE list-memory3 memory-ref2)
 target_link_libraries(main-memory4 PRIVATE list-memory4 memory-ref3 list-lcg)
-target_link_libraries(main-brain1 PRIVATE tests list-default tests-vm-v1 list-pointer1 list-micro vm-v1 std-string-pointer1)
+target_link_libraries(main-brain1 PRIVATE tests list-default tests-vm-v1 list-pointer1 list-micro vm-v1 std-string-pointer1 std-os1)
 target_link_libraries(main-brain2 PRIVATE tests tests-vm-v2 list-pointer2 list-micro)
 target_link_libraries(main-pointer1 PRIVATE list-pointer1 list-micro vm-v1)
 target_link_libraries(main-pointer2 PRIVATE list-pointer2 list-micro)
-target_link_libraries(main-hashtable1 PRIVATE list-pointer1 list-micro vm-v1 hashtable1 std-string-pointer1)
+target_link_libraries(main-hashtable1 PRIVATE list-pointer1 list-micro vm-v1 hashtable1 std-string-pointer1 std-os1)
 target_link_libraries(main-hashtable2 PRIVATE list-pointer2 list-micro hashtable2)
-target_link_libraries(main-vm1 PRIVATE tests tests-vm-v1 list-alloc list-light vm-v1)
+target_link_libraries(main-vm1 PRIVATE tests tests-vm-v1 list-alloc list-light vm-v1 std-os1)
 target_link_libraries(main-vm2 PRIVATE tests tests-vm-v2 list-alloc list-light vm-v2 list-pointer2 list-micro)
 target_link_libraries(main-structs1 PRIVATE list-common)
 target_link_libraries(main-structs2 PRIVATE list-class)

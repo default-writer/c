@@ -23,11 +23,13 @@
  * SOFTWARE.
  *
  */
-#include "pointer/types/string_pointer/v1/string_pointer_v1.h"
 #include "common/memory.h"
 #include "list-micro/data.h"
+
 #include "pointer/v1/pointer_v1.h"
-#include "vm/v1/vm_v1.h"
+#include "pointer/v1/virtual_v1.h"
+#include "pointer/types/string_pointer/v1/string_pointer_v1.h"
+#include "pointer/types/types.h"
 
 #define DEFAULT_SIZE 0x100
 
@@ -35,17 +37,10 @@ static const enum type id = TYPE_STRING_POINTER;
 
 /* api */
 const struct string_pointer_methods string_pointer_methods_definition;
-void string_pointer_init();
 
-extern u64 pointer_vm_register_type(u64 id, const struct vm_type* type);
-
-/* definition */
-extern const struct vm_methods vm_methods_definition;
-extern const struct pointer_vm_methods pointer_vm_methods_definition;
-
-/* definition */
-static const struct vm_methods* vm = &vm_methods_definition;
-static const struct pointer_vm_methods* virtual = &pointer_vm_methods_definition;
+#ifndef ATTRIBUTE
+void string_pointer_init(void);
+#endif
 
 /* definition */
 static const struct vm_type type_definition;
@@ -56,35 +51,35 @@ static void string_free(u64 ptr);
 static void string_vm_free(struct pointer* ptr);
 
 /* internal */
-static void string_pointer_vm_free(struct pointer* ptr);
+static void string_virtual_free(struct pointer* ptr);
 
 /* implementation */
-static void string_pointer_vm_free(struct pointer* ptr) {
-    virtual->free(ptr);
+static void string_virtual_free(struct pointer* ptr) {
+    pointer->release(ptr);
 }
 
 static const struct vm_type type_definition = {
-    .free = string_pointer_vm_free
+    .free = string_virtual_free
 };
 
 static void INIT init() {
-    pointer_vm_register_type(id, type);
+    pointer->register_type(id, type);
 }
 
 /* api */
 static void string_free(u64 ptr) {
-    struct pointer* data_ptr = vm->read(ptr);
+    struct pointer* data_ptr = virtual->read(ptr);
     if (data_ptr == 0) {
         return;
     }
-    if (data_ptr->id == TYPE_STRING_POINTER) {
+    if (pointer->read_type(data_ptr, TYPE_STRING_POINTER)) {
         string_vm_free(data_ptr);
         return;
     }
 }
 
 static void string_vm_free(struct pointer* ptr) {
-    virtual->free(ptr);
+    pointer->release(ptr);
 }
 
 /* public */

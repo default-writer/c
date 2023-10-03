@@ -25,10 +25,6 @@
  */
 #include "common/memory.h"
 
-#ifdef USE_MEMORY_ALLOC
-#include "playground/memory/memory.h"
-#endif
-
 static u64 total_alloc = 0;
 static u64 total_used = 0;
 static u64 total_free = 0;
@@ -47,14 +43,13 @@ static void memory_free(void* ptr, u64 size);
 static void* memory_realloc(void* old_ptr, u64 size, u64 new_size);
 static void memory_set(void* dest, u8 c, size_t count);
 
+/* api */
+void global_statistics(void);
+
 static void* memory_alloc(u64 size) {
     void* ptr = 0;
     if (size != 0) {
-#ifdef USE_MEMORY_ALLOC
-        ptr = memory_alloc(nmemb, size);
-#else
         ptr = calloc(1, size);
-#endif
 #ifdef USE_MEMORY_DEBUG_INFO
         total_alloc += size;
         base->used = total_alloc - total_free;
@@ -71,11 +66,7 @@ static void memory_free(void* ptr, u64 size) {
 #ifdef USE_MEMORY_CLEANUP
         memory_set(ptr, 0, size); /* NOLINT */
 #endif
-#ifdef USE_MEMORY_ALLOC
-        memory_free(ptr, size);
-#else
-        free(ptr);
-#endif
+       free(ptr);
 #ifdef USE_MEMORY_DEBUG_INFO
         total_free += size;
 #if defined(VM_ALLOC_DEBUG_INFO)
@@ -84,12 +75,6 @@ static void memory_free(void* ptr, u64 size) {
 #endif
     }
 }
-
-#ifdef USE_MEMORY_DEBUG_INFO
-void global_statistics(void) {
-    printf("   .: %16s ! %16lld . %16lld : %16lld : %16lld\n", "", (u64)0, total_alloc - total_free, total_alloc, total_free);
-}
-#endif
 
 static void* memory_realloc(void* old_ptr, u64 size, u64 new_size) {
     void* ptr = old_ptr;
@@ -130,6 +115,12 @@ static void memory_set(void* dest, u8 c, size_t count) {
     for (block_idx = 0; block_idx < bytes_left; block_idx++)
         dest_ptr1[block_idx] = (u8)c;
 }
+
+#ifdef USE_MEMORY_DEBUG_INFO
+void global_statistics(void) {
+    printf("   .: %16s ! %16lld . %16lld : %16lld : %16lld\n", "", (u64)0, total_alloc - total_free, total_alloc, total_free);
+}
+#endif
 
 const struct memory memory_definition = {
     .alloc = memory_alloc,

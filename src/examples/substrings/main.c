@@ -1,24 +1,18 @@
 #include "common/memory.h"
 #include "list-micro/data.h"
 #include "list/v1/list_v1.h"
+
 #include "playground/hashtable/v1/hashtable_v1.h"
+
+#include "pointer/v1/pointer_v1.h"
 #include "pointer/types/data/v1/data_v1.h"
 #include "pointer/types/file/v1/file_v1.h"
 #include "pointer/types/list/v1/list_v1.h"
 #include "pointer/types/object/v1/object_v1.h"
-#include "pointer/types/os/v1/os_v1.h"
 #include "pointer/types/string/v1/string_v1.h"
 #include "pointer/types/string_pointer/v1/string_pointer_v1.h"
-#include "pointer/types/user/v1/user_v1.h"
-#include "pointer/v1/pointer_v1.h"
 
-/* definition */
-extern const struct user_methods user_methods_definition;
-extern const struct string_pointer_methods string_pointer_methods_definition;
-
-/* definition */
-static const struct user_methods* user = &user_methods_definition;
-static const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
+#include "pointer/os/v1/os_v1.h"
 
 static u64 load_data() {
     u64 list_ptr = list->alloc();
@@ -50,10 +44,10 @@ static u64 load_data() {
         while ((data_ptr = list->pop(list_ptr)) != 0) {
             list->push(reversed_list_ptr, data_ptr);
         }
-        /* memory leak if uncommented: use pointer->release(); */
+        /* memory leak if uncommented: use pointer->gc(); */
         /* list->free(list_ptr); */
     }
-    /* memory leak if commented: use pointer->release(); */
+    /* memory leak if commented: use pointer->gc(); */
     list->free(list_ptr);
     string->free(mode_ptr);
     return reversed_list_ptr;
@@ -197,10 +191,7 @@ int main(void) {
     printf(">[done]\n");
     list->release(gc_ptr);
     list->free(gc_ptr);
-    pointer->release();
-#ifdef USE_GC
     pointer->gc();
-#endif
     pointer->destroy();
 #ifdef USE_MEMORY_DEBUG_INFO
 #if defined(VM_GLOBAL_DEBUG_INFO)

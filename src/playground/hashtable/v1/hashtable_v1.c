@@ -27,7 +27,6 @@
 #include "common/memory.h"
 #include "common/lcg.h"
 #include "playground/list/v2/list_v2.h"
-#include "pointer/v1/pointer_v1.h"
 
 /* macros */
 #define DEFAULT_SIZE 101

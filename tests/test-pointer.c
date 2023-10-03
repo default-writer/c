@@ -26,7 +26,7 @@
 #define RXP_DEBUG_TESTS
 #include "../tests/src/test.h"
 
-#include "vm/v1/vm_v1.h"
+#include "pointer/v1/virtual_v1.h"
 
 #include "common/memory.h"
 #include "list-micro/data.h"

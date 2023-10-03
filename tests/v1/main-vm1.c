@@ -27,17 +27,21 @@
 #include "../tests/src/test.h"
 
 #define INLINE
+
 #include "common/memory.h"
 #include "list-micro/data.h"
+
 #include "playground/brain/brain.h"
 #include "playground/hashtable/v1/hashtable_v1.h"
+
+#include "pointer/v1/pointer_v1.h"
 #include "pointer/types/data/v1/data_v1.h"
 #include "pointer/types/file/v1/file_v1.h"
 #include "pointer/types/list/v1/list_v1.h"
-#include "pointer/types/os/v1/os_v1.h"
 #include "pointer/types/string/v1/string_v1.h"
 #include "pointer/types/string_pointer/v1/string_pointer_v1.h"
-#include "pointer/v1/pointer_v1.h"
+
+#include "pointer/os/v1/os_v1.h"
 
 extern const struct test_suite vm_v1_test_suite_definition;
 static const struct test_suite* vm_v1_tests = &vm_v1_test_suite_definition;
@@ -49,14 +53,6 @@ extern const struct test_suite list_alloc_test_suite_definition;
 static const struct test_suite* list_alloc_tests = &list_alloc_test_suite_definition;
 
 #define DEFAULT_SIZE 0x100
-
-/* definition */
-extern const struct user_methods user_methods_definition;
-extern const struct string_pointer_methods string_pointer_methods_definition;
-
-/* definition */
-const struct user_methods* user = &user_methods_definition;
-const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
 
 typedef struct test_data {
     struct pointer_data* ctx;

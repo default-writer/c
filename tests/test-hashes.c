@@ -265,11 +265,11 @@ void get_data() {
     FILE* f = fopen(fn, "r");
 
     /* Read file line by line, calculate hash */
-    char buffer[PATH_MAX];
+    char buffer[PATH_MAX + 1];
     char* input = &buffer[0];
-    memset(input, 0, PATH_MAX);
+    memset(input, 0, PATH_MAX + 1);
     char* ch = &buffer[0];
-    while (fgets(input, PATH_MAX - 1, f)) {
+    while (fgets(input, PATH_MAX, f)) {
         unsigned long size = ((strlen(input) >> 3) | 1) << 3;
         struct list* current = calloc(1, sizeof(struct list));
         current->data = calloc(1, size);

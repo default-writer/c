@@ -31,26 +31,20 @@
 
 #include "common/memory.h"
 #include "list-micro/data.h"
+
 #include "playground/brain/brain.h"
 #include "playground/hashtable/v1/hashtable_v1.h"
+
+#include "pointer/v1/pointer_v1.h"
 #include "pointer/types/data/v1/data_v1.h"
 #include "pointer/types/file/v1/file_v1.h"
 #include "pointer/types/list/v1/list_v1.h"
 #include "pointer/types/string/v1/string_v1.h"
-#include "pointer/v1/pointer_v1.h"
 
 #define DEFAULT_SIZE 0x8
 
 /* definition */
-extern const struct vm_methods vm_methods_definition;
-
-/* definition */
-extern const struct user_methods user_methods_definition;
-extern const struct string_pointer_methods string_pointer_methods_definition;
-
-/* definition */
-static const struct user_methods* user = &user_methods_definition;
-static const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
+extern const struct virtual_methods virtual_methods_definition;
 
 typedef struct test_data {
     struct pointer_data* ctx;
@@ -74,7 +68,7 @@ RX_TEST_CASE(tests, test_list_unsafe, .fixture = test_fixture) {
     u64 data_size = data->size(data_ptr);
     RX_ASSERT(data_size == 256);
     data->free(data_ptr);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -107,7 +101,7 @@ RX_TEST_CASE(tests, test_list_push_list_peek_list_pop, .fixture = test_fixture) 
     memory->free(buffer, size);
     memory->free(dest, size);
     list->free(list_ptr);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -141,7 +135,7 @@ RX_TEST_CASE(tests, test_list_push_list_peek_list_pop_free, .fixture = test_fixt
     memory->free(buffer, size);
     memory->free(dest, size);
     list->free(list_ptr);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -185,7 +179,7 @@ RX_TEST_CASE(tests, test_list_push_0_list_peek_0_list_pop_0_list_free_0, .fixtur
     string->free(list_ptr);
     string->free(str1);
     list->free(list_ptr);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -213,7 +207,7 @@ RX_TEST_CASE(tests, test_list_peek_0, .fixture = test_fixture) {
     printf("   .: %s\n", buffer);
     memory->free(buffer, size);
     memory->free(dest, size);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 

@@ -34,7 +34,7 @@ static const struct test_suite* vm_v2_tests = &vm_v2_test_suite_definition;
 #define DEFAULT_SIZE 0x100
 
 /* definition */
-extern const struct vm_methods vm_methods_definition;
+extern const struct virtual_methods virtual_methods_definition;
 
 typedef struct test_data {
 }* TEST_DATA;

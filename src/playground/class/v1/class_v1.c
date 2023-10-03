@@ -27,8 +27,6 @@
 #include "common/memory.h"
 #include "list-micro/data.h"
 
-/* definition */
-extern const struct list list_micro_definition;
 /* class data definition */
 extern struct class_data class_data;
 
@@ -47,6 +45,9 @@ struct class_data {
 static struct list_data list_data;
 /* class data list reference */
 static struct list_data* class_list_data = &list_data;
+
+/* definition */
+extern const struct list list_micro_definition;
 
 /* definition */
 static const struct list* list = &list_micro_definition;

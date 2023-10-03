@@ -37,4 +37,14 @@ struct user_methods {
     void (*free)(u64 ptr);
 };
 
+/* definition */
+extern const struct user_methods user_methods_definition;
+
+/* definition */
+#if defined(INLINE)
+const struct user_methods* user = &user_methods_definition;
+#else
+static const struct user_methods* user = &user_methods_definition;
+#endif
+
 #endif /* _POINTER_TYPES_USER_TYPE_H_ */

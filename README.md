@@ -36,7 +36,6 @@ int main(void) {
 
     // some work with standard classes: os, string, data, etc.
 
-    pointer->release(); // releases all not freed memory
     pointer->gc();      // releases all resources added to GC
     pointer->destroy(); // releases virtual memory manager
     return 0;
@@ -58,7 +57,7 @@ int main(void) {
 - simple
 - tested (100% code coverage)
 
-## description
+## brief
 
 <a href="" target="blank"><img style='height:128px' src='./resources/api.png'></a>
 

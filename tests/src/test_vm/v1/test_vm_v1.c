@@ -24,24 +24,15 @@
  *
  */
 #include "test_vm_v1.h"
-#include "vm/v1/vm_v1.h"
 
+#include "pointer/v1/pointer_v1.h"
+#include "pointer/v1/virtual_v1.h"
 #include "pointer/types/data/v1/data_v1.h"
 #include "pointer/types/list/v1/list_v1.h"
 #include "pointer/types/user/v1/user_v1.h"
-#include "pointer/v1/pointer_v1.h"
+#include "pointer/types/types.h"
 
 #define DEFAULT_SIZE 0x100
-
-/* definition */
-extern const struct vm_methods vm_methods_definition;
-extern const struct vm_default_options vm_default_options_definition;
-extern const struct pointer_vm_methods pointer_vm_methods_definition;
-
-/* definition */
-static const struct vm_methods* vm = &vm_methods_definition;
-static const struct vm_default_options* vm_options = &vm_default_options_definition;
-static const struct pointer_vm_methods* virtual = &pointer_vm_methods_definition;
 
 /* Data structure to use at the core of our fixture. */
 typedef struct test_data {
@@ -51,14 +42,14 @@ typedef struct test_data {
 RX_SET_UP(test_set_up) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct vm** ctx = &rx->ctx;
-    *ctx = vm->init(0);
+    *ctx = virtual->init(0);
     return RX_SUCCESS;
 }
 
 RX_TEAR_DOWN(test_tear_down) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct vm** ctx = &rx->ctx;
-    vm->destroy(ctx);
+    virtual->destroy(ctx);
 }
 
 /* Define the fixture. */
@@ -66,68 +57,68 @@ RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tea
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_read_type_0, .fixture = test_fixture) {
-    const struct pointer* ptr = vm->read_type(0, TYPE_DATA);
+    struct pointer* ptr = virtual->read_type(0, TYPE_DATA);
     RX_ASSERT(ptr == 0);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_alloc_user, .fixture = test_fixture) {
-    struct pointer* ptr = virtual->alloc(0, TYPE_NULL);
-    u64 data_ptr = vm->alloc(ptr);
-    const struct pointer* vm_ptr = vm->read(data_ptr);
+    struct pointer* ptr = pointer->alloc(0, TYPE_NULL);
+    u64 data_ptr = virtual->alloc(ptr);
+    const struct pointer* vm_ptr = virtual->read(data_ptr);
     RX_ASSERT(ptr != 0);
     RX_ASSERT(data_ptr != 0);
     RX_ASSERT(vm_ptr == ptr);
-    virtual->free(ptr);
+    pointer->release(ptr);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_read_data, .fixture = test_fixture) {
-    struct pointer* ptr = virtual->alloc(0, TYPE_DATA);
-    u64 data_ptr = vm->alloc(ptr);
-    const struct pointer* vm_ptr = vm->read(data_ptr);
+    struct pointer* ptr = pointer->alloc(0, TYPE_DATA);
+    u64 data_ptr = virtual->alloc(ptr);
+    const struct pointer* vm_ptr = virtual->read(data_ptr);
     RX_ASSERT(ptr != 0);
     RX_ASSERT(data_ptr != 0);
     RX_ASSERT(vm_ptr == ptr);
-    virtual->free(ptr);
+    pointer->release(ptr);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_read_1, .fixture = test_fixture) {
-    struct pointer* ptr = virtual->alloc(0, TYPE_DATA);
-    u64 data_ptr = vm->alloc(ptr);
-    const struct pointer* vm_ptr = vm->read(1);
+    struct pointer* ptr = pointer->alloc(0, TYPE_DATA);
+    u64 data_ptr = virtual->alloc(ptr);
+    const struct pointer* vm_ptr = virtual->read(1);
     RX_ASSERT(ptr != 0);
     RX_ASSERT(data_ptr != 0);
     RX_ASSERT(vm_ptr == ptr);
-    virtual->free(ptr);
+    pointer->release(ptr);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_read_9, .fixture = test_fixture) {
-    struct pointer* ptr = virtual->alloc(0, TYPE_DATA);
-    u64 data_ptr = vm->alloc(ptr);
-    const struct pointer* vm_ptr = vm->read(vm_options->size + 1);
+    struct pointer* ptr = pointer->alloc(0, TYPE_DATA);
+    u64 data_ptr = virtual->alloc(ptr);
+    const struct pointer* vm_ptr = virtual->read(vm_options->size + 1);
     RX_ASSERT(ptr != 0);
     RX_ASSERT(data_ptr != 0);
     RX_ASSERT(vm_ptr == 0);
-    virtual->free(ptr);
+    pointer->release(ptr);
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_pointer_vm_free_0, .fixture = test_fixture) {
-    virtual->free(0);
+RX_TEST_CASE(tests, test_virtual_free_0, .fixture = test_fixture) {
+    pointer->release(0);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_free_0, .fixture = test_fixture) {
-    vm->free(0);
+    virtual->free(0);
     RX_ASSERT(0 == 0);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_read_0, .fixture = test_fixture) {
-    const struct pointer* ptr = vm->read(0);
+    const struct pointer* ptr = virtual->read(0);
     RX_ASSERT(ptr == 0);
 }
 
@@ -138,36 +129,36 @@ RX_TEST_CASE(tests, test_vm_init_0, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_read_type_1, .fixture = test_fixture) {
-    const struct pointer* ptr = vm->read_type(1, TYPE_DATA);
+    struct pointer* ptr = virtual->read_type(1, TYPE_DATA);
     RX_ASSERT(ptr == 0);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_write_0, .fixture = test_fixture) {
-    u64 ptr = vm->alloc(0);
+    u64 ptr = virtual->alloc(0);
     RX_ASSERT(ptr == 0);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_read_type_write_1_read_1, .fixture = test_fixture) {
-    struct pointer* ptr = virtual->alloc(0, TYPE_DATA);
-    u64 data_ptr = vm->alloc(ptr);
-    const struct pointer* vm_ptr = vm->read_type(data_ptr, TYPE_DATA);
+    struct pointer* ptr = pointer->alloc(0, TYPE_DATA);
+    u64 data_ptr = virtual->alloc(ptr);
+    struct pointer* vm_ptr = virtual->read_type(data_ptr, TYPE_DATA);
     RX_ASSERT(ptr != 0);
     RX_ASSERT(data_ptr != 0);
     RX_ASSERT(vm_ptr == ptr);
-    virtual->free(ptr);
+    pointer->release(ptr);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_read_type_write_1_read_2, .fixture = test_fixture) {
-    struct pointer* ptr = virtual->alloc(0, TYPE_DATA);
-    u64 data_ptr = vm->alloc(ptr);
-    const struct pointer* vm_ptr = vm->read_type(data_ptr + 1, TYPE_DATA);
+    struct pointer* ptr = pointer->alloc(0, TYPE_DATA);
+    u64 data_ptr = virtual->alloc(ptr);
+    struct pointer* vm_ptr = virtual->read_type(data_ptr + 1, TYPE_DATA);
     RX_ASSERT(ptr != 0);
     RX_ASSERT(data_ptr != 0);
     RX_ASSERT(vm_ptr == 0);
-    virtual->free(ptr);
+    pointer->release(ptr);
 }
 
 /* -------------------------------------------------------- *
@@ -177,14 +168,6 @@ RX_TEST_CASE(tests, test_vm_read_type_write_1_read_2, .fixture = test_fixture) {
  *                                                          *
  *                                                          *
  * -------------------------------------------------------- */
-
-/* definition */
-extern const struct user_methods user_methods_definition;
-extern const struct string_pointer_methods string_pointer_methods_definition;
-
-/* definition */
-static const struct user_methods* user = &user_methods_definition;
-static const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
 
 typedef struct test_pointer_data {
 }* TEST_POINTER_DATA;
@@ -204,7 +187,7 @@ RX_TEST_CASE(tests, test_list, .fixture = test_pointer_fixture) {
     pointer->init(8);
     u64 list_ptr = list->alloc();
     list->free(list_ptr);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -216,7 +199,7 @@ RX_TEST_CASE(tests, test_list_user, .fixture = test_pointer_fixture) {
     list->push(list_ptr, user_ptr);
     user->free(user_ptr);
     list->free(list_ptr);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -228,7 +211,7 @@ RX_TEST_CASE(tests, test_list_data, .fixture = test_pointer_fixture) {
     list->push(list_ptr, data_ptr);
     data->free(data_ptr);
     list->free(list_ptr);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -240,7 +223,7 @@ RX_TEST_CASE(tests, test_list_free_user_free, .fixture = test_pointer_fixture) {
     list->push(list_ptr, user_ptr);
     list->free(list_ptr);
     user->free(user_ptr);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -248,7 +231,7 @@ RX_TEST_CASE(tests, test_list_free_user_free, .fixture = test_pointer_fixture) {
 RX_TEST_CASE(tests, test_user_free_0, .fixture = test_pointer_fixture) {
     pointer->init(8);
     user->free(0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 

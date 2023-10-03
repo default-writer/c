@@ -39,12 +39,6 @@
 extern const struct test_suite vm_v2_test_suite_definition;
 static const struct test_suite* vm_v2_tests = &vm_v2_test_suite_definition;
 
-/* definition */
-extern const struct vm_methods vm_methods_definition;
-
-/* definition */
-const struct vm_methods* vm = &vm_methods_definition;
-
 struct pointer_data {
     struct vm_data* vm;
     struct list_data* list;
@@ -452,10 +446,10 @@ RX_TEST_CASE(main_brain2_tests, test_strcat_load_alloc_copy, .fixture = test_fix
     list->free(list_ptr);
 
 #ifdef USE_MEMORY_DEBUG_INFO
-    vm->dump(0);
-    vm->dump(ctx->vm);
-    vm->dump_ref(0);
-    vm->dump_ref(ctx->vm);
+    virtual->dump(0);
+    virtual->dump(ctx->vm);
+    virtual->dump_ref(0);
+    virtual->dump_ref(ctx->vm);
 #endif
 
 #ifndef USE_GC

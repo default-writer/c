@@ -41,4 +41,14 @@ struct string_reference {
     u64 offset;
 };
 
+/* definition */
+extern const struct string_pointer_methods string_pointer_methods_definition;
+
+/* definition */
+#if defined(INLINE)
+const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
+#else
+static const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
+#endif
+
 #endif /* _POINTER_TYPES_STRING_POINTER_H_ */

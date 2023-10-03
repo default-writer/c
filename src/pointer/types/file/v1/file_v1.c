@@ -23,12 +23,15 @@
  * SOFTWARE.
  *
  */
-#include "pointer/types/file/v1/file_v1.h"
 #include "common/memory.h"
 #include "list-micro/data.h"
-#include "pointer/types/data/v1/data_v1.h"
+
 #include "pointer/v1/pointer_v1.h"
-#include "vm/v1/vm_v1.h"
+#include "pointer/types/file/v1/file_v1.h"
+#include "pointer/types/data/v1/data_v1.h"
+#include "pointer/types/types.h"
+
+#include "pointer/v1/virtual_v1.h"
 
 #define DEFAULT_SIZE 0x100
 
@@ -36,19 +39,10 @@ static const enum type id = TYPE_FILE;
 
 /* api */
 const struct file_methods file_methods_definition;
-void file_init();
 
-extern u64 pointer_vm_register_type(u64 id, const struct vm_type* type);
-
-/* definition */
-extern const struct vm_methods vm_methods_definition;
-extern const struct list list_micro_definition;
-extern const struct pointer_vm_methods pointer_vm_methods_definition;
-
-/* definition */
-static const struct vm_methods* vm = &vm_methods_definition;
-static const struct list* list = &list_micro_definition;
-static const struct pointer_vm_methods* virtual = &pointer_vm_methods_definition;
+#ifndef ATTRIBUTE
+void file_init(void);
+#endif
 
 /* definition */
 extern struct pointer_data vm_pointer;
@@ -79,35 +73,32 @@ static u64 file_alloc(u64 file_path, u64 mode) {
     if (mode == 0) {
         return 0;
     }
-    struct pointer* file_path_ptr = vm->read_type(file_path, TYPE_STRING);
+    struct pointer* file_path_ptr = virtual->read_type(file_path, TYPE_STRING);
     if (file_path_ptr == 0) {
         return 0;
     }
-    const struct pointer* mode_ptr = vm->read_type(mode, TYPE_STRING);
+    struct pointer* mode_ptr = virtual->read_type(mode, TYPE_STRING);
     if (mode_ptr == 0) {
         return 0;
     }
-    const char* file_path_data = file_path_ptr->data;
-    const char* mode_data = mode_ptr->data;
+    const char* file_path_data = pointer->read(file_path_ptr);
+    const char* mode_data = pointer->read(mode_ptr);
     FILE* f = fopen(file_path_data, mode_data); /* NOLINT */
     if (f == 0) {
         return 0;
     }
-    struct pointer* f_ptr = virtual->alloc(sizeof(struct file_handler), id);
-    struct file_handler* handler = f_ptr->data;
+    struct pointer* f_ptr = pointer->alloc(sizeof(struct file_handler), id);
+    struct file_handler* handler = pointer->read(f_ptr);
     handler->file = f;
 #ifdef USE_MEMORY_DEBUG_INFO
-    handler->path = file_path_ptr->data;
+    handler->path = pointer->read(file_path_ptr);
 #endif
-    u64 data_ptr = vm->alloc(f_ptr);
-#ifdef USE_GC
-    list->push(&base->gc, (void*)data_ptr);
-#endif
+    u64 data_ptr = virtual->alloc(f_ptr);
     return data_ptr;
 }
 
 static void file_free(u64 ptr) {
-    struct pointer* data_ptr = vm->read_type(ptr, id);
+    struct pointer* data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return;
     }
@@ -115,20 +106,20 @@ static void file_free(u64 ptr) {
 }
 
 static void file_vm_free(struct pointer* ptr) {
-    struct file_handler* handler = ptr->data;
+    struct file_handler* handler = pointer->read(ptr);
     if (handler->file != 0) {
         fclose(handler->file);
         handler->file = 0;
     }
-    virtual->free(ptr);
+    pointer->release(ptr);
 }
 
 static u64 file_data(u64 ptr) {
-    struct pointer* data_ptr = vm->read_type(ptr, id);
+    struct pointer* data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
-    struct file_handler* handler = data_ptr->data;
+    struct file_handler* handler = pointer->read(data_ptr);
     FILE* f = handler->file;
     fseek(f, 0, SEEK_END); /* NOLINT */
     u64 size = (u64)ftell(f);
@@ -137,9 +128,6 @@ static u64 file_data(u64 ptr) {
     u64 virtual_data = data->alloc(data_size);
     void* file_data = data->unsafe(virtual_data);
     fread(file_data, 1, size, handler->file);
-#ifdef USE_GC
-    list->push(&base->gc, (void*)virtual_data);
-#endif
     return virtual_data;
 }
 
@@ -148,7 +136,7 @@ static const struct vm_type type_definition = {
 };
 
 static void INIT init() {
-    pointer_vm_register_type(id, type);
+    pointer->register_type(id, type);
 }
 
 /* public */

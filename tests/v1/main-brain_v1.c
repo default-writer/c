@@ -30,18 +30,20 @@
 #include "common/memory.h"
 #include "list-micro/data.h"
 #include "list/v1/list_v1.h"
+
 #include "playground/brain/brain.h"
 #include "playground/hashtable/v1/hashtable_v1.h"
+
+#include "pointer/v1/pointer_v1.h"
 #include "pointer/types/data/v1/data_v1.h"
 #include "pointer/types/file/v1/file_v1.h"
 #include "pointer/types/list/v1/list_v1.h"
 #include "pointer/types/object/v1/object_v1.h"
-#include "pointer/types/os/v1/os_v1.h"
 #include "pointer/types/string/v1/string_v1.h"
 #include "pointer/types/string_pointer/v1/string_pointer_v1.h"
 #include "pointer/types/user/v1/user_v1.h"
-#include "pointer/v1/pointer_v1.h"
 
+#include "pointer/os/v1/os_v1.h"
 
 #define DEFAULT_SIZE 0x100
 
@@ -60,15 +62,7 @@ static const struct test_suite* vm_v1_tests = &vm_v1_test_suite_definition;
 static const struct test_suite* pointer_tests = &pointer_test_suite_definition;
 
 /* definition */
-extern const struct vm_methods vm_methods_definition;
-
-/* definition */
-extern const struct user_methods user_methods_definition;
-extern const struct string_pointer_methods string_pointer_methods_definition;
-
-/* definition */
-const struct user_methods* user = &user_methods_definition;
-const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
+extern const struct virtual_methods virtual_methods_definition;
 
 typedef struct test_data {
 }* TEST_DATA;
@@ -88,7 +82,7 @@ RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tea
 RX_TEST_CASE(main_brain1_tests, test_print_0, .fixture = test_fixture) {
     pointer->init(8);
     os->putc(0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -97,7 +91,7 @@ RX_TEST_CASE(main_brain1_tests, test_load_0, .fixture = test_fixture) {
     pointer->init(8);
     u64 empty_ptr = string->load("\0");
     RX_ASSERT(empty_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -106,7 +100,7 @@ RX_TEST_CASE(main_brain1_tests, test_load_null, .fixture = test_fixture) {
     pointer->init(8);
     u64 empty_ptr = string->load(0);
     RX_ASSERT(empty_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -117,10 +111,8 @@ RX_TEST_CASE(main_brain1_tests, test_load_empty, .fixture = test_fixture) {
     RX_ASSERT(empty_ptr == 0);
 #ifndef USE_GC
     string->free(empty_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -132,10 +124,8 @@ RX_TEST_CASE(main_brain1_tests, test_print_load_empty, .fixture = test_fixture) 
     RX_ASSERT(empty_ptr == 0);
 #ifndef USE_GC
     string->free(empty_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -150,10 +140,8 @@ RX_TEST_CASE(main_brain1_tests, test_load_copy, .fixture = test_fixture) {
 #ifndef USE_GC
     string->free(char_ptr);
     string->free(copy_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -164,10 +152,8 @@ RX_TEST_CASE(main_brain1_tests, test_load_push_peek_pop, .fixture = test_fixture
     RX_ASSERT(strcmp(string->unsafe(char_ptr), "/") == 0);
 #ifndef USE_GC
     string->free(char_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -178,10 +164,8 @@ RX_TEST_CASE(main_brain1_tests, test_load_free_free, .fixture = test_fixture) {
 #ifndef USE_GC
     string->free(char_ptr);
     string->free(char_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -196,10 +180,8 @@ RX_TEST_CASE(main_brain1_tests, test_strcat_load_alloc, .fixture = test_fixture)
 #ifndef USE_GC
     string->free(char_ptr);
     string->free(pattern_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -215,10 +197,8 @@ RX_TEST_CASE(main_brain1_tests, test_string_size, .fixture = test_fixture) {
 #ifndef USE_GC
     string->free(char_ptr);
     string->free(pattern_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -234,10 +214,8 @@ RX_TEST_CASE(main_brain1_tests, test_pointer_size_0, .fixture = test_fixture) {
 #ifndef USE_GC
     string->free(char_ptr);
     string->free(pattern_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -253,10 +231,8 @@ RX_TEST_CASE(main_brain1_tests, test_pointer_size_empty, .fixture = test_fixture
 #ifndef USE_GC
     string->free(char_ptr);
     string->free(pattern_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -273,10 +249,8 @@ RX_TEST_CASE(main_brain1_tests, test_pointer_size_object, .fixture = test_fixtur
     string->free(object_ptr);
     string->free(pattern_ptr);
     object->free(object_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -293,10 +267,8 @@ RX_TEST_CASE(main_brain1_tests, test_object_0, .fixture = test_fixture) {
     string->free(object_ptr);
     string->free(pattern_ptr);
     object->free(object_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -313,10 +285,8 @@ RX_TEST_CASE(main_brain1_tests, test_object_alloc_0, .fixture = test_fixture) {
     string->free(object_ptr);
     string->free(pattern_ptr);
     object->free(object_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -329,10 +299,8 @@ RX_TEST_CASE(main_brain1_tests, test_object_load_free, .fixture = test_fixture) 
     object->free(object_ptr);
 #ifndef USE_GC
     string->free(object_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -343,10 +311,8 @@ RX_TEST_CASE(main_brain1_tests, test_object_free_0, .fixture = test_fixture) {
     object->free(object_ptr);
 #ifndef USE_GC
     string->free(object_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -363,10 +329,8 @@ RX_TEST_CASE(main_brain1_tests, test_object_load_0, .fixture = test_fixture) {
     string->free(object_ptr);
     string->free(pattern_ptr);
     object->free(object_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -385,10 +349,8 @@ RX_TEST_CASE(main_brain1_tests, test_object_load_string_0, .fixture = test_fixtu
     string->free(object_ptr);
     string->free(pattern_ptr);
     object->free(object_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -407,10 +369,8 @@ RX_TEST_CASE(main_brain1_tests, test_object_load_string, .fixture = test_fixture
     string->free(object_ptr);
     string->free(pattern_ptr);
     object->free(object_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -429,10 +389,8 @@ RX_TEST_CASE(main_brain1_tests, test_object_load_string_unsafe_alloc_0, .fixture
     string->free(object_ptr);
     string->free(pattern_ptr);
     object->free(object_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -451,10 +409,8 @@ RX_TEST_CASE(main_brain1_tests, test_object_load_string_unsafe_string, .fixture 
     string->free(object_ptr);
     string->free(pattern_ptr);
     object->free(object_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -475,10 +431,8 @@ RX_TEST_CASE(main_brain1_tests, test_object_load_string_unsafe_0, .fixture = tes
     string->free(object_ptr);
     string->free(pattern_ptr);
     object->free(object_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -499,10 +453,8 @@ RX_TEST_CASE(main_brain1_tests, test_object_load_string_unsafe, .fixture = test_
     string->free(object_ptr);
     string->free(pattern_ptr);
     object->free(object_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -517,10 +469,8 @@ RX_TEST_CASE(main_brain1_tests, test_strcat_alloc_alloc, .fixture = test_fixture
 #ifndef USE_GC
     string->free(char_ptr);
     string->free(pattern_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -535,10 +485,8 @@ RX_TEST_CASE(main_brain1_tests, test_string_offset_ptr_diff, .fixture = test_fix
     string->free(last_matched_ptr1);
     string->free(string_ptr1);
     string->free(string_ptr2);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -553,10 +501,8 @@ RX_TEST_CASE(main_brain1_tests, test_string_offset_ptr_less, .fixture = test_fix
     string->free(last_matched_ptr1);
     string->free(string_ptr1);
     string->free(string_ptr2);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -571,10 +517,8 @@ RX_TEST_CASE(main_brain1_tests, test_string_offset_ptr_offset, .fixture = test_f
     string->free(last_matched_ptr1);
     string->free(string_ptr1);
     string->free(string_ptr2);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -589,10 +533,8 @@ RX_TEST_CASE(main_brain1_tests, test_string_offset_ptr_offset_found, .fixture = 
     string->free(last_matched_ptr1);
     string->free(string_ptr1);
     string->free(string_ptr2);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -614,9 +556,8 @@ RX_TEST_CASE(main_brain1_tests, test_string_pointer_free_list, .fixture = test_f
     u64 string_ptr = string->load("hello");
     u64 e_ptr = string->load("e");
     string->offset(string_ptr, e_ptr);
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -632,10 +573,8 @@ RX_TEST_CASE(main_brain1_tests, test_string_pointer_free, .fixture = test_fixtur
 #ifndef USE_GC
     string->free(e_ptr);
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -649,10 +588,8 @@ RX_TEST_CASE(main_brain1_tests, test_string_offset_list, .fixture = test_fixture
 #ifndef USE_GC
     string->free(string_ptr);
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -672,10 +609,8 @@ RX_TEST_CASE(main_brain1_tests, test_string_pointer_match, .fixture = test_fixtu
 #ifndef USE_GC
     string->free(dot_ptr);
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -692,10 +627,8 @@ RX_TEST_CASE(main_brain1_tests, test_string_pointer_match_miss, .fixture = test_
 #ifndef USE_GC
     string->free(dot_ptr);
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -712,10 +645,8 @@ RX_TEST_CASE(main_brain1_tests, test_string_pointer_match_pattern, .fixture = te
 #ifndef USE_GC
     string->free(dot_ptr);
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -732,10 +663,8 @@ RX_TEST_CASE(main_brain1_tests, test_string_pointer_match_patter_0, .fixture = t
 #ifndef USE_GC
     string->free(dot_ptr);
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -752,10 +681,8 @@ RX_TEST_CASE(main_brain1_tests, test_string_pointer_match_patter_none, .fixture 
 #ifndef USE_GC
     string->free(dot_ptr);
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -767,10 +694,8 @@ RX_TEST_CASE(main_brain1_tests, test_string_pointer_match_0, .fixture = test_fix
     RX_ASSERT(string_pointer_ptr == 0);
 #ifndef USE_GC
     string->free(string_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -786,9 +711,8 @@ RX_TEST_CASE(main_brain1_tests, test_string_pointer_match_0_0, .fixture = test_f
     string->load("192.168.0.1");
     u64 string_pointer_ptr = string->match(0, 0);
     RX_ASSERT(string_pointer_ptr == 0);
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -800,10 +724,8 @@ RX_TEST_CASE(main_brain1_tests, test_string_pointer_match_0_string, .fixture = t
     RX_ASSERT(string_pointer_ptr == 0);
 #ifndef USE_GC
     string->free(string_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -811,16 +733,15 @@ RX_TEST_CASE(main_brain1_tests, test_string_pointer_match_0_string, .fixture = t
 RX_TEST_CASE(main_brain1_tests, test_string_match_list, .fixture = test_fixture) {
     pointer->init(8);
     u64 list_ptr = list->alloc();
+
     u64 string_ptr = string->load("hello");
     u64 last_matched_ptr = string->match(list_ptr, string_ptr);
     RX_ASSERT(last_matched_ptr == 0);
 #ifndef USE_GC
     string->free(string_ptr);
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -840,10 +761,8 @@ RX_TEST_CASE(main_brain1_tests, test_string_pointer_strchr, .fixture = test_fixt
 #ifndef USE_GC
     string->free(dot_ptr);
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -860,10 +779,8 @@ RX_TEST_CASE(main_brain1_tests, test_string_pointer_strchr_miss, .fixture = test
 #ifndef USE_GC
     string->free(dot_ptr);
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -875,10 +792,8 @@ RX_TEST_CASE(main_brain1_tests, test_string_pointer_strchr_0, .fixture = test_fi
     RX_ASSERT(string_pointer_ptr == 0);
 #ifndef USE_GC
     string->free(string_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -894,9 +809,8 @@ RX_TEST_CASE(main_brain1_tests, test_string_pointer_strchr_0_0, .fixture = test_
     string->load("192.168.0.1");
     u64 string_pointer_ptr = string->strchr(0, 0);
     RX_ASSERT(string_pointer_ptr == 0);
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -908,10 +822,8 @@ RX_TEST_CASE(main_brain1_tests, test_string_pointer_strchr_0_string, .fixture = 
     RX_ASSERT(string_pointer_ptr == 0);
 #ifndef USE_GC
     string->free(string_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -925,10 +837,8 @@ RX_TEST_CASE(main_brain1_tests, test_string_strchr_list, .fixture = test_fixture
 #ifndef USE_GC
     string->free(string_ptr);
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -946,10 +856,8 @@ RX_TEST_CASE(main_brain1_tests, test_string_pointer_strrchr, .fixture = test_fix
     string->free(string_pointer_ptr2);
     string->free(string_ptr);
     string->free(dot_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -970,10 +878,8 @@ RX_TEST_CASE(main_brain1_tests, test_string_pointer_strrchr_match_offset, .fixtu
     string->free(string_pointer_ptr3);
     string->free(string_ptr);
     string->free(dot_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1025,11 +931,8 @@ RX_TEST_CASE(main_brain1_tests, test_string_pointer_strchr_match_offset, .fixtur
     string->free(pattern_ptr);
     list->free(list_match_ptr);
     list->free(list_ptr);
-#else
-    /* memory leak: list_ptr is not freed, use pointer->release(); */
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1046,10 +949,8 @@ RX_TEST_CASE(main_brain1_tests, test_string_pointer_strrchr_miss, .fixture = tes
 #ifndef USE_GC
     string->free(dot_ptr);
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1061,10 +962,8 @@ RX_TEST_CASE(main_brain1_tests, test_string_pointer_strrchr_0, .fixture = test_f
     RX_ASSERT(string_pointer_ptr == 0);
 #ifndef USE_GC
     string->free(string_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1080,9 +979,8 @@ RX_TEST_CASE(main_brain1_tests, test_string_pointer_strrchr_0_0, .fixture = test
     string->load("192.168.0.1");
     u64 string_pointer_ptr = string->strrchr(0, 0);
     RX_ASSERT(string_pointer_ptr == 0);
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1094,10 +992,8 @@ RX_TEST_CASE(main_brain1_tests, test_string_pointer_strrchr_0_string, .fixture =
     RX_ASSERT(string_pointer_ptr == 0);
 #ifndef USE_GC
     string->free(string_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1111,10 +1007,8 @@ RX_TEST_CASE(main_brain1_tests, test_string_strrchr_list, .fixture = test_fixtur
 #ifndef USE_GC
     string->free(string_ptr);
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1122,7 +1016,7 @@ RX_TEST_CASE(main_brain1_tests, test_string_strrchr_list, .fixture = test_fixtur
 RX_TEST_CASE(main_brain1_tests, test_list_push_0_1, .fixture = test_fixture) {
     pointer->init(8);
     list->push(0, 1);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1130,7 +1024,7 @@ RX_TEST_CASE(main_brain1_tests, test_list_push_0_1, .fixture = test_fixture) {
 RX_TEST_CASE(main_brain1_tests, test_list_push_1_0, .fixture = test_fixture) {
     pointer->init(8);
     list->push(1, 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1141,10 +1035,8 @@ RX_TEST_CASE(main_brain1_tests, test_list_push_0, .fixture = test_fixture) {
     list->push(list_ptr, 0);
 #ifndef USE_GC
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1155,10 +1047,8 @@ RX_TEST_CASE(main_brain1_tests, test_list_push_list, .fixture = test_fixture) {
     list->push(list_ptr, list_ptr);
 #ifndef USE_GC
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1171,10 +1061,8 @@ RX_TEST_CASE(main_brain1_tests, test_list_push_string, .fixture = test_fixture) 
 #ifndef USE_GC
     list->free(list_ptr);
     string->free(string_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1193,9 +1081,8 @@ RX_TEST_CASE(main_brain1_tests, test_list_size_string, .fixture = test_fixture) 
     list->alloc();
     u64 value = list->size(string_ptr);
     RX_ASSERT(value == 0);
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1210,10 +1097,8 @@ RX_TEST_CASE(main_brain1_tests, test_list_push_size, .fixture = test_fixture) {
 #ifndef USE_GC
     list->free(list_ptr);
     string->free(string_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1222,7 +1107,7 @@ RX_TEST_CASE(main_brain1_tests, test_list_pop_0_1, .fixture = test_fixture) {
     pointer->init(8);
     u64 value_ptr = list->pop(0);
     RX_ASSERT(value_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1231,7 +1116,7 @@ RX_TEST_CASE(main_brain1_tests, test_list_pop_1_0, .fixture = test_fixture) {
     pointer->init(8);
     u64 value_ptr = list->pop(1);
     RX_ASSERT(value_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1243,10 +1128,8 @@ RX_TEST_CASE(main_brain1_tests, test_list_pop_list, .fixture = test_fixture) {
     RX_ASSERT(value_ptr == 0);
 #ifndef USE_GC
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1261,10 +1144,8 @@ RX_TEST_CASE(main_brain1_tests, test_list_pop_string, .fixture = test_fixture) {
 #ifndef USE_GC
     list->free(list_ptr);
     string->free(string_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1273,7 +1154,7 @@ RX_TEST_CASE(main_brain1_tests, test_list_peek_0_1, .fixture = test_fixture) {
     pointer->init(8);
     u64 value_ptr = list->peek(0);
     RX_ASSERT(value_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1282,7 +1163,7 @@ RX_TEST_CASE(main_brain1_tests, test_list_peek_1_0, .fixture = test_fixture) {
     pointer->init(8);
     u64 value_ptr = list->peek(1);
     RX_ASSERT(value_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1294,10 +1175,8 @@ RX_TEST_CASE(main_brain1_tests, test_list_peek_list, .fixture = test_fixture) {
     RX_ASSERT(value_ptr == 0);
 #ifndef USE_GC
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1312,10 +1191,8 @@ RX_TEST_CASE(main_brain1_tests, test_list_peek_string, .fixture = test_fixture) 
 #ifndef USE_GC
     list->free(list_ptr);
     string->free(string_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1344,10 +1221,8 @@ RX_TEST_CASE(main_brain1_tests, test_strcpy, .fixture = test_fixture) {
     string->free(path_ptr1);
     string->free(path_ptr2);
     string->free(path_copy_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1580,10 +1455,8 @@ RX_TEST_CASE(main_brain1_tests, test_strcat_load_alloc_copy, .fixture = test_fix
     list->free(data_ptr);
     list->free(list_ptr);
     list->free(none_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1598,10 +1471,8 @@ RX_TEST_CASE(main_brain1_tests, test_strcat_alloc_load, .fixture = test_fixture)
 #ifndef USE_GC
     string->free(zero_ptr);
     string->free(char_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1620,10 +1491,8 @@ RX_TEST_CASE(main_brain1_tests, test_strcat_load_alloc_alloc, .fixture = test_fi
     string->free(empty_ptr);
     string->free(pattern_ptr);
     string->free(char_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1638,10 +1507,8 @@ RX_TEST_CASE(main_brain1_tests, test_strcat_load_load, .fixture = test_fixture) 
 #ifndef USE_GC
     string->free(pattern_ptr);
     string->free(char_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1656,10 +1523,8 @@ RX_TEST_CASE(main_brain1_tests, test_strcpy_load_alloc, .fixture = test_fixture)
 #ifndef USE_GC
     string->free(empty_ptr);
     string->free(pattern_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1674,10 +1539,8 @@ RX_TEST_CASE(main_brain1_tests, test_strcpy_load_load, .fixture = test_fixture) 
 #ifndef USE_GC
     string->free(pattern_ptr);
     string->free(char_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1699,10 +1562,8 @@ RX_TEST_CASE(main_brain1_tests, test_load_open_file_close_file, .fixture = test_
     string->free(mode_ptr);
     string->free(file_name_ptr);
     string->free(file_path_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1734,10 +1595,8 @@ RX_TEST_CASE(main_brain1_tests, test_offset_strcpy, .fixture = test_fixture) {
     string->free(name_ptr);
     string->free(domain_ptr);
     string->free(at_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1769,10 +1628,8 @@ RX_TEST_CASE(main_brain1_tests, test_offset_strcpy_free, .fixture = test_fixture
     string->free(name_ptr);
     string->free(domain_ptr);
     string->free(at_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1782,7 +1639,7 @@ RX_TEST_CASE(main_brain1_tests, test_print_free, .fixture = test_fixture) {
     u64 printing_ptr = string->load("hello, world!");
     string->free(printing_ptr);
     os->putc(printing_ptr);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1793,10 +1650,8 @@ RX_TEST_CASE(main_brain1_tests, test_print, .fixture = test_fixture) {
     os->putc(printing_ptr);
 #ifndef USE_GC
     string->free(printing_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1811,10 +1666,8 @@ RX_TEST_CASE(main_brain1_tests, test_print_string_pointer, .fixture = test_fixtu
     string->free(printing_ptr);
     string->free(substring_index_ptr);
     string->free(comma_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1835,10 +1688,8 @@ RX_TEST_CASE(main_brain1_tests, test_print_string_pointer_copy, .fixture = test_
     string->free(comma_ptr);
     string->free(substring_index_ptr);
     string->free(substring_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1851,10 +1702,8 @@ RX_TEST_CASE(main_brain1_tests, test_list_size, .fixture = test_fixture) {
     RX_ASSERT(size_expected == size_actual);
 #ifndef USE_GC
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1867,10 +1716,8 @@ RX_TEST_CASE(main_brain1_tests, test_list_unsafe, .fixture = test_fixture) {
     RX_ASSERT(ptr_expected == ptr_actual);
 #ifndef USE_GC
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1885,10 +1732,8 @@ RX_TEST_CASE(main_brain1_tests, test_list_offset, .fixture = test_fixture) {
 #ifndef USE_GC
     list->free(list_ptr);
     string->free(string_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1908,10 +1753,8 @@ RX_TEST_CASE(main_brain1_tests, teststring_pointer_unsafe, .fixture = test_fixtu
 #ifndef USE_GC
     string->free(printing_ptr);
     string->free(comma_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1932,10 +1775,8 @@ RX_TEST_CASE(main_brain1_tests, test_string_pointer_size, .fixture = test_fixtur
     string->free(comma_ptr);
     string->free(substring_index_ptr);
     string->free(substring_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1960,10 +1801,8 @@ RX_TEST_CASE(main_brain1_tests, test_string_offset_subsearch, .fixture = test_fi
     string->free(substring_index_ptr2);
     string->free(substring_ptr);
     string->free(w_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1978,10 +1817,8 @@ RX_TEST_CASE(main_brain1_tests, test_print_string_pointer_free, .fixture = test_
 #ifndef USE_GC
     string->free(printing_ptr);
     string->free(comma_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2014,10 +1851,8 @@ RX_TEST_CASE(main_brain1_tests, test_offset_strcat, .fixture = test_fixture) {
     string->free(path_ptr2);
     string->free(name_ptr);
     string->free(at_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2033,9 +1868,8 @@ RX_TEST_CASE(main_brain1_tests, test_file_read_invalid_type, .fixture = test_fix
 #else
     u64 list_ptr = list->alloc();
     file->data(list_ptr);
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2061,10 +1895,8 @@ RX_TEST_CASE(main_brain1_tests, test_load_open_match_last_unsafe_free, .fixture 
     os->putc(data_ptr);
 #ifndef USE_GC
     data->free(data_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2082,10 +1914,8 @@ RX_TEST_CASE(main_brain1_tests, test_load_open_match_last_unsafe_free_unsuppport
     string->free(ptr1);
     string->free(ptr2);
     string->free(last_match_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2097,9 +1927,8 @@ RX_TEST_CASE(main_brain1_tests, test_user, .fixture = test_fixture) {
     user->free(ptr1);
 #else
     user->alloc();
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2135,10 +1964,8 @@ RX_TEST_CASE(main_brain1_tests, test_load_open_file_unsafe_hashtable, .fixture =
     string->free(mode_ptr);
     string->free(file_name_ptr);
     string->free(file_path_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2152,10 +1979,8 @@ RX_TEST_CASE(main_brain1_tests, test_load_load_match_last, .fixture = test_fixtu
     string->free(last_match_ptr);
     string->free(str_ptr);
     string->free(ch_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2259,10 +2084,8 @@ int main(int argc, char** argv) {
     list->free(_list_ptr);
 #ifndef USE_GC
     string->free(argv_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- rexo unit test code\n");

@@ -23,18 +23,20 @@
  * SOFTWARE.
  *
  */
-#include "pointer/types/os/v1/os_v1.h"
 #include "common/memory.h"
 #include "list-micro/data.h"
+
+#include "pointer/v1/pointer_v1.h"
+#include "pointer/v1/virtual_v1.h"
+
+#include "pointer/types/types.h"
 #include "pointer/types/data/v1/data_v1.h"
-#include "pointer/types/file/v1/file_v1.h"
-#include "pointer/types/list/v1/list_v1.h"
-#include "pointer/types/object/v1/object_v1.h"
 #include "pointer/types/string/v1/string_v1.h"
 #include "pointer/types/string_pointer/v1/string_pointer_v1.h"
-#include "pointer/types/user/v1/user_v1.h"
-#include "pointer/v1/pointer_v1.h"
-#include "vm/v1/vm_v1.h"
+#include "pointer/types/list/v1/list_v1.h"
+#include "pointer/types/object/v1/object_v1.h"
+
+#include "pointer/os/v1/os_v1.h"
 
 #define DEFAULT_SIZE 0x100
 
@@ -42,43 +44,29 @@
 const struct os_methods os_methods_definition;
 
 /* definition */
-extern const struct vm_methods vm_methods_definition;
-
-/* definition */
-extern const struct user_methods user_methods_definition;
-extern const struct string_pointer_methods string_pointer_methods_definition;
-
-/* definition */
-static const struct vm_methods* vm = &vm_methods_definition;
-
-/* definition */
-static const struct user_methods* user = &user_methods_definition;
-static const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
-
-/* definition */
 static u64 os_getenv(u64 name);
 static u64 os_getcwd(void);
 static void os_putc(u64 ptr);
 
 /* implementation */
-static u64 os_getenv(u64 name) {
-    if (name == 0) {
+static u64 os_getenv(u64 ptr) {
+    if (ptr == 0) {
         return 0;
     }
-    struct pointer* name_ptr = vm->read_type(name, TYPE_STRING);
-    if (name_ptr == 0) {
+    struct pointer* data_ptr = virtual->read_type(ptr, TYPE_STRING);
+    if (data_ptr == 0) {
         return 0;
     }
-    const char* name_data = name_ptr->data;
+    const char* name_data = pointer->read(data_ptr);
     u64 value = string->load(getenv(name_data));
     return value;
 }
 
 static u64 os_getcwd(void) {
-    char* src = memory->alloc(PATH_MAX);
-    getcwd(src, PATH_MAX);
-    u64 data_ptr = string->load(src);
-    memory->free(src, PATH_MAX);
+    u64 data_ptr = 0;
+    char* src = memory->alloc(PATH_MAX + 1);
+    data_ptr = string->load(getcwd(src, PATH_MAX));
+    memory->free(src, PATH_MAX + 1);
     return data_ptr;
 }
 

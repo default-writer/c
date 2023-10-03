@@ -25,11 +25,12 @@
  */
 #include "string_v1.h"
 #include "common/memory.h"
-#include "list-micro/data.h"
+
+#include "pointer/v1/pointer_v1.h"
+#include "pointer/v1/virtual_v1.h"
+#include "pointer/types/types.h"
 #include "pointer/types/list/v1/list_v1.h"
 #include "pointer/types/string_pointer/v1/string_pointer_v1.h"
-#include "pointer/v1/pointer_v1.h"
-#include "vm/v1/vm_v1.h"
 
 #define DEFAULT_SIZE 0x100
 
@@ -37,19 +38,10 @@ static const enum type id = TYPE_STRING;
 
 /* api */
 const struct string_methods string_methods_definition;
-void string_init();
 
-extern u64 pointer_vm_register_type(u64 id, const struct vm_type* type);
-
-/* definition */
-extern const struct vm_methods vm_methods_definition;
-extern const struct list list_micro_definition;
-extern const struct pointer_vm_methods pointer_vm_methods_definition;
-
-/* definition */
-static const struct vm_methods* vm = &vm_methods_definition;
-static const struct list* _list = &list_micro_definition;
-static const struct pointer_vm_methods* virtual = &pointer_vm_methods_definition;
+#ifndef ATTRIBUTE
+void string_init(void);
+#endif
 
 /* definition */
 extern struct pointer_data vm_pointer;
@@ -91,11 +83,9 @@ static u64 string_move_right(u64 src, u64 shift);
 static u64 string_strcmp(u64 src, u64 dest);
 
 /* definition */
-extern const struct string_pointer_methods string_pointer_methods_definition;
 extern const struct list_methods list_methods_definition;
 
 /* definition */
-static const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
 static const struct list_methods* list_type = &list_methods_definition;
 
 /* definition */
@@ -107,30 +97,30 @@ struct list_handler {
 static char* string_pointer_internal(struct pointer* data_ptr, u64* data_size, u64* data_offset) {
     u64 offset = 0;
     struct pointer* ptr = 0;
-    if (data_ptr->id != TYPE_STRING && data_ptr->id != TYPE_STRING_POINTER) {
+    if (!pointer->read_type(data_ptr, TYPE_STRING) && !pointer->read_type(data_ptr, TYPE_STRING_POINTER)) {
         return 0;
     }
-    if (data_ptr->id == TYPE_STRING) {
+    if (pointer->read_type(data_ptr, TYPE_STRING)) {
         ptr = data_ptr;
     }
-    if (data_ptr->id == TYPE_STRING_POINTER) {
-        struct string_reference* ref = data_ptr->data;
-        while ((ptr = vm->read(ref->address)) != 0) {
-            if (ptr->id != TYPE_STRING_POINTER) {
+    if (pointer->read_type(data_ptr, TYPE_STRING_POINTER)) {
+        struct string_reference* ref = pointer->read(data_ptr);
+        while ((ptr = virtual->read(ref->address)) != 0) {
+            if (!pointer->read_type(ptr, TYPE_STRING_POINTER)) {
                 break;
             }
             offset += ref->offset;
-            ref = ptr->data;
+            ref = pointer->read(ptr);
         }
-        ptr = vm->read_type(ref->address, TYPE_STRING);
+        ptr = virtual->read_type(ref->address, TYPE_STRING);
         if (ptr == 0) {
             return 0;
         }
         offset += ref->offset;
     }
-    *data_size = ptr->size;
+    *data_size = pointer->size(ptr);
     *data_offset = offset;
-    char* data = ptr->data;
+    char* data = pointer->read(ptr);
     return data;
 }
 
@@ -174,17 +164,17 @@ static char* string_strchr_internal(char* data, char* str2, u64 size, u64 offset
 
 /* api */
 static void string_free(u64 ptr) {
-    struct pointer* data_ptr = vm->read(ptr);
+    struct pointer* data_ptr = virtual->read(ptr);
     if (data_ptr == 0) {
         return;
     }
-    if (data_ptr->id == TYPE_STRING) {
+    if (pointer->read_type(data_ptr, TYPE_STRING)) {
         string_vm_free(data_ptr);
         return;
     }
-    if (data_ptr->id == TYPE_STRING_POINTER) {
-        struct string_reference* ref = data_ptr->data;
-        struct pointer* pointer_ptr = vm->read_type(ref->address, TYPE_STRING_POINTER);
+    if (pointer->read_type(data_ptr, TYPE_STRING_POINTER)) {
+        struct string_reference* ref = pointer->read(data_ptr);
+        struct pointer* pointer_ptr = virtual->read_type(ref->address, TYPE_STRING_POINTER);
         string_vm_free(pointer_ptr);
         string_vm_free(data_ptr);
         return;
@@ -192,11 +182,11 @@ static void string_free(u64 ptr) {
 }
 
 static void string_vm_free(struct pointer* ptr) {
-    virtual->free(ptr);
+    pointer->release(ptr);
 }
 
 static u64 string_copy(u64 src) {
-    struct pointer* ptr = vm->read(src);
+    struct pointer* ptr = virtual->read(src);
     if (ptr == 0) {
         return 0;
     }
@@ -207,12 +197,9 @@ static u64 string_copy(u64 src) {
         return 0;
     }
     data += offset;
-    struct pointer* data_ptr = virtual->alloc(size - offset, id);
-    memcpy(data_ptr->data, data, size - offset); /* NOLINT */
-    u64 result = vm->alloc(data_ptr);
-#ifdef USE_GC
-    _list->push(&base->gc, (void*)result);
-#endif
+    struct pointer* data_ptr = pointer->alloc(size - offset, id);
+    memcpy(pointer->read(data_ptr), data, size - offset); /* NOLINT */
+    u64 result = virtual->alloc(data_ptr);
     return result;
 }
 
@@ -220,11 +207,11 @@ static void string_strcpy(u64 dest, u64 src) {
     if (src == dest) {
         return;
     }
-    struct pointer* dest_ptr = vm->read_type(dest, id);
+    struct pointer* dest_ptr = virtual->read_type(dest, id);
     if (dest_ptr == 0) {
         return;
     }
-    struct pointer* src_ptr = vm->read(src);
+    struct pointer* src_ptr = virtual->read(src);
     if (src_ptr == 0) {
         return;
     }
@@ -235,10 +222,11 @@ static void string_strcpy(u64 dest, u64 src) {
         return;
     }
     data += src_offset;
-    if (dest_ptr->size < src_size) {
-        virtual->realloc(dest_ptr, src_size);
+    u64 dest_size = pointer->size(dest_ptr);
+    if (dest_size < src_size) {
+        pointer->realloc(dest_ptr, src_size);
     }
-    char* data_dest = dest_ptr->data;
+    char* data_dest = pointer->read(dest_ptr);
     strcpy(data_dest, data); /* NOLINT */
 }
 
@@ -246,11 +234,11 @@ static void string_strcat(u64 dest, u64 src) {
     if (src == dest) {
         return;
     }
-    struct pointer* dest_ptr = vm->read_type(dest, id);
+    struct pointer* dest_ptr = virtual->read_type(dest, id);
     if (dest_ptr == 0) {
         return;
     }
-    struct pointer* data_ptr = vm->read(src);
+    struct pointer* data_ptr = virtual->read(src);
     if (data_ptr == 0) {
         return;
     }
@@ -262,16 +250,17 @@ static void string_strcat(u64 dest, u64 src) {
     }
     data += offset;
     const char* data_src = data; /* NOLINT */
-    size += dest_ptr->size - 1;
-    if (dest_ptr->size < size) {
-        virtual->realloc(dest_ptr, size);
+    u64 dest_size = pointer->size(dest_ptr);
+    size += dest_size - 1;
+    if (dest_size < size) {
+        pointer->realloc(dest_ptr, size);
     }
-    char* data_dest = dest_ptr->data;
+    char* data_dest = pointer->read(dest_ptr);
     strcat(data_dest, data_src); /* NOLINT */
 }
 
 static u64 string_strrchr(u64 src, u64 match) {
-    struct pointer* ptr = vm->read(src);
+    struct pointer* ptr = virtual->read(src);
     if (ptr == 0) {
         return 0;
     }
@@ -281,31 +270,28 @@ static u64 string_strrchr(u64 src, u64 match) {
     if (data == 0) {
         return 0;
     }
-    const struct pointer* match_ptr = vm->read_type(match, id);
+    const struct pointer* match_ptr = virtual->read_type(match, id);
     if (match_ptr == 0) {
         return 0;
     }
     char* text = data + offset;
-    char* str2 = match_ptr->data;
+    char* str2 = pointer->read(match_ptr);
     char* str1 = string_strrchr_internal(text, str2, size, offset);
     if (str1 == 0) {
         return 0;
     }
     data += offset;
     offset = (u64)(str1 - data);
-    struct pointer* data_ptr = virtual->alloc(sizeof(struct string_reference), TYPE_STRING_POINTER);
-    struct string_reference* ref = data_ptr->data;
+    struct pointer* data_ptr = pointer->alloc(sizeof(struct string_reference), TYPE_STRING_POINTER);
+    struct string_reference* ref = pointer->read(data_ptr);
     ref->address = src;
     ref->offset = offset;
-    u64 result = vm->alloc(data_ptr);
-#ifdef USE_GC
-    _list->push(&base->gc, (void*)result);
-#endif
+    u64 result = virtual->alloc(data_ptr);
     return result;
 }
 
 static u64 string_strchr(u64 src, u64 match) {
-    struct pointer* ptr = vm->read(src);
+    struct pointer* ptr = virtual->read(src);
     if (ptr == 0) {
         return 0;
     }
@@ -315,31 +301,28 @@ static u64 string_strchr(u64 src, u64 match) {
     if (data == 0) {
         return 0;
     }
-    const struct pointer* match_ptr = vm->read_type(match, id);
+    const struct pointer* match_ptr = virtual->read_type(match, id);
     if (match_ptr == 0) {
         return 0;
     }
     char* text = data + offset;
-    char* str2 = match_ptr->data;
+    char* str2 = pointer->read(match_ptr);
     char* str1 = string_strchr_internal(text, str2, size, offset);
     if (str1 == 0) {
         return 0;
     }
     data += offset;
     offset = (u64)(str1 - data);
-    struct pointer* data_ptr = virtual->alloc(sizeof(struct string_reference), TYPE_STRING_POINTER);
-    struct string_reference* ref = data_ptr->data;
+    struct pointer* data_ptr = pointer->alloc(sizeof(struct string_reference), TYPE_STRING_POINTER);
+    struct string_reference* ref = pointer->read(data_ptr);
     ref->address = src;
     ref->offset = offset;
-    u64 result = vm->alloc(data_ptr);
-#ifdef USE_GC
-    _list->push(&base->gc, (void*)result);
-#endif
+    u64 result = virtual->alloc(data_ptr);
     return result;
 }
 
 static u64 string_match(u64 src, u64 match) {
-    struct pointer* ptr = vm->read(src);
+    struct pointer* ptr = virtual->read(src);
     if (ptr == 0) {
         return 0;
     }
@@ -349,13 +332,13 @@ static u64 string_match(u64 src, u64 match) {
     if (data == 0) {
         return 0;
     }
-    const struct pointer* match_ptr = vm->read_type(match, id);
+    const struct pointer* match_ptr = virtual->read_type(match, id);
     if (match_ptr == 0) {
         return 0;
     }
     data += offset;
-    u64 match_size = match_ptr->size;
-    char* str2 = match_ptr->data;
+    u64 match_size = pointer->size(match_ptr);
+    char* str2 = pointer->read(match_ptr);
     char* str1 = data;
     char* ptr2 = str2;
     size -= offset;
@@ -386,19 +369,16 @@ static u64 string_match(u64 src, u64 match) {
         str2 = ptr2;
     }
     offset = (u64)(str1 - data);
-    struct pointer* data_ptr = virtual->alloc(sizeof(struct string_reference), TYPE_STRING_POINTER);
-    struct string_reference* ref = data_ptr->data;
+    struct pointer* data_ptr = pointer->alloc(sizeof(struct string_reference), TYPE_STRING_POINTER);
+    struct string_reference* ref = pointer->read(data_ptr);
     ref->address = src;
     ref->offset = offset;
-    u64 result = vm->alloc(data_ptr);
-#ifdef USE_GC
-    _list->push(&base->gc, (void*)result);
-#endif
+    u64 result = virtual->alloc(data_ptr);
     return result;
 }
 
 static u64 string_offset(u64 src, u64 match) {
-    struct pointer* ptr = vm->read(src);
+    struct pointer* ptr = virtual->read(src);
     if (ptr == 0) {
         return 0;
     }
@@ -408,13 +388,13 @@ static u64 string_offset(u64 src, u64 match) {
     if (data == 0) {
         return 0;
     }
-    const struct pointer* match_ptr = vm->read_type(match, id);
+    const struct pointer* match_ptr = virtual->read_type(match, id);
     if (match_ptr == 0) {
         return 0;
     }
     data += offset;
-    u64 match_size = match_ptr->size;
-    char* str2 = match_ptr->data;
+    u64 match_size = pointer->size(match_ptr);
+    char* str2 = pointer->read(match_ptr);
     char* str1 = data;
     char* pos = str1;
     char* last_match = 0;
@@ -460,14 +440,11 @@ static u64 string_offset(u64 src, u64 match) {
         str2 = ptr2;
     }
     offset = (u64)(str1 - data);
-    struct pointer* data_ptr = virtual->alloc(sizeof(struct string_reference), TYPE_STRING_POINTER);
-    struct string_reference* ref = data_ptr->data;
+    struct pointer* data_ptr = pointer->alloc(sizeof(struct string_reference), TYPE_STRING_POINTER);
+    struct string_reference* ref = pointer->read(data_ptr);
     ref->address = src;
     ref->offset = offset;
-    u64 result = vm->alloc(data_ptr);
-#ifdef USE_GC
-    _list->push(&base->gc, (void*)result);
-#endif
+    u64 result = virtual->alloc(data_ptr);
     return result;
 }
 
@@ -479,17 +456,14 @@ static u64 string_load(const char* src_data) {
         return 0;
     }
     u64 size = strlen(src_data) + 1;
-    struct pointer* data_ptr = virtual->alloc(size, id);
-    memcpy(data_ptr->data, src_data, size); /* NOLINT */
-    u64 result = vm->alloc(data_ptr);
-#ifdef USE_GC
-    _list->push(&base->gc, (void*)result);
-#endif
+    struct pointer* data_ptr = pointer->alloc(size, id);
+    memcpy(pointer->read(data_ptr), src_data, size); /* NOLINT */
+    u64 result = virtual->alloc(data_ptr);
     return result;
 }
 
 static void string_put_char(u64 src, char value) {
-    struct pointer* ptr = vm->read(src);
+    struct pointer* ptr = virtual->read(src);
     if (ptr == 0) {
         return;
     }
@@ -504,7 +478,7 @@ static void string_put_char(u64 src, char value) {
 }
 
 static char* string_unsafe(u64 src) {
-    struct pointer* ptr = vm->read(src);
+    struct pointer* ptr = virtual->read(src);
     if (ptr == 0) {
         return 0;
     }
@@ -519,7 +493,7 @@ static char* string_unsafe(u64 src) {
 }
 
 static u64 string_size(u64 src) {
-    struct pointer* ptr = vm->read(src);
+    struct pointer* ptr = virtual->read(src);
     if (ptr == 0) {
         return 0;
     }
@@ -536,11 +510,11 @@ static u64 string_lessthan(u64 src, u64 dst) {
     if (src == dst) {
         return 0;
     }
-    struct pointer* src_ptr = vm->read(src);
+    struct pointer* src_ptr = virtual->read(src);
     if (src_ptr == 0) {
         return 0;
     }
-    struct pointer* dst_ptr = vm->read(dst);
+    struct pointer* dst_ptr = virtual->read(dst);
     if (dst_ptr == 0) {
         return 0;
     }
@@ -569,11 +543,11 @@ static u64 string_greaterthan(u64 src, u64 dst) {
     if (src == dst) {
         return 0;
     }
-    struct pointer* src_ptr = vm->read(src);
+    struct pointer* src_ptr = virtual->read(src);
     if (src_ptr == 0) {
         return 0;
     }
-    struct pointer* dst_ptr = vm->read(dst);
+    struct pointer* dst_ptr = virtual->read(dst);
     if (dst_ptr == 0) {
         return 0;
     }
@@ -602,11 +576,11 @@ static u64 string_equals(u64 src, u64 dst) {
     if (src == dst) {
         return 0;
     }
-    struct pointer* src_ptr = vm->read(src);
+    struct pointer* src_ptr = virtual->read(src);
     if (src_ptr == 0) {
         return 0;
     }
-    struct pointer* dst_ptr = vm->read(dst);
+    struct pointer* dst_ptr = virtual->read(dst);
     if (dst_ptr == 0) {
         return 0;
     }
@@ -635,11 +609,11 @@ static u64 string_compare(u64 src, u64 dst) {
     if (src == dst) {
         return 0;
     }
-    struct pointer* src_ptr = vm->read(src);
+    struct pointer* src_ptr = virtual->read(src);
     if (src_ptr == 0) {
         return 0;
     }
-    struct pointer* dst_ptr = vm->read(dst);
+    struct pointer* dst_ptr = virtual->read(dst);
     if (dst_ptr == 0) {
         return 0;
     }
@@ -662,7 +636,7 @@ static u64 string_compare(u64 src, u64 dst) {
 }
 
 static u64 string_left(u64 src, u64 shift) {
-    struct pointer* ptr = vm->read(src);
+    struct pointer* ptr = virtual->read(src);
     if (ptr == 0) {
         return 0;
     }
@@ -675,19 +649,16 @@ static u64 string_left(u64 src, u64 shift) {
     if (offset < shift) {
         return 0;
     }
-    struct pointer* data_ptr = virtual->alloc(sizeof(struct string_reference), TYPE_STRING_POINTER);
-    struct string_reference* ref = data_ptr->data;
+    struct pointer* data_ptr = pointer->alloc(sizeof(struct string_reference), TYPE_STRING_POINTER);
+    struct string_reference* ref = pointer->read(data_ptr);
     ref->address = src;
     ref->offset = 0 - shift;
-    u64 result = vm->alloc(data_ptr);
-#ifdef USE_GC
-    _list->push(&base->gc, (void*)result);
-#endif
+    u64 result = virtual->alloc(data_ptr);
     return result;
 }
 
 static u64 string_strncpy(u64 src, u64 nbytes) {
-    struct pointer* ptr = vm->read(src);
+    struct pointer* ptr = virtual->read(src);
     if (ptr == 0) {
         return 0;
     }
@@ -701,17 +672,14 @@ static u64 string_strncpy(u64 src, u64 nbytes) {
         return 0;
     }
     data += offset;
-    struct pointer* data_ptr = virtual->alloc(nbytes + 1, id);
-    memcpy(data_ptr->data, data, nbytes); /* NOLINT */
-    u64 result = vm->alloc(data_ptr);
-#ifdef USE_GC
-    _list->push(&base->gc, (void*)result);
-#endif
+    struct pointer* data_ptr = pointer->alloc(nbytes + 1, id);
+    memcpy(pointer->read(data_ptr), data, nbytes); /* NOLINT */
+    u64 result = virtual->alloc(data_ptr);
     return result;
 }
 
 static u64 string_left_strncpy(u64 src, u64 nbytes) {
-    struct pointer* ptr = vm->read(src);
+    struct pointer* ptr = virtual->read(src);
     if (ptr == 0) {
         return 0;
     }
@@ -725,17 +693,14 @@ static u64 string_left_strncpy(u64 src, u64 nbytes) {
         return 0;
     }
     data += (offset - nbytes);
-    struct pointer* data_ptr = virtual->alloc(nbytes + 1, id);
-    memcpy(data_ptr->data, data, nbytes); /* NOLINT */
-    u64 result = vm->alloc(data_ptr);
-#ifdef USE_GC
-    _list->push(&base->gc, (void*)result);
-#endif
+    struct pointer* data_ptr = pointer->alloc(nbytes + 1, id);
+    memcpy(pointer->read(data_ptr), data, nbytes); /* NOLINT */
+    u64 result = virtual->alloc(data_ptr);
     return result;
 }
 
 static u64 string_right(u64 src, u64 nbytes) {
-    struct pointer* ptr = vm->read(src);
+    struct pointer* ptr = virtual->read(src);
     if (ptr == 0) {
         return 0;
     }
@@ -748,23 +713,20 @@ static u64 string_right(u64 src, u64 nbytes) {
     if (offset + nbytes >= size) {
         return 0;
     }
-    struct pointer* data_ptr = virtual->alloc(sizeof(struct string_reference), TYPE_STRING_POINTER);
-    struct string_reference* ref = data_ptr->data;
+    struct pointer* data_ptr = pointer->alloc(sizeof(struct string_reference), TYPE_STRING_POINTER);
+    struct string_reference* ref = pointer->read(data_ptr);
     ref->address = src;
     ref->offset = nbytes;
-    u64 result = vm->alloc(data_ptr);
-#ifdef USE_GC
-    _list->push(&base->gc, (void*)result);
-#endif
+    u64 result = virtual->alloc(data_ptr);
     return result;
 }
 
 static u64 string_move_left(u64 src, u64 nbytes) {
-    struct pointer* ptr = vm->read(src);
+    struct pointer* ptr = virtual->read(src);
     if (ptr == 0) {
         return 0;
     }
-    if (ptr->id != TYPE_STRING_POINTER) {
+    if (!pointer->read_type(ptr, TYPE_STRING_POINTER)) {
         return 0;
     }
     u64 size = 0;
@@ -776,19 +738,19 @@ static u64 string_move_left(u64 src, u64 nbytes) {
     if (offset < nbytes) {
         return 0;
     }
-    struct string_reference* ref = ptr->data;
+    struct string_reference* ref = pointer->read(ptr);
     ref->offset -= nbytes;
     return (u64)(0 - 1);
 }
 
 static u64 string_move_right(u64 src, u64 nbytes) {
-    struct pointer* ptr = vm->read(src);
+    struct pointer* ptr = virtual->read(src);
     if (ptr == 0) {
         return 0;
     }
     u64 size = 0;
     u64 offset = 0;
-    if (ptr->id != TYPE_STRING_POINTER) {
+    if (!pointer->read_type(ptr, TYPE_STRING_POINTER)) {
         return 0;
     }
     char* data = string_pointer_internal(ptr, &size, &offset);
@@ -798,7 +760,7 @@ static u64 string_move_right(u64 src, u64 nbytes) {
     if (offset + nbytes >= size) {
         return 0;
     }
-    struct string_reference* ref = ptr->data;
+    struct string_reference* ref = pointer->read(ptr);
     ref->offset += nbytes;
     return (u64)(0 - 1);
 }
@@ -807,7 +769,7 @@ static u64 string_strcmp(u64 src, u64 dest) {
     if (src == dest) {
         return 0;
     }
-    struct pointer* src_ptr = vm->read(src);
+    struct pointer* src_ptr = virtual->read(src);
     if (src_ptr == 0) {
         return 0;
     }
@@ -817,7 +779,7 @@ static u64 string_strcmp(u64 src, u64 dest) {
     if (src_data == 0) {
         return 0;
     }
-    struct pointer* dest_ptr = vm->read(dest);
+    struct pointer* dest_ptr = virtual->read(dest);
     if (dest_ptr == 0) {
         return 0;
     }
@@ -838,7 +800,7 @@ static const struct vm_type type_definition = {
 };
 
 static void INIT init() {
-    pointer_vm_register_type(id, type);
+    pointer->register_type(id, type);
 }
 
 /* public */

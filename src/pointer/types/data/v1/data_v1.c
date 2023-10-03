@@ -23,11 +23,14 @@
  * SOFTWARE.
  *
  */
-#include "pointer/types/data/v1/data_v1.h"
+
 #include "common/memory.h"
 #include "list-micro/data.h"
+
+#include "pointer/v1/virtual_v1.h"
 #include "pointer/v1/pointer_v1.h"
-#include "vm/v1/vm_v1.h"
+#include "pointer/types/data/v1/data_v1.h"
+#include "pointer/types/types.h"
 
 #define DEFAULT_SIZE 0x100
 
@@ -35,19 +38,10 @@ static const enum type id = TYPE_DATA;
 
 /* api */
 const struct data_methods data_methods_definition;
-void data_init();
 
-extern u64 pointer_vm_register_type(u64 id, const struct vm_type* type);
-
-/* definition */
-extern const struct vm_methods vm_methods_definition;
-extern const struct list list_micro_definition;
-extern const struct pointer_vm_methods pointer_vm_methods_definition;
-
-/* definition */
-static const struct vm_methods* vm = &vm_methods_definition;
-static const struct list* list = &list_micro_definition;
-static const struct pointer_vm_methods* virtual = &pointer_vm_methods_definition;
+#ifndef ATTRIBUTE
+void data_init(void);
+#endif
 
 /* definition */
 extern struct pointer_data vm_pointer;
@@ -66,16 +60,13 @@ static u64 data_size(u64 ptr);
 
 /* implementation */
 static u64 data_alloc(u64 size) {
-    struct pointer* f_ptr = virtual->alloc(size, id);
-    u64 vm_data = vm->alloc(f_ptr);
-#ifdef USE_GC
-    list->push(&base->gc, (void*)vm_data);
-#endif
+    struct pointer* f_ptr = pointer->alloc(size, id);
+    u64 vm_data = virtual->alloc(f_ptr);
     return vm_data;
 }
 
 static void data_free(u64 ptr) {
-    struct pointer* data_ptr = vm->read_type(ptr, id);
+    struct pointer* data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return;
     }
@@ -83,24 +74,24 @@ static void data_free(u64 ptr) {
 }
 
 static void data_vm_free(struct pointer* ptr) {
-    virtual->free(ptr);
+    pointer->release(ptr);
 }
 
 static void* data_unsafe(u64 ptr) {
-    struct pointer* data_ptr = vm->read_type(ptr, id);
+    struct pointer* data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
-    void* vm_data = data_ptr->data;
+    void* vm_data = pointer->read(data_ptr);
     return vm_data;
 }
 
 static u64 data_size(u64 ptr) {
-    const struct pointer* data_ptr = vm->read_type(ptr, id);
+    struct pointer* data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
-    u64 size = data_ptr->size;
+    u64 size = pointer->size(data_ptr);
     return size;
 }
 
@@ -109,7 +100,7 @@ static const struct vm_type type_definition = {
 };
 
 static void INIT init() {
-    pointer_vm_register_type(id, type);
+    pointer->register_type(id, type);
 }
 
 /* public */

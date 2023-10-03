@@ -31,17 +31,20 @@
 #include "common/memory.h"
 #include "list-micro/data.h"
 #include "list/v1/list_v1.h"
+
 #include "playground/brain/brain.h"
 #include "playground/hashtable/v1/hashtable_v1.h"
+
+#include "pointer/v1/pointer_v1.h"
 #include "pointer/types/data/v1/data_v1.h"
 #include "pointer/types/file/v1/file_v1.h"
 #include "pointer/types/list/v1/list_v1.h"
 #include "pointer/types/object/v1/object_v1.h"
-#include "pointer/types/os/v1/os_v1.h"
 #include "pointer/types/string/v1/string_v1.h"
 #include "pointer/types/string_pointer/v1/string_pointer_v1.h"
 #include "pointer/types/user/v1/user_v1.h"
-#include "pointer/v1/pointer_v1.h"
+
+#include "pointer/os/v1/os_v1.h"
 
 #define DEFAULT_SIZE 0x100
 
@@ -58,15 +61,7 @@ static const struct test_suite* list_tests = &list_test_suite_definition;
 static const struct test_suite* vm_v1_tests = &vm_v1_test_suite_definition;
 
 /* definition */
-extern const struct vm_methods vm_methods_definition;
-
-/* definition */
-extern const struct user_methods user_methods_definition;
-extern const struct string_pointer_methods string_pointer_methods_definition;
-
-/* definition */
-static const struct user_methods* user = &user_methods_definition;
-static const struct string_pointer_methods* string_pointer = &string_pointer_methods_definition;
+extern const struct virtual_methods virtual_methods_definition;
 
 /* Data structure to use at the core of our fixture. */
 typedef struct test_data {
@@ -95,6 +90,14 @@ RX_TEST_CASE(tests_v1, test_load_0, .fixture = test_fixture) {
 }
 
 /* test init */
+RX_TEST_CASE(tests_v1, test_load_null_ptr, .fixture = test_fixture) {
+    u64 null_ptr = 0;
+#ifndef USE_GC
+    pointer->free(null_ptr);
+#endif
+}
+
+/* test init */
 RX_TEST_CASE(tests_v1, test_load_null, .fixture = test_fixture) {
     u64 empty_ptr = string->load(0);
     RX_ASSERT(empty_ptr == 0);
@@ -107,10 +110,8 @@ RX_TEST_CASE(tests_v1, test_load_empty, .fixture = test_fixture) {
     RX_ASSERT(empty_ptr == 0);
 #ifndef USE_GC
     string->free(empty_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -122,10 +123,8 @@ RX_TEST_CASE(tests_v1, test_print_load_empty, .fixture = test_fixture) {
     RX_ASSERT(empty_ptr == 0);
 #ifndef USE_GC
     string->free(empty_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -142,10 +141,8 @@ RX_TEST_CASE(tests_v1, test_load_copy, .fixture = test_fixture) {
 #ifndef USE_GC
     string->free(char_ptr);
     string->free(copy_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -156,10 +153,8 @@ RX_TEST_CASE(tests_v1, test_load_push_peek_pop, .fixture = test_fixture) {
     RX_ASSERT(strcmp(string->unsafe(char_ptr), "/") == 0);
 #ifndef USE_GC
     string->free(char_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -170,10 +165,8 @@ RX_TEST_CASE(tests_v1, test_load_free_free, .fixture = test_fixture) {
 #ifndef USE_GC
     string->free(char_ptr);
     string->free(char_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -188,10 +181,8 @@ RX_TEST_CASE(tests_v1, test_strcat_load_alloc, .fixture = test_fixture) {
 #ifndef USE_GC
     string->free(char_ptr);
     string->free(pattern_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -207,10 +198,8 @@ RX_TEST_CASE(tests_v1, test_string_size, .fixture = test_fixture) {
 #ifndef USE_GC
     string->free(char_ptr);
     string->free(pattern_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -226,10 +215,8 @@ RX_TEST_CASE(tests_v1, test_pointer_size_0, .fixture = test_fixture) {
 #ifndef USE_GC
     string->free(char_ptr);
     string->free(pattern_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -245,10 +232,8 @@ RX_TEST_CASE(tests_v1, test_pointer_size_empty, .fixture = test_fixture) {
 #ifndef USE_GC
     string->free(char_ptr);
     string->free(pattern_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -265,10 +250,8 @@ RX_TEST_CASE(tests_v1, test_pointer_size_object, .fixture = test_fixture) {
     string->free(object_ptr);
     string->free(pattern_ptr);
     object->free(object_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -285,10 +268,8 @@ RX_TEST_CASE(tests_v1, test_object_0, .fixture = test_fixture) {
     string->free(object_ptr);
     string->free(pattern_ptr);
     object->free(object_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -305,10 +286,8 @@ RX_TEST_CASE(tests_v1, test_object_alloc_0, .fixture = test_fixture) {
     string->free(object_ptr);
     string->free(pattern_ptr);
     object->free(object_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -321,10 +300,8 @@ RX_TEST_CASE(tests_v1, test_object_load_free, .fixture = test_fixture) {
     object->free(object_ptr);
 #ifndef USE_GC
     string->free(object_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -335,10 +312,8 @@ RX_TEST_CASE(tests_v1, test_object_free_0, .fixture = test_fixture) {
     object->free(object_ptr);
 #ifndef USE_GC
     string->free(object_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -355,10 +330,8 @@ RX_TEST_CASE(tests_v1, test_object_load_0, .fixture = test_fixture) {
     string->free(object_ptr);
     string->free(pattern_ptr);
     object->free(object_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -377,10 +350,8 @@ RX_TEST_CASE(tests_v1, test_object_load_string_0, .fixture = test_fixture) {
     string->free(object_ptr);
     string->free(pattern_ptr);
     object->free(object_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -399,10 +370,8 @@ RX_TEST_CASE(tests_v1, test_object_load_string, .fixture = test_fixture) {
     string->free(object_ptr);
     string->free(pattern_ptr);
     object->free(object_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -421,10 +390,8 @@ RX_TEST_CASE(tests_v1, test_object_load_string_unsafe_alloc_0, .fixture = test_f
     string->free(object_ptr);
     string->free(pattern_ptr);
     object->free(object_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -443,10 +410,8 @@ RX_TEST_CASE(tests_v1, test_object_load_string_unsafe_string, .fixture = test_fi
     string->free(object_ptr);
     string->free(pattern_ptr);
     object->free(object_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -467,10 +432,8 @@ RX_TEST_CASE(tests_v1, test_object_load_string_unsafe_0, .fixture = test_fixture
     string->free(object_ptr);
     string->free(pattern_ptr);
     object->free(object_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -491,10 +454,8 @@ RX_TEST_CASE(tests_v1, test_object_load_string_unsafe, .fixture = test_fixture) 
     string->free(object_ptr);
     string->free(pattern_ptr);
     object->free(object_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -509,10 +470,8 @@ RX_TEST_CASE(tests_v1, test_strcat_alloc_alloc, .fixture = test_fixture) {
 #ifndef USE_GC
     string->free(char_ptr);
     string->free(pattern_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -527,10 +486,8 @@ RX_TEST_CASE(tests_v1, test_string_offset_ptr_diff, .fixture = test_fixture) {
     string->free(last_matched_ptr1);
     string->free(string_ptr1);
     string->free(string_ptr2);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -545,10 +502,8 @@ RX_TEST_CASE(tests_v1, test_string_offset_ptr_less, .fixture = test_fixture) {
     string->free(last_matched_ptr1);
     string->free(string_ptr1);
     string->free(string_ptr2);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -563,10 +518,8 @@ RX_TEST_CASE(tests_v1, test_string_offset_ptr_offset, .fixture = test_fixture) {
     string->free(last_matched_ptr1);
     string->free(string_ptr1);
     string->free(string_ptr2);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -581,10 +534,8 @@ RX_TEST_CASE(tests_v1, test_string_offset_ptr_offset_found, .fixture = test_fixt
     string->free(last_matched_ptr1);
     string->free(string_ptr1);
     string->free(string_ptr2);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -606,9 +557,8 @@ RX_TEST_CASE(tests_v1, test_string_pointer_free_list, .fixture = test_fixture) {
     u64 string_ptr = string->load("hello");
     u64 e_ptr = string->load("e");
     string->offset(string_ptr, e_ptr);
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -624,10 +574,8 @@ RX_TEST_CASE(tests_v1, test_string_pointer_free, .fixture = test_fixture) {
 #ifndef USE_GC
     string->free(e_ptr);
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -641,10 +589,8 @@ RX_TEST_CASE(tests_v1, test_string_offset_list, .fixture = test_fixture) {
 #ifndef USE_GC
     string->free(string_ptr);
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -664,10 +610,8 @@ RX_TEST_CASE(tests_v1, test_string_pointer_match, .fixture = test_fixture) {
 #ifndef USE_GC
     string->free(dot_ptr);
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -684,10 +628,8 @@ RX_TEST_CASE(tests_v1, test_string_pointer_match_miss, .fixture = test_fixture) 
 #ifndef USE_GC
     string->free(dot_ptr);
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -704,10 +646,8 @@ RX_TEST_CASE(tests_v1, test_string_pointer_match_pattern, .fixture = test_fixtur
 #ifndef USE_GC
     string->free(dot_ptr);
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -724,10 +664,8 @@ RX_TEST_CASE(tests_v1, test_string_pointer_match_pattern_0, .fixture = test_fixt
 #ifndef USE_GC
     string->free(dot_ptr);
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -744,10 +682,8 @@ RX_TEST_CASE(tests_v1, test_string_pointer_match_pattern_none, .fixture = test_f
 #ifndef USE_GC
     string->free(dot_ptr);
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -756,7 +692,7 @@ RX_TEST_CASE(tests_v1, test_list_release_string, .fixture = test_fixture) {
     pointer->init(8);
     u64 string_ptr = string->load("192.168.0.11");
     list->release(string_ptr);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -767,7 +703,7 @@ RX_TEST_CASE(tests_v1, test_string_pointer_match_pattern_load_0, .fixture = test
     u64 dot_ptr = string->load("57.34.7.2");
     u64 error_ptr = string->match(string_ptr, dot_ptr);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -778,7 +714,7 @@ RX_TEST_CASE(tests_v1, test_string_pointer_offset_pattern_load_0, .fixture = tes
     u64 dot_ptr = string->load("57.34.7.2");
     u64 error_ptr = string->offset(string_ptr, dot_ptr);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -790,10 +726,8 @@ RX_TEST_CASE(tests_v1, test_string_pointer_match_0, .fixture = test_fixture) {
     RX_ASSERT(string_pointer_ptr == 0);
 #ifndef USE_GC
     string->free(string_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -809,9 +743,8 @@ RX_TEST_CASE(tests_v1, test_string_pointer_match_0_0, .fixture = test_fixture) {
     string->load("192.168.0.1");
     u64 string_pointer_ptr = string->match(0, 0);
     RX_ASSERT(string_pointer_ptr == 0);
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -823,10 +756,8 @@ RX_TEST_CASE(tests_v1, test_string_pointer_match_0_string, .fixture = test_fixtu
     RX_ASSERT(string_pointer_ptr == 0);
 #ifndef USE_GC
     string->free(string_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -840,10 +771,8 @@ RX_TEST_CASE(tests_v1, test_string_match_list, .fixture = test_fixture) {
 #ifndef USE_GC
     string->free(string_ptr);
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -863,10 +792,8 @@ RX_TEST_CASE(tests_v1, test_string_pointer_strchr, .fixture = test_fixture) {
 #ifndef USE_GC
     string->free(dot_ptr);
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -883,10 +810,8 @@ RX_TEST_CASE(tests_v1, test_string_pointer_strchr_miss, .fixture = test_fixture)
 #ifndef USE_GC
     string->free(dot_ptr);
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -898,10 +823,8 @@ RX_TEST_CASE(tests_v1, test_string_pointer_strchr_0, .fixture = test_fixture) {
     RX_ASSERT(string_pointer_ptr == 0);
 #ifndef USE_GC
     string->free(string_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -917,9 +840,8 @@ RX_TEST_CASE(tests_v1, test_string_pointer_strchr_0_0, .fixture = test_fixture) 
     string->load("192.168.0.1");
     u64 string_pointer_ptr = string->strchr(0, 0);
     RX_ASSERT(string_pointer_ptr == 0);
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -931,10 +853,8 @@ RX_TEST_CASE(tests_v1, test_string_pointer_strchr_0_string, .fixture = test_fixt
     RX_ASSERT(string_pointer_ptr == 0);
 #ifndef USE_GC
     string->free(string_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -948,10 +868,8 @@ RX_TEST_CASE(tests_v1, test_string_strchr_list, .fixture = test_fixture) {
 #ifndef USE_GC
     string->free(string_ptr);
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -969,10 +887,8 @@ RX_TEST_CASE(tests_v1, test_string_pointer_strrchr, .fixture = test_fixture) {
     string->free(string_pointer_ptr2);
     string->free(string_ptr);
     string->free(dot_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -993,10 +909,8 @@ RX_TEST_CASE(tests_v1, test_string_pointer_strrchr_match_offset, .fixture = test
     string->free(string_pointer_ptr3);
     string->free(string_ptr);
     string->free(dot_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1006,7 +920,7 @@ RX_TEST_CASE(tests_v1, test_list_peekn_0_0, .fixture = test_fixture) {
     u64 list_ptr = list->alloc();
     u64 error_ptr = list->peekn(0, 0);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1016,7 +930,7 @@ RX_TEST_CASE(tests_v1, test_list_peekn_0, .fixture = test_fixture) {
     u64 list_ptr = list->alloc();
     u64 error_ptr = list->peekn(list_ptr, 0);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1032,7 +946,7 @@ RX_TEST_CASE(tests_v1, test_list_peekn_1, .fixture = test_fixture) {
     u64 string_ptr2 = list->peek(list_ptr2);
     RX_ASSERT(string_ptr2 != 0);
     RX_ASSERT(string_ptr1 == string_ptr2);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1044,7 +958,7 @@ RX_TEST_CASE(tests_v1, test_list_peekn_2, .fixture = test_fixture) {
     list->push(list_ptr, string_ptr);
     u64 error_ptr = list->peekn(list_ptr, 2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1054,7 +968,7 @@ RX_TEST_CASE(tests_v1, test_list_popn_0_0, .fixture = test_fixture) {
     u64 list_ptr = list->alloc();
     u64 error_ptr = list->popn(0, 0);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1064,7 +978,7 @@ RX_TEST_CASE(tests_v1, test_list_popn_0, .fixture = test_fixture) {
     u64 list_ptr = list->alloc();
     u64 error_ptr = list->popn(list_ptr, 0);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1080,7 +994,7 @@ RX_TEST_CASE(tests_v1, test_list_popn_1, .fixture = test_fixture) {
     u64 string_ptr2 = list->peek(list_ptr2);
     RX_ASSERT(string_ptr2 != 0);
     RX_ASSERT(string_ptr1 == string_ptr2);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1092,7 +1006,7 @@ RX_TEST_CASE(tests_v1, test_list_popn_2, .fixture = test_fixture) {
     list->push(list_ptr, string_ptr);
     u64 error_ptr = list->popn(list_ptr, 2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1144,11 +1058,8 @@ RX_TEST_CASE(tests_v1, test_string_pointer_strchr_match_offset, .fixture = test_
     string->free(pattern_ptr);
     list->free(list_match_ptr);
     list->free(list_ptr);
-#else
-    /* memory leak: list_ptr is not freed, use pointer->release(); */
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1165,10 +1076,8 @@ RX_TEST_CASE(tests_v1, test_string_pointer_strrchr_miss, .fixture = test_fixture
 #ifndef USE_GC
     string->free(dot_ptr);
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1180,10 +1089,8 @@ RX_TEST_CASE(tests_v1, test_string_pointer_strrchr_0, .fixture = test_fixture) {
     RX_ASSERT(string_pointer_ptr == 0);
 #ifndef USE_GC
     string->free(string_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1199,9 +1106,8 @@ RX_TEST_CASE(tests_v1, test_string_pointer_strrchr_0_0, .fixture = test_fixture)
     string->load("192.168.0.1");
     u64 string_pointer_ptr = string->strrchr(0, 0);
     RX_ASSERT(string_pointer_ptr == 0);
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1213,10 +1119,8 @@ RX_TEST_CASE(tests_v1, test_string_pointer_strrchr_0_string, .fixture = test_fix
     RX_ASSERT(string_pointer_ptr == 0);
 #ifndef USE_GC
     string->free(string_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1230,10 +1134,8 @@ RX_TEST_CASE(tests_v1, test_string_strrchr_list, .fixture = test_fixture) {
 #ifndef USE_GC
     string->free(string_ptr);
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1241,7 +1143,7 @@ RX_TEST_CASE(tests_v1, test_string_strrchr_list, .fixture = test_fixture) {
 RX_TEST_CASE(tests_v1, test_list_push_0_1, .fixture = test_fixture) {
     pointer->init(8);
     list->push(0, 1);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1249,7 +1151,7 @@ RX_TEST_CASE(tests_v1, test_list_push_0_1, .fixture = test_fixture) {
 RX_TEST_CASE(tests_v1, test_list_push_1_0, .fixture = test_fixture) {
     pointer->init(8);
     list->push(1, 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1260,10 +1162,8 @@ RX_TEST_CASE(tests_v1, test_list_push_0, .fixture = test_fixture) {
     list->push(list_ptr, 0);
 #ifndef USE_GC
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1274,10 +1174,8 @@ RX_TEST_CASE(tests_v1, test_list_push_list, .fixture = test_fixture) {
     list->push(list_ptr, list_ptr);
 #ifndef USE_GC
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1290,10 +1188,8 @@ RX_TEST_CASE(tests_v1, test_list_push_string, .fixture = test_fixture) {
 #ifndef USE_GC
     list->free(list_ptr);
     string->free(string_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1312,9 +1208,8 @@ RX_TEST_CASE(tests_v1, test_list_size_string, .fixture = test_fixture) {
     list->alloc();
     u64 value = list->size(string_ptr);
     RX_ASSERT(value == 0);
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1329,10 +1224,8 @@ RX_TEST_CASE(tests_v1, test_list_push_size, .fixture = test_fixture) {
 #ifndef USE_GC
     list->free(list_ptr);
     string->free(string_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1341,7 +1234,7 @@ RX_TEST_CASE(tests_v1, test_list_pop_0_1, .fixture = test_fixture) {
     pointer->init(8);
     u64 value_ptr = list->pop(0);
     RX_ASSERT(value_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1350,7 +1243,7 @@ RX_TEST_CASE(tests_v1, test_list_pop_1_0, .fixture = test_fixture) {
     pointer->init(8);
     u64 value_ptr = list->pop(1);
     RX_ASSERT(value_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1362,10 +1255,8 @@ RX_TEST_CASE(tests_v1, test_list_pop_list, .fixture = test_fixture) {
     RX_ASSERT(value_ptr == 0);
 #ifndef USE_GC
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1380,10 +1271,8 @@ RX_TEST_CASE(tests_v1, test_list_pop_string, .fixture = test_fixture) {
 #ifndef USE_GC
     list->free(list_ptr);
     string->free(string_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1392,7 +1281,7 @@ RX_TEST_CASE(tests_v1, test_list_peek_0_1, .fixture = test_fixture) {
     pointer->init(8);
     u64 value_ptr = list->peek(0);
     RX_ASSERT(value_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1401,7 +1290,7 @@ RX_TEST_CASE(tests_v1, test_list_peek_1_0, .fixture = test_fixture) {
     pointer->init(8);
     u64 value_ptr = list->peek(1);
     RX_ASSERT(value_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1413,10 +1302,8 @@ RX_TEST_CASE(tests_v1, test_list_peek_list, .fixture = test_fixture) {
     RX_ASSERT(value_ptr == 0);
 #ifndef USE_GC
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1431,10 +1318,8 @@ RX_TEST_CASE(tests_v1, test_list_peek_string, .fixture = test_fixture) {
 #ifndef USE_GC
     list->free(list_ptr);
     string->free(string_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1463,10 +1348,8 @@ RX_TEST_CASE(tests_v1, test_strcpy, .fixture = test_fixture) {
     string->free(path_ptr1);
     string->free(path_ptr2);
     string->free(path_copy_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1699,10 +1582,8 @@ RX_TEST_CASE(tests_v1, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     list->free(data_ptr);
     list->free(list_ptr);
     list->free(none_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1717,10 +1598,8 @@ RX_TEST_CASE(tests_v1, test_strcat_alloc_load, .fixture = test_fixture) {
 #ifndef USE_GC
     string->free(zero_ptr);
     string->free(char_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1739,10 +1618,8 @@ RX_TEST_CASE(tests_v1, test_strcat_load_alloc_alloc, .fixture = test_fixture) {
     string->free(empty_ptr);
     string->free(pattern_ptr);
     string->free(char_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1757,10 +1634,8 @@ RX_TEST_CASE(tests_v1, test_strcat_load_load, .fixture = test_fixture) {
 #ifndef USE_GC
     string->free(pattern_ptr);
     string->free(char_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1775,10 +1650,8 @@ RX_TEST_CASE(tests_v1, test_strcpy_load_alloc, .fixture = test_fixture) {
 #ifndef USE_GC
     string->free(empty_ptr);
     string->free(pattern_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1793,10 +1666,8 @@ RX_TEST_CASE(tests_v1, test_strcpy_load_load, .fixture = test_fixture) {
 #ifndef USE_GC
     string->free(pattern_ptr);
     string->free(char_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1805,7 +1676,7 @@ RX_TEST_CASE(tests_v1, test_os_getenv, .fixture = test_fixture) {
     pointer->init(8);
     u64 ui_mode_ptr = string->load("UI_MODE");
     u64 file_path_ptr = os->getenv(ui_mode_ptr);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1813,7 +1684,7 @@ RX_TEST_CASE(tests_v1, test_os_getenv, .fixture = test_fixture) {
 RX_TEST_CASE(tests_v1, test_os_getenv_0, .fixture = test_fixture) {
     pointer->init(8);
     u64 file_path_ptr = os->getenv(0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1822,7 +1693,7 @@ RX_TEST_CASE(tests_v1, test_os_getenv_list, .fixture = test_fixture) {
     pointer->init(8);
     u64 list_ptr = list->alloc();
     u64 file_path_ptr = os->getenv(list_ptr);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1844,10 +1715,8 @@ RX_TEST_CASE(tests_v1, test_load_open_file_close_file, .fixture = test_fixture) 
     string->free(mode_ptr);
     string->free(file_name_ptr);
     string->free(file_path_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1879,10 +1748,8 @@ RX_TEST_CASE(tests_v1, test_offset_strcpy, .fixture = test_fixture) {
     string->free(name_ptr);
     string->free(domain_ptr);
     string->free(at_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1914,10 +1781,8 @@ RX_TEST_CASE(tests_v1, test_offset_strcpy_free, .fixture = test_fixture) {
     string->free(name_ptr);
     string->free(domain_ptr);
     string->free(at_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1927,7 +1792,7 @@ RX_TEST_CASE(tests_v1, test_print_free, .fixture = test_fixture) {
     u64 printing_ptr = string->load("hello, world!");
     string->free(printing_ptr);
     os->putc(printing_ptr);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1938,10 +1803,8 @@ RX_TEST_CASE(tests_v1, test_print, .fixture = test_fixture) {
     os->putc(printing_ptr);
 #ifndef USE_GC
     string->free(printing_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1956,10 +1819,8 @@ RX_TEST_CASE(tests_v1, test_print_string_pointer, .fixture = test_fixture) {
     string->free(printing_ptr);
     string->free(substring_index_ptr);
     string->free(comma_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1980,10 +1841,8 @@ RX_TEST_CASE(tests_v1, test_print_string_pointer_copy, .fixture = test_fixture) 
     string->free(comma_ptr);
     string->free(substring_index_ptr);
     string->free(substring_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -1996,10 +1855,8 @@ RX_TEST_CASE(tests_v1, test_list_size, .fixture = test_fixture) {
     RX_ASSERT(size_expected == size_actual);
 #ifndef USE_GC
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2012,10 +1869,8 @@ RX_TEST_CASE(tests_v1, test_list_unsafe, .fixture = test_fixture) {
     RX_ASSERT(ptr_expected == ptr_actual);
 #ifndef USE_GC
     list->free(list_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2030,10 +1885,8 @@ RX_TEST_CASE(tests_v1, test_list_offset, .fixture = test_fixture) {
 #ifndef USE_GC
     list->free(list_ptr);
     string->free(string_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2053,10 +1906,8 @@ RX_TEST_CASE(tests_v1, teststring_pointer_unsafe, .fixture = test_fixture) {
 #ifndef USE_GC
     string->free(printing_ptr);
     string->free(comma_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2077,10 +1928,8 @@ RX_TEST_CASE(tests_v1, test_string_pointer_size, .fixture = test_fixture) {
     string->free(comma_ptr);
     string->free(substring_index_ptr);
     string->free(substring_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2105,9 +1954,8 @@ RX_TEST_CASE(tests_v1, test_string_offset_subsearch, .fixture = test_fixture) {
     string->free(substring_index_ptr2);
     string->free(substring_ptr);
     string->free(w_ptr);
-#else
-    pointer->gc();
 #endif
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2122,10 +1970,8 @@ RX_TEST_CASE(tests_v1, test_print_string_pointer_free, .fixture = test_fixture) 
 #ifndef USE_GC
     string->free(printing_ptr);
     string->free(comma_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2158,10 +2004,8 @@ RX_TEST_CASE(tests_v1, test_offset_strcat, .fixture = test_fixture) {
     string->free(path_ptr2);
     string->free(name_ptr);
     string->free(at_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2177,9 +2021,8 @@ RX_TEST_CASE(tests_v1, test_file_read_invalid_type, .fixture = test_fixture) {
 #else
     u64 list_ptr = list->alloc();
     file->data(list_ptr);
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2205,10 +2048,8 @@ RX_TEST_CASE(tests_v1, test_load_open_match_last_unsafe_free, .fixture = test_fi
     os->putc(data_ptr);
 #ifndef USE_GC
     data->free(data_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2226,10 +2067,8 @@ RX_TEST_CASE(tests_v1, test_load_open_match_last_unsafe_free_unsuppported_calls,
     string->free(ptr1);
     string->free(ptr2);
     string->free(last_match_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2241,9 +2080,8 @@ RX_TEST_CASE(tests_v1, test_user, .fixture = test_fixture) {
     user->free(ptr1);
 #else
     user->alloc();
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2279,10 +2117,8 @@ RX_TEST_CASE(tests_v1, test_load_open_file_unsafe_hashtable, .fixture = test_fix
     string->free(mode_ptr);
     string->free(file_name_ptr);
     string->free(file_path_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2296,10 +2132,8 @@ RX_TEST_CASE(tests_v1, test_load_load_match_last, .fixture = test_fixture) {
     string->free(last_match_ptr);
     string->free(str_ptr);
     string->free(ch_ptr);
-#else
-    pointer->gc();
 #endif
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2309,7 +2143,7 @@ static void parse_text(u64 text_string_ptr);
 /* test init */
 RX_TEST_CASE(pointer_tests, test_pointer_init, .fixture = test_fixture) {
     pointer->init(8);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2317,7 +2151,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_init, .fixture = test_fixture) {
 RX_TEST_CASE(pointer_tests, test_pointer_string_load, .fixture = test_fixture) {
     pointer->init(8);
     string->load("asdf");
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2334,7 +2168,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_init_string_load_9, .fixture = test_fix
     string->load("7");
     string->load("8");
     string->load("9");
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2366,10 +2200,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_strings, .fixture = test_fixture) {
     string->free(text_string_ptr5);
     string->free(text_string_ptr6);
     string->free(text_string_ptr7);
-#ifdef USE_GC
     pointer->gc();
-#endif
-    pointer->release();
     pointer->destroy();
 }
 
@@ -2377,7 +2208,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_strings, .fixture = test_fixture) {
 RX_TEST_CASE(pointer_tests, test_pointer_string_pointer_free, .fixture = test_fixture) {
     pointer->init(8);
     string_pointer->free(0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2390,7 +2221,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_pointer_lessthan_free, .fixture 
     u64 data_ptr = string->lessthan(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(data_ptr != 0);
     string_pointer->free(data_ptr);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2399,7 +2230,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_0_0, .fixture = test_fi
     pointer->init(8);
     u64 error_ptr = string->lessthan(0, 0);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2408,7 +2239,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_0_1, .fixture = test_fi
     pointer->init(8);
     u64 error_ptr = string->lessthan(0, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2418,7 +2249,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_1_0, .fixture = test_fi
     u64 quantum_str_ptr = string->load("");
     u64 error_ptr = string->lessthan(1, 0);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2429,7 +2260,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_1_1, .fixture = test_fi
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->lessthan(1, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2441,7 +2272,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_a_b, .fixture = test_fi
     u64 quantum_str_ptr2 = string->offset(quantum_str_ptr1, pattern_ptr);
     u64 data_ptr = string->lessthan(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(data_ptr != 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2453,7 +2284,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_b_a, .fixture = test_fi
     u64 quantum_str_ptr2 = string->offset(quantum_str_ptr1, pattern_ptr);
     u64 error_ptr = string->lessthan(quantum_str_ptr2, quantum_str_ptr1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2464,7 +2295,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_1_2, .fixture = test_fi
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->lessthan(1, 2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2475,7 +2306,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_1_3, .fixture = test_fi
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->lessthan(1, 2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2486,7 +2317,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_2_1, .fixture = test_fi
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->lessthan(2, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2498,7 +2329,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_a_string_free, .fixture
     string->free(quantum_str_ptr2);
     u64 error_ptr = string->lessthan(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2510,7 +2341,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_string_free_b, .fixture
     string->free(quantum_str_ptr1);
     u64 error_ptr = string->lessthan(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2521,7 +2352,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_string_list, .fixture =
     u64 list_ptr2 = list->alloc();
     u64 error_ptr = string->lessthan(quantum_str_ptr1, list_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2532,7 +2363,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_list_string, .fixture =
     u64 quantum_str_ptr2 = string->load("a");
     u64 error_ptr = string->lessthan(list_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2541,7 +2372,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_0_0, .fixture = test
     pointer->init(8);
     u64 error_ptr = string->greaterthan(0, 0);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2550,7 +2381,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_0_1, .fixture = test
     pointer->init(8);
     u64 error_ptr = string->greaterthan(0, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2560,7 +2391,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_1_0, .fixture = test
     u64 quantum_str_ptr = string->load("");
     u64 error_ptr = string->greaterthan(1, 0);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2571,7 +2402,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_1_1, .fixture = test
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->greaterthan(1, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2583,7 +2414,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_a_b, .fixture = test
     u64 quantum_str_ptr2 = string->offset(quantum_str_ptr1, pattern_ptr);
     u64 error_ptr = string->greaterthan(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2595,7 +2426,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_b_a, .fixture = test
     u64 quantum_str_ptr2 = string->offset(quantum_str_ptr1, pattern_ptr);
     u64 data_ptr = string->greaterthan(quantum_str_ptr2, quantum_str_ptr1);
     RX_ASSERT(data_ptr != 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2606,7 +2437,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_1_2, .fixture = test
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->greaterthan(1, 2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2617,7 +2448,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_1_3, .fixture = test
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->greaterthan(1, 3);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2628,7 +2459,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_2_1, .fixture = test
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->greaterthan(2, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2640,7 +2471,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_a_string_free, .fixt
     string->free(quantum_str_ptr2);
     u64 error_ptr = string->greaterthan(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2652,7 +2483,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_string_free_b, .fixt
     string->free(quantum_str_ptr1);
     u64 error_ptr = string->greaterthan(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2663,7 +2494,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_string_list, .fixtur
     u64 list_ptr2 = list->alloc();
     u64 error_ptr = string->greaterthan(quantum_str_ptr1, list_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2674,7 +2505,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_list_string, .fixtur
     u64 quantum_str_ptr2 = string->load("a");
     u64 error_ptr = string->greaterthan(list_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2683,7 +2514,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_equals_0_0, .fixture = test_fixt
     pointer->init(8);
     u64 error_ptr = string->equals(0, 0);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2692,7 +2523,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_equals_0_1, .fixture = test_fixt
     pointer->init(8);
     u64 error_ptr = string->equals(0, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2702,7 +2533,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_equals_1_0, .fixture = test_fixt
     u64 quantum_str_ptr = string->load("");
     u64 error_ptr = string->equals(1, 0);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2713,7 +2544,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_equals_1_1, .fixture = test_fixt
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->equals(1, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2725,7 +2556,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_equals_a_b, .fixture = test_fixt
     u64 quantum_str_ptr2 = string->offset(quantum_str_ptr1, pattern_ptr);
     u64 error_ptr = string->equals(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2738,7 +2569,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_equals_b_a, .fixture = test_fixt
     u64 quantum_str_ptr2 = string->offset(source_ptr, pattern_ptr);
     u64 data_ptr = string->equals(quantum_str_ptr2, quantum_str_ptr1);
     RX_ASSERT(data_ptr != 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2749,7 +2580,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_equals_1_2, .fixture = test_fixt
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->equals(1, 2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2760,7 +2591,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_equals_1_3, .fixture = test_fixt
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->equals(1, 3);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2771,7 +2602,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_equals_2_1, .fixture = test_fixt
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->equals(2, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2783,7 +2614,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_equals_a_string_free, .fixture =
     string->free(quantum_str_ptr2);
     u64 error_ptr = string->equals(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2795,7 +2626,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_equals_string_free_b, .fixture =
     string->free(quantum_str_ptr1);
     u64 error_ptr = string->equals(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2806,7 +2637,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_equals_string_list, .fixture = t
     u64 list_ptr2 = list->alloc();
     u64 error_ptr = string->equals(quantum_str_ptr1, list_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2817,7 +2648,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_equals_list_string, .fixture = t
     u64 quantum_str_ptr2 = string->load("a");
     u64 error_ptr = string->equals(list_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2826,7 +2657,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_compare_0_0, .fixture = test_fix
     pointer->init(8);
     u64 error_ptr = string->compare(0, 0);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2835,7 +2666,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_compare_0_1, .fixture = test_fix
     pointer->init(8);
     u64 error_ptr = string->compare(0, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2845,7 +2676,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_compare_1_0, .fixture = test_fix
     u64 quantum_str_ptr = string->load("");
     u64 error_ptr = string->compare(1, 0);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2856,7 +2687,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_compare_1_1, .fixture = test_fix
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->compare(1, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2868,7 +2699,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_compare_a_b, .fixture = test_fix
     u64 quantum_str_ptr2 = string->offset(quantum_str_ptr1, pattern_ptr);
     u64 data_ptr = string->compare(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(data_ptr != 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2881,7 +2712,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_compare_b_a, .fixture = test_fix
     u64 quantum_str_ptr2 = string->offset(source_ptr, pattern_ptr);
     u64 data_ptr = string->compare(quantum_str_ptr2, quantum_str_ptr1);
     RX_ASSERT(data_ptr != 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2892,7 +2723,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_compare_1_2, .fixture = test_fix
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->compare(1, 2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2903,7 +2734,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_compare_1_3, .fixture = test_fix
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->compare(1, 3);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2914,7 +2745,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_compare_2_1, .fixture = test_fix
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->compare(2, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2926,7 +2757,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_compare_a_string_free, .fixture 
     string->free(quantum_str_ptr2);
     u64 error_ptr = string->compare(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2938,7 +2769,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_compare_string_free_b, .fixture 
     string->free(quantum_str_ptr1);
     u64 error_ptr = string->compare(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2949,7 +2780,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_compare_string_list, .fixture = 
     u64 list_ptr2 = list->alloc();
     u64 error_ptr = string->compare(quantum_str_ptr1, list_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2960,7 +2791,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_compare_list_string, .fixture = 
     u64 quantum_str_ptr2 = string->load("a");
     u64 error_ptr = string->compare(list_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2969,7 +2800,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strcmp_0_0, .fixture = test_fixt
     pointer->init(8);
     u64 error_ptr = string->strcmp(0, 0);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2978,7 +2809,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strcmp_0_1, .fixture = test_fixt
     pointer->init(8);
     u64 error_ptr = string->strcmp(0, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2988,7 +2819,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strcmp_1_0, .fixture = test_fixt
     u64 quantum_str_ptr = string->load("");
     u64 error_ptr = string->strcmp(1, 0);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -2999,7 +2830,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strcmp_1_1, .fixture = test_fixt
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->strcmp(1, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3011,7 +2842,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strcmp_a_b, .fixture = test_fixt
     u64 quantum_str_ptr2 = string->offset(quantum_str_ptr1, pattern_ptr);
     u64 data_ptr = string->strcmp(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(data_ptr != 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3024,7 +2855,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strcmp_b_a, .fixture = test_fixt
     u64 quantum_str_ptr2 = string->offset(source_ptr, pattern_ptr);
     u64 data_ptr = string->strcmp(quantum_str_ptr2, quantum_str_ptr1);
     RX_ASSERT(data_ptr != 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3035,7 +2866,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strcmp_1_2, .fixture = test_fixt
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->strcmp(1, 2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 /* test init */
@@ -3045,7 +2876,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strcmp_1_3, .fixture = test_fixt
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->strcmp(1, 3);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3056,7 +2887,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strcmp_2_1, .fixture = test_fixt
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->strcmp(2, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3068,7 +2899,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strcmp_a_string_free, .fixture =
     string->free(quantum_str_ptr2);
     u64 error_ptr = string->strcmp(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3080,7 +2911,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strcmp_string_free_b, .fixture =
     string->free(quantum_str_ptr1);
     u64 error_ptr = string->strcmp(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3091,7 +2922,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strcmp_string_list, .fixture = t
     u64 list_ptr2 = list->alloc();
     u64 error_ptr = string->strcmp(quantum_str_ptr1, list_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3102,7 +2933,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strcmp_list_string, .fixture = t
     u64 quantum_str_ptr2 = string->load("a");
     u64 error_ptr = string->strcmp(list_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3111,7 +2942,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_right_0_0, .fixture = test_
     pointer->init(8);
     u64 error_ptr = string->move_right(0, 0);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3120,7 +2951,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_right_0_1, .fixture = test_
     pointer->init(8);
     u64 error_ptr = string->move_right(0, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3130,7 +2961,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_right_1_0, .fixture = test_
     u64 quantum_str_ptr = string->load("");
     u64 error_ptr = string->move_right(1, 0);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3141,7 +2972,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_right_1_1, .fixture = test_
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->move_right(1, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3151,7 +2982,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_right_a_b, .fixture = test_
     u64 quantum_str_ptr1 = string->load("abba");
     u64 error_ptr = string->move_right(quantum_str_ptr1, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3163,7 +2994,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_right_b_a, .fixture = test_
     u64 quantum_str_ptr1 = string->offset(source_ptr, pattern_ptr);
     u64 error_ptr = string->move_right(quantum_str_ptr1, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3175,7 +3006,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_right_a_b_2, .fixture = tes
     u64 quantum_str_ptr1 = string->offset(source_ptr, pattern_ptr);
     u64 data_ptr = string->move_right(quantum_str_ptr1, 1);
     RX_ASSERT(data_ptr != 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3188,7 +3019,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_right_a_b_0, .fixture = tes
     u64 error_ptr = string->move_right(quantum_str_ptr1, 1);
     RX_ASSERT(strcmp(string->unsafe(quantum_str_ptr1), "") == 0);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3201,7 +3032,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_right_a_b_free, .fixture = 
     string->free(source_ptr);
     u64 error_ptr = string->move_right(quantum_str_ptr1, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3212,7 +3043,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_right_1_2, .fixture = test_
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->move_right(1, 2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3223,7 +3054,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_right_1_3, .fixture = test_
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->move_right(1, 3);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3234,7 +3065,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_right_2_1, .fixture = test_
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->move_right(2, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3246,7 +3077,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_right_a_string_free, .fixtu
     string->free(quantum_str_ptr2);
     u64 error_ptr = string->move_right(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3258,7 +3089,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_right_string_free_b, .fixtu
     string->free(quantum_str_ptr1);
     u64 error_ptr = string->move_right(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3269,7 +3100,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_right_string_list, .fixture
     u64 list_ptr2 = list->alloc();
     u64 error_ptr = string->move_right(quantum_str_ptr1, list_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3280,7 +3111,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_right_list_string, .fixture
     u64 quantum_str_ptr2 = string->load("a");
     u64 error_ptr = string->move_right(list_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3289,7 +3120,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_right_0_0, .fixture = test_fixtu
     pointer->init(8);
     u64 error_ptr = string->right(0, 0);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3298,7 +3129,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_right_0_1, .fixture = test_fixtu
     pointer->init(8);
     u64 error_ptr = string->right(0, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3308,7 +3139,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_right_1_0, .fixture = test_fixtu
     u64 quantum_str_ptr = string->load("");
     u64 error_ptr = string->right(1, 0);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3320,7 +3151,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_right_1_1, .fixture = test_fixtu
     u64 data_ptr = string->right(quantum_str_ptr1, 1);
     RX_ASSERT(data_ptr != 0);
     RX_ASSERT(strcmp(string->unsafe(data_ptr), "") == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3330,7 +3161,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_right_a_b, .fixture = test_fixtu
     u64 quantum_str_ptr1 = string->load("abba");
     u64 error_ptr = string->right(quantum_str_ptr1, 1);
     RX_ASSERT(error_ptr != 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3342,7 +3173,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_right_b_a, .fixture = test_fixtu
     u64 quantum_str_ptr1 = string->offset(source_ptr, pattern_ptr);
     u64 error_ptr = string->right(quantum_str_ptr1, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3354,7 +3185,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_right_a_b_2, .fixture = test_fix
     u64 quantum_str_ptr1 = string->offset(source_ptr, pattern_ptr);
     u64 data_ptr = string->right(quantum_str_ptr1, 1);
     RX_ASSERT(data_ptr != 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3367,7 +3198,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_right_a_b_0, .fixture = test_fix
     u64 error_ptr = string->right(quantum_str_ptr1, 1);
     RX_ASSERT(error_ptr == 0);
     RX_ASSERT(strcmp(string->unsafe(quantum_str_ptr1), "") == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3380,7 +3211,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_right_a_b_free, .fixture = test_
     string->free(source_ptr);
     u64 error_ptr = string->right(quantum_str_ptr1, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3391,7 +3222,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_right_1_2, .fixture = test_fixtu
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->right(1, 2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3402,7 +3233,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_right_1_3, .fixture = test_fixtu
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->right(1, 3);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3413,7 +3244,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_right_2_1, .fixture = test_fixtu
     u64 quantum_str_ptr2 = string->load("");
     u64 error_ptr = string->right(quantum_str_ptr2, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3425,7 +3256,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_right_a_string_free, .fixture = 
     string->free(quantum_str_ptr2);
     u64 error_ptr = string->right(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3437,7 +3268,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_right_string_free_b, .fixture = 
     string->free(quantum_str_ptr1);
     u64 error_ptr = string->right(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3448,7 +3279,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_right_string_list, .fixture = te
     u64 list_ptr2 = list->alloc();
     u64 error_ptr = string->right(quantum_str_ptr1, list_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3459,7 +3290,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_right_list_string, .fixture = te
     u64 quantum_str_ptr2 = string->load("a");
     u64 error_ptr = string->right(list_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3468,7 +3299,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_0_0, .fixture = test_f
     pointer->init(8);
     u64 error_ptr = string->move_left(0, 0);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3477,7 +3308,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_0_1, .fixture = test_f
     pointer->init(8);
     u64 error_ptr = string->move_left(0, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3487,7 +3318,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_1_0, .fixture = test_f
     u64 quantum_str_ptr = string->load("");
     u64 error_ptr = string->move_left(1, 0);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3498,7 +3329,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_1_1, .fixture = test_f
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->move_left(1, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3510,7 +3341,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_a_b, .fixture = test_f
     u64 quantum_str_ptr1 = string->offset(source_ptr, pattern_ptr);
     u64 error_ptr = string->move_left(quantum_str_ptr1, 4);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3522,7 +3353,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_b_a, .fixture = test_f
     u64 quantum_str_ptr1 = string->offset(source_ptr, pattern_ptr);
     u64 data_ptr = string->move_left(quantum_str_ptr1, 1);
     RX_ASSERT(data_ptr != 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3534,7 +3365,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_a_b_2, .fixture = test
     u64 quantum_str_ptr1 = string->offset(source_ptr, pattern_ptr);
     u64 data_ptr = string->move_left(quantum_str_ptr1, 1);
     RX_ASSERT(data_ptr != 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3547,7 +3378,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_a_b_0, .fixture = test
     u64 data_ptr = string->move_left(quantum_str_ptr1, 1);
     RX_ASSERT(data_ptr != 0);
     RX_ASSERT(strcmp(string->unsafe(quantum_str_ptr1), "a") == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3560,7 +3391,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_a_b_free, .fixture = t
     string->free(source_ptr);
     u64 error_ptr = string->move_left(quantum_str_ptr1, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3571,7 +3402,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_1_2, .fixture = test_f
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->move_left(1, 2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 /* test init */
@@ -3581,7 +3412,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_1_3, .fixture = test_f
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->move_left(1, 3);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3592,7 +3423,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_2_1, .fixture = test_f
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->move_left(2, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3604,7 +3435,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_a_string_free, .fixtur
     string->free(quantum_str_ptr2);
     u64 error_ptr = string->move_left(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3616,7 +3447,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_string_free_b, .fixtur
     string->free(quantum_str_ptr1);
     u64 error_ptr = string->move_left(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3627,7 +3458,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_string_list, .fixture 
     u64 list_ptr2 = list->alloc();
     u64 error_ptr = string->move_left(quantum_str_ptr1, list_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3638,7 +3469,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_list_string, .fixture 
     u64 quantum_str_ptr2 = string->load("a");
     u64 error_ptr = string->move_left(list_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3647,7 +3478,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_0_0, .fixture = tes
     pointer->init(8);
     u64 error_ptr = string->left_strncpy(0, 0);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3656,7 +3487,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_0_1, .fixture = tes
     pointer->init(8);
     u64 error_ptr = string->left_strncpy(0, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3666,7 +3497,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_1_0, .fixture = tes
     u64 quantum_str_ptr = string->load("");
     u64 error_ptr = string->left_strncpy(1, 0);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3677,7 +3508,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_1_1, .fixture = tes
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->left_strncpy(1, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3689,7 +3520,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_a_b, .fixture = tes
     u64 quantum_str_ptr1 = string->offset(source_ptr, pattern_ptr);
     u64 error_ptr = string->left_strncpy(quantum_str_ptr1, 4);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3704,7 +3535,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_b_a, .fixture = tes
     RX_ASSERT(data_ptr != 0);
     RX_ASSERT(strcmp(string->unsafe(quantum_str_ptr1), "") == 0);
     RX_ASSERT(strcmp(string->unsafe(data_ptr), "bbc") == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3716,7 +3547,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_a_b_2, .fixture = t
     u64 quantum_str_ptr1 = string->offset(source_ptr, pattern_ptr);
     u64 data_ptr = string->left_strncpy(quantum_str_ptr1, 1);
     RX_ASSERT(data_ptr != 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3731,7 +3562,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_a_b_0, .fixture = t
     RX_ASSERT(data_ptr != 0);
     RX_ASSERT(strcmp(string->unsafe(quantum_str_ptr1), "") == 0);
     RX_ASSERT(strcmp(string->unsafe(data_ptr), "a") == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3744,7 +3575,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_a_b_free, .fixture 
     string->free(source_ptr);
     u64 error_ptr = string->left_strncpy(quantum_str_ptr1, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3755,7 +3586,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_1_2, .fixture = tes
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->left_strncpy(1, 2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 /* test init */
@@ -3765,7 +3596,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_1_3, .fixture = tes
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->left_strncpy(1, 3);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3776,7 +3607,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_2_1, .fixture = tes
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->left_strncpy(2, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3788,7 +3619,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_a_string_free, .fix
     string->free(quantum_str_ptr2);
     u64 error_ptr = string->left_strncpy(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3800,7 +3631,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_string_free_b, .fix
     string->free(quantum_str_ptr1);
     u64 error_ptr = string->left_strncpy(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3811,7 +3642,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_string_list, .fixtu
     u64 list_ptr2 = list->alloc();
     u64 error_ptr = string->left_strncpy(quantum_str_ptr1, list_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3822,7 +3653,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_list_string, .fixtu
     u64 quantum_str_ptr2 = string->load("a");
     u64 error_ptr = string->left_strncpy(list_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3831,7 +3662,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_0_0, .fixture = test_fixtur
     pointer->init(8);
     u64 error_ptr = string->left(0, 0);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3840,7 +3671,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_0_1, .fixture = test_fixtur
     pointer->init(8);
     u64 error_ptr = string->left(0, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3850,7 +3681,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_1_0, .fixture = test_fixtur
     u64 quantum_str_ptr = string->load("");
     u64 error_ptr = string->left(1, 0);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3861,7 +3692,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_1_1, .fixture = test_fixtur
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->left(1, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3873,7 +3704,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_a_b, .fixture = test_fixtur
     u64 quantum_str_ptr1 = string->offset(source_ptr, pattern_ptr);
     u64 error_ptr = string->left(quantum_str_ptr1, 4);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3888,7 +3719,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_b_a, .fixture = test_fixtur
     RX_ASSERT(data_ptr != 0);
     RX_ASSERT(strcmp(string->unsafe(quantum_str_ptr1), "") == 0);
     RX_ASSERT(strcmp(string->unsafe(data_ptr), "bbc") == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3900,7 +3731,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_a_b_2, .fixture = test_fixt
     u64 quantum_str_ptr1 = string->offset(source_ptr, pattern_ptr);
     u64 data_ptr = string->left(quantum_str_ptr1, 1);
     RX_ASSERT(data_ptr != 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3915,7 +3746,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_a_b_0, .fixture = test_fixt
     RX_ASSERT(data_ptr != 0);
     RX_ASSERT(strcmp(string->unsafe(quantum_str_ptr1), "") == 0);
     RX_ASSERT(strcmp(string->unsafe(data_ptr), "a") == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3928,7 +3759,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_a_b_free, .fixture = test_f
     string->free(source_ptr);
     u64 error_ptr = string->left(quantum_str_ptr1, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3939,7 +3770,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_1_2, .fixture = test_fixtur
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->left(1, 2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 /* test init */
@@ -3949,7 +3780,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_1_3, .fixture = test_fixtur
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->left(1, 3);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3960,7 +3791,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_2_1, .fixture = test_fixtur
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->left(2, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3972,7 +3803,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_a_string_free, .fixture = t
     string->free(quantum_str_ptr2);
     u64 error_ptr = string->left(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3984,7 +3815,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_string_free_b, .fixture = t
     string->free(quantum_str_ptr1);
     u64 error_ptr = string->left(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -3995,7 +3826,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_string_list, .fixture = tes
     u64 list_ptr2 = list->alloc();
     u64 error_ptr = string->left(quantum_str_ptr1, list_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -4006,7 +3837,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_list_string, .fixture = tes
     u64 quantum_str_ptr2 = string->load("a");
     u64 error_ptr = string->left(list_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -4015,7 +3846,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_0_0, .fixture = test_fix
     pointer->init(8);
     u64 error_ptr = string->strncpy(0, 0);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -4024,7 +3855,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_0_1, .fixture = test_fix
     pointer->init(8);
     u64 error_ptr = string->strncpy(0, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -4034,7 +3865,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_1_0, .fixture = test_fix
     u64 quantum_str_ptr = string->load("");
     u64 error_ptr = string->strncpy(1, 0);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -4045,7 +3876,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_1_1, .fixture = test_fix
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->strncpy(1, 1);
     RX_ASSERT(error_ptr == 3);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -4062,7 +3893,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_a_b, .fixture = test_fix
     RX_ASSERT(data_ptr != 0);
     RX_ASSERT(str_ptr1 != 0);
     RX_ASSERT(strcmp(string->unsafe(str_ptr1), "") == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -4074,7 +3905,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_b_a, .fixture = test_fix
     u64 quantum_str_ptr1 = string->offset(source_ptr, pattern_ptr);
     u64 data_ptr = string->strncpy(quantum_str_ptr1, 2);
     RX_ASSERT(data_ptr != 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -4086,7 +3917,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_a_b_2, .fixture = test_f
     u64 quantum_str_ptr1 = string->offset(source_ptr, pattern_ptr);
     u64 data_ptr = string->strncpy(quantum_str_ptr1, 1);
     RX_ASSERT(data_ptr != 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -4100,7 +3931,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_a_b_0, .fixture = test_f
     RX_ASSERT(data_ptr == 0);
     RX_ASSERT(quantum_str_ptr1 != 0);
     RX_ASSERT(strcmp(string->unsafe(quantum_str_ptr1), "") == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -4113,7 +3944,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_a_b_free, .fixture = tes
     string->free(source_ptr);
     u64 error_ptr = string->strncpy(quantum_str_ptr1, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -4125,7 +3956,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_a_b_2_overflow, .fixture
     u64 quantum_str_ptr1 = string->offset(source_ptr, pattern_ptr);
     u64 error_ptr = string->strncpy(quantum_str_ptr1, 1);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -4136,7 +3967,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_1_2, .fixture = test_fix
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->strncpy(1, 2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -4147,7 +3978,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_1_3, .fixture = test_fix
     u64 quantum_str_ptr2 = string->load("b");
     u64 error_ptr = string->strncpy(1, 3);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -4158,7 +3989,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_2_1, .fixture = test_fix
     u64 quantum_str_ptr2 = string->load("b");
     u64 data_ptr = string->strncpy(2, 1);
     RX_ASSERT(data_ptr != 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -4170,7 +4001,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_a_string_free, .fixture 
     string->free(quantum_str_ptr2);
     u64 error_ptr = string->strncpy(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -4182,7 +4013,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_string_free_b, .fixture 
     string->free(quantum_str_ptr1);
     u64 error_ptr = string->strncpy(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -4193,7 +4024,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_string_list, .fixture = 
     u64 list_ptr2 = list->alloc();
     u64 error_ptr = string->strncpy(quantum_str_ptr1, list_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -4204,7 +4035,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_list_string, .fixture = 
     u64 quantum_str_ptr2 = string->load("a");
     u64 error_ptr = string->strncpy(list_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
-    pointer->release();
+    pointer->gc();
     pointer->destroy();
 }
 
@@ -4237,9 +4068,9 @@ static void parse_text(u64 text_string_ptr) {
     while ((data_ptr = list->pop(list_ptr)) != 0) {
         list->push(list_data_ptr, data_ptr);
     }
-    /* memory leak if uncommented: use pointer->release(); */
+    /* memory leak if uncommented: use pointer->gc(); */
     /* list->free(list_ptr); */
-    /* memory leak if commented: use pointer->release(); */
+    /* memory leak if commented: use pointer->gc(); */
     list->free(list_ptr);
     list->push(gc_ptr, list_data_ptr);
     u64 quit = 0;

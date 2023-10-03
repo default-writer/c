@@ -23,11 +23,12 @@
  * SOFTWARE.
  *
  */
-#include "pointer/types/user/v1/user_v1.h"
 #include "common/memory.h"
-#include "list-micro/data.h"
+
 #include "pointer/v1/pointer_v1.h"
-#include "vm/v1/vm_v1.h"
+#include "pointer/v1/virtual_v1.h"
+#include "pointer/types/types.h"
+#include "pointer/types/user/v1/user_v1.h"
 
 #define DEFAULT_SIZE 0x100
 
@@ -35,19 +36,10 @@ static u64 id = TYPE_NULL;
 
 /* api */
 const struct user_methods user_methods_definition;
-void user_type_init();
 
-extern u64 pointer_vm_register_type(u64 id, const struct vm_type* type);
-
-/* definition */
-extern const struct vm_methods vm_methods_definition;
-extern const struct list list_micro_definition;
-extern const struct pointer_vm_methods pointer_vm_methods_definition;
-
-/* definition */
-static const struct vm_methods* vm = &vm_methods_definition;
-static const struct list* list = &list_micro_definition;
-static const struct pointer_vm_methods* virtual = &pointer_vm_methods_definition;
+#ifndef ATTRIBUTE
+void user_type_init(void);
+#endif
 
 /* definition */
 extern struct pointer_data vm_pointer;
@@ -64,16 +56,13 @@ static void user_vm_free(struct pointer* ptr);
 
 /* implementation */
 static u64 user_alloc(void) {
-    struct pointer* ptr = virtual->alloc(0, id);
-    u64 data = vm->alloc(ptr);
-#ifdef USE_GC
-    list->push(&base->gc, (void*)data);
-#endif
+    struct pointer* ptr = pointer->alloc(0, id);
+    u64 data = virtual->alloc(ptr);
     return data;
 }
 
 static void user_free(u64 ptr) {
-    struct pointer* data_ptr = vm->read_type(ptr, id);
+    struct pointer* data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return;
     }
@@ -81,7 +70,7 @@ static void user_free(u64 ptr) {
 }
 
 static void user_vm_free(struct pointer* ptr) {
-    virtual->free(ptr);
+    pointer->release(ptr);
 }
 
 static struct vm_type type_definition = {
@@ -89,7 +78,7 @@ static struct vm_type type_definition = {
 };
 
 static void INIT init() {
-    id = pointer_vm_register_type(TYPE_NULL, type);
+    id = pointer->register_type(TYPE_NULL, type);
 }
 
 /* public */

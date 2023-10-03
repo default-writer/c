@@ -83,6 +83,8 @@ extern const struct list list_micro_definition;
 
 /* definition */
 static const struct list* list = &list_micro_definition;
+
+/* definition */
 static struct list_data** cache;
 
 void memory_list_init(void) {

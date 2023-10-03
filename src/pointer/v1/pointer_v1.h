@@ -32,61 +32,28 @@
  *  @brief C API / pointer
  */
 
-enum type {
-    /* value used for ephemeral type - null */
-    TYPE_NULL = 0,
-    /* value used for pointer type - ref */
-    TYPE_DATA = 1,
-    /* value used for string type - string */
-    TYPE_STRING = 2,
-    /* value used for string ref type - string ref */
-    TYPE_STRING_POINTER = 3,
-    /* value used for file type - file */
-    TYPE_FILE = 4,
-    /* value used for list type - list */
-    TYPE_LIST = 5,
-    /* value used for object type - object */
-    TYPE_OBJECT = 6,
-    /* value used for user type - user (id: +0, +1, +2, +3, ...) */
-    TYPE_USER = 7
-};
-
+struct pointer;
 struct vm_data;
-struct list_data;
-
-/* private */
-struct pointer {
-    struct vm_data* vm;
-    void* data;
-    u64 size;
-    u64 address;
-    u64 id;
-};
-
-struct pointer_data {
-    struct vm* vm;
-#ifdef USE_GC
-    struct list_data* gc;
-#endif
-};
-
-struct pointer_vm_methods {
-    struct pointer* (*alloc)(u64 size, u64 id);
-    void (*realloc)(struct pointer* ptr, u64 size);
-    void (*free)(struct pointer* ptr);
-    void (*release)(struct list_data** current);
-};
+struct vm_type;
 
 struct pointer_methods {
     void (*init)(u64 size);
     void (*destroy)(void);
-    void (*release)(void);
+    void (*gc)(void);
+    struct pointer* (*alloc)(u64 size, u64 id);
+    void (*realloc)(struct pointer* ptr, u64 size);
+    u64 (*register_type)(u64 id, const struct vm_type* type);
+    void (*free)(u64 ptr);
+    u64 (*address)(const struct pointer* ptr);
+    struct vm_data* (*vm)(const struct pointer* ptr);
+    void (*release)(struct pointer* ptr);
+    u64 (*size)(const struct pointer* ptr);
+    void* (*read)(const struct pointer* ptr);
+    u64 (*read_type)(const struct pointer* ptr, u64 id);
+    void (*write)(struct pointer* ptr, struct vm_data* vm, u64 address);
 #ifdef USE_VM_DEBUG_INFO
     void (*dump)(struct pointer* ptr);
     void (*dump_ref)(void** ptr);
-#endif
-#ifdef USE_GC
-    void (*gc)(void);
 #endif
 };
 

@@ -31,7 +31,7 @@
 #define DEFAULT_SIZE 0x100
 
 /* definition */
-extern const struct vm_methods vm_methods_definition;
+extern const struct virtual_methods virtual_methods_definition;
 
 /* definition */
 #ifdef USE_MEMORY_DEBUG_INFO

@@ -41,7 +41,6 @@
 #ifdef USE_MEMORY_DEBUG_INFO
 extern const struct debug_methods debug_methods_definition;
 #endif
-extern const struct vm_methods vm_methods_definition;
 extern const struct test_suite list_micro_test_suite_definition;
 extern const struct test_suite list_alloc_test_suite_definition;
 
@@ -49,7 +48,6 @@ extern const struct test_suite list_alloc_test_suite_definition;
 #ifdef USE_MEMORY_DEBUG_INFO
 static const struct debug_methods* debug = &debug_methods_definition;
 #endif
-static const struct vm_methods* vm = &vm_methods_definition;
 static const struct test_suite* list_micro_tests = &list_micro_test_suite_definition;
 static const struct test_suite* list_alloc_tests = &list_alloc_test_suite_definition;
 
@@ -90,6 +88,14 @@ RX_TEST_CASE(tests_v2, test_print_0, .fixture = test_fixture) {
 RX_TEST_CASE(tests_v2, test_load_0, .fixture = test_fixture) {
     u64 empty_ptr = pointer->load(0);
     RX_ASSERT(empty_ptr == 0);
+}
+
+/* test init */
+RX_TEST_CASE(tests_v2, test_load_null_ptr, .fixture = test_fixture) {
+    u64 null_ptr = 0;
+#ifndef USE_GC
+    pointer->free(null_ptr);
+#endif
 }
 
 /* test init */
@@ -457,10 +463,10 @@ RX_TEST_CASE(tests_v2, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     list->free(list_ptr);
 
 #ifdef USE_MEMORY_DEBUG_INFO
-    vm->dump(0);
-    vm->dump(ctx->vm);
-    vm->dump_ref(0);
-    vm->dump_ref(ctx->vm);
+    virtual->dump(0);
+    virtual->dump(ctx->vm);
+    virtual->dump_ref(0);
+    virtual->dump_ref(ctx->vm);
 #endif
 
 #ifndef USE_GC

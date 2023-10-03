@@ -23,37 +23,32 @@
  * SOFTWARE.
  *
  */
-#ifndef _VIRTUAL_H_
-#define _VIRTUAL_H_
+#ifndef _TYPE_V1_H_
+#define _TYPE_V1_H_
 
-#include "std/common.h"
+enum type {
+    /* value used for ephemeral type - null */
+    TYPE_NULL = 0,
+    /* value used for pointer type - ref */
+    TYPE_DATA = 1,
+    /* value used for string type - string */
+    TYPE_STRING = 2,
+    /* value used for string ref type - string ref */
+    TYPE_STRING_POINTER = 3,
+    /* value used for file type - file */
+    TYPE_FILE = 4,
+    /* value used for list type - list */
+    TYPE_LIST = 5,
+    /* value used for object type - object */
+    TYPE_OBJECT = 6,
+    /* value used for user type - user (id: +0, +1, +2, +3, ...) */
+    TYPE_USER = 7
+};
 
-struct vm;
-struct vm_data;
 struct pointer;
 
-struct vm_default_options {
-    const u64 size;
+struct vm_type {
+    void (*free)(struct pointer* ptr);
 };
 
-struct vm_methods {
-    struct vm* (*init)(u64 size);
-    void (*destroy)(struct vm**);
-    u64 (*alloc)(struct pointer* value);
-    void (*free)(struct pointer* ptr);
-    struct pointer* (*read)(u64 address);
-    struct pointer* (*read_type)(u64 address, u64 id);
-    void (*enumerator_init)(void);
-    void (*enumerator_destroy)(void);
-    void* (*enumerator_next)(void);
-#ifdef USE_VM_DEBUG_INFO
-    void (*dump)(void);
-    void (*dump_ref)(void);
-#endif
-};
-
-typedef struct vm_type {
-    void (*free)(struct pointer* ptr);
-} vm_type, *vm_type_ptr;
-
-#endif /* _VIRTUAL_H_ */
+#endif /* _TYPE_V1_H_ */
