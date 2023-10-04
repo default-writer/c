@@ -42,7 +42,7 @@ typedef struct test_data {
 RX_SET_UP(test_set_up) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct vm** ctx = &rx->ctx;
-    *ctx = virtual->init(0);
+    virtual->init(ctx, 0);
     return RX_SUCCESS;
 }
 
