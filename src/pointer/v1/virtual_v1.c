@@ -82,7 +82,7 @@ static struct vm_state* state = &vm_state;
 
 /* api */
 
-static struct vm* vm_init(u64 size);
+static void vm_init(struct vm**, u64 size);
 static void vm_destroy(struct vm**);
 #ifdef USE_VM_DEBUG_INFO
 static void vm_dump(void);
@@ -180,7 +180,7 @@ static void vm_enumerator_destroy_internal(struct vm* ptr) {
 
 /* implementation */
 
-static struct vm* vm_init(u64 size) {
+static void vm_init(struct vm** ptr, u64 size) {
 #ifndef USE_GC
     cache = memory->alloc(PTR_SIZE);
     list->init(cache);
@@ -191,17 +191,18 @@ static struct vm* vm_init(u64 size) {
     struct vm* vm_data_ptr = memory->alloc(sizeof(struct vm));
     vm_data_ptr->head = vm_data;
     vm_data_ptr->tail = vm_data;
-    return vm_data_ptr;
+    *ptr = vm_data_ptr;
 }
 
 static void vm_destroy(struct vm** ptr) {
-    if (ptr != 0 && *ptr != 0) {
-        struct vm* current = *ptr;
-        vm_ptr->head = current->head;
-        vm_ptr->tail = current->tail;
-        memory->free(current, sizeof(struct vm));
-        *ptr = 0;
+    if (ptr == 0 || *ptr == 0) {
+        return;
     }
+    struct vm* current = *ptr;
+    vm_ptr->head = current->head;
+    vm_ptr->tail = current->tail;
+    memory->free(current, sizeof(struct vm));
+    *ptr = 0;
 #ifndef USE_GC
     struct vm_pointer* vm_pointer_ptr = 0;
     while ((vm_pointer_ptr = list->pop(cache)) != 0) {

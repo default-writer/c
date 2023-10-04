@@ -115,8 +115,6 @@ static void* pointer_read(const struct pointer* ptr);
 static void pointer_write(struct pointer* ptr, struct vm_data* vm_ptr, u64 address);
 static u64 pointer_read_type(const struct pointer* ptr, u64 type);
 
-static void pointer_init_internal(struct pointer_data* ptr, u64 size);
-static void pointer_destroy_internal(struct pointer_data* ptr);
 static void pointer_free_internal(struct pointer* ptr);
 
 /* free */
@@ -254,8 +252,9 @@ static u64 pointer_read_type(const struct pointer* ptr, u64 type) {
 }
 
 /* implementation */
-static void pointer_init_internal(struct pointer_data* ptr, u64 size) {
-    ptr->vm = virtual->init(size);
+static void pointer_init(u64 size) {
+    virtual->init(&base->vm, size);
+    types = memory->alloc(type_count * sizeof(struct vm_types));
 #ifndef ATTRIBUTE
     data_init();
     string_init();
@@ -265,7 +264,6 @@ static void pointer_init_internal(struct pointer_data* ptr, u64 size) {
     list_init();
     object_init();
 #endif
-    types = memory->alloc(type_count * sizeof(struct vm_types));
     struct vm_types* current = vm_types;
     while (current->next != 0) {
         struct vm_types* prev = current->next;
@@ -277,17 +275,9 @@ static void pointer_init_internal(struct pointer_data* ptr, u64 size) {
     }
 }
 
-static void pointer_destroy_internal(struct pointer_data* ptr) {
-    memory->free(types, type_count * sizeof(struct vm_types));
-    virtual->destroy(&ptr->vm);
-}
-
-static void pointer_init(u64 size) {
-    pointer_init_internal(base, size);
-}
-
 static void pointer_destroy(void) {
-    pointer_destroy_internal(base);
+    memory->free(types, type_count * sizeof(struct vm_types));
+    virtual->destroy(&base->vm);
 }
 
 static void pointer_gc(void) {

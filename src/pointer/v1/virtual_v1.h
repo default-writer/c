@@ -36,7 +36,7 @@ struct vm_default_options {
 };
 
 struct virtual_methods {
-    struct vm* (*init)(u64 size);
+    void (*init)(struct vm**,u64 size);
     void (*destroy)(struct vm**);
     u64 (*alloc)(struct pointer* ptr);
     void (*free)(struct pointer* ptr);
