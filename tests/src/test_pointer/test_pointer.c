@@ -4068,9 +4068,6 @@ static void parse_text(u64 text_string_ptr) {
     while ((data_ptr = list->pop(list_ptr)) != 0) {
         list->push(list_data_ptr, data_ptr);
     }
-    /* memory leak if uncommented: use pointer->gc(); */
-    /* list->free(list_ptr); */
-    /* memory leak if commented: use pointer->gc(); */
     list->free(list_ptr);
     list->push(gc_ptr, list_data_ptr);
     u64 quit = 0;
