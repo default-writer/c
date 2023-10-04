@@ -62,6 +62,21 @@ RX_TEST_CASE(tests, test_vm_read_type_0, .fixture = test_fixture) {
 }
 
 /* test init */
+RX_TEST_CASE(tests, test_vm_destroy_0, .fixture = test_fixture) {
+    struct vm** ptr = 0;
+    virtual->destroy(ptr);
+    RX_ASSERT(ptr == 0);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_vm_destroy_null, .fixture = test_fixture) {
+    struct vm* vm_ptr = 0;
+    struct vm** ptr = &vm_ptr;
+    virtual->destroy(ptr);
+    RX_ASSERT(vm_ptr == 0);
+}
+
+/* test init */
 RX_TEST_CASE(tests, test_vm_alloc_user, .fixture = test_fixture) {
     struct pointer* ptr = pointer->alloc(0, TYPE_NULL);
     u64 data_ptr = virtual->alloc(ptr);
