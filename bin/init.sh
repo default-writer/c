@@ -32,6 +32,8 @@ fi
 ## Usage: ${script} <option> [optional]
 ## ${commands}
 
+init="--init"
+
 while (($#)); do
     case "$1" in
 
