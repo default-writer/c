@@ -55,6 +55,18 @@ while (($#)); do
             hooks="--hooks"
             ;;
 
+        "--clangd") # installs clangd
+            clangd="--clangd"
+            ;;
+
+        "--cmake") # installs cmake
+            cmake="--cmake"
+            ;;
+
+        "--submodule-rexo") # installs rexo
+            rexo="--submodule-rexo"
+            ;;
+
         "--optional") # installs optional dependencies
             optional="--optional"
             ;;
@@ -91,14 +103,22 @@ if [[ "${hooks}" == "--hooks" ]]; then
     "${pwd}/bin/utils/install.sh" --hooks
 fi
 
-if [[ "${optional}" == "--optional" ]]; then
+if [[ "${clangd}" == "--clangd" ]]; then
     "${pwd}/bin/utils/install.sh" --clangd
+fi
+
+if [[ "${cmake}" == "--cmake" ]]; then
     "${pwd}/bin/utils/install.sh" --cmake
-    "${pwd}/bin/utils/install.sh" --submodule-rexo
 fi
 
 if [[ "${init}" == "--init" ]]; then
+    "${pwd}/bin/utils/install.sh" --clangd
+    "${pwd}/bin/utils/install.sh" --cmake
+    "${pwd}/bin/utils/install.sh" --submodule-rexo
     "${pwd}/bin/utils/init.sh" --all
+fi
+
+if [[ "${init}" == "--init" ]]; then
 fi
 
 if [[ "${silent}" == "--silent" ]]; then

@@ -56,12 +56,12 @@ case "${install}" in
         cmake="--cmake"
         ;;
 
-    "--submodule-musl") # installs musl
-        musl="--submodule-musl"
-        ;;
-
     "--submodule-rexo") # installs rexo
         rexo="--submodule-rexo"
+        ;;
+
+    "--submodule-musl") # installs musl
+        musl="--submodule-musl"
         ;;
 
     "--submodule-vcpkg") # installs vcpkg
@@ -85,7 +85,7 @@ esac
 if [[ "${source}" == "all" || "${hooks}" == "--hooks" ]]; then
     "${pwd}/bin/utils/install.sh" --hooks
 fi
-if [[ "${source}" == "all" || "${cclangd}" == "--clangd" ]]; then
+if [[ "${source}" == "all" || "${clangd}" == "--clangd" ]]; then
     "${pwd}/bin/utils/install.sh" --clangd
 fi
 if [[ "${source}" == "all" || "${cmake}" == "--cmake" ]]; then
