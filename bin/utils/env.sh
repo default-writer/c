@@ -61,6 +61,12 @@ case "${install}" in
         grep -qxF '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"' $HOME/.bashrc || echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"' >> $HOME/.bashrc
         ;;
 
+    "--bun") # install bun environment variables in .bashrc
+        grep -qxF '# bun' $HOME/.bashrc || (tail -1 $HOME/.bashrc | grep -qxF '' || echo '' >> $HOME/.bashrc && echo '# bun' >> $HOME/.bashrc)
+        grep -qxF 'export BUN_INSTALL="$HOME/.bun"' $HOME/.bashrc || echo 'export BUN_INSTALL="$HOME/.bun"' >> $HOME/.bashrc
+        grep -qxF 'export PATH=$BUN_INSTALL/bin:$PATH' $HOME/.bashrc || echo 'export PATH=$BUN_INSTALL/bin:$PATH' >> $HOME/.bashrc
+        ;;
+
     "--bazel") # installs bazel environment variables in .bashrc
         grep -qxF '# bazel' $HOME/.bashrc || (tail -1 $HOME/.bashrc | grep -qxF '' || echo '' >> $HOME/.bashrc && echo '# bazel' >> $HOME/.bashrc)
         grep -qxF 'export BAZEL_ROOT="$HOME/.bazel"' $HOME/.bashrc || echo 'export BAZEL_ROOT="$HOME/.bazel"' >> $HOME/.bashrc

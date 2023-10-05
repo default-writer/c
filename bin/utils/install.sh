@@ -173,6 +173,10 @@ case "${install}" in
         npm install -g @marp-team/marp-cli
         ;;
 
+    "--bun") # installs bun alternative to nodejs
+        curl -fsSL https://bun.sh/install | bash
+        ;;
+
     *)
         help
         exit
