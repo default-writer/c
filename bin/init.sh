@@ -118,9 +118,6 @@ if [[ "${init}" == "--init" ]]; then
     "${pwd}/bin/utils/init.sh" --all
 fi
 
-if [[ "${init}" == "--init" ]]; then
-fi
-
 if [[ "${silent}" == "--silent" ]]; then
     exec 1>&2 2>&-
 fi
