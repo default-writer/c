@@ -432,6 +432,7 @@ add_library(std-object1 SHARED ${LIB_STD_OBJECT1_SOURCE})
 # test
 add_executable(test-hashes ${TEST_HASHES_SOURCE})
 add_executable(test-pointer ${TEST_POINTER_SOURCE})
+add_executable(test-url ${URL_GET})
 
 # main 
 add_executable(main-default ${MAIN_STANDARD_SOURCE})
@@ -465,7 +466,6 @@ add_executable(main-tests-vm2 ${MAIN_TESTS_VM2_SOURCE})
 add_executable(c-substrings ${SUBSTRINGS})
 add_executable(c-valid-parentheses ${LEETCODE_VALID_PARENTHESES})
 add_executable(c-longest-valid-parentheses ${LEETCODE_LONGEST_VALID_PARENTHESES})
-add_executable(c-url ${URL_GET})
 
 #zen
 add_executable(zen ${ZEN_SOURCE})
@@ -526,7 +526,7 @@ target_link_libraries(main-tests-vm1 PRIVATE list-micro list-pointer1 tests-vm-v
 target_link_libraries(main-tests-vm2 PRIVATE tests tests-vm-v2 list-micro list-pointer2 vm-v2 list-pointer2 list-micro)
 
 #examples
-target_link_libraries(c-url PRIVATE curl ctypes)
+target_link_libraries(test-url PRIVATE curl ctypes)
 
 configure_file(all_english_words.txt ${CMAKE_BINARY_DIR}/all_english_words.txt COPYONLY)
 configure_file(file.txt ${CMAKE_BINARY_DIR}/file.txt COPYONLY)
