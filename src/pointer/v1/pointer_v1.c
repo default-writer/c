@@ -35,15 +35,10 @@
 
 #define DEFAULT_SIZE 0x100
 #define POINTER_SIZE sizeof(struct pointer)
-#define POINTER_DATA_SIZE sizeof(struct pointer_data)
 
 /* private */
 struct vm_data;
 struct list_data;
-
-struct pointer_data {
-    struct vm* vm;
-};
 
 struct pointer {
     struct vm_data* vm;
@@ -60,9 +55,11 @@ struct vm_types {
     void (*free)(struct pointer* ptr);
 };
 
+/* definition */
 static struct vm_types vm_types_definition;
+
+/* definition */
 static struct vm_types* vm_types = &vm_types_definition;
-static struct vm_types* types;
 
 #ifndef ATTRIBUTE
 extern void data_init(void);
@@ -73,11 +70,8 @@ extern void list_init(void);
 extern void object_init(void);
 #endif
 
-/* definition */
-struct pointer_data vm_pointer;
-
-/* definition */
-static struct pointer_data* base = &vm_pointer;
+static struct vm* vm;
+static struct vm_types* types;
 
 /* api */
 
@@ -114,7 +108,7 @@ static void pointer_release(struct pointer* ptr);
 static u64 pointer_address(const struct pointer* ptr);
 static u64 pointer_size(const struct pointer* ptr);
 static void* pointer_read(const struct pointer* ptr);
-static void pointer_write(struct pointer* ptr, struct vm_data* vm_ptr, u64 address);
+static void pointer_write(struct pointer* ptr, struct vm_data* vm_data_ptr, u64 address);
 static u64 pointer_read_type(const struct pointer* ptr, u64 type);
 
 static void pointer_free_internal(struct pointer* ptr);
@@ -215,11 +209,11 @@ static u64 pointer_address(const struct pointer* ptr) {
 }
 
 static struct vm_data* pointer_vm(const struct pointer* ptr) {
-    struct vm_data* vm_ptr = 0;
+    struct vm_data* vm_data_ptr = 0;
     if (ptr) {
-        vm_ptr = ptr->vm;
+        vm_data_ptr = ptr->vm;
     }
-    return vm_ptr;
+    return vm_data_ptr;
 }
 
 static u64 pointer_size(const struct pointer* ptr) {
@@ -238,9 +232,9 @@ static void* pointer_read(const struct pointer* ptr) {
     return data;
 }
 
-static void pointer_write(struct pointer* ptr, struct vm_data* vm_ptr, u64 address) {
+static void pointer_write(struct pointer* ptr, struct vm_data* vm_data_ptr, u64 address) {
     if (ptr) {
-        ptr->vm = vm_ptr;
+        ptr->vm = vm_data_ptr;
         ptr->address = address;
     }
 }
@@ -255,7 +249,7 @@ static u64 pointer_read_type(const struct pointer* ptr, u64 type) {
 
 /* implementation */
 static void pointer_init(u64 size) {
-    virtual->init(&base->vm, size);
+    virtual->init(&vm, size);
     types = memory->alloc(type_count * sizeof(struct vm_types));
 #ifndef ATTRIBUTE
     data_init();
@@ -279,7 +273,7 @@ static void pointer_init(u64 size) {
 
 static void pointer_destroy(void) {
     memory->free(types, type_count * sizeof(struct vm_types));
-    virtual->destroy(&base->vm);
+    virtual->destroy(&vm);
 }
 
 static void pointer_gc(void) {
