@@ -26,10 +26,10 @@
 #include "common/memory.h"
 #include "list-micro/data.h"
 
-#include "pointer/v1/pointer_v1.h"
-#include "pointer/v1/virtual_v1.h"
 #include "pointer/types/list/v1/list_v1.h"
 #include "pointer/types/types.h"
+#include "pointer/v1/pointer_v1.h"
+#include "pointer/v1/virtual_v1.h"
 
 #define DEFAULT_SIZE 0x100
 
@@ -47,10 +47,6 @@ extern const struct list list_micro_definition;
 
 /* definition */
 static const struct list* _list = &list_micro_definition;
-
-/* definition */
-extern struct pointer_data vm_pointer;
-static struct pointer_data* base = &vm_pointer;
 
 /* definition */
 static const struct vm_type type_definition;

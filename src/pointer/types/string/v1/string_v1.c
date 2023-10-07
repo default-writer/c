@@ -26,11 +26,11 @@
 #include "string_v1.h"
 #include "common/memory.h"
 
-#include "pointer/v1/pointer_v1.h"
-#include "pointer/v1/virtual_v1.h"
-#include "pointer/types/types.h"
 #include "pointer/types/list/v1/list_v1.h"
 #include "pointer/types/string_pointer/v1/string_pointer_v1.h"
+#include "pointer/types/types.h"
+#include "pointer/v1/pointer_v1.h"
+#include "pointer/v1/virtual_v1.h"
 
 #define DEFAULT_SIZE 0x100
 
@@ -42,10 +42,6 @@ const struct string_methods string_methods_definition;
 #ifndef ATTRIBUTE
 void string_init(void);
 #endif
-
-/* definition */
-extern struct pointer_data vm_pointer;
-static struct pointer_data* base = &vm_pointer;
 
 /* definition */
 static const struct vm_type type_definition;

@@ -27,10 +27,10 @@
 #include "common/memory.h"
 #include "list-micro/data.h"
 
-#include "pointer/v1/pointer_v1.h"
-#include "pointer/v1/virtual_v1.h"
 #include "pointer/types/object/v1/object_v1.h"
 #include "pointer/types/types.h"
+#include "pointer/v1/pointer_v1.h"
+#include "pointer/v1/virtual_v1.h"
 
 #define DEFAULT_SIZE 0x100
 
@@ -42,10 +42,6 @@ const struct object_methods object_methods_definition;
 #ifndef ATTRIBUTE
 void object_init(void);
 #endif
-
-/* definition */
-extern struct pointer_data vm_pointer;
-static struct pointer_data* base = &vm_pointer;
 
 /* definition */
 static const struct vm_type type_definition;
