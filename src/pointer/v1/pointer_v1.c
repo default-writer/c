@@ -25,9 +25,9 @@
  */
 #include "common/memory.h"
 
+#include "pointer/types/types.h"
 #include "pointer/v1/pointer_v1.h"
 #include "pointer/v1/virtual_v1.h"
-#include "pointer/types/types.h"
 
 #if defined(USE_MEMORY_DEBUG_INFO)
 #define VM_GLOBAL_DEBUG_INFO
@@ -59,7 +59,6 @@ struct vm_types {
     u64 id;
     void (*free)(struct pointer* ptr);
 };
-struct pointer_data vm_pointer;
 
 static struct vm_types vm_types_definition;
 static struct vm_types* vm_types = &vm_types_definition;
@@ -73,6 +72,9 @@ extern void file_init(void);
 extern void list_init(void);
 extern void object_init(void);
 #endif
+
+/* definition */
+struct pointer_data vm_pointer;
 
 /* definition */
 static struct pointer_data* base = &vm_pointer;

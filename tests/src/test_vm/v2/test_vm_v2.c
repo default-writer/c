@@ -53,10 +53,6 @@ static const struct test_suite* list_alloc_tests = &list_alloc_test_suite_defini
 
 struct pointer_data {
     struct vm_data* vm;
-    struct list_data* list;
-#ifdef USE_GC
-    struct list_data* gc;
-#endif
 };
 
 typedef struct test_data {

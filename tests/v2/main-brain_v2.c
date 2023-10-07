@@ -41,10 +41,6 @@ static const struct test_suite* vm_v2_tests = &vm_v2_test_suite_definition;
 
 struct pointer_data {
     struct vm_data* vm;
-    struct list_data* list;
-#ifdef USE_GC
-    struct list_data* gc;
-#endif
 };
 
 typedef struct test_data {
