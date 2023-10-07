@@ -419,7 +419,7 @@
   },
   "git.suggestSmartCommit": false,
   "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "trunk.io"
   },
   "files.refactoring.autoSave": false,
   "editor.fontVariations": false,
