@@ -93,20 +93,20 @@ static u64 vm_alloc(struct pointer* ptr);
 static void vm_free(struct pointer* ptr);
 static struct pointer* vm_read(u64 address);
 static struct pointer* vm_read_type(u64 address, u64 id);
-static u64 vm_enumerator_next(void);
+static u64 virtual_enumerator_next(void);
 
 /* internal */
 
 static struct vm_data* vm_init_internal(u64 size, u64 offset);
 static struct pointer** vm_read_internal(u64 address);
 static struct pointer** vm_alloc_internal(u64* address, struct vm_data** target);
-static void vm_enumerator_init(void);
-static void vm_enumerator_destroy(void);
-static void vm_enumerator_init_internal(struct vm* ptr);
-static void vm_enumerator_destroy_internal(struct vm* ptr);
-static void** vm_enumerator_next_internal(void);
+static void virtual_enumerator_init(void);
+static void virtual_enumerator_destroy(void);
+static void virtual_enumerator_init_internal(struct vm* ptr);
+static void virtual_enumerator_destroy_internal(struct vm* ptr);
+static void** virtual_enumerator_next_internal(void);
 #ifdef USE_VM_DEBUG_INFO
-static struct pointer* vm_enumerator_pointer_next_internal(void);
+static struct pointer* virtual_enumerator_pointer_next_internal(void);
 #endif
 
 static struct vm_data* vm_init_internal(u64 size, u64 offset) {
@@ -160,21 +160,21 @@ static struct pointer** vm_alloc_internal(u64* address, struct vm_data** target)
     return ptr;
 }
 
-static void vm_enumerator_init(void) {
-    vm_enumerator_init_internal(vm);
+static void virtual_enumerator_init(void) {
+    virtual_enumerator_init_internal(vm);
 }
 
-static void vm_enumerator_destroy(void) {
-    vm_enumerator_init_internal(vm);
+static void virtual_enumerator_destroy(void) {
+    virtual_enumerator_init_internal(vm);
 }
 
-static void vm_enumerator_init_internal(struct vm* ptr) {
+static void virtual_enumerator_init_internal(struct vm* ptr) {
     struct vm_data* vm_data_ptr = ptr->head;
     state->vm = vm_data_ptr;
     state->ptr = vm_data_ptr->bp;
 }
 
-static void vm_enumerator_destroy_internal(struct vm* ptr) {
+static void virtual_enumerator_destroy_internal(struct vm* ptr) {
     state->vm = 0;
     state->ptr = 0;
 }
@@ -228,21 +228,21 @@ static void vm_destroy(struct vm** ptr) {
 
 #ifdef USE_VM_DEBUG_INFO
 static void vm_dump(void) {
-    vm_enumerator_init_internal(vm);
+    virtual_enumerator_init_internal(vm);
     struct pointer* ptr = 0;
-    while ((ptr = vm_enumerator_pointer_next_internal()) != 0) {
+    while ((ptr = virtual_enumerator_pointer_next_internal()) != 0) {
         pointer->dump(ptr);
     }
-    vm_enumerator_destroy_internal(vm);
+    virtual_enumerator_destroy_internal(vm);
 }
 
 static void vm_dump_ref(void) {
-    vm_enumerator_init_internal(vm);
+    virtual_enumerator_init_internal(vm);
     void** ptr = 0;
-    while ((ptr = vm_enumerator_next_internal()) != 0) {
+    while ((ptr = virtual_enumerator_next_internal()) != 0) {
         pointer->dump_ref(ptr);
     }
-    vm_enumerator_destroy_internal(vm);
+    virtual_enumerator_destroy_internal(vm);
 }
 #endif
 
@@ -331,7 +331,7 @@ static u64 vm_alloc(struct pointer* ptr) {
 }
 
 #ifdef USE_VM_DEBUG_INFO
-static struct pointer* vm_enumerator_pointer_next_internal(void) {
+static struct pointer* virtual_enumerator_pointer_next_internal(void) {
     struct pointer* data = 0;
     struct vm_data* vm_data_ptr = state->vm;
     while (data == 0) {
@@ -349,10 +349,10 @@ static struct pointer* vm_enumerator_pointer_next_internal(void) {
 }
 #endif
 
-static u64 vm_enumerator_next(void) {
+static u64 virtual_enumerator_next(void) {
     u64 address = 0;
     void** ptr;
-    while ((ptr = vm_enumerator_next_internal()) != 0) {
+    while ((ptr = virtual_enumerator_next_internal()) != 0) {
         if (*ptr != 0) {
             struct pointer* data_ptr = *ptr;
             if (data_ptr != 0) {
@@ -364,7 +364,7 @@ static u64 vm_enumerator_next(void) {
     return address;
 }
 
-static void** vm_enumerator_next_internal(void) {
+static void** virtual_enumerator_next_internal(void) {
     void** data = 0;
     struct vm_data* vm_data_ptr = state->vm;
     while (data == 0) {
@@ -393,9 +393,9 @@ const struct virtual_methods virtual_methods_definition = {
     .free = vm_free,
     .read = vm_read,
     .read_type = vm_read_type,
-    .enumerator_init = vm_enumerator_init,
-    .enumerator_destroy = vm_enumerator_destroy,
-    .enumerator_next = vm_enumerator_next,
+    .enumerator_init = virtual_enumerator_init,
+    .enumerator_destroy = virtual_enumerator_destroy,
+    .enumerator_next = virtual_enumerator_next,
 #ifdef USE_VM_DEBUG_INFO
     .dump = vm_dump,
     .dump_ref = vm_dump_ref
