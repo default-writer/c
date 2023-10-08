@@ -33,8 +33,8 @@ struct linked_list_node;
 struct linked_list_enumerator;
 
 struct linked_list_enumerator_methods {
-    struct linked_list_enumerator* (*new)(struct linked_list* list);
-    void (*delete)(struct linked_list_enumerator** enumerator);
+    struct linked_list_enumerator* (*create)(struct linked_list* list);
+    void (*destroy)(struct linked_list_enumerator** enumerator);
     void (*reverse)(struct linked_list_enumerator* enumerator);
     struct linked_list_node* (*next)(struct linked_list_enumerator* enumerator);
     struct linked_list_node* (*find)(struct linked_list_enumerator* enumerator, void* data);

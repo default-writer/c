@@ -40,8 +40,8 @@ static const struct linked_list_methods* list = &linked_list_methods_definition;
 
 /* private */
 
-static struct linked_list_enumerator* linked_list_enumerator_new(struct linked_list* list);
-static void linked_list_enumerator_delete(struct linked_list_enumerator** enumerator);
+static struct linked_list_enumerator* linked_list_enumerator_create(struct linked_list* list);
+static void linked_list_enumerator_destroy(struct linked_list_enumerator** enumerator);
 static void linked_list_enumerator_reverse(struct linked_list_enumerator* enumerator);
 static struct linked_list_node* linked_list_enumerator_next(struct linked_list_enumerator* enumerator);
 static struct linked_list_node* linked_list_enumerator_find(struct linked_list_enumerator* enumerator, void* data);
@@ -50,7 +50,7 @@ static void linked_list_print(struct linked_list* ptr);
 #endif
 
 /* implementation */
-static struct linked_list_enumerator* linked_list_enumerator_new(struct linked_list* ptr) {
+static struct linked_list_enumerator* linked_list_enumerator_create(struct linked_list* ptr) {
     if (!ptr) {
         return 0;
     }
@@ -60,7 +60,7 @@ static struct linked_list_enumerator* linked_list_enumerator_new(struct linked_l
     return enumerator;
 }
 
-static void linked_list_enumerator_delete(struct linked_list_enumerator** enumerator) {
+static void linked_list_enumerator_destroy(struct linked_list_enumerator** enumerator) {
     if (!enumerator) {
         return;
     }
@@ -168,8 +168,8 @@ static void linked_list_print(struct linked_list* ptr) {
 
 /* public */
 const struct linked_list_enumerator_methods linked_list_enumerator_methods_definition = {
-    .new = linked_list_enumerator_new,
-    .delete = linked_list_enumerator_delete,
+    .create = linked_list_enumerator_create,
+    .destroy = linked_list_enumerator_destroy,
     .reverse = linked_list_enumerator_reverse,
     .next = linked_list_enumerator_next,
     .find = linked_list_enumerator_find,
