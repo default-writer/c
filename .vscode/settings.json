@@ -480,7 +480,7 @@
         ".bazelrc"
     ],
     "bsv.bazel.buildFlags": [
-        "--config=clang_config",
+        "--config=clang_config"
     ],
     "bsv.cc.compdb.targets": [
         "//main:hello-world"
