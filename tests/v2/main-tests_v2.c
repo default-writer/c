@@ -37,6 +37,7 @@ static const struct test_suite* vm_v2_tests = &vm_v2_test_suite_definition;
 extern const struct virtual_methods virtual_methods_definition;
 
 typedef struct test_data {
+    void* ptr;
 }* TEST_DATA;
 
 int main(int argc, char** argv) {

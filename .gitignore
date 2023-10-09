@@ -69,7 +69,6 @@ lcov.info
 **/*tests/*.
 appwrite/.env
 wget.log*
-compile_commands.json
 
 bazel-*/
 bazel-*

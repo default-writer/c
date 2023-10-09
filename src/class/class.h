@@ -43,7 +43,9 @@ typedef struct_typeinfo* typeinfo;
 typedef struct_object_typeinfo* object_typeinfo;
 typedef struct_class* class;
 
-struct object { };
+struct object {
+    void* ptr;
+};
 
 struct typeinfo {
     const size_t size;

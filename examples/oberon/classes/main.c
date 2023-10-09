@@ -4,7 +4,7 @@
 #include "figures.h"
 #include "rectangles.h"
 
-extern rectangle_pointer rectangle_new();
+extern rectangle_pointer rectangle_new(void);
 extern void rectangle_delete(rectangle_pointer r);
 extern void rectangle_draw(rectangle_pointer r);
 extern void rectangle_move(rectangle_pointer r, int dx, int dy);

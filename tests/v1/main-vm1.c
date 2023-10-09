@@ -34,12 +34,12 @@
 #include "playground/brain/brain.h"
 #include "playground/hashtable/v1/hashtable_v1.h"
 
-#include "pointer/v1/pointer_v1.h"
 #include "pointer/types/data/v1/data_v1.h"
 #include "pointer/types/file/v1/file_v1.h"
 #include "pointer/types/list/v1/list_v1.h"
 #include "pointer/types/string/v1/string_v1.h"
 #include "pointer/types/string_pointer/v1/string_pointer_v1.h"
+#include "pointer/v1/pointer_v1.h"
 
 #include "pointer/os/v1/os_v1.h"
 
@@ -60,7 +60,7 @@ typedef struct test_data {
 
 u64 _list_ptr;
 
-extern inline void source1() {
+extern inline void source1(void) {
     u64 file_path_ptr = list->pop(_list_ptr);
     u64 file_name_ptr = string->load("/input.txt");
     u64 pattern_ptr = string->load("/");

@@ -56,7 +56,7 @@ int main(void) {
 
     object_typeinfo class_object = instance->create(&b_typeinfo);
 
-    B b = (B)class_object->object;
+    B b = (B)(void*)class_object->object;
 
     b->base.counter_a = 1;
     b->counter_b = 2;

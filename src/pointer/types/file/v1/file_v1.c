@@ -131,7 +131,7 @@ static const struct vm_type type_definition = {
     .free = file_vm_free
 };
 
-static void INIT init() {
+static void INIT init(void) {
     pointer->register_type(id, type);
 }
 
@@ -144,7 +144,7 @@ const struct file_methods file_methods_definition = {
 };
 
 #ifndef ATTRIBUTE
-void file_init() {
+void file_init(void) {
     init();
 }
 #endif

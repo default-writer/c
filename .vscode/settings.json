@@ -316,7 +316,7 @@
     "editor.defaultFormatter": "trunk.io",
     "files.insertFinalNewline": true,
     "[c]": {
-        "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
+        "editor.defaultFormatter": "trunk.io",
         "files.insertFinalNewline": true
     },
     "[shellscript]": {
@@ -478,5 +478,15 @@
     "editor.fontSize": 12,
     "markdownlint.ignore": [
         ".bazelrc"
-    ]
+    ],
+    "bsv.bazel.buildFlags": [
+        "--config=clang_config",
+    ],
+    "bsv.cc.compdb.targets": [
+        "//main:hello-world"
+    ],
+    "bsv.bazel.executable": "$HOME/.bazel/bazel",
+    "bazel.enableCodeLens": true,
+    "bazel.buildifierExecutable": "$HOME/.bazel/tools/buildifier",
+    "bazel.executable": "$HOME/.bazel/bazel"
 }

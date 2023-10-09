@@ -131,13 +131,13 @@ static u64 vm_types_init(u64 id, const struct vm_type* type) {
     return vm_types->id;
 }
 
-static void INIT vm_init() {
+static void INIT vm_init(void) {
 #if defined(VM_GLOBAL_DEBUG_INFO)
     global_statistics();
 #endif
 }
 
-static void DESTROY vm_destroy() {
+static void DESTROY vm_destroy(void) {
     while (vm_types->next != 0) {
         struct vm_types* prev = vm_types->next;
         memory->free(vm_types, sizeof(struct vm_types));

@@ -33,7 +33,9 @@ typedef const struct object_typeinfo* object_typeinfo;
 object base_create(const typeinfo ti);
 void base_destroy(const object_typeinfo ptr);
 
-struct object { };
+struct object {
+    void* ptr;
+};
 
 struct base {
     object (*create)(const typeinfo ti);

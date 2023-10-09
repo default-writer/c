@@ -25,12 +25,12 @@
  */
 #include "test_vm_v1.h"
 
-#include "pointer/v1/pointer_v1.h"
-#include "pointer/v1/virtual_v1.h"
 #include "pointer/types/data/v1/data_v1.h"
 #include "pointer/types/list/v1/list_v1.h"
-#include "pointer/types/user/v1/user_v1.h"
 #include "pointer/types/types.h"
+#include "pointer/types/user/v1/user_v1.h"
+#include "pointer/v1/pointer_v1.h"
+#include "pointer/v1/virtual_v1.h"
 
 #define DEFAULT_SIZE 0x100
 
@@ -185,6 +185,7 @@ RX_TEST_CASE(tests, test_vm_read_type_write_1_read_2, .fixture = test_fixture) {
  * -------------------------------------------------------- */
 
 typedef struct test_pointer_data {
+    void* ptr;
 }* TEST_POINTER_DATA;
 
 RX_SET_UP(test_pointer_set_up) {
@@ -192,6 +193,7 @@ RX_SET_UP(test_pointer_set_up) {
 }
 
 RX_TEAR_DOWN(test_pointer_tear_down) {
+    void* ptr;
 }
 
 /* Define the fixture. */

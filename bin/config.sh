@@ -194,6 +194,12 @@ ${cmake} \
     -B"${build}" \
     -G "Ninja" 2>&1 >/dev/null
 
+[[ ! -d "${pwd}/build" ]] && mkdir "${pwd}/build"
+
+if [[ ! "${pwd}/config" == "${pwd}/build" ]]; then
+    [[ -f "${pwd}/config/compile_commands.json" ]] && cp -f "${pwd}/config/compile_commands.json" "${pwd}/build/compile_commands.json"
+fi
+
 for config in ${targets[@]}; do
     target="${config}"
     echo building ${target}

@@ -4,17 +4,17 @@
 
 #include "playground/hashtable/v1/hashtable_v1.h"
 
-#include "pointer/v1/pointer_v1.h"
 #include "pointer/types/data/v1/data_v1.h"
 #include "pointer/types/file/v1/file_v1.h"
 #include "pointer/types/list/v1/list_v1.h"
 #include "pointer/types/object/v1/object_v1.h"
 #include "pointer/types/string/v1/string_v1.h"
 #include "pointer/types/string_pointer/v1/string_pointer_v1.h"
+#include "pointer/v1/pointer_v1.h"
 
 #include "pointer/os/v1/os_v1.h"
 
-static u64 load_data() {
+static u64 load_data(void) {
     u64 list_ptr = list->alloc();
     u64 reversed_list_ptr = list->alloc();
     u64 file_path_ptr = string->load("input-substrings.txt");

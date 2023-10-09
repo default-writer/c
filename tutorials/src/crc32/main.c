@@ -18,7 +18,7 @@ uint32_t crc32b(const uint8_t* str, unsigned long size) {
     return ~crc;
 }
 
-int main() {
+int main(void) {
     const char* str = "zyzzyvas\n";
     uint32_t result = crc32b((const uint8_t*)str, strlen(str));
     printf("CRC32: 0x%08x\n", result);

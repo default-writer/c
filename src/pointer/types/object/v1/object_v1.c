@@ -70,7 +70,7 @@ static void object_free(u64 ptr) {
     if (data_ptr == 0) {
         return;
     }
-    return object_vm_free(data_ptr);
+    object_vm_free(data_ptr);
 }
 
 static void object_vm_free(struct pointer* ptr) {
@@ -112,7 +112,7 @@ static const struct vm_type type_definition = {
     .free = object_vm_free
 };
 
-static void INIT init() {
+static void INIT init(void) {
     pointer->register_type(id, type);
 }
 
@@ -126,7 +126,7 @@ const struct object_methods object_methods_definition = {
 };
 
 #ifndef ATTRIBUTE
-void object_init() {
+void object_init(void) {
     init();
 }
 #endif

@@ -44,10 +44,11 @@
 
 void get_hash_from_file(int hash_id);
 
-void get_data();
+void get_data(void);
 void get_hash(int hash_id);
 
 struct hash_functions {
+    void* ptr;
 };
 
 /* Data structure to use at the core of our fixture. */
@@ -258,7 +259,7 @@ struct list {
 
 static struct list* list;
 
-void get_data() {
+void get_data(void) {
     const char* fn = "all_english_words.txt";
 
     /* Read file */

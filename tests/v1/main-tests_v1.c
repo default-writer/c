@@ -34,6 +34,7 @@ static const struct test_suite* vm_v1_tests = &vm_v1_test_suite_definition;
 #define DEFAULT_SIZE 0x100
 
 typedef struct test_data {
+    void* ptr;
 }* TEST_DATA;
 
 int main(int argc, char** argv) {

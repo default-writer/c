@@ -17,7 +17,7 @@ void rectangle_init(rectangle_data_pointer data) {
     figure_init((figure_data_pointer)data);
 }
 
-rectangle_pointer rectangle_new() {
+rectangle_pointer rectangle_new(void) {
     rectangle_pointer pointer = calloc(1, sizeof(rectangle) + sizeof(rectangle_data));
     pointer->data = (rectangle_data_pointer)(pointer + 1);
     pointer->type = rectangle_type_instance;
@@ -53,13 +53,13 @@ static void rectangle_type_move(rectangle_data_pointer r, int dx, int dy) {
     printf("rectangle move[%d,%d,%d,%d]\n", r->x, r->y, r->w, r->h);
 }
 
-static void __attribute__((constructor)) rectangle_type_init() {
+static void __attribute__((constructor)) rectangle_type_init(void) {
     rectangle_type_instance = calloc(1, sizeof(rectangle_type));
     rectangle_type_instance->figure = *figure_type_instance;
     rectangle_type_instance->draw = rectangle_type_draw;
     rectangle_type_instance->move = rectangle_type_move;
 }
 
-static void __attribute__((destructor)) rectangle_type_free() {
+static void __attribute__((destructor)) rectangle_type_free(void) {
     free(rectangle_type_instance);
 }

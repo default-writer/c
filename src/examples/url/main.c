@@ -1,19 +1,19 @@
+#include <curl/curl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <curl/curl.h>
 
 struct memory {
-    char *response;
+    char* response;
     size_t size;
 };
- 
-size_t callback(void *data, size_t size, size_t nmemb, void *clientp) {
-    size_t realsize = size * nmemb;
-    struct memory *mem = (struct memory *)clientp;
 
-    char *ptr = realloc(mem->response, mem->size + realsize + 1);
-    if (ptr == NULL) return 0;  /* out of memory! */
+size_t callback(void* data, size_t size, size_t nmemb, void* clientp) {
+    size_t realsize = size * nmemb;
+    struct memory* mem = (struct memory*)clientp;
+
+    char* ptr = realloc(mem->response, mem->size + realsize + 1);
+    if (ptr == NULL) return 0;
 
     mem->response = ptr;
     memcpy(&(mem->response[mem->size]), data, realsize);
@@ -33,12 +33,12 @@ int fetch(const char* url, struct memory* chunk) {
     res = curl_easy_perform(curl_handle);
     if (res != CURLE_OK) {
         fprintf(stderr, "fetch() failed: %s\n", curl_easy_strerror(res));
-    }    
+    }
     curl_easy_cleanup(curl_handle);
     return 0;
 }
 
-int main() {
+int main(void) {
     const char* url = "https://leetcode.com/problems/valid-parentheses/description/";
     struct memory* buffer = calloc(1, sizeof(struct memory));
     buffer->response = calloc(1, 4096);

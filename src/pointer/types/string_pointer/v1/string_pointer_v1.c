@@ -26,10 +26,10 @@
 #include "common/memory.h"
 #include "list-micro/data.h"
 
-#include "pointer/v1/pointer_v1.h"
-#include "pointer/v1/virtual_v1.h"
 #include "pointer/types/string_pointer/v1/string_pointer_v1.h"
 #include "pointer/types/types.h"
+#include "pointer/v1/pointer_v1.h"
+#include "pointer/v1/virtual_v1.h"
 
 #define DEFAULT_SIZE 0x100
 
@@ -62,7 +62,7 @@ static const struct vm_type type_definition = {
     .free = string_virtual_free
 };
 
-static void INIT init() {
+static void INIT init(void) {
     pointer->register_type(id, type);
 }
 
@@ -88,7 +88,7 @@ const struct string_pointer_methods string_pointer_methods_definition = {
 };
 
 #ifndef ATTRIBUTE
-void string_pointer_init() {
+void string_pointer_init(void) {
     init();
 }
 #endif

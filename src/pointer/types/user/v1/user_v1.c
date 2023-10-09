@@ -62,7 +62,7 @@ static void user_free(u64 ptr) {
     if (data_ptr == 0) {
         return;
     }
-    return user_vm_free(data_ptr);
+    user_vm_free(data_ptr);
 }
 
 static void user_vm_free(struct pointer* ptr) {
@@ -73,7 +73,7 @@ static struct vm_type type_definition = {
     .free = user_vm_free
 };
 
-static void INIT init() {
+static void INIT init(void) {
     id = pointer->register_type(TYPE_NULL, type);
 }
 
@@ -84,7 +84,7 @@ const struct user_methods user_methods_definition = {
 };
 
 #ifndef ATTRIBUTE
-void user_type_init() {
+void user_type_init(void) {
     init();
 }
 #endif

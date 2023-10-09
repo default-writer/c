@@ -61,7 +61,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     )
 
     set(OPTIONS
-        # -Wpedantic
+        -Wpedantic
         -Winline
         -Werror
         -Wall

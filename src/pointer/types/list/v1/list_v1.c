@@ -231,7 +231,7 @@ static const struct vm_type type_definition = {
     .free = list_vm_free
 };
 
-static void INIT init() {
+static void INIT init(void) {
     pointer->register_type(id, type);
 }
 
@@ -249,7 +249,7 @@ const struct list_methods list_methods_definition = {
 };
 
 #ifndef ATTRIBUTE
-void list_init() {
+void list_init(void) {
     init();
 }
 #endif

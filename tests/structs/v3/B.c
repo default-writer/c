@@ -52,20 +52,20 @@ struct_typeinfo b_typeinfo = {
 
 static object_typeinfo initialize(void) {
     object_typeinfo ptr = instance_class->create(&b_typeinfo);
-    writable_pointer_B b = (writable_pointer_B)ptr->object;
+    writable_pointer_B b = (writable_pointer_B)(void*)ptr->object;
     instance_interface_A->set_counter(&b->a, 1);
     b->counter = 2;
     return ptr;
 }
 
 static void print(object_typeinfo ptr) {
-    B b = (B)ptr->object;
+    B b = (B)(void*)ptr->object;
     printf("counter a: 0x%0llx\n", b->a.counter);
     printf("counter b: 0x%0llx\n", b->counter);
 }
 
 static void finalize(object_typeinfo ptr) {
-    writable_pointer_B b = (writable_pointer_B)ptr->object;
+    writable_pointer_B b = (writable_pointer_B)(void*)ptr->object;
     instance_interface_A->set_counter(&b->a, 0);
     b->counter = 0;
     instance_class->destroy(ptr);
