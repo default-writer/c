@@ -27,7 +27,7 @@
 #define _PUBLIC_H_
 
 #include "std/common.h"
-#include "../common/object.h"
+#include "../common/v2/object.h"
 
 struct A {
     u64 counter_a;
@@ -38,21 +38,20 @@ struct public_B { /* public */
 };
 
 struct friend_B;
+struct typeinfo;
 
 struct B_methods {
     void (*set_counter_b)(struct friend_B* ptr, u64 value);
     u64 (*get_counter_b)(struct friend_B* ptr);
+    struct typeinfo* (*type)(void);
 };
 
-extern struct typeinfo ti_definition;
 extern const struct B_methods B_methods_definition;
 
 #if defined(INLINE)
-struct typeinfo* B_type = &ti_definition;
-const struct B_methods* B_methods = &B_methods_definition;
+const struct B* B_methods = &B_methods_definition;
 #else
-static struct typeinfo* B_type = &ti_definition;
-static const struct B_methods* B_methods = &B_methods_definition;
+static const struct B_methods* B = &B_methods_definition;
 #endif
 
 #endif /* _PUBLIC_H_ */

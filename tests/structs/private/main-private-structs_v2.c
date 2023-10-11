@@ -25,7 +25,7 @@
  */
 #include "common/memory.h"
 #include "std/common.h"
-#include "../common/object.h"
+#include "../common/v2/object.h"
 #include "public.h"
 
 int main(void) {
@@ -79,15 +79,15 @@ int main(void) {
 
     */
 
-    struct B* b = (struct B*)object->create(B_type);
+    struct B* b = (struct B*)object->create(B->type());
     struct friend_B* private_ptr = (struct friend_B*)b;
     b->public.base.counter_a = 1;
-    B_methods->set_counter_b(private_ptr, 2); // private_ptr->private.counter_b = 2
+    B->set_counter_b(private_ptr, 2); // private_ptr->private.counter_b = 2
 
     printf("counter a: 0x%0llx\n", b->public.base.counter_a);
-    printf("counter b: 0x%0llx\n",B_methods->get_counter_b(private_ptr)); // private_ptr->private.counter_b
+    printf("counter b: 0x%0llx\n",B->get_counter_b(private_ptr)); // private_ptr->private.counter_b
 
-    object->destroy(B_type);
+    object->destroy(b);
 #ifdef USE_MEMORY_DEBUG_INFO
 #if defined(VM_GLOBAL_DEBUG_INFO)
     global_statistics();

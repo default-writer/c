@@ -25,7 +25,7 @@
  */
 #include "common/memory.h"
 #include "std/common.h"
-#include "../common/object.h"
+#include "../common/v1/object.h"
 
 int main(void) {
 #ifdef USE_MEMORY_DEBUG_INFO

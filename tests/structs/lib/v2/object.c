@@ -23,46 +23,36 @@
  * SOFTWARE.
  *
  */
+
 #include "common/memory.h"
 #include "std/common.h"
-#include "../common/v1/object.h"
+#include "../../common/v2/object.h"
 
-int main(void) {
+static void* object_create(struct typeinfo* ti);
+static void object_destroy(void* ptr);
+
+static void* object_create(struct typeinfo* ti) {
+    void* data = memory->alloc(ti->size + sizeof(struct typeinfo*));
+    struct typeinfo** ti_ptr = (struct typeinfo**)data;
+    *ti_ptr=ti;
+    void* ptr = (void*)(++ti_ptr);
 #ifdef USE_MEMORY_DEBUG_INFO
-#if defined(VM_GLOBAL_DEBUG_INFO)
-    global_statistics();
+    printf("creating type %s at %016llx (%ld bytes)\n", ti->name, (u64)ptr, ti->size);
 #endif
-#endif
-
-    struct A {
-        u64 counter_a;
-    };
-
-    struct B {
-        struct A base;
-        u64 counter_b;
-    };
-
-    struct typeinfo ti = {
-        .size = sizeof(struct B),
-#ifdef USE_MEMORY_DEBUG_INFO
-        .name = "B"
-#endif
-    };
-
-    struct B* b = (struct B*)object->create(&ti);
-
-    b->base.counter_a = 1;
-    b->counter_b = 2;
-
-    printf("counter a: 0x%0llx\n", b->base.counter_a);
-    printf("counter b: 0x%0llx\n", b->counter_b);
-
-    object->destroy(&ti);
-#ifdef USE_MEMORY_DEBUG_INFO
-#if defined(VM_GLOBAL_DEBUG_INFO)
-    global_statistics();
-#endif
-#endif
-    return 0;
+    return ptr;
 }
+
+static void object_destroy(void* data) {
+    struct typeinfo** ti_ptr = (struct typeinfo**)data;
+    void* ptr = (void*)(--ti_ptr);
+    struct typeinfo* ti = (struct typeinfo*)*ti_ptr;
+#ifdef USE_MEMORY_DEBUG_INFO
+    printf("deleting type %s at %016llx (%ld bytes)\n", ti->name, (u64)ptr, ti->size);
+#endif
+    memory->free(ptr, ti->size);
+}
+
+const struct object_methods object_methods_definition = {
+    .create = object_create,
+    .destroy = object_destroy
+};

@@ -26,12 +26,13 @@
 
 #include "common/memory.h"
 #include "std/common.h"
-#include "../common/object.h"
 
-void* object_create(struct typeinfo* ti);
-void object_destroy(struct typeinfo* ti);
+#include "../../common/v1/object.h"
 
-void* object_create(struct typeinfo* ti) {
+static void* object_create(struct typeinfo* ti);
+static void object_destroy(struct typeinfo* ti);
+
+static void* object_create(struct typeinfo* ti) {
     ti->ptr = memory->alloc(ti->size);
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("creating type %s (%ld bytes)\n", ti->name, ti->size);
@@ -39,7 +40,7 @@ void* object_create(struct typeinfo* ti) {
     return ti->ptr;
 }
 
-void object_destroy(struct typeinfo* ti) {
+static void object_destroy(struct typeinfo* ti) {
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("deleting type %s (%ld bytes)\n", ti->name, ti->size);
 #endif
