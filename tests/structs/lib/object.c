@@ -23,46 +23,30 @@
  * SOFTWARE.
  *
  */
+
 #include "common/memory.h"
 #include "std/common.h"
 #include "../common/object.h"
 
-int main(void) {
+void* object_create(struct typeinfo* ti);
+void object_destroy(struct typeinfo* ti);
+
+void* object_create(struct typeinfo* ti) {
+    ti->ptr = memory->alloc(ti->size);
 #ifdef USE_MEMORY_DEBUG_INFO
-#if defined(VM_GLOBAL_DEBUG_INFO)
-    global_statistics();
+    printf("creating type %s (%ld bytes)\n", ti->name, ti->size);
 #endif
-#endif
-
-    struct A {
-        u64 counter_a;
-    };
-
-    struct B {
-        struct A base;
-        u64 counter_b;
-    };
-
-    struct typeinfo ti = {
-        .size = sizeof(struct B),
-#ifdef USE_MEMORY_DEBUG_INFO
-        .name = "B"
-#endif
-    };
-
-    struct B* b = (struct B*)object->create(&ti);
-
-    b->base.counter_a = 1;
-    b->counter_b = 2;
-
-    printf("counter a: 0x%0llx\n", b->base.counter_a);
-    printf("counter b: 0x%0llx\n", b->counter_b);
-
-    object->destroy(&ti);
-#ifdef USE_MEMORY_DEBUG_INFO
-#if defined(VM_GLOBAL_DEBUG_INFO)
-    global_statistics();
-#endif
-#endif
-    return 0;
+    return ti->ptr;
 }
+
+void object_destroy(struct typeinfo* ti) {
+#ifdef USE_MEMORY_DEBUG_INFO
+    printf("deleting type %s (%ld bytes)\n", ti->name, ti->size);
+#endif
+    memory->free(ti->ptr, ti->size);
+}
+
+const struct object_methods object_methods_definition = {
+    .create = object_create,
+    .destroy = object_destroy
+};

@@ -23,46 +23,37 @@
  * SOFTWARE.
  *
  */
+#ifndef _OBJECT_H_
+#define _OBJECT_H_
+
 #include "common/memory.h"
 #include "std/common.h"
-#include "../common/object.h"
 
-int main(void) {
+struct typeinfo;
+void* object_create(struct typeinfo* ti);
+void object_destroy(struct typeinfo* ti);
+
+struct object_methods {
+    void* (*create)(struct typeinfo* ti);
+    void (*destroy)(struct typeinfo* ti);
+};
+
+struct typeinfo {
+    void* ptr;
+    const size_t size;
 #ifdef USE_MEMORY_DEBUG_INFO
-#if defined(VM_GLOBAL_DEBUG_INFO)
-    global_statistics();
+    const char* name;
 #endif
+};
+
+/* definition */
+extern const struct object_methods object_methods_definition;
+
+/* definition */
+#if defined(INLINE)
+const struct object_methods* object = &object_methods_definition;
+#else
+static const struct object_methods* object = &object_methods_definition;
 #endif
 
-    struct A {
-        u64 counter_a;
-    };
-
-    struct B {
-        struct A base;
-        u64 counter_b;
-    };
-
-    struct typeinfo ti = {
-        .size = sizeof(struct B),
-#ifdef USE_MEMORY_DEBUG_INFO
-        .name = "B"
-#endif
-    };
-
-    struct B* b = (struct B*)object->create(&ti);
-
-    b->base.counter_a = 1;
-    b->counter_b = 2;
-
-    printf("counter a: 0x%0llx\n", b->base.counter_a);
-    printf("counter b: 0x%0llx\n", b->counter_b);
-
-    object->destroy(&ti);
-#ifdef USE_MEMORY_DEBUG_INFO
-#if defined(VM_GLOBAL_DEBUG_INFO)
-    global_statistics();
-#endif
-#endif
-    return 0;
-}
+#endif /* _OBJECT_H_ */
