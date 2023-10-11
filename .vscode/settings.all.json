@@ -186,7 +186,7 @@
   "editor.matchBrackets": "near",
   "presentation-mode.active": {
     "commands": [],
-    "editor.fontSize": 12,
+    "editor.fontSize": 20,
     "editor.matchBrackets": "near",
     "editor.minimap.enabled": false,
     "workbench.activityBar.visible": true,
@@ -466,5 +466,7 @@
   "bsv.bazel.executable": "$HOME/.bazel/bazel",
   "bazel.enableCodeLens": true,
   "bazel.buildifierExecutable": "$HOME/.bazel/tools/buildifier",
-  "bazel.executable": "$HOME/.bazel/bazel"  
+  "bazel.executable": "$HOME/.bazel/bazel",
+  "hexeditor.showDecodedText": false,
+  "hexeditor.showOpenFileButton": true  
 }

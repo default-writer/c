@@ -37,12 +37,13 @@ struct public_B { /* public */
     struct A base;
 };
 
-struct friend_B;
+struct B;
+
 struct typeinfo;
 
 struct B_methods {
-    void (*set_counter_b)(struct friend_B* ptr, u64 value);
-    u64 (*get_counter_b)(struct friend_B* ptr);
+    void (*set_counter_b)(struct B* ptr, u64 value);
+    u64 (*get_counter_b)(struct B* ptr);
     struct typeinfo* (*type)(void);
 };
 

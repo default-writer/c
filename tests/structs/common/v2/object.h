@@ -28,19 +28,11 @@
 
 #include "common/memory.h"
 #include "std/common.h"
-
-struct typeinfo;
+#include "../type.h"
 
 struct object_methods {
     void* (*create)(struct typeinfo* ti);
     void (*destroy)(void* ptr);
-};
-
-struct typeinfo {
-    const size_t size;
-#ifdef USE_MEMORY_DEBUG_INFO
-    const char* name;
-#endif
 };
 
 /* definition */

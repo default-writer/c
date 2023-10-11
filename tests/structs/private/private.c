@@ -31,13 +31,14 @@ struct private_B { /* private */
     u64 counter_b;
 };
 
+struct B {
+    // struct private_B private;
+    struct public_B public;
+};
+
 struct friend_B {
     struct public_B public;
     struct private_B private;
-};
-
-struct private_type {
-    struct typeinfo* info;
 };
 
 struct typeinfo ti = {
@@ -49,16 +50,18 @@ struct typeinfo ti = {
 
 static struct typeinfo* B_typeinfo = &ti;
 
-static void b_methods_set_counter_b(struct friend_B* ptr, u64 value);
-static u64 b_methods_get_counter_b(struct friend_B* ptr);
+static void b_methods_set_counter_b(struct B* ptr, u64 value);
+static u64 b_methods_get_counter_b(struct B* ptr);
 static struct typeinfo* b_methods_type(void);
 
-static void b_methods_set_counter_b(struct friend_B* ptr, u64 value) {
-    ptr->private.counter_b = value;
+static void b_methods_set_counter_b(struct B* ptr, u64 value) {
+    struct friend_B* b = (struct friend_B*)ptr;
+    b->private.counter_b = value;
 }
 
-static u64 b_methods_get_counter_b(struct friend_B* ptr) {
-    return ptr->private.counter_b;
+static u64 b_methods_get_counter_b(struct B* ptr) {
+    struct friend_B* b = (struct friend_B*)ptr;
+    return b->private.counter_b;
 }
 
 static struct typeinfo* b_methods_type(void) {

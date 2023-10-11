@@ -63,11 +63,6 @@ int main(void) {
 
     */
 
-    struct B {
-        // struct private_B private;
-        struct public_B public;
-    };
-
     /* 
         we still can requre this stucture in case aligment setup changes its boundaries so we do not match 
         
@@ -79,15 +74,20 @@ int main(void) {
 
     */
 
-    struct B* b = (struct B*)object->create(B->type());
-    struct friend_B* private_ptr = (struct friend_B*)b;
-    b->public.base.counter_a = 1;
-    B->set_counter_b(private_ptr, 2); // private_ptr->private.counter_b = 2
+    struct B* b = object->create(B->type());
 
-    printf("counter a: 0x%0llx\n", b->public.base.counter_a);
-    printf("counter b: 0x%0llx\n",B->get_counter_b(private_ptr)); // private_ptr->private.counter_b
+    // now, since we use the same pointers for friend_B and B, we can obviously eliminate the need of friend_B
+    // structure cause it is not needed anymore.
+
+    struct public_B* public_ptr = (struct public_B*)b; 
+    public_ptr->base.counter_a = 1;
+    B->set_counter_b(b, 2); // private_ptr->private.counter_b = 2
+
+    printf("counter a: 0x%0llx\n", public_ptr->base.counter_a);
+    printf("counter b: 0x%0llx\n",B->get_counter_b(b)); // private_ptr->private.counter_b
 
     object->destroy(b);
+
 #ifdef USE_MEMORY_DEBUG_INFO
 #if defined(VM_GLOBAL_DEBUG_INFO)
     global_statistics();

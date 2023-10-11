@@ -42,14 +42,14 @@ static void* object_create(struct typeinfo* ti) {
     return ptr;
 }
 
-static void object_destroy(void* data) {
-    struct typeinfo** ti_ptr = (struct typeinfo**)data;
-    void* ptr = (void*)(--ti_ptr);
+static void object_destroy(void* ptr) {
+    struct typeinfo** ti_ptr = (struct typeinfo**)ptr;
+    void* data = (void*)(--ti_ptr);
     struct typeinfo* ti = (struct typeinfo*)*ti_ptr;
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("deleting type %s at %016llx (%ld bytes)\n", ti->name, (u64)ptr, ti->size);
 #endif
-    memory->free(ptr, ti->size);
+    memory->free(data, ti->size);
 }
 
 const struct object_methods object_methods_definition = {
