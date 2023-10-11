@@ -42,9 +42,12 @@ int main(void) {
     this is a requirement because of how we actually omit a pointer correction
     arithmetic. if we prefer to do a pointer corrections then we can keep
     first part private (which makes sense to me cause that will helps us to
-    keep things unchanged if we tend to change private structure...) that's is
-    a Liskov principle to our data applcation programming interface. 
-    
+    keep things unchanged if we tend to change private structure...) that one of the is Liskov's
+    principles applied to our data applcation programming interface, i.e.: 
+
+    we break our struct into chunks, and label them as "private" and "public" parts
+
+    |      struct      |
     | public | private | 
 
     */
@@ -52,7 +55,7 @@ int main(void) {
     /* 
 
     we moveed struct private_B into .c file and made it "private"
-    of cause we just can recreate "private" struct in another file and good to go.
+    of cause we just can recreate "private" struct in another file and are good to go.
     for keeping really "private" stucts we probably need SipHash and address randomisation with
     some sort of guard values to validate owr own data structures, as well as CPU page related protection
     but all of this can still be flawed and hacked, obviously.
@@ -65,7 +68,7 @@ int main(void) {
         we are not needed a structure aligment logic for private and public parts cause internal struct concatenation
         will do this automatically
         
-        |      B               |  <-- great news, it is 13 bytes only!!!
+        |       struct B       |  <-- great news, it is 13 bytes only!!!
         | private B | public B | < we actually got exactly the same 13 bytes-long data structure if divided into chunks
 
     */
