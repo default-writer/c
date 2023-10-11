@@ -29,8 +29,12 @@
 #include "std/common.h"
 #include "../common/object.h"
 
+struct A {
+    u64 counter_a;
+};
+
 struct public_B { /* public */
-    u64 counter_b;
+    struct A base;
 };
 
 struct friend_B;

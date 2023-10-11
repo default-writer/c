@@ -35,10 +35,6 @@ int main(void) {
 #endif
 #endif
 
-    struct A {
-        u64 counter_a;
-    };
-
     /* 
     
     we have to split B into two parts.
@@ -54,9 +50,6 @@ int main(void) {
     | private | public |
 
     */
-    struct public_B {
-        struct A base; /* public */
-    };
 
     /* 
 
