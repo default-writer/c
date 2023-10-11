@@ -38,22 +38,20 @@ int main(void) {
     /* 
     
     we have to split B into two parts.
-    it is essential to keep in mind that first part will always be private
-    this is a requirement because of how we actually done a pointer correction
-    arithmetic. if we prefer not to do a pointer corrections then we can keep
-    first part public (which makes sense to me cause that will helps us to
+    it is essential to keep in mind that first part will always be public
+    this is a requirement because of how we actually omit a pointer correction
+    arithmetic. if we prefer to do a pointer corrections then we can keep
+    first part private (which makes sense to me cause that will helps us to
     keep things unchanged if we tend to change private structure...) that's is
-    a Liskov principle to our data applcation programming interface. Lets try 
-    this in the next commit
-
+    a Liskov principle to our data applcation programming interface. 
     
-    | private | public |
+    | public | private | 
 
     */
 
     /* 
 
-    we need to move struct private_B into .c file to make it "private"
+    we moveed struct private_B into .c file and made it "private"
     of cause we just can recreate "private" struct in another file and good to go.
     for keeping really "private" stucts we probably need SipHash and address randomisation with
     some sort of guard values to validate owr own data structures, as well as CPU page related protection
@@ -64,20 +62,18 @@ int main(void) {
     */
 
     /* 
-        we still can requre this stucture in case aligment setup changes its boundaries so we do not match 
+        we are not needed a structure aligment logic for private and public parts cause internal struct concatenation
+        will do this automatically
         
-        |      B               |  <-- oops it is 13 bytes only
-        | private B | . . . | public B | < we actually will get aligned to 16 bytes, and 42 at the end
-                           ^
-                           | 
-         8 byte boundaries aligment (if somehow private B is not a 8n size long)
+        |      B               |  <-- great news, it is 13 bytes only!!!
+        | private B | public B | < we actually got exactly the same 13 bytes-long data structure if divided into chunks
 
     */
 
     struct B* b = object->create(B->type());
 
     // now, since we use the same pointers for friend_B and B, we can obviously eliminate the need of friend_B
-    // structure cause it is not needed anymore.
+    // structure cause it is not needed anymore (we don't need it anywhere)
 
     struct public_B* public_ptr = (struct public_B*)b; 
     public_ptr->base.counter_a = 1;

@@ -32,17 +32,12 @@ struct private_B { /* private */
 };
 
 struct B {
-    // struct private_B private;
-    struct public_B public;
-};
-
-struct friend_B {
     struct public_B public;
     struct private_B private;
 };
 
 struct typeinfo ti = {
-    .size = sizeof(struct friend_B),
+    .size = sizeof(struct B),
 #ifdef USE_MEMORY_DEBUG_INFO
     .name = "B"
 #endif
@@ -55,12 +50,12 @@ static u64 b_methods_get_counter_b(struct B* ptr);
 static struct typeinfo* b_methods_type(void);
 
 static void b_methods_set_counter_b(struct B* ptr, u64 value) {
-    struct friend_B* b = (struct friend_B*)ptr;
+    struct B* b = (struct B*)ptr;
     b->private.counter_b = value;
 }
 
 static u64 b_methods_get_counter_b(struct B* ptr) {
-    struct friend_B* b = (struct friend_B*)ptr;
+    struct B* b = (struct B*)ptr;
     return b->private.counter_b;
 }
 
