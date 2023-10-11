@@ -82,8 +82,8 @@ int main(void) {
     public_ptr->base.counter_a = 1;
     B->set_counter_b(b, 2); // private_ptr->private.counter_b = 2
 
-    printf("counter a: 0x%0llx\n", public_ptr->base.counter_a);
-    printf("counter b: 0x%0llx\n",B->get_counter_b(b)); // private_ptr->private.counter_b
+    printf("counter a: %016llx\n", public_ptr->base.counter_a);
+    printf("counter b: %016llx\n",B->get_counter_b(b)); // private_ptr->private.counter_b
 
     object->destroy(b);
 
