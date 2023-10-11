@@ -42,8 +42,8 @@ int main(void) {
     this is a requirement because of how we actually omit a pointer correction
     arithmetic. if we prefer to do a pointer corrections then we can keep
     first part private (which makes sense to me cause that will helps us to
-    keep things unchanged if we tend to change private structure...) that one of the is Liskov's
-    principles applied to our data applcation programming interface, i.e.: 
+    keep things unchanged if we tend to change private structure...) thats the open/closed
+    principle applied to our data applcation programming interface, i.e.: 
 
     we break our struct into chunks, and label them as "private" and "public" parts
 

@@ -41,16 +41,17 @@ int main(void) {
     /* 
     
     we have to split B into two parts.
-    it is essential to keep in mind that first part will always be private
-    this is a requirement because of how we actually done a pointer correction
-    arithmetic. if we prefer not to do a pointer corrections then we can keep
-    first part public (which makes sense to me cause that will helps us to
-    keep things unchanged if we tend to change private structure...) that's is
-    a Liskov principle to our data applcation programming interface. Lets try 
-    this in the next commit
+    it is essential to keep in mind that first part will always be public
+    this is a requirement because of how we actually omit a pointer correction
+    arithmetic. if we prefer to do a pointer corrections then we can keep
+    first part private (which makes sense to me cause that will helps us to
+    keep things unchanged if we tend to change private structure...) thats the open/closed
+    principle applied to our data applcation programming interface, i.e.: 
 
-    
-    | private | public |
+    we break our struct into chunks, and label them as "private" and "public" parts
+
+    |      struct      |
+    | public | private | 
 
     */
     struct private_B {
@@ -63,8 +64,7 @@ int main(void) {
 
     /* 
 
-    Now we actually can move struct private_B into .c file
-    while keeping struct public_B in .h file...
+    now we actually can move struct private_B into .c file while keeping struct public_B in .h file...
 
     */
 
