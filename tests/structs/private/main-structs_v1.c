@@ -38,32 +38,61 @@ int main(void) {
         u64 counter_a;
     };
 
+    /* 
+    
+    we have to split B into two parts.
+    it is essential to keep in mind that first part will always be private
+    this is a requirement because of how we actually done a pointer correction
+    arithmetic. if we prefer not to do a pointer corrections then we can keep
+    first part public (which makes sense to me cause that will helps us to
+    keep things unchanged if we tend to change private structure...) that's is
+    a Liskov principle to our data applcation programming interface. Lets try 
+    this in the next commit
+
+    
+    | private | public |
+
+    */
     struct private_B {
         struct A base; /* private */
     };
 
-    struct public_B {
+    struct public_B { /* public */
         u64 counter_b;
     };
+
+    /* 
+
+    Now we actually can move struct private_B into .c file
+    while keeping struct public_B in .h file...
+
+    */
 
     struct B {
         // struct private_B private;
         struct public_B public;
     };
 
+    struct friend_B {
+        struct private_B private;
+        struct public_B public;
+    };
+
     struct typeinfo ti = {
-        .size = sizeof(struct private_B) + sizeof(struct public_B),
+        .size = sizeof(struct friend_B),
 #ifdef USE_MEMORY_DEBUG_INFO
         .name = "B"
 #endif
     };
 
-    struct B* b = (struct B*)object->create(&ti);
+    struct friend_B* b = (struct friend_B*)object->create(&ti);
+    u64 offset = sizeof(struct private_B);
 
-    // b->base.counter_a = 1;
-    b->public.counter_b = 2;
+    struct B* public_ptr = (struct B*)((u64*)((void*)((u8*)b + offset)));
+    b->private.base.counter_a = 1;
+    public_ptr->public.counter_b = 2;
 
-    // printf("counter a: 0x%0llx\n", b->base.counter_a);
+    printf("counter a: 0x%0llx\n", b->private.base.counter_a);
     printf("counter b: 0x%0llx\n", b->public.counter_b);
 
     object->destroy(&ti);
