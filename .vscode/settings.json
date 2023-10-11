@@ -197,7 +197,7 @@
     "editor.matchBrackets": "near",
     "presentation-mode.active": {
         "commands": [],
-        "editor.fontSize": 12,
+        "editor.fontSize": 20,
         "editor.matchBrackets": "near",
         "editor.minimap.enabled": false,
         "workbench.activityBar.visible": true,
@@ -475,7 +475,7 @@
     "terminal.integrated.fastScrollSensitivity": 2,
     "workbench.list.fastScrollSensitivity": 2,
     "workbench.editor.showTabs": true,
-    "editor.fontSize": 12,
+    "editor.fontSize": 20,
     "markdownlint.ignore": [
         ".bazelrc"
     ],
