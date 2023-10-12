@@ -44,7 +44,7 @@ struct typeinfo;
 
 struct B_methods {
     void (*set_counter_b)(struct B* ptr, u64 value);
-    u64 (*get_counter_b)(struct B* ptr);
+    u64 (*get_counter_b)(const struct B* ptr);
     struct typeinfo* (*type)(void);
 };
 

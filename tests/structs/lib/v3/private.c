@@ -55,7 +55,7 @@ static struct typeinfo* B_typeinfo = &ti;
 static struct methodinfo* B_methodinfo = &mi;
 
 static void b_set_counter_b(struct B* ptr, u64 value);
-static u64 b_get_counter_b(struct B* ptr);
+static u64 b_get_counter_b(const struct B* ptr);
 static struct typeinfo* b_type(void);
 static struct methodinfo* b_methodinfo(void);
 
@@ -75,7 +75,7 @@ static void b_set_counter_b(struct B* ptr, u64 value) {
     ptr->private.counter_b = value;
 }
 
-static u64 b_get_counter_b(struct B* ptr) {
+static u64 b_get_counter_b(const struct B* ptr) {
     return ptr->private.counter_b;
 }
 

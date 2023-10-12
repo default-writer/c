@@ -46,18 +46,14 @@ struct typeinfo ti = {
 static struct typeinfo* B_typeinfo = &ti;
 
 static void b_methods_set_counter_b(struct B* ptr, u64 value);
-static u64 b_methods_get_counter_b(struct B* ptr);
+static u64 b_methods_get_counter_b(const struct B* ptr);
 static struct typeinfo* b_methods_type(void);
 
 static void b_methods_set_counter_b(struct B* ptr, u64 value) {
     ptr->private.counter_b = value;
 }
 
-void instance_methods_B_set_counter_b(struct B* ptr, u64 value) {
-    ptr->public.set_counter_b(ptr, value);
-}
-
-static u64 b_methods_get_counter_b(struct B* ptr) {
+static u64 b_methods_get_counter_b(const struct B* ptr) {
     return ptr->private.counter_b;
 }
 

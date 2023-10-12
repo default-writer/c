@@ -38,7 +38,7 @@ struct public_B { /* public */
     struct A base;
     /* public methods */
     void (*set_counter_b)(struct B* ptr, u64 value);
-    u64 (*get_counter_b)(struct B* ptr);
+    u64 (*get_counter_b)(const struct B* ptr);
 };
 
 struct typeinfo;
