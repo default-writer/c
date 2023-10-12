@@ -28,7 +28,6 @@
 #include "std/common.h"
 
 #include "../../common/v1/type.h"
-#include "../../common/v1/public.h"
 #include "../../common/v1/object.h"
 
 static void* object_create(struct typeinfo* ti);

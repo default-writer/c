@@ -25,7 +25,6 @@
  */
 #include "../../common/v2/type.h"
 #include "../../common/v2/public.h"
-#include "../../common/v2/object.h"
 
 struct private_B { /* private */
     u64 counter_b;
