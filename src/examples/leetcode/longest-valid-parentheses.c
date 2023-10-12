@@ -32,13 +32,11 @@ int process(state_machine_pointer p) {
 }
 
 int longestValidParentheses(char* ptr) {
-    state_machine_pointer p = 0;
-    p = (state_machine_pointer)calloc(1, sizeof(state_machine));
     unsigned long size = strlen(ptr);
     if (size == 0) {
-        free(p);
         return 0;
     }
+    state_machine_pointer p = (state_machine_pointer)calloc(1, sizeof(state_machine));
     p->current_position = ptr;
     p->fire_position = ptr;
     p->start_position = ptr;
