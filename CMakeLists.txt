@@ -321,8 +321,7 @@ set(TEST_LINKED_LIST_SOURCE tests/main-linked-list.c)
 set(TEST_LINKED_LIST_STATIC_ENUMERATOR_SOURCE tests/main-linked-list-static-enumerator.c)
 set(TEST_PRIVATE_STRUCTS1_SOURCE 
     tests/structs/private/main-private-structs_v1.c
-    tests/structs/lib/v1/object.c
-    tests/structs/lib/v1/private.c)
+    tests/structs/lib/v1/object.c)
 set(TEST_PRIVATE_STRUCTS2_SOURCE
     tests/structs/private/main-private-structs_v2.c
     tests/structs/lib/v2/object.c
@@ -331,7 +330,7 @@ set(TEST_PRIVATE_STRUCTS3_SOURCE
     tests/structs/private/main-private-structs_v3.c
     tests/structs/lib/v3/object.c
     tests/structs/lib/v3/private.c)
-set(TEST_STRUCTS1_SOURCE tests/structs/v1/main-structs_v1.c tests/structs/lib/v1/object.c tests/structs/lib/v1/private.c)
+set(TEST_STRUCTS1_SOURCE tests/structs/v1/main-structs_v1.c tests/structs/lib/v1/object.c)
 set(TEST_STRUCTS2_SOURCE tests/structs/v2/main-structs_v2.c)
 set(TEST_STRUCTS3_SOURCE tests/structs/v3/main-structs_v3.c)
 set(TEST_STRUCTS3_LIB_SOURCE tests/structs/v3/A.c tests/structs/v3/B.c)

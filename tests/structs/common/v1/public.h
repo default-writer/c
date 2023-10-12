@@ -40,20 +40,4 @@ struct public_B { /* public */
     void (*set_counter_b)(struct B* ptr, u64 value);
 };
 
-struct typeinfo;
-
-struct B_methods {
-    void (*set_counter_b)(struct B* ptr, u64 value);
-    u64 (*get_counter_b)(const struct B* ptr);
-    struct typeinfo* (*type)(void);
-};
-
-extern const struct B_methods B_methods_definition;
-
-#if defined(INLINE)
-const struct B_methods* B = &B_methods_definition;
-#else
-static const struct B_methods* B = &B_methods_definition;
-#endif
-
 #endif /* _PUBLIC_V1_H_ */
