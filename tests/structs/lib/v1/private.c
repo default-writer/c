@@ -45,12 +45,7 @@ struct typeinfo ti = {
 
 static struct typeinfo* B_typeinfo = &ti;
 
-static void b_methods_set_counter_b(struct B* ptr, u64 value);
 static struct typeinfo* b_methods_type(void);
-
-static void b_methods_set_counter_b(struct B* ptr, u64 value) {
-    ptr->private.counter_b = value;
-}
 
 static struct typeinfo* b_methods_type(void) {
     return B_typeinfo;
