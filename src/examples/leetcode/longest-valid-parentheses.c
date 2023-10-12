@@ -36,6 +36,7 @@ int longestValidParentheses(char* ptr) {
     p = (state_machine_pointer)calloc(1, sizeof(state_machine));
     unsigned long size = strlen(ptr);
     if (size == 0) {
+        free(p);
         return 0;
     }
     p->current_position = ptr;
