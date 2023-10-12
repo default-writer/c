@@ -27,7 +27,6 @@
 #include "std/common.h"
 
 #include "../../common/v3/type.h"
-#include "../../common/v3/public.h"
 #include "../../common/v3/object.h"
 
 static void* object_create(const struct class* class);
