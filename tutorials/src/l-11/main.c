@@ -5,7 +5,7 @@
 
 struct func_struct { };
 
-void func_done(int a) { }
+void func_done(int a) { /*nothing*/ }
 
 int main(void) {
     int a = 42;

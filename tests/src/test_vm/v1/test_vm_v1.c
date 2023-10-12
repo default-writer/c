@@ -193,7 +193,7 @@ RX_SET_UP(test_pointer_set_up) {
 }
 
 RX_TEAR_DOWN(test_pointer_tear_down) {
-    void* ptr;
+    // void* ptr;
 }
 
 /* Define the fixture. */

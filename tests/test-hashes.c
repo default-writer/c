@@ -264,22 +264,23 @@ void get_data(void) {
 
     /* Read file */
     FILE* f = fopen(fn, "r");
-
-    /* Read file line by line, calculate hash */
-    char buffer[PATH_MAX + 1];
-    char* input = &buffer[0];
-    memset(input, 0, PATH_MAX + 1);
-    char* ch = &buffer[0];
-    while (fgets(input, PATH_MAX, f)) {
-        unsigned long size = ((strlen(input) >> 3) | 1) << 3;
-        struct list* current = calloc(1, sizeof(struct list));
-        current->data = calloc(1, size);
-        current->size = size;
-        memcpy(current->data, input, size);
-        current->next = list;
-        list = current;
+    if (f != 0) {
+        /* Read file line by line, calculate hash */
+        char buffer[PATH_MAX + 1];
+        char* input = &buffer[0];
+        memset(input, 0, PATH_MAX + 1);
+        char* ch = &buffer[0];
+        while (fgets(input, PATH_MAX, f)) {
+            unsigned long size = ((strlen(input) >> 3) | 1) << 3;
+            struct list* current = calloc(1, sizeof(struct list));
+            current->data = calloc(1, size);
+            current->size = size;
+            memcpy(current->data, input, size);
+            current->next = list;
+            list = current;
+        }
+        fclose(f);
     }
-    fclose(f);
 }
 
 void get_hash(int hash_id) {

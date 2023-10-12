@@ -113,7 +113,7 @@ static void memory_set(void* dest, u8 c, size_t count) {
 
     u8* dest_ptr1 = (u8*)&dest_ptr8[block_idx];
     for (block_idx = 0; block_idx < bytes_left; block_idx++)
-        dest_ptr1[block_idx] = (u8)c;
+        dest_ptr1[block_idx] = c;
 }
 
 #ifdef USE_MEMORY_DEBUG_INFO
