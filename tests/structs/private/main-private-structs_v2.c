@@ -25,8 +25,10 @@
  */
 #include "common/memory.h"
 #include "std/common.h"
+
+#include "../common/v2/type.h"
+#include "../common/v2/public.h"
 #include "../common/v2/object.h"
-#include "public.h"
 
 int main(void) {
 #ifdef USE_MEMORY_DEBUG_INFO

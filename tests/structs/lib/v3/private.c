@@ -23,9 +23,9 @@
  * SOFTWARE.
  *
  */
-#include "../common/v2/object.h"
-
-#include "public.h"
+#include "../../common/v3/type.h"
+#include "../../common/v3/public.h"
+#include "../../common/v3/object.h"
 
 struct private_B { /* private */
     u64 counter_b;
@@ -36,6 +36,9 @@ struct B {
     struct private_B private;
 };
 
+static void B_create(struct B* ptr);
+static void B_destroy(struct B* ptr);
+
 struct typeinfo ti = {
     .size = sizeof(struct B),
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -43,28 +46,48 @@ struct typeinfo ti = {
 #endif
 };
 
+struct methodinfo mi = {
+    .create = B_create,
+    .destroy = B_destroy
+};
+
 static struct typeinfo* B_typeinfo = &ti;
+static struct methodinfo* B_methodinfo = &mi;
 
-static void b_methods_set_counter_b(struct B* ptr, u64 value);
-static u64 b_methods_get_counter_b(struct B* ptr);
-static struct typeinfo* b_methods_type(void);
+static void b_set_counter_b(struct B* ptr, u64 value);
+static u64 b_get_counter_b(struct B* ptr);
+static struct typeinfo* b_type(void);
+static struct methodinfo* b_methodinfo(void);
 
-static void b_methods_set_counter_b(struct B* ptr, u64 value) {
+static void B_create(struct B* ptr) {
     struct B* b = (struct B*)ptr;
-    b->private.counter_b = value;
+    b->public.get_counter_b = b_get_counter_b;
+    b->public.set_counter_b = b_set_counter_b;
 }
 
-static u64 b_methods_get_counter_b(struct B* ptr) {
+static void B_destroy(struct B* ptr) {
     struct B* b = (struct B*)ptr;
-    return b->private.counter_b;
+    b->public.get_counter_b = 0;
+    b->public.set_counter_b = 0;
 }
 
-static struct typeinfo* b_methods_type(void) {
+static void b_set_counter_b(struct B* ptr, u64 value) {
+    ptr->private.counter_b = value;
+}
+
+static u64 b_get_counter_b(struct B* ptr) {
+    return ptr->private.counter_b;
+}
+
+static struct typeinfo* b_type(void) {
     return B_typeinfo;
 }
 
-const struct B_methods B_methods_definition = {
-    .set_counter_b = b_methods_set_counter_b,
-    .get_counter_b = b_methods_get_counter_b,
-    .type = b_methods_type
+static struct methodinfo* b_method(void) {
+    return B_methodinfo;
+}
+
+const struct class B_class_definition = {
+    .type = b_type,
+    .method = b_method
 };

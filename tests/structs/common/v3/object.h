@@ -23,16 +23,17 @@
  * SOFTWARE.
  *
  */
-#ifndef _OBJECT_V1_H_
-#define _OBJECT_V1_H_
+#ifndef _OBJECT_V3_H_
+#define _OBJECT_V3_H_
 
+#include "public.h"
 #include "std/common.h"
 
 struct typeinfo;
 
 struct object_methods {
-    void* (*create)(struct typeinfo* ti);
-    void (*destroy)(struct typeinfo* ti);
+    void* (*create)(const struct class* ptr);
+    void (*destroy)(void* ptr);
 };
 
 /* definition */
@@ -45,4 +46,4 @@ const struct object_methods* object = &object_methods_definition;
 static const struct object_methods* object = &object_methods_definition;
 #endif
 
-#endif /* _OBJECT_V1_H_ */
+#endif /* _OBJECT_V3_H_ */

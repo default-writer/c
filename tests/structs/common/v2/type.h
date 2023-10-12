@@ -23,26 +23,16 @@
  * SOFTWARE.
  *
  */
-#ifndef _OBJECT_V1_H_
-#define _OBJECT_V1_H_
+#ifndef _TYPE_V2_H_
+#define _TYPE_V2_H_
 
 #include "std/common.h"
 
-struct typeinfo;
-
-struct object_methods {
-    void* (*create)(struct typeinfo* ti);
-    void (*destroy)(struct typeinfo* ti);
+struct typeinfo {
+    const size_t size;
+#ifdef USE_MEMORY_DEBUG_INFO
+    const char* name;
+#endif
 };
 
-/* definition */
-extern const struct object_methods object_methods_definition;
-
-/* definition */
-#if defined(INLINE)
-const struct object_methods* object = &object_methods_definition;
-#else
-static const struct object_methods* object = &object_methods_definition;
-#endif
-
-#endif /* _OBJECT_V1_H_ */
+#endif /* _TYPE_V2_H_ */

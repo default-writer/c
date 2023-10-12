@@ -23,16 +23,17 @@
  * SOFTWARE.
  *
  */
-#ifndef _TYPE_H_
-#define _TYPE_H_
+#ifndef _TYPE_V1_H_
+#define _TYPE_V1_H_
 
 #include "std/common.h"
 
 struct typeinfo {
+    void* ptr;
     const size_t size;
 #ifdef USE_MEMORY_DEBUG_INFO
     const char* name;
 #endif
 };
 
-#endif /* _TYPE_H_ */
+#endif /* _TYPE_V1_H_ */

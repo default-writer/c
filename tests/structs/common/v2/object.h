@@ -26,9 +26,9 @@
 #ifndef _OBJECT_V2_H_
 #define _OBJECT_V2_H_
 
-#include "common/memory.h"
 #include "std/common.h"
-#include "../type.h"
+
+struct typeinfo;
 
 struct object_methods {
     void* (*create)(struct typeinfo* ti);

@@ -23,30 +23,41 @@
  * SOFTWARE.
  *
  */
-
 #include "common/memory.h"
 #include "std/common.h"
 
-#include "../../common/v1/type.h"
-#include "../../common/v1/public.h"
-#include "../../common/v1/object.h"
+#include "../../common/v3/type.h"
+#include "../../common/v3/public.h"
+#include "../../common/v3/object.h"
 
-static void* object_create(struct typeinfo* ti);
-static void object_destroy(struct typeinfo* ti);
+static void* object_create(const struct class* class);
+static void object_destroy(void* ptr);
 
-static void* object_create(struct typeinfo* ti) {
-    ti->ptr = memory->alloc(ti->size);
+static void* object_create(const struct class* class_ptr) {
+    struct typeinfo* ti = class_ptr->type();
+    struct methodinfo* mi = class_ptr->method();
+    void* data = memory->alloc(ti->size + sizeof(struct class*));
+    struct class** b_class_ptr = (struct class**)data;
+    memcpy(b_class_ptr, &class_ptr, sizeof(struct class*));
+    void* ptr = (void*)(++b_class_ptr);
+    mi->create(ptr);
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("creating type %s (%ld bytes)\n", ti->name, ti->size);
+    printf("creating object of class %s at %016llx (%ld bytes)\n", ti->name, (u64)ptr, ti->size);
 #endif
-    return ti->ptr;
+    return ptr;
 }
 
-static void object_destroy(struct typeinfo* ti) {
+static void object_destroy(void* ptr) {    
+    struct class** b_class_ptr = (struct class**)ptr;
+    void** data = (void**)(--b_class_ptr);
+    struct class* class_ptr = (struct class*)*data;
+    struct typeinfo* ti = class_ptr->type();
+    struct methodinfo* mi = class_ptr->method();
+    mi->destroy(ptr);
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("deleting type %s (%ld bytes)\n", ti->name, ti->size);
+    printf("deleting object of class %s at %016llx (%ld bytes)\n", ti->name, (u64)ptr, ti->size);
 #endif
-    memory->free(ti->ptr, ti->size);
+    memory->free(data, ti->size + sizeof(struct typeinfo*));
 }
 
 const struct object_methods object_methods_definition = {

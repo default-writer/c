@@ -23,26 +23,37 @@
  * SOFTWARE.
  *
  */
-#ifndef _OBJECT_V1_H_
-#define _OBJECT_V1_H_
+#ifndef _PUBLIC_V2_H_
+#define _PUBLIC_V2_H_
 
 #include "std/common.h"
 
-struct typeinfo;
-
-struct object_methods {
-    void* (*create)(struct typeinfo* ti);
-    void (*destroy)(struct typeinfo* ti);
+struct A {
+    u64 counter_a;
 };
 
-/* definition */
-extern const struct object_methods object_methods_definition;
+struct B;
 
-/* definition */
+struct public_B { /* public */
+    struct A base;
+    /* public methods */
+    void (*set_counter_b)(struct B* ptr, u64 value);
+};
+
+struct typeinfo;
+
+struct B_methods {
+    void (*set_counter_b)(struct B* ptr, u64 value);
+    u64 (*get_counter_b)(struct B* ptr);
+    struct typeinfo* (*type)(void);
+};
+
+extern const struct B_methods B_methods_definition;
+
 #if defined(INLINE)
-const struct object_methods* object = &object_methods_definition;
+const struct B_methods* B = &B_methods_definition;
 #else
-static const struct object_methods* object = &object_methods_definition;
+static const struct B_methods* B = &B_methods_definition;
 #endif
 
-#endif /* _OBJECT_V1_H_ */
+#endif /* _PUBLIC_V2_H_ */

@@ -167,7 +167,6 @@
   "workbench.editor.restoreViewState": true,
   "workbench.editor.autoLockGroups": {
     "default": true,
-    "hexEditor.hexedit": false,
     "workbench.editorinputs.searchEditorInput": false,
     "workbench.editor.chatSession": false,
     "imagePreview.previewEditor": false,

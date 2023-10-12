@@ -26,6 +26,9 @@
 
 #include "common/memory.h"
 #include "std/common.h"
+
+#include "../../common/v2/type.h"
+#include "../../common/v2/public.h"
 #include "../../common/v2/object.h"
 
 static void* object_create(struct typeinfo* ti);

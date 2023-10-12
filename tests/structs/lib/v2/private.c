@@ -23,36 +23,50 @@
  * SOFTWARE.
  *
  */
-#ifndef _PUBLIC_H_
-#define _PUBLIC_H_
+#include "../../common/v2/type.h"
+#include "../../common/v2/public.h"
+#include "../../common/v2/object.h"
 
-#include "std/common.h"
-#include "../common/v2/object.h"
-
-struct A {
-    u64 counter_a;
+struct private_B { /* private */
+    u64 counter_b;
 };
 
-struct public_B { /* public */
-    struct A base;
+struct B {
+    struct public_B public;
+    struct private_B private;
 };
 
-struct B;
-
-struct typeinfo;
-
-struct B_methods {
-    void (*set_counter_b)(struct B* ptr, u64 value);
-    u64 (*get_counter_b)(struct B* ptr);
-    struct typeinfo* (*type)(void);
-};
-
-extern const struct B_methods B_methods_definition;
-
-#if defined(INLINE)
-const struct B* B_methods = &B_methods_definition;
-#else
-static const struct B_methods* B = &B_methods_definition;
+struct typeinfo ti = {
+    .size = sizeof(struct B),
+#ifdef USE_MEMORY_DEBUG_INFO
+    .name = "B"
 #endif
+};
 
-#endif /* _PUBLIC_H_ */
+static struct typeinfo* B_typeinfo = &ti;
+
+static void b_methods_set_counter_b(struct B* ptr, u64 value);
+static u64 b_methods_get_counter_b(struct B* ptr);
+static struct typeinfo* b_methods_type(void);
+
+static void b_methods_set_counter_b(struct B* ptr, u64 value) {
+    ptr->private.counter_b = value;
+}
+
+void instance_methods_B_set_counter_b(struct B* ptr, u64 value) {
+    ptr->public.set_counter_b(ptr, value);
+}
+
+static u64 b_methods_get_counter_b(struct B* ptr) {
+    return ptr->private.counter_b;
+}
+
+static struct typeinfo* b_methods_type(void) {
+    return B_typeinfo;
+}
+
+const struct B_methods B_methods_definition = {
+    .set_counter_b = b_methods_set_counter_b,
+    .get_counter_b = b_methods_get_counter_b,
+    .type = b_methods_type
+};

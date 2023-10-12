@@ -25,6 +25,9 @@
  */
 #include "common/memory.h"
 #include "std/common.h"
+
+#include "../common/v1/type.h"
+#include "../common/v1/public.h"
 #include "../common/v1/object.h"
 
 int main(void) {

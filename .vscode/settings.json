@@ -179,7 +179,6 @@
     "workbench.editor.restoreViewState": true,
     "workbench.editor.autoLockGroups": {
         "default": true,
-        "hexEditor.hexedit": false,
         "workbench.editorinputs.searchEditorInput": false,
         "workbench.editor.chatSession": false,
         "imagePreview.previewEditor": false,
@@ -475,7 +474,7 @@
     "terminal.integrated.fastScrollSensitivity": 2,
     "workbench.list.fastScrollSensitivity": 2,
     "workbench.editor.showTabs": true,
-    "editor.fontSize": 12,
+    "editor.fontSize": 20,
     "markdownlint.ignore": [
         ".bazelrc"
     ],
@@ -488,7 +487,5 @@
     "bsv.bazel.executable": "$HOME/.bazel/bazel",
     "bazel.enableCodeLens": true,
     "bazel.buildifierExecutable": "$HOME/.bazel/tools/buildifier",
-    "bazel.executable": "$HOME/.bazel/bazel",
-    "hexeditor.showDecodedText": false,
-    "hexeditor.showOpenFileButton": true
+    "bazel.executable": "$HOME/.bazel/bazel"
 }
