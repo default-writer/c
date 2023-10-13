@@ -75,3 +75,5 @@ bazel-*
 
 .vscode/settings.json
 .vscode/settings.local.json
+
+tests/gcc/bin/*

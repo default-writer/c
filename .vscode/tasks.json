@@ -1,0 +1,15 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build tests/gcc",
+            "type": "shell",
+            "command": "${workspaceFolder}/tests/gcc/build.sh",
+            "problemMatcher": [],
+            "args": ["${workspaceFolder}/tests/gcc"],
+            "options": {
+                "cwd": "${workspaceFolder}/tests/gcc",
+            }
+        }
+    ]
+}

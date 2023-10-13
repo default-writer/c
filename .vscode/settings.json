@@ -474,7 +474,7 @@
     "terminal.integrated.fastScrollSensitivity": 2,
     "workbench.list.fastScrollSensitivity": 2,
     "workbench.editor.showTabs": true,
-    "editor.fontSize": 20,
+    "editor.fontSize": 12,
     "markdownlint.ignore": [
         ".bazelrc"
     ],
