@@ -330,6 +330,10 @@ set(TEST_PRIVATE_STRUCTS3_SOURCE
     tests/structs/private/main-private-structs_v3.c
     tests/structs/lib/v3/object.c
     tests/structs/lib/v3/private.c)
+set(TEST_PRIVATE_STRUCTS4_SOURCE
+    tests/structs/private/main-private-structs_v4.c
+    tests/structs/lib/v4/object.c
+    tests/structs/lib/v4/private.c)
 set(TEST_STRUCTS1_SOURCE tests/structs/v1/main-structs_v1.c tests/structs/lib/v1/object.c)
 set(TEST_STRUCTS2_SOURCE tests/structs/v2/main-structs_v2.c)
 set(TEST_STRUCTS3_SOURCE tests/structs/v3/main-structs_v3.c)
@@ -470,6 +474,7 @@ add_executable(main-linked-list-static-enumerator ${TEST_LINKED_LIST_STATIC_ENUM
 add_executable(main-private-structs1 ${TEST_PRIVATE_STRUCTS1_SOURCE})
 add_executable(main-private-structs2 ${TEST_PRIVATE_STRUCTS2_SOURCE})
 add_executable(main-private-structs3 ${TEST_PRIVATE_STRUCTS3_SOURCE})
+add_executable(main-private-structs4 ${TEST_PRIVATE_STRUCTS4_SOURCE})
 add_executable(main-structs1 ${TEST_STRUCTS1_SOURCE})
 add_executable(main-structs2 ${TEST_STRUCTS2_SOURCE})
 add_executable(main-structs3 ${TEST_STRUCTS3_SOURCE})
@@ -535,6 +540,7 @@ target_link_libraries(main-structs1 PRIVATE list-common)
 target_link_libraries(main-private-structs1 PRIVATE list-common)
 target_link_libraries(main-private-structs2 PRIVATE list-common)
 target_link_libraries(main-private-structs3 PRIVATE list-common)
+target_link_libraries(main-private-structs4 PRIVATE list-common)
 target_link_libraries(main-structs2 PRIVATE list-class)
 target_link_libraries(main-structs3 PRIVATE structs-v3)
 target_link_libraries(main-linked-list PRIVATE stl-linked-list)
