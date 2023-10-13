@@ -325,9 +325,7 @@
   "cmake.configureArgs": [
     "CONFIG_VM_DEBUG_INFO",
     "CONFIG_MEMORY_DEBUG_INFO",
-    "CONFIG_MEMORY_CLEANUP",
-    "CONFIG_GC",
-    "CODE_SANITIZER"
+    "CONFIG_MEMORY_CLEANUP"
   ],
   "clangd.arguments": [
     "--compile-commands-dir=${workspaceFolder}/cmake",

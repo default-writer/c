@@ -5,4 +5,4 @@
 
 int a = 42;
 
-int main() { /*nothing*/ }
+int main(void) { /*nothing*/ }

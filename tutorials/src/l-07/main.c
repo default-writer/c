@@ -5,7 +5,7 @@
 
 int a = 42;
 
-void func_done() { }
+void func_done(void) { }
 
 int main(void) {
     return 0;

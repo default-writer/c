@@ -11,4 +11,4 @@ int main(void) {
     return 0;
 }
 
-void func_done() { }
+void func_done(void) { }

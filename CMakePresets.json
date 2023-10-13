@@ -38,11 +38,11 @@
                 },
                 "CODE_SANITIZER": {
                     "type": "BOOL",
-                    "value": "ON"
+                    "value": "OFF"
                 },
                 "CONFIG_GC": {
                     "type": "BOOL",
-                    "value": "ON"
+                    "value": "OFF"
                 }
             }
         },
@@ -78,11 +78,11 @@
                 },
                 "CODE_SANITIZER": {
                     "type": "BOOL",
-                    "value": "ON"
+                    "value": "OFF"
                 },
                 "CONFIG_GC": {
                     "type": "BOOL",
-                    "value": "ON"
+                    "value": "OFF"
                 }
             }
         }

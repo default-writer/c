@@ -4,4 +4,4 @@
 #pragma GCC diagnostic ignored "-Wextra"
 
 /* this is minimal C program */
-int main() { /*nothing*/ }
+int main(void) { /*nothing*/ }
