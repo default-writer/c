@@ -5,6 +5,15 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "type": "mojo-lldb",
+      "request": "launch",
+      "name": "(mojo) launch",
+      "program": "${workspaceFolder}/tests/mojo/main",
+      "args": [],
+      "env": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
       "name": "(gdb) Launch",
       "type": "cppdbg",
       "request": "launch",
