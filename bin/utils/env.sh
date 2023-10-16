@@ -32,6 +32,11 @@ case "${install}" in
         curl --silent -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | bash
         ;;
 
+    "--mojo-sdk") # installs mojo sdk environment variables in .bashrc
+        grep -qxF '# mojo' $HOME/.bashrc || (tail -1 $HOME/.bashrc | grep -qxF '' || echo '' >> $HOME/.bashrc && echo '# mojo' >> $HOME/.bashrc)
+        grep -qxF 'export MODULAR_HOME=$HOME/.modular' $HOME/.bashrc || echo 'MODULAR_HOME=$HOME/.modular' >> $HOME/.bashrc
+        ;;
+
     "--asan") # installs asan environment variables in .bashrc
         grep -qxF '# asan' $HOME/.bashrc || (tail -1 $HOME/.bashrc | grep -qxF '' || echo '' >> $HOME/.bashrc && echo '# asan' >> $HOME/.bashrc)
         grep -qxF 'export LSAN_OPTIONS=disable_coredump=1:handle_segv=0:verbosity=0:log_threads=0:log_pointers=1' $HOME/.bashrc || echo 'export LSAN_OPTIONS=disable_coredump=1:handle_segv=0:verbosity=0:log_threads=0:log_pointers=1' >> $HOME/.bashrc
