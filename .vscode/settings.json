@@ -486,5 +486,5 @@
     "bazel.enableCodeLens": true,
     "bazel.buildifierExecutable": "$HOME/.bazel/tools/buildifier",
     "bazel.executable": "$HOME/.bazel/bazel",
-    "mojo.modularHomePath": "${workspaceRoot}/.modular"
+    "mojo.modularHomePath": "$HOME/.modular"
 }
