@@ -153,7 +153,8 @@
 		"CircleCI.circleci",
 		"franmastromarino.vs-code-settings-os",
 		"dangmai.workspace-default-settings",
-		"Swellaby.workspace-config-plus"
+		"Swellaby.workspace-config-plus",
+		"modular-mojotools.vscode-mojo"
 	]
     }
   }
