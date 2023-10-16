@@ -44,6 +44,7 @@ case "${install}" in
 
     "--mojo-sdk") # installs mojo sdk
         curl https://get.modular.com | MODULAR_AUTH=${MODULAR_AUTH} sh -
+        modular install mojo
         ;;
 
     "--appwrite-start") # starts appwrite docker
