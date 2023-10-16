@@ -35,6 +35,7 @@ case "${install}" in
     "--mojo-sdk") # installs mojo sdk environment variables in .bashrc
         grep -qxF '# mojo' $HOME/.bashrc || (tail -1 $HOME/.bashrc | grep -qxF '' || echo '' >> $HOME/.bashrc && echo '# mojo' >> $HOME/.bashrc)
         grep -qxF 'export MODULAR_HOME=$HOME/.modular' $HOME/.bashrc || echo 'export MODULAR_HOME=$HOME/.modular' >> $HOME/.bashrc
+        grep -qxF 'export PATH="$HOME/.modular/pkg/packages.modular.com_mojo/bin:$PATH"' $HOME/.bashrc || echo 'export PATH="$HOME/.modular/pkg/packages.modular.com_mojo/bin:$PATH"' >> $HOME/.bashrc
         ;;
 
     "--asan") # installs asan environment variables in .bashrc
