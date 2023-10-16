@@ -42,6 +42,10 @@ case "${install}" in
             appwrite/appwrite:1.3.1
         ;;
 
+    "--mojo-sdk") # installs mojo sdk
+        curl https://get.modular.com | MODULAR_AUTH=${MODULAR_AUTH} sh -
+        ;;
+
     "--appwrite-start") # starts appwrite docker
         docker compose -f "${pwd}/appwrite/docker-compose.yml" up -d --remove-orphans --renew-anon-volumes
         ;;
