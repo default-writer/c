@@ -13,7 +13,7 @@ cd "${path}"
 [[ ! -d "${path}/bin" ]] && mkdir "${path}/bin"
 
 # Build the mojo program
-mojo build "${path}/src/main.mojo" -o "${path}/bin/main"
+mojo build "${path}/src/main.mojo" -o "${path}/bin/main" --debug-level full --no-optimization
 
 echo "OK"
 

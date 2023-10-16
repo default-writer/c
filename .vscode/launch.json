@@ -8,10 +8,11 @@
       "type": "mojo-lldb",
       "request": "launch",
       "name": "(mojo) launch",
-      "program": "${workspaceFolder}/tests/mojo/main",
+      "program": "${workspaceFolder}/tests/mojo/bin/main",
+      "preLaunchTask": "build tests/mojo",
       "args": [],
       "env": [],
-      "cwd": "${workspaceFolder}"
+      "cwd": "${workspaceFolder}/tests/mojo"
     },
     {
       "name": "(gdb) Launch",

@@ -10,6 +10,16 @@
             "options": {
                 "cwd": "${workspaceFolder}/tests/gcc",
             }
+        },
+        {
+            "label": "build tests/mojo",
+            "type": "shell",
+            "command": "${workspaceFolder}/tests/mojo/build.sh",
+            "problemMatcher": [],
+            "args": ["${workspaceFolder}/tests/mojo"],
+            "options": {
+                "cwd": "${workspaceFolder}/tests/mojo",
+            }
         }
-    ]
+   ]
 }
