@@ -68,6 +68,14 @@ case "${install}" in
         upgrade ${updgradeflags}
         ;;
 
+    "--mojo-sdk") # installs mojo sdk
+        update ${updateflags}
+        apt-get install modular
+        modular clean
+        modular install mojo
+        upgrade ${updgradeflags}
+        ;;
+
     "--mpv") # installs mpv
         update ${updateflags}
         apt install -y mpv
