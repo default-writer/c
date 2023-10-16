@@ -58,14 +58,8 @@ static u64 b_get_counter_b(const struct B* ptr);
 static struct typeinfo* b_type(void);
 static struct methodinfo* b_methodinfo(void);
 
-static void set_counter(u64 value) {
-    struct B** ptr;
-    __asm__ (
-        "   movq (%%rbp), %%rax\n"
-        "   subq $8, %%rax\n"
-        "   movq %%rax, %0" : "=r" (ptr)
-    );
-    b_set_counter_b(*ptr, value);
+static void set_counter(struct B* ptr, u64 value) {
+    b_set_counter_b(ptr, value);
 }
 
 static void B_create(struct B* ptr) {

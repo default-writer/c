@@ -66,16 +66,23 @@ int main(void) {
 
     */
 
-    struct B* b = object->create(B);
+    struct B* b1 = object->create(B);
+    struct B* b2 = object->create(B);
 
-    struct public_B* public_ptr = (struct public_B*)b; 
-    public_ptr->base.counter_a = 1;
-    public_ptr->set_counter_b(2); /* "instance" method */
+    struct public_B* public_ptr1 = (struct public_B*)b1; 
+    public_ptr1->base.counter_a = 1;
+    public_ptr1->set_counter_b(b1, 2); /* "instance" method */
 
-    printf("counter a: %016llx\n", public_ptr->base.counter_a);
-    printf("counter b: %016llx\n", public_ptr->get_counter_b(b)); // private_ptr->private.counter_b
+    struct public_B* public_ptr2 = (struct public_B*)b2;
+    public_ptr2->base.counter_a = 1;
+    public_ptr2->set_counter_b(b2, 2); /* "instance" method */
 
-    object->destroy(b);
+    printf("counter a: %016llx\n", public_ptr1->base.counter_a);
+    printf("counter b: %016llx\n", public_ptr2->get_counter_b(b2)); // private_ptr->private.counter_b
+
+
+    object->destroy(b1);
+    object->destroy(b2);
 
 #ifdef USE_MEMORY_DEBUG_INFO
 #if defined(VM_GLOBAL_DEBUG_INFO)

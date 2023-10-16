@@ -8,11 +8,18 @@ if [[ "${path}" == "" ]]; then
     path=$(dirname 0$)
 fi
 
-[[ -d "${path}/bin" ]] || mkdir "${path}/bin"
+cd "${path}"
 
-gcc "${path}/main.c" -o "${path}/bin/main" --debug -save-temps -std=gnu89 -fgnu89-inline -Winline
-mv "${path}/bin/main.s" "${path}/main.c.s"
+[[ ! -d "${path}/bin" ]] && mkdir "${path}/bin"
 
-echo OK
+# Assemble the assembly program
+nasm -f elf64 "${path}/src/my_asm_program.asm" -o "${path}/bin/my_asm_program.o"
+
+# Compile the C program and link with the assembly object
+gcc -o "${path}/bin/my_program" "${path}/src/main.c" "${path}/bin/my_asm_program.o" --save-temps --debug
+
+cp "${path}/bin/my_program-main.s" "${path}/src/main.c.s"
+
+echo "OK"
 
 cd "${cwd}"
