@@ -36,6 +36,7 @@ case "${install}" in
         grep -qxF '# mojo' $HOME/.bashrc || (tail -1 $HOME/.bashrc | grep -qxF '' || echo '' >> $HOME/.bashrc && echo '# mojo' >> $HOME/.bashrc)
         grep -qxF 'export MODULAR_HOME=$HOME/.modular' $HOME/.bashrc || echo 'export MODULAR_HOME=$HOME/.modular' >> $HOME/.bashrc
         grep -qxF 'export PATH="$HOME/.modular/pkg/packages.modular.com_mojo/bin:$PATH"' $HOME/.bashrc || echo 'export PATH="$HOME/.modular/pkg/packages.modular.com_mojo/bin:$PATH"' >> $HOME/.bashrc
+        grep -qxF 'export MOJO_PYTHON_LIBRARY="/usr/lib/x86_64-linux-gnu/libpython3.10.so"' $HOME/.bashrc || echo 'export MOJO_PYTHON_LIBRARY="/usr/lib/x86_64-linux-gnu/libpython3.10.so"' >> $HOME/.bashrc
         ;;
 
     "--asan") # installs asan environment variables in .bashrc
