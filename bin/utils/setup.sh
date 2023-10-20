@@ -88,6 +88,13 @@ case "${install}" in
         upgrade ${updgradeflags}
         ;;
 
+    "--far2l") # installs far2l from ppa
+        update ${updateflags}
+        add-apt-repository ppa:far2l-team/ppa -y
+        apt-get install far2l -y
+        upgrade ${updgradeflags}
+        ;;
+
     "--wsl2") # fixes wsl error /sbin/ldconfig.real: /usr/lib/wsl/lib/libcuda.so.1 is not a symbolic link
         mkdir /usr/lib/wsl/lib2
         ln -s /usr/lib/wsl/lib/* /usr/lib/wsl/lib2
