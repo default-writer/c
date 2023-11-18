@@ -76,6 +76,12 @@ case "${install}" in
         upgrade ${updgradeflags}
         ;;
 
+    "--nasm") # installs nasm
+        update ${updateflags}
+        apt-get install nasm
+        upgrade ${updgradeflags}
+        ;;
+
     "--mpv") # installs mpv
         update ${updateflags}
         apt install -y mpv

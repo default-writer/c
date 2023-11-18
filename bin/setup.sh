@@ -27,6 +27,7 @@ if [ ! "${uid}" -eq 0 ]; then
 fi
 
 "${pwd}/bin/utils/setup.sh" --update
+"${pwd}/bin/utils/setup.sh" --nasm
 "${pwd}/bin/utils/setup.sh" --curl-openssl --no-update --no-upgrade
 "${pwd}/bin/utils/setup.sh" --zip --no-update --no-upgrade
 "${pwd}/bin/utils/setup.sh" --configuration --no-update --no-upgrade

@@ -580,16 +580,13 @@ FILE(WRITE ${CMAKE_BINARY_DIR}/input-substrings.txt
 if(TARGETS)
 
     get_property(main_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
-    get_property(test_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
 
     list(FILTER main_target_names INCLUDE REGEX "^main-")
-    list(FILTER test_target_names INCLUDE REGEX "^test-")
 
     string(REGEX REPLACE ";" " " main_target_names "${main_target_names}")
-    string(REGEX REPLACE ";" " " test_target_names "${test_target_names}")
 
     FILE(WRITE ${CMAKE_BINARY_DIR}/targets.txt
-        "${main_target_names} ${test_target_names}"
+        "${main_target_names}"
     )
 
     get_property(target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
