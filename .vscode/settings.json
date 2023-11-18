@@ -368,7 +368,7 @@
     "editor.indentSize": "tabSize",
     "screencastMode.fontSize": 20,
     "window.zoomLevel": 0,
-    "editor.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
+    "editor.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
     "editor.inlayHints.fontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
     "editor.codeLensFontFamily": "'ProggyVector', 'Ubuntu Mono', 'monospace', monospace",
     "editor.fontLigatures": true,
