@@ -1,14 +1,28 @@
+section .data
+    originalFunction dq 0
+    args             dq 0
 section .text
-global my_asm_function
-my_asm_function:
-    ; Inputs: 
-    ;   - rdi: First argument (int value)
-    ;   - rsi: Second argument (int multiplier)
-    ; Outputs:
-    ;   - rax: Result of the multiplication
-    ; Clobbered registers: None
+    global f_closure
+    global my_asm_function
+    extern original_function
+    extern wrapperFunction
+    extern f
 
-    ; Multiply the first argument by the second argument
+my_asm_function:
+    sub rsp, 24
+    push rdi
+    push rsi
+    call f
+    call wrapperFunction
+    pop rsi
+    pop rdi
+    add rsp, 24
     mov rax, rdi
     imul rax, rsi
+    ret
+f_closure:
+    push rbp      ; Save the base pointer
+    mov rbp, rsp  ; Set up the new base pointer    ; Save the originalFunction and args in the data section
+    mov rsp, rbp  ; Restore the stack pointer
+    pop rbp       ; Restore the base pointer
     ret

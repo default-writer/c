@@ -74,11 +74,14 @@ int main(void) {
     public_ptr1->set_counter_b(b1, 2); /* "instance" method */
 
     struct public_B* public_ptr2 = (struct public_B*)b2;
-    public_ptr2->base.counter_a = 1;
-    public_ptr2->set_counter_b(b2, 2); /* "instance" method */
+    public_ptr2->base.counter_a = 41;
+    public_ptr2->set_counter_b(b2, 42); /* "instance" method */
 
-    printf("counter a: %016llx\n", public_ptr1->base.counter_a);
-    printf("counter b: %016llx\n", public_ptr2->get_counter_b(b2)); // private_ptr->private.counter_b
+    printf("counter p1.a: %016llx\n", public_ptr1->base.counter_a);
+    printf("counter p1.b: %016llx\n", public_ptr1->get_counter_b(b1)); // private_ptr->private.counter_b
+
+    printf("counter p2.a: %016llx\n", public_ptr2->base.counter_a);
+    printf("counter p2.b: %016llx\n", public_ptr1->get_counter_b(b2)); // private_ptr->private.counter_b
 
 
     object->destroy(b1);

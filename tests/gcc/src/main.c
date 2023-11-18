@@ -126,8 +126,27 @@
 //     return 0;
 // }
 #include <stdio.h>
+#include <stdlib.h>
+#include <sys/mman.h>
 
+// Function pointer type
+typedef void (*FuncPtr)();
+
+// External assembly function
 extern int my_asm_function(int value, int multiplier);
+
+void wrapperFunction(void* arg1)
+{
+    printf("%016llx\n", (unsigned long long)arg1);
+}
+
+void original_function() {
+    printf("Original function called.\n");
+}
+
+void f() {
+    printf("Hello, world!\n");
+}
 
 int main() {
     int value = 5;

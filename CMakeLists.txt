@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.22.1)
 
 project(c VERSION 0.0.1 LANGUAGES C CXX)
 
+enable_language(ASM_NASM)
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -9,6 +11,8 @@ set(CMAKE_C_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_ASM_NASM_FLAGS "${CMAKE_ASM_NASM_FLAGS} -f elf64")
+set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> <INCLUDES> ${CMAKE_ASM_NASM_FLAGS} -o <OBJECT> <SOURCE>")
 
 option(CONFIG_VM_DEBUG_INFO "Enables memory vm debug information")
 option(CONFIG_MEMORY_DEBUG_INFO "Enables memory debug information")
@@ -338,6 +342,11 @@ set(TEST_STRUCTS1_SOURCE tests/structs/v1/main-structs_v1.c tests/structs/lib/v1
 set(TEST_STRUCTS2_SOURCE tests/structs/v2/main-structs_v2.c)
 set(TEST_STRUCTS3_SOURCE tests/structs/v3/main-structs_v3.c)
 set(TEST_STRUCTS3_LIB_SOURCE tests/structs/v3/A.c tests/structs/v3/B.c)
+set(TEST_GCC_SOURCE tests/gcc/src/main.c)
+set(TEST_GCC_NASM_SOURCE tests/gcc/src/my_asm_program.asm)
+
+# NASM files
+set_source_files_properties(${TEST_GCC_NASM_SOURCE} PROPERTIES LANGUAGE ASM_NASM)
 
 set(TESTS_SRC_LIST tests/src/test_list/test_list.c)
 set(TESTS_SRC_LIST_MICRO tests/src/test_list-micro/test_list-micro.c)
@@ -389,9 +398,9 @@ add_library(tests STATIC
     ${TESTS_SRC_LIST_MICRO}
     ${TESTS_SRC_POINTER}
 )
-
 add_library(tests-vm-v1 STATIC ${TESTS_SRC_VM_V1})
 add_library(tests-vm-v2 STATIC ${TESTS_SRC_VM_V2})
+add_library(tests-gcc-nasm OBJECT ${TEST_GCC_NASM_SOURCE})
 
 #user
 add_library(user1 SHARED ${LIB_STD_USER1_SOURCE})
@@ -448,6 +457,9 @@ add_library(std-object1 SHARED ${LIB_STD_OBJECT1_SOURCE})
 add_executable(test-hashes ${TEST_HASHES_SOURCE})
 add_executable(test-pointer ${TEST_POINTER_SOURCE})
 add_executable(test-url ${URL_GET})
+add_executable(test-gcc ${TEST_GCC_SOURCE} $<TARGET_OBJECTS:tests-gcc-nasm>)
+
+set_target_properties(test-gcc PROPERTIES NASM_OBJ_FORMAT elf64)
 
 # main 
 add_executable(main-default ${MAIN_STANDARD_SOURCE})

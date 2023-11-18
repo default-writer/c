@@ -16,9 +16,9 @@ cd "${path}"
 nasm -f elf64 "${path}/src/my_asm_program.asm" -o "${path}/bin/my_asm_program.o"
 
 # Compile the C program and link with the assembly object
-gcc -o "${path}/bin/my_program" "${path}/src/main.c" "${path}/bin/my_asm_program.o" --save-temps --debug
+gcc -o "${path}/bin/main" "${path}/src/main.c" "${path}/bin/my_asm_program.o" --save-temps --debug
 
-cp "${path}/bin/my_program-main.s" "${path}/src/main.c.s"
+cp "${path}/bin/main-main.s" "${path}/src/main.c.s"
 
 echo "OK"
 
