@@ -184,7 +184,7 @@
   "editor.matchBrackets": "near",
   "presentation-mode.active": {
     "commands": [],
-    "editor.fontSize": 12,
+    "editor.fontSize": 16,
     "editor.matchBrackets": "near",
     "editor.minimap.enabled": false,
     "workbench.activityBar.visible": true,
@@ -199,7 +199,7 @@
     "window.zoomLevel": 0
   },
   "presentation-mode.configBackup": {
-    "editor.fontSize": 12,
+    "editor.fontSize": 16,
     "editor.matchBrackets": "near",
     "editor.minimap.enabled": false,
     "workbench.activityBar.visible": true,
@@ -353,16 +353,16 @@
   "screencastMode.fontSize": 20,
   "window.zoomLevel": 0,
   "editor.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', monospace', monospace",
-  "editor.inlayHints.fontFamily": "''Monoid', 'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector',  'Fira Code', monospace",
-  "editor.codeLensFontFamily": "''Monoid', 'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector',  'Fira Code', monospace",
+  "editor.inlayHints.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
+  "editor.codeLensFontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
   "editor.fontLigatures": true,
-  "debug.console.fontFamily": "''Monoid', 'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector',  'Fira Code', monospace",
+  "debug.console.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
   "debug.console.fontSize": 12,
-  "scm.inputFontFamily": "''Monoid', 'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector',  'Fira Code', monospace",
-  "chat.editor.fontFamily": "''Monoid', 'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector',  'Fira Code', monospace",
+  "scm.inputFontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
+  "chat.editor.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
   "chat.editor.fontSize": 12,
-  "notebook.output.fontFamily": "''Monoid', 'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector',  'Fira Code', monospace",
-  "terminal.integrated.fontFamily": "''Monoid', 'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector',  'Fira Code', monospace",
+  "notebook.output.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
+  "terminal.integrated.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
   "terminal.integrated.fontSize": 12,
   "terminal.integrated.enablePersistentSessions": true,
   "terminal.integrated.persistentSessionReviveProcess": "onExitAndWindowClose",
@@ -425,7 +425,6 @@
   "files.refactoring.autoSave": false,
   "editor.fontVariations": false,
   "editor.minimap.enabled": false,
-  "workbench.activityBar.visible": true,
   "workbench.statusBar.visible": true,
   "workbench.colorCustomizations": {
     "[Yitzchok (rainglow)]": {}
@@ -456,5 +455,5 @@
   "terminal.integrated.fastScrollSensitivity": 2,
   "workbench.list.fastScrollSensitivity": 2,
   "workbench.editor.showTabs": "multiple",
-  "editor.fontSize": 12
+  "editor.fontSize": 16
 }

@@ -173,7 +173,7 @@
       "window.zoomLevel": 0
     },
     "presentation-mode.configBackup": {
-      "editor.fontSize": 12,
+      "editor.fontSize": 16,
       "window.zoomLevel": 0,
       "terminal.integrated.fontSize": 12,
       "debug.console.fontSize": 12,
@@ -206,10 +206,10 @@
     "clang-tidy.compilerArgs": ["-I/usr/include/gtk-4.0"],
     "screencastMode.fontSize": 20,
     "window.zoomLevel": 0,
-    "debug.console.fontFamily": "''Monoid', 'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector',  'Fira Code', monospace",
-    "chat.editor.fontFamily": "''Monoid', 'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector',  'Fira Code', monospace",
-    "notebook.output.fontFamily": "''Monoid', 'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector',  'Fira Code', monospace",
-    "terminal.integrated.fontFamily": "''Monoid', 'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector',  'Fira Code', monospace",
+    "debug.console.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
+    "chat.editor.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
+    "notebook.output.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
+    "terminal.integrated.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
     "terminal.integrated.enablePersistentSessions": true,
     "terminal.integrated.persistentSessionReviveProcess": "onExitAndWindowClose",
     "terminal.integrated.shellIntegration.history": 1000,
@@ -255,7 +255,6 @@
       ]
     },
     "files.refactoring.autoSave": false,
-    "workbench.activityBar.visible": true,
     "workbench.statusBar.visible": true,
     "workbench.colorCustomizations": {
       "[Yitzchok (rainglow)]": {}
@@ -285,8 +284,8 @@
     "editor.mouseWheelScrollSensitivity": 1,
     "task.quickOpen.history": 30,
     "git.untrackedChanges": "mixed",
-    "editor.fontFamily": "''Monoid', 'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector',  'Fira Code', monospace",
-    "editor.fontSize": 12,
+    "editor.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
+    "editor.fontSize": 16,
     "terminal.integrated.fontSize": 12,
     "debug.console.fontSize": 12,
     "cmake.configureArgs": [
@@ -302,7 +301,13 @@
     "coverage-gutters.showLineCoverage": true,
     "coverage-gutters.showGutterCoverage": false,
     "cSpell.checkOnlyEnabledFileTypes": true,
-    "cSpell.enableFiletypes": ["c", "!json", "!jsonc", "!code-workspace"]
+    "cSpell.enableFiletypes": [
+      "c",
+      "!json",
+      "!jsonc",
+      "!code-workspace"
+    ],
+    "cmake.options.statusBarVisibility": "visible"
   },
   "extensions": {
     "recommendations": [
