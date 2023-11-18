@@ -312,10 +312,10 @@
             }
         ]
     },
-    "editor.defaultFormatter": "trunk.io",
+    "editor.defaultFormatter": null,
     "files.insertFinalNewline": true,
     "[c]": {
-        "editor.defaultFormatter": "trunk.io",
+        "editor.defaultFormatter": null,
         "files.insertFinalNewline": true
     },
     "[shellscript]": {
@@ -436,7 +436,7 @@
     },
     "git.suggestSmartCommit": false,
     "[jsonc]": {
-        "editor.defaultFormatter": "trunk.io"
+        "editor.defaultFormatter": null
     },
     "files.refactoring.autoSave": false,
     "editor.fontVariations": false,
