@@ -342,11 +342,11 @@ set(TEST_STRUCTS1_SOURCE tests/structs/v1/main-structs_v1.c tests/structs/lib/v1
 set(TEST_STRUCTS2_SOURCE tests/structs/v2/main-structs_v2.c)
 set(TEST_STRUCTS3_SOURCE tests/structs/v3/main-structs_v3.c)
 set(TEST_STRUCTS3_LIB_SOURCE tests/structs/v3/A.c tests/structs/v3/B.c)
-set(TEST_GCC_SOURCE tests/gcc/src/main.c)
-set(TEST_GCC_NASM_SOURCE tests/gcc/src/my_asm_program.asm)
 
-# NASM files
-set_source_files_properties(${TEST_GCC_NASM_SOURCE} PROPERTIES LANGUAGE ASM_NASM)
+# demo
+set(GCC_SOURCE tests/gcc/src/main.c)
+set(GCC_NASM_SOURCE tests/gcc/src/my_asm_program.asm)
+set_source_files_properties(${GCC_NASM_SOURCE} PROPERTIES LANGUAGE ASM_NASM)
 
 set(TESTS_SRC_LIST tests/src/test_list/test_list.c)
 set(TESTS_SRC_LIST_MICRO tests/src/test_list-micro/test_list-micro.c)
@@ -379,13 +379,13 @@ set(MAIN_VM2_SOURCE tests/v2/main-vm2.c)
 set(MAIN_TESTS_VM1_SOURCE tests/v1/main-tests_v1.c)
 set(MAIN_TESTS_VM2_SOURCE tests/v2/main-tests_v2.c)
 
-#examples
+# demo
 set(SUBSTRINGS src/examples/substrings/main.c)
 set(LEETCODE_VALID_PARENTHESES src/examples/leetcode/valid-parentheses.c)
 set(LEETCODE_LONGEST_VALID_PARENTHESES src/examples/leetcode/longest-valid-parentheses.c)
 set(URL_GET src/examples/url/main.c)
 
-#zen
+# zen
 set(ZEN_SOURCE zen/zen.c)
 
 include_directories(src)
@@ -400,9 +400,11 @@ add_library(tests STATIC
 )
 add_library(tests-vm-v1 STATIC ${TESTS_SRC_VM_V1})
 add_library(tests-vm-v2 STATIC ${TESTS_SRC_VM_V2})
-add_library(tests-gcc-nasm OBJECT ${TEST_GCC_NASM_SOURCE})
 
-#user
+# demo
+add_library(demo-gcc-nasm OBJECT ${GCC_NASM_SOURCE})
+
+# user
 add_library(user1 SHARED ${LIB_STD_USER1_SOURCE})
 
 # all
@@ -456,10 +458,11 @@ add_library(std-object1 SHARED ${LIB_STD_OBJECT1_SOURCE})
 # test
 add_executable(test-hashes ${TEST_HASHES_SOURCE})
 add_executable(test-pointer ${TEST_POINTER_SOURCE})
-add_executable(test-url ${URL_GET})
-add_executable(test-gcc ${TEST_GCC_SOURCE} $<TARGET_OBJECTS:tests-gcc-nasm>)
 
-set_target_properties(test-gcc PROPERTIES NASM_OBJ_FORMAT elf64)
+# demo
+add_executable(demo-url ${URL_GET})
+add_executable(demo-gcc ${GCC_SOURCE} $<TARGET_OBJECTS:demo-gcc-nasm>)
+set_target_properties(demo-gcc PROPERTIES NASM_OBJ_FORMAT elf64)
 
 # main 
 add_executable(main-default ${MAIN_STANDARD_SOURCE})
@@ -498,7 +501,7 @@ add_executable(c-substrings ${SUBSTRINGS})
 add_executable(c-valid-parentheses ${LEETCODE_VALID_PARENTHESES})
 add_executable(c-longest-valid-parentheses ${LEETCODE_LONGEST_VALID_PARENTHESES})
 
-#zen
+# zen
 add_executable(zen ${ZEN_SOURCE})
 
 # all
@@ -560,8 +563,8 @@ target_link_libraries(main-linked-list-static-enumerator PRIVATE stl-linked-list
 target_link_libraries(main-tests-vm1 PRIVATE list-micro list-pointer1 tests-vm-v1 vm-v1)
 target_link_libraries(main-tests-vm2 PRIVATE tests tests-vm-v2 list-micro list-pointer2 vm-v2 list-pointer2 list-micro)
 
-#examples
-target_link_libraries(test-url PRIVATE curl ctypes)
+# demo
+target_link_libraries(demo-url PRIVATE curl ctypes)
 
 configure_file(all_english_words.txt ${CMAKE_BINARY_DIR}/all_english_words.txt COPYONLY)
 configure_file(file.txt ${CMAKE_BINARY_DIR}/file.txt COPYONLY)

@@ -255,6 +255,7 @@
       ]
     },
     "files.refactoring.autoSave": false,
+    "workbench.activityBar.visible": true,
     "workbench.statusBar.visible": true,
     "workbench.colorCustomizations": {
       "[Yitzchok (rainglow)]": {}
