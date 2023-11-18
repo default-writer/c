@@ -211,7 +211,7 @@
         "window.zoomLevel": 0
     },
     "presentation-mode.configBackup": {
-        "editor.fontSize": 12,
+        "editor.fontSize": 16,
         "editor.matchBrackets": "near",
         "editor.minimap.enabled": false,
         "workbench.activityBar.visible": true,
@@ -471,7 +471,6 @@
     "terminal.integrated.fastScrollSensitivity": 2,
     "workbench.list.fastScrollSensitivity": 2,
     "workbench.editor.showTabs": "multiple",
-    "editor.fontSize": 16,
     "markdownlint.ignore": [
         ".bazelrc"
     ],
@@ -485,5 +484,6 @@
     "bazel.enableCodeLens": true,
     "bazel.buildifierExecutable": "$HOME/.bazel/tools/buildifier",
     "bazel.executable": "$HOME/.bazel/bazel",
-    "cmake.options.statusBarVisibility": "visible"
+    "cmake.options.statusBarVisibility": "visible",
+    "editor.fontSize": 16
 }

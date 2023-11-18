@@ -454,6 +454,5 @@
   "workbench.list.horizontalScrolling": false,
   "terminal.integrated.fastScrollSensitivity": 2,
   "workbench.list.fastScrollSensitivity": 2,
-  "workbench.editor.showTabs": "multiple",
   "editor.fontSize": 16
 }
