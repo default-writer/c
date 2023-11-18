@@ -451,7 +451,7 @@
   "workbench.list.horizontalScrolling": false,
   "terminal.integrated.fastScrollSensitivity": 2,
   "workbench.list.fastScrollSensitivity": 2,
-  "workbench.editor.showTabs": true,
+  "workbench.editor.showTabs": "multiple",
   "editor.fontSize": 12,
   "markdownlint.ignore": [".bazelrc"],
   "bsv.bazel.buildFlags": [
