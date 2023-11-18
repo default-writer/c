@@ -40,6 +40,13 @@
       ]
     },
     {
+      "name": "(lldb) demo-gcc",
+      "type": "lldb",
+      "request": "launch",
+      "program": "${workspaceFolder}/cmake/demo-gcc",
+      "initCommands": ["settings set target.disable-aslr false"]
+    },    
+    {
       "type": "bashdb",
       "request": "launch",
       "name": "bash-debug",
