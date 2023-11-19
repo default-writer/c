@@ -35,8 +35,11 @@ struct B {
     struct private_B private;
 };
 
-static void B_create(struct B* ptr);
-static void B_destroy(struct B* ptr);
+static const struct public_B** B_enter(struct object* ptr);
+static void B_leave(const struct public_B** ptr);
+
+static void B_create_object(struct B* ptr);
+static void B_destroy_object(struct B* ptr);
 
 struct typeinfo ti = {
     .size = sizeof(struct B),
@@ -46,36 +49,46 @@ struct typeinfo ti = {
 };
 
 struct methodinfo mi = {
-    .create = B_create,
-    .destroy = B_destroy
+    .create = B_create_object,
+    .destroy = B_destroy_object
 };
 
 static struct typeinfo* B_typeinfo = &ti;
 static struct methodinfo* B_methodinfo = &mi;
 
-static void b_set_counter_b(struct B* ptr, u64 value);
-static u64 b_get_counter_b(const struct B* ptr);
+static void b_set_counter_b(u64 value);
+static u64 b_get_counter_b();
 static struct typeinfo* b_type(void);
 static struct methodinfo* b_methodinfo(void);
 
-static void B_create(struct B* ptr) {
-    struct B* b = (struct B*)ptr;
-    b->public.get_counter_b = b_get_counter_b;
-    b->public.set_counter_b = b_set_counter_b;
+static struct B* this;
+const static struct public_B** public = (const struct public_B**)&this;
+
+const static struct public_B** B_enter(struct object* ptr) {
+    this = (struct B*)ptr;
+    return public;
 }
 
-static void B_destroy(struct B* ptr) {
-    struct B* b = (struct B*)ptr;
-    b->public.get_counter_b = 0;
-    b->public.set_counter_b = 0;
+static void B_leave(const struct public_B** ptr) {
+    this = 0;
 }
 
-static void b_set_counter_b(struct B* ptr, u64 value) {
-    ptr->private.counter_b = value;
+static void B_create_object(struct B* ptr) {
+    ptr->public.get_counter_b = b_get_counter_b;
+    ptr->public.set_counter_b = b_set_counter_b;
 }
 
-static u64 b_get_counter_b(const struct B* ptr) {
-    return ptr->private.counter_b;
+static void B_destroy_object(struct B* ptr) {
+    ptr->public.get_counter_b = 0;
+    ptr->public.set_counter_b = 0;
+}
+
+static u64 b_get_counter_b() {
+    return this->private.counter_b;
+}
+
+static void b_set_counter_b(u64 value) {
+    this->private.counter_b = value;
 }
 
 static struct typeinfo* b_type(void) {
@@ -88,5 +101,7 @@ static struct methodinfo* b_method(void) {
 
 const struct class B_class_definition = {
     .type = b_type,
-    .method = b_method
+    .method = b_method,
+    .enter = B_enter,
+    .leave = B_leave
 };

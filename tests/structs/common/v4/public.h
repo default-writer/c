@@ -33,12 +33,13 @@ struct A {
 };
 
 struct B;
+struct object;
 
 struct public_B { /* public */
     struct A base;
     /* public methods */
-    void (*set_counter_b)(struct B* ptr, u64 value);
-    u64 (*get_counter_b)(const struct B* ptr);
+    u64 (*get_counter_b)();
+    void (*set_counter_b)(u64 value);
 };
 
 struct typeinfo;
@@ -47,6 +48,8 @@ struct methodinfo;
 struct class {
     struct typeinfo* (*type)(void);
     struct methodinfo* (*method)(void);
+    const struct public_B** (*enter)(struct object* ptr);
+    void (*leave)(const struct public_B** ptr);
 };
 
 extern const struct class B_class_definition;

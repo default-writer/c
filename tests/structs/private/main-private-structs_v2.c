@@ -75,19 +75,28 @@ int main(void) {
 
     */
 
-    struct B* b = object->create(B->type());
+    struct B* b1 = object->create(B->type());
+    struct B* b2 = object->create(B->type());
 
     // now, since we use the same pointers for friend_B and B, we can obviously eliminate the need of friend_B
     // structure cause it is not needed anymore (we don't need it anywhere)
 
-    struct public_B* public_ptr = (struct public_B*)b; 
-    public_ptr->base.counter_a = 1;
-    B->set_counter_b(b, 2); // private_ptr->private.counter_b = 2
+    struct public_B* public_ptr1 = (struct public_B*)b1;
+    public_ptr1->base.counter_a = 1;
+    B->set_counter_b(b1, 2);
 
-    printf("counter a: %016llx\n", public_ptr->base.counter_a);
-    printf("counter b: %016llx\n",B->get_counter_b(b)); // private_ptr->private.counter_b
+    struct public_B* public_ptr2 = (struct public_B*)b2;
+    public_ptr2->base.counter_a = 41;
+    B->set_counter_b(b2, 42);
 
-    object->destroy(b);
+    printf("counter a: %016llx\n", public_ptr1->base.counter_a);
+    printf("counter b: %016llx\n",B->get_counter_b(b1));
+
+    printf("counter a: %016llx\n", public_ptr2->base.counter_a);
+    printf("counter b: %016llx\n",B->get_counter_b(b2));
+
+    object->destroy(b1);
+    object->destroy(b2);
 
 #ifdef USE_MEMORY_DEBUG_INFO
 #if defined(VM_GLOBAL_DEBUG_INFO)

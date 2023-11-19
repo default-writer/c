@@ -66,23 +66,34 @@ int main(void) {
 
     */
 
-    struct B* b1 = object->create(B);
-    struct B* b2 = object->create(B);
+    struct object* b1 = object->create(B);
+    struct object* b2 = object->create(B);
 
     struct public_B* public_ptr1 = (struct public_B*)b1; 
     public_ptr1->base.counter_a = 1;
-    public_ptr1->set_counter_b(b1, 2); /* "instance" method */
+
+    const struct public_B** b1_this = B->enter(b1);
+    (*b1_this)->set_counter_b(2); /* "instance" method */
+    B->leave(b1_this);
 
     struct public_B* public_ptr2 = (struct public_B*)b2;
     public_ptr2->base.counter_a = 41;
-    public_ptr2->set_counter_b(b2, 42); /* "instance" method */
+
+    const struct public_B** b2_this = B->enter(b2);
+    (*b2_this)->set_counter_b(42); /* "instance" method */
+    B->leave(b2_this);
 
     printf("counter p1.a: %016llx\n", public_ptr1->base.counter_a);
-    printf("counter p1.b: %016llx\n", public_ptr1->get_counter_b(b1)); // private_ptr->private.counter_b
+    
+    const struct public_B** b1_this_1 = B->enter(b1);
+    printf("counter p1.b: %016llx\n", (*b1_this_1)->get_counter_b());
+    B->leave(b1_this_1);
 
     printf("counter p2.a: %016llx\n", public_ptr2->base.counter_a);
-    printf("counter p2.b: %016llx\n", public_ptr1->get_counter_b(b2)); // private_ptr->private.counter_b
-
+    
+    const struct public_B** b2_this_1 = B->enter(b2);
+    printf("counter p2.b: %016llx\n", (*b2_this_1)->get_counter_b());
+    B->leave(b2_this_1);
 
     object->destroy(b1);
     object->destroy(b2);

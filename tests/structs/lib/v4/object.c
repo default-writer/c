@@ -29,30 +29,30 @@
 #include "../../common/v4/type.h"
 #include "../../common/v4/object.h"
 
-static void* object_create(const struct class* class);
-static void object_destroy(void* ptr);
+static struct object* object_create(const struct class* class);
+static void object_destroy(struct object* ptr);
 
-static void* object_create(const struct class* class_ptr) {
+static struct object* object_create(const struct class* class_ptr) {
     struct typeinfo* ti = class_ptr->type();
     struct methodinfo* mi = class_ptr->method();
-    void* data = memory->alloc(ti->size + sizeof(struct class*));
+    void* data = memory->alloc(sizeof(struct class*) + ti->size);
     struct class** b_class_ptr = (struct class**)data;
     memcpy(b_class_ptr, &class_ptr, sizeof(struct class*));
     void* ptr = (void*)(++b_class_ptr);
-    mi->create(ptr);
+    mi->create((struct B*)ptr);
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("creating object of class %s at %016llx (%ld bytes)\n", ti->name, (u64)ptr, ti->size);
 #endif
     return ptr;
 }
 
-static void object_destroy(void* ptr) {    
+static void object_destroy(struct object* ptr) {    
     struct class** b_class_ptr = (struct class**)ptr;
     void** data = (void**)(--b_class_ptr);
     struct class* class_ptr = (struct class*)*data;
     struct typeinfo* ti = class_ptr->type();
     struct methodinfo* mi = class_ptr->method();
-    mi->destroy(ptr);
+    mi->destroy((struct B*)ptr);
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("deleting object of class %s at %016llx (%ld bytes)\n", ti->name, (u64)ptr, ti->size);
 #endif

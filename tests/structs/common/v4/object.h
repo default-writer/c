@@ -32,8 +32,8 @@
 struct typeinfo;
 
 struct object_methods {
-    void* (*create)(const struct class* ptr);
-    void (*destroy)(void* ptr);
+    struct object* (*create)(const struct class* ptr);
+    void (*destroy)(struct object* ptr);
 };
 
 /* definition */

@@ -38,8 +38,8 @@ struct typeinfo {
 struct B;
 
 struct methodinfo {
-    void (*create)(struct B*);
-    void (*destroy)(struct B*);
+    void (*create)(struct B* ptr);
+    void (*destroy)(struct B* ptr);
 };
 
 #endif /* _TYPE_V3_H_ */
