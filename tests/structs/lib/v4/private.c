@@ -62,9 +62,9 @@ static struct typeinfo* b_type(void);
 static struct methodinfo* b_methodinfo(void);
 
 static struct B* this;
-const static struct public_B** public = (const struct public_B**)&this;
+static const struct public_B** public = (const struct public_B**)&this;
 
-const static struct public_B** B_enter(struct object* ptr) {
+static const struct public_B** B_enter(struct object* ptr) {
     this = (struct B*)ptr;
     return public;
 }
