@@ -58,14 +58,10 @@ static u64 b_get_counter_b(const struct B* ptr);
 static struct typeinfo* b_type(void);
 static struct methodinfo* b_methodinfo(void);
 
-static void set_counter(struct B* ptr, u64 value) {
-    b_set_counter_b(ptr, value);
-}
-
 static void B_create(struct B* ptr) {
     struct B* b = (struct B*)ptr;
     b->public.get_counter_b = b_get_counter_b;
-    b->public.set_counter_b = set_counter;
+    b->public.set_counter_b = b_set_counter_b;
 }
 
 static void B_destroy(struct B* ptr) {
