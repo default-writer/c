@@ -463,5 +463,5 @@
   "bazel.buildifierExecutable": "$HOME/.bazel/tools/buildifier",
   "bazel.executable": "$HOME/.bazel/bazel",
   "cmake.options.statusBarVisibility": "visible",
-  "editor.fontSize": 16
+  "editor.fontSize": 12  
 }

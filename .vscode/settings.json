@@ -60,7 +60,7 @@
         "**/*.cpp": "${workspaceFolder}/${relativeFileDirname}/${fileBasenameNoExtension}.c.s"
     },
     "lldb.displayFormat": "auto",
-    "lldb.showDisassembly": "auto",
+    "lldb.showDisassembly": "always",
     "lldb.dereferencePointers": true,
     "lldb.consoleMode": "commands",
     "statusbar_command.commands": [
@@ -485,5 +485,5 @@
     "bazel.buildifierExecutable": "$HOME/.bazel/tools/buildifier",
     "bazel.executable": "$HOME/.bazel/bazel",
     "cmake.options.statusBarVisibility": "visible",
-    "editor.fontSize": 16
+    "editor.fontSize": 12
 }

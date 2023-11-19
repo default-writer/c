@@ -205,7 +205,7 @@
     "clang-tidy.lintOnSave": true,
     "clang-tidy.compilerArgs": ["-I/usr/include/gtk-4.0"],
     "screencastMode.fontSize": 20,
-    "window.zoomLevel": 1,
+    "window.zoomLevel": 0,
     "debug.console.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
     "chat.editor.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
     "notebook.output.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
@@ -255,7 +255,6 @@
       ]
     },
     "files.refactoring.autoSave": false,
-    "workbench.activityBar.visible": true,
     "workbench.statusBar.visible": true,
     "workbench.colorCustomizations": {
       "[Yitzchok (rainglow)]": {}
@@ -285,7 +284,7 @@
     "task.quickOpen.history": 30,
     "git.untrackedChanges": "mixed",
     "editor.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
-    "editor.fontSize": 16,
+    "editor.fontSize": 12,
     "terminal.integrated.fontSize": 12,
     "debug.console.fontSize": 12,
     "cmake.configureArgs": [

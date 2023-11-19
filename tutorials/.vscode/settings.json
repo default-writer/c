@@ -425,7 +425,6 @@
   "files.refactoring.autoSave": false,
   "editor.fontVariations": false,
   "editor.minimap.enabled": false,
-  "workbench.activityBar.visible": true,
   "workbench.statusBar.visible": true,
   "workbench.colorCustomizations": {
     "[Yitzchok (rainglow)]": {}
@@ -455,5 +454,5 @@
   "workbench.list.horizontalScrolling": false,
   "terminal.integrated.fastScrollSensitivity": 2,
   "workbench.list.fastScrollSensitivity": 2,
-  "editor.fontSize": 16
+  "editor.fontSize": 12
 }

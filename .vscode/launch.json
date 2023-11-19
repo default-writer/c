@@ -47,6 +47,13 @@
       "initCommands": ["settings set target.disable-aslr false"]
     },    
     {
+      "name": "(lldb) demo-inline",
+      "type": "lldb",
+      "request": "launch",
+      "program": "${workspaceFolder}/cmake/demo-inline",
+      "initCommands": ["settings set target.disable-aslr false"]
+    }, 
+    {
       "type": "bashdb",
       "request": "launch",
       "name": "bash-debug",
