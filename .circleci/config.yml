@@ -24,7 +24,7 @@ jobs:
           command: ./bin/init.sh --init --optional
       - run:
           name: "coverage"
-          command: ./bin/coverage.sh --all
+          command: ./bin/coverageall.sh --all
       - store_artifacts:
           path: coverage
       - coveralls/upload:
