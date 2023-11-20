@@ -31,10 +31,12 @@ jobs:
       - store_artifacts:
           path: coverage
   coverage:
+    steps:
       - run:
           name: "lcov"
           command: "${pwd}/bin/coverage.sh" --target ${source} --coverage
   coveralls:
+    steps:
       - coveralls/upload:
           coverage_file: ./coverage/lcov.info
 
