@@ -53,5 +53,11 @@ workflows:
     jobs:
       - init
       - tests
+          requires:
+            - init
       - coverage
+          requires:
+            - tests
       - coveralls
+          requires:
+            - coverage
