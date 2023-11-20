@@ -56,7 +56,7 @@ static void object_destroy(struct object* ptr) {
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("deleting object of class %s at %016llx (%ld bytes)\n", ti->name, (u64)ptr, ti->size);
 #endif
-    memory->free(data, ti->size + sizeof(struct typeinfo*));
+    memory->free(data, ti->size + sizeof(struct class*));
 }
 
 const struct object_methods object_methods_definition = {
