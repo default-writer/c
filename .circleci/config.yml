@@ -23,6 +23,7 @@ jobs:
           name: "init"
           command: ./bin/init.sh --init --optional
   tests:
+    steps:
     parallelism: 6
       - run:
           name: "coverage"
@@ -42,4 +43,7 @@ jobs:
 workflows:
   coverage-workflow:
     jobs:
-      - code-coverage
+      - init
+      - tests
+      - coverage
+      - coveralls
