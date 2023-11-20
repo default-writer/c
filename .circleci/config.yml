@@ -25,7 +25,7 @@ jobs:
   tests:
     parallelism: 6
     machine:
-      resource_class: small
+      resource_class: Large
     steps:
       - run:
           name: "coverage"
@@ -34,14 +34,14 @@ jobs:
           path: coverage
   coverage:
     machine:
-      resource_class: small
+      resource_class: Large
     steps:
       - run:
           name: "lcov"
           command: ./bin/coverage.sh --all --coverage
   coveralls:
     machine:
-      resource_class: small
+      resource_class: Large
     steps:
       - coveralls/upload:
           coverage_file: ./coverage/lcov.info
