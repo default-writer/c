@@ -52,11 +52,12 @@ workflows:
   coverage-workflow:
     jobs:
       - init
-      - tests
-          requires: init
-      - coverage
+      - tests:
+          requires:
+            - init
+      - coverage:
           requires:
             - tests
-      - coveralls
+      - coveralls:
           requires:
             - coverage
