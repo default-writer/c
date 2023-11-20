@@ -85,15 +85,17 @@ int main(void) {
 
     printf("counter p1.a: %016llx\n", public_ptr1->base.counter_a);
     
-    const struct public_B** b1_this_1 = B->enter(b1);
-    printf("counter p1.b: %016llx\n", (*b1_this_1)->get_counter_b());
-    B->leave(b1_this_1);
+    const struct public_B** public_b1 = B->enter(b1);
+    const struct public_B* this_b1 = *public_b1;
+    printf("counter p1.b: %016llx\n", this_b1->get_counter_b());
+    B->leave(public_b1);
 
     printf("counter p2.a: %016llx\n", public_ptr2->base.counter_a);
     
-    const struct public_B** b2_this_1 = B->enter(b2);
-    printf("counter p2.b: %016llx\n", (*b2_this_1)->get_counter_b());
-    B->leave(b2_this_1);
+    const struct public_B** public_b2 = B->enter(b2);
+    const struct public_B* this_b2 = *public_b2;
+    printf("counter p2.b: %016llx\n", this_b2->get_counter_b());
+    B->leave(public_b2);
 
     object->destroy(b1);
     object->destroy(b2);
