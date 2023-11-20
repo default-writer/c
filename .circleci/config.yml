@@ -24,6 +24,8 @@ jobs:
           command: ./bin/init.sh --init --optional
   tests:
     parallelism: 6
+    machine:
+      resource_class: small
     steps:
       - run:
           name: "coverage"
@@ -31,11 +33,15 @@ jobs:
       - store_artifacts:
           path: coverage
   coverage:
+    machine:
+      resource_class: small
     steps:
       - run:
           name: "lcov"
-          command: "${pwd}/bin/coverage.sh" --target ${source} --coverage
+          command: ./bin/coverage.sh --all --coverage
   coveralls:
+    machine:
+      resource_class: small
     steps:
       - coveralls/upload:
           coverage_file: ./coverage/lcov.info
