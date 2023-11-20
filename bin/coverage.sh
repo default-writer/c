@@ -135,6 +135,10 @@ while (($#)); do
             fi
             ;;
 
+        "--coverage") # [optional] joins coverage info in coverage directory
+            coverage="--coverage"
+            ;;
+
         "--help") # [optional] shows command description
             help
             ;;
@@ -156,86 +160,84 @@ if [[ ! "${dir}" == "" ]]; then
     build="${dir}"
 fi
 
+directories=${build[@]}
+
 if [[ "${clean}" == "--clean" ]]; then
     if [[ -d "${dir}" ]]; then
         rm -rf "${dir}"
     fi
 fi
 
-targets=( $(get-source-targets ${source}) )
+if [[ "${coverage}" == "" ]]; then
 
-if [[ "${targets[@]}" == "" ]]; then
-    if [[ "${help}" == "--help" ]]; then
-        help
+    targets=( $(get-source-targets ${source}) )
+
+    if [[ "${targets[@]}" == "" ]]; then
+        if [[ "${help}" == "--help" ]]; then
+            help
+        fi
+        echo no source targets: ${source} >&2
+        exit 8
     fi
-    echo no source targets: ${source} >&2
-    exit 8
+
+    coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" )
+
+    for directory in ${directories[@]}; do
+        for f in ${coverage[@]}; do
+            if [[ -d "${directory}" ]]; then
+                find "${directory}" -type f -name "callgrind.out.*" -delete
+                find "${directory}" -type f -name "*.s" -delete
+                find "${directory}" -type f -name "${f}" -delete
+            fi
+        done
+    done
+
+    [[ ! -d "${pwd}/coverage" ]] && mkdir "${pwd}/coverage"
+
+    case "${index}" in
+        "")
+            "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v1 ${silent} ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v2 --gc ${silent} ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v3 --sanitize ${silent} ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v4 --gc --sanitize ${silent} ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v5 --valgrind ${silent} ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v6 --gc --valgrind ${silent} ${opts[@]}
+            ;;
+        "1")
+            "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v1 ${silent} ${opts[@]}
+            ;;
+        "2")
+            "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v2 --gc ${silent} ${opts[@]}
+            ;;
+        "3")
+            "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v3 --sanitize ${silent} ${opts[@]}
+            ;;
+        "4")
+            "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v4 --gc --sanitize ${silent} ${opts[@]}
+            ;;
+        "5")
+            "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v5 --valgrind ${silent} ${opts[@]}
+            ;;
+        "6")
+            "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v6 --gc --valgrind ${silent} ${opts[@]}
+            ;;
+    esac
 fi
 
-directories=${build[@]}
-
-coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" "*.info" )
-
-for directory in ${directories[@]}; do
-    for f in ${coverage[@]}; do
+if [[ "${coverage}" == "--coverage" ]]; then
+    for directory in ${directories[@]}; do
         if [[ -d "${directory}" ]]; then
-            find "${directory}" -type f -name "callgrind.out.*" -delete
-            find "${directory}" -type f -name "*.s" -delete
-            find "${directory}" -type f -name "${f}" -delete
+            files=$(find "${directory}" -type f -name "lcov.info" -exec echo {} \;)
+            for file in ${files[@]}; do
+                targets=( $(get-source-targets ${source}) )
+                for target in ${targets[@]}; do
+                    cp "${file}" "${pwd}/coverage/${directory}-${source}.info"
+                done
+            done
+            # find "${directory}" -type f -name "lcov.info" -delete
         fi
     done
-done
-
-[[ ! -d "${pwd}/coverage" ]] && mkdir "${pwd}/coverage"
-
-find "${pwd}/coverage" -type f -name "lcov.info" -delete
-
-targets=( $(get-source-targets ${source}) )
-for target in ${targets[@]}; do
-    if [[ -f "${pwd}/coverage/${target}.info" ]]; then
-        rm "${pwd}/coverage/${target}.info"
-    fi
-done
-
-case "${index}" in
-    "") ;& "1")
-        "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v1 ${silent} ${opts[@]}
-        ;;    
-    "") ;& "2")
-        "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v2 --gc ${silent} ${opts[@]}
-        ;;    
-    "") ;& "3")
-        "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v3 --sanitize ${silent} ${opts[@]}
-        ;;    
-    "") ;& "4")
-        "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v4 --gc --sanitize ${silent} ${opts[@]}
-        ;;    
-    "") ;& "5")
-        "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v5 --valgrind ${silent} ${opts[@]}
-    ;;    
-    "") ;& "6")
-        "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v6 --gc --valgrind ${silent} ${opts[@]}
-    ;;    
-esac
-
-for directory in ${directories[@]}; do
-    if [[ -d "${directory} " ]]; then
-        files=$(find "${directory}" -type f -name "lcov.info" -exec echo {} \;)
-        for file in ${files[@]}; do
-            targets=( $(get-source-targets ${source}) )
-            for target in ${targets[@]}; do
-                cp "${file}" "${pwd}/coverage/${directory}-${source}.info"
-            done
-        done
-    fi
-done
-
-files=$(find "${pwd}/coverage" -type f -name "*.info" -exec echo {} \;)
-if [[ ! "${files[@]}" == "" ]]; then
-    find "${pwd}/coverage" -type f -name "*.info" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
 fi
-
-$(find "$(pwd)/coverage" -type f -not -name "lcov.info" -exec rm {} \;)
 
 if [[ "${silent}" == "--silent" ]]; then
     exec 1>&2 2>&-

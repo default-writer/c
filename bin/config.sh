@@ -171,16 +171,6 @@ find "${pwd}" -type f -name "callgrind.out.*" -delete
 find "${pwd}/src" -type f -name "*.s" -delete
 find "${pwd}/tests" -type f -name "*.s" -delete
 
-coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" "*.info" )
-
-for f in ${coverage[@]}; do
-    if [[ -d "${build}" ]]; then
-        find "${build}" -type f -name "callgrind.out.*" -delete
-        find "${build}" -type f -name "*.s" -delete
-        find "${build}" -type f -name "${f}" -delete
-    fi
-done
-
 export MAKEFLAGS=-j8
 export LD_LIBRARY_PATH="${pwd}/lib"
 

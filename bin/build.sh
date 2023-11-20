@@ -147,7 +147,7 @@ fi
 
 directories=${build[@]}
 
-coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" "*.info" )
+coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" )
 
 for directory in ${directories[@]}; do
     for f in ${coverage[@]}; do

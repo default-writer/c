@@ -160,16 +160,6 @@ for target in ${targets[@]}; do
     fi
 done
 
-coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" "*.info" )
-
-for f in ${coverage[@]}; do
-    if [[ -d "${build}" ]]; then
-        find "${build}" -type f -name "callgrind.out.*" -delete
-        find "${build}" -type f -name "*.s" -delete
-        find "${build}" -type f -name "${f}" -delete
-    fi
-done
-
 export MAKEFLAGS=-j8
 export LD_LIBRARY_PATH="${pwd}/lib"
 

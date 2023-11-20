@@ -163,18 +163,10 @@ for target in ${targets[@]}; do
         rm "${output}/log-${target}.txt"
     fi
 
-    if [[ -f "${build}/${target}.info" ]]; then
-        rm "${build}/${target}.info"
-    fi
-done
-
-coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" "*.info" )
-
-for f in ${coverage[@]}; do
-    if [[ -d "${build}" ]]; then
-        find "${build}" -type f -name "callgrind.out.*" -delete
-        find "${build}" -type f -name "*.s" -delete
-        find "${build}" -type f -name "${f}" -delete
+    if [[ "${clean}" == "--clean" ]]; then
+        if [[ -f "${build}/${target}.info" ]]; then
+            rm "${build}/${target}.info"
+        fi
     fi
 done
 
