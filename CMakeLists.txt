@@ -580,6 +580,12 @@ FILE(WRITE ${CMAKE_BINARY_DIR}/input-substrings.txt
     "as\n"
 )
 
+# Enable testing
+enable_testing()
+
+# test
+add_test(NAME main-tests-vm1 COMMAND main-tests-vm1)
+
 if(TARGETS)
 
     get_property(main_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)

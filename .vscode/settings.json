@@ -60,7 +60,7 @@
         "**/*.cpp": "${workspaceFolder}/${relativeFileDirname}/${fileBasenameNoExtension}.c.s"
     },
     "lldb.displayFormat": "auto",
-    "lldb.showDisassembly": "always",
+    "lldb.showDisassembly": "auto",
     "lldb.dereferencePointers": true,
     "lldb.consoleMode": "commands",
     "statusbar_command.commands": [

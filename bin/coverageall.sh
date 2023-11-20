@@ -115,7 +115,6 @@ fi
 "${pwd}/bin/coverage.sh" --target ${source} --index 6 ${silent} ${opts[@]}
 "${pwd}/bin/coverage.sh" --target ${source} --coverage ${silent} ${opts[@]}
 
-
 files=$(find "${pwd}/coverage" -type f -name "*.info" -exec echo {} \;)
 if [[ ! "${files[@]}" == "" ]]; then
     find "${pwd}/coverage" -type f -name "*.info" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
