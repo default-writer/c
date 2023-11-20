@@ -36,36 +36,26 @@ opts=( "${@:2}" )
 ## Usage: ${script} <option> [optional]
 ## ${commands}
 
-case "${install}" in
 
-    "")
-        source="all"
-        ;;
-
-    "--target") # builds and runs specified target
-        source="$2"
-        opts=( "${@:3}" )
-        ;;
-
-    "--all") # builds and runs specified target
-        source="all"
-        opts=( "${@:2}" )
-        ;;
-
-    "--help") # [optional] shows command description
-        help
-        ;;
-
-    *)
-        help
-        ;;
-
-esac
-
-for opt in ${opts[@]}; do
-    case ${opt} in
+while (($#)); do
+    case "$1" in
 
         "")
+            source="all"
+            ;;
+
+        "--target") # builds and runs specified target
+            shift
+            source="$1"
+            opts=( "${@:2}" )
+            ;;
+
+        "--all") # builds and runs specified target
+            source="all"
+            ;;
+
+        "--help") # [optional] shows command description
+            help
             ;;
 
         "--dir="*) # [optional] build directory
@@ -108,6 +98,43 @@ for opt in ${opts[@]}; do
             vm_debug="--vm-debug"
             ;;
 
+        "--index") # [optional] uses sharding coverage tests
+            shift
+            index="$1"
+            opts=( "${@:2}" )
+
+            if [[ "${index}" == "1" ]]; then
+                gc=""
+                sanitize=""
+                valgrind=""
+            fi
+            if [[ "${index}" == "2" ]]; then
+                gc="--gc"
+                sanitize=""
+                valgrind=""
+            fi
+            if [[ "${index}" == "3" ]]; then
+                gc=""
+                sanitize="--sanitize"
+                valgrind=""
+            fi
+            if [[ "${index}" == "4" ]]; then
+                gc="--gc"
+                sanitize="--sanitize"
+                valgrind=""
+            fi
+            if [[ "${index}" == "5" ]]; then
+                gc=""
+                sanitize=""
+                valgrind="--valgrind"
+            fi
+            if [[ "${index}" == "6" ]]; then
+                gc="--gc"
+                sanitize=""
+                valgrind="--valgrind"
+            fi
+            ;;
+
         "--help") # [optional] shows command description
             help
             ;;
@@ -115,8 +142,8 @@ for opt in ${opts[@]}; do
         *)
             help
             ;;
-
     esac
+    shift
 done
 
 if [[ "${silent}" == "--silent" ]]; then
@@ -170,35 +197,37 @@ for target in ${targets[@]}; do
     fi
 done
 
-registered=$(echo "${sanitize} ${gc} ${valgrind} ${callgrind}" | xargs)
-
-if [[ "${registered[@]}" == "" || ("${gc}" == "" && "${sanitize}" == "" && "${valgrind}" == "") ]]; then
-    "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v1 ${silent} ${opts[@]}
-fi
-if [[ "${registered[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "" && "${valgrind}" == "") ]]; then
-    "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v2 --gc ${silent} ${opts[@]}
-fi
-if [[ "${registered[@]}" == "" || ("${gc}" == "" && "${sanitize}" == "--sanitize" && "${valgrind}" == "") ]]; then
-    "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v3 --sanitize ${silent} ${opts[@]}
-fi
-if [[ "${registered[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "--sanitize" && "${valgrind}" == "") ]]; then
-    "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v4 --gc --sanitize ${silent} ${opts[@]}
-fi
-if [[ "${registered[@]}" == "" || ("${gc}" == "" && "${sanitize}" == "" && "${valgrind}" == "--valgrind") ]]; then
-    "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v5 --valgrind ${silent} ${opts[@]}
-fi
-if [[ "${registered[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "" && "${valgrind}" == "--valgrind") ]]; then
-    "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v6 --gc --valgrind ${silent} ${opts[@]}
-fi
+case "${index}" in
+    "") ;& "1")
+        "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v1 ${silent} ${opts[@]}
+        ;;    
+    "") ;& "2")
+        "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v2 --gc ${silent} ${opts[@]}
+        ;;    
+    "") ;& "3")
+        "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v3 --sanitize ${silent} ${opts[@]}
+        ;;    
+    "") ;& "4")
+        "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v4 --gc --sanitize ${silent} ${opts[@]}
+        ;;    
+    "") ;& "5")
+        "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v5 --valgrind ${silent} ${opts[@]}
+    ;;    
+    "") ;& "6")
+        "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v6 --gc --valgrind ${silent} ${opts[@]}
+    ;;    
+esac
 
 for directory in ${directories[@]}; do
-    files=$(find "${directory}" -type f -name "lcov.info" -exec echo {} \;)
-    for file in ${files[@]}; do
-        targets=( $(get-source-targets ${source}) )
-        for target in ${targets[@]}; do
-            cp "${file}" "${pwd}/coverage/${directory}-${source}.info"
+    if [[ -d "${directory} " ]]; then
+        files=$(find "${directory}" -type f -name "lcov.info" -exec echo {} \;)
+        for file in ${files[@]}; do
+            targets=( $(get-source-targets ${source}) )
+            for target in ${targets[@]}; do
+                cp "${file}" "${pwd}/coverage/${directory}-${source}.info"
+            done
         done
-    done
+    fi
 done
 
 files=$(find "${pwd}/coverage" -type f -name "*.info" -exec echo {} \;)
