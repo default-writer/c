@@ -19,9 +19,9 @@ jobs:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
-      # - run:
-      #     name: "init"
-      #     command: ./bin/init.sh --init --setup --optional
+      - run:
+          name: "init"
+          command: ./bin/init.sh --init --optional
       - run:
           name: "coverage"
           command: ./bin/coverage.sh --all
