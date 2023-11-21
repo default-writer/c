@@ -23,8 +23,8 @@ jobs:
           name: "init"
           command: ./bin/init.sh --init --optional
   tests:
-    machine:
-      resource_class: hack2root/c-project:latest #cimg/base:edge-22.04
+    docker:
+      - image: hack2root/c-project:latest #cimg/base:edge-22.04
     steps:
       - run:
           name: "coverage"
@@ -47,15 +47,15 @@ jobs:
       - store_artifacts:
           path: coverage
   coverage:
-    machine:
-      resource_class: hack2root/c-project:latest #cimg/base:edge-22.04
+    docker:
+      - image: hack2root/c-project:latest #cimg/base:edge-22.04
     steps:
       - run:
           name: "lcov"
           command: ./bin/coverage.sh --all --coverage
   coveralls:
-    machine:
-      resource_class: hack2root/c-project:latest #cimg/base:edge-22.04
+    docker:
+      - image: hack2root/c-project:latest #cimg/base:edge-22.04
     steps:
       - coveralls/upload:
           coverage_file: ./coverage/lcov.info
