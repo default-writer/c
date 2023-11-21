@@ -8,7 +8,7 @@ orbs:
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/configuration-reference/#jobs
 jobs:
-  init:
+  code-coverage:
     # Specify the execution environment. You can specify an image from Docker Hub or use one of our convenience images from CircleCI's Developer Hub.
     # See: https://circleci.com/docs/configuration-reference/#executor-job
     docker:
@@ -22,10 +22,6 @@ jobs:
       - run:
           name: "init"
           command: ./bin/init.sh --init --optional
-  tests:
-    docker:
-      - image: hack2root/c-project:latest #cimg/base:edge-22.04
-    steps:
       - run:
           name: "coverage"
           command: ./bin/coverage.sh --all --index 1
@@ -44,19 +40,11 @@ jobs:
       - run:
           name: "coverage"
           command: ./bin/coverage.sh --all --index 6
+      - run:
+          name: "coverage"
+          command: ./bin/coverage.sh --all --coverage
       - store_artifacts:
           path: coverage
-  coverage:
-    docker:
-      - image: hack2root/c-project:latest #cimg/base:edge-22.04
-    steps:
-      - run:
-          name: "lcov"
-          command: ./bin/coverage.sh --all --coverage
-  coveralls:
-    docker:
-      - image: hack2root/c-project:latest #cimg/base:edge-22.04
-    steps:
       - coveralls/upload:
           coverage_file: ./coverage/lcov.info
 
@@ -65,13 +53,4 @@ jobs:
 workflows:
   coverage-workflow:
     jobs:
-      - init
-      - tests:
-          requires:
-            - init
-      - coverage:
-          requires:
-            - tests
-      - coveralls:
-          requires:
-            - coverage
+      - code-coverage
