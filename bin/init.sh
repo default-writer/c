@@ -26,6 +26,8 @@ if [ "${uid}" -eq 0 ]; then
     exit
 fi
 
+install="$1"
+
 . "${pwd}/bin/scripts/load.sh"
 
 init="--init"
