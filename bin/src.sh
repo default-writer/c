@@ -36,40 +36,20 @@ opts=( "${@:2}" )
 ## Usage: ${script} <option> [optional]
 ## ${commands}
 
-case "${install}" in
+while (($#)); do
+    case "$1" in
 
-    "")
-        source="all"
-        ;;
+        "--all") # builds and runs specified target
+            source="all"
+            ;;
 
-    "--target") # builds and runs specified target
-        source="$2"
-        opts=( "${@:3}" )
-        ;;
-
-    "--all") # builds and runs specified target
-        source="all"
-        opts=( "${@:2}" )
-        ;;
-
-    "--help") # [optional] shows command description
-        help
-        ;;
-
-    *)
-        help
-        ;;
-
-esac
-
-for opt in ${opts[@]}; do
-    case ${opt} in
-
-        "")
+        "--target="*) # builds and runs specified target
+            source=${1#*=}
+            opts=( "${@:2}" )
             ;;
 
         "--dir="*) # [optional] build directory
-            dir=${opt#*=}
+            dir=${1#*=}
             ;;
 
         "--clean") # [optional] cleans up directories before build
@@ -117,7 +97,13 @@ for opt in ${opts[@]}; do
             ;;
 
     esac
+    shift
 done
+
+if [[ "${install}" == "" ]]; then
+    help
+    exit;
+fi
 
 if [[ "${silent}" == "--silent" ]]; then
     exec 2>&1 >/dev/null
@@ -160,24 +146,22 @@ for linked_target in ${targets[@]}; do
         c-*) ;& main-*) ;& test-*)
             ;;
         *)
-            ${pwd}/bin/build.sh --target ${linked_target} ${opts[@]}
+            ${pwd}/bin/build.sh --target=${linked_target} ${opts[@]}
             ;;
     esac
 done
-
 
 for linked_target in ${targets[@]}; do
     case ${linked_target} in
         c-*) ;& main-*) ;& test-*)
             if [[ " ${targets[*]} " == *" ${linked_target} "* ]]; then
-                ${pwd}/bin/coverage.sh --target ${linked_target} ${opts[@]}
+                ${pwd}/bin/coverage.sh --target=${linked_target} ${opts[@]}
             fi
             ;;
         *)
             ;;
     esac
 done
-
 
 files=$(find "${pwd}/coverage" -type f -name "*.info" -exec echo {} \;)
 if [[ ! "${files[@]}" == "" ]]; then

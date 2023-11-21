@@ -36,40 +36,21 @@ opts=( "${@:2}" )
 ## Usage: ${script} <option> [optional]
 ## ${commands}
 
-case "${install}" in
+while (($#)); do
+    case "$1" in
 
-    "")
-        source="all"
-        ;;
+        "--all") # builds and runs specified target
+            source="all"
+            ;;
 
-    "--target") # builds and runs specified target
-        source="$2"
-        opts=( "${@:3}" )
-        ;;
-
-    "--all") # builds and runs specified target
-        source="all"
-        opts=( "${@:2}" )
-        ;;
-
-    "--help") # [optional] shows command description
-        help
-        ;;
-
-    *)
-        help
-        ;;
-
-esac
-
-for opt in ${opts[@]}; do
-    case ${opt} in
-
-        "")
+        "--target="*) # builds and runs specified target
+            source=${1#*=}
+            opts=( "${@:2}" )
             ;;
 
         "--dir="*) # [optional] build directory
-            dir=${opt#*=}
+            dir=${1#*=}
+            opts=( "${@:2}" )
             ;;
 
         "--clean") # [optional] cleans up directories before build
@@ -78,6 +59,7 @@ for opt in ${opts[@]}; do
 
         "--sanitize") # [optional] builds using sanitizer
             sanitize="--sanitize"
+            opts=( "${@:2}" )
             ;;
 
         "--mocks") # [optional] builds with mocks
@@ -86,6 +68,7 @@ for opt in ${opts[@]}; do
 
         "--gc") # [optional] builds with garbage collector
             gc="--gc"
+            opts=( "${@:2}" )
             ;;
 
         "--silent") # [optional] suppress verbose output
@@ -94,6 +77,7 @@ for opt in ${opts[@]}; do
 
         "--valgrind") # [optional] runs using valgrind
             valgrind="--valgrind"
+            opts=( "${@:2}" )
             ;;
 
         "--callgrind") # [optional] runs using valgrind with tool callgrind
@@ -117,7 +101,13 @@ for opt in ${opts[@]}; do
             ;;
 
     esac
+    shift
 done
+
+if [[ "${install}" == "" ]]; then
+    help
+    exit;
+fi
 
 if [[ "${silent}" == "--silent" ]]; then
     exec 2>&1 >/dev/null
@@ -150,13 +140,20 @@ directories=${build[@]}
 coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" )
 
 for directory in ${directories[@]}; do
-    for f in ${coverage[@]}; do
+    if [[ "${clean}" == "--clean" ]]; then
         if [[ -d "${directory}" ]]; then
-            find "${directory}" -type f -name "callgrind.out.*" -delete
-            find "${directory}" -type f -name "*.s" -delete
-            find "${directory}" -type f -name "${f}" -delete
+            rm -rf "${directory}"
         fi
-    done
+    fi
+    if [[ "${clean}" == "" ]]; then
+        for f in ${coverage[@]}; do
+            if [[ -d "${directory}" ]]; then
+                find "${directory}" -type f -name "callgrind.out.*" -delete
+                find "${directory}" -type f -name "*.s" -delete
+                find "${directory}" -type f -name "${f}" -delete
+            fi
+        done
+    fi
 done
 
 registered=$(echo "${sanitize} ${gc} ${valgrind} ${callgrind}" | xargs)
@@ -164,22 +161,22 @@ registered=$(echo "${sanitize} ${gc} ${valgrind} ${callgrind}" | xargs)
 [[ ! -d "${pwd}/build" ]] && mkdir "${pwd}/build"
 
 if [[ "${registered[@]}" == "" || ("${gc}" == "" && "${sanitize}" == "" && "${valgrind}" == "") ]]; then
-    "${pwd}/bin/utils/build.sh" --target ${source} --dir=build-v1 ${silent} ${opts[@]}
+    "${pwd}/bin/utils/build.sh" --target=${source} --dir=build-v1 ${opts[@]}
 fi
 if [[ "${registered[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "" && "${valgrind}" == "") ]]; then
-    "${pwd}/bin/utils/build.sh" --target ${source} --dir=build-v2 --gc ${silent} ${opts[@]}
+    "${pwd}/bin/utils/build.sh" --target=${source} --dir=build-v2 --gc ${opts[@]}
 fi
 if [[ "${registered[@]}" == "" || ("${gc}" == "" && "${sanitize}" == "--sanitize" && "${valgrind}" == "") ]]; then
-    "${pwd}/bin/utils/build.sh" --target ${source} --dir=build-v3 --sanitize ${silent} ${opts[@]}
+    "${pwd}/bin/utils/build.sh" --target=${source} --dir=build-v3 --sanitize ${opts[@]}
 fi
 if [[ "${registered[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "--sanitize" && "${valgrind}" == "") ]]; then
-    "${pwd}/bin/utils/build.sh" --target ${source} --dir=build-v4 --gc --sanitize ${silent} ${opts[@]}
+    "${pwd}/bin/utils/build.sh" --target=${source} --dir=build-v4 --gc --sanitize ${opts[@]}
 fi
 if [[ "${registered[@]}" == "" || ("${gc}" == "" && "${sanitize}" == "" && "${valgrind}" == "--valgrind") ]]; then
-    "${pwd}/bin/utils/build.sh" --target ${source} --dir=build-v5 --valgrind ${silent} ${opts[@]}
+    "${pwd}/bin/utils/build.sh" --target=${source} --dir=build-v5 --valgrind ${opts[@]}
 fi
 if [[ "${registered[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "" && "${valgrind}" == "--valgrind") ]]; then
-    "${pwd}/bin/utils/build.sh" --target ${source} --dir=build-v6 --gc --valgrind ${silent} ${opts[@]}
+    "${pwd}/bin/utils/build.sh" --target=${source} --dir=build-v6 --gc --valgrind ${opts[@]}
 fi
 
 for directory in ${directories[@]}; do

@@ -36,30 +36,21 @@ opts=( "${@:2}" )
 ## Usage: ${script} <option> [optional]
 ## ${commands}
 
-
 while (($#)); do
     case "$1" in
-
-        "")
-            source="all"
-            ;;
-
-        "--target") # builds and runs specified target
-            shift
-            source="$1"
-            opts=( "${@:2}" )
-            ;;
 
         "--all") # builds and runs specified target
             source="all"
             ;;
 
-        "--help") # [optional] shows command description
-            help
+        "--target="*) # builds and runs specified target
+            source=${1#*=}
+            opts=( "${@:2}" )
             ;;
 
         "--dir="*) # [optional] build directory
-            dir=${opt#*=}
+            dir=${1#*=}
+            opts=( "${@:2}" )
             ;;
 
         "--clean") # [optional] cleans up directories before coverage
@@ -98,11 +89,9 @@ while (($#)); do
             vm_debug="--vm-debug"
             ;;
 
-        "--index") # [optional] uses sharding coverage tests
-            shift
-            index="$1"
+        "--index="*) # [optional] uses sharding coverage tests
+            index="${1#*=}"
             opts=( "${@:2}" )
-
             if [[ "${index}" == "1" ]]; then
                 gc=""
                 sanitize=""
@@ -137,6 +126,7 @@ while (($#)); do
 
         "--coverage") # [optional] joins coverage info in coverage directory
             coverage="--coverage"
+            opts=( "${@:2}" )
             ;;
 
         "--help") # [optional] shows command description
@@ -146,9 +136,15 @@ while (($#)); do
         *)
             help
             ;;
+
     esac
     shift
 done
+
+if [[ "${install}" == "" ]]; then
+    help
+    exit;
+fi
 
 if [[ "${silent}" == "--silent" ]]; then
     exec 2>&1 >/dev/null
@@ -195,33 +191,42 @@ if [[ "${coverage}" == "" ]]; then
     [[ ! -d "${pwd}/coverage" ]] && mkdir "${pwd}/coverage"
 
     case "${index}" in
-        "")
-            "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v1 ${silent} ${opts[@]}
-            "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v2 --gc ${silent} ${opts[@]}
-            "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v3 --sanitize ${silent} ${opts[@]}
-            "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v4 --gc --sanitize ${silent} ${opts[@]}
-            "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v5 --valgrind ${silent} ${opts[@]}
-            "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v6 --gc --valgrind ${silent} ${opts[@]}
+
+        "all")
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=coverage-v1 ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=coverage-v2 --gc ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=coverage-v3 --sanitize ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=coverage-v4 --gc --sanitize ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=coverage-v5 --valgrind ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=coverage-v6 --gc --valgrind ${opts[@]}
             ;;
+
         "1")
-            "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v1 ${silent} ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=coverage-v1 ${opts[@]}
             ;;
+
         "2")
-            "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v2 --gc ${silent} ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=coverage-v2 --gc ${opts[@]}
             ;;
+
         "3")
-            "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v3 --sanitize ${silent} ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=coverage-v3 --sanitize ${opts[@]}
             ;;
+
         "4")
-            "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v4 --gc --sanitize ${silent} ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=coverage-v4 --gc --sanitize ${opts[@]}
             ;;
+
         "5")
-            "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v5 --valgrind ${silent} ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=coverage-v5 --valgrind ${opts[@]}
             ;;
+
         "6")
-            "${pwd}/bin/utils/coverage.sh" --target ${source} --dir=coverage-v6 --gc --valgrind ${silent} ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=coverage-v6 --gc --valgrind ${opts[@]}
             ;;
+
     esac
+
 fi
 
 if [[ "${coverage}" == "--coverage" ]]; then

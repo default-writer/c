@@ -49,9 +49,9 @@ case "${install}" in
         "${pwd}/bin/coverage.sh" $args ${opts[@]}
         ;;
 
-    *)
-        help
-        exit
-        ;;
-
 esac
+
+if [[ "${install}" == "" ]]; then
+    help
+    exit;
+fi

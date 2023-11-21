@@ -32,74 +32,82 @@ install="$1"
 ## Usage: ${script} <option>
 ## ${commands}
 
-case "${install}" in
+while (($#)); do
+    case "$1" in
 
-    "--clangd") # uninstalls clangd 16.0.2
-        rm -rf "${pwd}/clangd"
-        ;;
+        "--clangd") # uninstalls clangd 16.0.2
+            rm -rf "${pwd}/clangd"
+            ;;
 
-    "--cmake") # uninstalls cmake cmake 3.25.3
-        rm -rf "${pwd}/cmake-3.25"
-        ;;
+        "--cmake") # uninstalls cmake cmake 3.25.3
+            rm -rf "${pwd}/cmake-3.25"
+            ;;
 
-    "--git") # unsets git config global environment variables
-        git config --global --unset safe.directory
-        git config --global --unset pull.rebase
-        ;;
+        "--git") # unsets git config global environment variables
+            git config --global --unset safe.directory
+            git config --global --unset pull.rebase
+            ;;
 
-    "--submodule-rexo") # uninstalls rexoas git submodule
-        submodule-uninstall ${pwd} .deps/rexo
-        ;;
+        "--submodule-rexo") # uninstalls rexoas git submodule
+            submodule-uninstall ${pwd} .deps/rexo
+            ;;
 
-    "--submodule-musl") # uninstalls muslas git submodule
-        submodule-uninstall ${pwd} .deps/musl
-        ;;
+        "--submodule-musl") # uninstalls muslas git submodule
+            submodule-uninstall ${pwd} .deps/musl
+            ;;
 
-    "--submodule-vcpkg") # uninstalls vcpkg as git submodule
-        submodule-uninstall ${pwd} .deps/vcpkg
-        ;;
+        "--submodule-vcpkg") # uninstalls vcpkg as git submodule
+            submodule-uninstall ${pwd} .deps/vcpkg
+            ;;
 
-    "--submodule-raylib") # uninstalls rexo as raylib submodule
-        submodule-uninstall ${pwd} .deps/raylib
-        ;;
+        "--submodule-raylib") # uninstalls rexo as raylib submodule
+            submodule-uninstall ${pwd} .deps/raylib
+            ;;
 
-    "--submodule-lldb-mi") # uninstalls lldb-mi as git submodule
-        submodule-uninstall ${pwd} .deps/lldb-mi
-        ;;
+        "--submodule-lldb-mi") # uninstalls lldb-mi as git submodule
+            submodule-uninstall ${pwd} .deps/lldb-mi
+            ;;
 
-    "--hooks") # removes prepare-commit-msg hook from .git
-        rm -rf .git/hooks/prepare-commit-msg
-        ;;
+        "--hooks") # removes prepare-commit-msg hook from .git
+            rm -rf .git/hooks/prepare-commit-msg
+            ;;
 
-    "--pyenv") # removes .pyenv folder
-        rm -rf $HOME/.pyenv
-        ;;
+        "--pyenv") # removes .pyenv folder
+            rm -rf $HOME/.pyenv
+            ;;
 
-    "--devcontainer-extensions") # installs vs code .devcontainers extensions
-        code --log error --uninstall-extension ms-vscode-remote.remote-containers &>/dev/null
-        ;;
+        "--devcontainer-extensions") # installs vs code .devcontainers extensions
+            code --log error --uninstall-extension ms-vscode-remote.remote-containers &>/dev/null
+            ;;
 
-    "--docker-extensions") # installs vs code docker extensions
-        code --log error --uninstall-extension ms-azuretools.vscode-docker &>/dev/null
-        ;;
+        "--docker-extensions") # installs vs code docker extensions
+            code --log error --uninstall-extension ms-azuretools.vscode-docker &>/dev/null
+            ;;
 
-    "--marp-extention") # istalls marp vscode extension
-        code --log error --uninstall-extension marp-team.marp-vscode &>/dev/null
-        ;;
+        "--marp-extention") # istalls marp vscode extension
+            code --log error --uninstall-extension marp-team.marp-vscode &>/dev/null
+            ;;
 
-    "--run-on-save") # istalls run on save vsode extension
-        code --log error --uninstall-extension emeraldwalk.RunOnSave &>/dev/null
-        ;;
+        "--run-on-save") # istalls run on save vsode extension
+            code --log error --uninstall-extension emeraldwalk.RunOnSave &>/dev/null
+            ;;
 
-    "--help") # [optional] shows command description
-        help
-        ;;
+        "--help") # [optional] shows command description
+            help
+            ;;
 
-    *)
-        help
-        ;;
+        *)
+            help
+            ;;
 
-esac
+    esac
+    shift
+done
+
+if [[ "${install}" == "" ]]; then
+    help
+    exit;
+fi
 
 [[ $SHLVL -gt 2 ]] || echo OK
 

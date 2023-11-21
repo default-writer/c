@@ -28,18 +28,14 @@ fi
 
 . "${pwd}/bin/scripts/load.sh"
 
+init="--init"
+
 ## Installs project dependencies
 ## Usage: ${script} <option> [optional]
 ## ${commands}
 
-init="--init"
-
 while (($#)); do
     case "$1" in
-
-        "")
-            init="--init"
-            ;;
 
         "--init") # initializes project dependencies
             init="--init"
@@ -75,7 +71,6 @@ while (($#)); do
 
         "--silent") # suppress verbose output
             silent="--silent"
-            shift
             ;;
 
         "--help") # shows command description
@@ -85,9 +80,15 @@ while (($#)); do
         *)
             help
             ;;
+
     esac
     shift
 done
+
+if [[ "${install}" == "" ]]; then
+    help
+    exit;
+fi
 
 if [[ "${silent}" == "--silent" ]]; then
     exec 2>&1 >/dev/null

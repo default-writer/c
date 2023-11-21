@@ -34,49 +34,58 @@ install="$1"
 ## Usage: ${script} <option>
 ## ${commands}
 
-case "${install}" in
 
-    "--llvm") # A style complying with the LLVM coding standards
-        format=("LLVM")
-        ;;
+while (($#)); do
+    case "$1" in
 
-    "--google") # A style complying with Google’s C++ style guide
-        format=("Google")
-        ;;
+        "--llvm") # A style complying with the LLVM coding standards
+            format=("LLVM")
+            ;;
 
-    "--chromium") # A style complying with Chromium’s style guide
-        format=("Chromium")
-        ;;
+        "--google") # A style complying with Google’s C++ style guide
+            format=("Google")
+            ;;
 
-    "--mozilla") # A style complying with Mozilla’s style guide
-        format=("Mozilla")
-        ;;
+        "--chromium") # A style complying with Chromium’s style guide
+            format=("Chromium")
+            ;;
 
-    "--webkit") # A style complying with WebKit’s style guide
-        format=("WebKit")
-        ;;
+        "--mozilla") # A style complying with Mozilla’s style guide
+            format=("Mozilla")
+            ;;
 
-    "--microsoft") # A style complying with Microsoft’s style guide
-        format=("Microsoft")
-        ;;
+        "--webkit") # A style complying with WebKit’s style guide
+            format=("WebKit")
+            ;;
 
-    "--gnu") # A style complying with the GNU coding standards
-        format=("GNU")
-        ;;
- 
-    "--clang-format") # Use the .clang-format file from the parent directory
-        format=("InheritParentConfig")
-        ;;
+        "--microsoft") # A style complying with Microsoft’s style guide
+            format=("Microsoft")
+            ;;
 
-    "--help") # [optional] shows command description
-        help
-        ;;
+        "--gnu") # A style complying with the GNU coding standards
+            format=("GNU")
+            ;;
+     
+        "--clang-format") # Use the .clang-format file from the parent directory
+            format=("InheritParentConfig")
+            ;;
 
-    *)
-        help
-        ;;
+        "--help") # [optional] shows command description
+            help
+            ;;
 
-esac
+        *)
+            help
+            ;;
+
+    esac
+    shift
+done
+
+if [[ "${install}" == "" ]]; then
+    help
+    exit;
+fi
 
 main=$(find "${pwd}/src" -type f -name "*.[c|h]" -exec echo {} \; | grep -v -s "rexo" | sed -n -e 's/^.*\/\(src.*\)$/\1/p')
 for i in ${main[@]}; do

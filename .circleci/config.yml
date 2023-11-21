@@ -24,25 +24,7 @@ jobs:
           command: ./bin/init.sh --init --optional
       - run:
           name: "coverage"
-          command: ./bin/coverage.sh --all --index 1
-      - run:
-          name: "coverage"
-          command: ./bin/coverage.sh --all --index 2
-      - run:
-          name: "coverage"
-          command: ./bin/coverage.sh --all --index 3
-      - run:
-          name: "coverage"
-          command: ./bin/coverage.sh --all --index 4
-      - run:
-          name: "coverage"
-          command: ./bin/coverage.sh --all --index 5
-      - run:
-          name: "coverage"
-          command: ./bin/coverage.sh --all --index 6
-      - run:
-          name: "coverage"
-          command: ./bin/coverage.sh --all --coverage
+          command: ./bin/coverageall.sh --all
       - store_artifacts:
           path: coverage
       - coveralls/upload:

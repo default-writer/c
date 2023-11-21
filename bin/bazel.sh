@@ -28,43 +28,29 @@ fi
 
 install="$1"
 
-opts=( "${@:2}" )
-
 . "${pwd}/bin/scripts/load.sh"
 
 ## Builds main binaries using bazel
 ## Usage: ${script} <option> [optional]
 ## ${commands}
 
-case "${install}" in
+while (($#)); do
+    case "$1" in
 
-    "")
-        source="all"
-        ;;
+        "--all") # builds and runs specified target
+            source="all"
+            ;;
 
-    "--target") # builds and runs specified target
-        source="$2"
-        opts=( "${@:3}" )
-        ;;
-
-    "--help") # [optional] shows command description
-        help
-        ;;
-
-    *)
-        help
-        ;;
-
-esac
-
-for opt in ${opts[@]}; do
-    case ${opt} in
-
-        "")
+        "--target="*) # builds and runs specified target
+            source=${1#*=}
             ;;
 
         "--silent") # [optional] suppress verbose output
             silent="--silent"
+            ;;
+
+        "--help") # [optional] shows command description
+            help
             ;;
 
         *)
@@ -72,7 +58,13 @@ for opt in ${opts[@]}; do
             ;;
 
     esac
+    shift
 done
+
+if [[ "${install}" == "" ]]; then
+    help
+    exit;
+fi
 
 if [[ "${silent}" == "--silent" ]]; then
     exec 2>&1 >/dev/null

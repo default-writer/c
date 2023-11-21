@@ -40,31 +40,38 @@ opts=( "${@:2}" )
 ## Usage: ${script} <option> [optional]
 ## ${commands}
 
-case "${install}" in
+while (($#)); do
+    case "$1" in
 
-    "")
-        source="all"
-        ;;
+        "--all") # builds and runs specified target
+            source="all"
+            ;;
 
-    "--target") # builds and runs specified target
-        source="$2"
-        opts=( "${@:3}" )
-        ;;
+        "--target="*) # builds and runs specified target
+            source=${1#*=}
+            opts=( "${@:2}" )
+            ;;
 
-    "--all") # builds and runs specified target
-        source="all"
-        opts=( "${@:2}" )
-        ;;
+        "--silent") # [optional] suppress verbose output
+            silent="--silent"
+            ;;
 
-    "--help") # [optional] shows command description
-        help
-        ;;
+        "--help") # [optional] shows command description
+            help
+            ;;
 
-    *)
-        help
-        ;;
+        *)
+            help
+            ;;
 
-esac
+    esac
+    shift
+done
+
+if [[ "${install}" == "" ]]; then
+    help
+    exit;
+fi
 
 COMMAND_LINE_OPTIONS=$(get-options ${opts[@]})
 if [ $? -eq 0 ]; then

@@ -29,7 +29,7 @@ install="$1"
 
 case "${install}" in
     
-    "")
+    "--all")
         ;;
  
     "--help") # shows command description

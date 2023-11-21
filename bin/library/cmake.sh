@@ -200,9 +200,6 @@ function get-options() {
     for opt in ${opts[@]}; do
         case ${opt} in
 
-            "")
-                ;;
-
             "--clean") # [optional] cleans up directories before build
                 clean="--clean"
                 ;;

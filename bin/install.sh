@@ -34,53 +34,52 @@ install="$1"
 ## Usage: ${script} <option> [optional]
 ## ${commands}
 
-case "${install}" in
+while (($#)); do
+    case "$1" in
 
-    "")
-        source="all"
-        ;;
+        "--all") # installs everything
+            source="all"
+            ;;
 
-    "--all") # installs everything
-        source="all"
-        ;;
+        "--hooks") # installs hooks
+            hooks="--hooks"
+            ;;
 
-    "--hooks") # installs hooks
-        hooks="--hooks"
-        ;;
+        "--clangd") # installs clangd
+            clangd="--clangd"
+            ;;
 
-    "--clangd") # installs clangd
-        clangd="--clangd"
-        ;;
+        "--cmake") # installs cmake
+            cmake="--cmake"
+            ;;
 
-    "--cmake") # installs cmake
-        cmake="--cmake"
-        ;;
+        "--submodule-rexo") # installs rexo
+            rexo="--submodule-rexo"
+            ;;
 
-    "--submodule-rexo") # installs rexo
-        rexo="--submodule-rexo"
-        ;;
+        "--submodule-musl") # installs musl
+            musl="--submodule-musl"
+            ;;
 
-    "--submodule-musl") # installs musl
-        musl="--submodule-musl"
-        ;;
+        "--submodule-vcpkg") # installs vcpkg
+            vcpkg="--submodule-vcpkg"
+            ;;
 
-    "--submodule-vcpkg") # installs vcpkg
-        vcpkg="--submodule-vcpkg"
-        ;;
+        "--submodule-raylib") # installs raylib
+            raylib="--submodule-raylib"
+            ;;
 
-    "--submodule-raylib") # installs raylib
-        raylib="--submodule-raylib"
-        ;;
+        "--help") # shows command description
+            help
+            ;;
 
-    "--help") # shows command description
-        help
-        ;;
+        *)
+            help
+            ;;
 
-    *)
-        help
-        ;;
-
-esac
+    esac
+    shift
+done
 
 if [[ "${source}" == "all" || "${hooks}" == "--hooks" ]]; then
     "${pwd}/bin/utils/install.sh" --hooks

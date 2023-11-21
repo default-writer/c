@@ -36,42 +36,42 @@ opts=( "${@:2}" )
 ## Usage: ${script} <option> [optional]
 ## ${commands}
 
-
 while (($#)); do
     case "$1" in
 
-        "")
-            source="all"
-            ;;
-
-        "--target") # builds and runs specified target
-            shift
-            source="$1"
-            opts=( "${@:2}" )
-            ;;
-
         "--all") # builds and runs specified target
             source="all"
+            ;;
+
+        "--target="*) # builds and runs specified target
+            source=${1#*=}
+            opts=( "${@:2}" )
             ;;
 
         "--silent") # [optional] suppress verbose output
             silent="--silent"
             ;;
 
-        "--help") # [optional] shows command description
-            help
-            ;;
-
         "--clean") # [optional] cleans up directories before coverage
             clean="--clean"
+            ;;
+
+        "--help") # [optional] shows command description
+            help
             ;;
 
         *)
             help
             ;;
+
     esac
     shift
 done
+
+if [[ "${install}" == "" ]]; then
+    help
+    exit;
+fi
 
 build="${pwd}/coverage"
 
@@ -107,13 +107,13 @@ if [[ "${clean}" == "--clean" ]]; then
     done
 fi
 
-"${pwd}/bin/coverage.sh" --target ${source} --index 1 ${silent} ${opts[@]}
-"${pwd}/bin/coverage.sh" --target ${source} --index 2 ${silent} ${opts[@]}
-"${pwd}/bin/coverage.sh" --target ${source} --index 3 ${silent} ${opts[@]}
-"${pwd}/bin/coverage.sh" --target ${source} --index 4 ${silent} ${opts[@]}
-"${pwd}/bin/coverage.sh" --target ${source} --index 5 ${silent} ${opts[@]}
-"${pwd}/bin/coverage.sh" --target ${source} --index 6 ${silent} ${opts[@]}
-"${pwd}/bin/coverage.sh" --target ${source} --coverage ${silent} ${opts[@]}
+"${pwd}/bin/coverage.sh" --target=${source} --index=1 ${opts[@]}
+"${pwd}/bin/coverage.sh" --target=${source} --index=2 ${opts[@]}
+"${pwd}/bin/coverage.sh" --target=${source} --index=3 ${opts[@]}
+"${pwd}/bin/coverage.sh" --target=${source} --index=4 ${opts[@]}
+"${pwd}/bin/coverage.sh" --target=${source} --index=5 ${opts[@]}
+"${pwd}/bin/coverage.sh" --target=${source} --index=6 ${opts[@]}
+"${pwd}/bin/coverage.sh" --target=${source} --coverage ${opts[@]}
 
 files=$(find "${pwd}/coverage" -type f -name "*.info" -exec echo {} \;)
 if [[ ! "${files[@]}" == "" ]]; then

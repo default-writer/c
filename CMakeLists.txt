@@ -580,7 +580,7 @@ FILE(WRITE ${CMAKE_BINARY_DIR}/input-substrings.txt
     "as\n"
 )
 
-# Enable testing
+# testing
 enable_testing()
 
 # test
