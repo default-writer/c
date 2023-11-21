@@ -25,7 +25,7 @@ jobs:
   tests:
     parallelism: 6
     machine:
-      resource_class: Large
+      resource_class: hack2root/c-project:latest #cimg/base:edge-22.04
     steps:
       - run:
           name: "coverage"
@@ -34,14 +34,14 @@ jobs:
           path: coverage
   coverage:
     machine:
-      resource_class: Large
+      resource_class: hack2root/c-project:latest #cimg/base:edge-22.04
     steps:
       - run:
           name: "lcov"
           command: ./bin/coverage.sh --all --coverage
   coveralls:
     machine:
-      resource_class: Large
+      resource_class: hack2root/c-project:latest #cimg/base:edge-22.04
     steps:
       - coveralls/upload:
           coverage_file: ./coverage/lcov.info
