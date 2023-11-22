@@ -1,7 +1,0 @@
-[
-  {
-    "command": "/usr/bin/clang -D\"BAZEL_CURRENT_REPOSITORY=\"\"\" -I . -I bazel-out/k8-fastbuild/bin -I external/bazel_tools -I bazel-out/k8-fastbuild/bin/external/bazel_tools -x c++ -c main/hello-world.cc",
-    "directory": "/home/user/.cache/bazel/_bazel_user/1cf2a04da962ad042ec1af3d942c0508/execroot/__main__",
-    "file": "main/hello-world.cc"
-  }
-]

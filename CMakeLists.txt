@@ -324,24 +324,24 @@ set(TEST_HASHES_SOURCE tests/test-hashes.c)
 set(TEST_LINKED_LIST_SOURCE tests/main-linked-list.c)
 set(TEST_LINKED_LIST_STATIC_ENUMERATOR_SOURCE tests/main-linked-list-static-enumerator.c)
 set(TEST_PRIVATE_STRUCTS1_SOURCE 
-    tests/structs/private/main-private-structs_v1.c
-    tests/structs/lib/v1/object.c)
+    src/structs/private/main-private-structs_v1.c
+    src/structs/lib/v1/object.c)
 set(TEST_PRIVATE_STRUCTS2_SOURCE
-    tests/structs/private/main-private-structs_v2.c
-    tests/structs/lib/v2/object.c
-    tests/structs/lib/v2/private.c)
+    src/structs/private/main-private-structs_v2.c
+    src/structs/lib/v2/object.c
+    src/structs/lib/v2/private.c)
 set(TEST_PRIVATE_STRUCTS3_SOURCE
-    tests/structs/private/main-private-structs_v3.c
-    tests/structs/lib/v3/object.c
-    tests/structs/lib/v3/private.c)
+    src/structs/private/main-private-structs_v3.c
+    src/structs/lib/v3/object.c
+    src/structs/lib/v3/private.c)
 set(TEST_PRIVATE_STRUCTS4_SOURCE
-    tests/structs/private/main-private-structs_v4.c
-    tests/structs/lib/v4/object.c
-    tests/structs/lib/v4/private.c)
-set(TEST_STRUCTS1_SOURCE tests/structs/v1/main-structs_v1.c tests/structs/lib/v1/object.c)
-set(TEST_STRUCTS2_SOURCE tests/structs/v2/main-structs_v2.c)
-set(TEST_STRUCTS3_SOURCE tests/structs/v3/main-structs_v3.c)
-set(TEST_STRUCTS3_LIB_SOURCE tests/structs/v3/A.c tests/structs/v3/B.c)
+    src/structs/private/main-private-structs_v4.c
+    src/structs/lib/v4/object.c
+    src/structs/lib/v4/private.c)
+set(TEST_STRUCTS1_SOURCE src/structs/v1/main-structs_v1.c src/structs/lib/v1/object.c)
+set(TEST_STRUCTS2_SOURCE src/structs/v2/main-structs_v2.c)
+set(TEST_STRUCTS3_SOURCE src/structs/v3/main-structs_v3.c)
+set(TEST_STRUCTS3_LIB_SOURCE src/structs/v3/A.c src/structs/v3/B.c)
 
 # demo
 set(GCC_SOURCE tests/gcc/src/main.c)

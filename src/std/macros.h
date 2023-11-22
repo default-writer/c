@@ -42,6 +42,6 @@
 #define FALL_THROUGH ((void)0)
 #endif /* __GNUC__ >= 7 */
 
-#define RXP_DEBUG_TESTS
+/* #define RXP_DEBUG_TESTS */
 
 #endif /* _STD_MACROS_H_ */

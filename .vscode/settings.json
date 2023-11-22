@@ -171,7 +171,7 @@
         "workbench.colorTheme": "Yitzchok (rainglow)"
     },
     "sonarlint.testFilePattern": "{**/test/**,**/*test*,**/*Test*,**/rexo/**}",
-    "sonarlint.pathToCompileCommands": "${workspaceFolder}/cmake/compile_commands.json",
+    "sonarlint.pathToCompileCommands": "${workspaceFolder}/config/compile_commands.json",
     "editor.useTabStops": false,
     "editor.insertSpaces": true,
     "editor.dropIntoEditor.enabled": true,
@@ -341,8 +341,12 @@
         "CONFIG_MEMORY_DEBUG_INFO",
         "CONFIG_MEMORY_CLEANUP"
     ],
+    "clangd.fallbackFlags": [
+        "-I${workspaceFolder}/src",
+        "-Isrc"
+    ],
     "clangd.arguments": [
-        "--compile-commands-dir=${workspaceFolder}/cmake",
+        "--compile-commands-dir=${workspaceFolder}/config",
         "-j=8",
         "--limit-results=0",
         "--background-index",
@@ -441,6 +445,7 @@
     "files.refactoring.autoSave": false,
     "editor.fontVariations": false,
     "editor.minimap.enabled": false,
+    "workbench.activityBar.visible": true,
     "workbench.statusBar.visible": true,
     "workbench.colorCustomizations": {
         "[Yitzchok (rainglow)]": {}
