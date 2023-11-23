@@ -1,0 +1,12 @@
+# clangd
+
+InlayHints:
+  Enabled: Yes
+  ParameterNames: No
+  DeducedTypes: No
+
+CompileFlags:
+  Add:
+    - "-Wno-undefined-inline"
+    - "-Isrc"
+  Compiler: clang

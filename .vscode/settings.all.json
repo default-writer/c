@@ -19,19 +19,30 @@
       "h": "./bin/docs.sh"
     }
   ],
-  "koverage.coverageFileNames": ["lcov.info"],
-  "coverage-gutters.coverageFileNames": ["lcov.info"],
+  "koverage.coverageFileNames": [
+    "lcov.info"
+  ],
+  "coverage-gutters.coverageFileNames": [
+    "lcov.info"
+  ],
   "coverage-gutters.coverageBaseDir": "coverage",
   "coverage-gutters.showLineCoverage": true,
   "coverage-gutters.showGutterCoverage": false,
   "cSpell.checkOnlyEnabledFileTypes": true,
-  "cSpell.enableFiletypes": ["c", "!json", "!jsonc", "!code-workspace"],
+  "cSpell.enableFiletypes": [
+    "c",
+    "!json",
+    "!jsonc",
+    "!code-workspace"
+  ],
   "files.autoSave": "off",
   "files.associations": {
     "*.h": "c",
     "*.c": "c"
   },
-  "files.watcherInclude": ["."],
+  "files.watcherInclude": [
+    "."
+  ],
   "files.exclude": {},
   "pdf-preview.default.scale": "page-fit",
   "cmake.showConsoleAutomatically": true,
@@ -211,8 +222,12 @@
     },
     "window.zoomLevel": 0
   },
-  "grammarly.files.include": ["**/*.md"],
-  "grammarly.files.exclude": ["**/*.txt"],
+  "grammarly.files.include": [
+    "**/*.md"
+  ],
+  "grammarly.files.exclude": [
+    "**/*.txt"
+  ],
   "C_Cpp.dimInactiveRegions": true,
   "C_Cpp.errorSquiggles": "disabled",
   "C_Cpp.intelliSenseEngine": "disabled",
@@ -283,7 +298,10 @@
   ],
   "editor.formatOnSave": true,
   "editor.fontWeight": "normal",
-  "cmake.additionalKits": ["${workspaceFolder}/.vscode", "${workspaceFolder}"],
+  "cmake.additionalKits": [
+    "${workspaceFolder}/.vscode",
+    "${workspaceFolder}"
+  ],
   "cmake.useCMakePresets": "always",
   "emeraldwalk.runonsave": {
     "commands": [
@@ -294,10 +312,10 @@
       }
     ]
   },
-  "editor.defaultFormatter": null,
+  "editor.defaultFormatter": "vscode.json-language-features",
   "files.insertFinalNewline": true,
   "[c]": {
-    "editor.defaultFormatter": null,
+    "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
     "files.insertFinalNewline": true
   },
   "[shellscript]": {
@@ -347,7 +365,9 @@
   "clang-format.style": "{BasedOnStyle: WebKit, IndentWidth: 4, BreakBeforeBraces: Attach}",
   "clang-format.language.c.enable": true,
   "clang-tidy.lintOnSave": true,
-  "clang-tidy.compilerArgs": ["-I/usr/include/gtk-4.0"],
+  "clang-tidy.compilerArgs": [
+    "-I/usr/include/gtk-4.0"
+  ],
   "editor.tabSize": 4,
   "editor.indentSize": "tabSize",
   "screencastMode.fontSize": 20,
@@ -420,7 +440,7 @@
   },
   "git.suggestSmartCommit": false,
   "[jsonc]": {
-    "editor.defaultFormatter": null
+    "editor.defaultFormatter": "vscode.json-language-features"
   },
   "files.refactoring.autoSave": false,
   "editor.fontVariations": false,
@@ -455,17 +475,19 @@
   "workbench.list.horizontalScrolling": false,
   "terminal.integrated.fastScrollSensitivity": 2,
   "workbench.list.fastScrollSensitivity": 2,
-  "markdownlint.ignore": [".bazelrc"],
+  "markdownlint.ignore": [
+    ".bazelrc"
+  ],
   "bsv.bazel.buildFlags": [
-      "--config=clang_config"
+    "--config=clang_config"
   ],
   "bsv.cc.compdb.targets": [
-      "//main:hello-world"
+    "//main:hello-world"
   ],
   "bsv.bazel.executable": "$HOME/.bazel/bazel",
   "bazel.enableCodeLens": true,
   "bazel.buildifierExecutable": "$HOME/.bazel/tools/buildifier",
   "bazel.executable": "$HOME/.bazel/bazel",
   "cmake.options.statusBarVisibility": "visible",
-  "editor.fontSize": 12  
+  "editor.fontSize": 12
 }

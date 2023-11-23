@@ -97,7 +97,7 @@ if [[ "${silent}" == "--silent" ]]; then
 fi
 
 if [[ "${clean}" == "--clean" ]]; then
-    "${pwd}/bin/utils/cleanup.sh"
+    "${pwd}/bin/utils/cleanup.sh" --all
 fi
 
 if [[ "${setup}" == "--setup" ]]; then
@@ -117,9 +117,13 @@ if [[ "${cmake}" == "--cmake" ]]; then
 fi
 
 if [[ "${init}" == "--init" ]]; then
-    "${pwd}/bin/utils/install.sh" --clangd
-    "${pwd}/bin/utils/install.sh" --cmake
-    "${pwd}/bin/utils/install.sh" --submodule-rexo
+    if [[ ! -d "${pwd}/.tools" ]]; then
+        "${pwd}/bin/utils/install.sh" --clangd
+        "${pwd}/bin/utils/install.sh" --cmake
+    fi
+    if [[ ! -d "${pwd}/.deps/rexo" ]]; then
+        "${pwd}/bin/utils/install.sh" --submodule-rexo
+    fi
     "${pwd}/bin/utils/init.sh" --all
 fi
 

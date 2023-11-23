@@ -18,19 +18,30 @@
       "h": "./bin/docs.sh"
     }
   ],
-  "koverage.coverageFileNames": ["lcov.info"],
-  "coverage-gutters.coverageFileNames": ["lcov.info"],
+  "koverage.coverageFileNames": [
+    "lcov.info"
+  ],
+  "coverage-gutters.coverageFileNames": [
+    "lcov.info"
+  ],
   "coverage-gutters.coverageBaseDir": "coverage",
   "coverage-gutters.showLineCoverage": true,
   "coverage-gutters.showGutterCoverage": false,
   "cSpell.checkOnlyEnabledFileTypes": true,
-  "cSpell.enableFiletypes": ["c", "!json", "!jsonc", "!code-workspace"],
+  "cSpell.enableFiletypes": [
+    "c",
+    "!json",
+    "!jsonc",
+    "!code-workspace"
+  ],
   "files.autoSave": "off",
   "files.associations": {
     "*.h": "c",
     "*.c": "c"
   },
-  "files.watcherInclude": ["."],
+  "files.watcherInclude": [
+    "."
+  ],
   "files.exclude": {},
   "pdf-preview.default.scale": "page-fit",
   "cmake.showConsoleAutomatically": true,
@@ -210,8 +221,12 @@
     },
     "window.zoomLevel": 0
   },
-  "grammarly.files.include": ["**/*.md"],
-  "grammarly.files.exclude": ["**/*.txt"],
+  "grammarly.files.include": [
+    "**/*.md"
+  ],
+  "grammarly.files.exclude": [
+    "**/*.txt"
+  ],
   "C_Cpp.dimInactiveRegions": true,
   "C_Cpp.errorSquiggles": "disabled",
   "C_Cpp.intelliSenseEngine": "disabled",
@@ -287,7 +302,10 @@
   ],
   "editor.formatOnSave": true,
   "editor.fontWeight": "normal",
-  "cmake.additionalKits": ["${workspaceFolder}/.vscode", "${workspaceFolder}"],
+  "cmake.additionalKits": [
+    "${workspaceFolder}/.vscode",
+    "${workspaceFolder}"
+  ],
   "cmake.useCMakePresets": "always",
   "emeraldwalk.runonsave": {
     "commands": [
@@ -298,10 +316,10 @@
       }
     ]
   },
-  "editor.defaultFormatter": null,
+  "editor.defaultFormatter": "vscode.json-language-features",
   "files.insertFinalNewline": true,
   "[c]": {
-    "editor.defaultFormatter": null,
+    "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
     "files.insertFinalNewline": true
   },
   "[shellscript]": {
@@ -351,22 +369,24 @@
   "clang-format.style": "{BasedOnStyle: WebKit, IndentWidth: 4, BreakBeforeBraces: Attach}",
   "clang-format.language.c.enable": true,
   "clang-tidy.lintOnSave": true,
-  "clang-tidy.compilerArgs": ["-I/usr/include/gtk-4.0"],
+  "clang-tidy.compilerArgs": [
+    "-I/usr/include/gtk-4.0"
+  ],
   "editor.tabSize": 4,
   "editor.indentSize": "tabSize",
   "screencastMode.fontSize": 20,
   "window.zoomLevel": 0,
-  "editor.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', monospace', monospace",
-  "editor.inlayHints.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
-  "editor.codeLensFontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
+  "editor.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'JetBrains Mono', 'Ubuntu Mono', 'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
+  "editor.inlayHints.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
+  "editor.codeLensFontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
   "editor.fontLigatures": true,
-  "debug.console.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
+  "debug.console.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
   "debug.console.fontSize": 12,
-  "scm.inputFontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
-  "chat.editor.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
+  "scm.inputFontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
+  "chat.editor.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
   "chat.editor.fontSize": 12,
-  "notebook.output.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
-  "terminal.integrated.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
+  "notebook.output.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
+  "terminal.integrated.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
   "terminal.integrated.fontSize": 12,
   "terminal.integrated.enablePersistentSessions": true,
   "terminal.integrated.persistentSessionReviveProcess": "onExitAndWindowClose",
@@ -424,7 +444,7 @@
   },
   "git.suggestSmartCommit": false,
   "[jsonc]": {
-    "editor.defaultFormatter": null
+    "editor.defaultFormatter": "vscode.json-language-features"
   },
   "files.refactoring.autoSave": false,
   "editor.fontVariations": false,

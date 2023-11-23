@@ -113,7 +113,7 @@ if [[ "${silent}" == "--silent" ]]; then
     exec 2>&1 >/dev/null
 fi
 
-build=( "build-v1" "build-v2" "build-v3" "build-v4" "build-v5" "build-v6" )
+build=( "build/build-v1" "build/build-v2" "build/build-v3" "build/build-v4" "build/build-v5" "build/build-v6" )
 
 if [[ ! "${dir}" == "" ]]; then
     build="${dir}"
@@ -161,22 +161,22 @@ registered=$(echo "${sanitize} ${gc} ${valgrind} ${callgrind}" | xargs)
 [[ ! -d "${pwd}/build" ]] && mkdir "${pwd}/build"
 
 if [[ "${registered[@]}" == "" || ("${gc}" == "" && "${sanitize}" == "" && "${valgrind}" == "") ]]; then
-    "${pwd}/bin/utils/build.sh" --target=${source} --dir=build-v1 ${opts[@]}
+    "${pwd}/bin/utils/build.sh" --target=${source} --dir=build/build-v1 ${opts[@]}
 fi
 if [[ "${registered[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "" && "${valgrind}" == "") ]]; then
-    "${pwd}/bin/utils/build.sh" --target=${source} --dir=build-v2 --gc ${opts[@]}
+    "${pwd}/bin/utils/build.sh" --target=${source} --dir=build/build-v2 --gc ${opts[@]}
 fi
 if [[ "${registered[@]}" == "" || ("${gc}" == "" && "${sanitize}" == "--sanitize" && "${valgrind}" == "") ]]; then
-    "${pwd}/bin/utils/build.sh" --target=${source} --dir=build-v3 --sanitize ${opts[@]}
+    "${pwd}/bin/utils/build.sh" --target=${source} --dir=build/build-v3 --sanitize ${opts[@]}
 fi
 if [[ "${registered[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "--sanitize" && "${valgrind}" == "") ]]; then
-    "${pwd}/bin/utils/build.sh" --target=${source} --dir=build-v4 --gc --sanitize ${opts[@]}
+    "${pwd}/bin/utils/build.sh" --target=${source} --dir=build/build-v4 --gc --sanitize ${opts[@]}
 fi
 if [[ "${registered[@]}" == "" || ("${gc}" == "" && "${sanitize}" == "" && "${valgrind}" == "--valgrind") ]]; then
-    "${pwd}/bin/utils/build.sh" --target=${source} --dir=build-v5 --valgrind ${opts[@]}
+    "${pwd}/bin/utils/build.sh" --target=${source} --dir=build/build-v5 --valgrind ${opts[@]}
 fi
 if [[ "${registered[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "" && "${valgrind}" == "--valgrind") ]]; then
-    "${pwd}/bin/utils/build.sh" --target=${source} --dir=build-v6 --gc --valgrind ${opts[@]}
+    "${pwd}/bin/utils/build.sh" --target=${source} --dir=build/build-v6 --gc --valgrind ${opts[@]}
 fi
 
 for directory in ${directories[@]}; do

@@ -51,7 +51,6 @@ report*/
 .cache*/
 .history*/
 .venv*/
-.tools*/
 
 # Files
 dump.txt

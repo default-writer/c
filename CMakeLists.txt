@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.22.1)
 
 project(c VERSION 0.0.1 LANGUAGES C CXX)
 
-enable_language(ASM_NASM)
-
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -11,8 +9,6 @@ set(CMAKE_C_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_ASM_NASM_FLAGS "${CMAKE_ASM_NASM_FLAGS} -f elf64")
-set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> <INCLUDES> ${CMAKE_ASM_NASM_FLAGS} -o <OBJECT> <SOURCE>")
 
 option(CONFIG_VM_DEBUG_INFO "Enables memory vm debug information")
 option(CONFIG_MEMORY_DEBUG_INFO "Enables memory debug information")
@@ -343,11 +339,6 @@ set(TEST_STRUCTS2_SOURCE src/structs/v2/main-structs_v2.c)
 set(TEST_STRUCTS3_SOURCE src/structs/v3/main-structs_v3.c)
 set(TEST_STRUCTS3_LIB_SOURCE src/structs/v3/A.c src/structs/v3/B.c)
 
-# demo
-set(GCC_SOURCE tests/gcc/src/main.c)
-set(GCC_NASM_SOURCE tests/gcc/src/my_asm_program.asm)
-set_source_files_properties(${GCC_NASM_SOURCE} PROPERTIES LANGUAGE ASM_NASM)
-
 set(TESTS_SRC_LIST tests/src/test_list/test_list.c)
 set(TESTS_SRC_LIST_MICRO tests/src/test_list-micro/test_list-micro.c)
 set(TESTS_SRC_LIST_ALLOC tests/src/test_list-alloc/test_list-alloc.c)
@@ -379,12 +370,6 @@ set(MAIN_VM2_SOURCE tests/v2/main-vm2.c)
 set(MAIN_TESTS_VM1_SOURCE tests/v1/main-tests_v1.c)
 set(MAIN_TESTS_VM2_SOURCE tests/v2/main-tests_v2.c)
 
-# demo
-set(SUBSTRINGS src/examples/substrings/main.c)
-set(LEETCODE_VALID_PARENTHESES src/examples/leetcode/valid-parentheses.c)
-set(LEETCODE_LONGEST_VALID_PARENTHESES src/examples/leetcode/longest-valid-parentheses.c)
-set(URL_GET src/examples/url/main.c)
-
 # zen
 set(ZEN_SOURCE zen/zen.c)
 
@@ -400,9 +385,6 @@ add_library(tests STATIC
 )
 add_library(tests-vm-v1 STATIC ${TESTS_SRC_VM_V1})
 add_library(tests-vm-v2 STATIC ${TESTS_SRC_VM_V2})
-
-# demo
-add_library(demo-gcc-nasm OBJECT ${GCC_NASM_SOURCE})
 
 # user
 add_library(user1 SHARED ${LIB_STD_USER1_SOURCE})
@@ -459,11 +441,6 @@ add_library(std-object1 SHARED ${LIB_STD_OBJECT1_SOURCE})
 add_executable(test-hashes ${TEST_HASHES_SOURCE})
 add_executable(test-pointer ${TEST_POINTER_SOURCE})
 
-# demo
-add_executable(demo-url ${URL_GET})
-add_executable(demo-gcc ${GCC_SOURCE} $<TARGET_OBJECTS:demo-gcc-nasm>)
-set_target_properties(demo-gcc PROPERTIES NASM_OBJ_FORMAT elf64)
-
 # main 
 add_executable(main-default ${MAIN_STANDARD_SOURCE})
 add_executable(main-light ${MAIN_LIGHT_SOURCE})
@@ -497,10 +474,6 @@ add_executable(main-tests-vm1 ${MAIN_TESTS_VM1_SOURCE})
 add_executable(main-tests-vm2 ${MAIN_TESTS_VM2_SOURCE})
 
 # examples
-add_executable(c-substrings ${SUBSTRINGS})
-add_executable(c-valid-parentheses ${LEETCODE_VALID_PARENTHESES})
-add_executable(c-longest-valid-parentheses ${LEETCODE_LONGEST_VALID_PARENTHESES})
-
 # zen
 add_executable(zen ${ZEN_SOURCE})
 
@@ -522,7 +495,6 @@ target_link_libraries(memory-ref3 PRIVATE memory-list3 list-micro list-common)
 target_link_libraries(list-pointer2 PRIVATE vm-v2)
 target_link_libraries(structs-v3 PRIVATE list-class)
 target_link_libraries(stl-linked-list PRIVATE list-common)
-target_link_libraries(c-substrings PRIVATE ctypes std-os1)
 target_link_libraries(std-types1 PRIVATE list-common list-micro)
 
 # test
@@ -562,9 +534,6 @@ target_link_libraries(main-linked-list PRIVATE stl-linked-list)
 target_link_libraries(main-linked-list-static-enumerator PRIVATE stl-linked-list)
 target_link_libraries(main-tests-vm1 PRIVATE list-micro list-pointer1 tests-vm-v1 vm-v1)
 target_link_libraries(main-tests-vm2 PRIVATE tests tests-vm-v2 list-micro list-pointer2 vm-v2 list-pointer2 list-micro)
-
-# demo
-target_link_libraries(demo-url PRIVATE curl ctypes)
 
 configure_file(all_english_words.txt ${CMAKE_BINARY_DIR}/all_english_words.txt COPYONLY)
 configure_file(file.txt ${CMAKE_BINARY_DIR}/file.txt COPYONLY)

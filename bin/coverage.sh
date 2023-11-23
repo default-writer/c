@@ -150,7 +150,7 @@ if [[ "${silent}" == "--silent" ]]; then
     exec 2>&1 >/dev/null
 fi
 
-build=( "coverage-v1" "coverage-v2" "coverage-v3" "coverage-v4" "coverage-v5" "coverage-v6" )
+build=( "build/coverage-v1" "build/coverage-v2" "build/coverage-v3" "build/coverage-v4" "build/coverage-v5" "build/coverage-v6" )
 
 if [[ ! "${dir}" == "" ]]; then
     build="${dir}"
@@ -188,41 +188,39 @@ if [[ "${coverage}" == "" ]]; then
         done
     done
 
-    [[ ! -d "${pwd}/coverage" ]] && mkdir "${pwd}/coverage"
-
     case "${index}" in
 
         "all")
-            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=coverage-v1 ${opts[@]}
-            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=coverage-v2 --gc ${opts[@]}
-            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=coverage-v3 --sanitize ${opts[@]}
-            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=coverage-v4 --gc --sanitize ${opts[@]}
-            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=coverage-v5 --valgrind ${opts[@]}
-            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=coverage-v6 --gc --valgrind ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v1 ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v2 --gc ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v3 --sanitize ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v4 --gc --sanitize ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v5 --valgrind ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v6 --gc --valgrind ${opts[@]}
             ;;
 
         "1")
-            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=coverage-v1 ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v1 ${opts[@]}
             ;;
 
         "2")
-            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=coverage-v2 --gc ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v2 --gc ${opts[@]}
             ;;
 
         "3")
-            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=coverage-v3 --sanitize ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v3 --sanitize ${opts[@]}
             ;;
 
         "4")
-            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=coverage-v4 --gc --sanitize ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v4 --gc --sanitize ${opts[@]}
             ;;
 
         "5")
-            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=coverage-v5 --valgrind ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v5 --valgrind ${opts[@]}
             ;;
 
         "6")
-            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=coverage-v6 --gc --valgrind ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v6 --gc --valgrind ${opts[@]}
             ;;
 
     esac
@@ -236,10 +234,10 @@ if [[ "${coverage}" == "--coverage" ]]; then
             for file in ${files[@]}; do
                 targets=( $(get-source-targets ${source}) )
                 for target in ${targets[@]}; do
-                    cp "${file}" "${pwd}/coverage/${directory}-${source}.info"
+                    cp "${file}" "${directory}-${source}.info"
                 done
             done
-            # find "${directory}" -type f -name "lcov.info" -delete
+            find "${directory}" -type f -name "*.info" -delete
         fi
     done
 fi

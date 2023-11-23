@@ -10,7 +10,9 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-include_directories(src)
+include_directories(../src)
+
+add_subdirectory(.. ../.c)
 
 set(LESSON1 src/l-01/main.c)
 set(LESSON2 src/l-02/main.c)

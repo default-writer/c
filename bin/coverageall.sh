@@ -73,11 +73,12 @@ if [[ "${install}" == "" ]]; then
     exit;
 fi
 
-build="${pwd}/coverage"
+build="${pwd}/build"
 
 if [[ "${clean}" == "--clean" ]]; then
-    if [[ -d "${pwd}/coverage" ]]; then
-        find "${pwd}/coverage" -type f -name "lcov.info" -delete
+
+    if [[ -d "${build}" ]]; then
+        find "${build}" -type f -name "lcov.info" -delete
     fi
 
     coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" "*.info" )
@@ -101,11 +102,15 @@ if [[ "${clean}" == "--clean" ]]; then
     fi    
 
     for target in ${targets[@]}; do
-        if [[ -f "${pwd}/coverage/${target}.info" ]]; then
-            rm "${pwd}/coverage/${target}.info"
+        if [[ -f "${build}/${target}.info" ]]; then
+            rm "${build}/${target}.info"
         fi
     done
 fi
+
+ if [[ ! -d "${pwd}/build" ]]; then
+    "${pwd}/bin/init.sh" --init
+ fi 
 
 "${pwd}/bin/coverage.sh" --target=${source} --index=1 ${opts[@]}
 "${pwd}/bin/coverage.sh" --target=${source} --index=2 ${opts[@]}
@@ -115,12 +120,12 @@ fi
 "${pwd}/bin/coverage.sh" --target=${source} --index=6 ${opts[@]}
 "${pwd}/bin/coverage.sh" --target=${source} --coverage ${opts[@]}
 
-files=$(find "${pwd}/coverage" -type f -name "*.info" -exec echo {} \;)
-if [[ ! "${files[@]}" == "" ]]; then
-    find "${pwd}/coverage" -type f -name "*.info" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
-fi
+[[ ! -d "${pwd}/coverage" ]] && mkdir "${pwd}/coverage"
 
-find "${build}" -type f -not -name "lcov.info" -exec rm {} \;
+files=$(find "${build}" -type f -name "*.info" -exec echo {} \;)
+if [[ ! "${files[@]}" == "" ]]; then
+    find "${build}" -type f -name "*.info" -exec echo -a {} \; | xargs lcov -o "${pwd}/coverage/lcov.info"
+fi
 
 if [[ "${silent}" == "--silent" ]]; then
     exec 1>&2 2>&-

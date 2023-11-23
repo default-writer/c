@@ -28,6 +28,4 @@
 
 #include "common/memory.h"
 
-#include "../tests/src/test.h"
-
 #endif /* _TESTS_SRC_VM_V1_H_ */

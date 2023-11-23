@@ -29,7 +29,7 @@ install="$1"
 
 case "${install}" in
     
-    "--all")
+    "--all") # cleans up all folders
         ;;
  
     "--help") # shows command description

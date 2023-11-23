@@ -312,10 +312,10 @@
             }
         ]
     },
-    "editor.defaultFormatter": null,
+    "editor.defaultFormatter": "vscode.json-language-features",
     "files.insertFinalNewline": true,
     "[c]": {
-        "editor.defaultFormatter": null,
+        "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
         "files.insertFinalNewline": true
     },
     "[shellscript]": {
@@ -440,12 +440,11 @@
     },
     "git.suggestSmartCommit": false,
     "[jsonc]": {
-        "editor.defaultFormatter": null
+        "editor.defaultFormatter": "vscode.json-language-features"
     },
     "files.refactoring.autoSave": false,
     "editor.fontVariations": false,
     "editor.minimap.enabled": false,
-    "workbench.activityBar.visible": true,
     "workbench.statusBar.visible": true,
     "workbench.colorCustomizations": {
         "[Yitzchok (rainglow)]": {}

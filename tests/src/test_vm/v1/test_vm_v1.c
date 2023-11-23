@@ -23,6 +23,8 @@
  * SOFTWARE.
  *
  */
+#include "../tests/src/test.h"
+
 #include "test_vm_v1.h"
 
 #include "pointer/types/data/v1/data_v1.h"

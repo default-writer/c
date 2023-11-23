@@ -104,7 +104,7 @@ if [[ "${silent}" == "--silent" ]]; then
     exec 2>&1 >/dev/null
 fi
 
-build="${pwd}/coverage"
+build="${pwd}/build/coverage"
 
 if [[ ! "${dir}" == "" ]]; then
     build="${pwd}/${dir}"
