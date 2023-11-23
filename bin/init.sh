@@ -121,9 +121,7 @@ if [[ "${init}" == "--init" ]]; then
         "${pwd}/bin/utils/install.sh" --clangd
         "${pwd}/bin/utils/install.sh" --cmake
     fi
-    if [[ ! -d "${pwd}/.deps/rexo" ]]; then
-        "${pwd}/bin/utils/install.sh" --submodule-rexo
-    fi
+    "${pwd}/bin/utils/install.sh" --submodule-rexo
     "${pwd}/bin/utils/init.sh" --all
 fi
 
