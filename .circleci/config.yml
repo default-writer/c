@@ -36,4 +36,3 @@ workflows:
   coverage-workflow:
     jobs:
       - code-coverage
-
