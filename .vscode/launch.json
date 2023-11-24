@@ -8,51 +8,46 @@
       "type": "mojo-lldb",
       "request": "launch",
       "name": "(mojo) launch",
-      "program": "${workspaceFolder}/tests/mojo/bin/main",
-      "preLaunchTask": "build tests/mojo",
+      "program": "${workspaceFolder}/examples/mojo/bin/main",
+      "preLaunchTask": "build examples/mojo",
       "args": [],
       "env": [],
-      "cwd": "${workspaceFolder}/tests/mojo"
+      "cwd": "${workspaceFolder}/examples/mojo"
     },
     {
       "name": "(gdb) Launch",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceRoot}/tests/gcc/bin/main",
+      "program": "${workspaceRoot}/examples/gcc/bin/main",
       "args": [],
       "stopAtEntry": false,
-      "cwd": "${workspaceRoot}/tests/gcc",
+      "cwd": "${workspaceRoot}/examples/gcc",
       "environment": [],
       "externalConsole": false,
-      "preLaunchTask": "build tests/gcc",
+      "preLaunchTask": "build examples/gcc",
       "MIMode": "gdb",
       "setupCommands": [
-          {
-              "description": "Enable pretty-printing for gdb",
-              "text": "-enable-pretty-printing",
-              "ignoreFailures": true
-          },
-          {
-              "description": "Set Disassembly Flavor to Intel",
-              "text": "-gdb-set disassembly-flavor intel",
-              "ignoreFailures": true
-          }
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        },
+        {
+          "description": "Set Disassembly Flavor to Intel",
+          "text": "-gdb-set disassembly-flavor intel",
+          "ignoreFailures": true
+        }
       ]
     },
     {
-      "name": "(lldb) demo-gcc",
+      "name": "(lldb) examples/demo-gcc",
       "type": "lldb",
       "request": "launch",
-      "program": "${workspaceFolder}/cmake/demo-gcc",
-      "initCommands": ["settings set target.disable-aslr false"]
-    },    
-    {
-      "name": "(lldb) demo-inline",
-      "type": "lldb",
-      "request": "launch",
-      "program": "${workspaceFolder}/cmake/demo-inline",
-      "initCommands": ["settings set target.disable-aslr false"]
-    }, 
+      "program": "${workspaceFolder}/examples/cmake/demo-gcc",
+      "initCommands": [
+        "settings set target.disable-aslr false"
+      ]
+    },
     {
       "type": "bashdb",
       "request": "launch",
@@ -62,7 +57,11 @@
       // "program": "./bin/src.sh",
       // "args": ["--target", "src/examples/substrings/main.c"]
       "program": "./bin/coverage.sh",
-      "args": ["--all", "--index", "3"]
+      "args": [
+        "--all",
+        "--index",
+        "3"
+      ]
     },
   ]
 }

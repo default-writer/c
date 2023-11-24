@@ -90,7 +90,7 @@ if(UNIX)
 endif()
 
 # gtk
-set(GTK_EXPERIMENT examples/gtk-experiment1.c)
+set(GTK_EXPERIMENT src/gtk-experiment1.c)
 
 include_directories(${CMAKE_SOURCE_DIR})
 
