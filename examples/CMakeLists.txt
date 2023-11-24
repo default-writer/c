@@ -15,6 +15,7 @@ set(CMAKE_ASM_NASM_FLAGS "${CMAKE_ASM_NASM_FLAGS} -f elf64")
 set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> <INCLUDES> ${CMAKE_ASM_NASM_FLAGS} -o <OBJECT> <SOURCE>")
 
 include_directories(../src)
+include_directories(../examples)
 
 add_subdirectory(.. ../.c)
 
@@ -53,6 +54,7 @@ set(TEST_PRIVATE_STRUCTS4_SOURCE
 set(TEST_STRUCTS1_SOURCE
     structs/v1/main-structs_v1.c
     structs/lib/v1/object.c)
+
 set(TEST_STRUCTS2_SOURCE structs/v2/main-structs_v2.c)
 set(TEST_STRUCTS3_SOURCE structs/v3/main-structs_v3.c)
 set(TEST_STRUCTS3_LIB_SOURCE structs/v3/A.c structs/v3/B.c)
@@ -64,10 +66,13 @@ set(URL_GET url/main.c)
 set(GCC_SOURCE gcc/src/main.c)
 set(GCC_NASM_SOURCE gcc/src/my_asm_program.asm)
 
+set(LIB_CLASS_SOURCE class/class.c)
+
 set_source_files_properties(${GCC_NASM_SOURCE} PROPERTIES LANGUAGE ASM_NASM)
 
 add_library(demo-gcc-nasm OBJECT ${GCC_NASM_SOURCE})
 add_library(structs-v3 STATIC ${TEST_STRUCTS3_LIB_SOURCE})
+add_library(list-class STATIC ${LIB_CLASS_SOURCE})
 
 add_executable(c-oberon-method-suite ${OBERON})
 add_executable(c-classes ${CLASSES})
@@ -97,3 +102,4 @@ target_link_libraries(main-structs1 PRIVATE list-common)
 target_link_libraries(main-structs2 PRIVATE list-class)
 target_link_libraries(main-structs3 PRIVATE structs-v3)
 target_link_libraries(structs-v3 PRIVATE list-class)
+target_link_libraries(list-class PRIVATE list-common)
