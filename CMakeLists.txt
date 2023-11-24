@@ -319,25 +319,6 @@ set(TEST_POINTER_SOURCE tests/test-pointer.c)
 set(TEST_HASHES_SOURCE tests/test-hashes.c)
 set(TEST_LINKED_LIST_SOURCE tests/main-linked-list.c)
 set(TEST_LINKED_LIST_STATIC_ENUMERATOR_SOURCE tests/main-linked-list-static-enumerator.c)
-set(TEST_PRIVATE_STRUCTS1_SOURCE 
-    src/structs/private/main-private-structs_v1.c
-    src/structs/lib/v1/object.c)
-set(TEST_PRIVATE_STRUCTS2_SOURCE
-    src/structs/private/main-private-structs_v2.c
-    src/structs/lib/v2/object.c
-    src/structs/lib/v2/private.c)
-set(TEST_PRIVATE_STRUCTS3_SOURCE
-    src/structs/private/main-private-structs_v3.c
-    src/structs/lib/v3/object.c
-    src/structs/lib/v3/private.c)
-set(TEST_PRIVATE_STRUCTS4_SOURCE
-    src/structs/private/main-private-structs_v4.c
-    src/structs/lib/v4/object.c
-    src/structs/lib/v4/private.c)
-set(TEST_STRUCTS1_SOURCE src/structs/v1/main-structs_v1.c src/structs/lib/v1/object.c)
-set(TEST_STRUCTS2_SOURCE src/structs/v2/main-structs_v2.c)
-set(TEST_STRUCTS3_SOURCE src/structs/v3/main-structs_v3.c)
-set(TEST_STRUCTS3_LIB_SOURCE src/structs/v3/A.c src/structs/v3/B.c)
 
 set(TESTS_SRC_LIST tests/src/test_list/test_list.c)
 set(TESTS_SRC_LIST_MICRO tests/src/test_list-micro/test_list-micro.c)
@@ -425,7 +406,6 @@ add_library(memory-list3 STATIC ${LIB_MEMORY_LIST3_SOURCE})
 add_library(memory-ref1 STATIC ${LIB_MEMORY_REF1_SOURCE})
 add_library(memory-ref2 STATIC ${LIB_MEMORY_REF2_SOURCE})
 add_library(memory-ref3 STATIC ${LIB_MEMORY_REF3_SOURCE})
-add_library(structs-v3 STATIC ${TEST_STRUCTS3_LIB_SOURCE})
 add_library(stl-linked-list STATIC ${LIB_LINKED_LIST_SOURCE})
 add_library(std-types1 STATIC ${LIB_STD_TYPES1_SOURCE})
 add_library(std-list1 SHARED ${LIB_STD_LIST1_SOURCE})
@@ -461,13 +441,6 @@ add_executable(main-vm1 ${MAIN_VM1_SOURCE})
 add_executable(main-vm2 ${MAIN_VM2_SOURCE})
 add_executable(main-linked-list ${TEST_LINKED_LIST_SOURCE})
 add_executable(main-linked-list-static-enumerator ${TEST_LINKED_LIST_STATIC_ENUMERATOR_SOURCE})
-add_executable(main-private-structs1 ${TEST_PRIVATE_STRUCTS1_SOURCE})
-add_executable(main-private-structs2 ${TEST_PRIVATE_STRUCTS2_SOURCE})
-add_executable(main-private-structs3 ${TEST_PRIVATE_STRUCTS3_SOURCE})
-add_executable(main-private-structs4 ${TEST_PRIVATE_STRUCTS4_SOURCE})
-add_executable(main-structs1 ${TEST_STRUCTS1_SOURCE})
-add_executable(main-structs2 ${TEST_STRUCTS2_SOURCE})
-add_executable(main-structs3 ${TEST_STRUCTS3_SOURCE})
 add_executable(main-tests-vm1 ${MAIN_TESTS_VM1_SOURCE})
 add_executable(main-tests-vm2 ${MAIN_TESTS_VM2_SOURCE})
 
@@ -491,7 +464,6 @@ target_link_libraries(memory-ref1 PRIVATE memory-list1 list-micro list-common)
 target_link_libraries(memory-ref2 PRIVATE memory-list2 list-micro list-common)
 target_link_libraries(memory-ref3 PRIVATE memory-list3 list-micro list-common)
 target_link_libraries(list-pointer2 PRIVATE vm-v2)
-target_link_libraries(structs-v3 PRIVATE list-class)
 target_link_libraries(stl-linked-list PRIVATE list-common)
 target_link_libraries(std-types1 PRIVATE list-common list-micro)
 
@@ -520,13 +492,6 @@ target_link_libraries(main-hashtable1 PRIVATE list-pointer1 list-micro vm-v1 has
 target_link_libraries(main-hashtable2 PRIVATE list-pointer2 list-micro hashtable2)
 target_link_libraries(main-vm1 PRIVATE tests tests-vm-v1 list-alloc list-light vm-v1 std-os1)
 target_link_libraries(main-vm2 PRIVATE tests tests-vm-v2 list-alloc list-light vm-v2 list-pointer2 list-micro)
-target_link_libraries(main-structs1 PRIVATE list-common)
-target_link_libraries(main-private-structs1 PRIVATE list-common)
-target_link_libraries(main-private-structs2 PRIVATE list-common)
-target_link_libraries(main-private-structs3 PRIVATE list-common)
-target_link_libraries(main-private-structs4 PRIVATE list-common)
-target_link_libraries(main-structs2 PRIVATE list-class)
-target_link_libraries(main-structs3 PRIVATE structs-v3)
 target_link_libraries(main-linked-list PRIVATE stl-linked-list)
 target_link_libraries(main-linked-list-static-enumerator PRIVATE stl-linked-list)
 target_link_libraries(main-tests-vm1 PRIVATE list-micro list-pointer1 tests-vm-v1 vm-v1)
