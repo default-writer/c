@@ -1,18 +1,12 @@
+#include "../list/v1/list_v1.h"
 #include "common/memory.h"
 #include "list-micro/data.h"
-#include "list/v1/list_v1.h"
 
-#include "playground/hashtable/v1/hashtable_v1.h"
+#include "../playground/hashtable/v1/hashtable_v1.h"
 
-#include "pointer/types/data/v1/data_v1.h"
-#include "pointer/types/file/v1/file_v1.h"
-#include "pointer/types/list/v1/list_v1.h"
-#include "pointer/types/object/v1/object_v1.h"
-#include "pointer/types/string/v1/string_v1.h"
-#include "pointer/types/string_pointer/v1/string_pointer_v1.h"
-#include "pointer/v1/pointer_v1.h"
-
-#include "pointer/os/v1/os_v1.h"
+#include "vm/v1/os/os_v1.h"
+#include "vm/v1/pointer/pointer_v1.h"
+#include "vm/v1/types/types_v1.h"
 
 static u64 load_data(void) {
     u64 list_ptr = list->alloc();
@@ -22,12 +16,12 @@ static u64 load_data(void) {
     u64 f_ptr = file->alloc(file_path_ptr, mode_ptr);
     if (f_ptr != 0) {
         u64 file_data_ptr = file->data(f_ptr);
-        u64 size = data->size(file_data_ptr);
+        u64 size = vm_types_data->size(file_data_ptr);
         if (size > 100) {
             size = 100;
         }
         file->free(f_ptr);
-        u8* file_data = data->unsafe(file_data_ptr);
+        u8* file_data = vm_types_data->unsafe(file_data_ptr);
         u8* tmp = file_data;
         while (*tmp != 0 && size > 0) {
             while (*tmp != 0 && *tmp != '\n') {

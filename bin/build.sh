@@ -39,7 +39,7 @@ opts=( "${@:2}" )
 while (($#)); do
     case "$1" in
 
-        "--all") # builds and runs specified target
+        "--all") # builds and runs all targets
             source="all"
             ;;
 
