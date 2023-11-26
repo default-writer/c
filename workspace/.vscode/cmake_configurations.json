@@ -1,0 +1,24 @@
+{
+  "configurations": [
+    {
+      "name": "Debug",
+      "buildType": "Debug",
+      "buildDirectory": "cmake"
+    },
+    {
+      "name": "Release",
+      "buildType": "Release",
+      "buildDirectory": "cmake"
+    },
+    {
+      "name": "RelWithDebInfo",
+      "buildType": "RelWithDebInfo",
+      "buildDirectory": "cmake"
+    },
+    {
+      "name": "MinSizeRel",
+      "buildType": "MinSizeRel",
+      "buildDirectory": "cmake"
+    }
+  ]
+}

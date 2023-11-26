@@ -1,0 +1,68 @@
+{
+  /* Use IntelliSense to learn about possible attributes. */
+  /* Hover to view descriptions of existing attributes. */
+  /* For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387 */
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "mojo-lldb",
+      "request": "launch",
+      "name": "(mojo) launch",
+      "program": "${workspaceFolder}/tests/mojo/bin/main",
+      "preLaunchTask": "build tests/mojo",
+      "args": [],
+      "env": [],
+      "cwd": "${workspaceFolder}/tests/mojo"
+    },
+    {
+      "name": "(gdb) Launch",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceRoot}/tests/gcc/bin/main",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceRoot}/tests/gcc",
+      "environment": [],
+      "externalConsole": false,
+      "preLaunchTask": "build tests/gcc",
+      "MIMode": "gdb",
+      "setupCommands": [
+          {
+              "description": "Enable pretty-printing for gdb",
+              "text": "-enable-pretty-printing",
+              "ignoreFailures": true
+          },
+          {
+              "description": "Set Disassembly Flavor to Intel",
+              "text": "-gdb-set disassembly-flavor intel",
+              "ignoreFailures": true
+          }
+      ]
+    },
+    {
+      "name": "(lldb) demo-gcc",
+      "type": "lldb",
+      "request": "launch",
+      "program": "${workspaceFolder}/cmake/demo-gcc",
+      "initCommands": ["settings set target.disable-aslr false"]
+    },    
+    {
+      "name": "(lldb) demo-inline",
+      "type": "lldb",
+      "request": "launch",
+      "program": "${workspaceFolder}/cmake/demo-inline",
+      "initCommands": ["settings set target.disable-aslr false"]
+    }, 
+    {
+      "type": "bashdb",
+      "request": "launch",
+      "name": "bash-debug",
+      "terminalKind": "integrated",
+      "cwd": "${workspaceFolder}",
+      // "program": "./bin/src.sh",
+      // "args": ["--target", "src/examples/substrings/main.c"]
+      "program": "./bin/coverage.sh",
+      "args": ["--all", "--index", "3"]
+    },
+  ]
+}

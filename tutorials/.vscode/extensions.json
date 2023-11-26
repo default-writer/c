@@ -1,3 +1,7 @@
 {
-  "recommendations": ["rogalmic.bash-debug", "circleci.circleci"]
+  "recommendations": [
+    "rogalmic.bash-debug",
+    "circleci.circleci",
+    "gabrielgrinberg.auto-run-command"
+  ]
 }

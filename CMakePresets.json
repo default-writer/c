@@ -8,7 +8,7 @@
     "configurePresets": [
         {
             "name": "default",
-            "displayName": "C++ WSL/containers",
+            "displayName": "C++",
             "description": "Default build using Ninja generator",
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/cmake",
@@ -48,7 +48,7 @@
         },
         {
             "name": "windows",
-            "displayName": "C++ msys64/ucrt64",
+            "displayName": "C++ windows",
             "description": "Default build using Ninja generator",
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/cmake",
@@ -90,12 +90,14 @@
     "buildPresets": [
         {
             "name": "default",
-            "configurePreset": "default"
+            "configurePreset": "default",
+            "description": "Build using default configuration"
         },
         {
             "name": "windows",
-            "configurePreset": "windows"
-                }
+            "configurePreset": "windows",
+            "description": "Build using default configuration"
+        }
     ],
     "testPresets": [
         {
@@ -107,7 +109,8 @@
             "execution": {
                 "noTestsAction": "error",
                 "stopOnFailure": true
-            }
+            },
+            "description": "Build using default configuration"
         },
         {
             "name": "windows",
@@ -118,7 +121,8 @@
             "execution": {
                 "noTestsAction": "error",
                 "stopOnFailure": true
-            }
+            },
+            "description": "Build using default configuration"
         }
     ]
 }

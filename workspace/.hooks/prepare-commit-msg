@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -e
+
+err_report() {
+    echo "ERROR: $0:$*"
+}
+
+trap 'err_report $LINENO' ERR
+
+echo preparing commit message;
+
+CommitMessageFile=$1;
+Message=$(<$CommitMessageFile);
+BranchName=$(git rev-parse --abbrev-ref HEAD);
+if [[ $Message =~ ^\*.* ]] # special tweak for skipping branch name
+then
+    echo branch name suppressed;
+	Message=${Message#?};
+else
+    echo appending branch name;
+    Message="[${BranchName}] ${Message}";
+fi
+echo new commit message is $Message;
+echo $Message > $CommitMessageFile;
+
+exit 0;

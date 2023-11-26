@@ -1,0 +1,124 @@
+{
+    "version": 6,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 22,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "default",
+            "displayName": "C++ WSL/containers",
+            "description": "Default build using Ninja generator",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/cmake",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "/usr/bin/gcc",
+                "CMAKE_CXX_COMPILER": "/usr/bin/g++",
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CONFIG_VM_DEBUG_INFO": {
+                    "type": "BOOL",
+                    "value": "ON"
+                },
+                "CONFIG_MEMORY_DEBUG_INFO": {
+                    "type": "BOOL",
+                    "value": "ON"
+                },
+                "CONFIG_MEMORY_CLEANUP": {
+                    "type": "BOOL",
+                    "value": "ON"
+                },
+                "CONFIG_MEMORY_ALLOC": {
+                    "type": "BOOL",
+                    "value": "OFF"
+                },
+                "CONFIG_MEMCPY": {
+                    "type": "BOOL",
+                    "value": "OFF"
+                },
+                "CODE_SANITIZER": {
+                    "type": "BOOL",
+                    "value": "OFF"
+                },
+                "CONFIG_GC": {
+                    "type": "BOOL",
+                    "value": "OFF"
+                }
+            }
+        },
+        {
+            "name": "windows",
+            "displayName": "C++ msys64/ucrt64",
+            "description": "Default build using Ninja generator",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/cmake",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "c:/tools/msys64/ucrt64/bin/gcc.exe",
+                "CMAKE_CXX_COMPILER": "c:/tools/msys64/ucrt64/bin/g++.exe",
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CONFIG_VM_DEBUG_INFO": {
+                    "type": "BOOL",
+                    "value": "ON"
+                },
+                "CONFIG_MEMORY_DEBUG_INFO": {
+                    "type": "BOOL",
+                    "value": "ON"
+                },
+                "CONFIG_MEMORY_CLEANUP": {
+                    "type": "BOOL",
+                    "value": "ON"
+                },
+                "CONFIG_MEMORY_ALLOC": {
+                    "type": "BOOL",
+                    "value": "OFF"
+                },
+                "CONFIG_MEMCPY": {
+                    "type": "BOOL",
+                    "value": "OFF"
+                },
+                "CODE_SANITIZER": {
+                    "type": "BOOL",
+                    "value": "OFF"
+                },
+                "CONFIG_GC": {
+                    "type": "BOOL",
+                    "value": "OFF"
+                }
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "default",
+            "configurePreset": "default"
+        },
+        {
+            "name": "windows",
+            "configurePreset": "windows"
+                }
+    ],
+    "testPresets": [
+        {
+            "name": "default",
+            "configurePreset": "default",
+            "output": {
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": true
+            }
+        },
+        {
+            "name": "windows",
+            "configurePreset": "windows",
+            "output": {
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": true
+            }
+        }
+    ]
+}

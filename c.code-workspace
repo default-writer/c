@@ -4,10 +4,10 @@
       "path": "."
     },
     {
-      "path": "examples"
+      "path": "tutorials"
     },
     {
-      "path": "tutorials"
+      "path": "workspace"
     }
   ],
   "settings": {
@@ -207,7 +207,9 @@
     "clangd.onConfigChanged": "restart",
     "clangd.detectExtensionConflicts": true,
     "clang-tidy.lintOnSave": true,
-    "clang-tidy.compilerArgs": ["-I/usr/include/gtk-4.0"],
+    "clang-tidy.compilerArgs": [
+      "-I/usr/include/gtk-4.0"
+    ],
     "screencastMode.fontSize": 20,
     "window.zoomLevel": 0,
     "debug.console.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
@@ -297,8 +299,12 @@
       "CONFIG_MEMORY_CLEANUP"
     ],
     "koverage.coverageCommand": "bash -e /home/user/c/bin/coverage.sh --all --clean",
-    "koverage.coverageFileNames": ["lcov.info"],
-    "coverage-gutters.coverageFileNames": ["lcov.info"],
+    "koverage.coverageFileNames": [
+      "lcov.info"
+    ],
+    "coverage-gutters.coverageFileNames": [
+      "lcov.info"
+    ],
     "terminal.integrated.scrollback": 65536,
     "coverage-gutters.customizable.status-bar-toggler-watchCoverageAndVisibleEditors-enabled": true,
     "coverage-gutters.showLineCoverage": true,
@@ -310,7 +316,15 @@
       "!jsonc",
       "!code-workspace"
     ],
-    "cmake.options.statusBarVisibility": "visible"
+    "cmake.options.statusBarVisibility": "visible",
+    "auto-run-command.rules": [
+      {
+        "condition": "always",
+        "command": "./bin/init.sh --init",
+        "message": "Initilalization",
+        "shellCommand": true
+      }
+    ]
   },
   "extensions": {
     "recommendations": [
@@ -320,7 +334,8 @@
       "donjayamanne.githistory",
       "guodongsun.vscode-git-cruise",
       "rogalmic.bash-debug",
-      "circleci.circleci"
+      "circleci.circleci",
+      "gabrielgrinberg.auto-run-command"
     ]
   }
 }

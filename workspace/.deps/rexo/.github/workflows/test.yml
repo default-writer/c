@@ -1,0 +1,76 @@
+name: Test
+
+on: [ push ]
+
+jobs:
+  main:
+    strategy:
+      matrix:
+        name: [
+          Ubuntu | Clang,
+          Ubuntu | GCC,
+          macOS | Clang,
+          macOS | GCC,
+          Windows Server,
+        ]
+        include:
+          - name: Ubuntu | Clang
+            os: ubuntu-latest
+            cc: clang
+            cxx: clang++
+
+          - name: Ubuntu | GCC
+            os: ubuntu-latest
+            cc: gcc
+            cxx: g++
+
+          - name: macOS | Clang
+            os: macos-latest
+            cc: clang
+            cxx: clang++
+
+          - name: macOS | GCC
+            os: macos-latest
+            cc: gcc
+            cxx: g++
+
+          - name: Windows Server
+            os: windows-latest
+            cc: cl
+            cxx: cl
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Check out
+        uses: actions/checkout@v2
+
+      - name: Create the build directory
+        run: cmake -E make_directory ${{ runner.workspace }}/build
+
+      - name: Configure CMake
+        shell: bash
+        working-directory: ${{ runner.workspace }}/build
+        run: |
+          cmake                                                                \
+            -D CMAKE_C_COMPILER=${{ matrix.cc }}                               \
+            -D CMAKE_CXX_COMPILER=${{ matrix.cxx }}                            \
+            $GITHUB_WORKSPACE
+
+      - name: Build (debug)
+        working-directory: ${{ runner.workspace }}/build
+        shell: bash
+        run: cmake --build . --config Debug
+
+      - name: Test (debug)
+        working-directory: ${{ runner.workspace }}/build
+        shell: bash
+        run: ctest -C Debug --output-on-failure
+
+      - name: Build (release)
+        working-directory: ${{ runner.workspace }}/build
+        shell: bash
+        run: cmake --build . --config Release
+
+      - name: Test (release)
+        working-directory: ${{ runner.workspace }}/build
+        shell: bash
+        run: ctest -C Release --output-on-failure

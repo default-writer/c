@@ -1,3 +1,11 @@
 {
+  "auto-run-command.rules": [
+    {
+      "condition": "always",
+      "command": "./bin/init.sh --init",
+      "message": "Initilalization",
+      "shellCommand": true
+    }
+  ],
   "clangd.path": "${workspaceFolder}/.tools/clangd_16.0.2/bin/clangd"
 }

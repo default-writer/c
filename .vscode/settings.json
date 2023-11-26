@@ -1,4 +1,12 @@
 {
+    "auto-run-command.rules": [
+        {
+            "condition": "always",
+            "command": "./bin/init.sh --init",
+            "message": "Initilalization",
+            "shellCommand": true
+        }
+    ],
     "terminal.integrated.smoothScrolling": true,
     "terminal.integrated.cursorBlinking": true,
     "terminal.integrated.enableFileLinks": "on",
@@ -445,6 +453,7 @@
     "files.refactoring.autoSave": false,
     "editor.fontVariations": false,
     "editor.minimap.enabled": false,
+    "workbench.activityBar.visible": true,
     "workbench.statusBar.visible": true,
     "workbench.colorCustomizations": {
         "[Yitzchok (rainglow)]": {}
