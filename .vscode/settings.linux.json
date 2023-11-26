@@ -2,7 +2,7 @@
   "auto-run-command.rules": [
     {
       "condition": "always",
-      "command": "./bin/init.sh --init",
+      "command": "${workspaceFolder}/bin/init.sh --init",
       "message": "Initilalization",
       "shellCommand": true
     }

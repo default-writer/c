@@ -2,7 +2,7 @@
   "auto-run-command.rules": [
     {
       "condition": "always",
-      "command": "./bin/init.sh --init",
+      "command": "${workspaceFolder}/bin/init.sh --init",
       "message": "Initilalization",
       "shellCommand": true
     }
@@ -373,7 +373,7 @@
   "clangd.restartAfterCrash": true,
   "clangd.onConfigChanged": "restart",
   "clangd.detectExtensionConflicts": true,
-  "clangd.defaultProfile": "C++ WSL/containers",
+  "clangd.defaultProfile": "C++",
   "clang-format.style": "{BasedOnStyle: WebKit, IndentWidth: 4, BreakBeforeBraces: Attach}",
   "clang-format.language.c.enable": true,
   "clang-tidy.lintOnSave": true,

@@ -361,7 +361,7 @@
   "clangd.restartAfterCrash": true,
   "clangd.onConfigChanged": "restart",
   "clangd.detectExtensionConflicts": true,
-  "clangd.defaultProfile": "C++ WSL/containers",
+  "clangd.defaultProfile": "C++",
   "clang-format.style": "{BasedOnStyle: WebKit, IndentWidth: 4, BreakBeforeBraces: Attach}",
   "clang-format.language.c.enable": true,
   "clang-tidy.lintOnSave": true,
