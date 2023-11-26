@@ -374,6 +374,8 @@ target_link_libraries(main-tests-vm1 PRIVATE list-micro tests-vm-v1 ctypes)
 
 # testing
 enable_testing()
+include(Dart)
+include(CTest)
 
 # test
 add_test(NAME main-tests-vm1 COMMAND main-tests-vm1)

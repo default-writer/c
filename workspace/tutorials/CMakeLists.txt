@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22.1)
 
-project(c-oberon VERSION 0.0.1 LANGUAGES C CXX)
+project(tutorials VERSION 0.0.1 LANGUAGES C CXX)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_C_STANDARD 99)
@@ -11,8 +11,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 include_directories(../src)
-
-add_subdirectory(.. ../.c)
 
 set(LESSON1 src/l-01/main.c)
 set(LESSON2 src/l-02/main.c)
@@ -79,3 +77,11 @@ add_executable(c-lesson-29 ${LESSON29})
 add_executable(c-lesson-30 ${LESSON30})
 add_executable(c-simple-parser ${SIMPLEPARSER})
 add_executable(c-crc32 ${CRC32})
+
+# testing
+enable_testing()
+include(Dart)
+include(CTest)
+
+# test
+add_test(NAME c-crc32 COMMAND c-crc32)

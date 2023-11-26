@@ -62,14 +62,14 @@ while (($#)); do
             cargo install slint-viewer
             ;;
 
-        "--clangd") # installs clangd 16.0.2
+        "--clangd") # installs clangd 17.0.3
             [[ ! -d "${pwd}/.tools" ]] && mkdir "${pwd}/.tools"
-            [[ ! -d "${pwd}/.tools/clangd_16.0.2" ]] && mkdir "${pwd}/.tools/clangd_16.0.2"
-            wget https://github.com/clangd/clangd/releases/download/16.0.2/clangd-linux-16.0.2.zip -qO "/tmp/clangd-linux-16.0.2.zip"
-            unzip -o -q "/tmp/clangd-linux-16.0.2.zip" -d "/tmp"
-            cp -r "/tmp/clangd_16.0.2/." "${pwd}/.tools/clangd_16.0.2"
-            rm -rf "/tmp/clangd-linux-16.0.2"
-            rm -f "/tmp/clangd-linux-16.0.2.zip"
+            [[ ! -d "${pwd}/.tools/clangd_17.0.3" ]] && mkdir "${pwd}/.tools/clangd_17.0.3"
+            wget https://github.com/clangd/clangd/releases/download/17.0.3/clangd-linux-17.0.3.zip -qO "/tmp/clangd-linux-17.0.3.zip"
+            unzip -o -q "/tmp/clangd-linux-17.0.3.zip" -d "/tmp"
+            cp -r "/tmp/clangd_17.0.3/." "${pwd}/.tools/clangd_17.0.3"
+            rm -rf "/tmp/clangd-linux-17.0.3"
+            rm -f "/tmp/clangd-linux-17.0.3.zip"
             ;;
 
         "--cmake") # installs cmake

@@ -551,6 +551,8 @@ FILE(WRITE ${CMAKE_BINARY_DIR}/input-substrings.txt
 
 # testing
 enable_testing()
+include(Dart)
+include(CTest)
 
 # test
 add_test(NAME main-tests-vm1 COMMAND main-tests-vm1)
