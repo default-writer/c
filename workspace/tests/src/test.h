@@ -29,7 +29,7 @@
 #ifndef _REXO_TESTS_
 #define _REXO_TESTS_
 /* #define RXP_DEBUG_TESTS */
-#include "../../.deps/rexo/include/rexo.h"
+#include "../.deps/rexo/include/rexo.h"
 #endif
 
 struct test_suite {
