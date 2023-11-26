@@ -316,15 +316,7 @@
       "!jsonc",
       "!code-workspace"
     ],
-    "cmake.options.statusBarVisibility": "visible",
-    "auto-run-command.rules": [
-      {
-        "condition": "always",
-        "command": "./bin/init.sh --init",
-        "message": "Initilalization",
-        "shellCommand": true
-      }
-    ]
+    "cmake.options.statusBarVisibility": "visible"
   },
   "extensions": {
     "recommendations": [
@@ -334,8 +326,7 @@
       "donjayamanne.githistory",
       "guodongsun.vscode-git-cruise",
       "rogalmic.bash-debug",
-      "circleci.circleci",
-      "gabrielgrinberg.auto-run-command"
+      "circleci.circleci"
     ]
   }
 }

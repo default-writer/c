@@ -46,7 +46,6 @@
     "circleci.circleci",
     "franmastromarino.vs-code-settings-os",
     "dangmai.workspace-default-settings",
-    "swellaby.workspace-config-plus",
-    "gabrielgrinberg.auto-run-command"
+    "swellaby.workspace-config-plus"
   ]
 }
