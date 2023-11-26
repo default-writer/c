@@ -453,6 +453,7 @@
     "files.refactoring.autoSave": false,
     "editor.fontVariations": false,
     "editor.minimap.enabled": false,
+    "workbench.activityBar.visible": true,
     "workbench.statusBar.visible": true,
     "workbench.colorCustomizations": {
         "[Yitzchok (rainglow)]": {}
