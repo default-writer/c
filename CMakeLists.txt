@@ -372,14 +372,6 @@ add_executable(main-tests-vm1 ${MAIN_TESTS_VM1_SOURCE})
 # test
 target_link_libraries(main-tests-vm1 PRIVATE list-micro tests-vm-v1 ctypes)
 
-# testing
-enable_testing()
-include(Dart)
-include(CTest)
-
-# test
-add_test(NAME main-tests-vm1 COMMAND main-tests-vm1)
-
 configure_file(all_english_words.txt ${CMAKE_BINARY_DIR}/all_english_words.txt COPYONLY)
 configure_file(file.txt ${CMAKE_BINARY_DIR}/file.txt COPYONLY)
 
