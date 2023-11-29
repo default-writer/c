@@ -191,8 +191,8 @@ static alloc_func _internal_alloc;
 static free_func _internal_free;
 
 static void INIT init(void) {
-    _internal_alloc = memory->set_alloc(_alloc);
-    _internal_free = memory->set_free(_free);
+    //_internal_alloc = memory->set_alloc(_alloc);
+    //_internal_free = memory->set_free(_free);
 }
 
 static void DESTROY destroy(void) {
