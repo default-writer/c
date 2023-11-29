@@ -27,9 +27,12 @@
 #define _STD_HEADERS_H_
 
 #include <limits.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
+#define VM_ALLOC_DEBUG_INFO
 
 #endif /* _STD_HEADERS_H_ */

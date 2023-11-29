@@ -261,7 +261,7 @@ static void vm_free(struct pointer* ptr) {
 #endif
 #ifdef USE_VM_DEBUG_INFO
 #if defined(VM_ALLOC_DEBUG_INFO)
-        printf("  >-: %016llx ! %016llx > %016llx\n", ptr->address, (u64)ptr, (u64)data);
+        printf("  >-: %016llx ! %016llx > %016llx\n", pointer->address(ptr), (u64)ptr, (u64)data);
 #endif
 #endif
         *data = 0;
