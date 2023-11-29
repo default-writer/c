@@ -115,7 +115,6 @@ static u64 pointer_read_type(const struct pointer* ptr, u64 type);
 
 static void pointer_free_internal(struct pointer* ptr);
 
-u64 hash(const u64* ptr);
 static void* _alloc(u64 size);
 static void _free(void* ptr, u64 size);
 
