@@ -15,11 +15,6 @@ fi
 
 uid=$(id -u)
 
-if [ ! "${uid}" -eq 0 ]; then
-    echo "Please run as root"
-    exit
-fi
-
 source=$(pwd)
 
 pwd=$(cd "$(dirname $(dirname $(dirname "${BASH_SOURCE[0]}")))" &> /dev/null && pwd)
@@ -27,6 +22,16 @@ pwd=$(cd "$(dirname $(dirname $(dirname "${BASH_SOURCE[0]}")))" &> /dev/null && 
 install="$1"
 
 . "${pwd}/bin/scripts/load.sh"
+
+if [[ "${install}" == "" || "${install}" == "--help" ]]; then
+    help
+    exit
+fi
+
+if [ ! "${uid}" -eq 0 ]; then
+    echo "Please run as root"
+    exit
+fi
 
 updateflags="--update"
 updgradeflags="--upgrade"
@@ -92,6 +97,14 @@ while (($#)); do
             ln -s /usr/lib/wsl/lib/* /usr/lib/wsl/lib2
             echo /usr/lib/wsl/lib2 | tee /etc/ld.so.conf.d/ld.wsl.conf
             ;;
+
+        "--clangd") # installs clangd 17.0.3 system wide
+            wget "https://apt.llvm.org/llvm.sh" -qO "/tmp/llvm.sh"
+            chmod u+x /tmp/llvm.sh
+            /tmp/llvm.sh 17
+            rm -r /tmp/llvm.sh
+            ;;
+
 
         "--doxygen") # installs doxygen
             update ${updateflags}
@@ -348,11 +361,6 @@ while (($#)); do
     esac
     shift
 done
-
-if [[ "${install}" == "" ]]; then
-    help
-    exit;
-fi
 
 [[ $SHLVL -gt 2 ]] || echo OK
 

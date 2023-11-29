@@ -36,11 +36,11 @@ while (($#)); do
     case "$1" in
 
         "--clangd") # uninstalls clangd 17.0.3
-            rm -rf "${pwd}/clangd"
+            rm -rf "${pwd}/.tools/clangd"
             ;;
 
         "--cmake") # uninstalls cmake cmake 3.25.3
-            rm -rf "${pwd}/cmake-3.25"
+            rm -rf "${pwd}/.tools/cmake-3.25"
             ;;
 
         "--git") # unsets git config global environment variables

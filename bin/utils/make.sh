@@ -15,11 +15,6 @@ fi
 
 uid=$(id -u)
 
-if [ ! "${uid}" -eq 0 ]; then
-    echo "Please run as root"
-    exit
-fi
-
 source=$(pwd)
 
 pwd=$(cd "$(dirname $(dirname $(dirname "${BASH_SOURCE[0]}")))" &> /dev/null && pwd)
@@ -27,6 +22,16 @@ pwd=$(cd "$(dirname $(dirname $(dirname "${BASH_SOURCE[0]}")))" &> /dev/null && 
 install="$1"
 
 . "${pwd}/bin/scripts/load.sh"
+
+if [[ "${install}" == "" || "${install}" == "--help" ]]; then
+    help
+    exit
+fi
+
+if [ ! "${uid}" -eq 0 ]; then
+    echo "Please run as root"
+    exit
+fi
 
 ## Build optional dependencies
 ## Usage: ${script} <option>

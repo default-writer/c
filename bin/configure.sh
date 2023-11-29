@@ -25,6 +25,11 @@ install="$1"
 
 . "${pwd}/bin/scripts/load.sh"
 
+if [[ "${install}" == "" || "${install}" == "--help" ]]; then
+    help
+    exit
+fi
+
 ## Builds binaries and creates coverage info
 ## Usage: ${script} <option> [optional]
 ## ${commands}
