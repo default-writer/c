@@ -32,11 +32,16 @@
 void global_statistics(void);
 #endif
 
+typedef void* (*alloc_func)(u64 size);
+typedef void (*free_func)(void* ptr, u64 size);
+
 struct memory {
     void* (*alloc)(u64 size);
     void (*free)(void* ptr, u64 size);
     void* (*realloc)(void* old_ptr, u64 size, u64 new_size);
     void (*set)(void* dest, u8 c, size_t count);
+    alloc_func (*set_alloc)(alloc_func alloc);
+    free_func (*set_free)(free_func free);
 };
 
 /* definition */

@@ -38,15 +38,52 @@ struct memory_info_data {
 static struct memory_info_data memory_info;
 static struct memory_info_data* base = &memory_info;
 
-static void* memory_alloc(u64 size);
-static void memory_free(void* ptr, u64 size);
+static void* internal_memory_alloc(u64 size);
+static void internal_memory_free(void* ptr, u64 size);
 static void* memory_realloc(void* old_ptr, u64 size, u64 new_size);
 static void memory_set(void* dest, u8 c, size_t count);
+
+static alloc_func memory_set_alloc(alloc_func alloc);
+static free_func memory_set_free(free_func free);
+
+/* api */
+
+void global_statistics(void);
+
+static alloc_func _alloc = internal_memory_alloc;
+static free_func _free = internal_memory_free;
+
+static alloc_func memory_set_alloc(alloc_func alloc) {
+    alloc_func tmp = _alloc;
+    _alloc = alloc;
+    return tmp;
+}
+
+static free_func memory_set_free(free_func free) {
+    free_func tmp = _free;
+    _free = free;
+    return tmp;
+}
+
+static void* memory_alloc(u64 size) {
+    if (_alloc != 0) {
+        return _alloc(size);
+    }
+    return internal_memory_alloc(size);
+}
+
+static void memory_free(void* ptr, u64 size) {
+    if (_free != 0) {
+        _free(ptr, size);
+        return;
+    }
+    internal_memory_free(ptr, size);
+}
 
 /* api */
 void global_statistics(void);
 
-static void* memory_alloc(u64 size) {
+static void* internal_memory_alloc(u64 size) {
     void* ptr = 0;
     if (size != 0) {
         ptr = calloc(1, size);
@@ -61,12 +98,12 @@ static void* memory_alloc(u64 size) {
     return ptr;
 }
 
-static void memory_free(void* ptr, u64 size) {
+static void internal_memory_free(void* ptr, u64 size) {
     if (ptr != 0) {
 #ifdef USE_MEMORY_CLEANUP
         memory_set(ptr, 0, size); /* NOLINT */
 #endif
-       free(ptr);
+        free(ptr);
 #ifdef USE_MEMORY_DEBUG_INFO
         total_free += size;
 #if defined(VM_ALLOC_DEBUG_INFO)
@@ -126,5 +163,7 @@ const struct memory memory_definition = {
     .alloc = memory_alloc,
     .free = memory_free,
     .realloc = memory_realloc,
-    .set = memory_set
+    .set = memory_set,
+    .set_alloc = memory_set_alloc,
+    .set_free = memory_set_free,
 };

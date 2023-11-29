@@ -25,7 +25,7 @@
  */
 #ifndef _REXO_TESTS_
 #define _REXO_TESTS_
-//#define RXP_DEBUG_TESTS
+// #define RXP_DEBUG_TESTS
 #include "../.deps/rexo/include/rexo.h"
 #endif
 
@@ -35,11 +35,11 @@
 #include "playground/brain/brain.h"
 #include "playground/hashtable/v1/hashtable_v1.h"
 
-#include "pointer/v1/pointer_v1.h"
 #include "pointer/types/data/v1/data_v1.h"
 #include "pointer/types/file/v1/file_v1.h"
 #include "pointer/types/list/v1/list_v1.h"
 #include "pointer/types/string/v1/string_v1.h"
+#include "pointer/v1/pointer_v1.h"
 
 #define DEFAULT_SIZE 0x8
 

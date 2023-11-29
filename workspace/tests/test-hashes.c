@@ -25,7 +25,7 @@
  */
 #ifndef _REXO_TESTS_
 #define _REXO_TESTS_
-//#define RXP_DEBUG_TESTS
+// #define RXP_DEBUG_TESTS
 #include "../.deps/rexo/include/rexo.h"
 #endif
 
@@ -154,6 +154,7 @@ uint32_t KR_v2_hash(const char* s, unsigned long size) {
         hashval = *s + 31 * hashval;
     return hashval;
 }
+
 uint32_t Jenkins_one_at_a_time_hash(const char* str, size_t len) {
     uint32_t hash, i;
     for (hash = i = 0; i < len; ++i) {

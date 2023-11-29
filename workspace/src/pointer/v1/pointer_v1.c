@@ -35,6 +35,8 @@
 
 #define DEFAULT_SIZE 0x100
 #define POINTER_SIZE sizeof(struct pointer)
+#define DEFAULT_BLOCK_SIZE 0x1000
+#define HASHTABLE_SIZE 0x100
 
 /* private */
 struct vm_data;
@@ -113,6 +115,10 @@ static u64 pointer_read_type(const struct pointer* ptr, u64 type);
 
 static void pointer_free_internal(struct pointer* ptr);
 
+u64 hash(const u64* ptr);
+static void* _alloc(u64 size);
+static void _free(void* ptr, u64 size);
+
 /* free */
 static u64 vm_types_init(u64 id, const struct vm_type* type);
 static void vm_init(void);
@@ -121,6 +127,78 @@ static void vm_destroy(void);
 /* internal */
 
 static u64 type_count = TYPE_USER;
+
+struct memory_block {
+    struct memory_block* prev;
+    void* ptr;
+};
+
+static struct memory_block* hashtable[HASHTABLE_SIZE] = { 0 };
+
+u64 hash(const u64* ptr) {
+    const u8* data = (const u8*)&ptr;
+    u32 byte, crc, mask, i = 0;
+    crc = 0xffffffff;
+    unsigned long size = 8;
+    while (--size > 0) {
+        byte = data[i];
+        crc = crc ^ byte;
+        for (unsigned int j = 8; j > 0; j--) {
+            mask = ~(crc & 1) + 1;
+            crc = (crc >> 1) ^ (0xedb88320 & mask);
+        }
+        i = i + 1;
+    }
+    return ~crc % HASHTABLE_SIZE;
+}
+
+static void* alloc_block(u64 size);
+static struct memory_block* free_block(void* ptr);
+
+static void* alloc_block(u64 size) {
+    struct memory_block* allocated = (struct memory_block*)calloc(1, sizeof(struct memory_block) + size);
+    allocated->ptr = allocated + 1;
+    return allocated;
+}
+
+static struct memory_block* free_block(void* ptr) {
+    struct memory_block* allocated = (struct memory_block*)ptr - 1;
+    struct memory_block* prev = allocated->prev;
+    free(allocated);
+    return prev;
+}
+
+static void* _alloc(u64 size) {
+    struct memory_block* allocated = alloc_block(size);
+    u64 index = hash(allocated->ptr);
+    allocated->prev = hashtable[index];
+    hashtable[index] = allocated;
+    return allocated->ptr;
+}
+
+static void _free(void* ptr, u64 size) {
+    u64 index = hash(ptr);
+    struct memory_block* allocated = hashtable[index];
+    if (allocated != 0 && allocated->ptr != ptr) {
+        allocated = (struct memory_block*)ptr - 1;
+    }
+    if (allocated != 0) {
+        hashtable[index] = free_block(ptr);
+    }
+}
+
+static alloc_func _internal_alloc;
+static free_func _internal_free;
+
+static void INIT init(void) {
+    _internal_alloc = memory->set_alloc(_alloc);
+    _internal_free = memory->set_free(_free);
+}
+
+static void DESTROY destroy(void) {
+    memory->set_alloc(0);
+    memory->set_free(0);
+}
 
 static u64 vm_types_init(u64 id, const struct vm_type* type) {
     struct vm_types* next = memory->alloc(sizeof(struct vm_types));
