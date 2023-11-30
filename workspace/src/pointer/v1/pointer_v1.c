@@ -35,8 +35,6 @@
 
 #define DEFAULT_SIZE 0x100
 #define POINTER_SIZE sizeof(struct pointer)
-#define DEFAULT_BLOCK_SIZE 0x1000
-#define HASHTABLE_SIZE 0x100
 
 /* private */
 struct vm_data;
@@ -126,27 +124,6 @@ static void vm_destroy(void);
 /* internal */
 
 static u64 type_count = TYPE_USER;
-
-static alloc_func _internal_memory_alloc = 0;
-static free_func _internal_memory_free = 0;
-
-static void* _alloc(u64 size) {
-    return _internal_memory_alloc(size);
-}
-
-static void _free(void* ptr, u64 size) {
-    _internal_memory_free(ptr, size);
-}
-
-static void INIT init(void) {
-    _internal_memory_alloc = memory->set_alloc(_alloc);
-    _internal_memory_free = memory->set_free(_free);
-}
-
-static void DESTROY destroy(void) {
-    memory->set_alloc(_internal_memory_alloc);
-    memory->set_free(_internal_memory_free);
-}
 
 static u64 vm_types_init(u64 id, const struct vm_type* type) {
     struct vm_types* next = memory->alloc(sizeof(struct vm_types));
