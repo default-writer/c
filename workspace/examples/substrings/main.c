@@ -17,6 +17,96 @@
 #define DEFAULT_BLOCK_SIZE 0x2000
 #define HASHTABLE_SIZE 0x100
 
+const char* ascii_code = "\x1b[1;32m";
+const char* reset_code = "\x1b[0m";
+
+static alloc_func _internal_memory_alloc = 0;
+static free_func _internal_memory_free = 0;
+
+static void* allocated;
+static void* sp;
+
+struct memory_pointer {
+    u64 size;
+    void* ptr;
+};
+
+static struct memory_pointer max;
+
+static struct memory_pointer last[HASHTABLE_SIZE] = { 0 };
+
+static void* _alloc(u64 size) {
+    void* ptr;
+    if (max.size >= size) {
+        max.size = 0;
+        ptr = max.ptr;
+        max.ptr = 0;
+        return ptr;
+    }
+    if (max.ptr != 0) {
+        for (int i = 0; i < HASHTABLE_SIZE; i++) {
+            if (last[i].ptr != 0 && last[i].size > size) {
+                if (max.size <= last[i].size) {
+                    max.size = last[i].size;
+                    max.ptr = last[i].ptr;
+                    ptr = last[i].ptr;
+                    return ptr;
+                }
+            }
+            if (last[i].ptr != 0 && last[i].size == size) {
+                ptr = last[i].ptr;
+                last[i].ptr = 0;
+                last[i].size = 0;
+                return ptr;
+            }
+        }
+    }
+    ptr = sp;
+    sp += size;
+    return ptr;
+}
+
+static void _free(void* ptr, u64 size) {
+    if (sp == ptr) {
+        sp -= size;
+        return;
+    }
+    if (max.size <= size) {
+        max.ptr = ptr;
+        max.size = size;
+        return;
+    }
+    if (ptr < sp) {
+        for (int i = 0; i < 256; i++) {
+            if (last[i].ptr == 0) {
+                memory->set(ptr, 0, size);
+                last[i].ptr = ptr;
+                last[i].size = size + (8 - size % 8);
+                return;
+            }
+        }
+        memory->set(ptr, 0, size);
+    }
+}
+
+static void INIT vm_init(void) {
+#if defined(VM_GLOBAL_DEBUG_INFO)
+    global_statistics();
+#endif
+    sp = allocated = memory->alloc(DEFAULT_BLOCK_SIZE);
+    _internal_memory_alloc = memory->set_alloc(_alloc);
+    _internal_memory_free = memory->set_free(_free);
+}
+
+static void DESTROY vm_destroy(void) {
+    memory->set_alloc(_internal_memory_alloc);
+    memory->set_free(_internal_memory_free);
+    memory->free(allocated, DEFAULT_BLOCK_SIZE);
+#if defined(VM_GLOBAL_DEBUG_INFO)
+    global_statistics();
+#endif
+}
+
 static u64 load_data(void) {
     u64 list_ptr = list->alloc();
     u64 reversed_list_ptr = list->alloc();
@@ -87,116 +177,6 @@ static u64 read_data(u64 list_ptr, const char* prompt) {
     return data_ptr;
 }
 
-const char* ascii_code = "\x1b[1;32m";
-const char* reset_code = "\x1b[0m";
-
-static void launch_game(void) {
-    u64 quit = 0;
-    u64 answer = string->load("42");
-    u64 message = string->load("it was a joke, now you will play in guess the number game!");
-    os->putc(message);
-
-    const char* prompt = "guess the number";
-
-    while (quit == 0) {
-        u64 data_ptr = read_input(prompt);
-        if (string->strcmp(data_ptr, answer) != 0) {
-            quit = 1;
-            printf("%syou won!%s\n", ascii_code, reset_code);
-            continue;
-        }
-        printf("%syou are wrong! try again!%s\n", ascii_code, reset_code);
-    }
-}
-static alloc_func _internal_memory_alloc = 0;
-static free_func _internal_memory_free = 0;
-
-static void* allocated;
-static void* sp;
-
-struct memory_pointer {
-    u64 size;
-    void* ptr;
-};
-
-static struct memory_pointer max;
-
-static struct memory_pointer last[HASHTABLE_SIZE] = { 0 };
-
-static void* _alloc(u64 size) {
-    void* ptr;
-    if (max.size >= size) {
-        max.size = 0;
-        ptr = max.ptr;
-        max.ptr = 0;
-        return ptr;
-    }
-    if (max.ptr != 0) {
-        for (int i = 0; i < HASHTABLE_SIZE; i++) {
-            if (last[i].ptr != 0 && last[i].size > size) {
-                if (max.size <= last[i].size) {
-                    max.size = last[i].size;
-                    max.ptr = last[i].ptr;
-                    ptr = last[i].ptr;
-                    return ptr;
-                }
-            }
-            if (last[i].ptr != 0 && last[i].size == size) {
-                ptr = last[i].ptr;
-                last[i].ptr = 0;
-                last[i].size = 0;
-                printf("suka suka pointer found!\n");
-                return ptr;
-            }
-        }
-    }
-    ptr = sp;
-    sp += size;
-    return ptr;
-}
-
-static void _free(void* ptr, u64 size) {
-    if (sp == ptr) {
-        sp -= size;
-        return;
-    }
-    if (max.size <= size) {
-        max.ptr = ptr;
-        max.size = size;
-        return;
-    }
-    if (ptr < sp) {
-        for (int i = 0; i < 256; i++) {
-            if (last[i].ptr == 0) {
-                memory->set(ptr, 0, size);
-                last[i].ptr = ptr;
-                last[i].size = size + (8 - size % 8);
-                return;
-            }
-        }
-        memory->set(ptr, 0, size);
-        printf("dandling pointer found\n");
-    }
-}
-
-static void INIT vm_init(void) {
-#if defined(VM_GLOBAL_DEBUG_INFO)
-    global_statistics();
-#endif
-    sp = allocated = memory->alloc(DEFAULT_BLOCK_SIZE);
-    _internal_memory_alloc = memory->set_alloc(_alloc);
-    _internal_memory_free = memory->set_free(_free);
-}
-
-static void DESTROY vm_destroy(void) {
-    memory->set_alloc(_internal_memory_alloc);
-    memory->set_free(_internal_memory_free);
-    memory->free(allocated, DEFAULT_BLOCK_SIZE);
-#if defined(VM_GLOBAL_DEBUG_INFO)
-    global_statistics();
-#endif
-}
-
 int main(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
 #if defined(VM_GLOBAL_DEBUG_INFO)
@@ -217,15 +197,9 @@ int main(void) {
             printf(">[quit]\n");
             continue;
         }
-        if (string->strcmp(string_ptr, secret_ptr) != 0) {
-            printf(">[%sentering secret chat%s]\n", ascii_code, reset_code);
-            launch_game();
-            continue;
-        }
         printf(">[%saccepted%s]:\n", ascii_code, reset_code);
         char* source_data = string->unsafe(string_ptr);
         printf("[%s]\n", source_data);
-        // os->putc(string_ptr);
         u64 pattern_ptr = read_data(list_data_ptr, "[pattern]");
         if (string->size(pattern_ptr) == 0) {
             quit = 1;
@@ -235,7 +209,6 @@ int main(void) {
         printf(">[%saccepted%s]:\n", ascii_code, reset_code);
         char* pattern_data = string->unsafe(pattern_ptr);
         printf("[%s]\n", pattern_data);
-        // os->putc(pattern_ptr);
         u64 pattern_size = string->size(pattern_ptr);
         u64 string_pointer_ptr = 0;
         u64 current_ptr = string_ptr;
