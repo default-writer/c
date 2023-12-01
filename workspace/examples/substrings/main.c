@@ -91,7 +91,10 @@ static void _free(void* ptr, u64 size) {
             memory->set(ptr, 0, size);
             last[last_empty_index].ptr = ptr;
             last[last_empty_index].size = size + (8 - size % 8);
-            last_empty_index = HASHTABLE_SIZE;
+            if (last_empty_index != 0 && last[last_empty_index - 1].ptr == 0) {
+                --last_empty_index;
+                return;
+            }
             return;
         }
         for (int i = 0; i < 256; i++) {
