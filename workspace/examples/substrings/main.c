@@ -34,6 +34,7 @@ struct memory_pointer {
 static struct memory_pointer max;
 
 static struct memory_pointer last[HASHTABLE_SIZE] = { 0 };
+static u64 last_empty_index = HASHTABLE_SIZE;
 
 static void* _alloc(u64 size) {
     void* ptr;
@@ -44,19 +45,28 @@ static void* _alloc(u64 size) {
         return ptr;
     }
     if (max.ptr != 0) {
+        last_empty_index = HASHTABLE_SIZE;
         for (int i = 0; i < HASHTABLE_SIZE; i++) {
-            if (last[i].ptr != 0 && last[i].size > size) {
+            if (last[i].ptr == 0) {
+                last_empty_index = i;
+                continue;
+            }
+            if (last[i].size > size) {
                 if (max.size <= last[i].size) {
                     max.size = last[i].size;
                     max.ptr = last[i].ptr;
-                    ptr = last[i].ptr;
-                    return ptr;
                 }
-            }
-            if (last[i].ptr != 0 && last[i].size == size) {
                 ptr = last[i].ptr;
                 last[i].ptr = 0;
                 last[i].size = 0;
+                last_empty_index = i;
+                return ptr;
+            }
+            if (last[i].size == size) {
+                ptr = last[i].ptr;
+                last[i].ptr = 0;
+                last[i].size = 0;
+                last_empty_index = i;
                 return ptr;
             }
         }
@@ -77,7 +87,17 @@ static void _free(void* ptr, u64 size) {
         return;
     }
     if (ptr < sp) {
+        if (last_empty_index < HASHTABLE_SIZE) {
+            memory->set(ptr, 0, size);
+            last[last_empty_index].ptr = ptr;
+            last[last_empty_index].size = size + (8 - size % 8);
+            last_empty_index = HASHTABLE_SIZE;
+            return;
+        }
         for (int i = 0; i < 256; i++) {
+            if (last[i].ptr != 0) {
+                continue;
+            }
             if (last[i].ptr == 0) {
                 memory->set(ptr, 0, size);
                 last[i].ptr = ptr;
