@@ -56,7 +56,7 @@ struct file_methods {
     void (*file_free)(u64 ptr);
 };
 
-#ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_MEMORY_DEBUG_INFO)
 struct debug_methods {
     void (*dump)(struct pointer* ptr);
     void (*dump_ref)(void** ptr);

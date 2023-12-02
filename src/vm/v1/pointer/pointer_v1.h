@@ -51,7 +51,7 @@ struct pointer_methods {
     void* (*read)(const struct pointer* ptr);
     u64 (*read_type)(const struct pointer* ptr, u64 id);
     void (*write)(struct pointer* ptr, struct vm_data* vm, u64 address);
-#ifdef USE_VM_DEBUG_INFO
+#if defined(VM_MEMORY_DEBUG_INFO)
     void (*dump)(struct pointer* ptr);
     void (*dump_ref)(void** ptr);
 #endif

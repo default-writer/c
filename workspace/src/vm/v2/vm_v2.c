@@ -39,12 +39,12 @@
 /* private */
 
 /* definition */
-#ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_MEMORY_DEBUG_INFO)
 extern const struct debug_methods debug_methods_definition;
 #endif
 
 /* definition */
-#ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_MEMORY_DEBUG_INFO)
 static const struct debug_methods* debug = &debug_methods_definition;
 #endif
 
@@ -75,7 +75,7 @@ static struct vm_state* state = &vm_state;
 
 static void vm_init(struct vm_data** current, u64 size);
 static void vm_destroy(struct vm_data** current);
-#ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_MEMORY_DEBUG_INFO)
 static void vm_dump(struct vm_data* vm_ptr);
 static void vm_dump_ref(struct vm_data* vm_ptr);
 #endif
@@ -158,7 +158,7 @@ static void* to_real_address_internal(struct vm_data* vm_data_ptr, u64 address) 
     return vm_data_ptr->bp + address - vm_data_ptr->offset - 1;
 }
 
-#ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_MEMORY_DEBUG_INFO)
 static void vm_enumerator_init_internal(struct vm_data* vm_data_ptr) {
     state->vm = vm_data_ptr;
     state->ptr = vm_data_ptr->bp;
@@ -189,7 +189,7 @@ static void vm_destroy(struct vm_data** current) {
     }
 }
 
-#ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_MEMORY_DEBUG_INFO)
 static void vm_dump(struct vm_data* vm_ptr) {
     if (vm_ptr == 0) {
         return;
@@ -271,7 +271,7 @@ static u64 vm_write(struct vm_data** current, struct pointer* data) {
     return address;
 }
 
-#ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_MEMORY_DEBUG_INFO)
 static struct pointer* vm_data_enumerator_next(void) {
     struct pointer* data = 0;
     struct vm_data* vm_data_ptr = state->vm;
@@ -315,7 +315,7 @@ const struct virtual_methods virtual_methods_definition = {
     .free = vm_free,
     .read = vm_read,
     .write = vm_write,
-#ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_MEMORY_DEBUG_INFO)
     .dump = vm_dump,
     .dump_ref = vm_dump_ref
 #endif

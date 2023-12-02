@@ -48,7 +48,7 @@ static u64 os_getenv(u64 ptr) {
     if (ptr == 0) {
         return 0;
     }
-    struct pointer* data_ptr = virtual->read_type(ptr, TYPE_STRING);
+    const struct pointer* data_ptr = virtual->read_type(ptr, TYPE_STRING);
     if (data_ptr == 0) {
         return 0;
     }

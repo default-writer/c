@@ -45,7 +45,7 @@ struct pointer_data {
 
 typedef struct test_data {
     struct pointer_data* ctx;
-}* TEST_DATA;
+} * TEST_DATA;
 
 RX_SET_UP(test_set_up) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
@@ -222,8 +222,8 @@ RX_TEST_CASE(main_brain2_tests, test_strcpy, .fixture = test_fixture) {
     u64 path_copy_ptr = pointer->copy(path_ptr1);
     pointer->strcat(path_copy_ptr, path_ptr2);
 
-    char* path1 = pointer->unsafe(path_ptr1);
-    char* path2 = pointer->unsafe(path_ptr2);
+    const char* path1 = pointer->unsafe(path_ptr1);
+    const char* path2 = pointer->unsafe(path_ptr2);
     u64 path1_len = strlen(path1);
     u64 path2_len = strlen(path2);
     RX_ASSERT(path1_len > 0);
@@ -231,7 +231,7 @@ RX_TEST_CASE(main_brain2_tests, test_strcpy, .fixture = test_fixture) {
     char* buf = calloc(1, path1_len + path2_len + 1);
     strcpy(buf, path1); /* NOLINT */
     strcat(buf, path2); /* NOLINT */
-    char* path_copy = pointer->unsafe(path_copy_ptr);
+    const char* path_copy = pointer->unsafe(path_copy_ptr);
     RX_ASSERT(strlen(path_copy) == strlen(buf));
     RX_ASSERT(strcmp(path_copy, buf) == 0);
     free(buf);
@@ -245,7 +245,7 @@ RX_TEST_CASE(main_brain2_tests, test_strcpy, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(main_brain2_tests, test_strcat_load_alloc_copy, .fixture = test_fixture) {
-#ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_MEMORY_DEBUG_INFO)
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct pointer_data* ctx = rx->ctx;
 #endif
@@ -441,7 +441,7 @@ RX_TEST_CASE(main_brain2_tests, test_strcat_load_alloc_copy, .fixture = test_fix
 
     list->free(list_ptr);
 
-#ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_MEMORY_DEBUG_INFO)
     virtual->dump(0);
     virtual->dump(ctx->vm);
     virtual->dump_ref(0);

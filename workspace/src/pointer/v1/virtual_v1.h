@@ -45,7 +45,7 @@ struct virtual_methods {
     void (*enumerator_init)(void);
     void (*enumerator_destroy)(void);
     u64 (*enumerator_next)(void);
-#ifdef USE_VM_DEBUG_INFO
+#if defined(VM_MEMORY_DEBUG_INFO)
     void (*dump)(void);
     void (*dump_ref)(void);
 #endif

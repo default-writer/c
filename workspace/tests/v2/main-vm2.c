@@ -34,18 +34,18 @@
 extern const struct virtual_methods virtual_methods_definition;
 
 /* definition */
-#ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_MEMORY_DEBUG_INFO)
 extern const struct debug_methods debug_methods_definition;
 #endif
 
 /* definition */
-#ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_MEMORY_DEBUG_INFO)
 static const struct debug_methods* debug = &debug_methods_definition;
 #endif
 
 typedef struct test_data {
     struct pointer_data* ctx;
-}* TEST_DATA;
+} * TEST_DATA;
 
 static void source1(void) {
     u64 file_path_ptr = pointer->pop();

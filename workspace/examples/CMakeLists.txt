@@ -16,7 +16,7 @@ set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> <INCLUDES> ${CMAKE_
 
 include_directories(../src)
 
-add_subdirectory(.. ../.c)
+add_subdirectory(.. ./.c)
 
 set(OBERON 
     oberon/method_suite/figures.c

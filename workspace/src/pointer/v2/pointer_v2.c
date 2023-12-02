@@ -96,7 +96,7 @@ static u64 pointer_file_read(u64 ptr);
 static void pointer_file_free(u64 ptr);
 static void pointer_free_vm(u64 ptr);
 static void pointer_printf(u64 ptr);
-#ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_MEMORY_DEBUG_INFO)
 static void pointer_dump(struct pointer* ptr);
 static void pointer_dump_ref(void** ptr);
 #endif
@@ -190,7 +190,7 @@ void pointer_ctx_init(struct pointer_data** ctx, u64 size) {
 }
 
 void pointer_ctx_destroy(struct pointer_data** ctx) {
-#ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_MEMORY_DEBUG_INFO)
     virtual->dump_ref(base->vm);
     virtual->dump(base->vm);
 #endif
@@ -219,7 +219,7 @@ void pointer_init(u64 size) {
 }
 
 void pointer_destroy(void) {
-#ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_MEMORY_DEBUG_INFO)
     virtual->dump_ref(base->vm);
 #endif
 #ifdef USE_GC
@@ -334,8 +334,8 @@ static u64 pointer_list_peek(u64 ptr) {
         return 0;
     }
     struct list_handler* handler = data_ptr->data;
-    u64 data = (u64)_list->peek(&handler->list);
-    return data;
+    u64 list_peek_ptr = (u64)_list->peek(&handler->list);
+    return list_peek_ptr;
 }
 
 static u64 pointer_list_pop(u64 ptr) {
@@ -350,8 +350,8 @@ static u64 pointer_list_pop(u64 ptr) {
         return 0;
     }
     struct list_handler* handler = data_ptr->data;
-    u64 data = (u64)_list->pop(&handler->list);
-    return data;
+    u64 list_pop_ptr = (u64)_list->pop(&handler->list);
+    return list_pop_ptr;
 }
 
 static u64 pointer_alloc(void) {
@@ -400,8 +400,8 @@ static char* pointer_unsafe(u64 ptr) {
     if (data_ptr->type != TYPE_PTR) {
         return 0;
     }
-    char* data = data_ptr->data;
-    return data;
+    char* ch = data_ptr->data;
+    return ch;
 }
 
 static u64 pointer_size(u64 ptr) {
@@ -554,10 +554,10 @@ static u64 pointer_getcwd(void) {
     u64 data_ptr;
     getcwd(cwd, PATH_MAX);
     u64 size = strlen(cwd) + 1;
-    char* data = memory->alloc(size);
-    strcpy(data, cwd); /* NOLINT */
-    data_ptr = pointer_load(data);
-    memory->free(data, size);
+    char* ch = memory->alloc(size);
+    strcpy(ch, cwd); /* NOLINT */
+    data_ptr = pointer_load(ch);
+    memory->free(ch, size);
     return data_ptr;
 }
 
@@ -652,7 +652,7 @@ static void pointer_file_free(u64 ptr) {
 }
 
 static void pointer_printf(u64 ptr) {
-    struct pointer* data_ptr = virtual->read(&base->vm, ptr);
+    const struct pointer* data_ptr = virtual->read(&base->vm, ptr);
     if (data_ptr == 0) {
         return;
     }
@@ -662,30 +662,24 @@ static void pointer_printf(u64 ptr) {
     if (data_ptr->data == 0) {
         return;
     }
-    const char* data = data_ptr->data;
-#ifdef USE_MEMORY_DEBUG_INFO
+    const char* ch = data_ptr->data;
 #if defined(VM_MEMORY_DEBUG_INFO)
     void* ptr_data = data_ptr->data;
     printf("   .: %016llx > %016llx\n", (u64)data_ptr, (u64)ptr_data);
 #endif
-#endif
-    puts(data);
+    puts(ch);
 }
 
-#ifdef USE_MEMORY_DEBUG_INFO
-static void pointer_dump(struct pointer* ptr) {
 #if defined(VM_MEMORY_DEBUG_INFO)
+static void pointer_dump(struct pointer* ptr) {
     printf("   ^: %016llx > %016llx\n", (u64)ptr, (u64)ptr->data);
-#endif
 }
 
 static void pointer_dump_ref(void** ptr) {
     if (*ptr == 0) {
         return;
     }
-#if defined(VM_MEMORY_DEBUG_INFO)
     printf("   &: %016llx > %016llx\n", (u64)ptr, (u64)*ptr);
-#endif
 }
 #endif
 
@@ -700,8 +694,8 @@ static void pointer_put_char(u64 ptr, char value) {
     if (data_ptr->type != TYPE_PTR) {
         return;
     }
-    char* data = data_ptr->data;
-    *data = value;
+    char* ch = data_ptr->data;
+    *ch = value;
 }
 
 /* public */
@@ -720,7 +714,7 @@ const struct file_methods file_methods_definition = {
     .file_free = pointer_file_free
 };
 
-#ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_MEMORY_DEBUG_INFO)
 const struct debug_methods debug_methods_definition = {
     .dump = pointer_dump,
     .dump_ref = pointer_dump_ref

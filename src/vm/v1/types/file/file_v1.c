@@ -66,11 +66,11 @@ static u64 file_alloc(u64 file_path, u64 mode) {
     if (mode == 0) {
         return 0;
     }
-    struct pointer* file_path_ptr = virtual->read_type(file_path, TYPE_STRING);
+    const struct pointer* file_path_ptr = virtual->read_type(file_path, TYPE_STRING);
     if (file_path_ptr == 0) {
         return 0;
     }
-    struct pointer* mode_ptr = virtual->read_type(mode, TYPE_STRING);
+    const struct pointer* mode_ptr = virtual->read_type(mode, TYPE_STRING);
     if (mode_ptr == 0) {
         return 0;
     }
@@ -108,7 +108,7 @@ static void file_vm_free(struct pointer* ptr) {
 }
 
 static u64 file_data(u64 ptr) {
-    struct pointer* data_ptr = virtual->read_type(ptr, id);
+    const struct pointer* data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
@@ -118,8 +118,8 @@ static u64 file_data(u64 ptr) {
     u64 size = (u64)ftell(f);
     fseek(f, 0, SEEK_SET);
     u64 data_size = size + 1;
-    u64 virtual_data = vm_types_data->alloc(data_size);
-    void* file_data = vm_types_data->unsafe(virtual_data);
+    u64 virtual_data = data->alloc(data_size);
+    void* file_data = data->unsafe(virtual_data);
     fread(file_data, 1, size, handler->file);
     return virtual_data;
 }

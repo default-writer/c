@@ -1,18 +1,10 @@
 #include "common/memory.h"
-#include "list-micro/data.h"
-#include "list/v1/list_v1.h"
 
 #include "playground/hashtable/v1/hashtable_v1.h"
-
-#include "pointer/types/data/v1/data_v1.h"
-#include "pointer/types/file/v1/file_v1.h"
-#include "pointer/types/list/v1/list_v1.h"
-#include "pointer/types/object/v1/object_v1.h"
-#include "pointer/types/string/v1/string_v1.h"
-#include "pointer/types/string_pointer/v1/string_pointer_v1.h"
-#include "pointer/v1/pointer_v1.h"
-
 #include "pointer/os/v1/os_v1.h"
+#include "pointer/types/string_pointer/v1/string_pointer_v1.h"
+#include "pointer/types/v1/types_v1.h"
+#include "pointer/v1/pointer_v1.h"
 
 #define DEFAULT_BLOCK_SIZE 0x2000
 #define HASHTABLE_SIZE 0x100
@@ -26,90 +18,15 @@ static free_func _internal_memory_free = 0;
 static void* allocated;
 static void* sp;
 
-struct memory_pointer {
-    u64 size;
-    void* ptr;
-};
-
-static struct memory_pointer max;
-
-static struct memory_pointer last[HASHTABLE_SIZE] = { 0 };
-static u64 last_empty_index = HASHTABLE_SIZE;
-
 static void* _alloc(u64 size) {
-    void* ptr;
-    if (max.size >= size) {
-        max.size = 0;
-        ptr = max.ptr;
-        max.ptr = 0;
-        return ptr;
-    }
-    if (max.ptr != 0) {
-        last_empty_index = HASHTABLE_SIZE;
-        for (int i = 0; i < HASHTABLE_SIZE; i++) {
-            if (last[i].ptr == 0) {
-                last_empty_index = i;
-                continue;
-            }
-            if (last[i].size > size) {
-                if (max.size <= last[i].size) {
-                    max.size = last[i].size;
-                    max.ptr = last[i].ptr;
-                }
-                ptr = last[i].ptr;
-                last[i].ptr = 0;
-                last[i].size = 0;
-                last_empty_index = i;
-                return ptr;
-            }
-            if (last[i].size == size) {
-                ptr = last[i].ptr;
-                last[i].ptr = 0;
-                last[i].size = 0;
-                last_empty_index = i;
-                return ptr;
-            }
-        }
-    }
-    ptr = sp;
-    sp += size;
+    void* ptr = sp;
+    sp = (u8*)sp + size;
+    memory->set(ptr, 0, size);
     return ptr;
 }
 
 static void _free(void* ptr, u64 size) {
-    if (sp == ptr) {
-        sp -= size;
-        return;
-    }
-    if (max.size <= size) {
-        max.ptr = ptr;
-        max.size = size;
-        return;
-    }
-    if (ptr < sp) {
-        if (last_empty_index < HASHTABLE_SIZE) {
-            memory->set(ptr, 0, size);
-            last[last_empty_index].ptr = ptr;
-            last[last_empty_index].size = size + (8 - size % 8);
-            if (last_empty_index != 0 && last[last_empty_index - 1].ptr == 0) {
-                --last_empty_index;
-                return;
-            }
-            return;
-        }
-        for (int i = 0; i < 256; i++) {
-            if (last[i].ptr != 0) {
-                continue;
-            }
-            if (last[i].ptr == 0) {
-                memory->set(ptr, 0, size);
-                last[i].ptr = ptr;
-                last[i].size = size + (8 - size % 8);
-                return;
-            }
-        }
-        memory->set(ptr, 0, size);
-    }
+    memory->set(ptr, 255, size);
 }
 
 static void INIT vm_init(void) {
@@ -117,6 +34,7 @@ static void INIT vm_init(void) {
     global_statistics();
 #endif
     sp = allocated = memory->alloc(DEFAULT_BLOCK_SIZE);
+    memory->set(sp, 255, DEFAULT_BLOCK_SIZE);
     _internal_memory_alloc = memory->set_alloc(_alloc);
     _internal_memory_free = memory->set_free(_free);
 }
@@ -171,8 +89,7 @@ static u64 read_input(const char* prompt) {
     memory->set(&buffer, 0, 100);
     printf(">%s:\n", prompt);
     char ch = 0;
-    int i = 0;
-    for (; i < 100; i++) {
+    for (u64 i = 0; i < 100; i++) {
         ch = (char)getchar();
         if (ch == EOF || ch == '\n') {
             break;
@@ -211,7 +128,6 @@ int main(void) {
     u64 list_data_ptr = load_data();
     list->push(gc_ptr, list_data_ptr);
     u64 quit = 0;
-    u64 secret_ptr = string->load("tic tak toe");
     while (quit == 0) {
         u64 string_ptr = read_data(list_data_ptr, "[string]");
         u64 input_size = string->size(string_ptr);

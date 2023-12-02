@@ -24,8 +24,8 @@
  *
  */
 #include "playground/hashtable/v2/hashtable_v2.h"
-#include "common/memory.h"
 #include "common/lcg.h"
+#include "common/memory.h"
 #include "playground/list/v2/list_v2.h"
 #include "pointer/v2/pointer_v2.h"
 
@@ -258,8 +258,8 @@ static void hashtable_free(struct hashtable_data* ptr) {
 }
 
 static const char* hashtable_key(const struct hashtable_data* ptr) {
-    const char* data = ptr != 0 ? ptr->key : 0;
-    return data;
+    const char* ch = ptr != 0 ? ptr->key : 0;
+    return ch;
 }
 
 static const void* hashtable_data(const struct hashtable_data* ptr) {

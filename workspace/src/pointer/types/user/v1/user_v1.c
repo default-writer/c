@@ -53,8 +53,8 @@ static void user_vm_free(struct pointer* ptr);
 /* implementation */
 static u64 user_alloc(void) {
     struct pointer* ptr = pointer->alloc(0, id);
-    u64 data = virtual->alloc(ptr);
-    return data;
+    u64 virtual_ptr = virtual->alloc(ptr);
+    return virtual_ptr;
 }
 
 static void user_free(u64 ptr) {

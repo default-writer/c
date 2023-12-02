@@ -85,7 +85,7 @@ static struct vm_state* state = &vm_state;
 
 static void vm_init(struct vm**, u64 size);
 static void vm_destroy(struct vm**);
-#ifdef USE_VM_DEBUG_INFO
+#if defined(VM_MEMORY_DEBUG_INFO)
 static void vm_dump(void);
 static void vm_dump_ref(void);
 #endif
@@ -103,9 +103,9 @@ static struct pointer** vm_alloc_internal(u64* address, struct vm_data** target)
 static void virtual_enumerator_init(void);
 static void virtual_enumerator_destroy(void);
 static void virtual_enumerator_init_internal(struct vm* ptr);
-static void virtual_enumerator_destroy_internal(struct vm* ptr);
+static void virtual_enumerator_destroy_internal(void);
 static void** virtual_enumerator_next_internal(void);
-#ifdef USE_VM_DEBUG_INFO
+#if defined(VM_ALLOC_DEBUG_INFO)
 static struct pointer* virtual_enumerator_pointer_next_internal(void);
 #endif
 
@@ -174,10 +174,12 @@ static void virtual_enumerator_init_internal(struct vm* ptr) {
     state->ptr = vm_data_ptr->bp;
 }
 
-static void virtual_enumerator_destroy_internal(struct vm* ptr) {
+#if defined(VM_MEMORY_DEBUG_INFO)
+static void virtual_enumerator_destroy_internal(void) {
     state->vm = 0;
     state->ptr = 0;
 }
+#endif
 
 /* implementation */
 
@@ -226,14 +228,14 @@ static void vm_destroy(struct vm** ptr) {
     vm->tail = 0;
 }
 
-#ifdef USE_VM_DEBUG_INFO
+#if defined(VM_MEMORY_DEBUG_INFO)
 static void vm_dump(void) {
     virtual_enumerator_init_internal(vm);
     struct pointer* ptr = 0;
     while ((ptr = virtual_enumerator_pointer_next_internal()) != 0) {
         pointer->dump(ptr);
     }
-    virtual_enumerator_destroy_internal(vm);
+    virtual_enumerator_destroy_internal();
 }
 
 static void vm_dump_ref(void) {
@@ -242,7 +244,7 @@ static void vm_dump_ref(void) {
     while ((ptr = virtual_enumerator_next_internal()) != 0) {
         pointer->dump_ref(ptr);
     }
-    virtual_enumerator_destroy_internal(vm);
+    virtual_enumerator_destroy_internal();
 }
 #endif
 
@@ -324,13 +326,13 @@ static u64 vm_alloc(struct pointer* ptr) {
     pointer->write(ptr, target, address);
 #ifdef USE_VM_DEBUG_INFO
 #if defined(VM_ALLOC_DEBUG_INFO)
-    printf("  >v: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)data);
+    printf("  >+: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)data);
 #endif
 #endif
     return address;
 }
 
-#ifdef USE_VM_DEBUG_INFO
+#if defined(VM_MEMORY_DEBUG_INFO)
 static struct pointer* virtual_enumerator_pointer_next_internal(void) {
     struct pointer* data = 0;
     struct vm_data* vm_data_ptr = state->vm;
@@ -354,7 +356,7 @@ static u64 virtual_enumerator_next(void) {
     void** ptr;
     while ((ptr = virtual_enumerator_next_internal()) != 0) {
         if (*ptr != 0) {
-            struct pointer* data_ptr = *ptr;
+            const struct pointer* data_ptr = *ptr;
             if (data_ptr != 0) {
                 address = pointer->address(data_ptr);
                 break;
@@ -396,7 +398,7 @@ const struct virtual_methods virtual_methods_definition = {
     .enumerator_init = virtual_enumerator_init,
     .enumerator_destroy = virtual_enumerator_destroy,
     .enumerator_next = virtual_enumerator_next,
-#ifdef USE_VM_DEBUG_INFO
+#if defined(VM_MEMORY_DEBUG_INFO)
     .dump = vm_dump,
     .dump_ref = vm_dump_ref
 #endif

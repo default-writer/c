@@ -42,18 +42,18 @@ extern const struct virtual_methods virtual_methods_definition;
 extern const struct list list_micro_definition;
 
 /* definition */
-#ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_MEMORY_DEBUG_INFO)
 extern const struct debug_methods debug_methods_definition;
 #endif
 
 /* definition */
-#ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_MEMORY_DEBUG_INFO)
 static const struct debug_methods* debug = &debug_methods_definition;
 #endif
 
 typedef struct test_data {
     struct pointer_data* ctx;
-}* TEST_DATA;
+} * TEST_DATA;
 
 RX_SET_UP(test_set_up) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
@@ -90,14 +90,14 @@ RX_TEST_CASE(tests, test_list_push_list_peek_list_pop, .fixture = test_fixture) 
     char* buffer = memory->alloc(size);
     for (u64 i = 0; i < size - 1; i++) {
         u64 ch0 = list->peek(list_ptr);
-        const char* data = pointer->unsafe(ch0);
-        *(buffer + i) = *data;
-        u64 ch = list->pop(list_ptr);
+        const char* ch = pointer->unsafe(ch0);
+        *(buffer + i) = *ch;
+        u64 ch_ptr = list->pop(list_ptr);
 #ifdef USE_GC
-        CLEAN(ch)
+        CLEAN(ch_ptr)
 #endif
 #ifndef USE_GC
-        pointer->free(ch);
+        pointer->free(ch_ptr);
 #endif
     }
     printf("   .: %s\n", buffer);
@@ -125,14 +125,14 @@ RX_TEST_CASE(tests, test_list_push_list_peek_list_pop_free, .fixture = test_fixt
     char* buffer = memory->alloc(size);
     for (u64 i = 0; i < size - 1; i++) {
         u64 ch0 = list->peek(list_ptr);
-        const char* data = pointer->unsafe(ch0);
-        *(buffer + i) = *data;
-        u64 ch = list->pop(list_ptr);
+        const char* ch = pointer->unsafe(ch0);
+        *(buffer + i) = *ch;
+        u64 ch_ptr = list->pop(list_ptr);
 #ifdef USE_GC
-        CLEAN(ch)
+        CLEAN(ch_ptr)
 #endif
 #ifndef USE_GC
-        pointer->free(ch);
+        pointer->free(ch_ptr);
 #endif
     }
 #ifndef USE_GC
@@ -161,8 +161,8 @@ RX_TEST_CASE(tests, test_list_peek_0, .fixture = test_fixture) {
     }
     char* buffer = memory->alloc(size);
     for (u64 i = 0; i < size - 1; i++) {
-        const char* data = pointer->unsafe(i + 1);
-        *(buffer + i) = *data;
+        const char* ch = pointer->unsafe(i + 1);
+        *(buffer + i) = *ch;
 #ifndef USE_GC
         pointer->free(i + 1);
 #endif

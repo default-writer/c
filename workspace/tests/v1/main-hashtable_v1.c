@@ -34,12 +34,8 @@
 
 #include "playground/hashtable/v1/hashtable_v1.h"
 
-#include "pointer/types/data/v1/data_v1.h"
-#include "pointer/types/file/v1/file_v1.h"
-#include "pointer/types/list/v1/list_v1.h"
-#include "pointer/types/object/v1/object_v1.h"
-#include "pointer/types/string/v1/string_v1.h"
 #include "pointer/types/string_pointer/v1/string_pointer_v1.h"
+#include "pointer/types/v1/types_v1.h"
 #include "pointer/v1/pointer_v1.h"
 
 #include "pointer/os/v1/os_v1.h"
@@ -55,7 +51,7 @@ static const struct hashtable* hashtable = &hashtable_definition_v1;
 
 typedef struct test_data {
     struct pointer_data* ctx;
-}* TEST_DATA;
+} * TEST_DATA;
 
 RX_SET_UP(test_set_up) {
     return RX_SUCCESS;

@@ -60,8 +60,8 @@ static u64 object_alloc(u64 size) {
         return 0;
     }
     struct pointer* ptr = pointer->alloc(size, id);
-    u64 data = virtual->alloc(ptr);
-    return data;
+    u64 virtual_ptr = virtual->alloc(ptr);
+    return virtual_ptr;
 }
 
 static void object_free(u64 ptr) {
@@ -77,12 +77,12 @@ static void object_vm_free(struct pointer* ptr) {
 }
 
 static void* object_unsafe(u64 ptr) {
-    struct pointer* data_ptr = virtual->read_type(ptr, id);
+    const struct pointer* data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
-    void* data = pointer->read(data_ptr);
-    return data;
+    void* object_data = pointer->read(data_ptr);
+    return object_data;
 }
 
 static u64 object_load(const void* src_data, u64 size) {
@@ -94,12 +94,12 @@ static u64 object_load(const void* src_data, u64 size) {
     }
     struct pointer* data_ptr = pointer->alloc(size, id);
     memcpy(pointer->read(data_ptr), src_data, size); /* NOLINT */
-    u64 data = virtual->alloc(data_ptr);
-    return data;
+    u64 virtual_ptr = virtual->alloc(data_ptr);
+    return virtual_ptr;
 }
 
 static u64 object_size(u64 ptr) {
-    struct pointer* data_ptr = virtual->read_type(ptr, id);
+    const struct pointer* data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }

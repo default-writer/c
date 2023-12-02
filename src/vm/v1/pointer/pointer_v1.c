@@ -80,7 +80,7 @@ static void pointer_push(u64 ptr);
 static u64 pointer_peek(void);
 static u64 pointer_pop(void);
 
-#ifdef USE_VM_DEBUG_INFO
+#if defined(VM_MEMORY_DEBUG_INFO)
 static void pointer_dump(struct pointer* ptr);
 static void pointer_dump_ref(void** ptr);
 #endif
@@ -191,10 +191,10 @@ static void pointer_release(struct pointer* ptr) {
     if (ptr == 0) {
         return;
     }
-    void* data = ptr->data;
+    void* data_ptr = ptr->data;
     u64 size = ptr->size;
     if (data != 0 && size != 0) {
-        memory->free(data, size);
+        memory->free(data_ptr, size);
     }
     virtual->free(ptr);
     memory->free(ptr, POINTER_SIZE);
@@ -225,11 +225,11 @@ static u64 pointer_size(const struct pointer* ptr) {
 }
 
 static void* pointer_read(const struct pointer* ptr) {
-    void* data = 0;
+    void* data_ptr = 0;
     if (ptr) {
-        data = ptr->data;
+        data_ptr = ptr->data;
     }
-    return data;
+    return data_ptr;
 }
 
 static void pointer_write(struct pointer* ptr, struct vm_data* vm_data_ptr, u64 address) {
@@ -277,7 +277,7 @@ static void pointer_destroy(void) {
 }
 
 static void pointer_gc(void) {
-#ifdef USE_VM_DEBUG_INFO
+#if defined(VM_MEMORY_DEBUG_INFO)
     virtual->dump_ref();
     virtual->dump();
 #endif
@@ -290,20 +290,16 @@ static void pointer_gc(void) {
     virtual->enumerator_destroy();
 }
 
-#ifdef USE_VM_DEBUG_INFO
-static void pointer_dump(struct pointer* ptr) {
 #if defined(VM_MEMORY_DEBUG_INFO)
+static void pointer_dump(struct pointer* ptr) {
     printf("   ^: %016llx > %016llx\n", (u64)ptr, (u64)ptr->data);
-#endif
 }
 
 static void pointer_dump_ref(void** ptr) {
     if (*ptr == 0) {
         return;
     }
-#if defined(VM_MEMORY_DEBUG_INFO)
     printf("   &: %016llx > %016llx\n", (u64)ptr, (u64)*ptr);
-#endif
 }
 #endif
 
@@ -324,7 +320,7 @@ const struct pointer_methods pointer_methods_definition = {
     .read = pointer_read,
     .read_type = pointer_read_type,
     .write = pointer_write,
-#ifdef USE_VM_DEBUG_INFO
+#if defined(VM_MEMORY_DEBUG_INFO)
     .dump = pointer_dump,
     .dump_ref = pointer_dump_ref,
 #endif

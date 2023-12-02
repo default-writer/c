@@ -38,14 +38,14 @@
 #define DEFAULT_SIZE 0x100
 
 /* definition */
-#ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_MEMORY_DEBUG_INFO)
 extern const struct debug_methods debug_methods_definition;
 #endif
 extern const struct test_suite list_micro_test_suite_definition;
 extern const struct test_suite list_alloc_test_suite_definition;
 
 /* definition */
-#ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_MEMORY_DEBUG_INFO)
 static const struct debug_methods* debug = &debug_methods_definition;
 #endif
 static const struct test_suite* list_micro_tests = &list_micro_test_suite_definition;
@@ -57,7 +57,7 @@ struct pointer_data {
 
 typedef struct test_data {
     struct pointer_data* ctx;
-}* TEST_DATA;
+} * TEST_DATA;
 
 RX_SET_UP(test_set_up) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
@@ -458,7 +458,7 @@ RX_TEST_CASE(tests_v2, test_strcat_load_alloc_copy, .fixture = test_fixture) {
 
     list->free(list_ptr);
 
-#ifdef USE_MEMORY_DEBUG_INFO
+#if defined(VM_MEMORY_DEBUG_INFO)
     virtual->dump(0);
     virtual->dump(ctx->vm);
     virtual->dump_ref(0);

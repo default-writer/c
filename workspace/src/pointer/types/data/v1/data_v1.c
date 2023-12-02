@@ -74,7 +74,7 @@ static void data_vm_free(struct pointer* ptr) {
 }
 
 static void* data_unsafe(u64 ptr) {
-    struct pointer* data_ptr = virtual->read_type(ptr, id);
+    const struct pointer* data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
@@ -83,7 +83,7 @@ static void* data_unsafe(u64 ptr) {
 }
 
 static u64 data_size(u64 ptr) {
-    struct pointer* data_ptr = virtual->read_type(ptr, id);
+    const struct pointer* data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }

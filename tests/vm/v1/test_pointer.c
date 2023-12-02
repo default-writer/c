@@ -40,7 +40,7 @@
 /* Data structure to use at the core of our fixture. */
 typedef struct test_data {
     void* ptr;
-}* TEST_DATA;
+} * TEST_DATA;
 
 RX_SET_UP(test_set_up) {
     return RX_SUCCESS;
@@ -166,7 +166,7 @@ RX_TEST_CASE(tests_v1, test_string_size, .fixture = test_fixture) {
     pointer->init(8);
     u64 char_ptr = string->load("/");
     u64 pattern_ptr = string->load("\0");
-    u64 string_size = vm_types_data->size(pattern_ptr);
+    u64 string_size = data->size(pattern_ptr);
     RX_ASSERT(string_size == 0);
     RX_ASSERT(pattern_ptr == 0);
     RX_ASSERT(strcmp(string->unsafe(char_ptr), "/") == 0);
@@ -181,11 +181,11 @@ RX_TEST_CASE(tests_v1, test_string_size, .fixture = test_fixture) {
 /* test init */
 RX_TEST_CASE(tests_v1, test_data_size, .fixture = test_fixture) {
     pointer->init(8);
-    u64 data_ptr = vm_types_data->alloc(2);
-    u64 data_size = vm_types_data->size(data_ptr);
+    u64 data_ptr = data->alloc(2);
+    u64 data_size = data->size(data_ptr);
     RX_ASSERT(data_size == 2);
 #ifndef USE_GC
-    vm_types_data->free(data_ptr);
+    data->free(data_ptr);
 #endif
     pointer->gc();
     pointer->destroy();
@@ -1346,7 +1346,7 @@ RX_TEST_CASE(tests_v1, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     pointer->init(8);
     u64 string_ptr = string->load("/all_english_words.txt");
     u64 zero_ptr = string->load("\0");
-    u64 data_ptr = vm_types_data->alloc(1);
+    u64 data_ptr = data->alloc(1);
     u64 list_ptr = list->alloc();
     u64 empty_ptr = string->load("\0");
 
@@ -1509,11 +1509,11 @@ RX_TEST_CASE(tests_v1, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     file->alloc(string_ptr, none_ptr);
     file->alloc(none_ptr, string_ptr);
 
-    const u64* data_unsafe_ptr1 = vm_types_data->unsafe(empty_ptr);
-    const u64* data_unsafe_ptr2 = vm_types_data->unsafe(null_ptr);
-    const u64* data_unsafe_ptr3 = vm_types_data->unsafe(string_ptr);
-    const u64* data_unsafe_ptr4 = vm_types_data->unsafe(list_ptr);
-    const u64* data_unsafe_ptr5 = vm_types_data->unsafe(none_ptr);
+    const u64* data_unsafe_ptr1 = data->unsafe(empty_ptr);
+    const u64* data_unsafe_ptr2 = data->unsafe(null_ptr);
+    const u64* data_unsafe_ptr3 = data->unsafe(string_ptr);
+    const u64* data_unsafe_ptr4 = data->unsafe(list_ptr);
+    const u64* data_unsafe_ptr5 = data->unsafe(none_ptr);
 
     RX_ASSERT(data_unsafe_ptr1 == 0);
     RX_ASSERT(data_unsafe_ptr2 == 0);
@@ -1551,16 +1551,16 @@ RX_TEST_CASE(tests_v1, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     string->free(data_ptr3);
     string->free(empty_ptr);
     string->free(data_ptr);
-    vm_types_data->free(zero_ptr);
-    vm_types_data->free(data_ptr);
-    vm_types_data->free(data_ptr3);
-    vm_types_data->free(empty_ptr);
-    vm_types_data->free(null_ptr);
-    vm_types_data->free(data_ptr);
-    vm_types_data->free(list_ptr);
-    vm_types_data->free(data_ptr);
-    vm_types_data->free(data_ptr3);
-    vm_types_data->free(none_ptr);
+    data->free(zero_ptr);
+    data->free(data_ptr);
+    data->free(data_ptr3);
+    data->free(empty_ptr);
+    data->free(null_ptr);
+    data->free(data_ptr);
+    data->free(list_ptr);
+    data->free(data_ptr);
+    data->free(data_ptr3);
+    data->free(none_ptr);
     list->free(zero_ptr);
     list->free(data_ptr);
     list->free(empty_ptr);
@@ -1699,7 +1699,7 @@ RX_TEST_CASE(tests_v1, test_load_open_file_close_file, .fixture = test_fixture) 
     RX_ASSERT(data_ptr == 0);
 #ifndef USE_GC
     file->free(f_ptr);
-    vm_types_data->free(data_ptr);
+    data->free(data_ptr);
     string->free(mode_ptr);
     string->free(file_name_ptr);
     string->free(file_path_ptr);
@@ -2003,7 +2003,7 @@ RX_TEST_CASE(tests_v1, test_file_read_invalid_type, .fixture = test_fixture) {
 #ifndef USE_GC
     u64 list_ptr = list->alloc();
     u64 data_ptr = file->data(list_ptr);
-    vm_types_data->free(data_ptr);
+    data->free(data_ptr);
     file->free(list_ptr);
     list->free(list_ptr);
 #else
@@ -2035,7 +2035,7 @@ RX_TEST_CASE(tests_v1, test_load_open_match_last_unsafe_free, .fixture = test_fi
     file->free(f_ptr);
     os->putc(data_ptr);
 #ifndef USE_GC
-    vm_types_data->free(data_ptr);
+    data->free(data_ptr);
 #endif
     pointer->gc();
     pointer->destroy();
@@ -2086,7 +2086,7 @@ RX_TEST_CASE(tests_v1, test_load_open_file_unsafe_hashtable, .fixture = test_fix
         u64 data_ptr = file->data(f_ptr);
         u64 list_ptr = list->alloc();
         file->free(f_ptr);
-        u8* file_data = vm_types_data->unsafe(data_ptr);
+        u8* file_data = data->unsafe(data_ptr);
         for (int i = 0; i < 100; i++) {
             u8* tmp = file_data;
             while (*tmp != 0 && *tmp != '\n') {
@@ -2099,7 +2099,7 @@ RX_TEST_CASE(tests_v1, test_load_open_file_unsafe_hashtable, .fixture = test_fix
             file_data = tmp;
         }
         list->free(list_ptr);
-        vm_types_data->free(data_ptr);
+        data->free(data_ptr);
     }
 #ifndef USE_GC
     string->free(mode_ptr);

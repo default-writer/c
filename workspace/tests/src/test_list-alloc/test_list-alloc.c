@@ -24,6 +24,7 @@
  *
  */
 #include "test_list-alloc.h"
+#include "std/macros.h"
 
 /* macros */
 #define MAX_ALLOC_SIZE 1024
@@ -577,6 +578,50 @@ RX_TEST_CASE(list_alloc_tests, test_list_push_pop, .fixture = test_fixture) {
     } while (i >= 0);
     /* releases memory allocated for the data */
     memory->free(_recorded, ALLOC_SIZE(N_ELEMENTS));
+}
+
+static u64 value = 0;
+static void* _alloc(u64 size) { return &value; }
+static void _free(void* ptr, u64 size) { CLEAN(ptr); }
+
+/* test loop push */
+RX_TEST_CASE(list_alloc_tests, test_list_alloc, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    struct list_data** ctx = &rx->ctx;
+    /* declares pointer to list functions definitions */
+    const struct list* list = &list_alloc_definition;
+    /* prepares the payload */
+    u8* payload = (void*)0x7bde8421;
+
+    /* record buffer has N items */
+    void** _recorded1 = memory->alloc(ALLOC_SIZE(N_ELEMENTS));
+    /* pushes all pseudo-random values */
+    memory->free(_recorded1, ALLOC_SIZE(N_ELEMENTS));
+
+    alloc_func _internal_memory_alloc = memory->set_alloc(_alloc);
+    free_func _internal_memory_free = memory->set_free(_free);
+    RX_ASSERT(_alloc != _internal_memory_alloc);
+    RX_ASSERT(_free != _internal_memory_free);
+
+    /* record buffer has N items */
+    void** _recorded2 = memory->alloc(ALLOC_SIZE(N_ELEMENTS));
+    /* pushes all pseudo-random values */
+    memory->free(_recorded2, ALLOC_SIZE(N_ELEMENTS));
+
+    _internal_memory_alloc = memory->set_alloc(_internal_memory_alloc);
+    _internal_memory_free = memory->set_free(_internal_memory_free);
+    RX_ASSERT(_alloc == _internal_memory_alloc);
+    RX_ASSERT(_free == _internal_memory_free);
+
+    _internal_memory_alloc = memory->set_alloc(0);
+    _internal_memory_free = memory->set_free(0);
+    RX_ASSERT(_alloc != _internal_memory_alloc);
+    RX_ASSERT(_free != _internal_memory_free);
+
+    /* record buffer has N items */
+    void** _recorded3 = memory->alloc(ALLOC_SIZE(N_ELEMENTS));
+    /* pushes all pseudo-random values */
+    memory->free(_recorded3, ALLOC_SIZE(N_ELEMENTS));
 }
 
 static int run(void) {
