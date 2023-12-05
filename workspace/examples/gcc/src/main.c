@@ -4,12 +4,12 @@
 
 // static void myFunction(void) {
 //     char* message;
-    
+
 //     // Inline assembly to load the pointer from a user-defined register
 //     __asm__ (
 //         "movq %%rdi, %0" : "=r" (message)
 //     );
-    
+
 //     printf("%s\n", message);
 // }
 
@@ -55,7 +55,7 @@
 
 //     // Call the dynamically generated function with the parameter in %rax
 //     __asm__ volatile(
-//         "   movq %0, %%rax\n" 
+//         "   movq %0, %%rax\n"
 //         "   call *%1"
 //         :
 //         : "r" (param), "r" (dynamic_function_ptr)
@@ -114,7 +114,7 @@
 // int main() {
 //     closure my_closure_1 = create_closure(10, 5);
 //     closure my_closure_2 = create_closure(12, 19);
-    
+
 //     closure* args_1 = (closure*)&my_closure_1;
 //     closure* args_2 = (closure*)&my_closure_2;
 
@@ -126,7 +126,6 @@
 //     return 0;
 // }
 #include <stdio.h>
-#include <stdlib.h>
 #include <sys/mman.h>
 
 // Function pointer type
@@ -135,8 +134,7 @@ typedef void (*FuncPtr)();
 // External assembly function
 extern int my_asm_function(int value, int multiplier);
 
-void wrapperFunction(void* arg1)
-{
+void wrapperFunction(void* arg1) {
     printf("%016llx\n", (unsigned long long)arg1);
 }
 

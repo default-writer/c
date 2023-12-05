@@ -23,10 +23,8 @@
  * SOFTWARE.
  *
  */
-#include "playground/hashtable/v1/hashtable_v1.h"
+#include "hashtable_v1.h"
 #include "common/memory.h"
-#include "common/lcg.h"
-#include "playground/list/v2/list_v2.h"
 
 /* macros */
 #define DEFAULT_SIZE 101

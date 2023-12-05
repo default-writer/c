@@ -14,7 +14,7 @@ enable_language(ASM_NASM)
 set(CMAKE_ASM_NASM_FLAGS "${CMAKE_ASM_NASM_FLAGS} -f elf64")
 set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> <INCLUDES> ${CMAKE_ASM_NASM_FLAGS} -o <OBJECT> <SOURCE>")
 
-include_directories(../src)
+include_directories(src)
 
 add_subdirectory(.. ./.c)
 

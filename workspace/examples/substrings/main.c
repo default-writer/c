@@ -1,10 +1,8 @@
 #include "common/memory.h"
 
-#include "playground/hashtable/v1/hashtable_v1.h"
-#include "pointer/os/v1/os_v1.h"
-#include "pointer/types/string_pointer/v1/string_pointer_v1.h"
-#include "pointer/types/v1/types_v1.h"
-#include "pointer/v1/pointer_v1.h"
+#include "../../src/pointer/os/v1/os_v1.h"
+#include "../../src/pointer/types/v1/types_v1.h"
+#include "../../src/pointer/v1/pointer_v1.h"
 
 #define DEFAULT_BLOCK_SIZE 0x2000
 #define HASHTABLE_SIZE 0x100

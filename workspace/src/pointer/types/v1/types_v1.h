@@ -26,10 +26,12 @@
 #ifndef _POINTER_TYPES_V1_H_
 #define _POINTER_TYPES_V1_H_
 
-#include "pointer/types/data/v1/data_v1.h"
-#include "pointer/types/string/v1/string_v1.h"
-#include "pointer/types/file/v1/file_v1.h"
-#include "pointer/types/list/v1/list_v1.h"
-#include "pointer/types/object/v1/object_v1.h"
+#include "../data/v1/data_v1.h"
+#include "../file/v1/file_v1.h"
+#include "../list/v1/list_v1.h"
+#include "../object/v1/object_v1.h"
+#include "../string/v1/string_v1.h"
+#include "../string_pointer/v1/string_pointer_v1.h"
+#include "../user/v1/user_v1.h"
 
 #endif /* _POINTER_TYPES_V1_H_ */
