@@ -21,6 +21,35 @@ cd "${pwd}"
 
 uid=$(id -u)
 
+install="$1"
+
+. "${pwd}/bin/scripts/load.sh"
+
+if [[ "${install}" == "" || "${install}" == "--help" ]]; then
+    help
+    exit
+fi
+
+
+## Installs build system dependencies
+## Usage: ${script} <option> [optional]
+## ${commands}
+
+while (($#)); do
+    case "$1" in
+
+        "--help") # [optional] shows command description
+            help
+            ;;
+
+        *)
+            help
+            ;;
+
+    esac
+    shift
+done
+
 if [ ! "${uid}" -eq 0 ]; then
     echo "Please run as root"
     exit
