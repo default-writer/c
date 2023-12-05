@@ -85,18 +85,67 @@
                     "value": "OFF"
                 }
             }
+        },
+        {
+            "name": "clang",
+            "displayName": "clang",
+            "description": "Using compilers: C = /usr/bin/clang-17, CXX = /usr/bin/clang++-17",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/cmake",
+            "cacheVariables": {
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
+                "CMAKE_C_COMPILER": "/usr/bin/clang-17",
+                "CMAKE_CXX_COMPILER": "/usr/bin/clang++-17",
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CONFIG_VM_DEBUG_INFO": {
+                    "type": "BOOL",
+                    "value": "ON"
+                },
+                "CONFIG_MEMORY_DEBUG_INFO": {
+                    "type": "BOOL",
+                    "value": "ON"
+                },
+                "CONFIG_MEMORY_CLEANUP": {
+                    "type": "BOOL",
+                    "value": "ON"
+                },
+                "CONFIG_MEMORY_ALLOC": {
+                    "type": "BOOL",
+                    "value": "OFF"
+                },
+                "CONFIG_MEMCPY": {
+                    "type": "BOOL",
+                    "value": "OFF"
+                },
+                "CODE_SANITIZER": {
+                    "type": "BOOL",
+                    "value": "OFF"
+                },
+                "CONFIG_GC": {
+                    "type": "BOOL",
+                    "value": "OFF"
+                }
+            }
         }
     ],
     "buildPresets": [
         {
             "name": "default",
-            "configurePreset": "default",
-            "description": "Build using default configuration"
+            "description": "Build using default configuration",
+            "displayName": "default",
+            "configurePreset": "default"
         },
         {
             "name": "windows",
-            "configurePreset": "windows",
-            "description": "Build using default configuration"
+            "description": "Build using default configuration",
+            "displayName": "windows",
+            "configurePreset": "windows"
+        },
+        {
+            "name": "clang",
+            "description": "Build using default configuration",
+            "displayName": "clang",
+            "configurePreset": "clang"
         }
     ],
     "testPresets": [
@@ -110,7 +159,8 @@
                 "noTestsAction": "error",
                 "stopOnFailure": true
             },
-            "description": "Build using default configuration"
+            "description": "Build using default configuration",
+            "displayName": "default"
         },
         {
             "name": "windows",
@@ -122,7 +172,21 @@
                 "noTestsAction": "error",
                 "stopOnFailure": true
             },
-            "description": "Build using default configuration"
+            "description": "Build using default configuration",
+            "displayName": "windows"
+        },
+        {
+            "name": "clang",
+            "configurePreset": "clang",
+            "output": {
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": true
+            },
+            "description": "Build using default configuration",
+            "displayName": "clang"
         }
     ]
 }
