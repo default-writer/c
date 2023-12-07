@@ -5,6 +5,9 @@
     },
     {
       "path": "workspace"
+    },
+    {
+      "path": "workspace/examples"
     }
   ],
   "settings": {
