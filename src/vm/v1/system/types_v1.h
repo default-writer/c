@@ -26,13 +26,13 @@
 #ifndef _POINTER_TYPES_V1_H_
 #define _POINTER_TYPES_V1_H_
 
-#include "data/data_v1.h"
-#include "string/string_v1.h"
-#include "string_pointer/string_pointer_v1.h"
-#include "file/file_v1.h"
-#include "list/list_v1.h"
-#include "object/object_v1.h"
-#include "user/user_v1.h"
+#include "vm/v1/types/data/data_v1.h"
+#include "vm/v1/types/file/file_v1.h"
+#include "vm/v1/types/list/list_v1.h"
+#include "vm/v1/types/object/object_v1.h"
+#include "vm/v1/types/string/string_v1.h"
+#include "vm/v1/types/string_pointer/string_pointer_v1.h"
+#include "vm/v1/types/user/user_v1.h"
 
 enum type {
     /* value used for ephemeral type - null */
@@ -58,5 +58,29 @@ struct pointer;
 struct vm_type {
     void (*free)(struct pointer* ptr);
 };
+
+struct types {
+    const struct data_methods* data;
+    const struct file_methods* file;
+    const struct list_methods* list;
+    const struct object_methods* object;
+    const struct string_methods* string;
+    const struct string_pointer_methods* string_pointer;
+    const struct user_methods* user;
+};
+
+/* definition */
+extern const struct types types_definition;
+
+#if !defined(GLOBAL)
+
+/* definition */
+#if defined(INLINE)
+const const struct types* types = &types_definition;
+#else
+static const struct types* types = &types_definition;
+#endif
+
+#endif /* !GLOBAL */
 
 #endif /* _POINTER_TYPES_V1_H_ */

@@ -25,7 +25,9 @@
  */
 #ifndef _REXO_TESTS_
 #define _REXO_TESTS_
-// #define RXP_DEBUG_TESTS
+
+#define RXP_DEBUG_TESTS
+
 #include "../.deps/rexo/include/rexo.h"
 #endif
 
@@ -54,7 +56,7 @@ struct hash_functions {
 /* Data structure to use at the core of our fixture. */
 typedef struct test_data {
     struct hash_functions* ctx;
-} * TEST_DATA;
+}* TEST_DATA;
 
 RX_SET_UP(test_set_up) {
     return RX_SUCCESS;

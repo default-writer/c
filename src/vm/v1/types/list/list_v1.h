@@ -54,11 +54,15 @@ struct list_methods {
 /* definition */
 extern const struct list_methods list_methods_definition;
 
+#if defined(GLOBAL)
+
 /* definition */
 #if defined(INLINE)
 const struct list_methods* list = &list_methods_definition;
 #else
 static const struct list_methods* list = &list_methods_definition;
 #endif
+
+#endif /* GLOBAL */
 
 #endif /* _POINTER_TYPES_LIST_H_ */

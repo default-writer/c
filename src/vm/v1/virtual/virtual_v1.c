@@ -26,8 +26,8 @@
 #include "common/memory.h"
 #include "list-micro/data.h"
 
-#include "../pointer/pointer_v1.h"
-#include "../virtual/virtual_v1.h"
+#include "vm/v1/pointer/pointer_v1.h"
+#include "vm/v1/virtual/virtual_v1.h"
 
 /* macros */
 #define DEFAULT_SIZE 0x8 /* 8 */
@@ -51,8 +51,6 @@ struct vm {
 };
 
 #ifndef USE_GC
-extern const struct list list_micro_definition;
-static const struct list* list = &list_micro_definition;
 static struct list_data** cache;
 #endif
 

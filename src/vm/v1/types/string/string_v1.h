@@ -61,11 +61,15 @@ struct string_methods {
 /* definition */
 extern const struct string_methods string_methods_definition;
 
+#if defined(GLOBAL)
+
 /* definition */
 #if defined(INLINE)
 const struct string_methods* string = &string_methods_definition;
 #else
 static const struct string_methods* string = &string_methods_definition;
 #endif
+
+#endif /* GLOBAL */
 
 #endif /* _POINTER_TYPES_STRING_H_ */

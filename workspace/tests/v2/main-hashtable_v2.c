@@ -25,7 +25,9 @@
  */
 #ifndef _REXO_TESTS_
 #define _REXO_TESTS_
-// #define RXP_DEBUG_TESTS
+
+#define RXP_DEBUG_TESTS
+
 #include "../.deps/rexo/include/rexo.h"
 #endif
 
@@ -54,7 +56,7 @@ static const struct debug_methods* debug = &debug_methods_definition;
 
 typedef struct test_data {
     struct pointer_data* ctx;
-} * TEST_DATA;
+}* TEST_DATA;
 
 RX_SET_UP(test_set_up) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;

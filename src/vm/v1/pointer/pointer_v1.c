@@ -25,9 +25,9 @@
  */
 #include "common/memory.h"
 
-#include "../types/types_v1.h"
-#include "../virtual/virtual_v1.h"
 #include "pointer_v1.h"
+#include "vm/v1/system/types_v1.h"
+#include "vm/v1/virtual/virtual_v1.h"
 
 #if defined(USE_MEMORY_DEBUG_INFO)
 #define VM_GLOBAL_DEBUG_INFO
@@ -71,7 +71,7 @@ extern void object_init(void);
 #endif
 
 static struct vm* vm;
-static struct vm_types* types;
+static struct vm_types* default_types;
 
 /* api */
 
@@ -149,7 +149,7 @@ static void DESTROY vm_destroy(void) {
 }
 
 static void pointer_free_internal(struct pointer* ptr) {
-    const struct vm_types* type_ptr = types + ptr->id;
+    const struct vm_types* type_ptr = default_types + ptr->id;
     if (type_ptr->free) {
         type_ptr->free(ptr);
     }
@@ -193,7 +193,7 @@ static void pointer_release(struct pointer* ptr) {
     }
     void* data_ptr = ptr->data;
     u64 size = ptr->size;
-    if (data != 0 && size != 0) {
+    if (data_ptr != 0 && size != 0) {
         memory->free(data_ptr, size);
     }
     virtual->free(ptr);
@@ -250,7 +250,7 @@ static u64 pointer_read_type(const struct pointer* ptr, u64 type) {
 /* implementation */
 static void pointer_init(u64 size) {
     virtual->init(&vm, size);
-    types = memory->alloc(type_count * sizeof(struct vm_types));
+    default_types = memory->alloc(type_count * sizeof(struct vm_types));
 #ifndef ATTRIBUTE
     data_init();
     string_init();
@@ -265,14 +265,14 @@ static void pointer_init(u64 size) {
         struct vm_types* prev = current->next;
         u64 index = current->id;
         if (index > 0 && index < type_count) {
-            types[index] = *current;
+            default_types[index] = *current;
         }
         current = prev;
     }
 }
 
 static void pointer_destroy(void) {
-    memory->free(types, type_count * sizeof(struct vm_types));
+    memory->free(default_types, type_count * sizeof(struct vm_types));
     virtual->destroy(&vm);
 }
 

@@ -43,11 +43,15 @@ struct object_methods {
 /* definition */
 extern const struct object_methods object_methods_definition;
 
+#if defined(GLOBAL)
+
 /* definition */
 #if defined(INLINE)
 const struct object_methods* object = &object_methods_definition;
 #else
 static const struct object_methods* object = &object_methods_definition;
 #endif
+
+#endif /* GLOBAL */
 
 #endif /* _POINTER_TYPES_OBJECT_H_ */

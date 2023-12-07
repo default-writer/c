@@ -23,7 +23,9 @@
  * SOFTWARE.
  *
  */
-/* #define RXP_DEBUG_TESTS */
+
+#define RXP_DEBUG_TESTS
+
 #include "../tests/src/test.h"
 
 #include "test_vm_v2.h"

@@ -24,14 +24,13 @@
  *
  */
 #include "common/memory.h"
-#include "list-micro/data.h"
 
-#include "../pointer/pointer_v1.h"
-#include "../virtual/virtual_v1.h"
+#include "vm/v1/pointer/pointer_v1.h"
+#include "vm/v1/virtual/virtual_v1.h"
 
-#include "../types/types_v1.h"
+#include "vm/v1/system/types_v1.h"
 
-#include "../os/os_v1.h"
+#include "vm/v1/os/os_v1.h"
 
 #define DEFAULT_SIZE 0x100
 
@@ -53,20 +52,20 @@ static u64 os_getenv(u64 ptr) {
         return 0;
     }
     const char* name_data = pointer->read(data_ptr);
-    u64 value = string->load(getenv(name_data));
+    u64 value = types->string->load(getenv(name_data));
     return value;
 }
 
 static u64 os_getcwd(void) {
     u64 data_ptr = 0;
     char* src = memory->alloc(PATH_MAX + 1);
-    data_ptr = string->load(getcwd(src, PATH_MAX));
+    data_ptr = types->string->load(getcwd(src, PATH_MAX));
     memory->free(src, PATH_MAX + 1);
     return data_ptr;
 }
 
 static void os_putc(u64 ptr) {
-    const char* unsafe_data = string->unsafe(ptr);
+    const char* unsafe_data = types->string->unsafe(ptr);
     if (unsafe_data == 0) {
         return;
     }

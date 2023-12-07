@@ -28,7 +28,9 @@
 
 #ifndef _REXO_TESTS_
 #define _REXO_TESTS_
-/* #define RXP_DEBUG_TESTS */
+
+#define RXP_DEBUG_TESTS
+
 #include "../.deps/rexo/include/rexo.h"
 #endif
 

@@ -23,7 +23,9 @@
  * SOFTWARE.
  *
  */
-// #define RXP_DEBUG_TESTS
+
+#define RXP_DEBUG_TESTS
+
 #include "../tests/src/test.h"
 
 #include "common/memory.h"

@@ -283,6 +283,8 @@ set(LIB_MICRO_SOURCE src/list-micro/code.c)
 # set(LIB_BRAIN_SOURCE src/playground/brain/brain.c)
 set(LIB_POINTER1_SOURCE
     src/vm/v1/pointer/pointer_v1.c)
+set(LIB_TYPES1_SOURCE
+    src/vm/v1/system/types_v1.c)
 # set(LIB_POINTER2_SOURCE src/pointer/v2/pointer_v2.c)
 # set(LIB_MEMORY_LIST1_SOURCE src/playground/memory/list/v1/memory_list_v1.c)
 # set(LIB_MEMORY_LIST2_SOURCE src/playground/memory/list/v2/memory_list_v2.c)
@@ -359,7 +361,8 @@ add_library(ctypes SHARED
     ${LIB_MICRO_SOURCE}
     ${LIB_VM1_SOURCE}
     ${LIB_STD_TYPES1_SOURCE}
-    ${LIB_POINTER1_SOURCE})
+    ${LIB_POINTER1_SOURCE}
+    ${LIB_TYPES1_SOURCE})
 
 # test
 add_library(tests-vm-v1 STATIC 

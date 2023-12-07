@@ -27,16 +27,16 @@
 
 #include "test_vm_v1.h"
 
-#include "../../../src/vm/v1/pointer/pointer_v1.h"
-#include "../../../src/vm/v1/types/types_v1.h"
-#include "../../../src/vm/v1/virtual/virtual_v1.h"
+#include "vm/v1/pointer/pointer_v1.h"
+#include "vm/v1/system/types_v1.h"
+#include "vm/v1/virtual/virtual_v1.h"
 
 #define DEFAULT_SIZE 0x100
 
 /* Data structure to use at the core of our fixture. */
 typedef struct test_data {
     struct vm* ctx;
-} * TEST_DATA;
+}* TEST_DATA;
 
 RX_SET_UP(test_set_up) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
@@ -185,7 +185,7 @@ RX_TEST_CASE(tests, test_vm_read_type_write_1_read_2, .fixture = test_fixture) {
 
 typedef struct test_pointer_data {
     void* ptr;
-} * TEST_POINTER_DATA;
+}* TEST_POINTER_DATA;
 
 RX_SET_UP(test_pointer_set_up) {
     return RX_SUCCESS;
@@ -201,8 +201,8 @@ RX_FIXTURE(test_pointer_fixture, TEST_POINTER_DATA, .set_up = test_pointer_set_u
 /* test init */
 RX_TEST_CASE(tests, test_list, .fixture = test_pointer_fixture) {
     pointer->init(8);
-    u64 list_ptr = list->alloc();
-    list->free(list_ptr);
+    u64 list_ptr = types->list->alloc();
+    types->list->free(list_ptr);
     pointer->gc();
     pointer->destroy();
 }
@@ -210,11 +210,11 @@ RX_TEST_CASE(tests, test_list, .fixture = test_pointer_fixture) {
 /* test init */
 RX_TEST_CASE(tests, test_list_user, .fixture = test_pointer_fixture) {
     pointer->init(8);
-    u64 list_ptr = list->alloc();
-    u64 user_ptr = user->alloc();
-    list->push(list_ptr, user_ptr);
-    user->free(user_ptr);
-    list->free(list_ptr);
+    u64 list_ptr = types->list->alloc();
+    u64 user_ptr = types->user->alloc();
+    types->list->push(list_ptr, user_ptr);
+    types->user->free(user_ptr);
+    types->list->free(list_ptr);
     pointer->gc();
     pointer->destroy();
 }
@@ -222,11 +222,11 @@ RX_TEST_CASE(tests, test_list_user, .fixture = test_pointer_fixture) {
 /* test init */
 RX_TEST_CASE(tests, test_list_data, .fixture = test_pointer_fixture) {
     pointer->init(8);
-    u64 list_ptr = list->alloc();
-    u64 data_ptr = data->alloc(1024);
-    list->push(list_ptr, data_ptr);
-    data->free(data_ptr);
-    list->free(list_ptr);
+    u64 list_ptr = types->list->alloc();
+    u64 data_ptr = types->data->alloc(1024);
+    types->list->push(list_ptr, data_ptr);
+    types->data->free(data_ptr);
+    types->list->free(list_ptr);
     pointer->gc();
     pointer->destroy();
 }
@@ -234,11 +234,11 @@ RX_TEST_CASE(tests, test_list_data, .fixture = test_pointer_fixture) {
 /* test init */
 RX_TEST_CASE(tests, test_list_free_user_free, .fixture = test_pointer_fixture) {
     pointer->init(8);
-    u64 list_ptr = list->alloc();
-    u64 user_ptr = user->alloc();
-    list->push(list_ptr, user_ptr);
-    list->free(list_ptr);
-    user->free(user_ptr);
+    u64 list_ptr = types->list->alloc();
+    u64 user_ptr = types->user->alloc();
+    types->list->push(list_ptr, user_ptr);
+    types->list->free(list_ptr);
+    types->user->free(user_ptr);
     pointer->gc();
     pointer->destroy();
 }
@@ -246,7 +246,7 @@ RX_TEST_CASE(tests, test_list_free_user_free, .fixture = test_pointer_fixture) {
 /* test init */
 RX_TEST_CASE(tests, test_user_free_0, .fixture = test_pointer_fixture) {
     pointer->init(8);
-    user->free(0);
+    types->user->free(0);
     pointer->gc();
     pointer->destroy();
 }

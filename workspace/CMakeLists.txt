@@ -370,9 +370,6 @@ set(MAIN_VM2_SOURCE tests/v2/main-vm2.c)
 set(MAIN_TESTS_VM1_SOURCE tests/v1/main-tests_v1.c)
 set(MAIN_TESTS_VM2_SOURCE tests/v2/main-tests_v2.c)
 
-# examples
-set(EXAMPLES_SUBSTRINGS examples/substrings/main.c)
-
 # zen
 set(ZEN_SOURCE zen/zen.c)
 
@@ -476,9 +473,6 @@ add_executable(main-structs3 ${TEST_STRUCTS3_SOURCE})
 add_executable(main-tests-vm1 ${MAIN_TESTS_VM1_SOURCE})
 add_executable(main-tests-vm2 ${MAIN_TESTS_VM2_SOURCE})
 
-# examples
-add_executable(examples-substrings ${EXAMPLES_SUBSTRINGS})
-
 # zen
 add_executable(zen ${ZEN_SOURCE})
 
@@ -539,9 +533,6 @@ target_link_libraries(main-linked-list PRIVATE stl-linked-list)
 target_link_libraries(main-linked-list-static-enumerator PRIVATE stl-linked-list)
 target_link_libraries(main-tests-vm1 PRIVATE list-micro list-pointer1 tests-vm-v1 vm-v1)
 target_link_libraries(main-tests-vm2 PRIVATE tests tests-vm-v2 list-micro list-pointer2 vm-v2 list-pointer2 list-micro)
-
-# examples
-target_link_libraries(examples-substrings PRIVATE std-os1 ctypes)
 
 configure_file(all_english_words.txt ${CMAKE_BINARY_DIR}/all_english_words.txt COPYONLY)
 configure_file(file.txt ${CMAKE_BINARY_DIR}/file.txt COPYONLY)

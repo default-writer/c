@@ -50,11 +50,16 @@ struct file_methods {
 /* definition */
 extern const struct file_methods file_methods_definition;
 
+#if defined(GLOBAL)
+
 /* definition */
+
 #if defined(INLINE)
 const struct file_methods* file = &file_methods_definition;
 #else
 static const struct file_methods* file = &file_methods_definition;
 #endif
+
+#endif /* GLOBAL */
 
 #endif /* _POINTER_TYPES_FILE_H_ */

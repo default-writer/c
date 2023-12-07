@@ -26,9 +26,9 @@
 #include "common/memory.h"
 #include "list-micro/data.h"
 
-#include "../../pointer/pointer_v1.h"
-#include "../../virtual/virtual_v1.h"
-#include "../types_v1.h"
+#include "vm/v1/pointer/pointer_v1.h"
+#include "vm/v1/system/types_v1.h"
+#include "vm/v1/virtual/virtual_v1.h"
 
 #define DEFAULT_SIZE 0x100
 
@@ -118,8 +118,8 @@ static u64 file_data(u64 ptr) {
     u64 size = (u64)ftell(f);
     fseek(f, 0, SEEK_SET);
     u64 data_size = size + 1;
-    u64 virtual_data = data->alloc(data_size);
-    void* file_data = data->unsafe(virtual_data);
+    u64 virtual_data = types->data->alloc(data_size);
+    void* file_data = types->data->unsafe(virtual_data);
     fread(file_data, 1, size, handler->file);
     return virtual_data;
 }

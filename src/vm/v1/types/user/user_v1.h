@@ -40,11 +40,15 @@ struct user_methods {
 /* definition */
 extern const struct user_methods user_methods_definition;
 
+#if defined(GLOBAL)
+
 /* definition */
 #if defined(INLINE)
 const struct user_methods* user = &user_methods_definition;
 #else
 static const struct user_methods* user = &user_methods_definition;
 #endif
+
+#endif /* GLOBAL */
 
 #endif /* _POINTER_TYPES_USER_TYPE_H_ */

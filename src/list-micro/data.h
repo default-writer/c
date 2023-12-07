@@ -54,4 +54,18 @@ struct list {
 #endif
 };
 
+/* definition */
+extern const struct list list_micro_definition;
+
+#if !defined(GLOBAL)
+
+/* definition */
+#if defined(INLINE)
+const const struct list* list = &list_micro_definition;
+#else
+static const struct list* list = &list_micro_definition;
+#endif
+
+#endif /* !GLOBAL */
+
 #endif /* _LIST_MICRO_DATA_H_ */

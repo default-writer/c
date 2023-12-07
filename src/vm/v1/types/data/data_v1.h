@@ -42,11 +42,15 @@ struct data_methods {
 /* definition */
 extern const struct data_methods data_methods_definition;
 
+#if defined(GLOBAL)
+
 /* definition */
 #if defined(INLINE)
 const struct data_methods* data = &data_methods_definition;
 #else
 static const struct data_methods* data = &data_methods_definition;
 #endif
+
+#endif /* GLOBAL */
 
 #endif /* _POINTER_TYPES_DATA_H_ */

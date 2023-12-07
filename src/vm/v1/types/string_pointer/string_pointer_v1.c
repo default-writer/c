@@ -26,9 +26,9 @@
 #include "common/memory.h"
 #include "list-micro/data.h"
 
-#include "../../pointer/pointer_v1.h"
-#include "../../virtual/virtual_v1.h"
-#include "../types_v1.h"
+#include "vm/v1/pointer/pointer_v1.h"
+#include "vm/v1/system/types_v1.h"
+#include "vm/v1/virtual/virtual_v1.h"
 
 #define DEFAULT_SIZE 0x100
 
