@@ -29,7 +29,7 @@
  * being used in this owned intellectual property.
  *
  * It is strictly prohibited to use this code base or any part of it for any purpouse
- * including prohibiting or restricive purpouses agains Russians for any EU citizens
+ * including prohibiting or restricive purpouses against Russians for any EU citizens
  * or other person with USA citizenship, origin or background including work permit
  * or locations from selected territories or any territory or any other country except
  * Russia considered as breaking basic human rights, freedom of speesh or involved in
