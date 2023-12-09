@@ -1,10 +1,11 @@
 /*
  *
- * MIT License
+ * Russian's IP Protection License
  *
  * Copyright (c) 2023 Artur Mustafin
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * Permission is hereby granted, free of charge, to any person with citizenship
+ * and location in Russia including Crimea and all occupations obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -22,13 +23,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
+ * For the rest of the world it is an order to pay royalties by agreement to the
+ * author of the code base for ability to use any part of the project for any
+ * purpouse including but not limited to the creative ideas or technologies are
+ * being used in this owned intellectual property.
+ *
+ * It is strictly prohibited to use this code base or any part of it for any purpouse
+ * including prohibiting or restricive purpouses agains Russians for any EU citizens
+ * or other person with USA citizenship, origin or background including work permit
+ * or locations from selected territories or any territory or any other country except
+ * Russia considered as breaking basic human rights, freedom of speesh or involved in
+ * acts of terrorism in a territory owned, occupied or managed by another country.
+ *
  */
 #include "common/memory.h"
 #include "std/common.h"
 
-#include "../common/v4/type.h"
-#include "../common/v4/public.h"
 #include "../common/v4/object.h"
+#include "../common/v4/public.h"
+#include "../common/v4/type.h"
 
 int main(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -37,15 +50,15 @@ int main(void) {
 #endif
 #endif
 
-    /* 
-    
+    /*
+
     object methods
 
     in advance we can use special section to be added for "objects" or "instances", which are opposite
     to class methods. in example below, that is called a "class" methods:
 
     B->get_counter_b(b)
-    
+
     it is true because B is a collection of methods around the "class" of pointers of the same type.
     key difference that we cannot replace or override default behavior for the "instance" object associated
     to the particular "class" methods for specific classes of pointers for the data type.
@@ -56,7 +69,7 @@ int main(void) {
 
 
     | pointer type information - "class" methods | "pubic" part of a struct | ["instance" pointer_1 | method_1  .. "instance" pointer_n | "instance" method_n] | "private" part of a struct |
-                                                 ^ 
+                                                 ^
                                                  | pointer returns the start of "public" section
     |<- "invisible"                            ->|
 
@@ -69,7 +82,7 @@ int main(void) {
     struct object* b1 = object->create(B);
     struct object* b2 = object->create(B);
 
-    struct public_B* public_ptr1 = (struct public_B*)b1; 
+    struct public_B* public_ptr1 = (struct public_B*)b1;
     public_ptr1->base.counter_a = 1;
 
     const struct public_B** b1_this = B->enter(b1);
@@ -84,14 +97,14 @@ int main(void) {
     B->leave(b2_this);
 
     printf("counter p1.a: %016llx\n", public_ptr1->base.counter_a);
-    
+
     const struct public_B** public_b1 = B->enter(b1);
     const struct public_B* this_b1 = *public_b1;
     printf("counter p1.b: %016llx\n", this_b1->get_counter_b());
     B->leave(public_b1);
 
     printf("counter p2.a: %016llx\n", public_ptr2->base.counter_a);
-    
+
     const struct public_B** public_b2 = B->enter(b2);
     const struct public_B* this_b2 = *public_b2;
     printf("counter p2.b: %016llx\n", this_b2->get_counter_b());
