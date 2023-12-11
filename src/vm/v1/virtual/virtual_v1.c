@@ -1,43 +1,31 @@
-/*
- *
- * Russian's IP Protection License
- *
- * Copyright (c) 2023 Artur Mustafin
- *
- * Permission is hereby granted, free of charge, to any person with citizenship
- * and location in Russia including Crimea and all occupations obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- *
- * For the rest of the world it is an order to pay royalties by agreement to the
- * author of the code base for ability to use any part of the project for any
- * purpouse including but not limited to the creative ideas or technologies are
- * being used in this owned intellectual property.
- *
- * It is strictly prohibited to use this code base or any part of it for any purpouse
- * including prohibiting or restricive purpouses against Russians for any EU citizens
- * or other person with USA citizenship, origin or background including work permit
- * or locations from selected territories or any territory or any other country except
- * Russia considered as breaking basic human rights, freedom of speesh or involved in
- * acts of terrorism in a territory owned, occupied or managed by another country.
+/*-*-coding:utf-8 -*-
+ * Auto updated?
+ *   Yes
+ * Created:
+ *   11 December 2023 at 9:06:14 GMT+3
+ * Modified:
+ *   11 December 2023 at 9:15:15 GMT+3
  *
  */
-#include "common/memory.h"
-#include "list-micro/data.h"
+/*
+    Copyright (C) 2022-2047 Artur Mustafin (artur.mustafin@gmail.com)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+#include "common/memory_v1.h"
+#include "list/list_v1.h"
 
 #include "vm/v1/pointer/pointer_v1.h"
 #include "vm/v1/virtual/virtual_v1.h"
@@ -67,9 +55,9 @@ struct vm {
 static struct list_data** cache;
 #endif
 
-static struct vm vm_definition;
+static struct vm vm_definition_v1;
 
-static struct vm* vm = &vm_definition;
+static struct vm* vm = &vm_definition_v1;
 
 struct vm_data {
     struct pointer** sp; /* stack pointer */
@@ -101,7 +89,7 @@ static void vm_dump(void);
 static void vm_dump_ref(void);
 #endif
 static u64 vm_alloc(struct pointer* ptr);
-static void vm_free(struct pointer* ptr);
+static void vm_free(const struct pointer* ptr);
 static struct pointer* vm_read(u64 address);
 static struct pointer* vm_read_type(u64 address, u64 id);
 static u64 virtual_enumerator_next(void);
@@ -121,8 +109,8 @@ static struct pointer* virtual_enumerator_pointer_next_internal(void);
 #endif
 
 static struct vm_data* vm_init_internal(u64 size, u64 offset) {
-    struct vm_data* vm_data_ptr = memory->alloc(VM_DATA_SIZE);
-    vm_data_ptr->bp = memory->alloc(ALLOC_SIZE(size));
+    struct vm_data* vm_data_ptr = memory_v1->alloc(VM_DATA_SIZE);
+    vm_data_ptr->bp = memory_v1->alloc(ALLOC_SIZE(size));
     vm_data_ptr->sp = vm_data_ptr->bp;
     vm_data_ptr->offset = offset;
     vm_data_ptr->size = size;
@@ -146,11 +134,11 @@ static struct pointer** vm_alloc_internal(u64* address, struct vm_data** target)
     struct vm_data* vm_data_ptr = vm->tail;
     struct pointer** ptr = 0;
 #ifndef USE_GC
-    struct vm_pointer* list_ptr = list->pop(cache);
+    struct vm_pointer* list_ptr = list_v1->pop(cache);
     if (list_ptr != 0) {
         ptr = list_ptr->ptr;
         vm_data_ptr = list_ptr->vm;
-        memory->free(list_ptr, VM_POINTER_SIZE);
+        memory_v1->free(list_ptr, VM_POINTER_SIZE);
     }
     if (ptr == 0) {
 #endif
@@ -196,13 +184,13 @@ static void virtual_enumerator_destroy_internal(void) {
 
 static void vm_init(struct vm** ptr, u64 size) {
 #ifndef USE_GC
-    cache = memory->alloc(PTR_SIZE);
-    list->init(cache);
+    cache = memory_v1->alloc(PTR_SIZE);
+    list_v1->init(cache);
 #endif
     struct vm_data* vm_data_ptr = vm_init_internal(size == 0 ? DEFAULT_SIZE : size, 0);
     vm->head = vm_data_ptr;
     vm->tail = vm_data_ptr;
-    struct vm* vm_ptr = memory->alloc(sizeof(struct vm));
+    struct vm* vm_ptr = memory_v1->alloc(sizeof(struct vm));
     vm_ptr->head = vm_data_ptr;
     vm_ptr->tail = vm_data_ptr;
     *ptr = vm_ptr;
@@ -215,15 +203,15 @@ static void vm_destroy(struct vm** ptr) {
     struct vm* current = *ptr;
     vm->head = current->head;
     vm->tail = current->tail;
-    memory->free(current, sizeof(struct vm));
+    memory_v1->free(current, sizeof(struct vm));
     *ptr = 0;
 #ifndef USE_GC
     struct vm_pointer* vm_pointer_ptr = 0;
-    while ((vm_pointer_ptr = list->pop(cache)) != 0) {
-        memory->free(vm_pointer_ptr, VM_POINTER_SIZE);
+    while ((vm_pointer_ptr = list_v1->pop(cache)) != 0) {
+        memory_v1->free(vm_pointer_ptr, VM_POINTER_SIZE);
     }
-    list->destroy(cache);
-    memory->free(cache, PTR_SIZE);
+    list_v1->destroy(cache);
+    memory_v1->free(cache, PTR_SIZE);
 #ifdef USE_MEMORY_CLEANUP
     cache = 0;
 #endif
@@ -231,8 +219,8 @@ static void vm_destroy(struct vm** ptr) {
     struct vm_data* vm_data_ptr = vm->head;
     while (vm_data_ptr != 0) {
         struct vm_data* next = vm_data_ptr->next;
-        memory->free(vm_data_ptr->bp, ALLOC_SIZE(vm_data_ptr->size));
-        memory->free(vm_data_ptr, VM_DATA_SIZE);
+        memory_v1->free(vm_data_ptr->bp, ALLOC_SIZE(vm_data_ptr->size));
+        memory_v1->free(vm_data_ptr, VM_DATA_SIZE);
         vm_data_ptr = next;
     }
     vm->head = 0;
@@ -244,7 +232,7 @@ static void vm_dump(void) {
     virtual_enumerator_init_internal(vm);
     struct pointer* ptr = 0;
     while ((ptr = virtual_enumerator_pointer_next_internal()) != 0) {
-        pointer->dump(ptr);
+        pointer_v1->dump(ptr);
     }
     virtual_enumerator_destroy_internal();
 }
@@ -253,28 +241,28 @@ static void vm_dump_ref(void) {
     virtual_enumerator_init_internal(vm);
     void** ptr = 0;
     while ((ptr = virtual_enumerator_next_internal()) != 0) {
-        pointer->dump_ref(ptr);
+        pointer_v1->dump_ref(ptr);
     }
     virtual_enumerator_destroy_internal();
 }
 #endif
 
-static void vm_free(struct pointer* ptr) {
+static void vm_free(const struct pointer* ptr) {
     if (!ptr) {
         return;
     }
-    const struct vm_data* vm_data_ptr = pointer->vm(ptr);
-    struct pointer** data = vm_data_ptr->bp - vm_data_ptr->offset - 1 + pointer->address(ptr);
+    const struct vm_data* vm_data_ptr = pointer_v1->vm(ptr);
+    struct pointer** data = vm_data_ptr->bp - vm_data_ptr->offset - 1 + pointer_v1->address(ptr);
     if (data != 0) {
 #ifndef USE_GC
-        struct vm_pointer* vm_pointer_ptr = memory->alloc(VM_POINTER_SIZE);
+        struct vm_pointer* vm_pointer_ptr = memory_v1->alloc(VM_POINTER_SIZE);
         vm_pointer_ptr->ptr = data;
-        vm_pointer_ptr->vm = pointer->vm(ptr);
-        list->push(cache, vm_pointer_ptr);
+        vm_pointer_ptr->vm = pointer_v1->vm(ptr);
+        list_v1->push(cache, vm_pointer_ptr);
 #endif
 #ifdef USE_VM_DEBUG_INFO
 #if defined(VM_ALLOC_DEBUG_INFO)
-        printf("  >-: %016llx ! %016llx > %016llx\n", pointer->address(ptr), (u64)ptr, (u64)data);
+        printf("  >-: %016llx ! %016llx > %016llx\n", pointer_v1->address(ptr), (u64)ptr, (u64)data);
 #endif
 #endif
         *data = 0;
@@ -294,7 +282,7 @@ static struct pointer* vm_read_type(u64 address, u64 id) {
     if (ptr == 0) {
         return 0;
     }
-    if (!pointer->read_type(ptr, id)) {
+    if (!pointer_v1->read_type(ptr, id)) {
         return 0;
     }
 #ifdef USE_VM_DEBUG_INFO
@@ -334,7 +322,7 @@ static u64 vm_alloc(struct pointer* ptr) {
     struct vm_data* target = 0;
     struct pointer** data = vm_alloc_internal(&address, &target);
     *data = ptr;
-    pointer->write(ptr, target, address);
+    pointer_v1->write(ptr, target, address);
 #ifdef USE_VM_DEBUG_INFO
 #if defined(VM_ALLOC_DEBUG_INFO)
     printf("  >+: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)data);
@@ -369,7 +357,7 @@ static u64 virtual_enumerator_next(void) {
         if (*ptr != 0) {
             const struct pointer* data_ptr = *ptr;
             if (data_ptr != 0) {
-                address = pointer->address(data_ptr);
+                address = pointer_v1->address(data_ptr);
                 break;
             }
         }
@@ -395,11 +383,7 @@ static void** virtual_enumerator_next_internal(void) {
 }
 
 /* public */
-const struct vm_default_options vm_default_options_definition = {
-    .size = DEFAULT_SIZE
-};
-
-const struct virtual_methods virtual_methods_definition = {
+const struct virtual_methods_v1 virtual_methods_definition_v1 = {
     .init = vm_init,
     .destroy = vm_destroy,
     .alloc = vm_alloc,

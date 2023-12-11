@@ -1,62 +1,41 @@
-/*
- *
- * Russian's IP Protection License
- *
- * Copyright (c) 2023 Artur Mustafin
- *
- * Permission is hereby granted, free of charge, to any person with citizenship
- * and location in Russia including Crimea and all occupations obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- *
- * For the rest of the world it is an order to pay royalties by agreement to the
- * author of the code base for ability to use any part of the project for any
- * purpouse including but not limited to the creative ideas or technologies are
- * being used in this owned intellectual property.
- *
- * It is strictly prohibited to use this code base or any part of it for any purpouse
- * including prohibiting or restricive purpouses against Russians for any EU citizens
- * or other person with USA citizenship, origin or background including work permit
- * or locations from selected territories or any territory or any other country except
- * Russia considered as breaking basic human rights, freedom of speesh or involved in
- * acts of terrorism in a territory owned, occupied or managed by another country.
+/*-*-coding:utf-8 -*-
+ * Auto updated?
+ *   Yes
+ * Created:
+ *   11 December 2023 at 9:06:14 GMT+3
+ * Modified:
+ *   11 December 2023 at 9:15:15 GMT+3
  *
  */
-#include "common/memory.h"
-#include "list-micro/data.h"
+/*
+    Copyright (C) 2022-2047 Artur Mustafin (artur.mustafin@gmail.com)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
 
 #include "vm/v1/pointer/pointer_v1.h"
 #include "vm/v1/system/types_v1.h"
 #include "vm/v1/virtual/virtual_v1.h"
+#include "vm/vm_type.h"
 
 #define DEFAULT_SIZE 0x100
 
 static const enum type id = TYPE_STRING_POINTER;
 
-/* api */
-const struct string_pointer_methods string_pointer_methods_definition;
-
 #ifndef ATTRIBUTE
 void string_pointer_init(void);
 #endif
-
-/* definition */
-static const struct vm_type type_definition;
-static const struct vm_type* type = &type_definition;
 
 /* definition */
 static void string_free(u64 ptr);
@@ -67,35 +46,35 @@ static void string_virtual_free(struct pointer* ptr);
 
 /* implementation */
 static void string_virtual_free(struct pointer* ptr) {
-    pointer->release(ptr);
+    pointer_v1->release(ptr);
 }
 
-static const struct vm_type type_definition = {
+static const struct vm_type type = {
     .free = string_virtual_free
 };
 
 static void INIT init(void) {
-    pointer->register_type(id, type);
+    pointer_v1->register_type(id, &type);
 }
 
 /* api */
 static void string_free(u64 ptr) {
-    struct pointer* data_ptr = virtual->read(ptr);
+    struct pointer* data_ptr = virtual_v1->read(ptr);
     if (data_ptr == 0) {
         return;
     }
-    if (pointer->read_type(data_ptr, TYPE_STRING_POINTER)) {
+    if (pointer_v1->read_type(data_ptr, TYPE_STRING_POINTER)) {
         string_vm_free(data_ptr);
         return;
     }
 }
 
 static void string_vm_free(struct pointer* ptr) {
-    pointer->release(ptr);
+    pointer_v1->release(ptr);
 }
 
 /* public */
-const struct string_pointer_methods string_pointer_methods_definition = {
+const struct string_pointer_methods_v1 string_pointer_methods_definition_v1 = {
     .free = string_free
 };
 

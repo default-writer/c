@@ -173,13 +173,13 @@
       "window.zoomLevel": 0
     },
     "presentation-mode.configBackup": {
-      "editor.fontSize": 16,
+      "editor.fontSize": 12,
       "window.zoomLevel": 0,
       "terminal.integrated.fontSize": 12,
       "debug.console.fontSize": 12,
       "editor.matchBrackets": "undefined",
       "editor.minimap.enabled": "undefined",
-      "workbench.activityBar.visible": true,
+      "workbench.activityBar.visible": "undefined",
       "workbench.statusBar.visible": true,
       "workbench.colorTheme": "Yitzchok (rainglow)",
       "workbench.colorCustomizations": {
@@ -210,7 +210,7 @@
     "clang-tidy.compilerArgs": [
       "-I/usr/include/gtk-4.0"
     ],
-    "screencastMode.fontSize": 20,
+    "screencastMode.fontSize": 24,
     "window.zoomLevel": 0,
     "debug.console.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
     "chat.editor.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
@@ -329,7 +329,10 @@
       "!jsonc",
       "!code-workspace"
     ],
-    "cmake.options.statusBarVisibility": "visible"
+    "cmake.options.statusBarVisibility": "visible",
+    "scm.inputFontSize": 12,
+    "chat.editor.fontSize": 12,
+    "markdown.preview.fontSize": 12
   },
   "extensions": {
     "recommendations": [
@@ -339,7 +342,8 @@
       "donjayamanne.githistory",
       "guodongsun.vscode-git-cruise",
       "rogalmic.bash-debug",
-      "circleci.circleci"
+      "circleci.circleci",
+      "therepoclub.fileheadergenerator"
     ]
   }
 }

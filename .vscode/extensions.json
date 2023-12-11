@@ -46,6 +46,7 @@
     "circleci.circleci",
     "franmastromarino.vs-code-settings-os",
     "dangmai.workspace-default-settings",
-    "swellaby.workspace-config-plus"
+    "swellaby.workspace-config-plus",
+    "therepoclub.fileheadergenerator"
   ]
 }

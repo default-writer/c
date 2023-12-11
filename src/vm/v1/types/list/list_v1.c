@@ -1,63 +1,43 @@
-/*
- *
- * Russian's IP Protection License
- *
- * Copyright (c) 2023 Artur Mustafin
- *
- * Permission is hereby granted, free of charge, to any person with citizenship
- * and location in Russia including Crimea and all occupations obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- *
- * For the rest of the world it is an order to pay royalties by agreement to the
- * author of the code base for ability to use any part of the project for any
- * purpouse including but not limited to the creative ideas or technologies are
- * being used in this owned intellectual property.
- *
- * It is strictly prohibited to use this code base or any part of it for any purpouse
- * including prohibiting or restricive purpouses against Russians for any EU citizens
- * or other person with USA citizenship, origin or background including work permit
- * or locations from selected territories or any territory or any other country except
- * Russia considered as breaking basic human rights, freedom of speesh or involved in
- * acts of terrorism in a territory owned, occupied or managed by another country.
+/*-*-coding:utf-8 -*-
+ * Auto updated?
+ *   Yes
+ * Created:
+ *   11 December 2023 at 9:06:14 GMT+3
+ * Modified:
+ *   11 December 2023 at 9:15:15 GMT+3
  *
  */
-#include "common/memory.h"
-#include "list-micro/data.h"
+/*
+    Copyright (C) 2022-2047 Artur Mustafin (artur.mustafin@gmail.com)
 
-#include "list-micro/data.h"
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+#include "list/list_v1.h"
+
 #include "vm/v1/pointer/pointer_v1.h"
-#include "vm/v1/system/types_v1.h"
+#include "vm/v1/types/list/list_v1.h"
 #include "vm/v1/virtual/virtual_v1.h"
+#include "vm/vm_type.h"
 
 #define DEFAULT_SIZE 0x100
 
 static const enum type id = TYPE_LIST;
 
-/* api */
-const struct list_methods list_methods_definition;
-
 #ifndef ATTRIBUTE
 void list_init(void);
 #endif
-
-/* definition */
-static const struct vm_type type_definition;
-static const struct vm_type* type = &type_definition;
 
 /* internal */
 static struct pointer* list_alloc_internal(void);
@@ -83,38 +63,38 @@ struct list_handler {
 
 /* implementation */
 static struct pointer* list_alloc_internal(void) {
-    struct pointer* ptr = pointer->alloc(sizeof(struct list_handler), id);
-    struct list_handler* handler = pointer->read(ptr);
+    struct pointer* ptr = pointer_v1->alloc(sizeof(struct list_handler), id);
+    struct list_handler* handler = pointer_v1->read(ptr);
     handler->size = 0;
-    list->init(&handler->list);
+    list_v1->init(&handler->list);
     return ptr;
 }
 
 static void list_release_internal(struct list_data** current) {
     u64 ptr = 0;
-    while ((ptr = (u64)list->pop(current)) != 0) {
-        pointer->free(ptr);
+    while ((ptr = (u64)list_v1->pop(current)) != 0) {
+        pointer_v1->free(ptr);
     }
 }
 
 static u64 list_alloc(void) {
     struct pointer* ptr = list_alloc_internal();
-    u64 virtual_ptr = virtual->alloc(ptr);
+    u64 virtual_ptr = virtual_v1->alloc(ptr);
     return virtual_ptr;
 }
 
 static void list_release(u64 ptr) {
-    const struct pointer* data_ptr = virtual->read_type(ptr, id);
+    const struct pointer* data_ptr = virtual_v1->read_type(ptr, id);
     if (data_ptr == 0) {
         return;
     }
-    struct list_handler* handler = pointer->read(data_ptr);
+    struct list_handler* handler = pointer_v1->read(data_ptr);
     handler->size = 0;
     list_release_internal(&handler->list);
 }
 
 static void list_free(u64 ptr) {
-    struct pointer* data_ptr = virtual->read_type(ptr, id);
+    struct pointer* data_ptr = virtual_v1->read_type(ptr, id);
     if (data_ptr == 0) {
         return;
     }
@@ -122,11 +102,11 @@ static void list_free(u64 ptr) {
 }
 
 static void list_vm_free(struct pointer* ptr) {
-    struct list_handler* handler = pointer->read(ptr);
+    struct list_handler* handler = pointer_v1->read(ptr);
     handler->size = 0;
     list_release_internal(&handler->list);
-    list->destroy(&handler->list);
-    pointer->release(ptr);
+    list_v1->destroy(&handler->list);
+    pointer_v1->release(ptr);
 }
 
 static void list_push(u64 ptr_list, u64 ptr) {
@@ -139,31 +119,31 @@ static void list_push(u64 ptr_list, u64 ptr) {
     if (ptr == 0) {
         return;
     }
-    const struct pointer* data_ptr = virtual->read_type(ptr_list, id);
+    const struct pointer* data_ptr = virtual_v1->read_type(ptr_list, id);
     if (data_ptr == 0) {
         return;
     }
-    struct list_handler* handler = pointer->read(data_ptr);
-    list->push(&handler->list, (void*)ptr);
+    struct list_handler* handler = pointer_v1->read(data_ptr);
+    list_v1->push(&handler->list, (void*)ptr);
     handler->size++;
 }
 
 static u64 list_peek(u64 ptr) {
-    const struct pointer* data_ptr = virtual->read_type(ptr, id);
+    const struct pointer* data_ptr = virtual_v1->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
-    struct list_handler* handler = pointer->read(data_ptr);
-    u64 list_peek_ptr = (u64)list->peek(&handler->list);
+    struct list_handler* handler = pointer_v1->read(data_ptr);
+    u64 list_peek_ptr = (u64)list_v1->peek(&handler->list);
     return list_peek_ptr;
 }
 
 static u64 list_peekn(u64 list_ptr, u64 nelements) {
-    const struct pointer* data_ptr = virtual->read_type(list_ptr, id);
+    const struct pointer* data_ptr = virtual_v1->read_type(list_ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
-    struct list_handler* src_handler = pointer->read(data_ptr);
+    struct list_handler* src_handler = pointer_v1->read(data_ptr);
     u64 size = src_handler->size;
     if (size == 0) {
         return 0;
@@ -172,39 +152,39 @@ static u64 list_peekn(u64 list_ptr, u64 nelements) {
         return 0;
     }
     struct pointer* dst_ptr = list_alloc_internal();
-    struct list_handler* dst_handler = pointer->read(dst_ptr);
+    struct list_handler* dst_handler = pointer_v1->read(dst_ptr);
     u64 i = nelements;
     while (i-- > 0) {
         struct list_data* current = src_handler->list;
-        u64 list_peek_ptr = (u64)list->peek(&current);
-        list->push(&dst_handler->list, (void*)list_peek_ptr);
+        u64 list_peek_ptr = (u64)list_v1->peek(&current);
+        list_v1->push(&dst_handler->list, (void*)list_peek_ptr);
         dst_handler->size++;
         current = current->next;
     }
-    u64 dst_data = virtual->alloc(dst_ptr);
+    u64 dst_data = virtual_v1->alloc(dst_ptr);
     return dst_data;
 }
 
 static u64 list_pop(u64 ptr) {
-    const struct pointer* data_ptr = virtual->read_type(ptr, id);
+    const struct pointer* data_ptr = virtual_v1->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
-    struct list_handler* handler = pointer->read(data_ptr);
+    struct list_handler* handler = pointer_v1->read(data_ptr);
     if (handler->size == 0) {
         return 0;
     }
-    u64 list_pop_ptr = (u64)list->pop(&handler->list);
+    u64 list_pop_ptr = (u64)list_v1->pop(&handler->list);
     handler->size--;
     return list_pop_ptr;
 }
 
 static u64 list_popn(u64 list_ptr, u64 nelements) {
-    const struct pointer* data_ptr = virtual->read_type(list_ptr, id);
+    const struct pointer* data_ptr = virtual_v1->read_type(list_ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
-    struct list_handler* src_handler = pointer->read(data_ptr);
+    struct list_handler* src_handler = pointer_v1->read(data_ptr);
     u64 size = src_handler->size;
     if (size == 0) {
         return 0;
@@ -213,37 +193,37 @@ static u64 list_popn(u64 list_ptr, u64 nelements) {
         return 0;
     }
     struct pointer* dst_ptr = list_alloc_internal();
-    struct list_handler* dst_handler = pointer->read(dst_ptr);
+    struct list_handler* dst_handler = pointer_v1->read(dst_ptr);
     u64 i = nelements;
     while (i-- > 0) {
-        u64 list_pop_ptr = (u64)list->pop(&src_handler->list);
-        list->push(&dst_handler->list, (void*)list_pop_ptr);
+        u64 list_pop_ptr = (u64)list_v1->pop(&src_handler->list);
+        list_v1->push(&dst_handler->list, (void*)list_pop_ptr);
         dst_handler->size++;
     }
-    u64 dst_data = virtual->alloc(dst_ptr);
+    u64 dst_data = virtual_v1->alloc(dst_ptr);
     return dst_data;
 }
 
 static u64 list_size(u64 ptr) {
-    const struct pointer* data_ptr = virtual->read_type(ptr, id);
+    const struct pointer* data_ptr = virtual_v1->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
-    const struct list_handler* handler = pointer->read(data_ptr);
+    const struct list_handler* handler = pointer_v1->read(data_ptr);
     u64 size = handler->size;
     return size;
 }
 
-static const struct vm_type type_definition = {
+static const struct vm_type type = {
     .free = list_vm_free
 };
 
 static void INIT init(void) {
-    pointer->register_type(id, type);
+    pointer_v1->register_type(id, &type);
 }
 
 /* public */
-const struct list_methods list_methods_definition = {
+const struct list_methods_v1 list_methods_definition_v1 = {
     .alloc = list_alloc,
     .free = list_free,
     .push = list_push,

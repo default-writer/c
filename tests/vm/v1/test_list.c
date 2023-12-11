@@ -1,60 +1,45 @@
-/*
- *
- * Russian's IP Protection License
- *
- * Copyright (c) 2023 Artur Mustafin
- *
- * Permission is hereby granted, free of charge, to any person with citizenship
- * and location in Russia including Crimea and all occupations obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- *
- * For the rest of the world it is an order to pay royalties by agreement to the
- * author of the code base for ability to use any part of the project for any
- * purpouse including but not limited to the creative ideas or technologies are
- * being used in this owned intellectual property.
- *
- * It is strictly prohibited to use this code base or any part of it for any purpouse
- * including prohibiting or restricive purpouses against Russians for any EU citizens
- * or other person with USA citizenship, origin or background including work permit
- * or locations from selected territories or any territory or any other country except
- * Russia considered as breaking basic human rights, freedom of speesh or involved in
- * acts of terrorism in a territory owned, occupied or managed by another country.
+/*-*-coding:utf-8 -*-
+ * Auto updated?
+ *   Yes
+ * Created:
+ *   11 December 2023 at 9:06:14 GMT+3
+ * Modified:
+ *   11 December 2023 at 9:15:15 GMT+3
  *
  */
-#include "test_list-micro.h"
+/*
+    Copyright (C) 2022-2047 Artur Mustafin (artur.mustafin@gmail.com)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+#include "test_list.h"
+#include "vm/v1/vm_v1.h"
 
 /* allocates memory pointer for list object */
 static struct list_data* new_list(void) {
-    /* declares pointer to list functions definitions */
-    const struct list* _list = &list_micro_definition;
     struct list_data* ctx = 0;
     /* initializes the list */
-    _list->init(&ctx);
+    list_v1->init(&ctx);
     /* returns list object */
     return ctx;
 }
 
 /* releases memory pointer for list object */
 static void delete_list(struct list_data** ctx) {
-    /* declares pointer to list functions definitions */
-    const struct list* _list = &list_micro_definition;
     /* destroys the list */
-    _list->destroy(ctx);
+    list_v1->destroy(ctx);
     /* cleans up */
     *ctx = 0;
 }
@@ -81,92 +66,90 @@ static void run_list2(void (*tests)(struct list_data** const)) {
 
 /* uses the list */
 static void tests(struct list_data** current) {
-    /* declares pointer to list functions definitions */
-    const struct list* _list = &list_micro_definition;
     u8* payload = (void*)0x7bde8421;
     void* is_null[] = {
-        _list->peek(current),
-        _list->pop(current)
+        list_v1->peek(current),
+        list_v1->pop(current)
     };
     RX_ASSERT(0 == is_null[0]);
     RX_ASSERT(0 == is_null[1]);
-    _list->push(current, payload);
+    list_v1->push(current, payload);
 #ifdef USE_VM_DEBUG_INFO
-    _list->print_head(current);
+    list_v1->print_head(current);
 #endif
-    _list->push(current, ++payload);
+    list_v1->push(current, ++payload);
 #ifdef USE_VM_DEBUG_INFO
-    _list->print_head(current);
+    list_v1->print_head(current);
 #endif
-    _list->push(current, ++payload);
+    list_v1->push(current, ++payload);
 #ifdef USE_VM_DEBUG_INFO
-    _list->print_head(current);
+    list_v1->print_head(current);
 #endif
-    _list->push(current, ++payload);
+    list_v1->push(current, ++payload);
 #ifdef USE_VM_DEBUG_INFO
-    _list->print_head(current);
+    list_v1->print_head(current);
 #endif
-    _list->push(current, ++payload);
+    list_v1->push(current, ++payload);
 #ifdef USE_VM_DEBUG_INFO
-    _list->print_head(current);
+    list_v1->print_head(current);
 #endif
 #ifdef USE_VM_DEBUG_INFO
-    _list->print(current);
+    list_v1->print(current);
 #endif
-    const void* q_peek0 = list->peek(current);
+    const void* q_peek0 = list_v1->peek(current);
     CLEAN(q_peek0)
-    void* q_pop0 = list->pop(current);
+    void* q_pop0 = list_v1->pop(current);
 #ifdef USE_VM_DEBUG_INFO
-    _list->print(current);
+    list_v1->print(current);
 #endif
-    const void* q_pop1 = list->pop(current);
+    const void* q_pop1 = list_v1->pop(current);
     CLEAN(q_pop1)
 #ifdef USE_VM_DEBUG_INFO
-    _list->print(current);
+    list_v1->print(current);
 #endif
-    const void* q_pop2 = list->pop(current);
+    const void* q_pop2 = list_v1->pop(current);
     CLEAN(q_pop2)
 #ifdef USE_VM_DEBUG_INFO
-    _list->print(current);
+    list_v1->print(current);
 #endif
-    const void* q_peek1 = list->peek(current);
-    void* q_pop3 = list->pop(current);
-    const void* q_peek2 = list->peek(current);
-    _list->push(current, q_pop3);
-    const void* q_peek3 = list->peek(current);
+    const void* q_peek1 = list_v1->peek(current);
+    void* q_pop3 = list_v1->pop(current);
+    const void* q_peek2 = list_v1->peek(current);
+    list_v1->push(current, q_pop3);
+    const void* q_peek3 = list_v1->peek(current);
     RX_ASSERT(q_peek1 != q_peek2);
     RX_ASSERT(q_peek2 != q_peek3);
     RX_ASSERT(q_peek1 == q_peek3);
-    const void* q_pop4 = list->pop(current);
+    const void* q_pop4 = list_v1->pop(current);
     CLEAN(q_pop4)
 #ifdef USE_VM_DEBUG_INFO
-    _list->print(current);
+    list_v1->print(current);
 #endif
-    const void* q_pop5 = list->pop(current);
+    const void* q_pop5 = list_v1->pop(current);
     CLEAN(q_pop5)
 #ifdef USE_VM_DEBUG_INFO
-    _list->print(current);
+    list_v1->print(current);
 #endif
-    const void* q_peek4 = list->peek(current);
-    _list->push(current, q_pop0);
+    const void* q_peek4 = list_v1->peek(current);
+    list_v1->push(current, q_pop0);
     CLEAN(q_peek4)
 #ifdef USE_VM_DEBUG_INFO
-    _list->print(current);
+    list_v1->print(current);
 #endif
-    const void* q_pop6 = list->pop(current);
+    const void* q_pop6 = list_v1->pop(current);
     CLEAN(q_pop6)
 #ifdef USE_VM_DEBUG_INFO
-    _list->print(current);
+    list_v1->print(current);
 #endif
-    const void* q_pop7 = list->pop(current);
+    const void* q_pop7 = list_v1->pop(current);
     CLEAN(q_pop7)
 #ifdef USE_VM_DEBUG_INFO
-    _list->print(current);
+    list_v1->print(current);
 #endif
-    const void* q_peek5 = list->peek(current);
+    const void* q_peek5 = list_v1->peek(current);
     CLEAN(q_peek5)
 #ifdef USE_VM_DEBUG_INFO
-    _list->print(current);
+    list_v1->print(current);
 #endif
 }
 
@@ -179,22 +162,18 @@ typedef struct test_data {
 RX_SET_UP(test_set_up) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-    /* declares pointer to list functions definitions */
-    const struct list* _list = &list_micro_definition;
     /* initializes to 0 */
     *ctx = 0;
     /* initialize list */
-    _list->init(ctx);
+    list_v1->init(ctx);
     return RX_SUCCESS;
 }
 
 RX_TEAR_DOWN(test_tear_down) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-    /* declares pointer to list functions definitions */
-    const struct list* _list = &list_micro_definition;
     /* destroy list */
-    _list->destroy(ctx);
+    list_v1->destroy(ctx);
     /* initializes to 0 */
     *ctx = 0;
 }
@@ -214,10 +193,8 @@ RX_TEST_CASE(list_micro_tests, test_empty_list_count_equals_0, .fixture = test_f
 RX_TEST_CASE(list_micro_tests, test_pop_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-    /* declares pointer to list functions definitions */
-    const struct list* _list = &list_micro_definition;
     /* pushed to the list */
-    const void* data_ptr = list->pop(0);
+    const void* data_ptr = list_v1->pop(0);
     /* ensures there is no result on 0 */
     RX_ASSERT(data_ptr == 0);
     /* ensures pop does not zeroes the head pointer */
@@ -228,12 +205,10 @@ RX_TEST_CASE(list_micro_tests, test_pop_0, .fixture = test_fixture) {
 RX_TEST_CASE(list_micro_tests, test_pop_null_ptr, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-    /* declares pointer to list functions definitions */
-    const struct list* _list = &list_micro_definition;
     /* pushed to the list */
     struct list_data* ptr = 0;
     struct list_data** null_ptr = &ptr;
-    const void* data_ptr = list->pop(null_ptr);
+    const void* data_ptr = list_v1->pop(null_ptr);
     /* ensures there is no result on 0 */
     RX_ASSERT(data_ptr == 0);
     /* ensures pop does not zeroes the head pointer */
@@ -244,10 +219,8 @@ RX_TEST_CASE(list_micro_tests, test_pop_null_ptr, .fixture = test_fixture) {
 RX_TEST_CASE(list_micro_tests, test_peek_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-    /* declares pointer to list functions definitions */
-    const struct list* _list = &list_micro_definition;
     /* pushed to the list */
-    const void* data_ptr = list->peek(0);
+    const void* data_ptr = list_v1->peek(0);
     /* ensures there is no result on 0 */
     RX_ASSERT(data_ptr == 0);
     /* ensures pop does not zeroes the head pointer */
@@ -258,12 +231,10 @@ RX_TEST_CASE(list_micro_tests, test_peek_0, .fixture = test_fixture) {
 RX_TEST_CASE(list_micro_tests, test_peek_null_ptr, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-    /* declares pointer to list functions definitions */
-    const struct list* _list = &list_micro_definition;
     /* pushed to the list */
     struct list_data* ptr = 0;
     struct list_data** null_ptr = &ptr;
-    const void* data_ptr = list->peek(null_ptr);
+    const void* data_ptr = list_v1->peek(null_ptr);
     /* ensures there is no result on 0 */
     RX_ASSERT(data_ptr == 0);
     /* ensures pop does not zeroes the head pointer */
@@ -274,13 +245,11 @@ RX_TEST_CASE(list_micro_tests, test_peek_null_ptr, .fixture = test_fixture) {
 RX_TEST_CASE(list_micro_tests, test_push_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-    /* declares pointer to list functions definitions */
-    const struct list* _list = &list_micro_definition;
     /* pushed to the list */
     void* payload = (void*)0x12345678;
-    _list->push(0, payload);
+    list_v1->push(0, payload);
     /* ensures there is no result on 0 */
-    const void* data_ptr = list->peek(0);
+    const void* data_ptr = list_v1->peek(0);
     RX_ASSERT(data_ptr == 0);
     /* ensures pop does not zeroes the head pointer */
     RX_ASSERT(*ctx != 0);
@@ -290,15 +259,13 @@ RX_TEST_CASE(list_micro_tests, test_push_0, .fixture = test_fixture) {
 RX_TEST_CASE(list_micro_tests, test_push_null_ptr, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-    /* declares pointer to list functions definitions */
-    const struct list* _list = &list_micro_definition;
     /* pushed to the list */
     struct list_data* ptr = 0;
     struct list_data** null_ptr = &ptr;
     void* payload = (void*)0x12345678;
-    _list->push(null_ptr, payload);
+    list_v1->push(null_ptr, payload);
     /* ensures there is no result on 0 */
-    const void* data_ptr = list->peek(0);
+    const void* data_ptr = list_v1->peek(0);
     /* ensures there is no result on 0 */
     RX_ASSERT(data_ptr == 0);
     /* ensures pop does not zeroes the head pointer */
@@ -309,10 +276,8 @@ RX_TEST_CASE(list_micro_tests, test_push_null_ptr, .fixture = test_fixture) {
 RX_TEST_CASE(list_micro_tests, test_init_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-    /* declares pointer to list functions definitions */
-    const struct list* _list = &list_micro_definition;
     /* pushed to the list */
-    _list->init(0);
+    list_v1->init(0);
     /* ensures pop does not zeroes the head pointer */
     RX_ASSERT(*ctx != 0);
 }
@@ -321,14 +286,12 @@ RX_TEST_CASE(list_micro_tests, test_init_0, .fixture = test_fixture) {
 RX_TEST_CASE(list_micro_tests, test_init_null_ptr, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-    /* declares pointer to list functions definitions */
-    const struct list* _list = &list_micro_definition;
     /* pushed to the list */
     struct list_data* ptr = 0;
     struct list_data** null_ptr = &ptr;
-    _list->init(null_ptr);
-    const void* data_ptr = list->peek(null_ptr);
-    _list->destroy(null_ptr);
+    list_v1->init(null_ptr);
+    const void* data_ptr = list_v1->peek(null_ptr);
+    list_v1->destroy(null_ptr);
     /* ensures there is no result on 0 */
     RX_ASSERT(data_ptr == 0);
     /* ensures pop does not zeroes the head pointer */
@@ -339,10 +302,8 @@ RX_TEST_CASE(list_micro_tests, test_init_null_ptr, .fixture = test_fixture) {
 RX_TEST_CASE(list_micro_tests, test_destroy_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-    /* declares pointer to list functions definitions */
-    const struct list* _list = &list_micro_definition;
     /* pushed to the list */
-    _list->destroy(0);
+    list_v1->destroy(0);
     /* ensures pop does not zeroes the head pointer */
     RX_ASSERT(*ctx != 0);
 }
@@ -351,13 +312,11 @@ RX_TEST_CASE(list_micro_tests, test_destroy_0, .fixture = test_fixture) {
 RX_TEST_CASE(list_micro_tests, test_destroy_null_ptr, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-    /* declares pointer to list functions definitions */
-    const struct list* _list = &list_micro_definition;
     /* pushed to the list */
     struct list_data* ptr = 0;
     struct list_data** null_ptr = &ptr;
-    const void* data_ptr = list->peek(null_ptr);
-    _list->destroy(null_ptr);
+    const void* data_ptr = list_v1->peek(null_ptr);
+    list_v1->destroy(null_ptr);
     /* ensures there is no result on 0 */
     RX_ASSERT(data_ptr == 0);
     /* ensures pop does not zeroes the head pointer */
@@ -368,16 +327,14 @@ RX_TEST_CASE(list_micro_tests, test_destroy_null_ptr, .fixture = test_fixture) {
 RX_TEST_CASE(list_micro_tests, test_standard_list_peek_does_not_changes_stack, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-    /* declares pointer to list functions definitions */
-    const struct list* _list = &list_micro_definition;
     /* prepares the payload */
     u8* payload = (void*)0x7bde8421;
     /* pushed to the list */
-    _list->push(ctx, payload);
+    list_v1->push(ctx, payload);
     /* gets the head pointer to the list */
     const struct list_data* ptr = *ctx;
     /* peeks from the list */
-    const void* head = list->peek(ctx);
+    const void* head = list_v1->peek(ctx);
     /* ensures payload is on top of the stack */
     RX_ASSERT(head == payload);
     /* ensures peek does not changes the head pointer */
@@ -387,10 +344,8 @@ RX_TEST_CASE(list_micro_tests, test_standard_list_peek_does_not_changes_stack, .
 /* test pop from 0 pointer */
 RX_TEST_CASE(list_micro_tests, test_empty_list_pop_equals_0, .fixture = test_fixture) {
     struct list_data* ctx = 0;
-    /* declares pointer to list functions definitions */
-    const struct list* _list = &list_micro_definition;
     /* pops from the list */
-    const struct list_data* head = list->pop(&ctx);
+    const struct list_data* head = list_v1->pop(&ctx);
     /* ensures head is not initialized */
     RX_ASSERT(head == 0);
 }
@@ -398,10 +353,8 @@ RX_TEST_CASE(list_micro_tests, test_empty_list_pop_equals_0, .fixture = test_fix
 /* test pop from 0 pointer */
 RX_TEST_CASE(list_micro_tests, test_empty_list_peek_equals_0, .fixture = test_fixture) {
     struct list_data* ctx = 0;
-    /* declares pointer to list functions definitions */
-    const struct list* _list = &list_micro_definition;
     /* peeks from the list */
-    const struct list_data* head = list->peek(&ctx);
+    const struct list_data* head = list_v1->peek(&ctx);
     /* ensures head is not initialized */
     RX_ASSERT(head == 0);
 }
@@ -410,12 +363,10 @@ RX_TEST_CASE(list_micro_tests, test_empty_list_peek_equals_0, .fixture = test_fi
 RX_TEST_CASE(list_micro_tests, test_alloc_count_eq_1, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-    /* declares pointer to list functions definitions */
-    const struct list* _list = &list_micro_definition;
     /* prepares the payload */
     u8* payload = (void*)0x7bde8421;
     /* pushes to the list */
-    _list->push(ctx, payload);
+    list_v1->push(ctx, payload);
     /* ensures data is added to the list */
     RX_ASSERT(*ctx != 0);
 }
@@ -423,14 +374,12 @@ RX_TEST_CASE(list_micro_tests, test_alloc_count_eq_1, .fixture = test_fixture) {
 RX_TEST_CASE(list_micro_tests, test_alloc_payload, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-    /* declares pointer to list functions definitions */
-    const struct list* _list = &list_micro_definition;
     /* prepares the payload */
     u8* payload = (void*)0x7bde8421;
     /* pushes to the list */
-    _list->push(ctx, payload);
+    list_v1->push(ctx, payload);
     /* peeks from the list */
-    const void* head = list->peek(ctx);
+    const void* head = list_v1->peek(ctx);
     /* ensures data is added to the list */
     RX_ASSERT(head == payload);
 }
@@ -438,14 +387,12 @@ RX_TEST_CASE(list_micro_tests, test_alloc_payload, .fixture = test_fixture) {
 RX_TEST_CASE(list_micro_tests, test_alloc_pop_count_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-    /* declares pointer to list functions definitions */
-    const struct list* _list = &list_micro_definition;
     /* prepares the payload */
     u8* payload = (void*)0x7bde8421;
     /* pushes to the list */
-    _list->push(ctx, payload);
+    list_v1->push(ctx, payload);
     /* pops from the list */
-    const void* head = list->pop(ctx);
+    const void* head = list_v1->pop(ctx);
     /* ensures data is added to the list */
     RX_ASSERT(head != 0);
 }
@@ -453,14 +400,12 @@ RX_TEST_CASE(list_micro_tests, test_alloc_pop_count_0, .fixture = test_fixture) 
 RX_TEST_CASE(list_micro_tests, test_alloc_pop_payload, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-    /* declares pointer to list functions definitions */
-    const struct list* _list = &list_micro_definition;
     /* prepares the payload */
     u8* payload = (void*)0x7bde8421;
     /* pushes to the list */
-    _list->push(ctx, payload);
+    list_v1->push(ctx, payload);
     /* pops from the list */
-    const void* head = list->pop(ctx);
+    const void* head = list_v1->pop(ctx);
     /* ensures data is added to the list */
     RX_ASSERT(head == payload);
 }
@@ -469,10 +414,8 @@ RX_TEST_CASE(list_micro_tests, test_alloc_pop_payload, .fixture = test_fixture) 
 RX_TEST_CASE(list_micro_tests, test_list_peek_is_zero, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-    /* declares pointer to list functions definitions */
-    const struct list* _list = &list_micro_definition;
     /* peeks from the list */
-    const void* head = _list->peek(ctx);
+    const void* head = list_v1->peek(ctx);
     /* ensures head is not initialized */
     RX_ASSERT(head == 0);
 }
@@ -481,10 +424,8 @@ RX_TEST_CASE(list_micro_tests, test_list_peek_is_zero, .fixture = test_fixture) 
 RX_TEST_CASE(list_micro_tests, test_list_pop_is_zero, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct list_data** ctx = &rx->ctx;
-    /* declares pointer to list functions definitions */
-    const struct list* _list = &list_micro_definition;
     /* pops from the list */
-    const void* head = _list->pop(ctx);
+    const void* head = list_v1->pop(ctx);
     /* ensures head is not initialized */
     RX_ASSERT(head == 0);
 }
@@ -503,6 +444,6 @@ static int run(void) {
     return result;
 }
 
-const struct test_suite list_micro_test_suite_definition = {
+const struct test_suite list_micro_test_suite_definition_v1 = {
     .run = run
 };

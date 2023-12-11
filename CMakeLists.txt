@@ -28,9 +28,9 @@ set(CONFIG_MEMORY_CLEANUP ON)
 set(CONFIG_MEMORY_ALLOC OFF)
 set(CONFIG_MEMCPY OFF)
 
-link_directories( $ENV{LD_LIBRARY_PATH} )
+link_directories(${CMAKE_SOURCE_DIR}/lib)
 
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY $ENV{LD_LIBRARY_PATH})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
 
 # Check the operating system version
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
@@ -253,127 +253,49 @@ if(UNIX)
     add_definitions(-D_POSIX_C_SOURCE=199309L)
 endif()
 
-set(LIB_COMMON_SOURCE 
-    src/common/memory.c)
+set(LIB_COMMON_SOURCE src/common/memory_v1.c)
+set(LIB_LIST_SOURCE src/list/list_v1.c)
 
-# set(LIB_LIST1_SOURCE src/playground/list/v1/list_v1.c)
-# set(LIB_LIST2_SOURCE src/playground/list/v2/list_v2.c)
-set(TESTS_SRC_VM_V1 tests/vm/v1/test_vm_v1.c)
-
-# set(LIB_VM2_SOURCE src/vm/v2/vm_v2.c)
-# set(LIB_HASHTABLE1_SOURCE src/playground/hashtable/v1/hashtable_v1.c)
-# set(LIB_HASHTABLE2_SOURCE src/playground/hashtable/v2/hashtable_v2.c)
-# set(LIB_STANDARD_SOURCE src/list/v1/list_v1.c)
-# set(LIB_LIGHT_SOURCE src/list-light/code.c)
-set(LIB_MICRO_SOURCE src/list-micro/code.c)
-# set(LIB_ALLOC_SOURCE src/list-alloc/code.c)
-# set(LIB_EXPERIMENTAL_SOURCE src/list-experimental/code.c)
-# set(LIB_CLASS1_SOURCE src/playground/class/v1/class_v1.c)
-# set(LIB_CLASS2_SOURCE src/playground/class/v2/class_v2.c)
-# set(LIB_MEMORY1_SOURCE
-#     src/playground/memory/v1/memory_v1.c 
-#     src/playground/memory/v2/memory_v2.c
-#     src/playground/memory/v3/memory_v3.c)
-# set(LIB_MEMORY2_SOURCE 
-#     src/playground/memory/v4/memory_v4.c)
-# set(LIB_MEMORY3_SOURCE
-#     src/playground/memory/v5/memory_v5.c)
-# set(LIB_MEMORY4_SOURCE
-#     src/playground/memory/v6/memory_v6.c)
-# set(LIB_BRAIN_SOURCE src/playground/brain/brain.c)
-set(LIB_POINTER1_SOURCE
-    src/vm/v1/pointer/pointer_v1.c)
-set(LIB_TYPES1_SOURCE
-    src/vm/v1/system/types_v1.c)
-# set(LIB_POINTER2_SOURCE src/pointer/v2/pointer_v2.c)
-# set(LIB_MEMORY_LIST1_SOURCE src/playground/memory/list/v1/memory_list_v1.c)
-# set(LIB_MEMORY_LIST2_SOURCE src/playground/memory/list/v2/memory_list_v2.c)
-# set(LIB_MEMORY_LIST3_SOURCE src/playground/memory/list/v3/memory_list_v3.c)
-# set(LIB_MEMORY_REF1_SOURCE src/memory/v1/ref_v1.c)
-# set(LIB_MEMORY_REF2_SOURCE src/memory/v2/ref_v2.c)
-# set(LIB_MEMORY_REF3_SOURCE src/memory/v3/ref_v3.c)
-# set(LIB_STD_DATA1_SOURCE src/pointer/types/data/v1/data_v1.c)
-# set(LIB_STD_USER1_SOURCE src/pointer/types/user/v1/user_v1.c)
-# set(LIB_STD_LIST1_SOURCE src/pointer/types/list/v1/list_v1.c)
-# set(LIB_STD_FILE1_SOURCE src/pointer/types/file/v1/file_v1.c)
-# set(LIB_STD_STRING1_SOURCE src/pointer/types/string/v1/string_v1.c)
-# set(LIB_STD_STRING_POINTER1_SOURCE src/pointer/types/string_pointer/v1/string_pointer_v1.c)
-# set(LIB_STD_OBJECT1_SOURCE src/pointer/types/object/v1/object_v1.c)
-# set(LIB_STD_OS1_SOURCE src/pointer/os/v1/os_v1.c)
 set(LIB_STD_TYPES1_SOURCE
+    src/vm/v1/options/options_v1.c
     src/vm/v1/os/os_v1.c
     src/vm/v1/pointer/pointer_v1.c
-    src/vm/v1/virtual/virtual_v1.c
+    src/vm/v1/system/types_v1.c
     src/vm/v1/types/data/data_v1.c
     src/vm/v1/types/file/file_v1.c
     src/vm/v1/types/list/list_v1.c
     src/vm/v1/types/object/object_v1.c
     src/vm/v1/types/string/string_v1.c
     src/vm/v1/types/string_pointer/string_pointer_v1.c
-    src/vm/v1/types/user/user_v1.c)
+    src/vm/v1/types/user/user_v1.c
+    src/vm/v1/virtual/virtual_v1.c)
 
-# set(LIB_LINKED_LIST_SOURCE
-#     src/stl/linked_list.c
-#     src/stl/linked_list_enumerator.c
-#     src/stl/linked_list_static_enumerator.c)
-
-# # test
-# set(TEST_POINTER_SOURCE tests/test-pointer.c)
-# set(TEST_HASHES_SOURCE tests/test-hashes.c)
-# set(TEST_LINKED_LIST_SOURCE tests/main-linked-list.c)
-# set(TEST_LINKED_LIST_STATIC_ENUMERATOR_SOURCE tests/main-linked-list-static-enumerator.c)
-
-set(TESTS_SRC_LIST_MICRO tests/vm/v1/test_list-micro.c)
+set(TESTS_SRC_LIST tests/vm/v1/test_list.c)
 set(TESTS_SRC_POINTER tests/vm/v1/test_pointer.c)
 set(TESTS_SRC_VM_V1 tests/vm/v1/test_vm_v1.c)
-
-# # main
-# set(MAIN_STANDARD_SOURCE tests/main-default.c)
-# set(MAIN_LIGHT_SOURCE tests/main-light.c ${LIB_LIGHT_SOURCE})
-# set(MAIN_MICRO_SOURCE tests/main-micro.c)
-# set(MAIN_ALLOC_SOURCE tests/main-alloc.c)
-# set(MAIN_EXPERIMENTAL_SOURCE tests/main-experimental.c)
-# set(MAIN_PLAYGROUND1_SOURCE tests/v1/main-playground_v1.c ${LIB_CLASS1_SOURCE})
-# set(MAIN_PLAYGROUND2_SOURCE tests/v2/main-playground_v2.c ${LIB_CLASS2_SOURCE})
-# set(MAIN_MEMORY_SOURCE tests/main-memory.c ${LIB_MEMORY1_SOURCE})
-# set(MAIN_MEMORY3_SOURCE tests/v3/main-memory_v3.c ${LIB_MEMORY3_SOURCE})
-# set(MAIN_MEMORY4_SOURCE tests/v4/main-memory_v4.c ${LIB_MEMORY4_SOURCE})
-# set(MAIN_BRAIN1_SOURCE tests/v1/main-brain_v1.c)
-# set(MAIN_BRAIN2_SOURCE tests/v2/main-brain_v2.c)
-# set(MAIN_POINTER1_SOURCE tests/v1/main-pointer_v1.c)
-# set(MAIN_POINTER2_SOURCE tests/v2/main-pointer_v2.c)
-# set(MAIN_HASHTABLE1_SOURCE tests/v1/main-hashtable_v1.c)
-# set(MAIN_HASHTABLE2_SOURCE tests/v2/main-hashtable_v2.c)
-# set(MAIN_VM1_SOURCE tests/v1/main-vm1.c)
-# set(MAIN_VM2_SOURCE tests/v2/main-vm2.c)
+set(TESTS_SRC_VM_V1 tests/vm/v1/test_vm_v1.c)
 set(MAIN_TESTS_VM1_SOURCE tests/vm/v1/main-tests_v1.c)
-# set(MAIN_TESTS_VM2_SOURCE tests/v2/main-tests_v2.c)
-
-# zen
-# set(ZEN_SOURCE zen/zen.c)
 
 include_directories(src)
 
-add_library(list-common STATIC ${LIB_COMMON_SOURCE})
-add_library(list-micro STATIC ${LIB_MICRO_SOURCE})
-add_library(ctypes SHARED
-    ${LIB_COMMON_SOURCE}
-    ${LIB_MICRO_SOURCE}
-    ${LIB_VM1_SOURCE}
-    ${LIB_STD_TYPES1_SOURCE}
-    ${LIB_POINTER1_SOURCE}
-    ${LIB_TYPES1_SOURCE})
+add_library(cmemory SHARED ${LIB_COMMON_SOURCE})
+add_library(clist SHARED ${LIB_LIST_SOURCE})
+add_library(ctypes SHARED ${LIB_STD_TYPES1_SOURCE})
 
 # test
 add_library(tests-vm-v1 STATIC 
-    ${TESTS_SRC_LIST_MICRO}
+    ${TESTS_SRC_LIST}
     ${TESTS_SRC_POINTER}
     ${TESTS_SRC_VM_V1})
 
+# main 
 add_executable(main-tests-vm1 ${MAIN_TESTS_VM1_SOURCE})
 
 # test
-target_link_libraries(main-tests-vm1 PRIVATE list-micro tests-vm-v1 ctypes)
+target_link_libraries(tests-vm-v1 PRIVATE cmemory clist ctypes)
+
+# main
+target_link_libraries(main-tests-vm1 PRIVATE cmemory clist ctypes tests-vm-v1)
 
 configure_file(all_english_words.txt ${CMAKE_BINARY_DIR}/all_english_words.txt COPYONLY)
 configure_file(file.txt ${CMAKE_BINARY_DIR}/file.txt COPYONLY)
@@ -389,6 +311,15 @@ FILE(WRITE ${CMAKE_BINARY_DIR}/input-substrings.txt
     "as\n"
 )
 
+execute_process(COMMAND git rev-parse HEAD OUTPUT_VARIABLE GIT_COMMIT_HASH)
+execute_process(COMMAND git log -n 1 --pretty=format:%at OUTPUT_VARIABLE UNIX_TIMESTAMP)
+string(REGEX REPLACE "\n" "" GIT_COMMIT_HASH "${GIT_COMMIT_HASH}")
+string(REGEX REPLACE "\n" "" UNIX_TIMESTAMP "${UNIX_TIMESTAMP}")
+file(WRITE ${CMAKE_SOURCE_DIR}/src/version.h 
+    "#define GIT_COMMIT_HASH \"" ${GIT_COMMIT_HASH} "\"\n"
+    "#define UNIX_TIMESTAMP " ${UNIX_TIMESTAMP} "\n"
+)
+
 if(TARGETS)
 
     get_property(main_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
@@ -397,7 +328,7 @@ if(TARGETS)
 
     string(REGEX REPLACE ";" " " main_target_names "${main_target_names}")
 
-    FILE(WRITE ${CMAKE_BINARY_DIR}/targets.txt
+    file(WRITE ${CMAKE_BINARY_DIR}/targets.txt
         "${main_target_names}"
     )
 

@@ -1,62 +1,43 @@
-/*
- *
- * Russian's IP Protection License
- *
- * Copyright (c) 2023 Artur Mustafin
- *
- * Permission is hereby granted, free of charge, to any person with citizenship
- * and location in Russia including Crimea and all occupations obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- *
- * For the rest of the world it is an order to pay royalties by agreement to the
- * author of the code base for ability to use any part of the project for any
- * purpouse including but not limited to the creative ideas or technologies are
- * being used in this owned intellectual property.
- *
- * It is strictly prohibited to use this code base or any part of it for any purpouse
- * including prohibiting or restricive purpouses against Russians for any EU citizens
- * or other person with USA citizenship, origin or background including work permit
- * or locations from selected territories or any territory or any other country except
- * Russia considered as breaking basic human rights, freedom of speesh or involved in
- * acts of terrorism in a territory owned, occupied or managed by another country.
+/*-*-coding:utf-8 -*-
+ * Auto updated?
+ *   Yes
+ * Created:
+ *   11 December 2023 at 9:06:14 GMT+3
+ * Modified:
+ *   11 December 2023 at 9:15:15 GMT+3
  *
  */
-#include "common/memory.h"
-#include "list-micro/data.h"
+/*
+    Copyright (C) 2022-2047 Artur Mustafin (artur.mustafin@gmail.com)
 
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+#include "vm/v1/types/file/file_v1.h"
 #include "vm/v1/pointer/pointer_v1.h"
-#include "vm/v1/system/types_v1.h"
+#include "vm/v1/types/data/data_v1.h"
 #include "vm/v1/virtual/virtual_v1.h"
+#include "vm/v1/vm_v1.h"
+#include "vm/vm_type.h"
 
 #define DEFAULT_SIZE 0x100
 
 static const enum type id = TYPE_FILE;
 
-/* api */
-const struct file_methods file_methods_definition;
-
 #ifndef ATTRIBUTE
 void file_init(void);
 #endif
-
-/* definition */
-static const struct vm_type type_definition;
-static const struct vm_type* type = &type_definition;
 
 /* internal */
 static u64 file_alloc(u64 file_path_ptr, u64 mode_ptr);
@@ -79,32 +60,32 @@ static u64 file_alloc(u64 file_path, u64 mode) {
     if (mode == 0) {
         return 0;
     }
-    const struct pointer* file_path_ptr = virtual->read_type(file_path, TYPE_STRING);
+    const struct pointer* file_path_ptr = virtual_v1->read_type(file_path, TYPE_STRING);
     if (file_path_ptr == 0) {
         return 0;
     }
-    const struct pointer* mode_ptr = virtual->read_type(mode, TYPE_STRING);
+    const struct pointer* mode_ptr = virtual_v1->read_type(mode, TYPE_STRING);
     if (mode_ptr == 0) {
         return 0;
     }
-    const char* file_path_data = pointer->read(file_path_ptr);
-    const char* mode_data = pointer->read(mode_ptr);
+    const char* file_path_data = pointer_v1->read(file_path_ptr);
+    const char* mode_data = pointer_v1->read(mode_ptr);
     FILE* f = fopen(file_path_data, mode_data); /* NOLINT */
     if (f == 0) {
         return 0;
     }
-    struct pointer* f_ptr = pointer->alloc(sizeof(struct file_handler), id);
-    struct file_handler* handler = pointer->read(f_ptr);
+    struct pointer* f_ptr = pointer_v1->alloc(sizeof(struct file_handler), id);
+    struct file_handler* handler = pointer_v1->read(f_ptr);
     handler->file = f;
 #ifdef USE_MEMORY_DEBUG_INFO
-    handler->path = pointer->read(file_path_ptr);
+    handler->path = pointer_v1->read(file_path_ptr);
 #endif
-    u64 data_ptr = virtual->alloc(f_ptr);
+    u64 data_ptr = virtual_v1->alloc(f_ptr);
     return data_ptr;
 }
 
 static void file_free(u64 ptr) {
-    struct pointer* data_ptr = virtual->read_type(ptr, id);
+    struct pointer* data_ptr = virtual_v1->read_type(ptr, id);
     if (data_ptr == 0) {
         return;
     }
@@ -112,42 +93,42 @@ static void file_free(u64 ptr) {
 }
 
 static void file_vm_free(struct pointer* ptr) {
-    struct file_handler* handler = pointer->read(ptr);
+    struct file_handler* handler = pointer_v1->read(ptr);
     if (handler->file != 0) {
         fclose(handler->file);
         handler->file = 0;
     }
-    pointer->release(ptr);
+    pointer_v1->release(ptr);
 }
 
 static u64 file_data(u64 ptr) {
-    const struct pointer* data_ptr = virtual->read_type(ptr, id);
+    const struct pointer* data_ptr = virtual_v1->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
-    struct file_handler* handler = pointer->read(data_ptr);
+    struct file_handler* handler = pointer_v1->read(data_ptr);
     FILE* f = handler->file;
     fseek(f, 0, SEEK_END); /* NOLINT */
     u64 size = (u64)ftell(f);
     fseek(f, 0, SEEK_SET);
     u64 data_size = size + 1;
-    u64 virtual_data = types->data->alloc(data_size);
-    void* file_data = types->data->unsafe(virtual_data);
+    u64 virtual_data = type_data_v1->alloc(data_size);
+    void* file_data = type_data_v1->unsafe(virtual_data);
     fread(file_data, 1, size, handler->file);
     return virtual_data;
 }
 
-static const struct vm_type type_definition = {
+static const struct vm_type type = {
     .free = file_vm_free
 };
 
 static void INIT init(void) {
-    pointer->register_type(id, type);
+    pointer_v1->register_type(id, &type);
 }
 
 /* public */
 /*! definition (initialization) of file_methods structure */
-const struct file_methods file_methods_definition = {
+const struct file_methods_v1 file_methods_definition_v1 = {
     .alloc = file_alloc,
     .data = file_data,
     .free = file_free

@@ -1,41 +1,29 @@
-/*
- *
- * Russian's IP Protection License
- *
- * Copyright (c) 2023 Artur Mustafin
- *
- * Permission is hereby granted, free of charge, to any person with citizenship
- * and location in Russia including Crimea and all occupations obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- *
- * For the rest of the world it is an order to pay royalties by agreement to the
- * author of the code base for ability to use any part of the project for any
- * purpouse including but not limited to the creative ideas or technologies are
- * being used in this owned intellectual property.
- *
- * It is strictly prohibited to use this code base or any part of it for any purpouse
- * including prohibiting or restricive purpouses against Russians for any EU citizens
- * or other person with USA citizenship, origin or background including work permit
- * or locations from selected territories or any territory or any other country except
- * Russia considered as breaking basic human rights, freedom of speesh or involved in
- * acts of terrorism in a territory owned, occupied or managed by another country.
+/*-*-coding:utf-8 -*-
+ * Auto updated?
+ *   Yes
+ * Created:
+ *   11 December 2023 at 9:06:14 GMT+3
+ * Modified:
+ *   11 December 2023 at 9:16:31 GMT+3
  *
  */
+/*
+    Copyright (C) 2022-2047 Artur Mustafin (artur.mustafin@gmail.com)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 #include "../../test.h"
 
 #include "test_vm_v1.h"
@@ -54,14 +42,14 @@ typedef struct test_data {
 RX_SET_UP(test_set_up) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct vm** ctx = &rx->ctx;
-    virtual->init(ctx, 0);
+    virtual_v1->init(ctx, 0);
     return RX_SUCCESS;
 }
 
 RX_TEAR_DOWN(test_tear_down) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     struct vm** ctx = &rx->ctx;
-    virtual->destroy(ctx);
+    virtual_v1->destroy(ctx);
 }
 
 /* Define the fixture. */
@@ -69,14 +57,14 @@ RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tea
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_read_type_0, .fixture = test_fixture) {
-    struct pointer* ptr = virtual->read_type(0, TYPE_DATA);
+    struct pointer* ptr = virtual_v1->read_type(0, TYPE_DATA);
     RX_ASSERT(ptr == 0);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_destroy_0, .fixture = test_fixture) {
     struct vm** ptr = 0;
-    virtual->destroy(ptr);
+    virtual_v1->destroy(ptr);
     RX_ASSERT(ptr == 0);
 }
 
@@ -84,68 +72,68 @@ RX_TEST_CASE(tests, test_vm_destroy_0, .fixture = test_fixture) {
 RX_TEST_CASE(tests, test_vm_destroy_null, .fixture = test_fixture) {
     struct vm* vm_ptr = 0;
     struct vm** ptr = &vm_ptr;
-    virtual->destroy(ptr);
+    virtual_v1->destroy(ptr);
     RX_ASSERT(vm_ptr == 0);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_alloc_user, .fixture = test_fixture) {
-    struct pointer* ptr = pointer->alloc(0, TYPE_NULL);
-    u64 virtual_ptr = virtual->alloc(ptr);
-    const struct pointer* vm_ptr = virtual->read(virtual_ptr);
+    struct pointer* ptr = pointer_v1->alloc(0, TYPE_NULL);
+    u64 virtual_ptr = virtual_v1->alloc(ptr);
+    const struct pointer* vm_ptr = virtual_v1->read(virtual_ptr);
     RX_ASSERT(ptr != 0);
     RX_ASSERT(virtual_ptr != 0);
     RX_ASSERT(vm_ptr == ptr);
-    pointer->release(ptr);
+    pointer_v1->release(ptr);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_read_data, .fixture = test_fixture) {
-    struct pointer* ptr = pointer->alloc(0, TYPE_DATA);
-    u64 virtual_ptr = virtual->alloc(ptr);
-    const struct pointer* vm_ptr = virtual->read(virtual_ptr);
+    struct pointer* ptr = pointer_v1->alloc(0, TYPE_DATA);
+    u64 virtual_ptr = virtual_v1->alloc(ptr);
+    const struct pointer* vm_ptr = virtual_v1->read(virtual_ptr);
     RX_ASSERT(ptr != 0);
     RX_ASSERT(virtual_ptr != 0);
     RX_ASSERT(vm_ptr == ptr);
-    pointer->release(ptr);
+    pointer_v1->release(ptr);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_read_1, .fixture = test_fixture) {
-    struct pointer* ptr = pointer->alloc(0, TYPE_DATA);
-    u64 virtual_ptr = virtual->alloc(ptr);
-    const struct pointer* vm_ptr = virtual->read(1);
+    struct pointer* ptr = pointer_v1->alloc(0, TYPE_DATA);
+    u64 virtual_ptr = virtual_v1->alloc(ptr);
+    const struct pointer* vm_ptr = virtual_v1->read(1);
     RX_ASSERT(ptr != 0);
     RX_ASSERT(virtual_ptr != 0);
     RX_ASSERT(vm_ptr == ptr);
-    pointer->release(ptr);
+    pointer_v1->release(ptr);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_read_9, .fixture = test_fixture) {
-    struct pointer* ptr = pointer->alloc(0, TYPE_DATA);
-    u64 virtual_ptr = virtual->alloc(ptr);
-    const struct pointer* vm_ptr = virtual->read(vm_options->size + 1);
+    struct pointer* ptr = pointer_v1->alloc(0, TYPE_DATA);
+    u64 virtual_ptr = virtual_v1->alloc(ptr);
+    const struct pointer* vm_ptr = virtual_v1->read(vm_options_v1->size + 1);
     RX_ASSERT(ptr != 0);
     RX_ASSERT(virtual_ptr != 0);
     RX_ASSERT(vm_ptr == 0);
-    pointer->release(ptr);
+    pointer_v1->release(ptr);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_virtual_free_0, .fixture = test_fixture) {
-    pointer->release(0);
+    pointer_v1->release(0);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_free_0, .fixture = test_fixture) {
-    virtual->free(0);
+    virtual_v1->free(0);
     RX_ASSERT(0 == 0);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_read_0, .fixture = test_fixture) {
-    const struct pointer* ptr = virtual->read(0);
+    const struct pointer* ptr = virtual_v1->read(0);
     RX_ASSERT(ptr == 0);
 }
 
@@ -156,36 +144,36 @@ RX_TEST_CASE(tests, test_vm_init_0, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_read_type_1, .fixture = test_fixture) {
-    struct pointer* ptr = virtual->read_type(1, TYPE_DATA);
+    struct pointer* ptr = virtual_v1->read_type(1, TYPE_DATA);
     RX_ASSERT(ptr == 0);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_write_0, .fixture = test_fixture) {
-    u64 ptr = virtual->alloc(0);
+    u64 ptr = virtual_v1->alloc(0);
     RX_ASSERT(ptr == 0);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_read_type_write_1_read_1, .fixture = test_fixture) {
-    struct pointer* ptr = pointer->alloc(0, TYPE_DATA);
-    u64 virtual_ptr = virtual->alloc(ptr);
-    struct pointer* vm_ptr = virtual->read_type(virtual_ptr, TYPE_DATA);
+    struct pointer* ptr = pointer_v1->alloc(0, TYPE_DATA);
+    u64 virtual_ptr = virtual_v1->alloc(ptr);
+    struct pointer* vm_ptr = virtual_v1->read_type(virtual_ptr, TYPE_DATA);
     RX_ASSERT(ptr != 0);
     RX_ASSERT(virtual_ptr != 0);
     RX_ASSERT(vm_ptr == ptr);
-    pointer->release(ptr);
+    pointer_v1->release(ptr);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_read_type_write_1_read_2, .fixture = test_fixture) {
-    struct pointer* ptr = pointer->alloc(0, TYPE_DATA);
-    u64 virtual_ptr = virtual->alloc(ptr);
-    struct pointer* vm_ptr = virtual->read_type(virtual_ptr + 1, TYPE_DATA);
+    struct pointer* ptr = pointer_v1->alloc(0, TYPE_DATA);
+    u64 virtual_ptr = virtual_v1->alloc(ptr);
+    struct pointer* vm_ptr = virtual_v1->read_type(virtual_ptr + 1, TYPE_DATA);
     RX_ASSERT(ptr != 0);
     RX_ASSERT(virtual_ptr != 0);
     RX_ASSERT(vm_ptr == 0);
-    pointer->release(ptr);
+    pointer_v1->release(ptr);
 }
 
 /* -------------------------------------------------------- *
@@ -213,55 +201,55 @@ RX_FIXTURE(test_pointer_fixture, TEST_POINTER_DATA, .set_up = test_pointer_set_u
 
 /* test init */
 RX_TEST_CASE(tests, test_list, .fixture = test_pointer_fixture) {
-    pointer->init(8);
-    u64 list_ptr = types->list->alloc();
-    types->list->free(list_ptr);
-    pointer->gc();
-    pointer->destroy();
+    pointer_v1->init(8);
+    u64 list_ptr = type_list_v1->alloc();
+    type_list_v1->free(list_ptr);
+    pointer_v1->gc();
+    pointer_v1->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_list_user, .fixture = test_pointer_fixture) {
-    pointer->init(8);
-    u64 list_ptr = types->list->alloc();
-    u64 user_ptr = types->user->alloc();
-    types->list->push(list_ptr, user_ptr);
-    types->user->free(user_ptr);
-    types->list->free(list_ptr);
-    pointer->gc();
-    pointer->destroy();
+    pointer_v1->init(8);
+    u64 list_ptr = type_list_v1->alloc();
+    u64 user_ptr = type_user_v1->alloc();
+    type_list_v1->push(list_ptr, user_ptr);
+    type_user_v1->free(user_ptr);
+    type_list_v1->free(list_ptr);
+    pointer_v1->gc();
+    pointer_v1->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_list_data, .fixture = test_pointer_fixture) {
-    pointer->init(8);
-    u64 list_ptr = types->list->alloc();
-    u64 data_ptr = types->data->alloc(1024);
-    types->list->push(list_ptr, data_ptr);
-    types->data->free(data_ptr);
-    types->list->free(list_ptr);
-    pointer->gc();
-    pointer->destroy();
+    pointer_v1->init(8);
+    u64 list_ptr = type_list_v1->alloc();
+    u64 data_ptr = type_data_v1->alloc(1024);
+    type_list_v1->push(list_ptr, data_ptr);
+    type_data_v1->free(data_ptr);
+    type_list_v1->free(list_ptr);
+    pointer_v1->gc();
+    pointer_v1->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_list_free_user_free, .fixture = test_pointer_fixture) {
-    pointer->init(8);
-    u64 list_ptr = types->list->alloc();
-    u64 user_ptr = types->user->alloc();
-    types->list->push(list_ptr, user_ptr);
-    types->list->free(list_ptr);
-    types->user->free(user_ptr);
-    pointer->gc();
-    pointer->destroy();
+    pointer_v1->init(8);
+    u64 list_ptr = type_list_v1->alloc();
+    u64 user_ptr = type_user_v1->alloc();
+    type_list_v1->push(list_ptr, user_ptr);
+    type_list_v1->free(list_ptr);
+    type_user_v1->free(user_ptr);
+    pointer_v1->gc();
+    pointer_v1->destroy();
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_user_free_0, .fixture = test_pointer_fixture) {
-    pointer->init(8);
-    types->user->free(0);
-    pointer->gc();
-    pointer->destroy();
+    pointer_v1->init(8);
+    type_user_v1->free(0);
+    pointer_v1->gc();
+    pointer_v1->destroy();
 }
 
 static int run(void) {
@@ -277,6 +265,6 @@ static int run(void) {
     return result;
 }
 
-const struct test_suite vm_v1_test_suite_definition = {
+const struct test_suite vm_v1_test_suite_definition_v1 = {
     .run = run
 };
