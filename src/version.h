@@ -1,2 +1,0 @@
-#define GIT_COMMIT_HASH ""
-#define UNIX_TIMESTAMP 0

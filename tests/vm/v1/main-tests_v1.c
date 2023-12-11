@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   11 December 2023 at 9:16:32 GMT+3
+ *   11 December 2023 at 20:09:48 GMT+3
  *
  */
 /*
@@ -46,9 +46,11 @@ typedef struct test_data {
     void* ptr;
 }* TEST_DATA;
 
+const char* commit = GIT_COMMIT_HASH;
+
 int main(int argc, char** argv) {
 #if defined(GIT_COMMIT_HASH)
-    printf(GIT_COMMIT_HASH);
+    printf("commit: %s\n", commit);
 #endif
 #ifdef USE_MEMORY_DEBUG_INFO
 #if defined(VM_GLOBAL_DEBUG_INFO)
