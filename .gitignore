@@ -77,4 +77,5 @@ bazel-*
 .vscode/settings.local.json
 src/compile_commands.json
 Testing
+
 src/version.h
