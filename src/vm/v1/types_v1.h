@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   11 December 2023 at 9:16:31 GMT+3
+ *   12 December 2023 at 8:36:28 GMT+3
  *
  */
 /*
@@ -23,10 +23,27 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+#ifndef _POINTER_TYPES_V1_H_
+#define _POINTER_TYPES_V1_H_
 
-#ifndef _TESTS_SRC_VM_V1_H_
-#define _TESTS_SRC_VM_V1_H_
+#include "vm/v1/types/data/data_v1.h"
+#include "vm/v1/types/file/file_v1.h"
+#include "vm/v1/types/list/list_v1.h"
+#include "vm/v1/types/object/object_v1.h"
+#include "vm/v1/types/string/string_v1.h"
+#include "vm/v1/types/string_pointer/string_pointer_v1.h"
+#include "vm/v1/types/user/user_v1.h"
 
-#include "common/memory_v1.h"
+typedef struct API(type_methods) type_methods;
 
-#endif /* _TESTS_SRC_VM_V1_H_ */
+struct API(type_methods) {
+    const struct data_methods_v1* data;
+    const struct file_methods_v1* file;
+    const struct list_methods_v1* list;
+    const object_methods* object;
+    const string_methods* string;
+    const struct string_pointer_methods_v1* string_pointer;
+    const struct user_methods_v1* user;
+};
+
+#endif /* _POINTER_TYPES_V1_H_ */

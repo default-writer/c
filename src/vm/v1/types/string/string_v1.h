@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   11 December 2023 at 9:15:15 GMT+3
+ *   12 December 2023 at 8:56:07 GMT+3
  *
  */
 /*
@@ -27,13 +27,16 @@
 #ifndef _POINTER_TYPES_STRING_H_
 #define _POINTER_TYPES_STRING_H_
 
-#include "std/common.h"
+#include "std/api.h"
+#include "std/data.h"
 
 /*! @file string_v1.h
  *  @brief C API / string
  */
 
-struct string_methods_v1 {
+typedef struct API(string_methods) string_methods;
+
+struct API(string_methods) {
     void (*free)(u64 ptr);
     u64 (*copy)(u64 ptr);
     void (*strcpy)(u64 dest, u64 src);

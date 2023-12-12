@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   11 December 2023 at 9:15:15 GMT+3
+ *   12 December 2023 at 22:04:33 GMT+3
  *
  */
 /*
@@ -26,9 +26,12 @@
 
 #include "list/list_v1.h"
 
+#include "std/macros.h"
 #include "vm/v1/pointer/pointer_v1.h"
 #include "vm/v1/types/list/list_v1.h"
 #include "vm/v1/virtual/virtual_v1.h"
+#include "vm/v1/vm_type.h"
+#include "vm/v1/vm_v1.h"
 #include "vm/vm_type.h"
 
 #define DEFAULT_SIZE 0x100

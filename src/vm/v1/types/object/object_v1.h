@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   11 December 2023 at 9:15:15 GMT+3
+ *   12 December 2023 at 8:46:54 GMT+3
  *
  */
 /*
@@ -27,13 +27,16 @@
 #ifndef _POINTER_TYPES_OBJECT_H_
 #define _POINTER_TYPES_OBJECT_H_
 
-#include "std/common.h"
+#include "std/api.h"
+#include "std/data.h"
 
 /*! @file object_v1.h
  *  @brief C API / object
  */
 
-struct object_methods_v1 {
+typedef struct API(object_methods) object_methods;
+
+struct API(object_methods) {
     u64 (*alloc)(u64 size);
     void (*free)(u64 ptr);
     void* (*unsafe)(u64 ptr);

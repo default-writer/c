@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   11 December 2023 at 9:15:15 GMT+3
+ *   12 December 2023 at 23:38:35 GMT+3
  *
  */
 /*
@@ -24,10 +24,25 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _TESTS_SRC_LIST_H_
-#define _TESTS_SRC_LIST_H_
+#ifndef _STD_API_H_
+#define _STD_API_H_
 
-#include "../../test.h"
-#include "common/memory_v1.h"
+#include "version.h"
 
-#endif /* _TESTS_SRC_LIST_H_ */
+#define VERSION 1
+#define MAJOR 0
+#define MINOR 0
+#define REVISION 0
+
+#define VM_QUOTE(X) #X
+#define VM_EXPAND(X) X
+#define VM_CONCAT_(A, B) A##B
+#define VM_CONCAT(A, B) VM_CONCAT_(A, B)
+#define VM_STRINGIFY_(X) #X
+#define VM_STRINGIFY(X) VM_STRINGIFY_(X)
+
+#define PRIVATE_API(x) VM_CONCAT(x, GIT_COMMIT_HASH)
+#define API_VERSION VM_EXPAND(VM_CONCAT(, VM_STRINGIFY(VM_CONCAT(VERSION, VM_CONCAT(., VM_CONCAT(MAJOR, VM_CONCAT(., VM_CONCAT(MINOR, VM_CONCAT(., REVISION)))))))))
+#define API(x) VM_CONCAT(x, VM_CONCAT(_, VM_CONCAT(v, VM_CONCAT(VERSION, VM_CONCAT(_, VM_CONCAT(MAJOR, VM_CONCAT(_, VM_CONCAT(MINOR, VM_CONCAT(_, REVISION)))))))))
+
+#endif /* _STD_API_H_ */

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   11 December 2023 at 9:16:01 GMT+3
+ *   12 December 2023 at 23:37:41 GMT+3
  *
  */
 /*
@@ -25,8 +25,12 @@
 */
 
 #include "common/memory_v1.h"
+#include "std/compile.h"
 #include "std/data.h"
+
+#ifdef USE_MEMORY_DEBUG_INFO
 #include <stdio.h>
+#endif
 #include <stdlib.h>
 
 static u64 total_alloc = 0;

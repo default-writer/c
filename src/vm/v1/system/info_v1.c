@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   11 December 2023 at 9:16:31 GMT+3
+ *   12 December 2023 at 7:42:48 GMT+3
  *
  */
 /*
@@ -24,26 +24,12 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _STD_ENUMS_H_
-#define _STD_ENUMS_H_
+#include "info_v1.h"
+#include "std/api.h"
 
-enum type {
-    /* value used for ephemeral type - null */
-    TYPE_NULL = 0,
-    /* value used for pointer type - ref */
-    TYPE_DATA = 1,
-    /* value used for string type - string */
-    TYPE_STRING = 2,
-    /* value used for string ref type - string ref */
-    TYPE_STRING_POINTER = 3,
-    /* value used for file type - file */
-    TYPE_FILE = 4,
-    /* value used for list type - list */
-    TYPE_LIST = 5,
-    /* value used for object type - object */
-    TYPE_OBJECT = 6,
-    /* value used for user type - user (id: +0, +1, +2, +3, ...) */
-    TYPE_USER = 7
+/* public */
+const struct info_v1 API(info_definition) = {
+    .timestamp = UNIX_TIMESTAMP,
+    .commit = GIT_COMMIT_HASH,
+    .version = API_VERSION
 };
-
-#endif /* _STD_ENUMS_H_ */

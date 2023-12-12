@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   11 December 2023 at 9:15:15 GMT+3
+ *   12 December 2023 at 16:08:45 GMT+3
  *
  */
 /*
@@ -23,27 +23,27 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#ifndef _POINTER_TYPES_V1_H_
-#define _POINTER_TYPES_V1_H_
 
-#include "../vm_v1.h"
+#ifndef _VM_V1_VM_TYPE_H_
+#define _VM_V1_VM_TYPE_H_
 
-#include "vm/v1/types/data/data_v1.h"
-#include "vm/v1/types/file/file_v1.h"
-#include "vm/v1/types/list/list_v1.h"
-#include "vm/v1/types/object/object_v1.h"
-#include "vm/v1/types/string/string_v1.h"
-#include "vm/v1/types/string_pointer/string_pointer_v1.h"
-#include "vm/v1/types/user/user_v1.h"
-
-struct types_v1 {
-    const struct data_methods_v1* data;
-    const struct file_methods_v1* file;
-    const struct list_methods_v1* list;
-    const struct object_methods_v1* object;
-    const struct string_methods_v1* string;
-    const struct string_pointer_methods_v1* string_pointer;
-    const struct user_methods_v1* user;
+enum type {
+    /* value used for ephemeral type - null */
+    TYPE_NULL = 0,
+    /* value used for pointer type - ref */
+    TYPE_DATA = 1,
+    /* value used for string type - string */
+    TYPE_STRING = 2,
+    /* value used for string ref type - string ref */
+    TYPE_STRING_POINTER = 3,
+    /* value used for file type - file */
+    TYPE_FILE = 4,
+    /* value used for list type - list */
+    TYPE_LIST = 5,
+    /* value used for object type - object */
+    TYPE_OBJECT = 6,
+    /* value used for user type - user (id: +0, +1, +2, +3, ...) */
+    TYPE_USER = 7
 };
 
-#endif /* _POINTER_TYPES_V1_H_ */
+#endif /* _VM_V1_VM_TYPE_H_ */

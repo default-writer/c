@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   11 December 2023 at 9:15:15 GMT+3
+ *   12 December 2023 at 23:38:05 GMT+3
  *
  */
 /*
@@ -24,10 +24,13 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "common/memory_v1.h"
-
 #include "pointer_v1.h"
+#include "bits/types/FILE.h"
+#include "common/memory_v1.h"
+#include "std/macros.h"
 #include "vm/v1/virtual/virtual_v1.h"
+#include "vm/v1/vm_type.h"
+#include "vm/v1/vm_v1.h"
 #include "vm/vm_type.h"
 
 #if defined(USE_MEMORY_DEBUG_INFO)
@@ -73,11 +76,6 @@ extern void object_init(void);
 
 static struct vm* vm;
 static struct vm_types* default_types;
-
-/* internal */
-static void pointer_push(u64 ptr);
-static u64 pointer_peek(void);
-static u64 pointer_pop(void);
 
 #if defined(VM_MEMORY_DEBUG_INFO)
 static void pointer_dump(struct pointer* ptr);

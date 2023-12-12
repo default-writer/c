@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   11 December 2023 at 20:09:48 GMT+3
+ *   12 December 2023 at 9:07:46 GMT+3
  *
  */
 /*
@@ -26,19 +26,13 @@
 
 #define RXP_DEBUG_TESTS
 
-#include "../../test.h"
+#include "main-tests_v1.h"
+#include "std/macros.h"
+#include "vm/v1/system/info_v1.h"
+#include "vm/v1/vm_v1.h"
 
-#include "version.h"
-
-/* definition */
-extern const struct test_suite list_micro_test_suite_definition_v1;
-extern const struct test_suite vm_v1_test_suite_definition_v1;
-extern const struct test_suite pointer_test_suite_definition_v1;
-
-/* definition */
-static const struct test_suite* list_micro_tests = &list_micro_test_suite_definition_v1;
-static const struct test_suite* vm_v1_tests = &vm_v1_test_suite_definition_v1;
-static const struct test_suite* pointer_tests = &pointer_test_suite_definition_v1;
+#include <stdio.h>
+#include <time.h>
 
 #define DEFAULT_SIZE 0x100
 
@@ -48,10 +42,26 @@ typedef struct test_data {
 
 const char* commit = GIT_COMMIT_HASH;
 
-int main(int argc, char** argv) {
+static void INIT init() {
 #if defined(GIT_COMMIT_HASH)
-    printf("commit: %s\n", commit);
+    printf("version: v%s\n", info_v1->version);
+    // Replace the timestamp below with your Unix timestamp
+    time_t unixTimestamp = info_v1->timestamp;
+
+    // Convert Unix timestamp to a time structure
+    struct tm* timeinfo;
+    timeinfo = localtime(&unixTimestamp);
+
+    // Format the time structure into a string
+    char buffer[160];
+    strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", timeinfo);
+
+    // Print the formatted string
+    printf("timestamp: %s\n", buffer);
 #endif
+}
+
+int main(int argc, char** argv) {
 #ifdef USE_MEMORY_DEBUG_INFO
 #if defined(VM_GLOBAL_DEBUG_INFO)
     global_statistics();

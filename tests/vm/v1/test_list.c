@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   11 December 2023 at 9:15:15 GMT+3
+ *   12 December 2023 at 23:37:54 GMT+3
  *
  */
 /*
@@ -24,7 +24,10 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "test_list.h"
+#include "../../test.h"
+#include "../.deps/rexo/include/rexo.h"
+#include "list/list_v1.h"
+#include "std/macros.h"
 #include "vm/v1/vm_v1.h"
 
 /* allocates memory pointer for list object */

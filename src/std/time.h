@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   11 December 2023 at 9:16:31 GMT+3
+ *   12 December 2023 at 9:49:00 GMT+3
  *
  */
 /*
@@ -26,9 +26,6 @@
 
 #ifndef _STD_TIME_H_
 #define _STD_TIME_H_
-
-#include "std/data.h"
-#include <sys/time.h>
 
 #define TIME_INIT(s)      \
     struct timeval s##t1; \

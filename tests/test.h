@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   11 December 2023 at 9:16:31 GMT+3
+ *   12 December 2023 at 8:32:39 GMT+3
  *
  */
 /*
@@ -24,16 +24,10 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _TESTS_COMMON_H_
-#define _TESTS_COMMON_H_
-
-#ifndef _REXO_TESTS_
-#define _REXO_TESTS_
+#ifndef _TESTS_TEST_H_
+#define _TESTS_TEST_H_
 
 #define RXP_DEBUG_TESTS
-
-#include "../.deps/rexo/include/rexo.h"
-#endif
 
 struct test_suite {
     int (*run)(void);
@@ -46,4 +40,4 @@ struct test_suite {
     }                                            \
     int variable = test_run_##variable
 
-#endif /* _TESTS_COMMON_H_ */
+#endif /* _TESTS_TEST_H_ */

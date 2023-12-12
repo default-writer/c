@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   11 December 2023 at 9:15:15 GMT+3
+ *   12 December 2023 at 22:16:34 GMT+3
  *
  */
 /*
@@ -24,11 +24,16 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include "vm/v1/types/object/object_v1.h"
+#include "std/data.h"
+#include "std/macros.h"
 #include "vm/v1/pointer/pointer_v1.h"
 #include "vm/v1/virtual/virtual_v1.h"
+#include "vm/v1/vm_type.h"
+#include "vm/v1/vm_v1.h"
 #include "vm/vm_type.h"
 
-#include "vm/v1/types/object/object_v1.h"
+#include <string.h>
 
 #define DEFAULT_SIZE 0x100
 
@@ -108,7 +113,7 @@ static void INIT init(void) {
 }
 
 /* public */
-const struct object_methods_v1 object_methods_definition_v1 = {
+const object_methods object_methods_definition_v1 = {
     .alloc = object_alloc,
     .free = object_free,
     .load = object_load,

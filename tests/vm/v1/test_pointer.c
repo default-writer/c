@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   11 December 2023 at 9:15:15 GMT+3
+ *   12 December 2023 at 23:35:43 GMT+3
  *
  */
 /*
@@ -27,10 +27,10 @@
 #define RXP_DEBUG_TESTS
 
 #include "../../test.h"
-
+#include "../.deps/rexo/include/rexo.h"
 #include "vm/v1/os/os_v1.h"
 #include "vm/v1/pointer/pointer_v1.h"
-#include "vm/v1/system/types_v1.h"
+#include "vm/v1/vm_v1.h"
 
 #define DEFAULT_SIZE 0x100
 

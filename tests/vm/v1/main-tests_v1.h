@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   11 December 2023 at 9:16:31 GMT+3
+ *   12 December 2023 at 23:37:52 GMT+3
  *
  */
 /*
@@ -24,21 +24,19 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _STD_COMMON_H_
-#define _STD_COMMON_H_
+#ifndef _MAIN_TESTS_V1_H_
+#define _MAIN_TESTS_V1_H_
 
-#include "std/compile.h"
-#include "std/data.h"
-#include "std/errors.h"
-#include "std/headers.h"
-#include "std/macros.h"
-#include "vm/vm_enums.h"
+#include "../../test.h"
 
-struct list_data {
-    /* points to previous node */
-    struct list_data* next;
-    /* data */
-    void* data;
-};
+/* definition */
+extern const struct test_suite list_micro_test_suite_definition_v1;
+extern const struct test_suite vm_v1_test_suite_definition_v1;
+extern const struct test_suite pointer_test_suite_definition_v1;
 
-#endif /* _STD_COMMON_H_ */
+/* definition */
+static const struct test_suite* list_micro_tests = &list_micro_test_suite_definition_v1;
+static const struct test_suite* vm_v1_tests = &vm_v1_test_suite_definition_v1;
+static const struct test_suite* pointer_tests = &pointer_test_suite_definition_v1;
+
+#endif /* _MAIN_TESTS_V1_H_ */

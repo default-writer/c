@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   11 December 2023 at 9:15:15 GMT+3
+ *   12 December 2023 at 22:05:45 GMT+3
  *
  */
 /*
@@ -24,11 +24,13 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include "vm/v1/types/data/data_v1.h"
+#include "std/macros.h"
 #include "vm/v1/pointer/pointer_v1.h"
 #include "vm/v1/virtual/virtual_v1.h"
+#include "vm/v1/vm_type.h"
+#include "vm/v1/vm_v1.h"
 #include "vm/vm_type.h"
-
-#include "vm/v1/types/data/data_v1.h"
 
 #define DEFAULT_SIZE 0x100
 

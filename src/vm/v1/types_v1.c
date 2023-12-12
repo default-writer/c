@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   11 December 2023 at 9:15:15 GMT+3
+ *   12 December 2023 at 8:37:00 GMT+3
  *
  */
 /*
@@ -25,9 +25,11 @@
 */
 
 #include "types_v1.h"
+#include "std/api.h"
+#include "vm/v1/vm_v1.h"
 
 /* public */
-const struct types_v1 types_definition_v1 = {
+const type_methods API(type_methods_definition) = {
     .data = &data_methods_definition_v1,
     .list = &list_methods_definition_v1,
     .file = &file_methods_definition_v1,

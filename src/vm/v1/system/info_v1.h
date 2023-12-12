@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   11 December 2023 at 9:16:32 GMT+3
+ *   12 December 2023 at 7:43:20 GMT+3
  *
  */
 /*
@@ -23,13 +23,15 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+#ifndef _POINTER_INFO_V1_H_
+#define _POINTER_INFO_V1_H_
 
-#ifndef _TESTS_SRC_LIST_MICRO_H_
-#define _TESTS_SRC_LIST_MICRO_H_
+#include "std/data.h"
 
-#include "common/memory_v1.h"
-#include "list/list_v1.h"
+struct info_v1 {
+    const u64 timestamp;
+    const char* commit;
+    const char* version;
+};
 
-#include "../../test.h"
-
-#endif /* _TESTS_SRC_LIST_MICRO_H_ */
+#endif /* _POINTER_INFO_V1_H_ */

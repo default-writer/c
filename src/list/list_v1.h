@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   11 December 2023 at 9:16:31 GMT+3
+ *   12 December 2023 at 21:24:02 GMT+3
  *
  */
 /*
@@ -27,7 +27,14 @@
 #ifndef _LIST_MICRO_DATA_H_
 #define _LIST_MICRO_DATA_H_
 
-#include "std/common.h"
+#include "std/compile.h"
+
+struct list_data {
+    /* points to previous node */
+    struct list_data* next;
+    /* data */
+    void* data;
+};
 
 struct list_v1 {
     /* initialize context */

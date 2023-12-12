@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   11 December 2023 at 9:15:15 GMT+3
+ *   12 December 2023 at 23:37:59 GMT+3
  *
  */
 /*
@@ -27,7 +27,7 @@
 #ifndef _VM_V1_OPTIONS_H_
 #define _VM_V1_OPTIONS_H_
 
-#include "std/common.h"
+#include "std/data.h"
 
 struct vm_options_v1 {
     const u64 size;

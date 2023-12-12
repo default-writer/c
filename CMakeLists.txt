@@ -260,7 +260,8 @@ set(LIB_STD_TYPES1_SOURCE
     src/vm/v1/options/options_v1.c
     src/vm/v1/os/os_v1.c
     src/vm/v1/pointer/pointer_v1.c
-    src/vm/v1/system/types_v1.c
+    src/vm/v1/types_v1.c
+    src/vm/v1/system/info_v1.c
     src/vm/v1/types/data/data_v1.c
     src/vm/v1/types/file/file_v1.c
     src/vm/v1/types/list/list_v1.c

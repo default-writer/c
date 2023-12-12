@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   11 December 2023 at 9:15:15 GMT+3
+ *   12 December 2023 at 22:06:05 GMT+3
  *
  */
 /*
@@ -29,6 +29,7 @@
 
 #include "vm/v1/pointer/pointer_v1.h"
 #include "vm/v1/virtual/virtual_v1.h"
+#include "vm/v1/vm_v1.h"
 
 /* macros */
 #define DEFAULT_SIZE 0x8 /* 8 */
@@ -102,7 +103,9 @@ static struct pointer** vm_alloc_internal(u64* address, struct vm_data** target)
 static void virtual_enumerator_init(void);
 static void virtual_enumerator_destroy(void);
 static void virtual_enumerator_init_internal(struct vm* ptr);
+#if defined(VM_MEMORY_DEBUG_INFO)
 static void virtual_enumerator_destroy_internal(void);
+#endif
 static void** virtual_enumerator_next_internal(void);
 #if defined(VM_ALLOC_DEBUG_INFO)
 static struct pointer* virtual_enumerator_pointer_next_internal(void);

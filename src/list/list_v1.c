@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   11 December 2023 at 9:16:01 GMT+3
+ *   12 December 2023 at 23:37:50 GMT+3
  *
  */
 /*
@@ -28,6 +28,10 @@
 #include "common/memory_v1.h"
 #include "vm/v1/vm_v1.h"
 
+#ifdef USE_MEMORY_DEBUG_INFO
+#include <stdio.h>
+#endif
+
 /* private */
 
 static struct list_data* list_next(struct list_data* ptr);
@@ -44,7 +48,7 @@ static void list_print(struct list_data** current);
 #endif
 
 /* size of a memory block to allocate */
-static const size_t _size = sizeof(struct list_data);
+static const u64 _size = sizeof(struct list_data);
 
 /* implementation */
 
