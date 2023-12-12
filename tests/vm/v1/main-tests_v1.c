@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   12 December 2023 at 9:07:46 GMT+3
+ *   13 December 2023 at 0:49:21 GMT+3
  *
  */
 /*
@@ -24,6 +24,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include <bits/types/time_t.h>
 #define RXP_DEBUG_TESTS
 
 #include "main-tests_v1.h"
@@ -46,11 +47,11 @@ static void INIT init() {
 #if defined(GIT_COMMIT_HASH)
     printf("version: v%s\n", info_v1->version);
     // Replace the timestamp below with your Unix timestamp
-    time_t unixTimestamp = info_v1->timestamp;
+    time_t unix_timestamp = (time_t)info_v1->timestamp;
 
     // Convert Unix timestamp to a time structure
     struct tm* timeinfo;
-    timeinfo = localtime(&unixTimestamp);
+    timeinfo = localtime(&unix_timestamp);
 
     // Format the time structure into a string
     char buffer[160];
