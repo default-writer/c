@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   13 December 2023 at 0:49:21 GMT+3
+ *   January 30, 2024 at 4:56:43 PM GMT+3
  *
  */
 /*
@@ -24,16 +24,15 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include <bits/types/time_t.h>
 #define RXP_DEBUG_TESTS
 
 #include "main-tests_v1.h"
+
 #include "std/macros.h"
+#include "std/headers.h"
+
 #include "vm/v1/system/info_v1.h"
 #include "vm/v1/vm_v1.h"
-
-#include <stdio.h>
-#include <time.h>
 
 #define DEFAULT_SIZE 0x100
 

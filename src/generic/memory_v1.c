@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   12 December 2023 at 23:37:41 GMT+3
+ *   January 30, 2024 at 4:57:49 PM GMT+3
  *
  */
 /*
@@ -24,14 +24,11 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "common/memory_v1.h"
+#include "generic/memory_v1.h"
+
 #include "std/compile.h"
 #include "std/data.h"
-
-#ifdef USE_MEMORY_DEBUG_INFO
-#include <stdio.h>
-#endif
-#include <stdlib.h>
+#include "std/headers.h"
 
 static u64 total_alloc = 0;
 static u64 total_free = 0;
@@ -128,7 +125,7 @@ void global_statistics(void) {
 }
 #endif
 
-const struct memory_v1 memory_definition_v1 = {
+const struct generic_memory_v1 generic_memory_definition_v1 = {
     .alloc = memory_alloc,
     .free = memory_free,
     .realloc = memory_realloc,

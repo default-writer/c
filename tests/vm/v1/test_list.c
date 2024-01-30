@@ -26,8 +26,10 @@
 
 #include "../../test.h"
 #include "../.deps/rexo/include/rexo.h"
+
 #include "list/list_v1.h"
 #include "std/macros.h"
+
 #include "vm/v1/vm_v1.h"
 
 /* allocates memory pointer for list object */

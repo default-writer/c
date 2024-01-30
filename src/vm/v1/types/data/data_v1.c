@@ -25,7 +25,9 @@
 */
 
 #include "vm/v1/types/data/data_v1.h"
+
 #include "std/macros.h"
+
 #include "vm/v1/pointer/pointer_v1.h"
 #include "vm/v1/virtual/virtual_v1.h"
 #include "vm/v1/vm_type.h"

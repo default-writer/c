@@ -28,6 +28,7 @@
 
 #include "../../test.h"
 #include "../.deps/rexo/include/rexo.h"
+
 #include "vm/v1/os/os_v1.h"
 #include "vm/v1/pointer/pointer_v1.h"
 #include "vm/v1/vm_v1.h"

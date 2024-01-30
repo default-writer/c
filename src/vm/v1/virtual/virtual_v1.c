@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   12 December 2023 at 22:06:05 GMT+3
+ *   January 30, 2024 at 4:57:55 PM GMT+3
  *
  */
 /*
@@ -24,7 +24,8 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "common/memory_v1.h"
+#include "generic/memory_v1.h"
+
 #include "list/list_v1.h"
 
 #include "vm/v1/pointer/pointer_v1.h"
@@ -112,8 +113,8 @@ static struct pointer* virtual_enumerator_pointer_next_internal(void);
 #endif
 
 static struct vm_data* vm_init_internal(u64 size, u64 offset) {
-    struct vm_data* vm_data_ptr = memory_v1->alloc(VM_DATA_SIZE);
-    vm_data_ptr->bp = memory_v1->alloc(ALLOC_SIZE(size));
+    struct vm_data* vm_data_ptr = generic_memory_v1->alloc(VM_DATA_SIZE);
+    vm_data_ptr->bp = generic_memory_v1->alloc(ALLOC_SIZE(size));
     vm_data_ptr->sp = vm_data_ptr->bp;
     vm_data_ptr->offset = offset;
     vm_data_ptr->size = size;
@@ -141,7 +142,7 @@ static struct pointer** vm_alloc_internal(u64* address, struct vm_data** target)
     if (list_ptr != 0) {
         ptr = list_ptr->ptr;
         vm_data_ptr = list_ptr->vm;
-        memory_v1->free(list_ptr, VM_POINTER_SIZE);
+        generic_memory_v1->free(list_ptr, VM_POINTER_SIZE);
     }
     if (ptr == 0) {
 #endif
@@ -187,13 +188,13 @@ static void virtual_enumerator_destroy_internal(void) {
 
 static void vm_init(struct vm** ptr, u64 size) {
 #ifndef USE_GC
-    cache = memory_v1->alloc(PTR_SIZE);
+    cache = generic_memory_v1->alloc(PTR_SIZE);
     list_v1->init(cache);
 #endif
     struct vm_data* vm_data_ptr = vm_init_internal(size == 0 ? DEFAULT_SIZE : size, 0);
     vm->head = vm_data_ptr;
     vm->tail = vm_data_ptr;
-    struct vm* vm_ptr = memory_v1->alloc(sizeof(struct vm));
+    struct vm* vm_ptr = generic_memory_v1->alloc(sizeof(struct vm));
     vm_ptr->head = vm_data_ptr;
     vm_ptr->tail = vm_data_ptr;
     *ptr = vm_ptr;
@@ -206,15 +207,15 @@ static void vm_destroy(struct vm** ptr) {
     struct vm* current = *ptr;
     vm->head = current->head;
     vm->tail = current->tail;
-    memory_v1->free(current, sizeof(struct vm));
+    generic_memory_v1->free(current, sizeof(struct vm));
     *ptr = 0;
 #ifndef USE_GC
     struct vm_pointer* vm_pointer_ptr = 0;
     while ((vm_pointer_ptr = list_v1->pop(cache)) != 0) {
-        memory_v1->free(vm_pointer_ptr, VM_POINTER_SIZE);
+        generic_memory_v1->free(vm_pointer_ptr, VM_POINTER_SIZE);
     }
     list_v1->destroy(cache);
-    memory_v1->free(cache, PTR_SIZE);
+    generic_memory_v1->free(cache, PTR_SIZE);
 #ifdef USE_MEMORY_CLEANUP
     cache = 0;
 #endif
@@ -222,8 +223,8 @@ static void vm_destroy(struct vm** ptr) {
     struct vm_data* vm_data_ptr = vm->head;
     while (vm_data_ptr != 0) {
         struct vm_data* next = vm_data_ptr->next;
-        memory_v1->free(vm_data_ptr->bp, ALLOC_SIZE(vm_data_ptr->size));
-        memory_v1->free(vm_data_ptr, VM_DATA_SIZE);
+        generic_memory_v1->free(vm_data_ptr->bp, ALLOC_SIZE(vm_data_ptr->size));
+        generic_memory_v1->free(vm_data_ptr, VM_DATA_SIZE);
         vm_data_ptr = next;
     }
     vm->head = 0;
@@ -258,7 +259,7 @@ static void vm_free(const struct pointer* ptr) {
     struct pointer** data = vm_data_ptr->bp - vm_data_ptr->offset - 1 + pointer_v1->address(ptr);
     if (data != 0) {
 #ifndef USE_GC
-        struct vm_pointer* vm_pointer_ptr = memory_v1->alloc(VM_POINTER_SIZE);
+        struct vm_pointer* vm_pointer_ptr = generic_memory_v1->alloc(VM_POINTER_SIZE);
         vm_pointer_ptr->ptr = data;
         vm_pointer_ptr->vm = pointer_v1->vm(ptr);
         list_v1->push(cache, vm_pointer_ptr);

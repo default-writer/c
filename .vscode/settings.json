@@ -356,7 +356,7 @@
         "--clang-tidy",
         "--fallback-style=WebKit"
     ],
-    "clangd.path": "${workspaceFolder}/.tools/clangd_17.0.3/bin/clangd",
+    "clangd.path": "",
     "clangd.checkUpdates": true,
     "clangd.restartAfterCrash": true,
     "clangd.onConfigChanged": "restart",

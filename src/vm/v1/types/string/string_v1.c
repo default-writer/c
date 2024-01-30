@@ -25,15 +25,16 @@
 */
 
 #include "string_v1.h"
+
 #include "std/macros.h"
+#include "std/headers.h"
+
 #include "vm/v1/pointer/pointer_v1.h"
 #include "vm/v1/types/string_pointer/string_pointer_v1.h"
 #include "vm/v1/virtual/virtual_v1.h"
 #include "vm/v1/vm_type.h"
 #include "vm/v1/vm_v1.h"
 #include "vm/vm_type.h"
-
-#include <string.h>
 
 #define DEFAULT_SIZE 0x100
 

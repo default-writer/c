@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   12 December 2023 at 23:37:57 GMT+3
+ *   January 30, 2024 at 4:58:14 PM GMT+3
  *
  */
 /*
@@ -24,19 +24,18 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "vm/v1/os/os_v1.h"
-#include "common/memory_v1.h"
+#include "generic/memory_v1.h"
+
 #include "std/data.h"
+#include "std/headers.h"
+
+#include "vm/v1/os/os_v1.h"
 #include "vm/v1/pointer/pointer_v1.h"
 #include "vm/v1/types/string/string_v1.h"
+#include "vm/v1/types/list/list_v1.h"
 #include "vm/v1/virtual/virtual_v1.h"
 #include "vm/v1/vm_type.h"
 #include "vm/v1/vm_v1.h"
-
-#include <linux/limits.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
 
 #define DEFAULT_SIZE 0x100
 
@@ -61,9 +60,9 @@ static u64 os_getenv(u64 ptr) {
 
 static u64 os_getcwd(void) {
     u64 data_ptr = 0;
-    char* src = memory_v1->alloc(PATH_MAX + 1);
+    char* src = generic_memory_v1->alloc(PATH_MAX + 1);
     data_ptr = type_string_v1->load(getcwd(src, PATH_MAX));
-    memory_v1->free(src, PATH_MAX + 1);
+    generic_memory_v1->free(src, PATH_MAX + 1);
     return data_ptr;
 }
 

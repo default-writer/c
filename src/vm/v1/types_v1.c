@@ -25,7 +25,9 @@
 */
 
 #include "types_v1.h"
+
 #include "std/api.h"
+
 #include "vm/v1/vm_v1.h"
 
 /* public */

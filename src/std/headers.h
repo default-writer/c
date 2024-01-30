@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   12 December 2023 at 23:38:42 GMT+3
+ *   January 30, 2024 at 4:56:21 PM GMT+3
  *
  */
 /*
@@ -27,8 +27,11 @@
 #ifndef _STD_HEADERS_H_
 #define _STD_HEADERS_H_
 
-#include <linux/limits.h>
 #include <sys/time.h>
+
+#include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 
 #endif /* _STD_HEADERS_H_ */

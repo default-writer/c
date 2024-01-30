@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   12 December 2023 at 23:37:50 GMT+3
+ *   January 30, 2024 at 4:58:09 PM GMT+3
  *
  */
 /*
@@ -24,9 +24,9 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include "generic/memory_v1.h"
+
 #include "list/list_v1.h"
-#include "common/memory_v1.h"
-#include "vm/v1/vm_v1.h"
 
 #ifdef USE_MEMORY_DEBUG_INFO
 #include <stdio.h>
@@ -55,13 +55,13 @@ static const u64 _size = sizeof(struct list_data);
 /* allocates memory pointer */
 static struct list_data* _new(void) {
     /* returns list object */
-    return memory_v1->alloc(_size);
+    return generic_memory_v1->alloc(_size);
 }
 
 /* releases memory pointer */
 static void _delete(struct list_data* ptr) {
     /* releases the pointer */
-    memory_v1->free(ptr, _size);
+    generic_memory_v1->free(ptr, _size);
 }
 
 /* ptr is not 0 */

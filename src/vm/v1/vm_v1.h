@@ -28,6 +28,7 @@
 #define _VM_V1_H_
 
 #include "std/api.h"
+
 #include "vm/v1/types_v1.h"
 
 /* definition */
@@ -38,7 +39,6 @@ extern const struct pointer_methods_v1 pointer_methods_definition_v1;
 extern const struct info_v1 API(info_definition);
 extern const type_methods API(type_methods_definition);
 extern const struct virtual_methods_v1 virtual_methods_definition_v1;
-extern const struct memory_v1 memory_definition_v1;
 
 /* definition */
 #if defined(INLINE)
@@ -49,7 +49,6 @@ const struct pointer_methods_v1* pointer_v1 = &pointer_methods_definition_v1;
 const struct info_v1* info_v1 = &API(info_definition);
 const struct types_v1* types_v1 = &API(types_definition);
 const struct virtual_methods_v1* virtual_v1 = &virtual_methods_definition_v1;
-const struct memory_v1* memory_v1 = &memory_definition_v1;
 #else
 /* definition */
 static const struct list_v1* list_v1 = &list_definition_v1;
@@ -59,7 +58,6 @@ static const struct pointer_methods_v1* pointer_v1 = &pointer_methods_definition
 static const struct info_v1* info_v1 = &API(info_definition);
 static const type_methods* types_v1 = &API(type_methods_definition);
 static const struct virtual_methods_v1* virtual_v1 = &virtual_methods_definition_v1;
-static const struct memory_v1* memory_v1 = &memory_definition_v1;
 #endif
 
 /* definition */

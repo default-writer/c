@@ -24,16 +24,16 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "vm/v1/types/file/file_v1.h"
 #include "std/macros.h"
+#include "std/headers.h"
+
+#include "vm/v1/types/file/file_v1.h"
 #include "vm/v1/pointer/pointer_v1.h"
 #include "vm/v1/types/data/data_v1.h"
 #include "vm/v1/virtual/virtual_v1.h"
 #include "vm/v1/vm_type.h"
 #include "vm/v1/vm_v1.h"
 #include "vm/vm_type.h"
-
-#include <stdio.h>
 
 #define DEFAULT_SIZE 0x100
 
