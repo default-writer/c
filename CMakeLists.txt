@@ -275,7 +275,7 @@ set(TESTS_SRC_LIST tests/vm/v1/test_list.c)
 set(TESTS_SRC_POINTER tests/vm/v1/test_pointer.c)
 set(TESTS_SRC_VM_V1 tests/vm/v1/test_vm_v1.c)
 set(TESTS_SRC_VM_V1 tests/vm/v1/test_vm_v1.c)
-# set(MAIN_TESTS_VM1_SOURCE tests/vm/v1/main-tests_v1.c)
+set(MAIN_TESTS_VM1_SOURCE tests/vm/v1/main-tests_v1.c)
 
 include_directories(src)
 
@@ -290,7 +290,7 @@ add_library(tests-vm-v1 STATIC
     ${TESTS_SRC_VM_V1})
 
 # main 
-# add_executable(main-tests-vm1 ${MAIN_TESTS_VM1_SOURCE})
+add_executable(main-tests-vm1 ${MAIN_TESTS_VM1_SOURCE})
 
 # test
 target_link_libraries(tests-vm-v1 PRIVATE ctypes clist cmemory)
@@ -298,7 +298,7 @@ target_link_libraries(clist PRIVATE cmemory)
 target_link_libraries(ctypes PRIVATE clist cmemory)
 
 # main
-# target_link_libraries(main-tests-vm1 PRIVATE cmemory clist ctypes tests-vm-v1)
+target_link_libraries(main-tests-vm1 PRIVATE ctypes clist cmemory tests-vm-v1)
 
 configure_file(all_english_words.txt ${CMAKE_BINARY_DIR}/all_english_words.txt COPYONLY)
 configure_file(file.txt ${CMAKE_BINARY_DIR}/file.txt COPYONLY)
