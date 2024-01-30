@@ -161,8 +161,8 @@ export LD_LIBRARY_PATH="${pwd}/lib"
 ${cmake} \
     -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
     -DCMAKE_BUILD_TYPE:STRING=Debug \
-    -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
-    -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
+    -DCMAKE_C_COMPILER:FILEPATH=$(get-cmake-c-compiler-path) \
+    -DCMAKE_CXX_COMPILER:FILEPATH=$(get-cmake-cxx-compiler-path) \
     -DLCOV_PATH=${LCOV_PATH} \
     -DGENHTML_PATH=${GENHTML_PATH} \
     -DCODE_COVERAGE:BOOL=TRUE \

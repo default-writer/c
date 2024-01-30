@@ -146,11 +146,14 @@ done
 export MAKEFLAGS=-j8
 export LD_LIBRARY_PATH="${pwd}/lib"
 
+echo CMAKE_C_COMPILER:FILEPATH=$(get-cmake-c-compiler-path)
+echo CMAKE_CXX_COMPILER:FILEPATH=$(get-cmake-cxx-compiler-path)
+
 ${cmake} \
     -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
     -DCMAKE_BUILD_TYPE:STRING=Debug \
-    -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
-    -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
+    -DCMAKE_C_COMPILER:FILEPATH=$(get-cmake-c-compiler-path) \
+    -DCMAKE_CXX_COMPILER:FILEPATH=$(get-cmake-cxx-compiler-path) \
     $(cmake-options) \
     -S"${pwd}" \
     -B"${build}" \

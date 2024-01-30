@@ -56,12 +56,15 @@
       "cwd": "${workspaceFolder}",
       // "program": "./bin/src.sh",
       // "args": ["--target", "src/examples/substrings/main.c"]
-      "program": "./bin/coverage.sh",
+      "program": "./bin/build.sh",
       "args": [
         "--all",
-        "--index",
-        "3"
       ]
+      // "args": [
+      //   "--all",
+      //   "--index",
+      //   "3"
+      // ]
     },
   ]
 }

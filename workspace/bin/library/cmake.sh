@@ -65,6 +65,42 @@ function get-targets() {
     printf '%s\n' ${array[@]} | cat -n | sort -uk2 | sort -nk1 | cut -f2-
 }
 
+function get-cmake-c-compiler-path() {
+    local CMAKE_COMPILER
+    case "$OSTYPE" in
+      linux*)   CMAKE_COMPILER=/usr/bin/gcc ;;
+      darwin*)  CMAKE_COMPILER= ;;
+      bsd*)     CMAKE_COMPILER= ;;
+      solaris*) CMAKE_COMPILER= ;;
+      win*)     CMAKE_COMPILER=cl.exe ;;
+      msys*)    CMAKE_COMPILER=gcc.exe ;;
+      cygwin*)  CMAKE_COMPILER=gcc.exe ;;
+      *)
+        echo "unknown: $OSTYPE" 
+        exit 8
+        ;;
+    esac
+    echo "${CMAKE_COMPILER}"
+}
+
+function get-cmake-cxx-compiler-path() {
+    local CMAKE_COMPILER
+    case "$OSTYPE" in
+      linux*)   CMAKE_COMPILER=/usr/bin/g++ ;;
+      darwin*)  CMAKE_COMPILER= ;;
+      bsd*)     CMAKE_COMPILER= ;;
+      solaris*) CMAKE_COMPILER= ;;
+      win*)     CMAKE_COMPILER=cl.exe ;;
+      msys*)    CMAKE_COMPILER=gcc.exe ;;
+      cygwin*)  CMAKE_COMPILER=gcc.exe ;;
+      *)
+        echo "unknown: $OSTYPE"
+        exit 8
+      ;;
+    esac
+    echo "${CMAKE_COMPILER}"
+}
+
 function search-link() {
     local target_src
     local target_dest
