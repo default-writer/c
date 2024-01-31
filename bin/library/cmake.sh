@@ -91,8 +91,8 @@ function get-cmake-cxx-compiler-path() {
       bsd*)     CMAKE_COMPILER= ;;
       solaris*) CMAKE_COMPILER= ;;
       win*)     CMAKE_COMPILER=cl.exe ;;
-      msys*)    CMAKE_COMPILER=gcc.exe ;;
-      cygwin*)  CMAKE_COMPILER=gcc.exe ;;
+      msys*)    CMAKE_COMPILER=g++.exe ;;
+      cygwin*)  CMAKE_COMPILER=g++.exe ;;
       *)
         echo "unknown: $OSTYPE"
         exit 8
