@@ -504,5 +504,6 @@
     "bazel.buildifierExecutable": "$HOME/.bazel/tools/buildifier",
     "bazel.executable": "$HOME/.bazel/bazel",
     "cmake.options.statusBarVisibility": "visible",
-    "editor.fontSize": 12
+    "editor.fontSize": 12,
+    "sonarlint.pathToNodeExecutable": "C:/Program Files/nodejs/node.exe"
 }

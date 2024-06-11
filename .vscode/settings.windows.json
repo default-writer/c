@@ -1,3 +1,4 @@
 {
-  "clangd.path": ""
+  "clangd.path": "",
+  "sonarlint.pathToNodeExecutable": "C:/Program Files/nodejs/node.exe"
 }
