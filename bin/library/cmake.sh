@@ -73,7 +73,7 @@ function get-cmake-c-compiler-path() {
       bsd*)     CMAKE_COMPILER= ;;
       solaris*) CMAKE_COMPILER= ;;
       win*)     CMAKE_COMPILER=cl.exe ;;
-      msys*)    CMAKE_COMPILER=gcc.exe ;;
+      msys*)    CMAKE_COMPILER=c:/msys64/ucrt64/bin/gcc.exe ;;
       cygwin*)  CMAKE_COMPILER=gcc.exe ;;
       *)
         echo "unknown: $OSTYPE" 
@@ -91,7 +91,7 @@ function get-cmake-cxx-compiler-path() {
       bsd*)     CMAKE_COMPILER= ;;
       solaris*) CMAKE_COMPILER= ;;
       win*)     CMAKE_COMPILER=cl.exe ;;
-      msys*)    CMAKE_COMPILER=g++.exe ;;
+      msys*)    CMAKE_COMPILER=c:/msys64/ucrt64/bin/g++.exe ;;
       cygwin*)  CMAKE_COMPILER=g++.exe ;;
       *)
         echo "unknown: $OSTYPE"
@@ -353,7 +353,11 @@ function cmake-valgrind-options() {
         fi
     fi
 
-    echo " ${valgrind_options} ${callgrind_options}"
+    if [ "$(cat /proc/version | grep -c MINGW64_NT)" == "0" ]; then
+        echo " ${valgrind_options} ${callgrind_options}"
+    else
+        echo " echo"
+    fi
 }
 
 export -f get-cmake

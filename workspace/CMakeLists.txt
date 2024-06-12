@@ -387,7 +387,7 @@ add_library(tests-vm-v1 STATIC ${TESTS_SRC_VM_V1})
 add_library(tests-vm-v2 STATIC ${TESTS_SRC_VM_V2})
 
 # user
-add_library(user1 SHARED ${LIB_STD_USER1_SOURCE})
+add_library(user1 STATIC ${LIB_STD_USER1_SOURCE})
 
 # all
 add_library(list-v1 STATIC ${LIB_LIST1_SOURCE})
@@ -414,7 +414,7 @@ add_library(list-class STATIC ${LIB_CLASS_SOURCE})
 add_library(list-brain STATIC ${LIB_BRAIN_SOURCE})
 add_library(list-pointer1 STATIC ${LIB_POINTER1_SOURCE})
 add_library(list-pointer2 STATIC ${LIB_POINTER2_SOURCE})
-add_library(ctypes SHARED
+add_library(ctypes STATIC
     ${LIB_COMMON_SOURCE}
     ${LIB_MICRO_SOURCE}
     ${LIB_VM1_SOURCE}
@@ -429,13 +429,13 @@ add_library(memory-ref3 STATIC ${LIB_MEMORY_REF3_SOURCE})
 add_library(structs-v3 STATIC ${TEST_STRUCTS3_LIB_SOURCE})
 add_library(stl-linked-list STATIC ${LIB_LINKED_LIST_SOURCE})
 add_library(std-types1 STATIC ${LIB_STD_TYPES1_SOURCE})
-add_library(std-list1 SHARED ${LIB_STD_LIST1_SOURCE})
-add_library(std-file1 SHARED ${LIB_STD_FILE1_SOURCE})
-add_library(std-string1 SHARED ${LIB_STD_STRING1_SOURCE})
-add_library(std-string-pointer1 SHARED ${LIB_STD_STRING_POINTER1_SOURCE})
-add_library(std-data1 SHARED ${LIB_STD_DATA1_SOURCE})
-add_library(std-os1 SHARED ${LIB_STD_OS1_SOURCE})
-add_library(std-object1 SHARED ${LIB_STD_OBJECT1_SOURCE})
+add_library(std-list1 STATIC ${LIB_STD_LIST1_SOURCE})
+add_library(std-file1 STATIC ${LIB_STD_FILE1_SOURCE})
+add_library(std-string1 STATIC ${LIB_STD_STRING1_SOURCE})
+add_library(std-string-pointer1 STATIC ${LIB_STD_STRING_POINTER1_SOURCE})
+add_library(std-data1 STATIC ${LIB_STD_DATA1_SOURCE})
+add_library(std-os1 STATIC ${LIB_STD_OS1_SOURCE})
+add_library(std-object1 STATIC ${LIB_STD_OBJECT1_SOURCE})
 
 # test
 add_executable(test-hashes ${TEST_HASHES_SOURCE})
