@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   12 December 2023 at 8:34:56 GMT+3
+ *   June 12, 2024 at 8:38:31 PM GMT+3
  *
  */
 /*
@@ -30,15 +30,16 @@
 #include "std/api.h"
 
 #include "vm/v1/types_v1.h"
+#include "vm/v1/system/info_v1.h"
 
 /* definition */
 extern const struct list_v1 list_definition_v1;
 extern const struct vm_options_v1 vm_options_definition_v1;
 extern const struct os_methods_v1 os_methods_definition_v1;
 extern const struct pointer_methods_v1 pointer_methods_definition_v1;
-extern const struct info_v1 API(info_definition);
-extern const type_methods API(type_methods_definition);
+extern const struct type_methods type_methods_definition_v1;
 extern const struct virtual_methods_v1 virtual_methods_definition_v1;
+extern const info_methods PRIVATE_API(info_methods_definition);
 
 /* definition */
 #if defined(INLINE)
@@ -46,18 +47,18 @@ const const struct list_v1* list_v1 = &list_definition_v1;
 const struct vm_options_v1* vm_options_v1 = &vm_options_definition_v1;
 const struct os_methods_v1* os_v1 = &os_methods_definition_v1;
 const struct pointer_methods_v1* pointer_v1 = &pointer_methods_definition_v1;
-const struct info_v1* info_v1 = &API(info_definition);
-const struct types_v1* types_v1 = &API(types_definition);
+const struct types_v1* types_v1 = &type_methods_definition_v1;
 const struct virtual_methods_v1* virtual_v1 = &virtual_methods_definition_v1;
+const struct info_v1* info_v1 = &PRIVATE_API(info_methods_definition);
 #else
 /* definition */
 static const struct list_v1* list_v1 = &list_definition_v1;
 static const struct vm_options_v1* vm_options_v1 = &vm_options_definition_v1;
 static const struct os_methods_v1* os_v1 = &os_methods_definition_v1;
 static const struct pointer_methods_v1* pointer_v1 = &pointer_methods_definition_v1;
-static const struct info_v1* info_v1 = &API(info_definition);
-static const type_methods* types_v1 = &API(type_methods_definition);
+static const struct type_methods* types_v1 = &type_methods_definition_v1;
 static const struct virtual_methods_v1* virtual_v1 = &virtual_methods_definition_v1;
+static const info_methods* info_v1 = &PRIVATE_API(info_methods_definition);
 #endif
 
 /* definition */

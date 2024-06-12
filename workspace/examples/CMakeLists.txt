@@ -53,5 +53,5 @@ add_executable(demo-gcc ${GCC_SOURCE} $<TARGET_OBJECTS:demo-gcc-nasm>)
 
 set_target_properties(demo-gcc PROPERTIES NASM_OBJ_FORMAT elf64)
 
-target_link_libraries(c-substrings PRIVATE ctypes std-os1)
-target_link_libraries(demo-url PRIVATE curl ctypes)
+target_link_libraries(c-substrings ctypes std-os1)
+target_link_libraries(demo-url curl ctypes)

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   12 December 2023 at 7:43:20 GMT+3
+ *   June 12, 2024 at 8:14:42 PM GMT+3
  *
  */
 /*
@@ -27,8 +27,11 @@
 #define _POINTER_INFO_V1_H_
 
 #include "std/data.h"
+#include "std/api.h"
 
-struct info_v1 {
+typedef struct PRIVATE_API(info_methods) info_methods;
+
+struct PRIVATE_API(info_methods) {
     const u64 timestamp;
     const char* commit;
     const char* version;

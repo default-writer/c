@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   12 December 2023 at 7:42:48 GMT+3
+ *   June 12, 2024 at 9:00:47 PM GMT+3
  *
  */
 /*
@@ -28,7 +28,7 @@
 #include "std/api.h"
 
 /* public */
-const struct info_v1 API(info_definition) = {
+const info_methods PRIVATE_API(info_methods_definition) = {
     .timestamp = UNIX_TIMESTAMP,
     .commit = GIT_COMMIT_HASH,
     .version = API_VERSION

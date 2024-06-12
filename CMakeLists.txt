@@ -89,13 +89,17 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     # Windows specific configuration
     message("Detected Windows OS")
     # You can add specific CMake options or behavior for Windows here
+elseif(CMAKE_SYSTEM_NAME STREQUAL "MSYS")
+    # Windows specific configuration
+    message("Detected Windows OS")
+    # You can add specific CMake options or behavior for Windows here    
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     # macOS specific configuration
     message("Detected macOS OS")
     # You can add specific CMake options or behavior for macOS here
 else()
     # Other/Unknown OS
-    message("Unknown OS")
+    message("Unknown OS: ${CMAKE_SYSTEM_NAME}")
     # You can add behavior for other/unknown OS here if needed
 endif()
 
@@ -261,7 +265,6 @@ set(LIB_STD_TYPES1_SOURCE
     src/vm/v1/os/os_v1.c
     src/vm/v1/pointer/pointer_v1.c
     src/vm/v1/types_v1.c
-    src/vm/v1/system/info_v1.c
     src/vm/v1/types/data/data_v1.c
     src/vm/v1/types/file/file_v1.c
     src/vm/v1/types/list/list_v1.c
@@ -271,6 +274,9 @@ set(LIB_STD_TYPES1_SOURCE
     src/vm/v1/types/user/user_v1.c
     src/vm/v1/virtual/virtual_v1.c)
 
+set(LIB_STD_INFO1_SOURCE
+    src/vm/v1/system/info_v1.c)
+
 set(TESTS_SRC_LIST tests/vm/v1/test_list.c)
 set(TESTS_SRC_POINTER tests/vm/v1/test_pointer.c)
 set(TESTS_SRC_VM_V1 tests/vm/v1/test_vm_v1.c)
@@ -279,12 +285,13 @@ set(MAIN_TESTS_VM1_SOURCE tests/vm/v1/main-tests_v1.c)
 
 include_directories(src)
 
-add_library(cmemory STATIC ${LIB_MEMORY_SOURCE})
-add_library(clist STATIC ${LIB_LIST_SOURCE})
-add_library(ctypes STATIC ${LIB_STD_TYPES1_SOURCE})
+add_library(cmemory SHARED ${LIB_MEMORY_SOURCE})
+add_library(clist SHARED ${LIB_LIST_SOURCE})
+add_library(ctypes SHARED ${LIB_STD_TYPES1_SOURCE})
+add_library(cinfo STATIC ${LIB_STD_INFO1_SOURCE})
 
 # test
-add_library(tests-vm-v1 STATIC 
+add_library(tests-vm-v1 SHARED 
     ${TESTS_SRC_LIST}
     ${TESTS_SRC_POINTER}
     ${TESTS_SRC_VM_V1})
@@ -295,7 +302,7 @@ add_executable(main-tests-vm1 ${MAIN_TESTS_VM1_SOURCE})
 # test
 target_link_libraries(tests-vm-v1 ctypes clist cmemory)
 target_link_libraries(clist cmemory)
-target_link_libraries(ctypes clist cmemory)
+target_link_libraries(ctypes clist cmemory cinfo)
 
 # main
 target_link_libraries(main-tests-vm1 ctypes clist cmemory tests-vm-v1)
@@ -318,13 +325,13 @@ execute_process(COMMAND git rev-parse HEAD OUTPUT_VARIABLE GIT_COMMIT_HASH)
 execute_process(COMMAND git log -n 1 --pretty=format:%at OUTPUT_VARIABLE UNIX_TIMESTAMP)
 string(REGEX REPLACE "\n" "" GIT_COMMIT_HASH "${GIT_COMMIT_HASH}")
 string(REGEX REPLACE "\n" "" UNIX_TIMESTAMP "${UNIX_TIMESTAMP}")
-file(WRITE ${CMAKE_SOURCE_DIR}/src/version.h 
+file(WRITE ${CMAKE_SOURCE_DIR}/src/std/version.h 
+    "#define GIT_COMMIT_HASH_VALUE " ${GIT_COMMIT_HASH} "\n"
     "#define GIT_COMMIT_HASH \"" ${GIT_COMMIT_HASH} "\"\n"
     "#define UNIX_TIMESTAMP " ${UNIX_TIMESTAMP} "\n"
 )
 
 if(TARGETS)
-
     get_property(main_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
 
     list(FILTER main_target_names INCLUDE REGEX "^main-")
@@ -352,5 +359,4 @@ if(TARGETS)
     foreach(source_file ${SOURCE_FILES})
         file(APPEND ${CMAKE_BINARY_DIR}/all-sources.txt "${source_file}\n")
     endforeach()
-
 endif()

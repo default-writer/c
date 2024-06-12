@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   12 December 2023 at 8:36:28 GMT+3
+ *   June 12, 2024 at 8:39:06 PM GMT+3
  *
  */
 /*
@@ -34,9 +34,7 @@
 #include "vm/v1/types/string_pointer/string_pointer_v1.h"
 #include "vm/v1/types/user/user_v1.h"
 
-typedef struct API(type_methods) type_methods;
-
-struct API(type_methods) {
+struct type_methods {
     const struct data_methods_v1* data;
     const struct file_methods_v1* file;
     const struct list_methods_v1* list;
