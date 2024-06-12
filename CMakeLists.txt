@@ -291,7 +291,7 @@ add_library(ctypes SHARED ${LIB_STD_TYPES1_SOURCE})
 add_library(cinfo STATIC ${LIB_STD_INFO1_SOURCE})
 
 # test
-add_library(tests-vm-v1 SHARED 
+add_library(tests-vm-v1 STATIC 
     ${TESTS_SRC_LIST}
     ${TESTS_SRC_POINTER}
     ${TESTS_SRC_VM_V1})
