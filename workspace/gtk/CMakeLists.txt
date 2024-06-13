@@ -99,7 +99,7 @@ add_executable(gtk-experiment1 ${GTK_EXPERIMENT})
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(GTK4 REQUIRED IMPORTED_TARGET gtk4)
-target_link_libraries(gtk-experiment1 PRIVATE PkgConfig::GTK4)
+target_link_libraries(gtk-experiment1 PkgConfig::GTK4)
 
 target_include_directories(gtk-experiment1 SYSTEM PUBLIC /usr/include/gtk-4.0)
 target_include_directories(gtk-experiment1 SYSTEM PUBLIC /usr/include/glib-2.0)

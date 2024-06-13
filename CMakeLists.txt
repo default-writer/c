@@ -293,12 +293,12 @@ add_library(tests-vm-v1 STATIC
 add_executable(main-tests-vm1 ${MAIN_TESTS_VM1_SOURCE})
 
 # test
-target_link_libraries(tests-vm-v1 PRIVATE ctypes clist cmemory)
-target_link_libraries(clist PRIVATE cmemory)
-target_link_libraries(ctypes PRIVATE clist cmemory)
+target_link_libraries(tests-vm-v1 ctypes clist cmemory)
+target_link_libraries(clist cmemory)
+target_link_libraries(ctypes clist cmemory)
 
 # main
-target_link_libraries(main-tests-vm1 PRIVATE ctypes clist cmemory tests-vm-v1)
+target_link_libraries(main-tests-vm1 ctypes clist cmemory tests-vm-v1)
 
 configure_file(all_english_words.txt ${CMAKE_BINARY_DIR}/all_english_words.txt COPYONLY)
 configure_file(file.txt ${CMAKE_BINARY_DIR}/file.txt COPYONLY)
