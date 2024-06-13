@@ -180,7 +180,9 @@ for config in ${targets[@]}; do
     ${cmake} --build "${build}" --target "${target}" 2>&1 || (echo ERROR: "${target}" && exit 1)
     case "${target}" in
         c-*) ;& main-*) ;& test-*)
-            timeout --foreground 180 $(cmake-valgrind-options) "${build}/${target}" 2>&1 >"${output}/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
+            if [ "$(cat /proc/version | grep -c MSYS)" == "0" ]; then
+                timeout --foreground 180 $(cmake-valgrind-options) "${build}/${target}" 2>&1 >"${output}/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
+            fi
             ;;
         *)
             ;;
