@@ -377,7 +377,7 @@ function cmake-valgrind-options() {
         fi
     fi
 
-    if [ "$(cat /proc/version | grep -c MINGW64_NT)" == "0" ]; then
+    if [ "$(cat /proc/version | grep -c MSYS)" == "0" ]; then
         echo " ${valgrind_options} ${callgrind_options}"
     else
         echo " echo"

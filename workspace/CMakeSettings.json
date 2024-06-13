@@ -10,7 +10,7 @@
     },
     {
       "environment": "mingw_64",
-      "MINGW64_ROOT": "D:/msys64/mingw64",
+      "MINGW64_ROOT": "C:/msys64/mingw64",
       "BIN_ROOT": "${env.MINGW64_ROOT}/bin",
       "FLAVOR": "x86_64-w64-mingw32",
       "TOOLSET_VERSION": "10.2.0",
@@ -23,7 +23,9 @@
       "name": "x86-Debug",
       "generator": "Ninja",
       "configurationType": "Debug",
-      "inheritEnvironments": ["vcpkg"],
+      "inheritEnvironments": [
+        "vcpkg"
+      ],
       "buildRoot": "${env.BuildDir}\\${name}",
       "installRoot": "${env.InstallDir}\\${name}",
       "addressSanitizerEnabled": false,
@@ -50,7 +52,7 @@
           "name": "CONFIG_GC",
           "value": "OFF",
           "type": "BOOL"
-        },        
+        },
         {
           "name": "CODE_SANITIZER",
           "value": "OFF",
@@ -63,7 +65,9 @@
       "name": "x86-Release",
       "generator": "Ninja",
       "configurationType": "RelWithDebInfo",
-      "inheritEnvironments": ["vcpkg"],
+      "inheritEnvironments": [
+        "vcpkg"
+      ],
       "buildRoot": "${env.BuildDir}\\${name}",
       "installRoot": "${env.InstallDir}\\${name}",
       "cmakeCommandArgs": "",
@@ -89,7 +93,7 @@
           "name": "CONFIG_GC",
           "value": "OFF",
           "type": "BOOL"
-        },        
+        },
         {
           "name": "CODE_SANITIZER",
           "value": "OFF",
@@ -102,7 +106,9 @@
       "name": "x64-Debug",
       "generator": "Ninja",
       "configurationType": "Debug",
-      "inheritEnvironments": ["vcpkg"],
+      "inheritEnvironments": [
+        "vcpkg"
+      ],
       "buildRoot": "${env.BuildDir}\\${name}",
       "installRoot": "${env.InstallDir}\\${name}",
       "cmakeCommandArgs": "",
@@ -128,7 +134,7 @@
           "name": "CONFIG_GC",
           "value": "OFF",
           "type": "BOOL"
-        },        
+        },
         {
           "name": "CODE_SANITIZER",
           "value": "OFF",
@@ -141,7 +147,9 @@
       "name": "x64-Release",
       "generator": "Ninja",
       "configurationType": "RelWithDebInfo",
-      "inheritEnvironments": ["vcpkg"],
+      "inheritEnvironments": [
+        "vcpkg"
+      ],
       "buildRoot": "${env.BuildDir}\\${name}",
       "installRoot": "${env.InstallDir}\\${name}",
       "cmakeCommandArgs": "",
