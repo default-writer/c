@@ -16,8 +16,26 @@ source=$(pwd)
 
 pwd=$(cd "$(dirname $(dirname $(dirname "${BASH_SOURCE[0]}")))" &> /dev/null && pwd)
 
+function get-cwd() {
+    local pwd
+    local source
+
+    source=$(pwd)
+    pwd=$(cd "$(dirname $(dirname $(dirname $(realpath --relative-to="${source}" "${BASH_SOURCE[0]}"))))" &> /dev/null)
+
+    if [ "$pwd" == "" ]; then
+        pwd="."
+    fi
+
+    echo ${pwd}
+}
+
 function get-cmake() {
     local cmake
+    local pwd
+
+    pwd=$(get-cwd)
+
     [ -d "${pwd}/.tools/cmake-3.25/bin" ] && cmake=${pwd}/.tools/cmake-3.25/bin/cmake || cmake=${cmake}
     if [[ "${cmake}" == "" ]]; then
         cmake=$(command -v cmake)
@@ -34,6 +52,9 @@ function get-targets() {
     local target
     local array
     local config
+    local pwd
+    
+    pwd=$(get-cwd)
 
     if [[ ! -d "${pwd}/config" ]]; then
         exec 2>&1 >/dev/null
@@ -72,9 +93,9 @@ function get-cmake-c-compiler-path() {
       darwin*)  CMAKE_COMPILER= ;;
       bsd*)     CMAKE_COMPILER= ;;
       solaris*) CMAKE_COMPILER= ;;
-      win*)     CMAKE_COMPILER=cl.exe ;;
-      msys*)    CMAKE_COMPILER=gcc.exe ;;
-      cygwin*)  CMAKE_COMPILER=gcc.exe ;;
+      win*)     CMAKE_COMPILER=cl ;;
+      msys*)    CMAKE_COMPILER=gcc ;;
+      cygwin*)  CMAKE_COMPILER=gcc ;;
       *)
         echo "unknown: $OSTYPE" 
         exit 8
@@ -90,9 +111,9 @@ function get-cmake-cxx-compiler-path() {
       darwin*)  CMAKE_COMPILER= ;;
       bsd*)     CMAKE_COMPILER= ;;
       solaris*) CMAKE_COMPILER= ;;
-      win*)     CMAKE_COMPILER=cl.exe ;;
-      msys*)    CMAKE_COMPILER=g++.exe ;;
-      cygwin*)  CMAKE_COMPILER=g++.exe ;;
+      win*)     CMAKE_COMPILER=cl ;;
+      msys*)    CMAKE_COMPILER=g++ ;;
+      cygwin*)  CMAKE_COMPILER=g++ ;;
       *)
         echo "unknown: $OSTYPE"
         exit 8
@@ -178,6 +199,9 @@ function get-source-targets() {
     local build
     local file
     local files
+    local pwd
+
+    pwd=$(get-cwd)
 
     source=$1
 
@@ -353,9 +377,13 @@ function cmake-valgrind-options() {
         fi
     fi
 
-    echo " ${valgrind_options} ${callgrind_options}"
+    if [ "$(cat /proc/version | grep -c MINGW64_NT)" == "0" ]; then
+        echo " ${valgrind_options} ${callgrind_options}"
+    else
+        echo " echo"
+    fi
 }
-
+export -f get-cwd
 export -f get-cmake
 export -f get-targets
 export -f get-linked-targets

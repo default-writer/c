@@ -18,7 +18,7 @@ pacman -S --noconfirm \
     mingw-w64-clang-x86_64-ninja \
     mingw-w64-clang-x86_64-cmake \
     mingw-w64-clang-x86_64-lcov \
-    cmake ninja clang lcov
+    cmake ninja clang lcov git
 ```
 
 - Add paths UCRT binaries/libraries at the top to the *system* variable (PATH)

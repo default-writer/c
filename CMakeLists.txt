@@ -318,7 +318,8 @@ execute_process(COMMAND git rev-parse HEAD OUTPUT_VARIABLE GIT_COMMIT_HASH)
 execute_process(COMMAND git log -n 1 --pretty=format:%at OUTPUT_VARIABLE UNIX_TIMESTAMP)
 string(REGEX REPLACE "\n" "" GIT_COMMIT_HASH "${GIT_COMMIT_HASH}")
 string(REGEX REPLACE "\n" "" UNIX_TIMESTAMP "${UNIX_TIMESTAMP}")
-file(WRITE ${CMAKE_SOURCE_DIR}/src/version.h 
+file(WRITE ${CMAKE_SOURCE_DIR}/src/std/version.h
+    "#define GIT_COMMIT_HASH_VALUE " ${GIT_COMMIT_HASH} "\n"
     "#define GIT_COMMIT_HASH \"" ${GIT_COMMIT_HASH} "\"\n"
     "#define UNIX_TIMESTAMP " ${UNIX_TIMESTAMP} "\n"
 )
