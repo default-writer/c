@@ -72,7 +72,7 @@ function get-cmake() {
 
     pwd=$(get-cwd)
 
-    [ -d "${pwd}/.tools/cmake-3.25/bin" ] && cmake=${pwd}/.tools/cmake-3.25/bin/cmake || cmake=${cmake}
+    [ -d "${pwd}/.tools/cmake-3.25/bin" ] && cmake="${pwd}/.tools/cmake-3.25/ucrt64/bin/cmake" || cmake=${cmake}
     if [[ "${cmake}" == "" ]]; then
         cmake=$(command -v cmake)
     fi
