@@ -171,6 +171,8 @@ ${cmake} \
     -B"${build}" \
     -G "Ninja" 2>&1 >/dev/null
 
+ignore=$(get-ignore)
+
 for config in ${targets[@]}; do
     target="${config}"
     echo building ${target}
