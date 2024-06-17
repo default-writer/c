@@ -167,12 +167,14 @@ for config in ${targets[@]}; do
     target="${config}"
     echo building ${target}
     echo options "$(cmake-options)"
-    echo cmake --build "${build}" --target "${target}"
+    echo cmake  --build "${build}" --target "${target}"
     ${cmake} --build "${build}" --target "${target}" 2>&1 || (echo ERROR: "${target}" && exit 1)
     case "${target}" in
         c-*) ;& main-*) ;& test-*)
-            if [ "$(cat /proc/version | grep -c MSYS)" == "0" ]; then
+            if [ ! "$(cat /proc/version | grep -c MSYS)" == "1" ] && [ ! "$(cat /proc/version | grep -c MINGW64)" == "1" ]; then
                 timeout --foreground 180 $(cmake-valgrind-options) "${build}/${target}" 2>&1 >"${output}/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
+            else
+                timeout --foreground 180 "${build}/${target}" 2>&1 >"${output}/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
             fi
             ;;
         *)
