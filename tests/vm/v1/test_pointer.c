@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   12 December 2023 at 23:35:43 GMT+3
+ *   June 17, 2024 at 9:31:28 PM GMT+3
  *
  */
 /*
@@ -26,8 +26,7 @@
 
 #define RXP_DEBUG_TESTS
 
-#include "../../test.h"
-#include "../.deps/rexo/include/rexo.h"
+#include "test.h"
 
 #include "vm/v1/os/os_v1.h"
 #include "vm/v1/pointer/pointer_v1.h"

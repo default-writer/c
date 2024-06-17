@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   12 December 2023 at 22:08:27 GMT+3
+ *   June 17, 2024 at 9:30:58 PM GMT+3
  *
  */
 /*
@@ -24,9 +24,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "../../test.h"
-
-#include "../.deps/rexo/include/rexo.h"
+#include "test.h"
 
 #include "vm/v1/pointer/pointer_v1.h"
 #include "vm/v1/virtual/virtual_v1.h"

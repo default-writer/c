@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   12 December 2023 at 8:32:39 GMT+3
+ *   June 17, 2024 at 9:28:54 PM GMT+3
  *
  */
 /*
@@ -28,6 +28,8 @@
 #define _TESTS_TEST_H_
 
 #define RXP_DEBUG_TESTS
+
+#include "rexo/include/rexo.h"
 
 struct test_suite {
     int (*run)(void);

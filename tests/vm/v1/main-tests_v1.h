@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   12 December 2023 at 23:37:52 GMT+3
+ *   June 17, 2024 at 9:31:37 PM GMT+3
  *
  */
 /*
@@ -27,7 +27,7 @@
 #ifndef _MAIN_TESTS_V1_H_
 #define _MAIN_TESTS_V1_H_
 
-#include "../../test.h"
+#include "test.h"
 
 /* definition */
 extern const struct test_suite list_micro_test_suite_definition_v1;
