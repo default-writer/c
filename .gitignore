@@ -78,4 +78,3 @@ bazel-*
 src/compile_commands.json
 Testing
 
-version.h
