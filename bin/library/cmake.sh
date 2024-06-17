@@ -16,6 +16,17 @@ source=$(pwd)
 
 pwd=$(cd "$(dirname $(dirname $(dirname "${BASH_SOURCE[0]}")))" &> /dev/null && pwd)
 
+
+function get-exclusions() {
+    local line
+    local array
+    local result
+    while read -r line; do
+        array=$(echo "${array} $line")
+    done < ${pwd}/.config/.ignore
+    echo $array
+}
+
 function get-cmake() {
     local cmake
     [ -d "${pwd}/.tools/cmake-3.25/bin" ] && cmake=${pwd}/.tools/cmake-3.25/bin/cmake || cmake=${cmake}
@@ -356,6 +367,7 @@ function cmake-valgrind-options() {
     echo " ${valgrind_options} ${callgrind_options}"
 }
 
+export -f get-exclusions
 export -f get-cmake
 export -f get-targets
 export -f get-linked-targets

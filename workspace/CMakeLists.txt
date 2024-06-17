@@ -89,6 +89,14 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     # Windows specific configuration
     message("Detected Windows OS")
     # You can add specific CMake options or behavior for Windows here
+elseif(CMAKE_SYSTEM_NAME STREQUAL "MSYS")
+    # Windows specific configuration
+    message("Detected Windows OS")
+    # You can add specific CMake options or behavior for Windows here  
+elseif(CMAKE_SYSTEM_NAME STREQUAL "MINGW64")
+    # Windows specific configuration
+    message("Detected Windows OS")
+    # You can add specific CMake options or behavior for Windows here  
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     # macOS specific configuration
     message("Detected macOS OS")

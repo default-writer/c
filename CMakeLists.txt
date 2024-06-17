@@ -89,6 +89,14 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     # Windows specific configuration
     message("Detected Windows OS")
     # You can add specific CMake options or behavior for Windows here
+elseif(CMAKE_SYSTEM_NAME STREQUAL "MSYS")
+    # Windows specific configuration
+    message("Detected Windows OS")
+    # You can add specific CMake options or behavior for Windows here  
+elseif(CMAKE_SYSTEM_NAME STREQUAL "MINGW64")
+    # Windows specific configuration
+    message("Detected Windows OS")
+    # You can add specific CMake options or behavior for Windows here  
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     # macOS specific configuration
     message("Detected macOS OS")
@@ -279,9 +287,9 @@ set(MAIN_TESTS_VM1_SOURCE tests/vm/v1/main-tests_v1.c)
 
 include_directories(src)
 
-add_library(cmemory SHARED ${LIB_MEMORY_SOURCE})
-add_library(clist SHARED ${LIB_LIST_SOURCE})
-add_library(ctypes SHARED ${LIB_STD_TYPES1_SOURCE})
+add_library(cmemory STATIC ${LIB_MEMORY_SOURCE})
+add_library(clist STATIC ${LIB_LIST_SOURCE})
+add_library(ctypes STATIC ${LIB_STD_TYPES1_SOURCE})
 
 # test
 add_library(tests-vm-v1 STATIC 
@@ -293,9 +301,9 @@ add_library(tests-vm-v1 STATIC
 add_executable(main-tests-vm1 ${MAIN_TESTS_VM1_SOURCE})
 
 # test
-target_link_libraries(tests-vm-v1 ctypes clist cmemory)
-target_link_libraries(clist cmemory)
-target_link_libraries(ctypes clist cmemory)
+target_link_libraries(tests-vm-v1 PRIVATE ctypes clist cmemory)
+target_link_libraries(clist PRIVATE cmemory)
+target_link_libraries(ctypes PRIVATE clist cmemory)
 
 # main
 target_link_libraries(main-tests-vm1 ctypes clist cmemory tests-vm-v1)
