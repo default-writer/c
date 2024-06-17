@@ -28,7 +28,7 @@ pwd=$(cd "$(dirname $(dirname $(dirname "${BASH_SOURCE[0]}")))" &> /dev/null && 
 
 if [ -f "${pwd}/.args" ]; then args=$(get-args); fi
 
-echo "${pwd}/bin/config.sh" $args
+"${pwd}/bin/utils/install.sh" --cmake
 
 "${pwd}/bin/config.sh" $args
 
