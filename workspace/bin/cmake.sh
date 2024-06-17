@@ -167,7 +167,6 @@ for config in ${targets[@]}; do
     target="${config}"
     echo building ${target}
     echo options "$(cmake-options)"
-    echo cmake  --build "${build}" --target "${target}"
     ${cmake} --build "${build}" --target "${target}" 2>&1 || (echo ERROR: "${target}" && exit 1)
     case "${target}" in
         c-*) ;& main-*) ;& test-*)

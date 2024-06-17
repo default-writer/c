@@ -146,9 +146,6 @@ done
 export MAKEFLAGS=-j8
 export LD_LIBRARY_PATH="${pwd}/lib"
 
-echo CMAKE_C_COMPILER:FILEPATH=$(get-cmake-c-compiler-path)
-echo CMAKE_CXX_COMPILER:FILEPATH=$(get-cmake-cxx-compiler-path)
-
 ${cmake} \
     -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
     -DCMAKE_BUILD_TYPE:STRING=Debug \
@@ -163,7 +160,6 @@ for config in ${targets[@]}; do
     target="${config}"
     echo building ${target}
     echo options "$(cmake-options)"
-    echo cmake  --build "${build}" --target "${target}"
     ${cmake} --build "${build}" --target "${target}" 2>&1 || (echo ERROR: "${target}" && exit 1)
     case "${target}" in
         c-*) ;& main-*) ;& test-*)

@@ -75,6 +75,10 @@ fi
 
 build="${pwd}/build"
 
+if [ ! -d "${build}" ]; then
+    "${pwd}/bin/build.sh" --all
+fi
+
 if [[ "${clean}" == "--clean" ]]; then
 
     if [[ -d "${build}" ]]; then
