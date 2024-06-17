@@ -56,7 +56,7 @@ while (($#)); do
     shift
 done
 
-if [[ "${install}" == "" || "${install}" == "--help" ]]; then
+if [[ "${install}" == "--help" ]]; then
     help
     exit;
 fi
