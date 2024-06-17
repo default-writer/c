@@ -303,7 +303,7 @@ while (($#)); do
 
         "--cmake") # installs cmake
             update ${updateflags}
-            apt install -y --no-install-recommends curl ca-certificates git build-essential lldb lcov cmake clangd clang-format g++ gcc gdb lcov ninja-build bison
+            apt install -y --no-install-recommends valgrind curl ca-certificates git build-essential lldb lcov cmake clangd clang-format g++ gcc gdb lcov ninja-build bison
             upgrade ${updgradeflags}
             ;;
 

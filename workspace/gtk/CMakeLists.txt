@@ -26,7 +26,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
 
     set(STANDARD
         -save-temps
-        -std=gnu89
+        -std=gnu99
         -fgnu89-inline
     )
 
