@@ -184,7 +184,7 @@ for config in ${targets[@]}; do
                 timeout --foreground 180 "${build}/${target}" 2>&1 >"${output}/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
             fi
             lcov --capture --directory "${build}/" --output-file "${build}/${target}-all.info" &>/dev/null
-            lcov --remove "${build}/${target}-all.info" -o "${build}/${target}.info" ${exclusions}
+            lcov --remove "${build}/${target}-all.info" -o "${build}/${target}.info" ${ignore}
             rm "${build}/${target}-all.info"
             ;;
         *)

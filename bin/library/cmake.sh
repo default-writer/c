@@ -26,14 +26,44 @@ function get-cwd() {
     echo ${pwd}
 }
 
-function get-exclusions() {
+function get-ignore() {
     local line
     local array
-    local result
-    while read -r line; do
-        array=$(echo "${array} $line")
-    done < ${pwd}/.config/.ignore
+    local pwd
+
+    pwd=$(get-cwd)
+
+    array=$(while read line ; do printf "%s\n" $line ; done < "${pwd}/.config/.ignore" | sed s'/:$//')
     echo $array
+}
+
+function get-args() {
+    local line
+    local array
+    local pwd
+
+    pwd=$(get-cwd)
+
+    array=$(while read line ; do printf "%s\n" $line ; done < "${pwd}/.args" | sed s'/:$//')
+    echo $array
+}
+
+function get-os-type() {
+    local CMAKE_OS_TYPE
+    case "$OSTYPE" in
+      linux*)   CMAKE_OS_TYPE=linux ;;
+      darwin*)  CMAKE_OS_TYPE=darwin ;;
+      bsd*)     CMAKE_OS_TYPE=bsd ;;
+      solaris*) CMAKE_OS_TYPE=solaris ;;
+      win*)     CMAKE_OS_TYPE=win ;;
+      msys*)    CMAKE_OS_TYPE=win ;;
+      cygwin*)  CMAKE_OS_TYPE=win ;;
+      *)
+        echo "unknown" 
+        exit 8
+        ;;
+    esac
+    echo "${CMAKE_OS_TYPE}"
 }
 
 function get-cmake() {
@@ -103,7 +133,7 @@ function get-cmake-c-compiler-path() {
       msys*)    CMAKE_COMPILER=gcc ;;
       cygwin*)  CMAKE_COMPILER=gcc ;;
       *)
-        echo "unknown: $OSTYPE" 
+        echo "unknown" 
         exit 8
         ;;
     esac
@@ -121,7 +151,7 @@ function get-cmake-cxx-compiler-path() {
       msys*)    CMAKE_COMPILER=g++ ;;
       cygwin*)  CMAKE_COMPILER=g++ ;;
       *)
-        echo "unknown: $OSTYPE"
+        echo "unknown"
         exit 8
       ;;
     esac
@@ -389,8 +419,11 @@ function cmake-valgrind-options() {
         echo " echo"
     fi
 }
+
 export -f get-cwd
-export -f get-exclusions
+export -f get-ignore
+export -f get-args
+export -f get-os-type
 export -f get-cmake
 export -f get-targets
 export -f get-linked-targets

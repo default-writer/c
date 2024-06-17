@@ -76,7 +76,7 @@ function get-cmake-c-compiler-path() {
       msys*)    CMAKE_COMPILER=gcc.exe ;;
       cygwin*)  CMAKE_COMPILER=gcc.exe ;;
       *)
-        echo "unknown: $OSTYPE" 
+        echo "unknown" 
         exit 8
         ;;
     esac
@@ -94,7 +94,7 @@ function get-cmake-cxx-compiler-path() {
       msys*)    CMAKE_COMPILER=g++.exe ;;
       cygwin*)  CMAKE_COMPILER=g++.exe ;;
       *)
-        echo "unknown: $OSTYPE"
+        echo "unknown"
         exit 8
       ;;
     esac
