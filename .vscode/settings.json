@@ -170,7 +170,7 @@
         "window.zoomLevel": 0,
         "workbench.colorTheme": "Yitzchok (rainglow)"
     },
-    "sonarlint.testFilePattern": "{**/test/**,**/*test*,**/*Test*,**/rexo/**}",
+    "sonarlint.testFilePattern": "{**/test/**,**/*test*,**/*Test*,**/.deps/**}",
     "sonarlint.pathToCompileCommands": "${workspaceFolder}/config/compile_commands.json",
     "editor.useTabStops": false,
     "editor.insertSpaces": true,
@@ -494,7 +494,7 @@
     "sonarlint.pathToNodeExecutable": "C:/Program Files/nodejs/node.exe",
     "cmake.debugConfig": {
         "MIMode": "gdb",
-        "miDebuggerPath": "c:/msys64/ucrt64/bin/gdb.exe",
+        "miDebuggerPath": "/c/msys64/ucrt64/bin/gdb.exe",
         "setupCommands": [
             {
                 "description": "Enable pretty-printing for lldb",
