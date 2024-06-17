@@ -25,7 +25,7 @@ install="$1"
 
 . "${pwd}/bin/scripts/load.sh"
 
-if [[ "${install}" == "" || "${install}" == "--help" ]]; then
+if [[ "${install}" == "--help" ]]; then
     help
     exit
 fi

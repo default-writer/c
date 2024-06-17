@@ -24,7 +24,9 @@ source=$(pwd)
 
 pwd=$(cd "$(dirname $(dirname $(dirname "${BASH_SOURCE[0]}")))" &> /dev/null && pwd)
 
-if [ -f "${pwd}/.args" ]; then args=$(cat "${pwd}/.args"); fi
+. "${pwd}/bin/scripts/load.sh"
+
+if [ -f "${pwd}/.args" ]; then args=$(get-args); fi
 
 "${pwd}/bin/config.sh" $args
 
