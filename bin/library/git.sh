@@ -21,7 +21,7 @@ function submodule-install() {
     git submodule add -f $1 $2 # &>/dev/null || print
     git submodule init # || print
     git submodule update --recursive --remote # || print
-    git pull --recurse-submodules . --quiet # || print
+    git pull --recurse-submodules $(pwd) --quiet # || print
 }
 
 function submodule-uninstall() {

@@ -99,7 +99,7 @@ while (($#)); do
             ;;
 
         "--clangd") # installs clangd 17.0.3 system wide
-            wget "https://apt.llvm.org/llvm.sh" -qO "/tmp/llvm.sh"
+            curl -L "https://apt.llvm.org/llvm.sh" -o "/tmp/llvm.sh"
             chmod u+x /tmp/llvm.sh
             /tmp/llvm.sh 17
             rm -r /tmp/llvm.sh
@@ -137,7 +137,7 @@ while (($#)); do
 
         "--powershell") # installs powershell
             update ${updateflags}
-            apt install -y wget apt-transport-https software-properties-common
+            apt install -y wget curl apt-transport-https software-properties-common
             curl -sL "https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb" -o /tmp/packages-microsoft-prod.deb
             dpkg -i /tmp/packages-microsoft-prod.deb
             apt update -y
@@ -303,7 +303,7 @@ while (($#)); do
 
         "--cmake") # installs cmake
             update ${updateflags}
-            apt install -y --no-install-recommends curl ca-certificates git build-essential lldb lcov cmake clangd clang-format g++ gcc gdb lcov ninja-build bison
+            apt install -y --no-install-recommends valgrind curl ca-certificates git build-essential lldb lcov cmake clangd clang-format g++ gcc gdb lcov ninja-build bison
             upgrade ${updgradeflags}
             ;;
 

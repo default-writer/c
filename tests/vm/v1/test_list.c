@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   12 December 2023 at 23:37:54 GMT+3
+ *   June 17, 2024 at 9:31:32 PM GMT+3
  *
  */
 /*
@@ -24,8 +24,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "../../test.h"
-#include "../.deps/rexo/include/rexo.h"
+#include "test.h"
 
 #include "list/list_v1.h"
 #include "std/macros.h"

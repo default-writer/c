@@ -65,7 +65,7 @@ while (($#)); do
         "--clangd") # installs clangd 17.0.3
             [[ ! -d "${pwd}/.tools" ]] && mkdir "${pwd}/.tools"
             [[ ! -d "${pwd}/.tools/clangd_17.0.3" ]] && mkdir "${pwd}/.tools/clangd_17.0.3"
-            wget https://github.com/clangd/clangd/releases/download/17.0.3/clangd-linux-17.0.3.zip -qO "/tmp/clangd-linux-17.0.3.zip"
+            curl -L https://github.com/clangd/clangd/releases/download/17.0.3/clangd-linux-17.0.3.zip -o "/tmp/clangd-linux-17.0.3.zip"
             unzip -o -q "/tmp/clangd-linux-17.0.3.zip" -d "/tmp"
             cp -r "/tmp/clangd_17.0.3/." "${pwd}/.tools/clangd_17.0.3"
             rm -rf "/tmp/clangd-linux-17.0.3"
@@ -75,10 +75,9 @@ while (($#)); do
         "--cmake") # installs cmake
             [[ ! -d "${pwd}/.tools" ]] && mkdir "${pwd}/.tools"
             [[ ! -d "${pwd}/.tools/cmake-3.25" ]] && mkdir "${pwd}/.tools/cmake-3.25"
-            wget https://github.com/Kitware/CMake/releases/download/v3.25.3/cmake-3.25.3-linux-x86_64.sh -qO "/tmp/cmake-3.25.3-linux-x86_64.sh"
-            chmod +x "/tmp/cmake-3.25.3-linux-x86_64.sh"
-            DEBIAN_FRONTEND=noninteractive /tmp/cmake-3.25.3-linux-x86_64.sh --prefix=${pwd}/.tools/cmake-3.25 --skip-license
-            rm "/tmp/cmake-3.25.3-linux-x86_64.sh"
+            [[ ! -f "${pwd}/.tools/cmake-3.25.3-linux-x86_64.sh" ]] && curl -L https://github.com/Kitware/CMake/releases/download/v3.25.3/cmake-3.25.3-linux-x86_64.sh -o "${pwd}/.tools/cmake-3.25.3-linux-x86_64.sh"
+            [[ ! -f "${pwd}/.tools/cmake-3.25/bin/cmake" ]] && (chmod +x "${pwd}/.tools/cmake-3.25.3-linux-x86_64.sh"; DEBIAN_FRONTEND=noninteractive "${pwd}/.tools/cmake-3.25.3-linux-x86_64.sh" --prefix="${pwd}/.tools/cmake-3.25" --skip-license)
+            rm "${pwd}/.tools/cmake-3.25.3-linux-x86_64.sh"
             ;;
 
         "--bazel") # installs bazel using bazelisk

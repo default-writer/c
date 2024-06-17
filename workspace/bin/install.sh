@@ -45,14 +45,6 @@ while (($#)); do
             hooks="--hooks"
             ;;
 
-        "--clangd") # installs clangd
-            clangd="--clangd"
-            ;;
-
-        "--cmake") # installs cmake
-            cmake="--cmake"
-            ;;
-
         "--submodule-rexo") # installs rexo
             rexo="--submodule-rexo"
             ;;
@@ -84,17 +76,11 @@ done
 if [[ "${source}" == "all" || "${hooks}" == "--hooks" ]]; then
     "${pwd}/bin/utils/install.sh" --hooks
 fi
-if [[ "${source}" == "all" || "${clangd}" == "--clangd" ]]; then
-    "${pwd}/bin/utils/install.sh" --clangd
-fi
-if [[ "${source}" == "all" || "${cmake}" == "--cmake" ]]; then
-    "${pwd}/bin/utils/install.sh" --cmake
+if [[ "${source}" == "all" || "${rexo}" == "--submodule-rexo" ]]; then
+    "${pwd}/bin/utils/install.sh" --submodule-rexo
 fi
 if [[ "${source}" == "all" || "${musl}" == "--submodule-musl" ]]; then
     "${pwd}/bin/utils/install.sh" --submodule-musl
-fi
-if [[ "${source}" == "all" || "${rexo}" == "--submodule-rexo" ]]; then
-    "${pwd}/bin/utils/install.sh" --submodule-rexo
 fi
 if [[ "${source}" == "all" || "${vcpkg}" == "--submodule-vcpkg" ]]; then
     "${pwd}/bin/utils/install.sh" --submodule-vcpkg

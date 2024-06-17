@@ -46,7 +46,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
 
     set(STANDARD
         -save-temps
-        -std=gnu89
+        -std=gnu99
         -fgnu89-inline
     )
 
@@ -295,6 +295,8 @@ set(TESTS_SRC_VM_V1 tests/vm/v1/test_vm_v1.c)
 set(TESTS_SRC_VM_V1 tests/vm/v1/test_vm_v1.c)
 set(MAIN_TESTS_VM1_SOURCE tests/vm/v1/main-tests_v1.c)
 
+include_directories(.deps)
+include_directories(tests)
 include_directories(src)
 
 add_library(cmemory SHARED ${LIB_MEMORY_SOURCE})
