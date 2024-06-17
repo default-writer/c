@@ -146,9 +146,6 @@ done
 export MAKEFLAGS=-j8
 export LD_LIBRARY_PATH="${pwd}/lib"
 
-echo CMAKE_C_COMPILER:FILEPATH=$(get-cmake-c-compiler-path)
-echo CMAKE_CXX_COMPILER:FILEPATH=$(get-cmake-cxx-compiler-path)
-
 cat << EOF
 ${cmake} \
     -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
@@ -175,11 +172,12 @@ for config in ${targets[@]}; do
     target="${config}"
     echo building ${target}
     echo options "$(cmake-options)"
-    echo cmake --build "${build}" --target "${target}"
-    ${cmake} --build "${build}" --target "${target}" --verbose 2>&1 || (echo ERROR: "${target}" && exit 1)
+    ${cmake} --build "${build}" --target "${target}" 2>&1 || (echo ERROR: "${target}" && exit 1)
     case "${target}" in
         c-*) ;& main-*) ;& test-*)
-            timeout --foreground 180 $(cmake-valgrind-options) "${build}/${target}" 2>&1 >"${output}/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
+            if [ ! "$(cat /proc/version | grep -c MSYS)" == "1" ] && [ ! "$(cat /proc/version | grep -c MINGW64)" == "1" ]; then
+                timeout --foreground 180 $(cmake-valgrind-options) "${build}/${target}" 2>&1 >"${output}/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
+            fi
             ;;
         *)
             ;;

@@ -12,10 +12,6 @@ if [[ "${BASHOPTS}" != *extdebug* ]]; then
     trap 'err_report $LINENO' ERR
 fi
 
-source=$(pwd)
-
-pwd=$(cd "$(dirname $(dirname $(dirname "${BASH_SOURCE[0]}")))" &> /dev/null && pwd)
-
 function get-cwd() {
     local pwd
     local source
@@ -28,6 +24,16 @@ function get-cwd() {
     fi
 
     echo ${pwd}
+}
+
+function get-exclusions() {
+    local line
+    local array
+    local result
+    while read -r line; do
+        array=$(echo "${array} $line")
+    done < ${pwd}/.config/.ignore
+    echo $array
 }
 
 function get-cmake() {
@@ -384,6 +390,7 @@ function cmake-valgrind-options() {
     fi
 }
 export -f get-cwd
+export -f get-exclusions
 export -f get-cmake
 export -f get-targets
 export -f get-linked-targets
