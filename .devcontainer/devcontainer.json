@@ -154,7 +154,8 @@
         "dangmai.workspace-default-settings",
         "Swellaby.workspace-config-plus",
         "modular-mojotools.vscode-mojo",
-        "TheRepoClub.fileheadergenerator"
+        "therepoclub.fileheadergenerator",
+        "usernamehw.errorlens"
       ]
     }
   }

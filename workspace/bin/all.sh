@@ -23,12 +23,6 @@ if [[ "${BASHOPTS}" != *extdebug* ]]; then
     trap 'err_report $LINENO' ERR
 fi
 
-uid=$(id -u)
-
-if [ "${uid}" -eq 0 ]; then
-    echo "Please run as user"
-    exit
-fi
 
 install="$1"
 

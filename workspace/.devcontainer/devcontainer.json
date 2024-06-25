@@ -149,12 +149,12 @@
         "huizhou.githd",
         "saber2pr.file-git-history",
         "rogalmic.bash-debug",
-        "CircleCI.circleci",
         "franmastromarino.vs-code-settings-os",
         "dangmai.workspace-default-settings",
         "Swellaby.workspace-config-plus",
         "modular-mojotools.vscode-mojo",
-        "TheRepoClub.fileheadergenerator"
+        "therepoclub.fileheadergenerator",
+        "usernamehw.errorlens"
       ]
     }
   }

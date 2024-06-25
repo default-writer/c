@@ -1,6 +1,5 @@
 {
   "recommendations": [
-    "rogalmic.bash-debug",
-    "circleci.circleci"
+    "rogalmic.bash-debug"
   ]
 }

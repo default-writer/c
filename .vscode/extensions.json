@@ -43,10 +43,10 @@
     "donjayamanne.githistory",
     "guodongsun.vscode-git-cruise",
     "rogalmic.bash-debug",
-    "circleci.circleci",
     "franmastromarino.vs-code-settings-os",
     "dangmai.workspace-default-settings",
     "swellaby.workspace-config-plus",
-    "therepoclub.fileheadergenerator"
+    "therepoclub.fileheadergenerator",
+    "usernamehw.errorlens"
   ]
 }

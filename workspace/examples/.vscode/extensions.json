@@ -1,7 +1,7 @@
 {
   "recommendations": [
     "rogalmic.bash-debug",
-    "circleci.circleci",
-    "therepoclub.fileheadergenerator"
+    "therepoclub.fileheadergenerator",
+    "usernamehw.errorlens"
   ]
 }
