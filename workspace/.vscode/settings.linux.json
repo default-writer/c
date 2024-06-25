@@ -1,3 +1,0 @@
-{
-  "clangd.path": "${workspaceFolder}/.tools/clangd_17.0.3/bin/clangd"
-}

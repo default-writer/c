@@ -2,9 +2,9 @@
 
 - Install [MSys2](https://www.msys2.org/docs/cmake/)
 
-- Install [Node.js](https://nodejs.org/en/download/prebuilt-installer)
+- (optionally) Install [Node.js](https://nodejs.org/en/download/prebuilt-installer)
 
-- Install  packages `cmake` `ninja` `clang` (MSYS2)
+- Install  packages using msys shell (MSYS2)
 
 ```bash
 pacman -S --noconfirm \
@@ -20,10 +20,20 @@ pacman -S --noconfirm \
     mingw-w64-clang-x86_64-cmake \
     mingw-w64-clang-x86_64-lcov \
     mingw-w64-clang-x86_64-gdb \
+    mingw-w64-clang-x86_64-clang-tools-extra \
+    mingw-w64-ucrt-x86_64-clang-tools-extra \
     cmake ninja clang lcov gdb
 ```
 
-- Add paths UCRT binaries/libraries at the top to the *system* variable (PATH)
+- Add paths to UCRT binaries/libraries (C:\msys64\ucrt64\bin) at the top to the *system* variable (PATH)
+
+    - Add to the top of PATH environment variables value `C:\msys64\clang64\bin` (clang64)
+
+    or
+
+    - Add to the top of PATH environment variables value `C:\msys64\clang64\bin` (ucrt64)
+
+- Run ./bin/init.sh --init (MSYS2)
 
 ```cmd
 set PATH="C:\msys64\ucrt64;C:\msys64\ucrt64\bin;C:\msys64\ucrt64\include;C:\msys64\ucrt64\lib;%PATH%"
