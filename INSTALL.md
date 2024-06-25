@@ -20,6 +20,8 @@ pacman -S --noconfirm \
     mingw-w64-clang-x86_64-cmake \
     mingw-w64-clang-x86_64-lcov \
     mingw-w64-clang-x86_64-gdb \
+    mingw-w64-clang-x86_64-clang-tools-extra \
+    mingw-w64-ucrt-x86_64-clang-tools-extra \
     cmake ninja clang lcov gdb
 ```
 
