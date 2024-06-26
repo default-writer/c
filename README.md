@@ -6,7 +6,6 @@
 
 [![C/C++ CI](https://github.com/default-writer/c/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/default-writer/c/actions/workflows/c-cpp.yml)
 [![Coverage Status](https://coveralls.io/repos/github/default-writer/c/badge.svg?branch=main)](https://coveralls.io/github/default-writer/c?branch=main)
-[![CircleCI](https://dl.circleci.com/status-badge/img/circleci/C6PKDRUL4dCmkCCGNrzJtW/J8nSQS5AHbmKiWnLaBUB1U/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/circleci/C6PKDRUL4dCmkCCGNrzJtW/J8nSQS5AHbmKiWnLaBUB1U/tree/main)
 
 ## description
 
