@@ -17,3 +17,6 @@ jobs:
       run: ./bin/init.sh --init --setup --optional
     - name: coverage
       run: ./bin/coverageall.sh --all
+    - name: Coveralls GitHub Action
+      uses: coverallsapp/github-action@v2.3.0
+ 
