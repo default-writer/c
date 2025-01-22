@@ -239,7 +239,7 @@ support this project [become a sponsor](https://opencollective.com/c-vm#sponsor)
 - Q: Ninja generator not known (windows build)
 - A: Download and Set Up Ninja Ninja for Windows
 
-  1. Download the latest version from the official GitHub [releases]([ninja]) page
+  1. Download the latest version from the official GitHub [releases][ninja] page
   2. Look for the ninja-win.zip file under the "Assets" section of the latest release.
   3. Extract the ninja.exe file from the zip archive.
   4. Create a new directory (e.g., C:\Tools\Ninja) and add it to your PATH.
