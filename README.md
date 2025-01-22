@@ -1,6 +1,6 @@
 # c project description
 
-<a href="" target="blank"><img style='height:128px' src='./resources/ecommerce.png'></a>
+<a href="" target="blank"><img alt="lib" style='height:128px' src='./resources/ecommerce.png'></a>
 
 ## status
 
@@ -59,7 +59,7 @@ int main(void) {
 
 ## brief
 
-<a href="" target="blank"><img style='height:128px' src='./resources/api.png'></a>
+<a href="" target="blank"><img alt="lib" style='height:128px' src='./resources/api.png'></a>
 
 - VM managed types / C API
 
@@ -82,7 +82,7 @@ int main(void) {
 
 ## media links
 
-<a href="" target="blank"><img style='height:128px' src='./resources/data-science.png'></a>
+<a href="" target="blank"><img alt="lib" style='height:128px' src='./resources/data-science.png'></a>
 
 - streaming channels
 
@@ -97,7 +97,7 @@ int main(void) {
 
 ## updates
 
-<a href="" target="blank"><img style='height:128px' src='./resources/checklist.png'></a>
+<a href="" target="blank"><img alt="lib" style='height:128px' src='./resources/checklist.png'></a>
 
 - 2023
 
@@ -110,7 +110,7 @@ int main(void) {
 
 ## features
 
-<a href="" target="blank"><img style='height:128px' src='./resources/global-distribution.png'></a>
+<a href="" target="blank"><img alt="lib" style='height:128px' src='./resources/global-distribution.png'></a>
 
 - `List<T>` implementations
 - code coverage
@@ -121,7 +121,7 @@ int main(void) {
 
 ## readme
 
-<a href="" target="blank"><img style='height:128px' src='./resources/digital-library.png'></a>
+<a href="" target="blank"><img alt="lib" style='height:128px' src='./resources/digital-library.png'></a>
 
 repo is ready to run on containers, WSL, remote hosts.
 
@@ -144,7 +144,7 @@ git clone https://github.com/default-writer/c.git
 
 ## containers
 
-<a href="" target="blank"><img style='height:128px' src='./resources/digital-library.png'></a>
+<a href="" target="blank"><img alt="lib" style='height:128px' src='./resources/digital-library.png'></a>
 
 ### manual installation (minimal install)
 
@@ -166,7 +166,7 @@ Sets up primary/optional tools and git hooks
 
 ## GTK GUI app development
 
-<a href="" target="blank"><img style='height:128px' src='./resources/digital-library.png'></a>
+<a href="" target="blank"><img alt="lib" style='height:128px' src='./resources/digital-library.png'></a>
 
 ### setup
 
@@ -200,7 +200,7 @@ UI_MODE=--ui ./build/gtk-experiment1
 
 ## history
 
-<a href="" target="blank"><img style='height:128px' src='./resources/digital-library.png'></a>
+<a href="" target="blank"><img alt="lib" style='height:128px' src='./resources/digital-library.png'></a>
 
 ## local repos
 
@@ -234,9 +234,20 @@ support this project [become a sponsor](https://opencollective.com/c-vm#sponsor)
 - ./bin/init.sh --optional
 ```
 
+## FAQ
+
+- Q: Ninja generator not known (windows build)
+- A: Download and Set Up Ninja Ninja for Windows
+
+  1. Download the latest version from the official GitHub [releases]([ninja]) page
+  2. Look for the ninja-win.zip file under the "Assets" section of the latest release.
+  3. Extract the ninja.exe file from the zip archive.
+  4. Create a new directory (e.g., C:\Tools\Ninja) and add it to your PATH.
+  5. Place ninja.exe in a directory that is included in your system's PATH.
+
 ## doxygen generated documentation
 
-<a href="" target="blank"><img style='height:128px' src='./resources/digital-library.png'></a>
+<a href="" target="blank"><img alt="lib" style='height:128px' src='./resources/digital-library.png'></a>
 
 [C API](docs/refman.pdf) PDF([refman.pdf][refman])
 
@@ -251,7 +262,7 @@ support this project [become a sponsor](https://opencollective.com/c-vm#sponsor)
 
 ## resources
 
-<a href="" target="blank"><img style='height:128px' src='./resources/digital-library.png'></a>
+<a href="" target="blank"><img alt="lib" style='height:128px' src='./resources/digital-library.png'></a>
 
 - [ubuntu](https://icons8.com/icon/63208/ubuntu") icon by [icons8](https://icons8.com)
 - [vectorsmarket15](https://www.flaticon.com/authors/vectorsmarket15)
@@ -260,7 +271,7 @@ support this project [become a sponsor](https://opencollective.com/c-vm#sponsor)
 
 ## links
 
-<a href="" target="blank"><img style='height:128px' src='./resources/digital-library.png'></a>
+<a href="" target="blank"><img alt="lib" style='height:128px' src='./resources/digital-library.png'></a>
 
 - [git](https://git-scm.com)
 - [pyenv](https://github.com/pyenv/pyenv)
@@ -272,7 +283,7 @@ support this project [become a sponsor](https://opencollective.com/c-vm#sponsor)
 
 ## requirements
 
-<a href="" target="blank"><img style='height:128px' src='./resources/digital-library.png'></a>
+<a href="" target="blank"><img alt="lib" style='height:128px' src='./resources/digital-library.png'></a>
 
 - [rexo](https://github.com/christophercrouzet/rexo)
 
@@ -287,3 +298,4 @@ support this project [become a sponsor](https://opencollective.com/c-vm#sponsor)
 [history]: docs/pdf/history.pdf
 [scripts]: docs/pdf/scripts.pdf
 [labs]: docs/pdf/labs.pdf
+[ninja]: https://github.com/ninja-build/ninja/releases
