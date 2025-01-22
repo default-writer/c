@@ -53,8 +53,8 @@
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/cmake",
             "cacheVariables": {
-                "CMAKE_C_COMPILER": "gcc",
-                "CMAKE_CXX_COMPILER": "g++",
+                "CMAKE_C_COMPILER": "cl.exe",
+                "CMAKE_CXX_COMPILER": "cl.exe",
                 "CMAKE_BUILD_TYPE": "Debug",
                 "CONFIG_VM_DEBUG_INFO": {
                     "type": "BOOL",
