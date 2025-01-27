@@ -42,8 +42,8 @@ while (($#)); do
             git config --global --unset pull.rebase
             ;;
 
-        "--submodule-rexo") # uninstalls rexoas git submodule
-            submodule-uninstall ${pwd} .deps/rexo
+        "--submodule-rexo") # uninstalls rexo as git submodule
+            submodule-uninstall ${pwd} .rexo
             ;;
 
         "--submodule-musl") # uninstalls muslas git submodule
@@ -54,7 +54,7 @@ while (($#)); do
             submodule-uninstall ${pwd} .deps/vcpkg
             ;;
 
-        "--submodule-raylib") # uninstalls rexo as raylib submodule
+        "--submodule-raylib") # uninstalls raylib as git submodule
             submodule-uninstall ${pwd} .deps/raylib
             ;;
 
