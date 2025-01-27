@@ -23,7 +23,7 @@ function submodule-install() {
         git submodule add -f "$1" "$2" 2>&1 >/dev/null
         git submodule init 2>&1 >/dev/null
         git submodule update --recursive --remote 2>&1 >/dev/null
-        git pull --recurse-submodules --quiet 2>&1 >/dev/null
+        git pull origin main --recurse-submodules --quiet 2>&1 >/dev/null
     fi
 }
 
