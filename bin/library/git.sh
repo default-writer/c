@@ -36,7 +36,6 @@ function submodule-uninstall() {
         git submodule deinit -f "$2"
         rm -rf "${pwd}/.git/modules/$2"
         rm -r "${pwd}/$2"
-        git reset --head
     fi
 }
 
