@@ -53,6 +53,10 @@ while (($#)); do
             clangd="--clangd"
             ;;
 
+        "--lcov") # installs lcov
+            lcov="--lcov"
+            ;;
+
         "--cmake") # installs cmake
             cmake="--cmake"
             ;;
@@ -104,6 +108,10 @@ fi
 
 if [[ "${clangd}" == "--clangd" ]]; then
     "${pwd}/bin/utils/install.sh" --clangd
+fi
+
+if [[ "${lcov}" == "--lcov" ]]; then
+    sudo "${pwd}/bin/utils/install.sh" --lcov
 fi
 
 if [[ "${cmake}" == "--cmake" ]]; then

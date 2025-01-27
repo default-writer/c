@@ -8,6 +8,10 @@ err_report() {
     exit 8
 }
 
+print() {
+    echo "$0:$*"
+}
+
 if [[ "${BASHOPTS}" != *extdebug* ]]; then
     trap 'err_report $LINENO' ERR
 fi
@@ -17,19 +21,24 @@ source=$(pwd)
 pwd=$(cd "$(dirname $(dirname $(dirname "${BASH_SOURCE[0]}")))" &> /dev/null && pwd)
 
 function submodule-install() {
-    [ -d $2 ] && rm -rf $2
-    git submodule add -f $1 $2 # &>/dev/null || print
-    git submodule init # || print
-    git submodule update --recursive --remote # || print
-    git pull --recurse-submodules $(pwd) --quiet # || print
+    if [ -d "$2" ]; then
+        rm -rf "$2" || { echo "Failed to remove directory: $2"; exit 8; }
+    fi
+
+    git submodule add -f "$1" "$2" &>/dev/null || { echo "Failed to add submodule: $1"; exit 8; }
+    git submodule init || { echo "Failed to initialize submodule"; exit 8; }
+    git submodule update --recursive --remote || { echo "Failed to update submodule"; exit 8; }
+    git pull --recurse-submodules --quiet || { echo "Failed to pull with submodules"; exit 8; }
 }
 
 function submodule-uninstall() {
-    [ -d $2 ] && rm -rf $2
-    git submodule deinit -f $2 &>/dev/null || print
-    rm -rf .git/modules/$2 &>/dev/null || print
-    git rm -f $2 &>/dev/null || print
-    rm -rf $1/$2 || print
+    if [ -d "$2" ]; then
+        rm -rf "$2" || { echo "Failed to remove directory: $2"; exit 8; }
+    fi
+    git submodule deinit -f "$2" &>/dev/null || { echo "Failed to deinitialize submodule: $2"; exit 8; }
+    rm -rf ".git/modules/$2" &>/dev/null || { echo "Failed to remove .git/modules/$2"; exit 8; }
+    git rm -f "$2" &>/dev/null || { echo "Failed to remove submodule from index: $2"; exit 8; }
+    rm -rf "$1/$2" || { echo "Failed to remove directory: $1/$2"; exit 8; }
 }
 
 export -f submodule-install

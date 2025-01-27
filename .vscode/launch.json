@@ -7,20 +7,14 @@
     {
       "type": "bashdb",
       "request": "launch",
-      "name": "bash-debug",
+      "name": "coverage",
       "terminalKind": "integrated",
       "cwd": "${workspaceFolder}",
-      // "program": "./bin/src.sh",
-      // "args": ["--target", "src/examples/substrings/main.c"]
-      "program": "./bin/build.sh",
+      "program": "./bin/utils/coverage.sh",
       "args": [
-        "--all",
+        "--target=main-tests-vm1",
+        "--dir=build/coverage-v1",
       ]
-      // "args": [
-      //   "--all",
-      //   "--index",
-      //   "3"
-      // ]
     },
   ]
 }
