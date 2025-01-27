@@ -20,10 +20,9 @@ function submodule-install() {
 }
 
 function submodule-uninstall() {
-    git submodule deinit -f "$2" &>/dev/null
+    [[ -d  ".git/modules/$2" ]] && git submodule deinit -f "$2" &>/dev/null
     rm -rf ".git/modules/$2" &>/dev/null
-    rm -rf "$2"
-    rm -rf "$1/$2"
+    rm -rf "$2" &>/dev/null
 }
 
 
