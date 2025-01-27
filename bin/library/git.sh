@@ -24,6 +24,7 @@ function submodule-install() {
     git submodule add -f "$1" "$2" &>/dev/null || { echo "Failed to add submodule: $1"; return 1; }
     git submodule init || { echo "Failed to initialize submodule"; return 1; }
     git submodule update --recursive --remote || { echo "Failed to update submodule"; return 1; }
+    git submodule set-branch --default main
     git pull --recurse-submodules --quiet || { echo "Failed to pull with submodules"; return 1; }
     if [ ! -d "$2" ]; then
         git add "$2" -f
