@@ -31,7 +31,9 @@ function submodule-install() {
 }
 
 function submodule-uninstall() {
-    git submodule deinit -f "$2" &>/dev/null || { echo "Failed to deinitialize submodule: $2"; return 1; }
+    if [[ -d ".git/modules/$2" ]]; then
+        git submodule deinit -f "$2" &>/dev/null || { echo "Failed to deinitialize submodule: $2"; return 1; }
+    fi
     if [[ -d ".git/modules/$2" ]]; then
         rm -rf ".git/modules/$2" &>/dev/null || { echo "Failed to remove .git/modules/$2"; return 1; }
     fi
