@@ -299,6 +299,8 @@ include_directories(.deps)
 include_directories(tests)
 include_directories(src)
 
+include_directories(.rexo/include)
+
 add_library(cmemory SHARED ${LIB_MEMORY_SOURCE})
 add_library(clist SHARED ${LIB_LIST_SOURCE})
 add_library(ctypes SHARED ${LIB_STD_TYPES1_SOURCE})
