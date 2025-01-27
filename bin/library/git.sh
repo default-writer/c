@@ -8,23 +8,37 @@ err_report() {
     exit 8
 }
 
+pwd=$(pwd)
+
 if [[ "${BASHOPTS}" != *extdebug* ]]; then
     trap 'err_report $LINENO' ERR
 fi
 
 function submodule-install() {
-    git submodule add -f "$1" "$2" &>/dev/null
-    git submodule init
-    git submodule update --recursive --remote
-    git pull --recurse-submodules --quiet
+    local pwd
+
+    pwd=$(get-cwd)
+
+    if [[ ! -d  "${pwd}/.git/modules/$2" ]]; then
+        git submodule add -f "$1" "$2"
+        git submodule init
+        git submodule update --recursive --remote
+        git pull --recurse-submodules --quiet
+    fi
 }
 
 function submodule-uninstall() {
-    [[ -d  ".git/modules/$2" ]] && git submodule deinit -f "$2" &>/dev/null
-    rm -rf ".git/modules/$2" &>/dev/null
-    rm -rf "$2" &>/dev/null
-}
+    local pwd
 
+    pwd=$(get-cwd)
+
+    if [[ -d  "${pwd}/.git/modules/$2" ]]; then
+        git submodule deinit -f "$2"
+        rm -rf "${pwd}/.git/modules/$2"
+        rm -r "${pwd}/$2"
+        git reset --head
+    fi
+}
 
 export -f submodule-install
 export -f submodule-uninstall

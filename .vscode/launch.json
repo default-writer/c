@@ -7,13 +7,12 @@
     {
       "type": "bashdb",
       "request": "launch",
-      "name": "coverage",
+      "name": "submodule-uninstall",
       "terminalKind": "integrated",
       "cwd": "${workspaceFolder}",
-      "program": "./bin/utils/coverage.sh",
+      "program": "./bin/utils/uninstall.sh",
       "args": [
-        "--target=main-tests-vm1",
-        "--dir=build/coverage-v1",
+        "--submodule-rexo"
       ]
     },
   ]
