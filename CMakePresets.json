@@ -18,11 +18,11 @@
                 "CMAKE_BUILD_TYPE": "Debug",
                 "CONFIG_VM_DEBUG_INFO": {
                     "type": "BOOL",
-                    "value": "ON"
+                    "value": "OFF"
                 },
                 "CONFIG_MEMORY_DEBUG_INFO": {
                     "type": "BOOL",
-                    "value": "ON"
+                    "value": "OFF"
                 },
                 "CONFIG_MEMORY_CLEANUP": {
                     "type": "BOOL",
