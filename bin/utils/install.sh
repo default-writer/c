@@ -127,7 +127,7 @@ while (($#)); do
             ;;
 
         "--submodule-rexo") # installs rexo as git submodule
-            submodule-install https://github.com/default-writer/rexo.git .deps/rexo
+            submodule-install https://github.com/default-writer/rexo.git .rexo
             ;;
 
         "--submodule-musl") # installs musl as git submodule

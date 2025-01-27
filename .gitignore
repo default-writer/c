@@ -33,6 +33,8 @@
 chud.log
 
 # Directories
+!.deps/rexo
+.deps*/
 gh*/
 vcpkg*/
 node_modules*/
