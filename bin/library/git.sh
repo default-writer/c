@@ -17,6 +17,10 @@ source=$(pwd)
 pwd=$(cd "$(dirname $(dirname $(dirname "${BASH_SOURCE[0]}")))" &> /dev/null && pwd)
 
 function submodule-install() {
+    if [ -d "$2" ]; then
+        rm -rf "$2" || { echo "Failed to remove directory: $2"; err_report; }
+    fi
+
     git submodule add -f "$1" "$2" &>/dev/null || { echo "Failed to add submodule: $1"; return 1; }
     git submodule init || { echo "Failed to initialize submodule"; return 1; }
     git submodule update --recursive --remote || { echo "Failed to update submodule"; return 1; }
@@ -27,7 +31,9 @@ function submodule-install() {
 }
 
 function submodule-uninstall() {
-    git submodule deinit -f "$2" &>/dev/null || { echo "Failed to deinitialize submodule: $2"; return 1; }
+    if [[ -d ".git/modules/$2" ]]; then
+        git submodule deinit -f "$2" &>/dev/null || { echo "Failed to deinitialize submodule: $2"; return 1; }
+    fi
     if [[ -d ".git/modules/$2" ]]; then
         rm -rf ".git/modules/$2" &>/dev/null || { echo "Failed to remove .git/modules/$2"; return 1; }
     fi
