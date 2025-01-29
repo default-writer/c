@@ -98,10 +98,10 @@ while (($#)); do
             echo /usr/lib/wsl/lib2 | tee /etc/ld.so.conf.d/ld.wsl.conf
             ;;
 
-        "--clangd") # installs clangd 17.0.3 system wide
+        "--clangd") # installs llvm 18 system wide
             curl -L "https://apt.llvm.org/llvm.sh" -o "/tmp/llvm.sh"
             chmod u+x /tmp/llvm.sh
-            /tmp/llvm.sh 17
+            /tmp/llvm.sh 18
             rm -r /tmp/llvm.sh
             ;;
 

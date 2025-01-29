@@ -47,7 +47,7 @@ struct list_v1 {
     void* (*pop)(struct list_data** current);
     /* peek item on current context (stack) */
     void* (*peek)(struct list_data** current);
-#ifdef USE_VM_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     /* print head */
     void (*print_head)(struct list_data** current);
     /* print */

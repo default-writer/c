@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   January 30, 2024 at 4:57:55 PM GMT+3
+ *   January 29, 2025 at 5:11:05 PM GMT+3
  *
  */
 /*
@@ -86,7 +86,7 @@ static struct vm_state* state = &vm_state;
 
 static void vm_init(struct vm**, u64 size);
 static void vm_destroy(struct vm**);
-#if defined(VM_MEMORY_DEBUG_INFO)
+#ifdef USE_MEMORY_DEBUG_INFO
 static void vm_dump(void);
 static void vm_dump_ref(void);
 #endif
@@ -104,11 +104,9 @@ static struct pointer** vm_alloc_internal(u64* address, struct vm_data** target)
 static void virtual_enumerator_init(void);
 static void virtual_enumerator_destroy(void);
 static void virtual_enumerator_init_internal(struct vm* ptr);
-#if defined(VM_MEMORY_DEBUG_INFO)
-static void virtual_enumerator_destroy_internal(void);
-#endif
 static void** virtual_enumerator_next_internal(void);
-#if defined(VM_ALLOC_DEBUG_INFO)
+#ifdef USE_MEMORY_DEBUG_INFO
+static void virtual_enumerator_destroy_internal(void);
 static struct pointer* virtual_enumerator_pointer_next_internal(void);
 #endif
 
@@ -177,7 +175,7 @@ static void virtual_enumerator_init_internal(struct vm* ptr) {
     state->ptr = vm_data_ptr->bp;
 }
 
-#if defined(VM_MEMORY_DEBUG_INFO)
+#ifdef USE_MEMORY_DEBUG_INFO
 static void virtual_enumerator_destroy_internal(void) {
     state->vm = 0;
     state->ptr = 0;
@@ -231,7 +229,7 @@ static void vm_destroy(struct vm** ptr) {
     vm->tail = 0;
 }
 
-#if defined(VM_MEMORY_DEBUG_INFO)
+#ifdef USE_MEMORY_DEBUG_INFO
 static void vm_dump(void) {
     virtual_enumerator_init_internal(vm);
     struct pointer* ptr = 0;
@@ -264,10 +262,8 @@ static void vm_free(const struct pointer* ptr) {
         vm_pointer_ptr->vm = pointer_v1->vm(ptr);
         list_v1->push(cache, vm_pointer_ptr);
 #endif
-#ifdef USE_VM_DEBUG_INFO
-#if defined(VM_ALLOC_DEBUG_INFO)
+#ifdef USE_MEMORY_DEBUG_INFO
         printf("  >-: %016llx ! %016llx > %016llx\n", pointer_v1->address(ptr), (u64)ptr, (u64)data);
-#endif
 #endif
         *data = 0;
     }
@@ -289,10 +285,8 @@ static struct pointer* vm_read_type(u64 address, u64 id) {
     if (!pointer_v1->read_type(ptr, id)) {
         return 0;
     }
-#ifdef USE_VM_DEBUG_INFO
-#if defined(VM_ACCESS_DEBUG_INFO)
-    printf("  <v: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)data);
-#endif
+#ifdef USE_MEMORY_DEBUG_INFO
+    printf("  ?v: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)data);
 #endif
     return ptr;
 }
@@ -310,10 +304,8 @@ static struct pointer* vm_read(u64 address) {
     if (ptr == 0) {
         return 0;
     }
-#ifdef USE_VM_DEBUG_INFO
-#if defined(VM_ACCESS_DEBUG_INFO)
-    printf("  <v: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)data);
-#endif
+#ifdef USE_MEMORY_DEBUG_INFO
+    printf("  !v: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)data);
 #endif
     return ptr;
 }
@@ -327,15 +319,13 @@ static u64 vm_alloc(struct pointer* ptr) {
     struct pointer** data = vm_alloc_internal(&address, &target);
     *data = ptr;
     pointer_v1->write(ptr, target, address);
-#ifdef USE_VM_DEBUG_INFO
-#if defined(VM_ALLOC_DEBUG_INFO)
+#ifdef USE_MEMORY_DEBUG_INFO
     printf("  >+: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)data);
-#endif
 #endif
     return address;
 }
 
-#if defined(VM_ALLOC_DEBUG_INFO)
+#ifdef USE_MEMORY_DEBUG_INFO
 static struct pointer* virtual_enumerator_pointer_next_internal(void) {
     struct pointer* data = 0;
     struct vm_data* vm_data_ptr = state->vm;
@@ -397,7 +387,7 @@ const struct virtual_methods_v1 virtual_methods_definition_v1 = {
     .enumerator_init = virtual_enumerator_init,
     .enumerator_destroy = virtual_enumerator_destroy,
     .enumerator_next = virtual_enumerator_next,
-#if defined(VM_MEMORY_DEBUG_INFO)
+#ifdef USE_MEMORY_DEBUG_INFO
     .dump = vm_dump,
     .dump_ref = vm_dump_ref
 #endif

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   January 30, 2024 at 4:58:21 PM GMT+3
+ *   January 29, 2025 at 5:13:51 PM GMT+3
  *
  */
 /*
@@ -35,10 +35,6 @@
 #include "vm/v1/vm_type.h"
 #include "vm/v1/vm_v1.h"
 #include "vm/vm_type.h"
-
-#if defined(USE_MEMORY_DEBUG_INFO)
-#define VM_GLOBAL_DEBUG_INFO
-#endif
 
 #define DEFAULT_SIZE 0x100
 #define POINTER_SIZE sizeof(struct pointer)
@@ -80,7 +76,7 @@ extern void object_init(void);
 static struct vm* vm;
 static struct vm_types* default_types;
 
-#if defined(VM_MEMORY_DEBUG_INFO)
+#ifdef USE_MEMORY_DEBUG_INFO
 static void pointer_dump(struct pointer* ptr);
 static void pointer_dump_ref(void** ptr);
 #endif
@@ -132,7 +128,7 @@ static u64 vm_types_init(u64 id, const struct vm_type* data_type) {
 }
 
 static void INIT vm_init(void) {
-#if defined(VM_GLOBAL_DEBUG_INFO)
+#ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();
 #endif
 }
@@ -143,7 +139,7 @@ static void DESTROY vm_destroy(void) {
         generic_memory_v1->free(vm_types, sizeof(struct vm_types));
         vm_types = prev;
     }
-#if defined(VM_GLOBAL_DEBUG_INFO)
+#ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();
 #endif
 }
@@ -277,7 +273,7 @@ static void pointer_destroy(void) {
 }
 
 static void pointer_gc(void) {
-#if defined(VM_MEMORY_DEBUG_INFO)
+#ifdef USE_MEMORY_DEBUG_INFO
     virtual_v1->dump_ref();
     virtual_v1->dump();
 #endif
@@ -290,7 +286,7 @@ static void pointer_gc(void) {
     virtual_v1->enumerator_destroy();
 }
 
-#if defined(VM_MEMORY_DEBUG_INFO)
+#ifdef USE_MEMORY_DEBUG_INFO
 static void pointer_dump(struct pointer* ptr) {
     printf("   ^: %016llx > %016llx\n", (u64)ptr, (u64)ptr->data);
 }
@@ -320,7 +316,7 @@ const struct pointer_methods_v1 pointer_methods_definition_v1 = {
     .read = pointer_read,
     .read_type = pointer_read_type,
     .write = pointer_write,
-#if defined(VM_MEMORY_DEBUG_INFO)
+#ifdef USE_MEMORY_DEBUG_INFO
     .dump = pointer_dump,
     .dump_ref = pointer_dump_ref,
 #endif

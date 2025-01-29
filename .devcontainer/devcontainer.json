@@ -1,5 +1,5 @@
 {
-  "name": "C++",
+  "name": "C Project",
   // Update the 'dockerComposeFile' list if you have more compose files or use different names.
   "dockerComposeFile": "docker-compose.yml",
   // The 'service' property is the name of the service for the container that VS Code should
@@ -11,6 +11,13 @@
   // Set *default* container specific settings.json values on container create.
   "customizations": {
     "vscode": {
+      "build": {
+        "dockerfile": "Dockerfile",
+        "args": {
+          "USER_NAME": "vscode",
+          "USER_ID": "1000"
+        }
+      },
       "settings": {
         "editor.tokenColorCustomizations": {
           "textMateRules": [

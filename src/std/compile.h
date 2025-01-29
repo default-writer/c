@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   11 December 2023 at 9:16:31 GMT+3
+ *   January 29, 2025 at 8:02:24 AM GMT+3
  *
  */
 /*
@@ -26,12 +26,6 @@
 
 #ifndef _STD_COMPILE_H_
 #define _STD_COMPILE_H_
-
-#ifdef CONFIG_VM_DEBUG_INFO
-#if CONFIG_VM_DEBUG_INFO == 1
-#define USE_VM_DEBUG_INFO
-#endif
-#endif
 
 #ifdef CONFIG_MEMORY_DEBUG_INFO
 #if CONFIG_MEMORY_DEBUG_INFO == 1

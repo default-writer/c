@@ -68,14 +68,14 @@ while (($#)); do
             rm -f "/tmp/lcov-1.16.tar.gz"
             ;;
 
-        "--clangd") # installs clangd 17.0.3
+        "--clangd") # installs clangd 19.1.2
             [[ ! -d "${pwd}/.tools" ]] && mkdir "${pwd}/.tools"
-            [[ ! -d "${pwd}/.tools/clangd_17.0.3" ]] && mkdir "${pwd}/.tools/clangd_17.0.3"
-            curl -L https://github.com/clangd/clangd/releases/download/17.0.3/clangd-linux-17.0.3.zip -o "/tmp/clangd-linux-17.0.3.zip"
-            unzip -o -q "/tmp/clangd-linux-17.0.3.zip" -d "/tmp"
-            cp -r "/tmp/clangd_17.0.3/." "${pwd}/.tools/clangd_17.0.3"
-            rm -rf "/tmp/clangd-linux-17.0.3"
-            rm -f "/tmp/clangd-linux-17.0.3.zip"
+            [[ ! -d "${pwd}/.tools/clangd_19.1.2" ]] && mkdir "${pwd}/.tools/clangd_19.1.2"
+            curl -L https://github.com/clangd/clangd/releases/download/19.1.2/clangd-linux-19.1.2.zip -o "/tmp/clangd-linux-19.1.2.zip"
+            unzip -o -q "/tmp/clangd-linux-19.1.2.zip" -d "/tmp"
+            cp -r "/tmp/clangd_19.1.2/." "${pwd}/.tools/clangd"
+            rm -rf "/tmp/clangd-linux-19.1.2"
+            rm -f "/tmp/clangd-linux-19.1.2.zip"
             ;;
 
         "--cmake") # installs cmake

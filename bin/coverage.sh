@@ -79,10 +79,6 @@ while (($#)); do
             debug="--debug"
             ;;
 
-        "--vm-debug") # [optional] runs using vm debug messaging
-            vm_debug="--vm-debug"
-            ;;
-
         "--index="*) # [optional] uses sharding coverage tests
             index="${1#*=}"
             opts=( "${@:2}" )

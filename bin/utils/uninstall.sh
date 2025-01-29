@@ -29,7 +29,7 @@ install="$1"
 while (($#)); do
     case "$1" in
 
-        "--clangd") # uninstalls clangd 17.0.3
+        "--clangd") # uninstalls clangd
             rm -rf "${pwd}/.tools/clangd"
             ;;
 

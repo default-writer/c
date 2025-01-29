@@ -323,7 +323,6 @@
         "**/gtk/**": true
     },
     "cmake.configureArgs": [
-        "CONFIG_VM_DEBUG_INFO",
         "CONFIG_MEMORY_DEBUG_INFO",
         "CONFIG_MEMORY_CLEANUP"
     ],
@@ -342,7 +341,7 @@
         "--clang-tidy",
         "--fallback-style=WebKit"
     ],
-    "clangd.path": "${workspaceFolder}/.tools/clangd_17.0.3/bin/clangd",
+    "clangd.path": "${workspaceFolder}/.tools/clangd/bin/clangd",
     "clangd.checkUpdates": true,
     "clangd.restartAfterCrash": true,
     "clangd.onConfigChanged": "restart",

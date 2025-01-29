@@ -23,7 +23,9 @@
       "name": "x86-Debug",
       "generator": "Ninja",
       "configurationType": "Debug",
-      "inheritEnvironments": ["vcpkg"],
+      "inheritEnvironments": [
+        "vcpkg"
+      ],
       "buildRoot": "${env.BuildDir}\\${name}",
       "installRoot": "${env.InstallDir}\\${name}",
       "addressSanitizerEnabled": false,
@@ -31,11 +33,6 @@
       "buildCommandArgs": "-v",
       "ctestCommandArgs": "",
       "variables": [
-        {
-          "name": "CONFIG_VM_DEBUG_INFO",
-          "value": "ON",
-          "type": "BOOL"
-        },
         {
           "name": "CONFIG_MEMORY_DEBUG_INFO",
           "value": "ON",
@@ -50,7 +47,7 @@
           "name": "CONFIG_GC",
           "value": "OFF",
           "type": "BOOL"
-        },        
+        },
         {
           "name": "CODE_SANITIZER",
           "value": "OFF",
@@ -63,18 +60,15 @@
       "name": "x86-Release",
       "generator": "Ninja",
       "configurationType": "RelWithDebInfo",
-      "inheritEnvironments": ["vcpkg"],
+      "inheritEnvironments": [
+        "vcpkg"
+      ],
       "buildRoot": "${env.BuildDir}\\${name}",
       "installRoot": "${env.InstallDir}\\${name}",
       "cmakeCommandArgs": "",
       "buildCommandArgs": "-v",
       "ctestCommandArgs": "",
       "variables": [
-        {
-          "name": "CONFIG_VM_DEBUG_INFO",
-          "value": "ON",
-          "type": "BOOL"
-        },
         {
           "name": "CONFIG_MEMORY_DEBUG_INFO",
           "value": "ON",
@@ -89,7 +83,7 @@
           "name": "CONFIG_GC",
           "value": "OFF",
           "type": "BOOL"
-        },        
+        },
         {
           "name": "CODE_SANITIZER",
           "value": "OFF",
@@ -102,18 +96,15 @@
       "name": "x64-Debug",
       "generator": "Ninja",
       "configurationType": "Debug",
-      "inheritEnvironments": ["vcpkg"],
+      "inheritEnvironments": [
+        "vcpkg"
+      ],
       "buildRoot": "${env.BuildDir}\\${name}",
       "installRoot": "${env.InstallDir}\\${name}",
       "cmakeCommandArgs": "",
       "buildCommandArgs": "-v",
       "ctestCommandArgs": "",
       "variables": [
-        {
-          "name": "CONFIG_VM_DEBUG_INFO",
-          "value": "ON",
-          "type": "BOOL"
-        },
         {
           "name": "CONFIG_MEMORY_DEBUG_INFO",
           "value": "ON",
@@ -128,7 +119,7 @@
           "name": "CONFIG_GC",
           "value": "OFF",
           "type": "BOOL"
-        },        
+        },
         {
           "name": "CODE_SANITIZER",
           "value": "OFF",
@@ -141,7 +132,9 @@
       "name": "x64-Release",
       "generator": "Ninja",
       "configurationType": "RelWithDebInfo",
-      "inheritEnvironments": ["vcpkg"],
+      "inheritEnvironments": [
+        "vcpkg"
+      ],
       "buildRoot": "${env.BuildDir}\\${name}",
       "installRoot": "${env.InstallDir}\\${name}",
       "cmakeCommandArgs": "",
@@ -149,11 +142,6 @@
       "ctestCommandArgs": "",
       "addressSanitizerEnabled": false,
       "variables": [
-        {
-          "name": "CONFIG_VM_DEBUG_INFO",
-          "value": "ON",
-          "type": "BOOL"
-        },
         {
           "name": "CONFIG_MEMORY_DEBUG_INFO",
           "value": "ON",
