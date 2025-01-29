@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   12 December 2023 at 22:08:57 GMT+3
+ *   January 29, 2025 at 5:14:09 PM GMT+3
  *
  */
 /*
@@ -52,7 +52,7 @@ struct pointer_methods_v1 {
     void* (*read)(const struct pointer* ptr);
     u64 (*read_type)(const struct pointer* ptr, u64 id);
     void (*write)(struct pointer* ptr, struct vm_data* vm, u64 address);
-#if defined(VM_MEMORY_DEBUG_INFO)
+#ifdef USE_MEMORY_DEBUG_INFO
     void (*dump)(struct pointer* ptr);
     void (*dump_ref)(void** ptr);
 #endif

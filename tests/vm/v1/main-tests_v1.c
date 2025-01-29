@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   January 30, 2024 at 4:56:43 PM GMT+3
+ *   January 29, 2025 at 5:13:46 PM GMT+3
  *
  */
 /*
@@ -63,17 +63,13 @@ static void INIT init() {
 
 int main(int argc, char** argv) {
 #ifdef USE_MEMORY_DEBUG_INFO
-#if defined(VM_GLOBAL_DEBUG_INFO)
     global_statistics();
-#endif
 #endif
     TEST_RUN(list_micro_result, list_micro_tests);
     TEST_RUN(vm_v1_result, vm_v1_tests);
     TEST_RUN(pointer_v1_result, pointer_tests);
 #ifdef USE_MEMORY_DEBUG_INFO
-#if defined(VM_GLOBAL_DEBUG_INFO)
     global_statistics();
-#endif
 #endif
     return list_micro_result | vm_v1_result | pointer_v1_result;
 }

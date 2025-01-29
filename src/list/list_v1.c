@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   January 30, 2024 at 4:58:09 PM GMT+3
+ *   January 29, 2025 at 7:16:12 AM GMT+3
  *
  */
 /*
@@ -42,7 +42,7 @@ static void* list_pop(struct list_data** current);
 static void* list_peek(struct list_data** current);
 static void list_init(struct list_data** current);
 static void list_destroy(struct list_data** current);
-#ifdef USE_VM_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
 static void list_print_head(struct list_data** current);
 static void list_print(struct list_data** current);
 #endif
@@ -175,7 +175,7 @@ static void list_destroy(struct list_data** current) {
     *current = 0;
 }
 
-#ifdef USE_VM_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
 
 /* prints head on current context (stack) */
 static void list_print_head(struct list_data** current) {
@@ -215,7 +215,7 @@ const struct list_v1 list_definition_v1 = {
     .push = list_push,
     .pop = list_pop,
     .peek = list_peek,
-#ifdef USE_VM_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     .print_head = list_print_head,
     .print = list_print
 #endif

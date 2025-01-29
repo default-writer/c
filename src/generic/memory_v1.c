@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   January 30, 2024 at 4:57:49 PM GMT+3
+ *   January 29, 2025 at 5:09:37 PM GMT+3
  *
  */
 /*
@@ -56,26 +56,23 @@ static void* memory_alloc(u64 size) {
 #ifdef USE_MEMORY_DEBUG_INFO
         total_alloc += size;
         base->used = total_alloc - total_free;
-#if defined(VM_ALLOC_DEBUG_INFO)
         printf("   +: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_alloc, total_free);
-#endif
 #endif
     }
     return ptr;
 }
 
-static void memory_free(void* ptr, u64 size) {
+static void memory_free(void* old_ptr, u64 size) {
+    void* ptr = old_ptr;
     if (ptr != 0) {
 #ifdef USE_MEMORY_CLEANUP
         memory_set(ptr, 0, size); /* NOLINT */
 #endif
-        free(ptr);
 #ifdef USE_MEMORY_DEBUG_INFO
         total_free += size;
-#if defined(VM_ALLOC_DEBUG_INFO)
         printf("   -: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_alloc, total_free);
 #endif
-#endif
+        free(ptr);
     }
 }
 
@@ -84,13 +81,8 @@ static void* memory_realloc(void* old_ptr, u64 size, u64 new_size) {
     if (ptr != 0 && new_size > size) {
         ptr = realloc(ptr, new_size);
 #ifdef USE_MEMORY_DEBUG_INFO
-#if defined(VM_ALLOC_DEBUG_INFO)
-        printf("   -: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_alloc, total_free);
-#endif
         total_alloc += new_size - size;
-#if defined(VM_ALLOC_DEBUG_INFO)
-        printf("   +: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_alloc, total_free);
-#endif
+        printf("  -+: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_alloc, total_free);
 #endif
     }
     return ptr;

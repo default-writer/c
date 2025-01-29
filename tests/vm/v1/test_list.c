@@ -78,42 +78,42 @@ static void tests(struct list_data** current) {
     RX_ASSERT(0 == is_null[0]);
     RX_ASSERT(0 == is_null[1]);
     list_v1->push(current, payload);
-#ifdef USE_VM_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_v1->print_head(current);
 #endif
     list_v1->push(current, ++payload);
-#ifdef USE_VM_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_v1->print_head(current);
 #endif
     list_v1->push(current, ++payload);
-#ifdef USE_VM_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_v1->print_head(current);
 #endif
     list_v1->push(current, ++payload);
-#ifdef USE_VM_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_v1->print_head(current);
 #endif
     list_v1->push(current, ++payload);
-#ifdef USE_VM_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_v1->print_head(current);
 #endif
-#ifdef USE_VM_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_v1->print(current);
 #endif
     const void* q_peek0 = list_v1->peek(current);
     CLEAN(q_peek0)
     void* q_pop0 = list_v1->pop(current);
-#ifdef USE_VM_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_v1->print(current);
 #endif
     const void* q_pop1 = list_v1->pop(current);
     CLEAN(q_pop1)
-#ifdef USE_VM_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_v1->print(current);
 #endif
     const void* q_pop2 = list_v1->pop(current);
     CLEAN(q_pop2)
-#ifdef USE_VM_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_v1->print(current);
 #endif
     const void* q_peek1 = list_v1->peek(current);
@@ -126,33 +126,33 @@ static void tests(struct list_data** current) {
     RX_ASSERT(q_peek1 == q_peek3);
     const void* q_pop4 = list_v1->pop(current);
     CLEAN(q_pop4)
-#ifdef USE_VM_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_v1->print(current);
 #endif
     const void* q_pop5 = list_v1->pop(current);
     CLEAN(q_pop5)
-#ifdef USE_VM_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_v1->print(current);
 #endif
     const void* q_peek4 = list_v1->peek(current);
     list_v1->push(current, q_pop0);
     CLEAN(q_peek4)
-#ifdef USE_VM_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_v1->print(current);
 #endif
     const void* q_pop6 = list_v1->pop(current);
     CLEAN(q_pop6)
-#ifdef USE_VM_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_v1->print(current);
 #endif
     const void* q_pop7 = list_v1->pop(current);
     CLEAN(q_pop7)
-#ifdef USE_VM_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_v1->print(current);
 #endif
     const void* q_peek5 = list_v1->peek(current);
     CLEAN(q_peek5)
-#ifdef USE_VM_DEBUG_INFO
+#ifdef USE_MEMORY_DEBUG_INFO
     list_v1->print(current);
 #endif
 }

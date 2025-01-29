@@ -16,10 +16,6 @@
                 "CMAKE_C_COMPILER": "/usr/bin/gcc",
                 "CMAKE_CXX_COMPILER": "/usr/bin/g++",
                 "CMAKE_BUILD_TYPE": "Debug",
-                "CONFIG_VM_DEBUG_INFO": {
-                    "type": "BOOL",
-                    "value": "OFF"
-                },
                 "CONFIG_MEMORY_DEBUG_INFO": {
                     "type": "BOOL",
                     "value": "OFF"
@@ -56,10 +52,6 @@
                 "CMAKE_C_COMPILER": "cl.exe",
                 "CMAKE_CXX_COMPILER": "cl.exe",
                 "CMAKE_BUILD_TYPE": "Debug",
-                "CONFIG_VM_DEBUG_INFO": {
-                    "type": "BOOL",
-                    "value": "ON"
-                },
                 "CONFIG_MEMORY_DEBUG_INFO": {
                     "type": "BOOL",
                     "value": "ON"
@@ -97,10 +89,6 @@
                 "CMAKE_C_COMPILER": "/usr/bin/clang-17",
                 "CMAKE_CXX_COMPILER": "/usr/bin/clang++-17",
                 "CMAKE_BUILD_TYPE": "Debug",
-                "CONFIG_VM_DEBUG_INFO": {
-                    "type": "BOOL",
-                    "value": "ON"
-                },
                 "CONFIG_MEMORY_DEBUG_INFO": {
                     "type": "BOOL",
                     "value": "ON"

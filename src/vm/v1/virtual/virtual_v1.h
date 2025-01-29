@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   11 December 2023 at 9:15:15 GMT+3
+ *   January 29, 2025 at 7:04:48 AM GMT+3
  *
  */
 /*
@@ -46,7 +46,7 @@ struct virtual_methods_v1 {
     void (*enumerator_init)(void);
     void (*enumerator_destroy)(void);
     u64 (*enumerator_next)(void);
-#if defined(VM_MEMORY_DEBUG_INFO)
+#ifdef USE_MEMORY_DEBUG_INFO
     void (*dump)(void);
     void (*dump_ref)(void);
 #endif

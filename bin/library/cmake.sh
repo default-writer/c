@@ -328,10 +328,6 @@ function get-options() {
                 debug="--debug"
                 ;;
 
-            "--vm-debug") # [optional] runs using vm debug messaging
-                vm_debug="--vm-debug"
-                ;;
-
             "--help") # [optional] shows command description
                 help="--help"
                 ;;
@@ -351,7 +347,6 @@ function cmake-options() {
     local mocks_options
     local gc_options
     local verbose_options
-    local vm_debug_options
 
     if [ "${sanitize}" == "--sanitize" ] && [ "${valgrind}" == "" ]; then
         sanitize_options=-DCODE_SANITIZER:BOOL=TRUE
@@ -369,11 +364,7 @@ function cmake-options() {
         debug_options=-DCONFIG_MEMORY_DEBUG_INFO:BOOL=TRUE
     fi
 
-    if [ "${vm_debug}" == "--vm-debug" ]; then
-        vm_debug_options=-DCONFIG_VM_DEBUG_INFO:BOOL=TRUE
-    fi
-
-    echo " ${sanitize_options} ${mocs_options} ${gc_options} ${debug_options} ${verbose_options} ${vm_debug_options}"
+    echo " ${sanitize_options} ${mocs_options} ${gc_options} ${debug_options} ${verbose_options}"
 }
 
 function cmake-coverage-options() {
@@ -381,7 +372,6 @@ function cmake-coverage-options() {
     local mocks_options
     local debug_options
     local verbose_options
-    local vm_debug_options
 
     if [ "${sanitize}" == "--sanitize" ] && [ "${valgrind}" == "" ]; then
         sanitize_options=-DCODE_SANITIZER:BOOL=TRUE
@@ -395,11 +385,7 @@ function cmake-coverage-options() {
         debug_options=-DCONFIG_MEMORY_DEBUG_INFO:BOOL=TRUE
     fi
 
-    if [ "${vm_debug}" == "--vm-debug" ]; then
-        vm_debug_options=-DCONFIG_VM_DEBUG_INFO:BOOL=TRUE
-    fi
-
-    echo " ${sanitize_options} ${mocs_options} ${debug_options} ${verbose_options} ${vm_debug_options}"
+    echo " ${sanitize_options} ${mocs_options} ${debug_options} ${verbose_options}"
 }
 
 function cmake-valgrind-options() {
