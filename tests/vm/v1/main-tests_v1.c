@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 2, 2025 at 7:08:36 PM GMT+3
+ *   February 2, 2025 at 8:35:33 PM GMT+3
  *
  */
 /*
@@ -57,12 +57,12 @@ static void INIT init() {
     time_t unix_timestamp = (time_t)info_v1->timestamp;
 
     // Convert Unix timestamp to a time structure
-    struct tm* timeinfo;
-    timeinfo = localtime(&unix_timestamp);
+    struct tm timeinfo;
+    localtime_r(&unix_timestamp, &timeinfo);
 
     // Format the time structure into a string
     char buffer[160];
-    strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", timeinfo);
+    strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", &timeinfo);
 
     // Print the formatted string
     printf("timestamp: %s\n", buffer);
