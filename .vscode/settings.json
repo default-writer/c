@@ -13,7 +13,7 @@
     "testFilesOnSave.languageId": "any",
     "testFilesOnSave.testCommands": [
         {
-            "c": "./bin/src.sh --target ${relativeFile}"
+            "c": "./bin/src.sh --target=${relativeFile}"
         },
         {
             "h": "./bin/docs.sh"
