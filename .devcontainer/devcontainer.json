@@ -162,7 +162,13 @@
         "Swellaby.workspace-config-plus",
         "modular-mojotools.vscode-mojo",
         "therepoclub.fileheadergenerator",
-        "usernamehw.errorlens"
+        "usernamehw.errorlens",
+        "ms-vscode.cpptools-themes",
+        "formulahendry.code-runner",
+        "ms-vscode-remote.remote-containers",
+        "gitpod.gitpod-desktop",
+        "gitpod.gitpod-flex",
+        "ms-python.python"
       ]
     }
   }

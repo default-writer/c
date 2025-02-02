@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   June 17, 2024 at 9:30:58 PM GMT+3
+ *   February 2, 2025 at 7:09:48 PM GMT+3
  *
  */
 /*
@@ -24,12 +24,19 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "test.h"
+#define RXP_DEBUG_TESTS
+// #define RX_ENABLE_EXTERNAL_LINKING
+
+#include <rexo.h>
 
 #include "vm/v1/pointer/pointer_v1.h"
 #include "vm/v1/virtual/virtual_v1.h"
 #include "vm/v1/vm_type.h"
 #include "vm/v1/vm_v1.h"
+
+#include "test_vm_v1.h"
+
+#include "../../test.h"
 
 #define DEFAULT_SIZE 0x100
 

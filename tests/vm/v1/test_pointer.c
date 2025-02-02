@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   June 17, 2024 at 9:31:28 PM GMT+3
+ *   February 2, 2025 at 7:09:45 PM GMT+3
  *
  */
 /*
@@ -25,12 +25,17 @@
 */
 
 #define RXP_DEBUG_TESTS
+// #define RX_ENABLE_EXTERNAL_LINKING
 
-#include "test.h"
+#include <rexo.h>
 
 #include "vm/v1/os/os_v1.h"
 #include "vm/v1/pointer/pointer_v1.h"
 #include "vm/v1/vm_v1.h"
+
+#include "test_pointer.h"
+
+#include "../../test.h"
 
 #define DEFAULT_SIZE 0x100
 

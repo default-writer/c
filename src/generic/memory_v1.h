@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   January 30, 2024 at 4:58:43 PM GMT+3
+ *   February 2, 2025 at 6:06:33 PM GMT+3
  *
  */
 /*
@@ -41,10 +41,11 @@ struct generic_memory_v1 {
     void (*set)(void* dest, u8 c, u64 count);
 };
 
+/* definition */
 extern const struct generic_memory_v1 generic_memory_definition_v1;
 
 /* definition */
-#if defined(INLINE)
+#ifdef INLINE
 const struct generic_memory_v1* generic_memory_v1 = &generic_memory_definition_v1;
 #else
 /* definition */

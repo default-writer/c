@@ -25,24 +25,15 @@ opts=( "${@:2}" )
 
 . "${pwd}/bin/scripts/load.sh"
 
-## Builds binaries
+## TODO: template for bash script
 ## Usage: ${script} <option> [optional]
 ## ${commands}
 
 while (($#)); do
     case "$1" in
 
-        "--all") # builds and runs all targets
-            source="all"
-            ;;
-
-        "--target="*) # builds and runs specified target
-            source=${1#*=}
-            opts=( "${@:2}" )
-            ;;
-
-        "--silent") # [optional] suppress verbose output
-            silent="--silent"
+        "--cleanup") # cleans up build/cmake/config foders
+            install="--cleanup"
             ;;
 
         "--help") # [optional] shows command description
@@ -62,15 +53,11 @@ if [[ "${install}" == "" ]]; then
     exit;
 fi
 
-COMMAND_LINE_OPTIONS=$(get-options ${opts[@]})
-if [ $? -eq 0 ]; then
-    "${pwd}/bin/build.sh" ${COMMAND_LINE_OPTIONS}
-fi
-if [ $? -eq 0 ]; then
-    "${pwd}/bin/coverage.sh" ${COMMAND_LINE_OPTIONS}
-fi
-if [ $? -eq 0 ]; then
-    "${pwd}/bin/logs.sh" ${COMMAND_LINE_OPTIONS}
+if [[ "${install}" == "--cleanup" ]]; then
+    rm -rf "${pwd}/build"
+    rm -rf "${pwd}/cmake"
+    rm -rf "${pwd}/config"
+    rm -rf "${pwd}/lib"
 fi
 
 [[ $SHLVL -gt 2 ]] || echo OK

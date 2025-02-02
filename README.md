@@ -6,6 +6,7 @@
 
 [![C/C++ CI](https://github.com/default-writer/c/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/default-writer/c/actions/workflows/c-cpp.yml)
 [![Coverage Status](https://coveralls.io/repos/github/default-writer/c/badge.svg?branch=main)](https://coveralls.io/github/default-writer/c?branch=main)
+[![Snyk](https://snyk.io/test/github/default-writer/c/badge.svg?targetFile=package.json&branch=main)](https://snyk.io/test/github/default-writer/c?targetFile=package.json&branch=main)
 
 ## description
 

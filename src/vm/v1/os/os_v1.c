@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   January 30, 2024 at 4:58:14 PM GMT+3
+ *   January 30, 2025 at 8:27:16 PM GMT+3
  *
  */
 /*
@@ -61,7 +61,9 @@ static u64 os_getenv(u64 ptr) {
 static u64 os_getcwd(void) {
     u64 data_ptr = 0;
     char* src = generic_memory_v1->alloc(PATH_MAX + 1);
-    data_ptr = type_string_v1->load(getcwd(src, PATH_MAX));
+    if (getcwd(src, PATH_MAX + 1) != 0) {
+        data_ptr = type_string_v1->load(src);
+    }
     generic_memory_v1->free(src, PATH_MAX + 1);
     return data_ptr;
 }

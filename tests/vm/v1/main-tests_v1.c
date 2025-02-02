@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   January 29, 2025 at 5:13:46 PM GMT+3
+ *   February 2, 2025 at 7:08:36 PM GMT+3
  *
  */
 /*
@@ -26,10 +26,18 @@
 
 #define RXP_DEBUG_TESTS
 
+#include <rexo.h>
+
 #include "main-tests_v1.h"
 
-#include "std/macros.h"
+#include "../../test.h"
+
+#include "test_list.h"
+#include "test_pointer.h"
+#include "test_vm_v1.h"
+
 #include "std/headers.h"
+#include "std/macros.h"
 
 #include "vm/v1/system/info_v1.h"
 #include "vm/v1/vm_v1.h"
@@ -43,7 +51,7 @@ typedef struct test_data {
 const char* commit = GIT_COMMIT_HASH;
 
 static void INIT init() {
-#if defined(GIT_COMMIT_HASH)
+#ifdef GIT_COMMIT_HASH
     printf("version: v%s\n", info_v1->version);
     // Replace the timestamp below with your Unix timestamp
     time_t unix_timestamp = (time_t)info_v1->timestamp;
@@ -60,6 +68,14 @@ static void INIT init() {
     printf("timestamp: %s\n", buffer);
 #endif
 }
+
+extern const struct test_suite list_micro_test_suite_definition_v1;
+extern const struct test_suite vm_v1_test_suite_definition_v1;
+extern const struct test_suite pointer_test_suite_definition_v1;
+
+const struct test_suite* list_micro_tests = &list_micro_test_suite_definition_v1;
+const struct test_suite* vm_v1_tests = &vm_v1_test_suite_definition_v1;
+const struct test_suite* pointer_tests = &pointer_test_suite_definition_v1;
 
 int main(int argc, char** argv) {
 #ifdef USE_MEMORY_DEBUG_INFO

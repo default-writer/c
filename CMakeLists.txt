@@ -188,18 +188,6 @@ else()
     endif()
 endif()
 
-if(CONFIG_GC)
-    if(VERBOSE)
-        message("building with garbage collector")
-    endif()
-    add_compile_definitions(CONFIG_GC)
-    add_definitions(-DCONFIG_GC)
-else()
-    if(VERBOSE)
-        message("building without garbage collector")
-    endif()
-endif()
-
 if(CODE_COVERAGE)
     if("${CMAKE_C_COMPILER_ID}" MATCHES "(Apple)?[Cc]lang" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "(Apple)?[Cc]lang")
         if(VERBOSE)
@@ -281,36 +269,40 @@ set(LIB_STD_INFO1_SOURCE
 set(TESTS_SRC_LIST tests/vm/v1/test_list.c)
 set(TESTS_SRC_POINTER tests/vm/v1/test_pointer.c)
 set(TESTS_SRC_VM_V1 tests/vm/v1/test_vm_v1.c)
-set(TESTS_SRC_VM_V1 tests/vm/v1/test_vm_v1.c)
 set(MAIN_TESTS_VM1_SOURCE tests/vm/v1/main-tests_v1.c)
 
-include_directories(.deps)
 include_directories(tests)
 include_directories(src)
-
 include_directories(.rexo/include)
 
+add_library(cinfo SHARED ${LIB_STD_INFO1_SOURCE})
 add_library(cmemory SHARED ${LIB_MEMORY_SOURCE})
 add_library(clist SHARED ${LIB_LIST_SOURCE})
 add_library(ctypes SHARED ${LIB_STD_TYPES1_SOURCE})
-add_library(cinfo SHARED ${LIB_STD_INFO1_SOURCE})
-
-# test
-add_library(tests-vm-v1 STATIC 
+add_library(ctests SHARED
     ${TESTS_SRC_LIST}
     ${TESTS_SRC_POINTER}
-    ${TESTS_SRC_VM_V1})
+    ${TESTS_SRC_VM_V1}
+)
 
 # main 
-add_executable(main-tests-vm1 ${MAIN_TESTS_VM1_SOURCE})
+add_executable(main-tests-vm1
+    ${MAIN_TESTS_VM1_SOURCE}
+)
 
 # test
-target_link_libraries(tests-vm-v1 PRIVATE ctypes clist cmemory)
 target_link_libraries(clist PRIVATE cmemory)
-target_link_libraries(ctypes PRIVATE clist cmemory cinfo)
+target_link_libraries(ctypes PRIVATE cinfo cmemory clist)
+target_link_libraries(ctests PRIVATE ctypes clist)
 
 # main
-target_link_libraries(main-tests-vm1 PRIVATE ctypes clist cmemory cinfo tests-vm-v1)
+target_link_libraries(main-tests-vm1 PRIVATE
+    cinfo
+    cmemory
+    clist
+    ctypes 
+    ctests
+)
 
 configure_file(all_english_words.txt ${CMAKE_BINARY_DIR}/all_english_words.txt COPYONLY)
 configure_file(file.txt ${CMAKE_BINARY_DIR}/file.txt COPYONLY)

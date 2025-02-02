@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   January 30, 2025 at 12:02:24 PM GMT+3
+ *   February 2, 2025 at 7:09:16 PM GMT+3
  *
  */
 /*
@@ -24,23 +24,17 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _STD_HEADERS_H_
-#define _STD_HEADERS_H_
+#ifndef _TEST_POINTER_H_
+#define _TEST_POINTER_H_
 
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
+#define RXP_DEBUG_TESTS
 
-#ifdef _WIN32
-#include <windows.h>
-#define PATH_MAX MAX_PATH
+struct test_suite;
+
+#ifdef INLINE
+static const struct test_suite pointer_test_suite_definition_v1;
 #else
-#include <sys/time.h>
-#include <unistd.h>
+extern const struct test_suite pointer_test_suite_definition_v1;
 #endif
 
-#include <limits.h>
-#include <string.h>
-#include <time.h>
-
-#endif /* _STD_HEADERS_H_ */
+#endif /* _TEST_POINTER_H_ */

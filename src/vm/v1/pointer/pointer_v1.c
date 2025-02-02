@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   January 29, 2025 at 5:13:51 PM GMT+3
+ *   January 29, 2025 at 10:31:27 PM GMT+3
  *
  */
 /*
@@ -251,7 +251,6 @@ static void pointer_init(u64 size) {
     data_init();
     string_init();
     string_pointer_init();
-    string_ref_init();
     file_init();
     list_init();
     object_init();
