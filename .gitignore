@@ -25,6 +25,9 @@
 *.la
 *.a
 *.lib
+*.exp
+*.pdb
+*.ilk
 
 # Executables
 *.exe
@@ -80,4 +83,3 @@ src/compile_commands.json
 Testing
 
 src/std/version.h
-

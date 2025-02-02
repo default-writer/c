@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   June 17, 2024 at 9:31:32 PM GMT+3
+ *   February 2, 2025 at 7:09:41 PM GMT+3
  *
  */
 /*
@@ -24,7 +24,12 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "test.h"
+#define RXP_DEBUG_TESTS
+// #define RX_ENABLE_EXTERNAL_LINKING
+
+#include <rexo.h>
+
+#include "../../test.h"
 
 #include "list/list_v1.h"
 #include "std/macros.h"
@@ -448,6 +453,6 @@ static int run(void) {
     return result;
 }
 
-const struct test_suite list_micro_test_suite_definition_v1 = {
+const test_suite list_micro_test_suite_definition_v1 = {
     .run = run
 };

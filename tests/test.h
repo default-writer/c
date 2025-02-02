@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   January 27, 2025 at 9:50:38 AM GMT+3
+ *   February 2, 2025 at 7:06:14 PM GMT+3
  *
  */
 /*
@@ -29,11 +29,9 @@
 
 #define RXP_DEBUG_TESTS
 
-#include "rexo.h"
-
-struct test_suite {
+typedef struct test_suite {
     int (*run)(void);
-};
+} test_suite;
 
 #define TEST_RUN(variable, expression)           \
     int test_run_##variable = expression->run(); \

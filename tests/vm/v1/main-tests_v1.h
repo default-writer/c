@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   June 17, 2024 at 9:31:37 PM GMT+3
+ *   February 2, 2025 at 7:09:32 PM GMT+3
  *
  */
 /*
@@ -27,16 +27,7 @@
 #ifndef _MAIN_TESTS_V1_H_
 #define _MAIN_TESTS_V1_H_
 
-#include "test.h"
-
-/* definition */
-extern const struct test_suite list_micro_test_suite_definition_v1;
-extern const struct test_suite vm_v1_test_suite_definition_v1;
-extern const struct test_suite pointer_test_suite_definition_v1;
-
-/* definition */
-static const struct test_suite* list_micro_tests = &list_micro_test_suite_definition_v1;
-static const struct test_suite* vm_v1_tests = &vm_v1_test_suite_definition_v1;
-static const struct test_suite* pointer_tests = &pointer_test_suite_definition_v1;
+#define RXP_DEBUG_TESTS
+// #define RX_ENABLE_EXTERNAL_LINKING
 
 #endif /* _MAIN_TESTS_V1_H_ */

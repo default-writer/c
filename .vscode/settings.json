@@ -298,7 +298,7 @@
             }
         ]
     },
-    "editor.defaultFormatter": "vscode.json-language-features",
+    "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
     "files.insertFinalNewline": true,
     "[c]": {
         "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
@@ -322,10 +322,6 @@
         "**/logs/**": true,
         "**/gtk/**": true
     },
-    "cmake.configureArgs": [
-        "CONFIG_MEMORY_DEBUG_INFO",
-        "CONFIG_MEMORY_CLEANUP"
-    ],
     "clangd.fallbackFlags": [
         "-I${workspaceFolder}/src",
         "-Isrc"

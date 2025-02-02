@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   11 December 2023 at 9:15:15 GMT+3
+ *   February 2, 2025 at 3:51:46 PM GMT+3
  *
  */
 /*
@@ -32,7 +32,7 @@
         ptr = 0;    \
     }
 
-#if defined(__GNUC__)
+#ifdef __GNUC__
 #define FALL_THROUGH __attribute__((fallthrough))
 #define ATTRIBUTE
 #define INIT __attribute__((constructor))
