@@ -36,5 +36,5 @@ RUN useradd -m docker && echo "docker:docker" | chpasswd && adduser docker sudo
 USER ${USER_NAME}
 WORKDIR /workspace
 
-COPY --chown=${USER_NAME}:${USER_GROUP} --chmod=755 . .
+COPY --chown=root:root --chmod=755 . .
 RUN /workspace/bin/init.sh --init --lcov --setup --optional
