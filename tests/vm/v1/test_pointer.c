@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 3, 2025 at 10:17:20 PM GMT+3
+ *   February 3, 2025 at 10:49:56 PM GMT+3
  *
  */
 /*
@@ -764,12 +764,12 @@ RX_TEST_CASE(tests_v1, test_string_match_list, .fixture = test_fixture) {
 RX_TEST_CASE(tests_v1, test_string_pointer_strchr, .fixture = test_fixture) {
     pointer_v1->init(8);
     u64 list_ptr = stack_v1->alloc();
-    u64 string_ptr = type_string_v1->load("192.168.0.1");
+    u64 string_ptr = type_string_v1->load("a.b.c/2");
     u64 dot_ptr = type_string_v1->load(".");
     u64 string_pointer_ptr1 = type_string_v1->strchr(string_ptr, dot_ptr);
     u64 string_pointer_ptr2 = type_string_v1->match(string_pointer_ptr1, dot_ptr);
-    RX_ASSERT(strcmp(type_string_v1->unsafe(string_pointer_ptr1), ".168.0.1") == 0);
-    RX_ASSERT(strcmp(type_string_v1->unsafe(string_pointer_ptr2), "168.0.1") == 0);
+    RX_ASSERT(strcmp(type_string_v1->unsafe(string_pointer_ptr1), ".b.c/2") == 0);
+    RX_ASSERT(strcmp(type_string_v1->unsafe(string_pointer_ptr2), "b.c/2") == 0);
     stack_v1->push(list_ptr, string_pointer_ptr1);
     stack_v1->push(list_ptr, string_pointer_ptr2);
     stack_v1->push(list_ptr, string_ptr);
