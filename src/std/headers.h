@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 3, 2025 at 5:08:16 PM GMT+3
+ *   February 3, 2025 at 10:27:17 PM GMT+3
  *
  */
 /*
@@ -30,8 +30,6 @@
 #define USING_HEADERS
 
 #include <stdint.h>
-// #include <stdio.h>
-// #include <stdlib.h>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -42,7 +40,5 @@
 #endif
 
 #include <limits.h>
-// #include <string.h>
-// #include <time.h>
 
 #endif /* _STD_HEADERS_H_ */
