@@ -119,7 +119,6 @@ if [[ "${cmake}" == "--cmake" ]]; then
 fi
 
 if [[ "${init}" == "--init" ]]; then
-    sudo "${pwd}/bin/utils/install.sh" --lcov
     "${pwd}/bin/utils/install.sh" --submodule-rexo
     "${pwd}/bin/utils/init.sh" --all
 fi

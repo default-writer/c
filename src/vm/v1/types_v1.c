@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   June 12, 2024 at 8:37:52 PM GMT+3
+ *   February 3, 2025 at 9:07:11 PM GMT+3
  *
  */
 /*
@@ -24,19 +24,21 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#define USING_VM_V1
+
 #include "types_v1.h"
 
 #include "std/api.h"
 
+#include "vm/v1/types/data/data_v1.h"
 #include "vm/v1/vm_v1.h"
 
 /* public */
-const struct type_methods type_methods_definition_v1 = {
-    .data = &data_methods_definition_v1,
-    .list = &list_methods_definition_v1,
-    .file = &file_methods_definition_v1,
-    .object = &object_methods_definition_v1,
-    .string = &string_methods_definition_v1,
-    .string_pointer = &string_pointer_methods_definition_v1,
-    .user = &user_methods_definition_v1
+const type_methods PRIVATE_API(type_methods_definition) = {
+    .data = &PRIVATE_API(data_methods_definition),
+    .file = &PRIVATE_API(file_methods_definition),
+    .object = &PRIVATE_API(object_methods_definition),
+    .string = &PRIVATE_API(string_methods_definition),
+    .string_pointer = &PRIVATE_API(string_pointer_methods_definition),
+    .user = &PRIVATE_API(user_methods_definition)
 };

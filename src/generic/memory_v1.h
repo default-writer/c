@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 2, 2025 at 6:06:33 PM GMT+3
+ *   February 3, 2025 at 5:33:37 PM GMT+3
  *
  */
 /*
@@ -27,29 +27,32 @@
 #ifndef _GENERIC_MEMORY_H_
 #define _GENERIC_MEMORY_H_
 
-#include "std/compile.h"
-#include "std/data.h"
+#include "std/api.h"
 
 #ifdef USE_MEMORY_DEBUG_INFO
 extern void global_statistics(void);
 #endif
 
-struct generic_memory_v1 {
+typedef struct PRIVATE_API(generic_memory) generic_memory;
+
+struct PRIVATE_API(generic_memory) {
     void* (*alloc)(u64 size);
     void (*free)(void* ptr, u64 size);
     void* (*realloc)(void* old_ptr, u64 size, u64 new_size);
+#ifdef USE_MEMORY_DEBUG_INFO
     void (*set)(void* dest, u8 c, u64 count);
+#endif
 };
 
 /* definition */
-extern const struct generic_memory_v1 generic_memory_definition_v1;
+extern const generic_memory PRIVATE_API(generic_memory_definition);
 
 /* definition */
 #ifdef INLINE
-const struct generic_memory_v1* generic_memory_v1 = &generic_memory_definition_v1;
+const generic_memory* generic_memory_v1 = &PRIVATE_API(generic_memory_definition);
 #else
 /* definition */
-static const struct generic_memory_v1* generic_memory_v1 = &generic_memory_definition_v1;
+static const generic_memory* generic_memory_v1 = &PRIVATE_API(generic_memory_definition);
 #endif
 
 #endif /* _GENERIC_MEMORY_H_ */

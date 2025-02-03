@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 2, 2025 at 8:49:21 PM GMT+3
+ *   February 3, 2025 at 10:17:07 PM GMT+3
  *
  */
 /*
@@ -24,18 +24,14 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#define RXP_DEBUG_TESTS
+#include "test_vm_v1.h"
 
-#include <rexo.h>
-
+#include "vm/v1/options/options_v1.h"
 #include "vm/v1/pointer/pointer_v1.h"
+#include "vm/v1/types/stack/stack_v1.h"
 #include "vm/v1/virtual/virtual_v1.h"
 #include "vm/v1/vm_type.h"
 #include "vm/v1/vm_v1.h"
-
-#include "test_vm_v1.h"
-
-#include "../../test.h"
 
 #define DEFAULT_SIZE 0x100
 
@@ -207,8 +203,8 @@ RX_FIXTURE(test_pointer_fixture, TEST_POINTER_DATA, .set_up = test_pointer_set_u
 /* test init */
 RX_TEST_CASE(tests, test_list, .fixture = test_pointer_fixture) {
     pointer_v1->init(8);
-    u64 list_ptr = type_list_v1->alloc();
-    type_list_v1->free(list_ptr);
+    u64 list_ptr = stack_v1->alloc();
+    stack_v1->free(list_ptr);
     pointer_v1->gc();
     pointer_v1->destroy();
 }
@@ -216,11 +212,11 @@ RX_TEST_CASE(tests, test_list, .fixture = test_pointer_fixture) {
 /* test init */
 RX_TEST_CASE(tests, test_list_user, .fixture = test_pointer_fixture) {
     pointer_v1->init(8);
-    u64 list_ptr = type_list_v1->alloc();
+    u64 list_ptr = stack_v1->alloc();
     u64 user_ptr = type_user_v1->alloc();
-    type_list_v1->push(list_ptr, user_ptr);
+    stack_v1->push(list_ptr, user_ptr);
     type_user_v1->free(user_ptr);
-    type_list_v1->free(list_ptr);
+    stack_v1->free(list_ptr);
     pointer_v1->gc();
     pointer_v1->destroy();
 }
@@ -228,11 +224,11 @@ RX_TEST_CASE(tests, test_list_user, .fixture = test_pointer_fixture) {
 /* test init */
 RX_TEST_CASE(tests, test_list_data, .fixture = test_pointer_fixture) {
     pointer_v1->init(8);
-    u64 list_ptr = type_list_v1->alloc();
+    u64 list_ptr = stack_v1->alloc();
     u64 data_ptr = type_data_v1->alloc(1024);
-    type_list_v1->push(list_ptr, data_ptr);
+    stack_v1->push(list_ptr, data_ptr);
     type_data_v1->free(data_ptr);
-    type_list_v1->free(list_ptr);
+    stack_v1->free(list_ptr);
     pointer_v1->gc();
     pointer_v1->destroy();
 }
@@ -240,10 +236,10 @@ RX_TEST_CASE(tests, test_list_data, .fixture = test_pointer_fixture) {
 /* test init */
 RX_TEST_CASE(tests, test_list_free_user_free, .fixture = test_pointer_fixture) {
     pointer_v1->init(8);
-    u64 list_ptr = type_list_v1->alloc();
+    u64 list_ptr = stack_v1->alloc();
     u64 user_ptr = type_user_v1->alloc();
-    type_list_v1->push(list_ptr, user_ptr);
-    type_list_v1->free(list_ptr);
+    stack_v1->push(list_ptr, user_ptr);
+    stack_v1->free(list_ptr);
     type_user_v1->free(user_ptr);
     pointer_v1->gc();
     pointer_v1->destroy();
@@ -270,6 +266,6 @@ static int run(void) {
     return result;
 }
 
-const struct test_suite vm_v1_test_suite_definition_v1 = {
+const vm_v1_test_suite PRIVATE_API(vm_v1_test_suite_definition) = {
     .run = run
 };

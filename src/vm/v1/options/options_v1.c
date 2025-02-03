@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   12 December 2023 at 23:37:55 GMT+3
+ *   February 3, 2025 at 3:56:36 PM GMT+3
  *
  */
 /*
@@ -24,12 +24,14 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "vm/v1/options/options_v1.h"
+#include "options_v1.h"
+
+#include "std/api.h"
 
 /* macros */
 #define DEFAULT_SIZE 0x8 /* 8 */
 
 /* public */
-const struct vm_options_v1 vm_options_definition_v1 = {
+const vm_options PRIVATE_API(vm_options_definition) = {
     .size = DEFAULT_SIZE
 };

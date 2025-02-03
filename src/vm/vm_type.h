@@ -5,7 +5,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   11 December 2023 at 9:16:32 GMT+3
+ *   February 3, 2025 at 8:34:23 PM GMT+3
  *
  */
 /*
@@ -33,5 +33,7 @@ struct pointer;
 struct vm_type {
     void (*free)(struct pointer* ptr);
 };
+
+struct stack_data;
 
 #endif /* _VM_TYPE_H_ */

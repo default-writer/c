@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   11 December 2023 at 9:16:31 GMT+3
+ *   February 3, 2025 at 10:09:04 PM GMT+3
  *
  */
 /*
@@ -27,6 +27,8 @@
 #ifndef _STD_DATA_H_
 #define _STD_DATA_H_
 
+#define USING_DATA
+
 typedef unsigned long long u64;
 typedef unsigned long int u32;
 typedef unsigned short int u16;
@@ -36,5 +38,14 @@ typedef signed long long s64;
 typedef signed long int s32;
 typedef signed short int s16;
 typedef signed char s8;
+
+typedef struct stack_element stack_element, *stack_pointer;
+
+struct stack_element {
+    /* points to next node */
+    stack_pointer next;
+    /* data */
+    void* data;
+};
 
 #endif /* _STD_DATA_H_ */

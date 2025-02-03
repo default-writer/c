@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   12 December 2023 at 22:06:31 GMT+3
+ *   February 3, 2025 at 7:56:42 PM GMT+3
  *
  */
 /*
@@ -26,7 +26,7 @@
 
 #include "string_pointer_v1.h"
 
-#include "std/macros.h"
+#include "std/api.h"
 
 #include "vm/v1/pointer/pointer_v1.h"
 #include "vm/v1/virtual/virtual_v1.h"
@@ -79,7 +79,7 @@ static void string_vm_free(struct pointer* ptr) {
 }
 
 /* public */
-const struct string_pointer_methods_v1 string_pointer_methods_definition_v1 = {
+const string_pointer_methods PRIVATE_API(string_pointer_methods_definition) = {
     .free = string_free
 };
 

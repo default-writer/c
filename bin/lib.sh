@@ -25,19 +25,19 @@ opts=( "${@:2}" )
 
 . "${pwd}/bin/scripts/load.sh"
 
-## Clean up root directory
+## Extracts library info
 ## Usage: ${script} <option> [optional]
 ## ${commands}
 
 while (($#)); do
     case "$1" in
 
-        "--clean") # cleans up build/cmake/config foders
-            install="--clean"
-            ;;
-
         "--help") # [optional] shows command description
             help
+            ;;
+
+        "--nm") # [optional] extracts library info
+            nm -D -l "${pwd}/lib/libctests.so"
             ;;
 
         *)
@@ -51,14 +51,6 @@ done
 if [[ "${install}" == "" ]]; then
     help
     exit;
-fi
-
-if [[ "${install}" == "--clean" ]]; then
-    rm -rf "${pwd}/build"
-    rm -rf "${pwd}/cmake"
-    rm -rf "${pwd}/config"
-    rm -rf "${pwd}/lib"
-    rm -f "${pwd}/src/std/version.h"
 fi
 
 [[ $SHLVL -gt 2 ]] || echo OK

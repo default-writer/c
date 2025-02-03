@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   12 December 2023 at 22:06:19 GMT+3
+ *   February 3, 2025 at 7:56:44 PM GMT+3
  *
  */
 /*
@@ -26,7 +26,7 @@
 
 #include "user_v1.h"
 
-#include "std/macros.h"
+#include "std/api.h"
 
 #include "vm/v1/pointer/pointer_v1.h"
 #include "vm/v1/virtual/virtual_v1.h"
@@ -75,7 +75,7 @@ static void INIT init(void) {
 }
 
 /* public */
-const struct user_methods_v1 user_methods_definition_v1 = {
+const user_methods PRIVATE_API(user_methods_definition) = {
     .alloc = user_alloc,
     .free = user_free
 };

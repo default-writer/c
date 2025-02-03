@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   12 December 2023 at 8:44:26 GMT+3
+ *   February 3, 2025 at 8:01:43 PM GMT+3
  *
  */
 /*
@@ -27,13 +27,17 @@
 #ifndef _POINTER_TYPES_STRING_POINTER_H_
 #define _POINTER_TYPES_STRING_POINTER_H_
 
-#include "std/data.h"
+#define USING_API
+
+#include "std/api.h"
 
 /*! @file string_pointer_v1.h
  *  @brief C API / string pointer
  */
 
-struct string_pointer_methods_v1 {
+typedef struct PRIVATE_API(string_pointer_methods) string_pointer_methods;
+
+struct PRIVATE_API(string_pointer_methods) {
     void (*free)(u64 ptr);
 };
 
@@ -41,5 +45,16 @@ struct string_reference {
     u64 address;
     u64 offset;
 };
+
+/* definition */
+extern const string_pointer_methods PRIVATE_API(string_pointer_methods_definition);
+
+/* definition */
+#ifdef INLINE
+const string_pointer_methods* string_pointer_v1 = &PRIVATE_API(string_pointer_methods_definition);
+#else
+/* definition */
+static const string_pointer_methods* string_pointer_v1 = &PRIVATE_API(string_pointer_methods_definition);
+#endif
 
 #endif /* _POINTER_TYPES_STRING_POINTER_H_ */

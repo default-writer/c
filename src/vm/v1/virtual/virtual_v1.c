@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   January 29, 2025 at 5:11:05 PM GMT+3
+ *   February 3, 2025 at 9:56:12 PM GMT+3
  *
  */
 /*
@@ -24,12 +24,15 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#define USING_VM_V1
+
+#include "virtual_v1.h"
+
 #include "generic/memory_v1.h"
 
 #include "list/list_v1.h"
 
 #include "vm/v1/pointer/pointer_v1.h"
-#include "vm/v1/virtual/virtual_v1.h"
 #include "vm/v1/vm_v1.h"
 
 /* macros */
@@ -54,7 +57,7 @@ struct vm {
 };
 
 #ifndef USE_GC
-static struct list_data** cache;
+static stack_pointer* cache;
 #endif
 
 static struct vm vm_definition_v1;
@@ -377,7 +380,7 @@ static void** virtual_enumerator_next_internal(void) {
 }
 
 /* public */
-const struct virtual_methods_v1 virtual_methods_definition_v1 = {
+const virtual_methods PRIVATE_API(virtual_methods_definition) = {
     .init = vm_init,
     .destroy = vm_destroy,
     .alloc = vm_alloc,

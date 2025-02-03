@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   12 December 2023 at 23:37:59 GMT+3
+ *   February 3, 2025 at 3:55:46 PM GMT+3
  *
  */
 /*
@@ -27,10 +27,23 @@
 #ifndef _VM_V1_OPTIONS_H_
 #define _VM_V1_OPTIONS_H_
 
-#include "std/data.h"
+#include "std/api.h"
 
-struct vm_options_v1 {
+typedef struct PRIVATE_API(vm_options) vm_options;
+
+struct PRIVATE_API(vm_options) {
     const u64 size;
 };
+
+/* definition */
+extern const vm_options PRIVATE_API(vm_options_definition);
+
+/* definition */
+#ifdef INLINE
+const vm_options* vm_options_v1 = &PRIVATE_API(vm_options_definition);
+#else
+/* definition */
+static const vm_options* vm_options_v1 = &PRIVATE_API(vm_options_definition);
+#endif
 
 #endif /* _VM_V1_OPTIONS_H_ */

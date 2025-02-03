@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   12 December 2023 at 22:15:19 GMT+3
+ *   February 3, 2025 at 8:44:35 PM GMT+3
  *
  */
 /*
@@ -24,10 +24,11 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#define USING_VM_V1
+
 #include "string_v1.h"
 
-#include "std/macros.h"
-#include "std/headers.h"
+#include "std/api.h"
 
 #include "vm/v1/pointer/pointer_v1.h"
 #include "vm/v1/types/string_pointer/string_pointer_v1.h"
@@ -35,6 +36,8 @@
 #include "vm/v1/vm_type.h"
 #include "vm/v1/vm_v1.h"
 #include "vm/vm_type.h"
+
+#include <string.h>
 
 #define DEFAULT_SIZE 0x100
 
@@ -77,7 +80,7 @@ static u64 string_strcmp(u64 src, u64 dest);
 
 /* definition */
 struct list_handler {
-    struct list_data* list;
+    stack_pointer list;
 };
 
 /* implementation */
@@ -791,7 +794,7 @@ static void INIT init(void) {
 }
 
 /* public */
-const string_methods string_methods_definition_v1 = {
+const string_methods PRIVATE_API(string_methods_definition) = {
     .free = string_free,
     .copy = string_copy,
     .strcpy = string_strcpy,

@@ -1,5 +1,5 @@
 {
-  "clangd.path": "${workspaceFolder}/.tools/clangd/bin/clangd",
+  "clangd.path": "${workspaceFolder}/.tools/clangd-linux-19.1.2/bin/clangd",
   "cmake.debugConfig": {
     "MIMode": "gdb",
     "miDebuggerPath": "/usr/bin/gdb",

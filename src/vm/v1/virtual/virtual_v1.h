@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   January 29, 2025 at 7:04:48 AM GMT+3
+ *   February 3, 2025 at 7:56:43 PM GMT+3
  *
  */
 /*
@@ -27,16 +27,14 @@
 #ifndef _VIRTUAL_H_
 #define _VIRTUAL_H_
 
-#include "std/data.h"
+#include "std/api.h"
 
 struct vm;
 struct pointer;
 
-struct vm_options_v1 {
-    const u64 size;
-};
+typedef struct PRIVATE_API(virtual_methods) virtual_methods;
 
-struct virtual_methods_v1 {
+struct PRIVATE_API(virtual_methods) {
     void (*init)(struct vm**, u64 size);
     void (*destroy)(struct vm**);
     u64 (*alloc)(struct pointer* ptr);
@@ -51,5 +49,16 @@ struct virtual_methods_v1 {
     void (*dump_ref)(void);
 #endif
 };
+
+/* definition */
+extern const virtual_methods PRIVATE_API(virtual_methods_definition);
+
+/* definition */
+#ifdef INLINE
+const virtual_methods* virtual_v1 = &PRIVATE_API(virtual_methods_definition);
+#else
+/* definition */
+static const virtual_methods* virtual_v1 = &PRIVATE_API(virtual_methods_definition);
+#endif
 
 #endif /* _VIRTUAL_H_ */

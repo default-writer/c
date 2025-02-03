@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   January 29, 2025 at 5:14:09 PM GMT+3
+ *   February 3, 2025 at 5:50:58 PM GMT+3
  *
  */
 /*
@@ -27,7 +27,7 @@
 #ifndef _POINTER_V1_H_
 #define _POINTER_V1_H_
 
-#include "std/data.h"
+#include "std/api.h"
 
 /*! @file pointer_v1.h
  *  @brief C API / pointer
@@ -37,7 +37,7 @@ struct pointer;
 struct vm_data;
 struct vm_type;
 
-struct pointer_methods_v1 {
+typedef struct PRIVATE_API(pointer_methods) {
     void (*init)(u64 size);
     void (*destroy)(void);
     void (*gc)(void);
@@ -56,6 +56,17 @@ struct pointer_methods_v1 {
     void (*dump)(struct pointer* ptr);
     void (*dump_ref)(void** ptr);
 #endif
-};
+} pointer_methods;
+
+/* definition */
+extern const pointer_methods PRIVATE_API(pointer_methods_definition);
+
+/* definition */
+#ifdef INLINE
+const spointer_methods* pointer_v1 = &PRIVATE_API(pointer_methods_definition);
+#else
+/* definition */
+static const pointer_methods* pointer_v1 = &PRIVATE_API(pointer_methods_definition);
+#endif
 
 #endif /* _POINTER_V1_H_ */
