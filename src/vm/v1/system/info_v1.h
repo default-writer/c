@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   June 12, 2024 at 8:14:42 PM GMT+3
+ *   February 3, 2025 at 5:54:48 PM GMT+3
  *
  */
 /*
@@ -26,7 +26,6 @@
 #ifndef _POINTER_INFO_V1_H_
 #define _POINTER_INFO_V1_H_
 
-#include "std/data.h"
 #include "std/api.h"
 
 typedef struct PRIVATE_API(info_methods) info_methods;
@@ -36,5 +35,16 @@ struct PRIVATE_API(info_methods) {
     const char* commit;
     const char* version;
 };
+
+/* definition */
+extern const info_methods PRIVATE_API(info_methods_definition);
+
+/* definition */
+#ifdef INLINE
+const info_methods* info_v1 = &PRIVATE_API(info_methods_definition);
+#else
+/* definition */
+static const info_methods* info_v1 = &PRIVATE_API(info_methods_definition);
+#endif
 
 #endif /* _POINTER_INFO_V1_H_ */

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   12 December 2023 at 22:05:45 GMT+3
+ *   February 3, 2025 at 7:56:40 PM GMT+3
  *
  */
 /*
@@ -24,9 +24,13 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "vm/v1/types/data/data_v1.h"
+#define USING_VM_V1
 
-#include "std/macros.h"
+#include "data_v1.h"
+
+#include "std/api.h"
+
+#include "vm/v1/types/data/data_v1.h"
 
 #include "vm/v1/pointer/pointer_v1.h"
 #include "vm/v1/virtual/virtual_v1.h"
@@ -95,7 +99,7 @@ static void INIT init(void) {
 }
 
 /* public */
-const struct data_methods_v1 data_methods_definition_v1 = {
+const data_methods PRIVATE_API(data_methods_definition) = {
     .alloc = data_alloc,
     .free = data_free,
     .unsafe = data_unsafe,

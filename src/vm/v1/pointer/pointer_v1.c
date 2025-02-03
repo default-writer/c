@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   January 29, 2025 at 10:31:27 PM GMT+3
+ *   February 3, 2025 at 10:03:22 PM GMT+3
  *
  */
 /*
@@ -24,24 +24,27 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "generic/memory_v1.h"
+#include "std/data.h"
+#define USING_VM_V1
 
 #include "pointer_v1.h"
 
-#include "std/macros.h"
-#include "std/headers.h"
+#include "std/api.h"
+
+#include "generic/memory_v1.h"
 
 #include "vm/v1/virtual/virtual_v1.h"
 #include "vm/v1/vm_type.h"
 #include "vm/v1/vm_v1.h"
 #include "vm/vm_type.h"
 
+#include <stdio.h>
+
 #define DEFAULT_SIZE 0x100
 #define POINTER_SIZE sizeof(struct pointer)
 
 /* private */
 struct vm_data;
-struct list_data;
 
 struct pointer {
     struct vm_data* vm;
@@ -90,7 +93,7 @@ struct file_handler {
 };
 
 struct list_handler {
-    struct list_data* list;
+    stack_pointer list;
 };
 
 static void pointer_init(u64 size);
@@ -300,7 +303,7 @@ static void pointer_dump_ref(void** ptr) {
 
 /* public */
 
-const struct pointer_methods_v1 pointer_methods_definition_v1 = {
+const pointer_methods PRIVATE_API(pointer_methods_definition) = {
     .init = pointer_init,
     .destroy = pointer_destroy,
     .gc = pointer_gc,

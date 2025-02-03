@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   January 29, 2025 at 5:09:37 PM GMT+3
+ *   February 3, 2025 at 5:10:49 PM GMT+3
  *
  */
 /*
@@ -24,14 +24,14 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "generic/memory_v1.h"
+#include "memory_v1.h"
 
-#include "std/compile.h"
-#include "std/data.h"
-#include "std/headers.h"
+#include <stdlib.h>
 
+#ifdef USE_MEMORY_DEBUG_INFO
 static u64 total_alloc = 0;
 static u64 total_free = 0;
+#endif
 
 struct memory_info_data {
     u64 alloc;
@@ -45,7 +45,9 @@ static struct memory_info_data* base = &memory_info;
 static void* memory_alloc(u64 size);
 static void memory_free(void* ptr, u64 size);
 static void* memory_realloc(void* old_ptr, u64 size, u64 new_size);
+#ifdef USE_MEMORY_DEBUG_INFO
 static void memory_set(void* dest, u8 c, u64 count);
+#endif
 
 /* api */
 
@@ -88,6 +90,7 @@ static void* memory_realloc(void* old_ptr, u64 size, u64 new_size) {
     return ptr;
 }
 
+#ifdef USE_MEMORY_CLEANUP
 static void memory_set(void* dest, u8 c, u64 count) {
     size_t block_idx = 0;
     size_t blocks = count >> 3;
@@ -110,6 +113,7 @@ static void memory_set(void* dest, u8 c, u64 count) {
     for (block_idx = 0; block_idx < bytes_left; block_idx++)
         dest_ptr1[block_idx] = c;
 }
+#endif
 
 #ifdef USE_MEMORY_DEBUG_INFO
 void global_statistics(void) {
@@ -117,9 +121,11 @@ void global_statistics(void) {
 }
 #endif
 
-const struct generic_memory_v1 generic_memory_definition_v1 = {
+const generic_memory PRIVATE_API(generic_memory_definition) = {
     .alloc = memory_alloc,
     .free = memory_free,
     .realloc = memory_realloc,
+#ifdef USE_MEMORY_CLEANUP
     .set = memory_set
+#endif
 };

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 2, 2025 at 3:51:46 PM GMT+3
+ *   February 3, 2025 at 5:06:59 PM GMT+3
  *
  */
 /*
@@ -26,6 +26,8 @@
 
 #ifndef _STD_MACROS_H_
 #define _STD_MACROS_H_
+
+#define USING_MACROS
 
 #define CLEAN(ptr)  \
     if (ptr != 0) { \

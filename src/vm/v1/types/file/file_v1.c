@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   January 29, 2025 at 7:16:13 AM GMT+3
+ *   February 3, 2025 at 7:56:44 PM GMT+3
  *
  */
 /*
@@ -24,16 +24,20 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "std/macros.h"
-#include "std/headers.h"
+#define USING_VM_V1
 
-#include "vm/v1/types/file/file_v1.h"
+#include "file_v1.h"
+
+#include "std/api.h"
+
 #include "vm/v1/pointer/pointer_v1.h"
 #include "vm/v1/types/data/data_v1.h"
 #include "vm/v1/virtual/virtual_v1.h"
 #include "vm/v1/vm_type.h"
 #include "vm/v1/vm_v1.h"
 #include "vm/vm_type.h"
+
+#include <stdio.h>
 
 #define DEFAULT_SIZE 0x100
 
@@ -132,7 +136,7 @@ static void INIT init(void) {
 
 /* public */
 /*! definition (initialization) of file_methods structure */
-const struct file_methods_v1 file_methods_definition_v1 = {
+const file_methods PRIVATE_API(file_methods_definition) = {
     .alloc = file_alloc,
     .data = file_data,
     .free = file_free

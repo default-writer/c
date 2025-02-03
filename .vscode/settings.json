@@ -338,7 +338,7 @@
         "--clang-tidy",
         "--fallback-style=WebKit"
     ],
-    "clangd.path": "${workspaceFolder}/.tools/clangd/bin/clangd",
+    "clangd.path": "${workspaceFolder}/.tools/clangd-linux-19.1.2/bin/clangd",
     "clangd.checkUpdates": true,
     "clangd.restartAfterCrash": true,
     "clangd.onConfigChanged": "restart",

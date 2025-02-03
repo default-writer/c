@@ -146,13 +146,14 @@ if [[ ! "${dir}" == "" ]]; then
     build="${dir}"
 fi
 
-directories=${build[@]}
-
 if [[ "${clean}" == "--clean" ]]; then
     if [[ -d "${dir}" ]]; then
         rm -rf "${dir}"
     fi
+    rm -rf "${build}"
 fi
+
+directories=${build[@]}
 
 if [[ "${coverage}" == "" ]]; then
 

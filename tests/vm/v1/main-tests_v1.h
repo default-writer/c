@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 2, 2025 at 8:49:21 PM GMT+3
+ *   February 3, 2025 at 4:07:34 PM GMT+3
  *
  */
 /*
@@ -26,7 +26,5 @@
 
 #ifndef _MAIN_TESTS_V1_H_
 #define _MAIN_TESTS_V1_H_
-
-#define RXP_DEBUG_TESTS
 
 #endif /* _MAIN_TESTS_V1_H_ */

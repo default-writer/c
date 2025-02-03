@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   12 December 2023 at 21:25:14 GMT+3
+ *   February 3, 2025 at 9:27:06 PM GMT+3
  *
  */
 /*
@@ -27,15 +27,20 @@
 #ifndef _POINTER_TYPES_LIST_H_
 #define _POINTER_TYPES_LIST_H_
 
-#include "std/data.h"
+#define USING_VM_V1
+
+#include "std/api.h"
 
 /*! @file list_v1.h
  *  @brief C API / list
  *
- *  structure for organizing @ref list_methods functions
+ *  structure for organizing @ref stack functions
  *
  */
-struct list_methods_v1 {
+
+typedef struct PRIVATE_API(stack) stack;
+
+struct PRIVATE_API(stack) {
     u64 (*alloc)(void);
     void (*free)(u64 ptr);
     u64 (*peek)(u64 list_ptr);
@@ -51,5 +56,16 @@ struct list_methods_v1 {
     u64 (*size)(u64 ptr);
     void (*release)(u64 ptr);
 };
+
+/* definition */
+extern const stack PRIVATE_API(stack_definition);
+
+/* definition */
+#ifdef INLINE
+const stack* stack_v1 = &PRIVATE_API(stack_definition);
+#else
+/* definition */
+static const stack* stack_v1 = &PRIVATE_API(stack_definition);
+#endif
 
 #endif /* _POINTER_TYPES_LIST_H_ */

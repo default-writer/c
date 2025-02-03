@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   12 December 2023 at 21:24:02 GMT+3
+ *   February 3, 2025 at 10:04:39 PM GMT+3
  *
  */
 /*
@@ -27,32 +27,36 @@
 #ifndef _LIST_MICRO_DATA_H_
 #define _LIST_MICRO_DATA_H_
 
-#include "std/compile.h"
+#include "std/api.h"
 
-struct list_data {
-    /* points to previous node */
-    struct list_data* next;
-    /* data */
-    void* data;
-};
-
-struct list_v1 {
+typedef struct PRIVATE_API(list) {
     /* initialize context */
-    void (*init)(struct list_data** current);
+    void (*init)(stack_pointer* current);
     /* destroy context */
-    void (*destroy)(struct list_data** current);
+    void (*destroy)(stack_pointer* current);
     /* push item on current context (stack) */
-    void (*push)(struct list_data** current, void* item);
+    void (*push)(stack_pointer* current, void* item);
     /* pop item on current context (stack) */
-    void* (*pop)(struct list_data** current);
+    void* (*pop)(stack_pointer* current);
     /* peek item on current context (stack) */
-    void* (*peek)(struct list_data** current);
+    void* (*peek)(stack_pointer* current);
 #ifdef USE_MEMORY_DEBUG_INFO
     /* print head */
-    void (*print_head)(struct list_data** current);
+    void (*print_head)(stack_pointer* current);
     /* print */
-    void (*print)(struct list_data** current);
+    void (*print)(stack_pointer* current);
 #endif
-};
+} list;
+
+/* definition */
+extern const list PRIVATE_API(list_definition);
+
+/* definition */
+#ifdef INLINE
+const list_v1* list_v1 = &PRIVATE_API(list_definition);
+#else
+/* definition */
+static const list* list_v1 = &PRIVATE_API(list_definition);
+#endif
 
 #endif /* _LIST_MICRO_DATA_H_ */

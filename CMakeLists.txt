@@ -256,8 +256,8 @@ set(LIB_STD_TYPES1_SOURCE
     src/vm/v1/types_v1.c
     src/vm/v1/types/data/data_v1.c
     src/vm/v1/types/file/file_v1.c
-    src/vm/v1/types/list/list_v1.c
     src/vm/v1/types/object/object_v1.c
+    src/vm/v1/types/stack/stack_v1.c
     src/vm/v1/types/string/string_v1.c
     src/vm/v1/types/string_pointer/string_pointer_v1.c
     src/vm/v1/types/user/user_v1.c
@@ -293,7 +293,7 @@ add_executable(main-tests-vm1
 # test
 target_link_libraries(clist PRIVATE cmemory)
 target_link_libraries(ctypes PRIVATE cinfo cmemory clist)
-target_link_libraries(ctests PRIVATE ctypes clist)
+target_link_libraries(ctests PRIVATE ctypes clist cstack)
 
 # main
 target_link_libraries(main-tests-vm1 PRIVATE

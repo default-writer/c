@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 2, 2025 at 10:41:04 PM GMT+3
+ *   February 3, 2025 at 5:55:26 PM GMT+3
  *
  */
 /*
@@ -24,9 +24,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#define RXP_DEBUG_TESTS
-
-#include <rexo.h>
+#define USING_VM_V1
 
 #include "main-tests_v1.h"
 
@@ -35,9 +33,6 @@
 #include "test_list.h"
 #include "test_pointer.h"
 #include "test_vm_v1.h"
-
-#include "std/headers.h"
-#include "std/macros.h"
 
 #include "vm/v1/system/info_v1.h"
 #include "vm/v1/vm_v1.h"
@@ -69,21 +64,13 @@ static void INIT init() {
 #endif
 }
 
-extern const struct test_suite list_micro_test_suite_definition_v1;
-extern const struct test_suite vm_v1_test_suite_definition_v1;
-extern const struct test_suite pointer_test_suite_definition_v1;
-
-const struct test_suite* list_micro_tests = &list_micro_test_suite_definition_v1;
-const struct test_suite* vm_v1_tests = &vm_v1_test_suite_definition_v1;
-const struct test_suite* pointer_tests = &pointer_test_suite_definition_v1;
-
 int main(int argc, char** argv) {
 #ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();
 #endif
-    TEST_RUN(list_micro_result, list_micro_tests);
-    TEST_RUN(vm_v1_result, vm_v1_tests);
-    TEST_RUN(pointer_v1_result, pointer_tests);
+    TEST_RUN(list_micro_result, list_micro_test_suite_v1);
+    TEST_RUN(vm_v1_result, vm_v1_test_suite_v1);
+    TEST_RUN(pointer_v1_result, pointer_test_suite_v1);
 #ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();
 #endif

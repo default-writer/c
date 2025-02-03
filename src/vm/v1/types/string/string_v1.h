@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   12 December 2023 at 8:56:07 GMT+3
+ *   February 3, 2025 at 4:01:14 PM GMT+3
  *
  */
 /*
@@ -28,7 +28,6 @@
 #define _POINTER_TYPES_STRING_H_
 
 #include "std/api.h"
-#include "std/data.h"
 
 /*! @file string_v1.h
  *  @brief C API / string

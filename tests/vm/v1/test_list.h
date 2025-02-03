@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 2, 2025 at 7:09:07 PM GMT+3
+ *   February 3, 2025 at 4:14:32 PM GMT+3
  *
  */
 /*
@@ -27,14 +27,23 @@
 #ifndef _TEST_LIST_H_
 #define _TEST_LIST_H_
 
-#define RXP_DEBUG_TESTS
+#define USING_TESTS
 
-struct test_suite;
+#include "../../test.h"
 
+#include "std/api.h"
+
+typedef struct PRIVATE_API(test_suite) list_micro_test_suite;
+
+/* definition */
+extern const list_micro_test_suite PRIVATE_API(list_micro_test_suite_definition);
+
+/* definition */
 #ifdef INLINE
-static const struct test_suite list_micro_test_suite_definition_v1;
+const list_micro_test_suite* list_micro_test_suite_v1 = &PRIVATE_API(list_micro_test_suite_definition);
 #else
-extern const struct test_suite list_micro_test_suite_definition_v1;
+/* definition */
+static const list_micro_test_suite* list_micro_test_suite_v1 = &PRIVATE_API(list_micro_test_suite_definition);
 #endif
 
 #endif /* _TEST_LIST_H_ */

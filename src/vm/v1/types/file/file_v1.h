@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   12 December 2023 at 8:46:45 GMT+3
+ *   February 3, 2025 at 7:44:11 PM GMT+3
  *
  */
 /*
@@ -27,7 +27,9 @@
 #ifndef _POINTER_TYPES_FILE_H_
 #define _POINTER_TYPES_FILE_H_
 
-#include "std/data.h"
+#define USING_API
+
+#include "std/api.h"
 
 /*!
     @file file_v1.h
@@ -42,10 +44,24 @@
     };
     ```
 */
-struct file_methods_v1 {
+
+typedef struct PRIVATE_API(file_methods) file_methods;
+
+struct PRIVATE_API(file_methods) {
     u64 (*alloc)(u64 file_path_ptr, u64 mode_ptr);
     void (*free)(u64 ptr);
     u64 (*data)(u64 ptr);
 };
+
+/* definition */
+extern const file_methods PRIVATE_API(file_methods_definition);
+
+/* definition */
+#ifdef INLINE
+const file_methods* type_file_v1 = &PRIVATE_API(file_methods_definition);
+#else
+/* definition */
+static const file_methods* type_file_v1 = &PRIVATE_API(file_methods_definition);
+#endif
 
 #endif /* _POINTER_TYPES_FILE_H_ */

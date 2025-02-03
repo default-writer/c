@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   12 December 2023 at 16:08:45 GMT+3
+ *   February 3, 2025 at 10:14:44 PM GMT+3
  *
  */
 /*
@@ -43,7 +43,9 @@ enum type {
     /* value used for object type - object */
     TYPE_OBJECT = 6,
     /* value used for user type - user (id: +0, +1, +2, +3, ...) */
-    TYPE_USER = 7
+    TYPE_USER = 7,
+    /* value used for list type - list */
+    TYPE_STACK = 8,
 };
 
 #endif /* _VM_V1_VM_TYPE_H_ */

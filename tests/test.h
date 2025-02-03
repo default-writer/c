@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 2, 2025 at 7:06:14 PM GMT+3
+ *   February 3, 2025 at 4:09:45 PM GMT+3
  *
  */
 /*
@@ -27,9 +27,15 @@
 #ifndef _TESTS_TEST_H_
 #define _TESTS_TEST_H_
 
+#define USING_TESTS
+
 #define RXP_DEBUG_TESTS
 
-typedef struct test_suite {
+#include "std/api.h"
+
+#include <rexo.h>
+
+typedef struct PRIVATE_API(test_suite) {
     int (*run)(void);
 } test_suite;
 

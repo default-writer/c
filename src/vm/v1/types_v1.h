@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   June 12, 2024 at 8:39:06 PM GMT+3
+ *   February 3, 2025 at 9:06:38 PM GMT+3
  *
  */
 /*
@@ -26,22 +26,37 @@
 #ifndef _POINTER_TYPES_V1_H_
 #define _POINTER_TYPES_V1_H_
 
+#define USING_TYPES_V1
+
+#include "std/api.h"
+
 #include "vm/v1/types/data/data_v1.h"
 #include "vm/v1/types/file/file_v1.h"
-#include "vm/v1/types/list/list_v1.h"
 #include "vm/v1/types/object/object_v1.h"
 #include "vm/v1/types/string/string_v1.h"
 #include "vm/v1/types/string_pointer/string_pointer_v1.h"
 #include "vm/v1/types/user/user_v1.h"
 
-struct type_methods {
-    const struct data_methods_v1* data;
-    const struct file_methods_v1* file;
-    const struct list_methods_v1* list;
+typedef struct PRIVATE_API(type_methods) type_methods;
+
+struct PRIVATE_API(type_methods) {
+    const data_methods* data;
+    const file_methods* file;
     const object_methods* object;
     const string_methods* string;
-    const struct string_pointer_methods_v1* string_pointer;
-    const struct user_methods_v1* user;
+    const string_pointer_methods* string_pointer;
+    const user_methods* user;
 };
+
+/* definition */
+extern const type_methods PRIVATE_API(type_methods_definition);
+
+/* definition */
+#ifdef INLINE
+const type_methods* type_v1 = &PRIVATE_API(type_methods_definition);
+#else
+/* definition */
+static const type_methods* type_v1 = &PRIVATE_API(type_methods_definition);
+#endif
 
 #endif /* _POINTER_TYPES_V1_H_ */

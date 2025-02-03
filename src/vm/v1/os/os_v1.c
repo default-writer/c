@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   January 30, 2025 at 8:27:16 PM GMT+3
+ *   February 3, 2025 at 8:17:23 PM GMT+3
  *
  */
 /*
@@ -24,18 +24,22 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#define USING_LIST_V1
+
+#include "os_v1.h"
+
+#include "std/api.h"
+
 #include "generic/memory_v1.h"
 
-#include "std/data.h"
-#include "std/headers.h"
-
-#include "vm/v1/os/os_v1.h"
 #include "vm/v1/pointer/pointer_v1.h"
 #include "vm/v1/types/string/string_v1.h"
-#include "vm/v1/types/list/list_v1.h"
 #include "vm/v1/virtual/virtual_v1.h"
 #include "vm/v1/vm_type.h"
 #include "vm/v1/vm_v1.h"
+
+#include <stdio.h>
+#include <stdlib.h>
 
 #define DEFAULT_SIZE 0x100
 
@@ -77,7 +81,7 @@ static void os_putc(u64 ptr) {
 }
 
 /* public */
-const struct os_methods_v1 os_methods_definition_v1 = {
+const os_methods PRIVATE_API(os_methods_definition) = {
     .getenv = os_getenv,
     .getcwd = os_getcwd,
     .putc = os_putc

@@ -3,10 +3,10 @@
 ## table of content
 
 - [list](#list)
-  - [table of content](#table-of-content)
-  - [1 list allocation](#1-list-allocation)
-  - [1.1 metadata-free allocation](#11-metadata-free-allocation)
-  - [1.2 in-place metadata allocation](#12-in-place-metadata-allocation)
+- [table of content](#table-of-content)
+- [1 list allocation](#1-list-allocation)
+- [1.1 metadata-free allocation](#11-metadata-free-allocation)
+- [1.2 in-place metadata allocation](#12-in-place-metadata-allocation)
 
 ## 1 list allocation
 
@@ -27,10 +27,11 @@ allocation where sensitive allocation metadata is placed in the same memory pool
 [^](#list)
 
 ```c
-struct list_data {
+struct stack_element {
+    /* points to next node */
+    stack_pointer next;
     /* data */
-    void** data;
-    /* next element */
-    struct list_data* next;
+    void* data;
 };
+
 ```

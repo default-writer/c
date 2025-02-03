@@ -112,7 +112,10 @@ if [[ "${clean}" == "--clean" ]]; then
     if [[ -d "${dir}" ]]; then
         rm -rf "${dir}"
     fi
+    rm -rf "${build}"
 fi
+
+directories=${build[@]}
 
 targets=( $(get-source-targets ${source}) )
 
@@ -124,8 +127,6 @@ if [[ "${targets[@]}" == "" ]]; then
     exit 8
 fi
 
-directories=${build[@]}
-
 coverage=( "*.gcda" "*.gcno" "*.s" "*.i" "*.o" )
 
 for directory in ${directories[@]}; do
@@ -133,6 +134,7 @@ for directory in ${directories[@]}; do
         if [[ -d "${directory}" ]]; then
             rm -rf "${directory}"
         fi
+        rm -rf "${directory}"
     fi
     if [[ "${clean}" == "" ]]; then
         for f in ${coverage[@]}; do
