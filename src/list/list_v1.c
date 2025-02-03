@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 3, 2025 at 10:07:15 PM GMT+3
+ *   February 3, 2025 at 10:40:29 PM GMT+3
  *
  */
 /*
@@ -129,7 +129,7 @@ static void* list_peek(stack_pointer* current) {
     /* gets the current memory pointer */
     stack_pointer ptr = *current;
     /* gets next pointer */
-    const stack_pointer next = list_next(ptr);
+    const stack_element* next = list_next(ptr);
     /* if we call method on empty stack, do not return head element, return null element by convention */
     if (next == 0) {
         /* returns default element as null element */
