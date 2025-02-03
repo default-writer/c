@@ -293,7 +293,7 @@ add_executable(main-tests-vm1
 # test
 target_link_libraries(clist PRIVATE cmemory)
 target_link_libraries(ctypes PRIVATE cinfo cmemory clist)
-target_link_libraries(ctests PRIVATE ctypes clist cstack)
+target_link_libraries(ctests PRIVATE ctypes clist)
 
 # main
 target_link_libraries(main-tests-vm1 PRIVATE

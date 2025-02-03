@@ -150,7 +150,6 @@ if [[ "${clean}" == "--clean" ]]; then
     if [[ -d "${dir}" ]]; then
         rm -rf "${dir}"
     fi
-    rm -rf "${build}"
 fi
 
 directories=${build[@]}

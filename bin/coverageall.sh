@@ -74,9 +74,6 @@ if [ ! -d "${build}" ]; then
 fi
 
 if [[ "${clean}" == "--clean" ]]; then
-
-    rm -rf "${build}"
-    
     if [[ -d "${build}" ]]; then
         find "${build}" -type f -name "lcov.info" -delete
     fi
