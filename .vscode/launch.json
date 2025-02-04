@@ -7,7 +7,7 @@
     {
       "type": "bashdb",
       "request": "launch",
-      "name": "submodule-uninstall",
+      "name": "bash",
       "terminalKind": "integrated",
       "cwd": "${workspaceFolder}",
       "program": "./bin/utils/uninstall.sh",

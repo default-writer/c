@@ -20,11 +20,12 @@ function submodule-install() {
     pwd=$(get-cwd)
 
     if [[ ! -d  "${pwd}/.git/modules/$2" ]]; then
-        git submodule add -f "$1" "$2" 2>&1 >/dev/null
-        git submodule init 2>&1 >/dev/null
-        git submodule update --recursive --remote 2>&1 >/dev/null
-        git pull origin main --recurse-submodules --quiet 2>&1 >/dev/null
+        git submodule add -f "$1" "$2"
+        git submodule init
+        git submodule update --recursive --remote
     fi
+
+    git pull origin main --recurse-submodules --quiet
 }
 
 function submodule-uninstall() {
@@ -32,10 +33,10 @@ function submodule-uninstall() {
 
     pwd=$(get-cwd)
 
-    if [[ -d  "${pwd}/.git/modules/$2" ]]; then
-        git submodule deinit -f "$2" 2>&1 >/dev/null
-        rm -rf "${pwd}/.git/modules/$2" 2>&1 >/dev/null
-        rm -r "${pwd}/$2" 2>&1 >/dev/null
+    if [[ -d "${pwd}/$2" ]]; then
+        git submodule deinit -f "$2"
+        [[ -d "${pwd}/.git/modules/$2" ]] && rm -rf "${pwd}/.git/modules/$2"
+        rm -rf "${pwd}/$2"
     fi
 }
 
