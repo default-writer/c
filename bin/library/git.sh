@@ -32,14 +32,14 @@ function submodule-install() {
     if ! git diff-index --quiet HEAD --; then
         echo "Local changes detected in submodule '$2'. Resetting to remote state..."
         git fetch origin
-        git reset --hard origin/master  # Replace 'main' with the correct branch if needed
+        git reset --hard # Replace 'master' with the correct branch if needed
     fi
 
     # Return to the main repository
     cd "${pwd}"
 
     # Pull with rebase
-    git pull origin main --recurse-submodules --rebase --force
+    git pull origin --recurse-submodules --rebase --force
 }
 
 function submodule-uninstall() {
