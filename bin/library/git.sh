@@ -45,6 +45,9 @@ function submodule-install() {
     # Return to the main repository
     cd "${pwd}"
 
+    # sync
+    git submodule sync --recursive
+
     # Pull with rebase
     git pull origin --recurse-submodules --rebase --force
 }
