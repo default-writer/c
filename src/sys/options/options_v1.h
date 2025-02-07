@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 3, 2025 at 5:33:37 PM GMT+3
+ *   February 7, 2025 at 7:21:33 AM GMT+3
  *
  */
 /*
@@ -24,35 +24,24 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _GENERIC_MEMORY_H_
-#define _GENERIC_MEMORY_H_
+#ifndef _VM_V1_OPTIONS_H_
+#define _VM_V1_OPTIONS_H_
 
 #include "std/api.h"
 
-#ifdef USE_MEMORY_DEBUG_INFO
-extern void global_statistics(void);
-#endif
-
-typedef struct PRIVATE_API(generic_memory) generic_memory;
-
-struct PRIVATE_API(generic_memory) {
-    void* (*alloc)(u64 size);
-    void (*free)(void* ptr, u64 size);
-    void* (*realloc)(void* old_ptr, u64 size, u64 new_size);
-#ifdef USE_MEMORY_DEBUG_INFO
-    void (*set)(void* dest, u8 c, u64 count);
-#endif
-};
+typedef struct PRIVATE_API(options_methods) {
+    const u64 size;
+} options_methods;
 
 /* definition */
-extern const generic_memory PRIVATE_API(generic_memory_definition);
+extern const options_methods PRIVATE_API(vm_options_definition);
 
 /* definition */
 #ifdef INLINE
-const generic_memory* generic_memory_v1 = &PRIVATE_API(generic_memory_definition);
+const options_methods* vm_options = &PRIVATE_API(vm_options_definition);
 #else
 /* definition */
-static const generic_memory* generic_memory_v1 = &PRIVATE_API(generic_memory_definition);
+static const options_methods* sys_options = &PRIVATE_API(vm_options_definition);
 #endif
 
-#endif /* _GENERIC_MEMORY_H_ */
+#endif /* _VM_V1_OPTIONS_H_ */

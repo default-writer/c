@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 3, 2025 at 10:03:22 PM GMT+3
+ *   February 7, 2025 at 7:54:23 AM GMT+3
  *
  */
 /*
@@ -25,17 +25,15 @@
 */
 
 #include "std/data.h"
-#define USING_VM_V1
 
 #include "pointer_v1.h"
 
 #include "std/api.h"
 
-#include "generic/memory_v1.h"
+#include "sys/memory/memory_v1.h"
 
 #include "vm/v1/virtual/virtual_v1.h"
 #include "vm/v1/vm_type.h"
-#include "vm/v1/vm_v1.h"
 #include "vm/vm_type.h"
 
 #include <stdio.h>
@@ -108,7 +106,7 @@ static u64 pointer_address(const struct pointer* ptr);
 static u64 pointer_size(const struct pointer* ptr);
 static void* pointer_read(const struct pointer* ptr);
 static void pointer_write(struct pointer* ptr, struct vm_data* vm_data_ptr, u64 address);
-static u64 pointer_read_type(const struct pointer* ptr, u64 type_id);
+static u64 pointer_read_type(const struct pointer* ptr, u64 virtual_id);
 
 static void pointer_free_internal(struct pointer* ptr);
 
@@ -119,11 +117,11 @@ static void vm_destroy(void);
 
 /* internal */
 
-static u64 type_count = TYPE_USER;
+static u64 virtual_count = TYPE_USER;
 
 static u64 vm_types_init(u64 id, const struct vm_type* data_type) {
-    struct vm_types* next = generic_memory_v1->alloc(sizeof(struct vm_types));
-    next->id = id == TYPE_NULL || id >= TYPE_USER ? type_count++ : id;
+    struct vm_types* next = sys_memory->alloc(sizeof(struct vm_types));
+    next->id = id == TYPE_NULL || id >= TYPE_USER ? virtual_count++ : id;
     next->free = data_type->free;
     next->next = vm_types;
     vm_types = next;
@@ -139,7 +137,7 @@ static void INIT vm_init(void) {
 static void DESTROY vm_destroy(void) {
     while (vm_types->next != 0) {
         struct vm_types* prev = vm_types->next;
-        generic_memory_v1->free(vm_types, sizeof(struct vm_types));
+        sys_memory->free(vm_types, sizeof(struct vm_types));
         vm_types = prev;
     }
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -148,16 +146,16 @@ static void DESTROY vm_destroy(void) {
 }
 
 static void pointer_free_internal(struct pointer* ptr) {
-    const struct vm_types* type_ptr = default_types + ptr->id;
-    if (type_ptr->free) {
-        type_ptr->free(ptr);
+    const struct vm_types* virtual_ptr = default_types + ptr->id;
+    if (virtual_ptr->free) {
+        virtual_ptr->free(ptr);
     }
 }
 
 static struct pointer* pointer_alloc(u64 size, u64 id) {
-    struct pointer* ptr = generic_memory_v1->alloc(POINTER_SIZE);
+    struct pointer* ptr = sys_memory->alloc(POINTER_SIZE);
     if (size != 0) {
-        ptr->data = generic_memory_v1->alloc(size);
+        ptr->data = sys_memory->alloc(size);
         ptr->size = size;
     }
     ptr->id = id;
@@ -166,7 +164,7 @@ static struct pointer* pointer_alloc(u64 size, u64 id) {
 
 static void pointer_realloc(struct pointer* ptr, u64 size) {
     if (ptr != 0 && ptr->data != 0) {
-        ptr->data = generic_memory_v1->realloc(ptr->data, ptr->size, size);
+        ptr->data = sys_memory->realloc(ptr->data, ptr->size, size);
         ptr->size = size;
     }
 }
@@ -179,7 +177,7 @@ static void pointer_free(u64 ptr) {
     if (ptr == 0) {
         return;
     }
-    struct pointer* data_ptr = virtual_v1->read(ptr);
+    struct pointer* data_ptr = virtual->read(ptr);
     if (data_ptr == 0) {
         return;
     }
@@ -193,10 +191,10 @@ static void pointer_release(struct pointer* ptr) {
     void* data_ptr = ptr->data;
     u64 size = ptr->size;
     if (data_ptr != 0 && size != 0) {
-        generic_memory_v1->free(data_ptr, size);
+        sys_memory->free(data_ptr, size);
     }
-    virtual_v1->free(ptr);
-    generic_memory_v1->free(ptr, POINTER_SIZE);
+    virtual->free(ptr);
+    sys_memory->free(ptr, POINTER_SIZE);
 }
 
 static u64 pointer_address(const struct pointer* ptr) {
@@ -238,18 +236,18 @@ static void pointer_write(struct pointer* ptr, struct vm_data* vm_data_ptr, u64 
     }
 }
 
-static u64 pointer_read_type(const struct pointer* ptr, u64 type_id) {
+static u64 pointer_read_type(const struct pointer* ptr, u64 virtual_id) {
     u64 id = 0;
-    if (ptr && ptr->id == type_id) {
-        id = type_id;
+    if (ptr && ptr->id == virtual_id) {
+        id = virtual_id;
     }
     return id;
 }
 
 /* implementation */
 static void pointer_init(u64 size) {
-    virtual_v1->init(&vm, size);
-    default_types = generic_memory_v1->alloc(type_count * sizeof(struct vm_types));
+    virtual->init(&vm, size);
+    default_types = sys_memory->alloc(virtual_count * sizeof(struct vm_types));
 #ifndef ATTRIBUTE
     data_init();
     string_init();
@@ -262,7 +260,7 @@ static void pointer_init(u64 size) {
     while (current->next != 0) {
         struct vm_types* prev = current->next;
         u64 index = current->id;
-        if (index > 0 && index < type_count) {
+        if (index > 0 && index < virtual_count) {
             default_types[index] = *current;
         }
         current = prev;
@@ -270,22 +268,22 @@ static void pointer_init(u64 size) {
 }
 
 static void pointer_destroy(void) {
-    generic_memory_v1->free(default_types, type_count * sizeof(struct vm_types));
-    virtual_v1->destroy(&vm);
+    sys_memory->free(default_types, virtual_count * sizeof(struct vm_types));
+    virtual->destroy(&vm);
 }
 
 static void pointer_gc(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
-    virtual_v1->dump_ref();
-    virtual_v1->dump();
+    virtual->dump_ref();
+    virtual->dump();
 #endif
-    virtual_v1->enumerator_init();
+    virtual->enumerator_init();
     u64 ptr = 0;
-    while ((ptr = virtual_v1->enumerator_next()) != 0) {
-        struct pointer* data_ptr = virtual_v1->read(ptr);
+    while ((ptr = virtual->enumerator_next()) != 0) {
+        struct pointer* data_ptr = virtual->read(ptr);
         pointer_free_internal(data_ptr);
     }
-    virtual_v1->enumerator_destroy();
+    virtual->enumerator_destroy();
 }
 
 #ifdef USE_MEMORY_DEBUG_INFO

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 3, 2025 at 4:17:08 PM GMT+3
+ *   February 6, 2025 at 11:55:13 PM GMT+3
  *
  */
 /*
@@ -40,10 +40,10 @@ extern const vm_v1_test_suite PRIVATE_API(vm_v1_test_suite_definition);
 
 /* definition */
 #ifdef INLINE
-const vm_v1_test_suite* vm_v1_test_suite_v1 = &PRIVATE_API(vm_v1_test_suite_definition);
+const vm_v1_test_suite* vm_v1_test_suite = &PRIVATE_API(vm_v1_test_suite_definition);
 #else
 /* definition */
-static const vm_v1_test_suite* vm_v1_test_suite_v1 = &PRIVATE_API(vm_v1_test_suite_definition);
+static const vm_v1_test_suite* _vm_v1_test_suite = &PRIVATE_API(vm_v1_test_suite_definition);
 #endif
 
 #endif /* _TEST_VM_V1_H_ */

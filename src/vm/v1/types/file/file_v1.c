@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 3, 2025 at 7:56:44 PM GMT+3
+ *   February 7, 2025 at 8:41:04 AM GMT+3
  *
  */
 /*
@@ -24,8 +24,6 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#define USING_VM_V1
-
 #include "file_v1.h"
 
 #include "std/api.h"
@@ -34,7 +32,6 @@
 #include "vm/v1/types/data/data_v1.h"
 #include "vm/v1/virtual/virtual_v1.h"
 #include "vm/v1/vm_type.h"
-#include "vm/v1/vm_v1.h"
 #include "vm/vm_type.h"
 
 #include <stdio.h>
@@ -50,8 +47,10 @@ void file_init(void);
 /* internal */
 static u64 file_alloc(u64 file_path_ptr, u64 mode_ptr);
 static void file_free(u64 ptr);
-static void file_vm_free(struct pointer* ptr);
 static u64 file_data(u64 ptr);
+
+/* destructor */
+static void virtual_free(struct pointer* ptr);
 
 /* implementation */
 struct file_handler {
@@ -68,70 +67,70 @@ static u64 file_alloc(u64 file_path, u64 mode) {
     if (mode == 0) {
         return 0;
     }
-    const struct pointer* file_path_ptr = virtual_v1->read_type(file_path, TYPE_STRING);
+    const struct pointer* file_path_ptr = virtual->read_type(file_path, TYPE_STRING);
     if (file_path_ptr == 0) {
         return 0;
     }
-    const struct pointer* mode_ptr = virtual_v1->read_type(mode, TYPE_STRING);
+    const struct pointer* mode_ptr = virtual->read_type(mode, TYPE_STRING);
     if (mode_ptr == 0) {
         return 0;
     }
-    const char* file_path_data = pointer_v1->read(file_path_ptr);
-    const char* mode_data = pointer_v1->read(mode_ptr);
+    const char* file_path_data = pointer->read(file_path_ptr);
+    const char* mode_data = pointer->read(mode_ptr);
     FILE* f = fopen(file_path_data, mode_data); /* NOLINT */
     if (f == 0) {
         return 0;
     }
-    struct pointer* f_ptr = pointer_v1->alloc(sizeof(struct file_handler), id);
-    struct file_handler* handler = pointer_v1->read(f_ptr);
+    struct pointer* f_ptr = pointer->alloc(sizeof(struct file_handler), id);
+    struct file_handler* handler = pointer->read(f_ptr);
     handler->file = f;
 #ifdef USE_MEMORY_DEBUG_INFO
-    handler->path = pointer_v1->read(file_path_ptr);
+    handler->path = pointer->read(file_path_ptr);
 #endif
-    u64 data_ptr = virtual_v1->alloc(f_ptr);
+    u64 data_ptr = virtual->alloc(f_ptr);
     return data_ptr;
 }
 
 static void file_free(u64 ptr) {
-    struct pointer* data_ptr = virtual_v1->read_type(ptr, id);
+    struct pointer* data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return;
     }
-    file_vm_free(data_ptr);
+    virtual_free(data_ptr);
 }
 
-static void file_vm_free(struct pointer* ptr) {
-    struct file_handler* handler = pointer_v1->read(ptr);
+static void virtual_free(struct pointer* ptr) {
+    struct file_handler* handler = pointer->read(ptr);
     if (handler->file != 0) {
         fclose(handler->file);
         handler->file = 0;
     }
-    pointer_v1->release(ptr);
+    pointer->release(ptr);
 }
 
 static u64 file_data(u64 ptr) {
-    const struct pointer* data_ptr = virtual_v1->read_type(ptr, id);
+    const struct pointer* data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
-    struct file_handler* handler = pointer_v1->read(data_ptr);
+    struct file_handler* handler = pointer->read(data_ptr);
     FILE* f = handler->file;
     fseek(f, 0, SEEK_END); /* NOLINT */
     u64 size = (u64)ftell(f);
     fseek(f, 0, SEEK_SET);
     u64 data_size = size + 1;
-    u64 virtual_data = type_data_v1->alloc(data_size);
-    void* file_data = type_data_v1->unsafe(virtual_data);
+    u64 data_handle = data->alloc(data_size);
+    void* file_data = data->unsafe(data_handle);
     fread(file_data, 1, size, handler->file);
-    return virtual_data;
+    return data_handle;
 }
 
-static const struct vm_type type = {
-    .free = file_vm_free
+static const struct vm_type _type = {
+    .free = virtual_free
 };
 
 static void INIT init(void) {
-    pointer_v1->register_type(id, &type);
+    pointer->register_type(id, &_type);
 }
 
 /* public */

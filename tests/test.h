@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 3, 2025 at 4:09:45 PM GMT+3
+ *   February 7, 2025 at 8:04:44 AM GMT+3
  *
  */
 /*
@@ -33,7 +33,7 @@
 
 #include "std/api.h"
 
-#include <rexo.h>
+#include "rexo.h"
 
 typedef struct PRIVATE_API(test_suite) {
     int (*run)(void);

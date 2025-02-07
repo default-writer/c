@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 3, 2025 at 7:44:11 PM GMT+3
+ *   February 7, 2025 at 7:33:51 AM GMT+3
  *
  */
 /*
@@ -45,23 +45,21 @@
     ```
 */
 
-typedef struct PRIVATE_API(file_methods) file_methods;
-
-struct PRIVATE_API(file_methods) {
+typedef struct PRIVATE_API(file_methods) {
     u64 (*alloc)(u64 file_path_ptr, u64 mode_ptr);
     void (*free)(u64 ptr);
     u64 (*data)(u64 ptr);
-};
+} file_methods;
 
 /* definition */
 extern const file_methods PRIVATE_API(file_methods_definition);
 
 /* definition */
 #ifdef INLINE
-const file_methods* type_file_v1 = &PRIVATE_API(file_methods_definition);
+const file_methods* file = &PRIVATE_API(file_methods_definition);
 #else
 /* definition */
-static const file_methods* type_file_v1 = &PRIVATE_API(file_methods_definition);
+static const file_methods* file = &PRIVATE_API(file_methods_definition);
 #endif
 
 #endif /* _POINTER_TYPES_FILE_H_ */

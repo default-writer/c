@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 3, 2025 at 9:56:12 PM GMT+3
+ *   February 7, 2025 at 7:18:03 AM GMT+3
  *
  */
 /*
@@ -28,12 +28,11 @@
 
 #include "virtual_v1.h"
 
-#include "generic/memory_v1.h"
+#include "sys/memory/memory_v1.h"
 
-#include "list/list_v1.h"
+#include "sys/list/list_v1.h"
 
 #include "vm/v1/pointer/pointer_v1.h"
-#include "vm/v1/vm_v1.h"
 
 /* macros */
 #define DEFAULT_SIZE 0x8 /* 8 */
@@ -114,8 +113,8 @@ static struct pointer* virtual_enumerator_pointer_next_internal(void);
 #endif
 
 static struct vm_data* vm_init_internal(u64 size, u64 offset) {
-    struct vm_data* vm_data_ptr = generic_memory_v1->alloc(VM_DATA_SIZE);
-    vm_data_ptr->bp = generic_memory_v1->alloc(ALLOC_SIZE(size));
+    struct vm_data* vm_data_ptr = sys_memory->alloc(VM_DATA_SIZE);
+    vm_data_ptr->bp = sys_memory->alloc(ALLOC_SIZE(size));
     vm_data_ptr->sp = vm_data_ptr->bp;
     vm_data_ptr->offset = offset;
     vm_data_ptr->size = size;
@@ -139,11 +138,11 @@ static struct pointer** vm_alloc_internal(u64* address, struct vm_data** target)
     struct vm_data* vm_data_ptr = vm->tail;
     struct pointer** ptr = 0;
 #ifndef USE_GC
-    struct vm_pointer* list_ptr = list_v1->pop(cache);
+    struct vm_pointer* list_ptr = sys_list->pop(cache);
     if (list_ptr != 0) {
         ptr = list_ptr->ptr;
         vm_data_ptr = list_ptr->vm;
-        generic_memory_v1->free(list_ptr, VM_POINTER_SIZE);
+        sys_memory->free(list_ptr, VM_POINTER_SIZE);
     }
     if (ptr == 0) {
 #endif
@@ -189,13 +188,13 @@ static void virtual_enumerator_destroy_internal(void) {
 
 static void vm_init(struct vm** ptr, u64 size) {
 #ifndef USE_GC
-    cache = generic_memory_v1->alloc(PTR_SIZE);
-    list_v1->init(cache);
+    cache = sys_memory->alloc(PTR_SIZE);
+    sys_list->init(cache);
 #endif
     struct vm_data* vm_data_ptr = vm_init_internal(size == 0 ? DEFAULT_SIZE : size, 0);
     vm->head = vm_data_ptr;
     vm->tail = vm_data_ptr;
-    struct vm* vm_ptr = generic_memory_v1->alloc(sizeof(struct vm));
+    struct vm* vm_ptr = sys_memory->alloc(sizeof(struct vm));
     vm_ptr->head = vm_data_ptr;
     vm_ptr->tail = vm_data_ptr;
     *ptr = vm_ptr;
@@ -208,15 +207,15 @@ static void vm_destroy(struct vm** ptr) {
     struct vm* current = *ptr;
     vm->head = current->head;
     vm->tail = current->tail;
-    generic_memory_v1->free(current, sizeof(struct vm));
+    sys_memory->free(current, sizeof(struct vm));
     *ptr = 0;
 #ifndef USE_GC
     struct vm_pointer* vm_pointer_ptr = 0;
-    while ((vm_pointer_ptr = list_v1->pop(cache)) != 0) {
-        generic_memory_v1->free(vm_pointer_ptr, VM_POINTER_SIZE);
+    while ((vm_pointer_ptr = sys_list->pop(cache)) != 0) {
+        sys_memory->free(vm_pointer_ptr, VM_POINTER_SIZE);
     }
-    list_v1->destroy(cache);
-    generic_memory_v1->free(cache, PTR_SIZE);
+    sys_list->destroy(cache);
+    sys_memory->free(cache, PTR_SIZE);
 #ifdef USE_MEMORY_CLEANUP
     cache = 0;
 #endif
@@ -224,8 +223,8 @@ static void vm_destroy(struct vm** ptr) {
     struct vm_data* vm_data_ptr = vm->head;
     while (vm_data_ptr != 0) {
         struct vm_data* next = vm_data_ptr->next;
-        generic_memory_v1->free(vm_data_ptr->bp, ALLOC_SIZE(vm_data_ptr->size));
-        generic_memory_v1->free(vm_data_ptr, VM_DATA_SIZE);
+        sys_memory->free(vm_data_ptr->bp, ALLOC_SIZE(vm_data_ptr->size));
+        sys_memory->free(vm_data_ptr, VM_DATA_SIZE);
         vm_data_ptr = next;
     }
     vm->head = 0;
@@ -237,7 +236,7 @@ static void vm_dump(void) {
     virtual_enumerator_init_internal(vm);
     struct pointer* ptr = 0;
     while ((ptr = virtual_enumerator_pointer_next_internal()) != 0) {
-        pointer_v1->dump(ptr);
+        pointer->dump(ptr);
     }
     virtual_enumerator_destroy_internal();
 }
@@ -246,7 +245,7 @@ static void vm_dump_ref(void) {
     virtual_enumerator_init_internal(vm);
     void** ptr = 0;
     while ((ptr = virtual_enumerator_next_internal()) != 0) {
-        pointer_v1->dump_ref(ptr);
+        pointer->dump_ref(ptr);
     }
     virtual_enumerator_destroy_internal();
 }
@@ -256,17 +255,17 @@ static void vm_free(const struct pointer* ptr) {
     if (!ptr) {
         return;
     }
-    const struct vm_data* vm_data_ptr = pointer_v1->vm(ptr);
-    struct pointer** data = vm_data_ptr->bp - vm_data_ptr->offset - 1 + pointer_v1->address(ptr);
+    const struct vm_data* vm_data_ptr = pointer->vm(ptr);
+    struct pointer** data = vm_data_ptr->bp - vm_data_ptr->offset - 1 + pointer->address(ptr);
     if (data != 0) {
 #ifndef USE_GC
-        struct vm_pointer* vm_pointer_ptr = generic_memory_v1->alloc(VM_POINTER_SIZE);
+        struct vm_pointer* vm_pointer_ptr = sys_memory->alloc(VM_POINTER_SIZE);
         vm_pointer_ptr->ptr = data;
-        vm_pointer_ptr->vm = pointer_v1->vm(ptr);
-        list_v1->push(cache, vm_pointer_ptr);
+        vm_pointer_ptr->vm = pointer->vm(ptr);
+        sys_list->push(cache, vm_pointer_ptr);
 #endif
 #ifdef USE_MEMORY_DEBUG_INFO
-        printf("  >-: %016llx ! %016llx > %016llx\n", pointer_v1->address(ptr), (u64)ptr, (u64)data);
+        printf("  >-: %016llx ! %016llx > %016llx\n", pointer->address(ptr), (u64)ptr, (u64)data);
 #endif
         *data = 0;
     }
@@ -285,7 +284,7 @@ static struct pointer* vm_read_type(u64 address, u64 id) {
     if (ptr == 0) {
         return 0;
     }
-    if (!pointer_v1->read_type(ptr, id)) {
+    if (!pointer->read_type(ptr, id)) {
         return 0;
     }
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -321,7 +320,7 @@ static u64 vm_alloc(struct pointer* ptr) {
     struct vm_data* target = 0;
     struct pointer** data = vm_alloc_internal(&address, &target);
     *data = ptr;
-    pointer_v1->write(ptr, target, address);
+    pointer->write(ptr, target, address);
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("  >+: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)data);
 #endif
@@ -354,7 +353,7 @@ static u64 virtual_enumerator_next(void) {
         if (*ptr != 0) {
             const struct pointer* data_ptr = *ptr;
             if (data_ptr != 0) {
-                address = pointer_v1->address(data_ptr);
+                address = pointer->address(data_ptr);
                 break;
             }
         }

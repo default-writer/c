@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 3, 2025 at 4:14:32 PM GMT+3
+ *   February 6, 2025 at 11:54:12 PM GMT+3
  *
  */
 /*
@@ -40,10 +40,10 @@ extern const list_micro_test_suite PRIVATE_API(list_micro_test_suite_definition)
 
 /* definition */
 #ifdef INLINE
-const list_micro_test_suite* list_micro_test_suite_v1 = &PRIVATE_API(list_micro_test_suite_definition);
+const list_micro_test_suite* list_micro_test_suite = &PRIVATE_API(list_micro_test_suite_definition);
 #else
 /* definition */
-static const list_micro_test_suite* list_micro_test_suite_v1 = &PRIVATE_API(list_micro_test_suite_definition);
+static const list_micro_test_suite* _list_micro_test_suite = &PRIVATE_API(list_micro_test_suite_definition);
 #endif
 
 #endif /* _TEST_LIST_H_ */

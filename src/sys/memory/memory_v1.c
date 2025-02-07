@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 3, 2025 at 5:10:49 PM GMT+3
+ *   February 7, 2025 at 7:50:31 AM GMT+3
  *
  */
 /*
@@ -39,8 +39,10 @@ struct memory_info_data {
     u64 free;
 };
 
+#ifdef USE_MEMORY_DEBUG_INFO
 static struct memory_info_data memory_info;
 static struct memory_info_data* base = &memory_info;
+#endif
 
 static void* memory_alloc(u64 size);
 static void memory_free(void* ptr, u64 size);
@@ -121,7 +123,7 @@ void global_statistics(void) {
 }
 #endif
 
-const generic_memory PRIVATE_API(generic_memory_definition) = {
+const memory_methods PRIVATE_API(memory_definition) = {
     .alloc = memory_alloc,
     .free = memory_free,
     .realloc = memory_realloc,

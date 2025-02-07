@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 3, 2025 at 7:54:40 PM GMT+3
+ *   February 7, 2025 at 7:30:50 AM GMT+3
  *
  */
 /*
@@ -35,22 +35,20 @@
  *  @brief C API / user
  */
 
-typedef struct PRIVATE_API(user_methods) user_methods;
-
-struct PRIVATE_API(user_methods) {
+typedef struct PRIVATE_API(user_methods) {
     u64 (*alloc)(void);
     void (*free)(u64 ptr);
-};
+} user_methods;
 
 /* definition */
 extern const user_methods PRIVATE_API(user_methods_definition);
 
 /* definition */
 #ifdef INLINE
-const user_methods* user_v1 = &PRIVATE_API(user_methods_definition);
+const user_methods* user = &PRIVATE_API(user_methods_definition);
 #else
 /* definition */
-static const user_methods* user_v1 = &PRIVATE_API(user_methods_definition);
+static const user_methods* user = &PRIVATE_API(user_methods_definition);
 #endif
 
 #endif /* _POINTER_TYPES_USER_TYPE_H_ */

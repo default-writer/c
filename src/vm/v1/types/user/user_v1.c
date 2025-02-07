@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 3, 2025 at 7:56:44 PM GMT+3
+ *   February 7, 2025 at 8:40:17 AM GMT+3
  *
  */
 /*
@@ -31,7 +31,6 @@
 #include "vm/v1/pointer/pointer_v1.h"
 #include "vm/v1/virtual/virtual_v1.h"
 #include "vm/v1/vm_type.h"
-#include "vm/v1/vm_v1.h"
 #include "vm/vm_type.h"
 
 #define DEFAULT_SIZE 0x100
@@ -39,39 +38,41 @@
 static u64 id = TYPE_NULL;
 
 #ifndef ATTRIBUTE
-void user_type_init(void);
+void user_virtual_init(void);
 #endif
 
 /* internal */
 static u64 user_alloc(void);
 static void user_free(u64 ptr);
-static void user_vm_free(struct pointer* ptr);
+
+/* destructor */
+static void virtual_free(struct pointer* ptr);
 
 /* implementation */
 static u64 user_alloc(void) {
-    struct pointer* ptr = pointer_v1->alloc(0, id);
-    u64 virtual_ptr = virtual_v1->alloc(ptr);
+    struct pointer* ptr = pointer->alloc(0, id);
+    u64 virtual_ptr = virtual->alloc(ptr);
     return virtual_ptr;
 }
 
 static void user_free(u64 ptr) {
-    struct pointer* data_ptr = virtual_v1->read_type(ptr, id);
+    struct pointer* data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return;
     }
-    user_vm_free(data_ptr);
+    virtual_free(data_ptr);
 }
 
-static void user_vm_free(struct pointer* ptr) {
-    pointer_v1->release(ptr);
+static void virtual_free(struct pointer* ptr) {
+    pointer->release(ptr);
 }
 
-static const struct vm_type type = {
-    .free = user_vm_free
+static const struct vm_type _type = {
+    .free = virtual_free
 };
 
 static void INIT init(void) {
-    id = pointer_v1->register_type(TYPE_NULL, &type);
+    id = pointer->register_type(TYPE_NULL, &_type);
 }
 
 /* public */
@@ -81,7 +82,7 @@ const user_methods PRIVATE_API(user_methods_definition) = {
 };
 
 #ifndef ATTRIBUTE
-void user_type_init(void) {
+void user_virtual_init(void) {
     init();
 }
 #endif

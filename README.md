@@ -22,7 +22,7 @@ static u64 read_data(u64 list_ptr, const char* prompt) {
         data_ptr = read_input(prompt);
     } else {
         printf(">%s:\n", prompt);
-        data_ptr = list->pop(list_ptr);
+        data_ptr = sys_list->pop(list_ptr);
         if (data_ptr == 0) {
             printf("\n");
         }

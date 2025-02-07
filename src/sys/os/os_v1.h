@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 3, 2025 at 9:06:38 PM GMT+3
+ *   February 6, 2025 at 11:29:43 PM GMT+3
  *
  */
 /*
@@ -23,40 +23,33 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#ifndef _POINTER_TYPES_V1_H_
-#define _POINTER_TYPES_V1_H_
 
-#define USING_TYPES_V1
+#ifndef _POINTER_TYPES_OS_H_
+#define _POINTER_TYPES_OS_H_
 
 #include "std/api.h"
 
-#include "vm/v1/types/data/data_v1.h"
-#include "vm/v1/types/file/file_v1.h"
-#include "vm/v1/types/object/object_v1.h"
-#include "vm/v1/types/string/string_v1.h"
-#include "vm/v1/types/string_pointer/string_pointer_v1.h"
-#include "vm/v1/types/user/user_v1.h"
+/*! @file os_v1.h
+ *  @brief C API / os
+ */
 
-typedef struct PRIVATE_API(type_methods) type_methods;
+typedef struct PRIVATE_API(os_methods) os_methods;
 
-struct PRIVATE_API(type_methods) {
-    const data_methods* data;
-    const file_methods* file;
-    const object_methods* object;
-    const string_methods* string;
-    const string_pointer_methods* string_pointer;
-    const user_methods* user;
+struct PRIVATE_API(os_methods) {
+    u64 (*getenv)(u64 name);
+    u64 (*getcwd)(void);
+    void (*putc)(u64 ptr);
 };
 
 /* definition */
-extern const type_methods PRIVATE_API(type_methods_definition);
+extern const os_methods PRIVATE_API(os_methods_definition);
 
 /* definition */
 #ifdef INLINE
-const type_methods* type_v1 = &PRIVATE_API(type_methods_definition);
+const os_methods* os = &PRIVATE_API(os_methods_definition);
 #else
 /* definition */
-static const type_methods* type_v1 = &PRIVATE_API(type_methods_definition);
+static const os_methods* os = &PRIVATE_API(os_methods_definition);
 #endif
 
-#endif /* _POINTER_TYPES_V1_H_ */
+#endif /* _POINTER_TYPES_OS_H_ */

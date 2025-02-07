@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 3, 2025 at 5:50:58 PM GMT+3
+ *   February 5, 2025 at 11:22:56 PM GMT+3
  *
  */
 /*
@@ -63,10 +63,10 @@ extern const pointer_methods PRIVATE_API(pointer_methods_definition);
 
 /* definition */
 #ifdef INLINE
-const spointer_methods* pointer_v1 = &PRIVATE_API(pointer_methods_definition);
+const spointer_methods* pointer = &PRIVATE_API(pointer_methods_definition);
 #else
 /* definition */
-static const pointer_methods* pointer_v1 = &PRIVATE_API(pointer_methods_definition);
+static const pointer_methods* pointer = &PRIVATE_API(pointer_methods_definition);
 #endif
 
 #endif /* _POINTER_V1_H_ */
