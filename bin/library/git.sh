@@ -14,6 +14,13 @@ if [[ "${BASHOPTS}" != *extdebug* ]]; then
     trap 'err_report $LINENO' ERR
 fi
 
+function branch-change-main-to-master() {
+  git branch -m main master
+  git fetch origin
+  git branch -u origin/master master
+  git remote set-head origin -a
+}
+
 function submodule-install() {
     local pwd
 
@@ -57,5 +64,6 @@ function submodule-uninstall() {
     fi
 }
 
+export -f branch-change-main-to-master
 export -f submodule-install
 export -f submodule-uninstall
