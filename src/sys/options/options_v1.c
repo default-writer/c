@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 7, 2025 at 7:23:05 AM GMT+3
+ *   February 7, 2025 at 8:59:17 AM GMT+3
  *
  */
 /*
@@ -32,6 +32,6 @@
 #define DEFAULT_SIZE 0x8 /* 8 */
 
 /* public */
-const options_methods PRIVATE_API(vm_options_definition) = {
+const options_methods PRIVATE_API(options_definition) = {
     .size = DEFAULT_SIZE
 };
