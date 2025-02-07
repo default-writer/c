@@ -25,7 +25,14 @@ function submodule-install() {
         git submodule update --recursive --remote --rebase --force
     fi
 
-    git pull origin main --recurse-submodules --quiet
+    # Stash any unstaged or uncommitted changes
+    git stash
+
+    # Pull with rebase
+    git pull origin main --recurse-submodules --rebase --force
+
+    # Reapply stashed changes (if any)
+    git stash pop
 }
 
 function submodule-uninstall() {
@@ -34,11 +41,11 @@ function submodule-uninstall() {
     pwd=$(get-cwd)
 
     if [[ -d "${pwd}/$2" ]]; then
-        git submodule deinit -f "$2"
         rm -rf "${pwd}/$2"
     fi
 
     if [[ -d "${pwd}/.git/modules/$2" ]]; then
+        git submodule deinit -f "$2"
         rm -rf "${pwd}/.git/modules/$2"
     fi
 }

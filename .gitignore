@@ -83,3 +83,5 @@ src/compile_commands.json
 Testing
 
 src/std/version.h
+
+./.rexo
