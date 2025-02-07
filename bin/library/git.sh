@@ -65,8 +65,6 @@ function submodule-uninstall() {
     if [[ -d "${pwd}/$2" ]]; then
         rm -rf "${pwd}/$2"
     fi
-
-    git reset --hard
 }
 
 export -f branch-change-main-to-master
