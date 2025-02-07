@@ -45,6 +45,9 @@ function submodule-install() {
     # Return to the main repository
     cd "${pwd}"
 
+    # sync
+    git submodule sync --recursive
+
     # Pull with rebase
     git pull origin --recurse-submodules --rebase --force
 }
@@ -62,6 +65,8 @@ function submodule-uninstall() {
     if [[ -d "${pwd}/$2" ]]; then
         rm -rf "${pwd}/$2"
     fi
+
+    git reset --hard
 }
 
 export -f branch-change-main-to-master
