@@ -36,8 +36,13 @@ while (($#)); do
             help
             ;;
 
-        "--nm") # [optional] extracts library info
-            nm -D -l "${pwd}/lib/libctests.so"
+        "--nm") # [optional] extracts sys library info
+            echo "--------libcsys.so--------"
+            nm -D -l "${pwd}/lib/libcsys.so"
+            echo ""
+            echo "--------libctypes.so--------"
+            nm -D -l "${pwd}/lib/libcsys.so"
+            echo ""
             ;;
 
         *)
