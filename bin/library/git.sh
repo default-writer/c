@@ -25,14 +25,21 @@ function submodule-install() {
         git submodule update --recursive --remote --rebase --force
     fi
 
-    # Stash any unstaged or uncommitted changes
-    git stash
+    # Navigate to the submodule directory
+    cd "${pwd}/$2"
+
+    # Check for local changes
+    if ! git diff-index --quiet HEAD --; then
+        echo "Local changes detected in submodule '$2'. Resetting to remote state..."
+        git fetch origin
+        git reset --hard origin/master  # Replace 'main' with the correct branch if needed
+    fi
+
+    # Return to the main repository
+    cd "${pwd}"
 
     # Pull with rebase
     git pull origin main --recurse-submodules --rebase --force
-
-    # Reapply stashed changes (if any)
-    git stash pop
 }
 
 function submodule-uninstall() {
@@ -40,13 +47,13 @@ function submodule-uninstall() {
 
     pwd=$(get-cwd)
 
-    if [[ -d "${pwd}/$2" ]]; then
-        rm -rf "${pwd}/$2"
-    fi
-
     if [[ -d "${pwd}/.git/modules/$2" ]]; then
         git submodule deinit -f "$2"
         rm -rf "${pwd}/.git/modules/$2"
+    fi
+
+    if [[ -d "${pwd}/$2" ]]; then
+        rm -rf "${pwd}/$2"
     fi
 }
 
