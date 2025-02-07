@@ -45,7 +45,7 @@ while (($#)); do
             echo ""
             ;;
 
-        "--branch-change-main-to-master")
+        "--branch-change-main-to-master") # changes branches to master
             branch-change-main-to-master
             ;;
 
