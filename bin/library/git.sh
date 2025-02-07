@@ -35,8 +35,11 @@ function submodule-uninstall() {
 
     if [[ -d "${pwd}/$2" ]]; then
         git submodule deinit -f "$2"
-        [[ -d "${pwd}/.git/modules/$2" ]] && rm -rf "${pwd}/.git/modules/$2"
         rm -rf "${pwd}/$2"
+    fi
+
+    if [[ -d "${pwd}/.git/modules/$2" ]]; then
+        rm -rf "${pwd}/.git/modules/$2"
     fi
 }
 
