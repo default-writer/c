@@ -22,7 +22,7 @@ function submodule-install() {
     if [[ ! -d  "${pwd}/.git/modules/$2" ]]; then
         git submodule add -f "$1" "$2"
         git submodule init
-        git submodule update --recursive --remote --no-rebase
+        git submodule update --recursive --remote --rebase --force
     fi
 
     git pull origin main --recurse-submodules --quiet
