@@ -1,4 +1,3 @@
 [submodule ".rexo"]
 	path = .rexo
-	branch = master
 	url = https://github.com/default-writer/rexo.git
