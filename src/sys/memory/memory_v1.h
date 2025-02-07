@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 3, 2025 at 10:04:39 PM GMT+3
+ *   February 7, 2025 at 7:22:09 AM GMT+3
  *
  */
 /*
@@ -24,39 +24,33 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _LIST_MICRO_DATA_H_
-#define _LIST_MICRO_DATA_H_
+#ifndef _GENERIC_MEMORY_H_
+#define _GENERIC_MEMORY_H_
 
 #include "std/api.h"
 
-typedef struct PRIVATE_API(list) {
-    /* initialize context */
-    void (*init)(stack_pointer* current);
-    /* destroy context */
-    void (*destroy)(stack_pointer* current);
-    /* push item on current context (stack) */
-    void (*push)(stack_pointer* current, void* item);
-    /* pop item on current context (stack) */
-    void* (*pop)(stack_pointer* current);
-    /* peek item on current context (stack) */
-    void* (*peek)(stack_pointer* current);
 #ifdef USE_MEMORY_DEBUG_INFO
-    /* print head */
-    void (*print_head)(stack_pointer* current);
-    /* print */
-    void (*print)(stack_pointer* current);
+extern void global_statistics(void);
 #endif
-} list;
+
+typedef struct PRIVATE_API(memory_methods) {
+    void* (*alloc)(u64 size);
+    void (*free)(void* ptr, u64 size);
+    void* (*realloc)(void* old_ptr, u64 size, u64 new_size);
+#ifdef USE_MEMORY_DEBUG_INFO
+    void (*set)(void* dest, u8 c, u64 count);
+#endif
+} memory_methods;
 
 /* definition */
-extern const list PRIVATE_API(list_definition);
+extern const memory_methods PRIVATE_API(memory_definition);
 
 /* definition */
 #ifdef INLINE
-const list_v1* list_v1 = &PRIVATE_API(list_definition);
+const memory_methods* memory = &PRIVATE_API(memory_definition);
 #else
 /* definition */
-static const list* list_v1 = &PRIVATE_API(list_definition);
+static const memory_methods* sys_memory = &PRIVATE_API(memory_definition);
 #endif
 
-#endif /* _LIST_MICRO_DATA_H_ */
+#endif /* _GENERIC_MEMORY_H_ */

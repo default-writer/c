@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 3, 2025 at 7:56:40 PM GMT+3
+ *   February 7, 2025 at 8:41:11 AM GMT+3
  *
  */
 /*
@@ -24,8 +24,6 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#define USING_VM_V1
-
 #include "data_v1.h"
 
 #include "std/api.h"
@@ -35,7 +33,6 @@
 #include "vm/v1/pointer/pointer_v1.h"
 #include "vm/v1/virtual/virtual_v1.h"
 #include "vm/v1/vm_type.h"
-#include "vm/v1/vm_v1.h"
 #include "vm/vm_type.h"
 
 #define DEFAULT_SIZE 0x100
@@ -49,53 +46,55 @@ void data_init(void);
 /* internal */
 static u64 data_alloc(u64 size);
 static void data_free(u64 ptr);
-static void data_vm_free(struct pointer* data_ptr);
 static void* data_unsafe(u64 ptr);
 static u64 data_size(u64 ptr);
 
+/* destructor */
+static void virtual_free(struct pointer* data_ptr);
+
 /* implementation */
 static u64 data_alloc(u64 size) {
-    struct pointer* f_ptr = pointer_v1->alloc(size, id);
-    u64 vm_data = virtual_v1->alloc(f_ptr);
+    struct pointer* f_ptr = pointer->alloc(size, id);
+    u64 vm_data = virtual->alloc(f_ptr);
     return vm_data;
 }
 
 static void data_free(u64 ptr) {
-    struct pointer* data_ptr = virtual_v1->read_type(ptr, id);
+    struct pointer* data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return;
     }
-    data_vm_free(data_ptr);
+    virtual_free(data_ptr);
 }
 
-static void data_vm_free(struct pointer* ptr) {
-    pointer_v1->release(ptr);
+static void virtual_free(struct pointer* ptr) {
+    pointer->release(ptr);
 }
 
 static void* data_unsafe(u64 ptr) {
-    const struct pointer* data_ptr = virtual_v1->read_type(ptr, id);
+    const struct pointer* data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
-    void* vm_data = pointer_v1->read(data_ptr);
+    void* vm_data = pointer->read(data_ptr);
     return vm_data;
 }
 
 static u64 data_size(u64 ptr) {
-    const struct pointer* data_ptr = virtual_v1->read_type(ptr, id);
+    const struct pointer* data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
-    u64 size = pointer_v1->size(data_ptr);
+    u64 size = pointer->size(data_ptr);
     return size;
 }
 
-static const struct vm_type type = {
-    .free = data_vm_free
+static const struct vm_type _type = {
+    .free = virtual_free
 };
 
 static void INIT init(void) {
-    pointer_v1->register_type(id, &type);
+    pointer->register_type(id, &_type);
 }
 
 /* public */

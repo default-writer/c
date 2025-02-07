@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 3, 2025 at 7:56:42 PM GMT+3
+ *   February 7, 2025 at 8:39:52 AM GMT+3
  *
  */
 /*
@@ -31,7 +31,6 @@
 #include "vm/v1/pointer/pointer_v1.h"
 #include "vm/v1/virtual/virtual_v1.h"
 #include "vm/v1/vm_type.h"
-#include "vm/v1/vm_v1.h"
 #include "vm/vm_type.h"
 
 #define DEFAULT_SIZE 0x100
@@ -44,38 +43,40 @@ void string_pointer_init(void);
 
 /* definition */
 static void string_free(u64 ptr);
-static void string_vm_free(struct pointer* ptr);
+
+/* destructor */
+static void virtual_free(struct pointer* ptr);
 
 /* internal */
 static void string_virtual_free(struct pointer* ptr);
 
 /* implementation */
 static void string_virtual_free(struct pointer* ptr) {
-    pointer_v1->release(ptr);
+    pointer->release(ptr);
 }
 
-static const struct vm_type type = {
+static const struct vm_type _type = {
     .free = string_virtual_free
 };
 
 static void INIT init(void) {
-    pointer_v1->register_type(id, &type);
+    pointer->register_type(id, &_type);
 }
 
 /* api */
 static void string_free(u64 ptr) {
-    struct pointer* data_ptr = virtual_v1->read(ptr);
+    struct pointer* data_ptr = virtual->read(ptr);
     if (data_ptr == 0) {
         return;
     }
-    if (pointer_v1->read_type(data_ptr, TYPE_STRING_POINTER)) {
-        string_vm_free(data_ptr);
+    if (pointer->read_type(data_ptr, TYPE_STRING_POINTER)) {
+        virtual_free(data_ptr);
         return;
     }
 }
 
-static void string_vm_free(struct pointer* ptr) {
-    pointer_v1->release(ptr);
+static void virtual_free(struct pointer* ptr) {
+    pointer->release(ptr);
 }
 
 /* public */

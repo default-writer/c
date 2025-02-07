@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 3, 2025 at 4:01:14 PM GMT+3
+ *   February 7, 2025 at 7:27:50 AM GMT+3
  *
  */
 /*
@@ -33,9 +33,7 @@
  *  @brief C API / string
  */
 
-typedef struct API(string_methods) string_methods;
-
-struct API(string_methods) {
+typedef struct API(string_methods) {
     void (*free)(u64 ptr);
     u64 (*copy)(u64 ptr);
     void (*strcpy)(u64 dest, u64 src);
@@ -59,6 +57,17 @@ struct API(string_methods) {
     u64 (*move_left)(u64 src, u64 nbytes);
     u64 (*move_right)(u64 src, u64 nbytes);
     u64 (*strcmp)(u64 src, u64 dest);
-};
+} string_methods;
+
+/* definition */
+extern const string_methods PRIVATE_API(string_methods_definition);
+
+/* definition */
+#ifdef INLINE
+const string_methods* string = &PRIVATE_API(string_methods_definition);
+#else
+/* definition */
+static const string_methods* string = &PRIVATE_API(string_methods_definition);
+#endif
 
 #endif /* _POINTER_TYPES_STRING_H_ */

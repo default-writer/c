@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 3, 2025 at 4:00:14 PM GMT+3
+ *   February 7, 2025 at 7:32:16 AM GMT+3
  *
  */
 /*
@@ -33,14 +33,23 @@
  *  @brief C API / object
  */
 
-typedef struct API(object_methods) object_methods;
-
-struct API(object_methods) {
+typedef struct API(object_methods) {
     u64 (*alloc)(u64 size);
     void (*free)(u64 ptr);
     void* (*unsafe)(u64 ptr);
     u64 (*load)(const void* data, u64 size);
     u64 (*size)(u64 ptr);
-};
+} object_methods;
+
+/* definition */
+extern const object_methods PRIVATE_API(object_methods_definition);
+
+/* definition */
+#ifdef INLINE
+const object_methods* string_pointer = &PRIVATE_API(object_methods_definition);
+#else
+/* definition */
+static const object_methods* object = &PRIVATE_API(object_methods_definition);
+#endif
 
 #endif /* _POINTER_TYPES_OBJECT_H_ */

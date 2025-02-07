@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 3, 2025 at 3:56:36 PM GMT+3
+ *   February 7, 2025 at 7:25:18 AM GMT+3
  *
  */
 /*
@@ -23,15 +23,26 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-
-#include "options_v1.h"
+#ifndef _POINTER_INFO_V1_H_
+#define _POINTER_INFO_V1_H_
 
 #include "std/api.h"
 
-/* macros */
-#define DEFAULT_SIZE 0x8 /* 8 */
+typedef struct PRIVATE_API(info_methods) {
+    const u64 timestamp;
+    const char* commit;
+    const char* version;
+} info_methods;
 
-/* public */
-const vm_options PRIVATE_API(vm_options_definition) = {
-    .size = DEFAULT_SIZE
-};
+/* definition */
+extern const info_methods PRIVATE_API(info_methods_definition);
+
+/* definition */
+#ifdef INLINE
+const info_methods* info = &PRIVATE_API(info_methods_definition);
+#else
+/* definition */
+static const info_methods* sys_info = &PRIVATE_API(info_methods_definition);
+#endif
+
+#endif /* _POINTER_INFO_V1_H_ */

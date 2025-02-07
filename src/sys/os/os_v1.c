@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 3, 2025 at 8:17:23 PM GMT+3
+ *   February 7, 2025 at 7:43:20 AM GMT+3
  *
  */
 /*
@@ -30,13 +30,12 @@
 
 #include "std/api.h"
 
-#include "generic/memory_v1.h"
+#include "sys/memory/memory_v1.h"
 
 #include "vm/v1/pointer/pointer_v1.h"
 #include "vm/v1/types/string/string_v1.h"
 #include "vm/v1/virtual/virtual_v1.h"
 #include "vm/v1/vm_type.h"
-#include "vm/v1/vm_v1.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -53,27 +52,27 @@ static u64 os_getenv(u64 ptr) {
     if (ptr == 0) {
         return 0;
     }
-    const struct pointer* data_ptr = virtual_v1->read_type(ptr, TYPE_STRING);
+    const struct pointer* data_ptr = virtual->read_type(ptr, TYPE_STRING);
     if (data_ptr == 0) {
         return 0;
     }
-    const char* name_data = pointer_v1->read(data_ptr);
-    u64 value = type_string_v1->load(getenv(name_data));
+    const char* name_data = pointer->read(data_ptr);
+    u64 value = string->load(getenv(name_data));
     return value;
 }
 
 static u64 os_getcwd(void) {
     u64 data_ptr = 0;
-    char* src = generic_memory_v1->alloc(PATH_MAX + 1);
+    char* src = sys_memory->alloc(PATH_MAX + 1);
     if (getcwd(src, PATH_MAX + 1) != 0) {
-        data_ptr = type_string_v1->load(src);
+        data_ptr = string->load(src);
     }
-    generic_memory_v1->free(src, PATH_MAX + 1);
+    sys_memory->free(src, PATH_MAX + 1);
     return data_ptr;
 }
 
 static void os_putc(u64 ptr) {
-    const char* unsafe_data = type_string_v1->unsafe(ptr);
+    const char* unsafe_data = string->unsafe(ptr);
     if (unsafe_data == 0) {
         return;
     }

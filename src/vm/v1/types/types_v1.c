@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 3, 2025 at 7:56:43 PM GMT+3
+ *   February 7, 2025 at 7:58:12 AM GMT+3
  *
  */
 /*
@@ -24,32 +24,17 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _POINTER_TYPES_OS_H_
-#define _POINTER_TYPES_OS_H_
+#include "types_v1.h"
 
 #include "std/api.h"
 
-/*! @file os_v1.h
- *  @brief C API / os
- */
-
-typedef struct PRIVATE_API(os_methods) os_methods;
-
-struct PRIVATE_API(os_methods) {
-    u64 (*getenv)(u64 name);
-    u64 (*getcwd)(void);
-    void (*putc)(u64 ptr);
+/* public */
+const type_methods PRIVATE_API(type_methods_definition) = {
+    .data = &PRIVATE_API(data_methods_definition),
+    .file = &PRIVATE_API(file_methods_definition),
+    .object = &PRIVATE_API(object_methods_definition),
+    .stack = &PRIVATE_API(stack_methods_definition),
+    .string = &PRIVATE_API(string_methods_definition),
+    .string_pointer = &PRIVATE_API(string_pointer_methods_definition),
+    .user = &PRIVATE_API(user_methods_definition)
 };
-
-/* definition */
-extern const os_methods PRIVATE_API(os_methods_definition);
-
-/* definition */
-#ifdef INLINE
-const os_methods* os_v1 = &PRIVATE_API(os_methods_definition);
-#else
-/* definition */
-static const os_methods* os_v1 = &PRIVATE_API(os_methods_definition);
-#endif
-
-#endif /* _POINTER_TYPES_OS_H_ */

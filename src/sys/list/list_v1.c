@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 3, 2025 at 10:40:29 PM GMT+3
+ *   February 7, 2025 at 7:18:03 AM GMT+3
  *
  */
 /*
@@ -26,7 +26,7 @@
 
 #include "list_v1.h"
 
-#include "generic/memory_v1.h"
+#include "sys/memory/memory_v1.h"
 
 #ifdef USE_MEMORY_DEBUG_INFO
 #include <stdio.h>
@@ -55,13 +55,13 @@ static const u64 _size = sizeof(stack_element);
 /* allocates memory pointer */
 static stack_pointer _new(void) {
     /* returns list object */
-    return generic_memory_v1->alloc(_size);
+    return sys_memory->alloc(_size);
 }
 
 /* releases memory pointer */
 static void _delete(stack_pointer ptr) {
     /* releases the pointer */
-    generic_memory_v1->free(ptr, _size);
+    sys_memory->free(ptr, _size);
 }
 
 /* ptr is not 0 */
@@ -207,7 +207,7 @@ static void list_print(stack_pointer* current) {
 
 /* public */
 
-const list PRIVATE_API(list_definition) = {
+const list_methods PRIVATE_API(list_definition) = {
     /* generic methods */
     .init = list_init,
     .destroy = list_destroy,

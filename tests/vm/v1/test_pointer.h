@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 3, 2025 at 4:15:31 PM GMT+3
+ *   February 6, 2025 at 11:54:00 PM GMT+3
  *
  */
 /*
@@ -40,10 +40,10 @@ extern const pointer_test_suite PRIVATE_API(pointer_test_suite_definition);
 
 /* definition */
 #ifdef INLINE
-const pointer_test_suite* pointer_test_suite_v1 = &PRIVATE_API(pointer_test_suite_definition);
+const pointer_test_suite* pointer_test_suite = &PRIVATE_API(pointer_test_suite_definition);
 #else
 /* definition */
-static const pointer_test_suite* pointer_test_suite_v1 = &PRIVATE_API(pointer_test_suite_definition);
+static const pointer_test_suite* _pointer_test_suite = &PRIVATE_API(pointer_test_suite_definition);
 #endif
 
 #endif /* _TEST_POINTER_H_ */

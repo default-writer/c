@@ -246,14 +246,16 @@ if(UNIX)
     add_definitions(-D_POSIX_C_SOURCE=199309L)
 endif()
 
-set(LIB_MEMORY_SOURCE src/generic/memory_v1.c)
-set(LIB_LIST_SOURCE src/list/list_v1.c)
+set(LIB_SYS_SOURCE
+    src/sys/info/info_v1.c
+    src/sys/memory/memory_v1.c
+    src/sys/options/options_v1.c
+    src/sys/os/os_v1.c
+    src/sys/list/list_v1.c)
 
 set(LIB_STD_TYPES1_SOURCE
-    src/vm/v1/options/options_v1.c
-    src/vm/v1/os/os_v1.c
     src/vm/v1/pointer/pointer_v1.c
-    src/vm/v1/types_v1.c
+    src/vm/v1/types/types_v1.c
     src/vm/v1/types/data/data_v1.c
     src/vm/v1/types/file/file_v1.c
     src/vm/v1/types/object/object_v1.c
@@ -262,9 +264,6 @@ set(LIB_STD_TYPES1_SOURCE
     src/vm/v1/types/string_pointer/string_pointer_v1.c
     src/vm/v1/types/user/user_v1.c
     src/vm/v1/virtual/virtual_v1.c)
-
-set(LIB_STD_INFO1_SOURCE
-    src/vm/v1/system/info_v1.c)
 
 set(TESTS_SRC_LIST tests/vm/v1/test_list.c)
 set(TESTS_SRC_POINTER tests/vm/v1/test_pointer.c)
@@ -275,9 +274,7 @@ include_directories(tests)
 include_directories(src)
 include_directories(.rexo/include)
 
-add_library(cinfo SHARED ${LIB_STD_INFO1_SOURCE})
-add_library(cmemory SHARED ${LIB_MEMORY_SOURCE})
-add_library(clist SHARED ${LIB_LIST_SOURCE})
+add_library(csys SHARED ${LIB_SYS_SOURCE})
 add_library(ctypes SHARED ${LIB_STD_TYPES1_SOURCE})
 add_library(ctests SHARED
     ${TESTS_SRC_LIST}
@@ -291,15 +288,12 @@ add_executable(main-tests-vm1
 )
 
 # test
-target_link_libraries(clist PRIVATE cmemory)
-target_link_libraries(ctypes PRIVATE cinfo cmemory clist)
-target_link_libraries(ctests PRIVATE ctypes clist)
+target_link_libraries(ctypes PRIVATE csys)
+target_link_libraries(ctests PRIVATE ctypes)
 
 # main
 target_link_libraries(main-tests-vm1 PRIVATE
-    cinfo
-    cmemory
-    clist
+    csys
     ctypes 
     ctests
 )

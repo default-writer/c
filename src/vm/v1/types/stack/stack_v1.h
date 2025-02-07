@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 3, 2025 at 9:27:06 PM GMT+3
+ *   February 7, 2025 at 7:58:17 AM GMT+3
  *
  */
 /*
@@ -27,8 +27,6 @@
 #ifndef _POINTER_TYPES_LIST_H_
 #define _POINTER_TYPES_LIST_H_
 
-#define USING_VM_V1
-
 #include "std/api.h"
 
 /*! @file list_v1.h
@@ -38,9 +36,7 @@
  *
  */
 
-typedef struct PRIVATE_API(stack) stack;
-
-struct PRIVATE_API(stack) {
+typedef struct PRIVATE_API(stack_methods) {
     u64 (*alloc)(void);
     void (*free)(u64 ptr);
     u64 (*peek)(u64 list_ptr);
@@ -55,17 +51,17 @@ struct PRIVATE_API(stack) {
     void (*push)(u64 list_ptr, u64 ptr);
     u64 (*size)(u64 ptr);
     void (*release)(u64 ptr);
-};
+} stack_methods;
 
 /* definition */
-extern const stack PRIVATE_API(stack_definition);
+extern const stack_methods PRIVATE_API(stack_methods_definition);
 
 /* definition */
 #ifdef INLINE
-const stack* stack_v1 = &PRIVATE_API(stack_definition);
+const stack_methods* stack = &PRIVATE_API(stack_methods_definition);
 #else
 /* definition */
-static const stack* stack_v1 = &PRIVATE_API(stack_definition);
+static const stack_methods* stack = &PRIVATE_API(stack_methods_definition);
 #endif
 
 #endif /* _POINTER_TYPES_LIST_H_ */

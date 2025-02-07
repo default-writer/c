@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 3, 2025 at 5:55:26 PM GMT+3
+ *   February 7, 2025 at 7:53:44 AM GMT+3
  *
  */
 /*
@@ -28,14 +28,15 @@
 
 #include "main-tests_v1.h"
 
+#define RX_ENABLE_EXTERNAL_LINKING
+
 #include "../../test.h"
 
 #include "test_list.h"
 #include "test_pointer.h"
 #include "test_vm_v1.h"
 
-#include "vm/v1/system/info_v1.h"
-#include "vm/v1/vm_v1.h"
+#include "sys/info/info_v1.h"
 
 #define DEFAULT_SIZE 0x100
 
@@ -47,9 +48,9 @@ const char* commit = GIT_COMMIT_HASH;
 
 static void INIT init() {
 #ifdef GIT_COMMIT_HASH
-    printf("version: v%s\n", info_v1->version);
+    printf("version: v%s\n", sys_info->version);
     // Replace the timestamp below with your Unix timestamp
-    time_t unix_timestamp = (time_t)info_v1->timestamp;
+    time_t unix_timestamp = (time_t)sys_info->timestamp;
 
     // Convert Unix timestamp to a time structure
     struct tm timeinfo;
@@ -68,9 +69,9 @@ int main(int argc, char** argv) {
 #ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();
 #endif
-    TEST_RUN(list_micro_result, list_micro_test_suite_v1);
-    TEST_RUN(vm_v1_result, vm_v1_test_suite_v1);
-    TEST_RUN(pointer_v1_result, pointer_test_suite_v1);
+    TEST_RUN(list_micro_result, _list_micro_test_suite);
+    TEST_RUN(vm_v1_result, _vm_v1_test_suite);
+    TEST_RUN(pointer_v1_result, _pointer_test_suite);
 #ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();
 #endif

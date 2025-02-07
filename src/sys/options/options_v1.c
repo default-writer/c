@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 3, 2025 at 3:55:46 PM GMT+3
+ *   February 7, 2025 at 7:23:05 AM GMT+3
  *
  */
 /*
@@ -24,26 +24,14 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _VM_V1_OPTIONS_H_
-#define _VM_V1_OPTIONS_H_
+#include "options_v1.h"
 
 #include "std/api.h"
 
-typedef struct PRIVATE_API(vm_options) vm_options;
+/* macros */
+#define DEFAULT_SIZE 0x8 /* 8 */
 
-struct PRIVATE_API(vm_options) {
-    const u64 size;
+/* public */
+const options_methods PRIVATE_API(vm_options_definition) = {
+    .size = DEFAULT_SIZE
 };
-
-/* definition */
-extern const vm_options PRIVATE_API(vm_options_definition);
-
-/* definition */
-#ifdef INLINE
-const vm_options* vm_options_v1 = &PRIVATE_API(vm_options_definition);
-#else
-/* definition */
-static const vm_options* vm_options_v1 = &PRIVATE_API(vm_options_definition);
-#endif
-
-#endif /* _VM_V1_OPTIONS_H_ */

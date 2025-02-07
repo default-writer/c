@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 7, 2025 at 7:37:52 AM GMT+3
+ *   February 7, 2025 at 7:16:38 AM GMT+3
  *
  */
 /*
@@ -24,39 +24,39 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _VIRTUAL_H_
-#define _VIRTUAL_H_
+#ifndef _LIST_MICRO_DATA_H_
+#define _LIST_MICRO_DATA_H_
 
 #include "std/api.h"
 
-struct vm;
-struct pointer;
-
-typedef struct PRIVATE_API(virtual_methods) {
-    void (*init)(struct vm**, u64 size);
-    void (*destroy)(struct vm**);
-    u64 (*alloc)(struct pointer* ptr);
-    void (*free)(const struct pointer* ptr);
-    struct pointer* (*read)(u64 address);
-    struct pointer* (*read_type)(u64 address, u64 id);
-    void (*enumerator_init)(void);
-    void (*enumerator_destroy)(void);
-    u64 (*enumerator_next)(void);
+typedef struct PRIVATE_API(list_methods) {
+    /* initialize context */
+    void (*init)(stack_pointer* current);
+    /* destroy context */
+    void (*destroy)(stack_pointer* current);
+    /* push item on current context (stack) */
+    void (*push)(stack_pointer* current, void* item);
+    /* pop item on current context (stack) */
+    void* (*pop)(stack_pointer* current);
+    /* peek item on current context (stack) */
+    void* (*peek)(stack_pointer* current);
 #ifdef USE_MEMORY_DEBUG_INFO
-    void (*dump)(void);
-    void (*dump_ref)(void);
+    /* print head */
+    void (*print_head)(stack_pointer* current);
+    /* print */
+    void (*print)(stack_pointer* current);
 #endif
-} virtual_methods;
+} list_methods;
 
 /* definition */
-extern const virtual_methods PRIVATE_API(virtual_methods_definition);
+extern const list_methods PRIVATE_API(list_definition);
 
 /* definition */
 #ifdef INLINE
-const virtual_methods* virtual = &PRIVATE_API(virtual_methods_definition);
+const list_v1* list_methods = &PRIVATE_API(list_definition);
 #else
 /* definition */
-static const virtual_methods* virtual = &PRIVATE_API(virtual_methods_definition);
+static const list_methods* sys_list = &PRIVATE_API(list_definition);
 #endif
 
-#endif /* _VIRTUAL_H_ */
+#endif /* _LIST_MICRO_DATA_H_ */

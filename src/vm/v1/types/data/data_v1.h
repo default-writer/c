@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 3, 2025 at 7:44:06 PM GMT+3
+ *   February 7, 2025 at 7:35:12 AM GMT+3
  *
  */
 /*
@@ -35,24 +35,22 @@
  *  @brief C API / data
  */
 
-typedef struct PRIVATE_API(data_methods) data_methods;
-
-struct PRIVATE_API(data_methods) {
+typedef struct PRIVATE_API(data_methods) {
     u64 (*alloc)(u64 size);
     void (*free)(u64 ptr);
     void* (*unsafe)(u64 ptr);
     u64 (*size)(u64 ptr);
-};
+} data_methods;
 
 /* definition */
 extern const data_methods PRIVATE_API(data_methods_definition);
 
 /* definition */
 #ifdef INLINE
-const struct data_methods* type_data_v1 = &PRIVATE_API(data_methods_definition);
+const struct data_methods* data = &PRIVATE_API(data_methods_definition);
 #else
 /* definition */
-static const data_methods* type_data_v1 = &PRIVATE_API(data_methods_definition);
+static const data_methods* data = &PRIVATE_API(data_methods_definition);
 #endif
 
 #endif /* _POINTER_TYPES_DATA_H_ */
