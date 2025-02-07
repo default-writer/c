@@ -33,22 +33,32 @@ if [ ! "${uid}" -eq 0 ]; then
     exit
 fi
 
-updateflags="--update"
-updgradeflags="--upgrade"
+updateflags=""
+updgradeflags=""
 
 ## Installs build system dependencies
 ## Usage: ${script} <option> [optional]
 ## ${commands}
 
+for i in "$@"; do
+    if [[ "$i" == "--no-update" ]]; then
+        updateflags="--no-update"
+    fi
+    if [[ "$i" == "--no-upgrade" ]]; then
+        updgradeflags="--no-upgrade"
+    fi
+done
+
+echo "${updateflags}"
+echo "${updgradeflags}"
+
 while (($#)); do
     case "$1" in
 
         "--no-update") # [optional] skips system updates
-            updateflags="--no-update"
             ;;
 
         "--no-upgrade") # [optional] skips system upgrades
-            updgradeflags="--no-upgrade"
             ;;
 
         "--update") # runs system update
