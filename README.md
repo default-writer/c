@@ -8,6 +8,10 @@
 [![Coverage Status](https://coveralls.io/repos/github/default-writer/c/badge.svg?branch=main)](https://coveralls.io/github/default-writer/c?branch=main)
 [![Snyk](https://snyk.io/test/github/default-writer/c/badge.svg?targetFile=package.json&branch=main)](https://snyk.io/test/github/default-writer/c?targetFile=package.json&branch=main)
 
+Funding:
+
+Etherium: 0x035ebC06C7e667200695Cf8FC3686EEBBBD5A452
+
 ## description
 
 - C memory management
