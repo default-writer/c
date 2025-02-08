@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 7, 2025 at 8:40:59 AM GMT+3
+ *   February 8, 2025 at 6:45:03 PM GMT+3
  *
  */
 /*
@@ -30,8 +30,6 @@
 
 #include "vm/v1/pointer/pointer_v1.h"
 #include "vm/v1/virtual/virtual_v1.h"
-#include "vm/v1/vm_type.h"
-#include "vm/vm_type.h"
 
 #include <string.h>
 
@@ -51,32 +49,32 @@ static u64 object_load(const void* data, u64 size);
 static u64 object_size(u64 ptr);
 
 /* destructor */
-static void virtual_free(struct pointer* ptr);
+static void virtual_free(pointer_ptr ptr);
 
 /* implementation */
 static u64 object_alloc(u64 size) {
     if (size == 0) {
         return 0;
     }
-    struct pointer* ptr = pointer->alloc(size, id);
+    pointer_ptr ptr = pointer->alloc(size, id);
     u64 virtual_ptr = virtual->alloc(ptr);
     return virtual_ptr;
 }
 
 static void object_free(u64 ptr) {
-    struct pointer* data_ptr = virtual->read_type(ptr, id);
+    pointer_ptr data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return;
     }
     virtual_free(data_ptr);
 }
 
-static void virtual_free(struct pointer* ptr) {
+static void virtual_free(pointer_ptr ptr) {
     pointer->release(ptr);
 }
 
 static void* object_unsafe(u64 ptr) {
-    const struct pointer* data_ptr = virtual->read_type(ptr, id);
+    const pointer_ptr data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
@@ -91,14 +89,14 @@ static u64 object_load(const void* src_data, u64 size) {
     if (size == 0) {
         return 0;
     }
-    struct pointer* data_ptr = pointer->alloc(size, id);
+    pointer_ptr data_ptr = pointer->alloc(size, id);
     memcpy(pointer->read(data_ptr), src_data, size); /* NOLINT */
     u64 virtual_ptr = virtual->alloc(data_ptr);
     return virtual_ptr;
 }
 
 static u64 object_size(u64 ptr) {
-    const struct pointer* data_ptr = virtual->read_type(ptr, id);
+    const pointer_ptr data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
@@ -106,7 +104,7 @@ static u64 object_size(u64 ptr) {
     return size;
 }
 
-static const struct vm_type _type = {
+static const struct type_methods_definitions _type = {
     .free = virtual_free
 };
 
@@ -115,7 +113,7 @@ static void INIT init(void) {
 }
 
 /* public */
-const object_methods PRIVATE_API(object_methods_definition) = {
+const object_methods PRIVATE_API(object_methods_definitions) = {
     .alloc = object_alloc,
     .free = object_free,
     .load = object_load,

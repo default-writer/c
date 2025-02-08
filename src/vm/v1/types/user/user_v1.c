@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 7, 2025 at 8:40:17 AM GMT+3
+ *   February 8, 2025 at 6:41:32 PM GMT+3
  *
  */
 /*
@@ -30,8 +30,6 @@
 
 #include "vm/v1/pointer/pointer_v1.h"
 #include "vm/v1/virtual/virtual_v1.h"
-#include "vm/v1/vm_type.h"
-#include "vm/vm_type.h"
 
 #define DEFAULT_SIZE 0x100
 
@@ -46,28 +44,28 @@ static u64 user_alloc(void);
 static void user_free(u64 ptr);
 
 /* destructor */
-static void virtual_free(struct pointer* ptr);
+static void virtual_free(pointer_ptr ptr);
 
 /* implementation */
 static u64 user_alloc(void) {
-    struct pointer* ptr = pointer->alloc(0, id);
+    pointer_ptr ptr = pointer->alloc(0, id);
     u64 virtual_ptr = virtual->alloc(ptr);
     return virtual_ptr;
 }
 
 static void user_free(u64 ptr) {
-    struct pointer* data_ptr = virtual->read_type(ptr, id);
+    pointer_ptr data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return;
     }
     virtual_free(data_ptr);
 }
 
-static void virtual_free(struct pointer* ptr) {
+static void virtual_free(pointer_ptr ptr) {
     pointer->release(ptr);
 }
 
-static const struct vm_type _type = {
+static const struct type_methods_definitions _type = {
     .free = virtual_free
 };
 
@@ -76,7 +74,7 @@ static void INIT init(void) {
 }
 
 /* public */
-const user_methods PRIVATE_API(user_methods_definition) = {
+const user_methods PRIVATE_API(user_methods_definitions) = {
     .alloc = user_alloc,
     .free = user_free
 };

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 7, 2025 at 7:34:50 AM GMT+3
+ *   February 8, 2025 at 6:57:10 PM GMT+3
  *
  */
 /*
@@ -28,9 +28,9 @@
 
 #include "sys/options/options_v1.h"
 #include "vm/v1/pointer/pointer_v1.h"
+#include "vm/v1/types/data/data_v1.h"
 #include "vm/v1/types/stack/stack_v1.h"
 #include "vm/v1/virtual/virtual_v1.h"
-#include "vm/v1/vm_type.h"
 #include "vm/v1/vm_v1.h"
 
 #define DEFAULT_SIZE 0x100
@@ -58,7 +58,7 @@ RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tea
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_read_virtual_0, .fixture = test_fixture) {
-    struct pointer* ptr = virtual->read_type(0, TYPE_DATA);
+    pointer_ptr ptr = virtual->read_type(0, TYPE_DATA);
     RX_ASSERT(ptr == 0);
 }
 
@@ -79,9 +79,9 @@ RX_TEST_CASE(tests, test_vm_destroy_null, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_alloc_user, .fixture = test_fixture) {
-    struct pointer* ptr = pointer->alloc(0, TYPE_NULL);
+    pointer_ptr ptr = pointer->alloc(0, TYPE_NULL);
     u64 virtual_ptr = virtual->alloc(ptr);
-    const struct pointer* vm_ptr = virtual->read(virtual_ptr);
+    const pointer_ptr vm_ptr = virtual->read(virtual_ptr);
     RX_ASSERT(ptr != 0);
     RX_ASSERT(virtual_ptr != 0);
     RX_ASSERT(vm_ptr == ptr);
@@ -90,9 +90,9 @@ RX_TEST_CASE(tests, test_vm_alloc_user, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_read_data, .fixture = test_fixture) {
-    struct pointer* ptr = pointer->alloc(0, TYPE_DATA);
+    pointer_ptr ptr = pointer->alloc(0, TYPE_DATA);
     u64 virtual_ptr = virtual->alloc(ptr);
-    const struct pointer* vm_ptr = virtual->read(virtual_ptr);
+    const pointer_ptr vm_ptr = virtual->read(virtual_ptr);
     RX_ASSERT(ptr != 0);
     RX_ASSERT(virtual_ptr != 0);
     RX_ASSERT(vm_ptr == ptr);
@@ -101,9 +101,9 @@ RX_TEST_CASE(tests, test_vm_read_data, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_read_1, .fixture = test_fixture) {
-    struct pointer* ptr = pointer->alloc(0, TYPE_DATA);
+    pointer_ptr ptr = pointer->alloc(0, TYPE_DATA);
     u64 virtual_ptr = virtual->alloc(ptr);
-    const struct pointer* vm_ptr = virtual->read(1);
+    const pointer_ptr vm_ptr = virtual->read(1);
     RX_ASSERT(ptr != 0);
     RX_ASSERT(virtual_ptr != 0);
     RX_ASSERT(vm_ptr == ptr);
@@ -112,9 +112,9 @@ RX_TEST_CASE(tests, test_vm_read_1, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_read_9, .fixture = test_fixture) {
-    struct pointer* ptr = pointer->alloc(0, TYPE_DATA);
+    pointer_ptr ptr = pointer->alloc(0, TYPE_DATA);
     u64 virtual_ptr = virtual->alloc(ptr);
-    const struct pointer* vm_ptr = virtual->read(sys_options->size + 1);
+    const pointer_ptr vm_ptr = virtual->read(sys_options->size + 1);
     RX_ASSERT(ptr != 0);
     RX_ASSERT(virtual_ptr != 0);
     RX_ASSERT(vm_ptr == 0);
@@ -134,7 +134,7 @@ RX_TEST_CASE(tests, test_vm_free_0, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_read_0, .fixture = test_fixture) {
-    const struct pointer* ptr = virtual->read(0);
+    const pointer_ptr ptr = virtual->read(0);
     RX_ASSERT(ptr == 0);
 }
 
@@ -145,7 +145,7 @@ RX_TEST_CASE(tests, test_vm_init_0, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_read_virtual_1, .fixture = test_fixture) {
-    struct pointer* ptr = virtual->read_type(1, TYPE_DATA);
+    pointer_ptr ptr = virtual->read_type(1, TYPE_DATA);
     RX_ASSERT(ptr == 0);
 }
 
@@ -157,9 +157,9 @@ RX_TEST_CASE(tests, test_vm_write_0, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_read_virtual_write_1_read_1, .fixture = test_fixture) {
-    struct pointer* ptr = pointer->alloc(0, TYPE_DATA);
+    pointer_ptr ptr = pointer->alloc(0, TYPE_DATA);
     u64 virtual_ptr = virtual->alloc(ptr);
-    struct pointer* vm_ptr = virtual->read_type(virtual_ptr, TYPE_DATA);
+    pointer_ptr vm_ptr = virtual->read_type(virtual_ptr, TYPE_DATA);
     RX_ASSERT(ptr != 0);
     RX_ASSERT(virtual_ptr != 0);
     RX_ASSERT(vm_ptr == ptr);
@@ -168,9 +168,9 @@ RX_TEST_CASE(tests, test_vm_read_virtual_write_1_read_1, .fixture = test_fixture
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_read_virtual_write_1_read_2, .fixture = test_fixture) {
-    struct pointer* ptr = pointer->alloc(0, TYPE_DATA);
+    pointer_ptr ptr = pointer->alloc(0, TYPE_DATA);
     u64 virtual_ptr = virtual->alloc(ptr);
-    struct pointer* vm_ptr = virtual->read_type(virtual_ptr + 1, TYPE_DATA);
+    pointer_ptr vm_ptr = virtual->read_type(virtual_ptr + 1, TYPE_DATA);
     RX_ASSERT(ptr != 0);
     RX_ASSERT(virtual_ptr != 0);
     RX_ASSERT(vm_ptr == 0);

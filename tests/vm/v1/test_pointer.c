@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 7, 2025 at 7:33:37 AM GMT+3
+ *   February 8, 2025 at 6:56:44 PM GMT+3
  *
  */
 /*
@@ -28,6 +28,8 @@
 
 #include "sys/os/os_v1.h"
 #include "vm/v1/pointer/pointer_v1.h"
+#include "vm/v1/types/data/data_v1.h"
+#include "vm/v1/types/file/file_v1.h"
 #include "vm/v1/types/stack/stack_v1.h"
 #include "vm/v1/vm_v1.h"
 

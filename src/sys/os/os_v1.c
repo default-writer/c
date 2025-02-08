@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 7, 2025 at 7:43:20 AM GMT+3
+ *   February 8, 2025 at 6:37:02 PM GMT+3
  *
  */
 /*
@@ -35,7 +35,6 @@
 #include "vm/v1/pointer/pointer_v1.h"
 #include "vm/v1/types/string/string_v1.h"
 #include "vm/v1/virtual/virtual_v1.h"
-#include "vm/v1/vm_type.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -52,7 +51,7 @@ static u64 os_getenv(u64 ptr) {
     if (ptr == 0) {
         return 0;
     }
-    const struct pointer* data_ptr = virtual->read_type(ptr, TYPE_STRING);
+    const pointer_ptr data_ptr = virtual->read_type(ptr, TYPE_STRING);
     if (data_ptr == 0) {
         return 0;
     }
@@ -80,7 +79,7 @@ static void os_putc(u64 ptr) {
 }
 
 /* public */
-const os_methods PRIVATE_API(os_methods_definition) = {
+const os_methods PRIVATE_API(os_methods_definitions) = {
     .getenv = os_getenv,
     .getcwd = os_getcwd,
     .putc = os_putc

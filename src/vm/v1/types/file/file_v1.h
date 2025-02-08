@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 7, 2025 at 7:33:51 AM GMT+3
+ *   February 8, 2025 at 5:55:58 PM GMT+3
  *
  */
 /*
@@ -52,14 +52,14 @@ typedef struct PRIVATE_API(file_methods) {
 } file_methods;
 
 /* definition */
-extern const file_methods PRIVATE_API(file_methods_definition);
+extern const file_methods PRIVATE_API(file_methods_definitions);
 
 /* definition */
 #ifdef INLINE
-const file_methods* file = &PRIVATE_API(file_methods_definition);
+const file_methods* file = &PRIVATE_API(file_methods_definitions);
 #else
 /* definition */
-static const file_methods* file = &PRIVATE_API(file_methods_definition);
+static const file_methods* file = &PRIVATE_API(file_methods_definitions);
 #endif
 
 #endif /* _POINTER_TYPES_FILE_H_ */

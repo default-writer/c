@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 7, 2025 at 7:18:03 AM GMT+3
+ *   February 8, 2025 at 6:30:18 PM GMT+3
  *
  */
 /*
@@ -34,17 +34,17 @@
 
 /* private */
 
-static stack_pointer list_next(stack_pointer ptr);
-static void* list_data(stack_pointer ptr);
-static void list_delete(stack_pointer ptr);
-static void list_push(stack_pointer* current, void* payload);
-static void* list_pop(stack_pointer* current);
-static void* list_peek(stack_pointer* current);
-static void list_init(stack_pointer* current);
-static void list_destroy(stack_pointer* current);
+static stack_ptr list_next(stack_ptr ptr);
+static void* list_data(stack_ptr ptr);
+static void list_delete(stack_ptr ptr);
+static void list_push(stack_ptr* current, void* payload);
+static void* list_pop(stack_ptr* current);
+static void* list_peek(stack_ptr* current);
+static void list_init(stack_ptr* current);
+static void list_destroy(stack_ptr* current);
 #ifdef USE_MEMORY_DEBUG_INFO
-static void list_print_head(stack_pointer* current);
-static void list_print(stack_pointer* current);
+static void list_print_head(stack_ptr* current);
+static void list_print(stack_ptr* current);
 #endif
 
 /* size of a memory block to allocate */
@@ -53,42 +53,42 @@ static const u64 _size = sizeof(stack_element);
 /* implementation */
 
 /* allocates memory pointer */
-static stack_pointer _new(void) {
+static stack_ptr _new(void) {
     /* returns list object */
     return sys_memory->alloc(_size);
 }
 
 /* releases memory pointer */
-static void _delete(stack_pointer ptr) {
+static void _delete(stack_ptr ptr) {
     /* releases the pointer */
     sys_memory->free(ptr, _size);
 }
 
 /* ptr is not 0 */
-static stack_pointer list_next(stack_pointer ptr) {
+static stack_ptr list_next(stack_ptr ptr) {
     /* ptr is not 0 */
     return ptr->next;
 }
 
 /* ptr is not 0 */
-static void* list_data(stack_pointer ptr) {
+static void* list_data(stack_ptr ptr) {
     /* ptr is not 0 */
     return ptr->data;
 }
 
 /* deletes the data pointer */
-static void list_delete(stack_pointer ptr) {
+static void list_delete(stack_ptr ptr) {
     /* releases the pointer */
     _delete(ptr);
 }
 
 /* pushes the memory pointer */
-static void list_push(stack_pointer* current, void* payload) {
+static void list_push(stack_ptr* current, void* payload) {
     if (!current || !*current) {
         return;
     }
     /* creates empty data chunk */
-    stack_pointer item = _new();
+    stack_ptr item = _new();
     /* writes data into allocated memory buffer */
     item->data = payload;
     /* assigns item's next pointer to current pointer */
@@ -98,14 +98,14 @@ static void list_push(stack_pointer* current, void* payload) {
 }
 
 /* pop existing element at the top of the stack/queue/list */
-static void* list_pop(stack_pointer* current) {
+static void* list_pop(stack_ptr* current) {
     if (!current || !*current) {
         return 0;
     }
     /* gets the current memory pointer */
-    stack_pointer ptr = *current;
+    stack_ptr ptr = *current;
     /* gets next pointer */
-    stack_pointer next = list_next(ptr);
+    stack_ptr next = list_next(ptr);
     /* if we call method on empty stack, do not return head element, return null element by convention */
     if (next == 0) {
         /* returns default element as null element */
@@ -122,12 +122,12 @@ static void* list_pop(stack_pointer* current) {
 }
 
 /* peeks existing element at the top of the stack/queue/list */
-static void* list_peek(stack_pointer* current) {
+static void* list_peek(stack_ptr* current) {
     if (!current || !*current) {
         return 0;
     }
     /* gets the current memory pointer */
-    stack_pointer ptr = *current;
+    stack_ptr ptr = *current;
     /* gets next pointer */
     const stack_element* next = list_next(ptr);
     /* if we call method on empty stack, do not return head element, return null element by convention */
@@ -140,7 +140,7 @@ static void* list_peek(stack_pointer* current) {
 }
 
 /* initializes the new context's head element */
-static void list_init(stack_pointer* current) {
+static void list_init(stack_ptr* current) {
     if (!current || *current) {
         return;
     }
@@ -154,18 +154,18 @@ static void list_init(stack_pointer* current) {
 }
 
 /* destroys the memory stack */
-static void list_destroy(stack_pointer* current) {
+static void list_destroy(stack_ptr* current) {
     if (!current || !*current) {
         return;
     }
     /* gets the current memory pointer */
-    stack_pointer tmp = *current;
+    stack_ptr tmp = *current;
     /* until we found element with no next node (not a list element) */
     do {
         /* gets temporary pointer value */
-        stack_pointer ptr = tmp;
+        stack_ptr ptr = tmp;
         /* gets prev pointer value */
-        stack_pointer next = list_next(ptr);
+        stack_ptr next = list_next(ptr);
         /* releases memory, should check for 0 before execution */
         list_delete(ptr);
         /* advances temporary pointer value to the next item */
@@ -178,19 +178,19 @@ static void list_destroy(stack_pointer* current) {
 #ifdef USE_MEMORY_DEBUG_INFO
 
 /* prints head on current context (stack) */
-static void list_print_head(stack_pointer* current) {
+static void list_print_head(stack_ptr* current) {
     /* get current context's head */
-    stack_pointer ptr = *current;
+    stack_ptr ptr = *current;
     /* visualize item */
     printf("   *: %016llx > %016llx\n", (u64)ptr, (u64)list_data(ptr));
 }
 
 /* prints all stack trace to output */
-static void list_print(stack_pointer* current) {
+static void list_print(stack_ptr* current) {
     /* sets the counter */
     int i = 0;
     /* assigns current's head pointer to the temporary */
-    stack_pointer tmp = *current;
+    stack_ptr tmp = *current;
     if (tmp != 0) {
         /* until we found root element (element with no previous element reference) */
         do {

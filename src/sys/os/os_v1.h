@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 6, 2025 at 11:29:43 PM GMT+3
+ *   February 8, 2025 at 7:05:39 PM GMT+3
  *
  */
 /*
@@ -33,23 +33,21 @@
  *  @brief C API / os
  */
 
-typedef struct PRIVATE_API(os_methods) os_methods;
-
-struct PRIVATE_API(os_methods) {
+typedef struct PRIVATE_API(os_methods) {
     u64 (*getenv)(u64 name);
     u64 (*getcwd)(void);
     void (*putc)(u64 ptr);
-};
+} os_methods;
 
 /* definition */
-extern const os_methods PRIVATE_API(os_methods_definition);
+extern const os_methods PRIVATE_API(os_methods_definitions);
 
 /* definition */
 #ifdef INLINE
-const os_methods* os = &PRIVATE_API(os_methods_definition);
+const os_methods* os = &PRIVATE_API(os_methods_definitions);
 #else
 /* definition */
-static const os_methods* os = &PRIVATE_API(os_methods_definition);
+static const os_methods* os = &PRIVATE_API(os_methods_definitions);
 #endif
 
 #endif /* _POINTER_TYPES_OS_H_ */

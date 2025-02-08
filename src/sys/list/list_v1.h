@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 7, 2025 at 7:16:38 AM GMT+3
+ *   February 8, 2025 at 6:29:57 PM GMT+3
  *
  */
 /*
@@ -31,20 +31,20 @@
 
 typedef struct PRIVATE_API(list_methods) {
     /* initialize context */
-    void (*init)(stack_pointer* current);
+    void (*init)(stack_ptr* current);
     /* destroy context */
-    void (*destroy)(stack_pointer* current);
+    void (*destroy)(stack_ptr* current);
     /* push item on current context (stack) */
-    void (*push)(stack_pointer* current, void* item);
+    void (*push)(stack_ptr* current, void* item);
     /* pop item on current context (stack) */
-    void* (*pop)(stack_pointer* current);
+    void* (*pop)(stack_ptr* current);
     /* peek item on current context (stack) */
-    void* (*peek)(stack_pointer* current);
+    void* (*peek)(stack_ptr* current);
 #ifdef USE_MEMORY_DEBUG_INFO
     /* print head */
-    void (*print_head)(stack_pointer* current);
+    void (*print_head)(stack_ptr* current);
     /* print */
-    void (*print)(stack_pointer* current);
+    void (*print)(stack_ptr* current);
 #endif
 } list_methods;
 

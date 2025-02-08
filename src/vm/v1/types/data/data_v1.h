@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 7, 2025 at 7:35:12 AM GMT+3
+ *   February 8, 2025 at 6:56:25 PM GMT+3
  *
  */
 /*
@@ -43,14 +43,14 @@ typedef struct PRIVATE_API(data_methods) {
 } data_methods;
 
 /* definition */
-extern const data_methods PRIVATE_API(data_methods_definition);
+extern const data_methods PRIVATE_API(data_methods_definitions);
 
 /* definition */
 #ifdef INLINE
-const struct data_methods* data = &PRIVATE_API(data_methods_definition);
+const struct data_methods* data = &PRIVATE_API(data_methods_definitions);
 #else
 /* definition */
-static const data_methods* data = &PRIVATE_API(data_methods_definition);
+static const data_methods* data = &PRIVATE_API(data_methods_definitions);
 #endif
 
 #endif /* _POINTER_TYPES_DATA_H_ */

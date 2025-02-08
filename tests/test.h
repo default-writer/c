@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 7, 2025 at 8:04:44 AM GMT+3
+ *   February 8, 2025 at 7:21:27 PM GMT+3
  *
  */
 /*
@@ -33,7 +33,22 @@
 
 #include "std/api.h"
 
+#if !defined(RX_MAJOR_VERSION)
+
+#if defined(_WIN32)
+#define RXP_PLATFORM_WINDOWS
+#elif defined(__unix__) || defined(__APPLE__)
+#define RXP_PLATFORM_UNIX
+#if defined(__APPLE__)
+#define RXP_PLATFORM_DARWIN
+#elif defined(__linux__)
+#define RXP_PLATFORM_LINUX
+#endif
+#endif
+
 #include "rexo.h"
+
+#endif
 
 typedef struct PRIVATE_API(test_suite) {
     int (*run)(void);

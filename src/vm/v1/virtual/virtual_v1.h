@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 7, 2025 at 7:37:52 AM GMT+3
+ *   February 8, 2025 at 6:37:02 PM GMT+3
  *
  */
 /*
@@ -35,10 +35,10 @@ struct pointer;
 typedef struct PRIVATE_API(virtual_methods) {
     void (*init)(struct vm**, u64 size);
     void (*destroy)(struct vm**);
-    u64 (*alloc)(struct pointer* ptr);
-    void (*free)(const struct pointer* ptr);
-    struct pointer* (*read)(u64 address);
-    struct pointer* (*read_type)(u64 address, u64 id);
+    u64 (*alloc)(pointer_ptr ptr);
+    void (*free)(const pointer_ptr ptr);
+    pointer_ptr (*read)(u64 address);
+    pointer_ptr (*read_type)(u64 address, u64 id);
     void (*enumerator_init)(void);
     void (*enumerator_destroy)(void);
     u64 (*enumerator_next)(void);
@@ -49,14 +49,14 @@ typedef struct PRIVATE_API(virtual_methods) {
 } virtual_methods;
 
 /* definition */
-extern const virtual_methods PRIVATE_API(virtual_methods_definition);
+extern const virtual_methods PRIVATE_API(virtual_methods_definitions);
 
 /* definition */
 #ifdef INLINE
-const virtual_methods* virtual = &PRIVATE_API(virtual_methods_definition);
+const virtual_methods* virtual = &PRIVATE_API(virtual_methods_definitions);
 #else
 /* definition */
-static const virtual_methods* virtual = &PRIVATE_API(virtual_methods_definition);
+static const virtual_methods* virtual = &PRIVATE_API(virtual_methods_definitions);
 #endif
 
 #endif /* _VIRTUAL_H_ */
