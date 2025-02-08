@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 7, 2025 at 7:54:23 AM GMT+3
+ *   February 8, 2025 at 6:44:50 PM GMT+3
  *
  */
 /*
@@ -33,8 +33,6 @@
 #include "sys/memory/memory_v1.h"
 
 #include "vm/v1/virtual/virtual_v1.h"
-#include "vm/v1/vm_type.h"
-#include "vm/vm_type.h"
 
 #include <stdio.h>
 
@@ -56,7 +54,7 @@ struct pointer {
 struct vm_types {
     struct vm_types* next;
     u64 id;
-    void (*free)(struct pointer* ptr);
+    void (*free)(pointer_ptr ptr);
 };
 
 /* definition */
@@ -78,7 +76,7 @@ static struct vm* vm;
 static struct vm_types* default_types;
 
 #ifdef USE_MEMORY_DEBUG_INFO
-static void pointer_dump(struct pointer* ptr);
+static void pointer_dump(pointer_ptr ptr);
 static void pointer_dump_ref(void** ptr);
 #endif
 
@@ -91,27 +89,27 @@ struct file_handler {
 };
 
 struct list_handler {
-    stack_pointer list;
+    stack_ptr list;
 };
 
 static void pointer_init(u64 size);
 static void pointer_destroy(void);
 static void pointer_gc(void);
 
-static struct pointer* pointer_alloc(u64 size, u64 id);
-static void pointer_realloc(struct pointer* ptr, u64 size);
+static pointer_ptr pointer_alloc(u64 size, u64 id);
+static void pointer_realloc(pointer_ptr ptr, u64 size);
 static void pointer_free(u64 ptr);
-static void pointer_release(struct pointer* ptr);
-static u64 pointer_address(const struct pointer* ptr);
-static u64 pointer_size(const struct pointer* ptr);
-static void* pointer_read(const struct pointer* ptr);
-static void pointer_write(struct pointer* ptr, struct vm_data* vm_data_ptr, u64 address);
-static u64 pointer_read_type(const struct pointer* ptr, u64 virtual_id);
+static void pointer_release(pointer_ptr ptr);
+static u64 pointer_address(const pointer_ptr ptr);
+static u64 pointer_size(const pointer_ptr ptr);
+static void* pointer_read(const pointer_ptr ptr);
+static void pointer_write(pointer_ptr ptr, struct vm_data* vm_data_ptr, u64 address);
+static u64 pointer_read_type(const pointer_ptr ptr, u64 virtual_id);
 
-static void pointer_free_internal(struct pointer* ptr);
+static void pointer_free_internal(pointer_ptr ptr);
 
 /* free */
-static u64 vm_types_init(u64 id, const struct vm_type* data_type);
+static u64 vm_types_init(u64 id, const type_methods_definitions* data_type);
 static void vm_init(void);
 static void vm_destroy(void);
 
@@ -119,7 +117,7 @@ static void vm_destroy(void);
 
 static u64 virtual_count = TYPE_USER;
 
-static u64 vm_types_init(u64 id, const struct vm_type* data_type) {
+static u64 vm_types_init(u64 id, const type_methods_definitions* data_type) {
     struct vm_types* next = sys_memory->alloc(sizeof(struct vm_types));
     next->id = id == TYPE_NULL || id >= TYPE_USER ? virtual_count++ : id;
     next->free = data_type->free;
@@ -145,15 +143,15 @@ static void DESTROY vm_destroy(void) {
 #endif
 }
 
-static void pointer_free_internal(struct pointer* ptr) {
+static void pointer_free_internal(pointer_ptr ptr) {
     const struct vm_types* virtual_ptr = default_types + ptr->id;
     if (virtual_ptr->free) {
         virtual_ptr->free(ptr);
     }
 }
 
-static struct pointer* pointer_alloc(u64 size, u64 id) {
-    struct pointer* ptr = sys_memory->alloc(POINTER_SIZE);
+static pointer_ptr pointer_alloc(u64 size, u64 id) {
+    pointer_ptr ptr = sys_memory->alloc(POINTER_SIZE);
     if (size != 0) {
         ptr->data = sys_memory->alloc(size);
         ptr->size = size;
@@ -162,14 +160,14 @@ static struct pointer* pointer_alloc(u64 size, u64 id) {
     return ptr;
 }
 
-static void pointer_realloc(struct pointer* ptr, u64 size) {
+static void pointer_realloc(pointer_ptr ptr, u64 size) {
     if (ptr != 0 && ptr->data != 0) {
         ptr->data = sys_memory->realloc(ptr->data, ptr->size, size);
         ptr->size = size;
     }
 }
 
-u64 pointer_register_type(u64 id, const struct vm_type* data_type) {
+u64 pointer_register_type(u64 id, const type_methods_definitions* data_type) {
     return vm_types_init(id, data_type);
 }
 
@@ -177,14 +175,14 @@ static void pointer_free(u64 ptr) {
     if (ptr == 0) {
         return;
     }
-    struct pointer* data_ptr = virtual->read(ptr);
+    pointer_ptr data_ptr = virtual->read(ptr);
     if (data_ptr == 0) {
         return;
     }
     pointer_free_internal(data_ptr);
 }
 
-static void pointer_release(struct pointer* ptr) {
+static void pointer_release(pointer_ptr ptr) {
     if (ptr == 0) {
         return;
     }
@@ -197,7 +195,7 @@ static void pointer_release(struct pointer* ptr) {
     sys_memory->free(ptr, POINTER_SIZE);
 }
 
-static u64 pointer_address(const struct pointer* ptr) {
+static u64 pointer_address(const pointer_ptr ptr) {
     u64 address = 0;
     if (ptr) {
         address = ptr->address;
@@ -205,7 +203,7 @@ static u64 pointer_address(const struct pointer* ptr) {
     return address;
 }
 
-static struct vm_data* pointer_vm(const struct pointer* ptr) {
+static struct vm_data* pointer_vm(const pointer_ptr ptr) {
     struct vm_data* vm_data_ptr = 0;
     if (ptr) {
         vm_data_ptr = ptr->vm;
@@ -213,7 +211,7 @@ static struct vm_data* pointer_vm(const struct pointer* ptr) {
     return vm_data_ptr;
 }
 
-static u64 pointer_size(const struct pointer* ptr) {
+static u64 pointer_size(const pointer_ptr ptr) {
     u64 size = 0;
     if (ptr) {
         size = ptr->size;
@@ -221,7 +219,7 @@ static u64 pointer_size(const struct pointer* ptr) {
     return size;
 }
 
-static void* pointer_read(const struct pointer* ptr) {
+static void* pointer_read(const pointer_ptr ptr) {
     void* data_ptr = 0;
     if (ptr) {
         data_ptr = ptr->data;
@@ -229,14 +227,14 @@ static void* pointer_read(const struct pointer* ptr) {
     return data_ptr;
 }
 
-static void pointer_write(struct pointer* ptr, struct vm_data* vm_data_ptr, u64 address) {
+static void pointer_write(pointer_ptr ptr, struct vm_data* vm_data_ptr, u64 address) {
     if (ptr) {
         ptr->vm = vm_data_ptr;
         ptr->address = address;
     }
 }
 
-static u64 pointer_read_type(const struct pointer* ptr, u64 virtual_id) {
+static u64 pointer_read_type(const pointer_ptr ptr, u64 virtual_id) {
     u64 id = 0;
     if (ptr && ptr->id == virtual_id) {
         id = virtual_id;
@@ -280,14 +278,14 @@ static void pointer_gc(void) {
     virtual->enumerator_init();
     u64 ptr = 0;
     while ((ptr = virtual->enumerator_next()) != 0) {
-        struct pointer* data_ptr = virtual->read(ptr);
+        pointer_ptr data_ptr = virtual->read(ptr);
         pointer_free_internal(data_ptr);
     }
     virtual->enumerator_destroy();
 }
 
 #ifdef USE_MEMORY_DEBUG_INFO
-static void pointer_dump(struct pointer* ptr) {
+static void pointer_dump(pointer_ptr ptr) {
     printf("   ^: %016llx > %016llx\n", (u64)ptr, (u64)ptr->data);
 }
 
@@ -301,7 +299,7 @@ static void pointer_dump_ref(void** ptr) {
 
 /* public */
 
-const pointer_methods PRIVATE_API(pointer_methods_definition) = {
+const pointer_methods PRIVATE_API(pointer_methods_definitions) = {
     .init = pointer_init,
     .destroy = pointer_destroy,
     .gc = pointer_gc,

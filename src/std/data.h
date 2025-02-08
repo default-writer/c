@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 3, 2025 at 10:09:04 PM GMT+3
+ *   February 8, 2025 at 6:59:39 PM GMT+3
  *
  */
 /*
@@ -39,13 +39,36 @@ typedef signed long int s32;
 typedef signed short int s16;
 typedef signed char s8;
 
-typedef struct stack_element stack_element, *stack_pointer;
-
-struct stack_element {
+typedef struct stack_element* stack_ptr;
+typedef struct stack_element {
     /* points to next node */
-    stack_pointer next;
+    stack_ptr next;
     /* data */
     void* data;
+} stack_element;
+
+typedef struct pointer* pointer_ptr;
+typedef struct type_methods_definitions {
+    void (*free)(pointer_ptr ptr);
+} type_methods_definitions;
+
+enum type {
+    /* value used for ephemeral type - null */
+    TYPE_NULL = 0,
+    /* value used for pointer type - ref */
+    TYPE_DATA = 1,
+    /* value used for string type - string */
+    TYPE_STRING = 2,
+    /* value used for string ref type - string ref */
+    TYPE_STRING_POINTER = 3,
+    /* value used for file type - file */
+    TYPE_FILE = 4,
+    /* value used for stack type - stack */
+    TYPE_STACK = 5,
+    /* value used for object type - object */
+    TYPE_OBJECT = 6,
+    /* value used for user type - user (id: +0, +1, +2, +3, ...) */
+    TYPE_USER = 7,
 };
 
 #endif /* _STD_DATA_H_ */

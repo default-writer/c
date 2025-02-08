@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 7, 2025 at 8:41:04 AM GMT+3
+ *   February 8, 2025 at 6:49:13 PM GMT+3
  *
  */
 /*
@@ -31,8 +31,6 @@
 #include "vm/v1/pointer/pointer_v1.h"
 #include "vm/v1/types/data/data_v1.h"
 #include "vm/v1/virtual/virtual_v1.h"
-#include "vm/v1/vm_type.h"
-#include "vm/vm_type.h"
 
 #include <stdio.h>
 
@@ -50,7 +48,7 @@ static void file_free(u64 ptr);
 static u64 file_data(u64 ptr);
 
 /* destructor */
-static void virtual_free(struct pointer* ptr);
+static void virtual_free(pointer_ptr ptr);
 
 /* implementation */
 struct file_handler {
@@ -67,11 +65,11 @@ static u64 file_alloc(u64 file_path, u64 mode) {
     if (mode == 0) {
         return 0;
     }
-    const struct pointer* file_path_ptr = virtual->read_type(file_path, TYPE_STRING);
+    const pointer_ptr file_path_ptr = virtual->read_type(file_path, TYPE_STRING);
     if (file_path_ptr == 0) {
         return 0;
     }
-    const struct pointer* mode_ptr = virtual->read_type(mode, TYPE_STRING);
+    const pointer_ptr mode_ptr = virtual->read_type(mode, TYPE_STRING);
     if (mode_ptr == 0) {
         return 0;
     }
@@ -81,7 +79,7 @@ static u64 file_alloc(u64 file_path, u64 mode) {
     if (f == 0) {
         return 0;
     }
-    struct pointer* f_ptr = pointer->alloc(sizeof(struct file_handler), id);
+    pointer_ptr f_ptr = pointer->alloc(sizeof(struct file_handler), id);
     struct file_handler* handler = pointer->read(f_ptr);
     handler->file = f;
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -92,14 +90,14 @@ static u64 file_alloc(u64 file_path, u64 mode) {
 }
 
 static void file_free(u64 ptr) {
-    struct pointer* data_ptr = virtual->read_type(ptr, id);
+    pointer_ptr data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return;
     }
     virtual_free(data_ptr);
 }
 
-static void virtual_free(struct pointer* ptr) {
+static void virtual_free(pointer_ptr ptr) {
     struct file_handler* handler = pointer->read(ptr);
     if (handler->file != 0) {
         fclose(handler->file);
@@ -109,7 +107,7 @@ static void virtual_free(struct pointer* ptr) {
 }
 
 static u64 file_data(u64 ptr) {
-    const struct pointer* data_ptr = virtual->read_type(ptr, id);
+    const pointer_ptr data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
@@ -125,7 +123,7 @@ static u64 file_data(u64 ptr) {
     return data_handle;
 }
 
-static const struct vm_type _type = {
+static const struct type_methods_definitions _type = {
     .free = virtual_free
 };
 
@@ -135,7 +133,7 @@ static void INIT init(void) {
 
 /* public */
 /*! definition (initialization) of file_methods structure */
-const file_methods PRIVATE_API(file_methods_definition) = {
+const file_methods PRIVATE_API(file_methods_definitions) = {
     .alloc = file_alloc,
     .data = file_data,
     .free = file_free

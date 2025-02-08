@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 7, 2025 at 7:27:50 AM GMT+3
+ *   February 8, 2025 at 8:05:38 PM GMT+3
  *
  */
 /*
@@ -60,14 +60,14 @@ typedef struct API(string_methods) {
 } string_methods;
 
 /* definition */
-extern const string_methods PRIVATE_API(string_methods_definition);
+extern const string_methods PRIVATE_API(string_methods_definitions);
 
 /* definition */
 #ifdef INLINE
-const string_methods* string = &PRIVATE_API(string_methods_definition);
+const string_methods* string = &PRIVATE_API(string_methods_definitions);
 #else
 /* definition */
-static const string_methods* string = &PRIVATE_API(string_methods_definition);
+static const string_methods* string = &PRIVATE_API(string_methods_definitions);
 #endif
 
 #endif /* _POINTER_TYPES_STRING_H_ */

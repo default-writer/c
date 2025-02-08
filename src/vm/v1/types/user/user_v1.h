@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 7, 2025 at 7:30:50 AM GMT+3
+ *   February 8, 2025 at 5:55:56 PM GMT+3
  *
  */
 /*
@@ -41,14 +41,14 @@ typedef struct PRIVATE_API(user_methods) {
 } user_methods;
 
 /* definition */
-extern const user_methods PRIVATE_API(user_methods_definition);
+extern const user_methods PRIVATE_API(user_methods_definitions);
 
 /* definition */
 #ifdef INLINE
-const user_methods* user = &PRIVATE_API(user_methods_definition);
+const user_methods* user = &PRIVATE_API(user_methods_definitions);
 #else
 /* definition */
-static const user_methods* user = &PRIVATE_API(user_methods_definition);
+static const user_methods* user = &PRIVATE_API(user_methods_definitions);
 #endif
 
 #endif /* _POINTER_TYPES_USER_TYPE_H_ */

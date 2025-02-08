@@ -29,7 +29,7 @@ allocation where sensitive allocation metadata is placed in the same memory pool
 ```c
 struct stack_element {
     /* points to next node */
-    stack_pointer next;
+    stack_ptr next;
     /* data */
     void* data;
 };

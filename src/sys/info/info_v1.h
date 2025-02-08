@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 7, 2025 at 7:25:18 AM GMT+3
+ *   February 8, 2025 at 5:55:55 PM GMT+3
  *
  */
 /*
@@ -35,14 +35,14 @@ typedef struct PRIVATE_API(info_methods) {
 } info_methods;
 
 /* definition */
-extern const info_methods PRIVATE_API(info_methods_definition);
+extern const info_methods PRIVATE_API(info_methods_definitions);
 
 /* definition */
 #ifdef INLINE
-const info_methods* info = &PRIVATE_API(info_methods_definition);
+const info_methods* info = &PRIVATE_API(info_methods_definitions);
 #else
 /* definition */
-static const info_methods* sys_info = &PRIVATE_API(info_methods_definition);
+static const info_methods* sys_info = &PRIVATE_API(info_methods_definitions);
 #endif
 
 #endif /* _POINTER_INFO_V1_H_ */

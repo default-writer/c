@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 7, 2025 at 7:53:44 AM GMT+3
+ *   February 8, 2025 at 6:54:38 PM GMT+3
  *
  */
 /*
@@ -23,8 +23,6 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-
-#define USING_VM_V1
 
 #include "main-tests_v1.h"
 

@@ -255,7 +255,6 @@ set(LIB_SYS_SOURCE
 
 set(LIB_STD_TYPES1_SOURCE
     src/vm/v1/pointer/pointer_v1.c
-    src/vm/v1/types/types_v1.c
     src/vm/v1/types/data/data_v1.c
     src/vm/v1/types/file/file_v1.c
     src/vm/v1/types/object/object_v1.c

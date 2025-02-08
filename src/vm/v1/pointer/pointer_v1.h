@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 5, 2025 at 11:22:56 PM GMT+3
+ *   February 8, 2025 at 6:37:10 PM GMT+3
  *
  */
 /*
@@ -33,40 +33,36 @@
  *  @brief C API / pointer
  */
 
-struct pointer;
-struct vm_data;
-struct vm_type;
-
 typedef struct PRIVATE_API(pointer_methods) {
     void (*init)(u64 size);
     void (*destroy)(void);
     void (*gc)(void);
-    struct pointer* (*alloc)(u64 size, u64 id);
-    void (*realloc)(struct pointer* ptr, u64 size);
-    u64 (*register_type)(u64 id, const struct vm_type* data_type);
+    pointer_ptr (*alloc)(u64 size, u64 id);
+    void (*realloc)(pointer_ptr ptr, u64 size);
+    u64 (*register_type)(u64 id, const struct type_methods_definitions* data_type);
     void (*free)(u64 ptr);
-    u64 (*address)(const struct pointer* ptr);
-    struct vm_data* (*vm)(const struct pointer* ptr);
-    void (*release)(struct pointer* ptr);
-    u64 (*size)(const struct pointer* ptr);
-    void* (*read)(const struct pointer* ptr);
-    u64 (*read_type)(const struct pointer* ptr, u64 id);
-    void (*write)(struct pointer* ptr, struct vm_data* vm, u64 address);
+    u64 (*address)(const pointer_ptr ptr);
+    struct vm_data* (*vm)(const pointer_ptr ptr);
+    void (*release)(pointer_ptr ptr);
+    u64 (*size)(const pointer_ptr ptr);
+    void* (*read)(const pointer_ptr ptr);
+    u64 (*read_type)(const pointer_ptr ptr, u64 id);
+    void (*write)(pointer_ptr ptr, struct vm_data* vm, u64 address);
 #ifdef USE_MEMORY_DEBUG_INFO
-    void (*dump)(struct pointer* ptr);
+    void (*dump)(pointer_ptr ptr);
     void (*dump_ref)(void** ptr);
 #endif
 } pointer_methods;
 
 /* definition */
-extern const pointer_methods PRIVATE_API(pointer_methods_definition);
+extern const pointer_methods PRIVATE_API(pointer_methods_definitions);
 
 /* definition */
 #ifdef INLINE
-const spointer_methods* pointer = &PRIVATE_API(pointer_methods_definition);
+const spointer_methods* pointer = &PRIVATE_API(pointer_methods_definitions);
 #else
 /* definition */
-static const pointer_methods* pointer = &PRIVATE_API(pointer_methods_definition);
+static const pointer_methods* pointer = &PRIVATE_API(pointer_methods_definitions);
 #endif
 
 #endif /* _POINTER_V1_H_ */

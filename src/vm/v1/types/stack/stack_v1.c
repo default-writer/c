@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 7, 2025 at 8:40:51 AM GMT+3
+ *   February 8, 2025 at 6:59:13 PM GMT+3
  *
  */
 /*
@@ -32,8 +32,6 @@
 
 #include "vm/v1/pointer/pointer_v1.h"
 #include "vm/v1/virtual/virtual_v1.h"
-#include "vm/v1/vm_type.h"
-#include "vm/vm_type.h"
 
 #define DEFAULT_SIZE 0x100
 
@@ -44,39 +42,39 @@ void stack_init(void);
 #endif
 
 /* internal */
-static struct pointer* stack_alloc_internal(void);
-static void stack_release_internal(stack_pointer* curent);
+static pointer_ptr stack_alloc_internal(void);
+static void stack_release_internal(stack_ptr* curent);
 
 /* api */
 static u64 stack_alloc(void);
 static void stack_free(u64 ptr);
 static void stack_push(u64 ptr, u64 data_ptr);
 static u64 stack_peek(u64 ptr);
-static u64 stack_peekn(u64 stack_ptr, u64 nelements);
+static u64 stack_peekn(u64 ptr, u64 nelements);
 static u64 stack_pop(u64 ptr);
-static u64 stack_popn(u64 stack_ptr, u64 nelements);
+static u64 stack_popn(u64 ptr, u64 nelements);
 static u64 stack_size(u64 ptr);
 static void stack_release(u64 ptr);
 
 /* destructor */
-static void virtual_free(struct pointer* ptr);
+static void virtual_free(pointer_ptr ptr);
 
 /* definition */
 struct stack_handler {
     u64 size;
-    stack_pointer list;
+    stack_ptr list;
 };
 
 /* implementation */
-static struct pointer* stack_alloc_internal(void) {
-    struct pointer* ptr = pointer->alloc(sizeof(struct stack_handler), id);
+static pointer_ptr stack_alloc_internal(void) {
+    pointer_ptr ptr = pointer->alloc(sizeof(struct stack_handler), id);
     struct stack_handler* handler = pointer->read(ptr);
     handler->size = 0;
     sys_list->init(&handler->list);
     return ptr;
 }
 
-static void stack_release_internal(stack_pointer* current) {
+static void stack_release_internal(stack_ptr* current) {
     u64 ptr = 0;
     while ((ptr = (u64)sys_list->pop(current)) != 0) {
         pointer->free(ptr);
@@ -84,13 +82,13 @@ static void stack_release_internal(stack_pointer* current) {
 }
 
 static u64 stack_alloc(void) {
-    struct pointer* ptr = stack_alloc_internal();
+    pointer_ptr ptr = stack_alloc_internal();
     u64 virtual_ptr = virtual->alloc(ptr);
     return virtual_ptr;
 }
 
 static void stack_release(u64 ptr) {
-    const struct pointer* data_ptr = virtual->read_type(ptr, id);
+    const pointer_ptr data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return;
     }
@@ -100,14 +98,14 @@ static void stack_release(u64 ptr) {
 }
 
 static void stack_free(u64 ptr) {
-    struct pointer* data_ptr = virtual->read_type(ptr, id);
+    pointer_ptr data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return;
     }
     virtual_free(data_ptr);
 }
 
-static void virtual_free(struct pointer* ptr) {
+static void virtual_free(pointer_ptr ptr) {
     struct stack_handler* handler = pointer->read(ptr);
     handler->size = 0;
     stack_release_internal(&handler->list);
@@ -125,7 +123,7 @@ static void stack_push(u64 ptr_list, u64 ptr) {
     if (ptr == 0) {
         return;
     }
-    const struct pointer* data_ptr = virtual->read_type(ptr_list, id);
+    const pointer_ptr data_ptr = virtual->read_type(ptr_list, id);
     if (data_ptr == 0) {
         return;
     }
@@ -135,7 +133,7 @@ static void stack_push(u64 ptr_list, u64 ptr) {
 }
 
 static u64 stack_peek(u64 ptr) {
-    const struct pointer* data_ptr = virtual->read_type(ptr, id);
+    const pointer_ptr data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
@@ -144,8 +142,8 @@ static u64 stack_peek(u64 ptr) {
     return stack_peek_ptr;
 }
 
-static u64 stack_peekn(u64 stack_ptr, u64 nelements) {
-    const struct pointer* data_ptr = virtual->read_type(stack_ptr, id);
+static u64 stack_peekn(u64 ptr, u64 nelements) {
+    const pointer_ptr data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
@@ -157,11 +155,11 @@ static u64 stack_peekn(u64 stack_ptr, u64 nelements) {
     if (size < nelements) {
         return 0;
     }
-    struct pointer* dst_ptr = stack_alloc_internal();
+    pointer_ptr dst_ptr = stack_alloc_internal();
     struct stack_handler* dst_handler = pointer->read(dst_ptr);
     u64 i = nelements;
     while (i-- > 0) {
-        stack_pointer current = src_handler->list;
+        stack_ptr current = src_handler->list;
         u64 stack_peek_ptr = (u64)sys_list->peek(&current);
         sys_list->push(&dst_handler->list, (void*)stack_peek_ptr);
         dst_handler->size++;
@@ -172,7 +170,7 @@ static u64 stack_peekn(u64 stack_ptr, u64 nelements) {
 }
 
 static u64 stack_pop(u64 ptr) {
-    const struct pointer* data_ptr = virtual->read_type(ptr, id);
+    const pointer_ptr data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
@@ -185,8 +183,8 @@ static u64 stack_pop(u64 ptr) {
     return stack_pop_ptr;
 }
 
-static u64 stack_popn(u64 stack_ptr, u64 nelements) {
-    const struct pointer* data_ptr = virtual->read_type(stack_ptr, id);
+static u64 stack_popn(u64 ptr, u64 nelements) {
+    const pointer_ptr data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
@@ -198,7 +196,7 @@ static u64 stack_popn(u64 stack_ptr, u64 nelements) {
     if (size < nelements) {
         return 0;
     }
-    struct pointer* dst_ptr = stack_alloc_internal();
+    pointer_ptr dst_ptr = stack_alloc_internal();
     struct stack_handler* dst_handler = pointer->read(dst_ptr);
     u64 i = nelements;
     while (i-- > 0) {
@@ -211,7 +209,7 @@ static u64 stack_popn(u64 stack_ptr, u64 nelements) {
 }
 
 static u64 stack_size(u64 ptr) {
-    const struct pointer* data_ptr = virtual->read_type(ptr, id);
+    const pointer_ptr data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
@@ -220,7 +218,7 @@ static u64 stack_size(u64 ptr) {
     return size;
 }
 
-static const struct vm_type _type = {
+static const struct type_methods_definitions _type = {
     .free = virtual_free
 };
 
@@ -229,7 +227,7 @@ static void INIT init(void) {
 }
 
 /* public */
-const stack_methods PRIVATE_API(stack_methods_definition) = {
+const stack_methods PRIVATE_API(stack_methods_definitions) = {
     .alloc = stack_alloc,
     .free = stack_free,
     .push = stack_push,

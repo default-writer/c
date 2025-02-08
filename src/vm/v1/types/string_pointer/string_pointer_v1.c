@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 7, 2025 at 8:39:52 AM GMT+3
+ *   February 8, 2025 at 6:37:01 PM GMT+3
  *
  */
 /*
@@ -30,8 +30,6 @@
 
 #include "vm/v1/pointer/pointer_v1.h"
 #include "vm/v1/virtual/virtual_v1.h"
-#include "vm/v1/vm_type.h"
-#include "vm/vm_type.h"
 
 #define DEFAULT_SIZE 0x100
 
@@ -45,17 +43,17 @@ void string_pointer_init(void);
 static void string_free(u64 ptr);
 
 /* destructor */
-static void virtual_free(struct pointer* ptr);
+static void virtual_free(pointer_ptr ptr);
 
 /* internal */
-static void string_virtual_free(struct pointer* ptr);
+static void string_virtual_free(pointer_ptr ptr);
 
 /* implementation */
-static void string_virtual_free(struct pointer* ptr) {
+static void string_virtual_free(pointer_ptr ptr) {
     pointer->release(ptr);
 }
 
-static const struct vm_type _type = {
+static const struct type_methods_definitions _type = {
     .free = string_virtual_free
 };
 
@@ -65,7 +63,7 @@ static void INIT init(void) {
 
 /* api */
 static void string_free(u64 ptr) {
-    struct pointer* data_ptr = virtual->read(ptr);
+    pointer_ptr data_ptr = virtual->read(ptr);
     if (data_ptr == 0) {
         return;
     }
@@ -75,12 +73,12 @@ static void string_free(u64 ptr) {
     }
 }
 
-static void virtual_free(struct pointer* ptr) {
+static void virtual_free(pointer_ptr ptr) {
     pointer->release(ptr);
 }
 
 /* public */
-const string_pointer_methods PRIVATE_API(string_pointer_methods_definition) = {
+const string_pointer_methods PRIVATE_API(string_pointer_methods_definitions) = {
     .free = string_free
 };
 
