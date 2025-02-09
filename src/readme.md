@@ -1,7 +1,7 @@
 
-# table of contents
+# Table of contents
 
-## system calls
+## System calls
 
 - info
 - list
@@ -9,7 +9,7 @@
 - options
 - os
 
-## basic types
+## Basic types
 
 - data
 - file
