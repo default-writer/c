@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 8, 2025 at 7:22:46 PM GMT+3
+ *   February 9, 2025 at 11:13:31 AM GMT+3
  *
  */
 /*
@@ -70,7 +70,7 @@ static void virtual_free(pointer_ptr ptr) {
 }
 
 static void* data_unsafe(u64 ptr) {
-    const pointer_ptr data_ptr = virtual->read_type(ptr, id);
+    const_pointer_ptr data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
@@ -79,7 +79,7 @@ static void* data_unsafe(u64 ptr) {
 }
 
 static u64 data_size(u64 ptr) {
-    const pointer_ptr data_ptr = virtual->read_type(ptr, id);
+    const_pointer_ptr data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }

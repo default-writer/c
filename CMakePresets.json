@@ -8,7 +8,7 @@
     "configurePresets": [
         {
             "name": "default",
-            "displayName": "C++",
+            "displayName": "c++",
             "description": "Default build using Ninja generator",
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/cmake",
@@ -18,7 +18,7 @@
                 "CMAKE_BUILD_TYPE": "Debug",
                 "CONFIG_MEMORY_DEBUG_INFO": {
                     "type": "BOOL",
-                    "value": "OFF"
+                    "value": "ON"
                 },
                 "CONFIG_MEMORY_CLEANUP": {
                     "type": "BOOL",
@@ -44,7 +44,7 @@
         },
         {
             "name": "windows",
-            "displayName": "C++ windows",
+            "displayName": "c++ windows",
             "description": "Default build using Ninja generator",
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/cmake",

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 8, 2025 at 6:54:39 PM GMT+3
+ *   February 9, 2025 at 1:15:46 PM GMT+3
  *
  */
 /*
@@ -445,6 +445,6 @@ static int run(void) {
     return result;
 }
 
-const list_micro_test_suite PRIVATE_API(list_micro_test_suite_definition) = {
+const list_micro_test_suite PRIVATE_API(list_micro_test_suite_definitions) = {
     .run = run
 };

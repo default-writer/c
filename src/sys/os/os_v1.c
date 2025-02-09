@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 8, 2025 at 6:37:02 PM GMT+3
+ *   February 9, 2025 at 11:12:55 AM GMT+3
  *
  */
 /*
@@ -51,7 +51,7 @@ static u64 os_getenv(u64 ptr) {
     if (ptr == 0) {
         return 0;
     }
-    const pointer_ptr data_ptr = virtual->read_type(ptr, TYPE_STRING);
+    const_pointer_ptr data_ptr = virtual->read_type(ptr, TYPE_STRING);
     if (data_ptr == 0) {
         return 0;
     }

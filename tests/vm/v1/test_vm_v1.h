@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 6, 2025 at 11:55:13 PM GMT+3
+ *   February 9, 2025 at 1:15:20 PM GMT+3
  *
  */
 /*
@@ -36,14 +36,14 @@
 typedef struct PRIVATE_API(test_suite) vm_v1_test_suite;
 
 /* definition */
-extern const vm_v1_test_suite PRIVATE_API(vm_v1_test_suite_definition);
+extern const vm_v1_test_suite PRIVATE_API(vm_v1_test_suite_definitions);
 
 /* definition */
 #ifdef INLINE
-const vm_v1_test_suite* vm_v1_test_suite = &PRIVATE_API(vm_v1_test_suite_definition);
+const vm_v1_test_suite* vm_v1_test_suite = &PRIVATE_API(vm_v1_test_suite_definitions);
 #else
 /* definition */
-static const vm_v1_test_suite* _vm_v1_test_suite = &PRIVATE_API(vm_v1_test_suite_definition);
+static const vm_v1_test_suite* _vm_v1_test_suite = &PRIVATE_API(vm_v1_test_suite_definitions);
 #endif
 
 #endif /* _TEST_VM_V1_H_ */

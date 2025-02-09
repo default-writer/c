@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 8, 2025 at 6:57:10 PM GMT+3
+ *   February 9, 2025 at 1:15:59 PM GMT+3
  *
  */
 /*
@@ -81,7 +81,7 @@ RX_TEST_CASE(tests, test_vm_destroy_null, .fixture = test_fixture) {
 RX_TEST_CASE(tests, test_vm_alloc_user, .fixture = test_fixture) {
     pointer_ptr ptr = pointer->alloc(0, TYPE_NULL);
     u64 virtual_ptr = virtual->alloc(ptr);
-    const pointer_ptr vm_ptr = virtual->read(virtual_ptr);
+    const_pointer_ptr vm_ptr = virtual->read(virtual_ptr);
     RX_ASSERT(ptr != 0);
     RX_ASSERT(virtual_ptr != 0);
     RX_ASSERT(vm_ptr == ptr);
@@ -92,7 +92,7 @@ RX_TEST_CASE(tests, test_vm_alloc_user, .fixture = test_fixture) {
 RX_TEST_CASE(tests, test_vm_read_data, .fixture = test_fixture) {
     pointer_ptr ptr = pointer->alloc(0, TYPE_DATA);
     u64 virtual_ptr = virtual->alloc(ptr);
-    const pointer_ptr vm_ptr = virtual->read(virtual_ptr);
+    const_pointer_ptr vm_ptr = virtual->read(virtual_ptr);
     RX_ASSERT(ptr != 0);
     RX_ASSERT(virtual_ptr != 0);
     RX_ASSERT(vm_ptr == ptr);
@@ -103,7 +103,7 @@ RX_TEST_CASE(tests, test_vm_read_data, .fixture = test_fixture) {
 RX_TEST_CASE(tests, test_vm_read_1, .fixture = test_fixture) {
     pointer_ptr ptr = pointer->alloc(0, TYPE_DATA);
     u64 virtual_ptr = virtual->alloc(ptr);
-    const pointer_ptr vm_ptr = virtual->read(1);
+    const_pointer_ptr vm_ptr = virtual->read(1);
     RX_ASSERT(ptr != 0);
     RX_ASSERT(virtual_ptr != 0);
     RX_ASSERT(vm_ptr == ptr);
@@ -114,7 +114,7 @@ RX_TEST_CASE(tests, test_vm_read_1, .fixture = test_fixture) {
 RX_TEST_CASE(tests, test_vm_read_9, .fixture = test_fixture) {
     pointer_ptr ptr = pointer->alloc(0, TYPE_DATA);
     u64 virtual_ptr = virtual->alloc(ptr);
-    const pointer_ptr vm_ptr = virtual->read(sys_options->size + 1);
+    const_pointer_ptr vm_ptr = virtual->read(sys_options->size + 1);
     RX_ASSERT(ptr != 0);
     RX_ASSERT(virtual_ptr != 0);
     RX_ASSERT(vm_ptr == 0);
@@ -134,7 +134,7 @@ RX_TEST_CASE(tests, test_vm_free_0, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_read_0, .fixture = test_fixture) {
-    const pointer_ptr ptr = virtual->read(0);
+    const_pointer_ptr ptr = virtual->read(0);
     RX_ASSERT(ptr == 0);
 }
 
@@ -266,6 +266,6 @@ static int run(void) {
     return result;
 }
 
-const vm_v1_test_suite PRIVATE_API(vm_v1_test_suite_definition) = {
+const vm_v1_test_suite PRIVATE_API(vm_v1_test_suite_definitions) = {
     .run = run
 };

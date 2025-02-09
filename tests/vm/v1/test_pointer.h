@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 6, 2025 at 11:54:00 PM GMT+3
+ *   February 9, 2025 at 1:15:21 PM GMT+3
  *
  */
 /*
@@ -36,14 +36,14 @@
 typedef struct PRIVATE_API(test_suite) pointer_test_suite;
 
 /* definition */
-extern const pointer_test_suite PRIVATE_API(pointer_test_suite_definition);
+extern const pointer_test_suite PRIVATE_API(pointer_test_suite_definitions);
 
 /* definition */
 #ifdef INLINE
-const pointer_test_suite* pointer_test_suite = &PRIVATE_API(pointer_test_suite_definition);
+const pointer_test_suite* pointer_test_suite = &PRIVATE_API(pointer_test_suite_definitions);
 #else
 /* definition */
-static const pointer_test_suite* _pointer_test_suite = &PRIVATE_API(pointer_test_suite_definition);
+static const pointer_test_suite* _pointer_test_suite = &PRIVATE_API(pointer_test_suite_definitions);
 #endif
 
 #endif /* _TEST_POINTER_H_ */

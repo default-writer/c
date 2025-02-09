@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 7, 2025 at 7:22:09 AM GMT+3
+ *   February 9, 2025 at 1:15:19 PM GMT+3
  *
  */
 /*
@@ -43,14 +43,14 @@ typedef struct PRIVATE_API(memory_methods) {
 } memory_methods;
 
 /* definition */
-extern const memory_methods PRIVATE_API(memory_definition);
+extern const memory_methods PRIVATE_API(memory_methods_definitions);
 
 /* definition */
 #ifdef INLINE
-const memory_methods* memory = &PRIVATE_API(memory_definition);
+const memory_methods* memory = &PRIVATE_API(memory_methods_definitions);
 #else
 /* definition */
-static const memory_methods* sys_memory = &PRIVATE_API(memory_definition);
+static const memory_methods* sys_memory = &PRIVATE_API(memory_methods_definitions);
 #endif
 
 #endif /* _GENERIC_MEMORY_H_ */

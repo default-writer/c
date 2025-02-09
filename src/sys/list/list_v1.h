@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 8, 2025 at 6:29:57 PM GMT+3
+ *   February 9, 2025 at 1:15:21 PM GMT+3
  *
  */
 /*
@@ -49,14 +49,14 @@ typedef struct PRIVATE_API(list_methods) {
 } list_methods;
 
 /* definition */
-extern const list_methods PRIVATE_API(list_definition);
+extern const list_methods PRIVATE_API(list_methods_definitions);
 
 /* definition */
 #ifdef INLINE
-const list_v1* list_methods = &PRIVATE_API(list_definition);
+const list_v1* list_methods = &PRIVATE_API(list_methods_definitions);
 #else
 /* definition */
-static const list_methods* sys_list = &PRIVATE_API(list_definition);
+static const list_methods* sys_list = &PRIVATE_API(list_methods_definitions);
 #endif
 
 #endif /* _LIST_MICRO_DATA_H_ */

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 8, 2025 at 6:49:13 PM GMT+3
+ *   February 9, 2025 at 11:07:49 AM GMT+3
  *
  */
 /*
@@ -65,11 +65,11 @@ static u64 file_alloc(u64 file_path, u64 mode) {
     if (mode == 0) {
         return 0;
     }
-    const pointer_ptr file_path_ptr = virtual->read_type(file_path, TYPE_STRING);
+    const_pointer_ptr file_path_ptr = virtual->read_type(file_path, TYPE_STRING);
     if (file_path_ptr == 0) {
         return 0;
     }
-    const pointer_ptr mode_ptr = virtual->read_type(mode, TYPE_STRING);
+    const_pointer_ptr mode_ptr = virtual->read_type(mode, TYPE_STRING);
     if (mode_ptr == 0) {
         return 0;
     }
@@ -107,7 +107,7 @@ static void virtual_free(pointer_ptr ptr) {
 }
 
 static u64 file_data(u64 ptr) {
-    const pointer_ptr data_ptr = virtual->read_type(ptr, id);
+    const_pointer_ptr data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }

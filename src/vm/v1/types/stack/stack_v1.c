@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 8, 2025 at 6:59:13 PM GMT+3
+ *   February 9, 2025 at 11:07:50 AM GMT+3
  *
  */
 /*
@@ -88,7 +88,7 @@ static u64 stack_alloc(void) {
 }
 
 static void stack_release(u64 ptr) {
-    const pointer_ptr data_ptr = virtual->read_type(ptr, id);
+    const_pointer_ptr data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return;
     }
@@ -123,7 +123,7 @@ static void stack_push(u64 ptr_list, u64 ptr) {
     if (ptr == 0) {
         return;
     }
-    const pointer_ptr data_ptr = virtual->read_type(ptr_list, id);
+    const_pointer_ptr data_ptr = virtual->read_type(ptr_list, id);
     if (data_ptr == 0) {
         return;
     }
@@ -133,7 +133,7 @@ static void stack_push(u64 ptr_list, u64 ptr) {
 }
 
 static u64 stack_peek(u64 ptr) {
-    const pointer_ptr data_ptr = virtual->read_type(ptr, id);
+    const_pointer_ptr data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
@@ -143,7 +143,7 @@ static u64 stack_peek(u64 ptr) {
 }
 
 static u64 stack_peekn(u64 ptr, u64 nelements) {
-    const pointer_ptr data_ptr = virtual->read_type(ptr, id);
+    const_pointer_ptr data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
@@ -170,7 +170,7 @@ static u64 stack_peekn(u64 ptr, u64 nelements) {
 }
 
 static u64 stack_pop(u64 ptr) {
-    const pointer_ptr data_ptr = virtual->read_type(ptr, id);
+    const_pointer_ptr data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
@@ -184,7 +184,7 @@ static u64 stack_pop(u64 ptr) {
 }
 
 static u64 stack_popn(u64 ptr, u64 nelements) {
-    const pointer_ptr data_ptr = virtual->read_type(ptr, id);
+    const_pointer_ptr data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
@@ -209,7 +209,7 @@ static u64 stack_popn(u64 ptr, u64 nelements) {
 }
 
 static u64 stack_size(u64 ptr) {
-    const pointer_ptr data_ptr = virtual->read_type(ptr, id);
+    const_pointer_ptr data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }

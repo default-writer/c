@@ -4109,6 +4109,6 @@ static int run(void) {
     return result;
 }
 
-const pointer_test_suite PRIVATE_API(pointer_test_suite_definition) = {
+const pointer_test_suite PRIVATE_API(pointer_test_suite_definitions) = {
     .run = run
 };
