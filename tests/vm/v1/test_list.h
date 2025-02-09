@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 6, 2025 at 11:54:12 PM GMT+3
+ *   February 9, 2025 at 1:15:21 PM GMT+3
  *
  */
 /*
@@ -36,14 +36,14 @@
 typedef struct PRIVATE_API(test_suite) list_micro_test_suite;
 
 /* definition */
-extern const list_micro_test_suite PRIVATE_API(list_micro_test_suite_definition);
+extern const list_micro_test_suite PRIVATE_API(list_micro_test_suite_definitions);
 
 /* definition */
 #ifdef INLINE
-const list_micro_test_suite* list_micro_test_suite = &PRIVATE_API(list_micro_test_suite_definition);
+const list_micro_test_suite* list_micro_test_suite = &PRIVATE_API(list_micro_test_suite_definitions);
 #else
 /* definition */
-static const list_micro_test_suite* _list_micro_test_suite = &PRIVATE_API(list_micro_test_suite_definition);
+static const list_micro_test_suite* _list_micro_test_suite = &PRIVATE_API(list_micro_test_suite_definitions);
 #endif
 
 #endif /* _TEST_LIST_H_ */

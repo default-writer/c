@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 7, 2025 at 8:59:34 AM GMT+3
+ *   February 9, 2025 at 1:15:01 PM GMT+3
  *
  */
 /*
@@ -34,14 +34,14 @@ typedef struct PRIVATE_API(options_methods) {
 } options_methods;
 
 /* definition */
-extern const options_methods PRIVATE_API(options_definition);
+extern const options_methods PRIVATE_API(options_methods_definitions);
 
 /* definition */
 #ifdef INLINE
-const options_methods* options = &PRIVATE_API(options_definition);
+const options_methods* options = &PRIVATE_API(options_methods_definitions);
 #else
 /* definition */
-static const options_methods* sys_options = &PRIVATE_API(options_definition);
+static const options_methods* sys_options = &PRIVATE_API(options_methods_definitions);
 #endif
 
 #endif /* _VM_V1_OPTIONS_H_ */

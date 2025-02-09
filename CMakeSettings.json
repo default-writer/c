@@ -71,7 +71,7 @@
       "variables": [
         {
           "name": "CONFIG_MEMORY_DEBUG_INFO",
-          "value": "ON",
+          "value": "OFF",
           "type": "BOOL"
         },
         {
@@ -144,7 +144,7 @@
       "variables": [
         {
           "name": "CONFIG_MEMORY_DEBUG_INFO",
-          "value": "ON",
+          "value": "OFF",
           "type": "BOOL"
         },
         {

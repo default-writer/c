@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 8, 2025 at 6:30:18 PM GMT+3
+ *   February 9, 2025 at 1:15:59 PM GMT+3
  *
  */
 /*
@@ -207,7 +207,7 @@ static void list_print(stack_ptr* current) {
 
 /* public */
 
-const list_methods PRIVATE_API(list_definition) = {
+const list_methods PRIVATE_API(list_methods_definitions) = {
     /* generic methods */
     .init = list_init,
     .destroy = list_destroy,

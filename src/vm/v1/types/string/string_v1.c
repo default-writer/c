@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 8, 2025 at 8:05:27 PM GMT+3
+ *   February 9, 2025 at 11:18:39 AM GMT+3
  *
  */
 /*
@@ -42,7 +42,7 @@ void string_init(void);
 #endif
 
 /* internal */
-static char* string_pointer_internal(const pointer_ptr data_ptr, u64* data_size, u64* data_offset);
+static char* string_pointer_internal(const_pointer_ptr data_ptr, u64* data_size, u64* data_offset);
 static char* string_strrchr_internal(char* ch, const char* str2, u64 size, u64 offset);
 static char* string_strchr_internal(char* ch, const char* str2, u64 size, u64 offset);
 
@@ -85,9 +85,9 @@ struct string_reference {
 };
 
 /* implementation */
-static char* string_pointer_internal(const pointer_ptr data_ptr, u64* data_size, u64* data_offset) {
+static char* string_pointer_internal(const_pointer_ptr data_ptr, u64* data_size, u64* data_offset) {
     u64 offset = 0;
-    struct pointer* ptr = 0;
+    const_pointer_ptr ptr = 0;
     if (!pointer->read_type(data_ptr, TYPE_STRING) && !pointer->read_type(data_ptr, TYPE_STRING_POINTER)) {
         return 0;
     }
@@ -177,7 +177,7 @@ static void virtual_free(pointer_ptr ptr) {
 }
 
 static u64 string_copy(u64 src) {
-    const pointer_ptr ptr = virtual->read(src);
+    const_pointer_ptr ptr = virtual->read(src);
     if (ptr == 0) {
         return 0;
     }
@@ -202,7 +202,7 @@ static void string_strcpy(u64 dest, u64 src) {
     if (dest_ptr == 0) {
         return;
     }
-    const pointer_ptr src_ptr = virtual->read(src);
+    const_pointer_ptr src_ptr = virtual->read(src);
     if (src_ptr == 0) {
         return;
     }
@@ -229,7 +229,7 @@ static void string_strcat(u64 dest, u64 src) {
     if (dest_ptr == 0) {
         return;
     }
-    const pointer_ptr data_ptr = virtual->read(src);
+    const_pointer_ptr data_ptr = virtual->read(src);
     if (data_ptr == 0) {
         return;
     }
@@ -251,7 +251,7 @@ static void string_strcat(u64 dest, u64 src) {
 }
 
 static u64 string_strrchr(u64 src, u64 match) {
-    const pointer_ptr ptr = virtual->read(src);
+    const_pointer_ptr ptr = virtual->read(src);
     if (ptr == 0) {
         return 0;
     }
@@ -261,7 +261,7 @@ static u64 string_strrchr(u64 src, u64 match) {
     if (ch == 0) {
         return 0;
     }
-    const pointer_ptr match_ptr = virtual->read_type(match, id);
+    const_pointer_ptr match_ptr = virtual->read_type(match, id);
     if (match_ptr == 0) {
         return 0;
     }
@@ -282,7 +282,7 @@ static u64 string_strrchr(u64 src, u64 match) {
 }
 
 static u64 string_strchr(u64 src, u64 match) {
-    const pointer_ptr ptr = virtual->read(src);
+    const_pointer_ptr ptr = virtual->read(src);
     if (ptr == 0) {
         return 0;
     }
@@ -292,7 +292,7 @@ static u64 string_strchr(u64 src, u64 match) {
     if (ch == 0) {
         return 0;
     }
-    const pointer_ptr match_ptr = virtual->read_type(match, id);
+    const_pointer_ptr match_ptr = virtual->read_type(match, id);
     if (match_ptr == 0) {
         return 0;
     }
@@ -313,7 +313,7 @@ static u64 string_strchr(u64 src, u64 match) {
 }
 
 static u64 string_match(u64 src, u64 match) {
-    const pointer_ptr ptr = virtual->read(src);
+    const_pointer_ptr ptr = virtual->read(src);
     if (ptr == 0) {
         return 0;
     }
@@ -323,7 +323,7 @@ static u64 string_match(u64 src, u64 match) {
     if (ch == 0) {
         return 0;
     }
-    const pointer_ptr match_ptr = virtual->read_type(match, id);
+    const_pointer_ptr match_ptr = virtual->read_type(match, id);
     if (match_ptr == 0) {
         return 0;
     }
@@ -369,7 +369,7 @@ static u64 string_match(u64 src, u64 match) {
 }
 
 static u64 string_offset(u64 src, u64 match) {
-    const pointer_ptr ptr = virtual->read(src);
+    const_pointer_ptr ptr = virtual->read(src);
     if (ptr == 0) {
         return 0;
     }
@@ -379,7 +379,7 @@ static u64 string_offset(u64 src, u64 match) {
     if (ch == 0) {
         return 0;
     }
-    const pointer_ptr match_ptr = virtual->read_type(match, id);
+    const_pointer_ptr match_ptr = virtual->read_type(match, id);
     if (match_ptr == 0) {
         return 0;
     }
@@ -454,7 +454,7 @@ static u64 string_load(const char* ch) {
 }
 
 static void string_put_char(u64 src, char value) {
-    const pointer_ptr ptr = virtual->read(src);
+    const_pointer_ptr ptr = virtual->read(src);
     if (ptr == 0) {
         return;
     }
@@ -469,7 +469,7 @@ static void string_put_char(u64 src, char value) {
 }
 
 static char* string_unsafe(u64 src) {
-    const pointer_ptr ptr = virtual->read(src);
+    const_pointer_ptr ptr = virtual->read(src);
     if (ptr == 0) {
         return 0;
     }
@@ -484,7 +484,7 @@ static char* string_unsafe(u64 src) {
 }
 
 static u64 string_size(u64 src) {
-    const pointer_ptr ptr = virtual->read(src);
+    const_pointer_ptr ptr = virtual->read(src);
     if (ptr == 0) {
         return 0;
     }
@@ -501,11 +501,11 @@ static u64 string_lessthan(u64 src, u64 dst) {
     if (src == dst) {
         return 0;
     }
-    const pointer_ptr src_ptr = virtual->read(src);
+    const_pointer_ptr src_ptr = virtual->read(src);
     if (src_ptr == 0) {
         return 0;
     }
-    const pointer_ptr dst_ptr = virtual->read(dst);
+    const_pointer_ptr dst_ptr = virtual->read(dst);
     if (dst_ptr == 0) {
         return 0;
     }
@@ -534,11 +534,11 @@ static u64 string_greaterthan(u64 src, u64 dst) {
     if (src == dst) {
         return 0;
     }
-    const pointer_ptr src_ptr = virtual->read(src);
+    const_pointer_ptr src_ptr = virtual->read(src);
     if (src_ptr == 0) {
         return 0;
     }
-    const pointer_ptr dst_ptr = virtual->read(dst);
+    const_pointer_ptr dst_ptr = virtual->read(dst);
     if (dst_ptr == 0) {
         return 0;
     }
@@ -567,11 +567,11 @@ static u64 string_equals(u64 src, u64 dst) {
     if (src == dst) {
         return 0;
     }
-    const pointer_ptr src_ptr = virtual->read(src);
+    const_pointer_ptr src_ptr = virtual->read(src);
     if (src_ptr == 0) {
         return 0;
     }
-    const pointer_ptr dst_ptr = virtual->read(dst);
+    const_pointer_ptr dst_ptr = virtual->read(dst);
     if (dst_ptr == 0) {
         return 0;
     }
@@ -600,11 +600,11 @@ static u64 string_compare(u64 src, u64 dst) {
     if (src == dst) {
         return 0;
     }
-    const pointer_ptr src_ptr = virtual->read(src);
+    const_pointer_ptr src_ptr = virtual->read(src);
     if (src_ptr == 0) {
         return 0;
     }
-    const pointer_ptr dst_ptr = virtual->read(dst);
+    const_pointer_ptr dst_ptr = virtual->read(dst);
     if (dst_ptr == 0) {
         return 0;
     }
@@ -627,7 +627,7 @@ static u64 string_compare(u64 src, u64 dst) {
 }
 
 static u64 string_left(u64 src, u64 shift) {
-    const pointer_ptr ptr = virtual->read(src);
+    const_pointer_ptr ptr = virtual->read(src);
     if (ptr == 0) {
         return 0;
     }
@@ -649,7 +649,7 @@ static u64 string_left(u64 src, u64 shift) {
 }
 
 static u64 string_strncpy(u64 src, u64 nbytes) {
-    const pointer_ptr ptr = virtual->read(src);
+    const_pointer_ptr ptr = virtual->read(src);
     if (ptr == 0) {
         return 0;
     }
@@ -670,7 +670,7 @@ static u64 string_strncpy(u64 src, u64 nbytes) {
 }
 
 static u64 string_left_strncpy(u64 src, u64 nbytes) {
-    const pointer_ptr ptr = virtual->read(src);
+    const_pointer_ptr ptr = virtual->read(src);
     if (ptr == 0) {
         return 0;
     }
@@ -691,7 +691,7 @@ static u64 string_left_strncpy(u64 src, u64 nbytes) {
 }
 
 static u64 string_right(u64 src, u64 nbytes) {
-    const pointer_ptr ptr = virtual->read(src);
+    const_pointer_ptr ptr = virtual->read(src);
     if (ptr == 0) {
         return 0;
     }
@@ -713,7 +713,7 @@ static u64 string_right(u64 src, u64 nbytes) {
 }
 
 static u64 string_move_left(u64 src, u64 nbytes) {
-    const pointer_ptr ptr = virtual->read(src);
+    const_pointer_ptr ptr = virtual->read(src);
     if (ptr == 0) {
         return 0;
     }
@@ -735,7 +735,7 @@ static u64 string_move_left(u64 src, u64 nbytes) {
 }
 
 static u64 string_move_right(u64 src, u64 nbytes) {
-    const pointer_ptr ptr = virtual->read(src);
+    const_pointer_ptr ptr = virtual->read(src);
     if (ptr == 0) {
         return 0;
     }
@@ -760,7 +760,7 @@ static u64 string_strcmp(u64 src, u64 dest) {
     if (src == dest) {
         return 0;
     }
-    const pointer_ptr src_ptr = virtual->read(src);
+    const_pointer_ptr src_ptr = virtual->read(src);
     if (src_ptr == 0) {
         return 0;
     }
@@ -770,7 +770,7 @@ static u64 string_strcmp(u64 src, u64 dest) {
     if (src_data == 0) {
         return 0;
     }
-    const pointer_ptr dest_ptr = virtual->read(dest);
+    const_pointer_ptr dest_ptr = virtual->read(dest);
     if (dest_ptr == 0) {
         return 0;
     }

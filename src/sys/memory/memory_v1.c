@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 7, 2025 at 7:50:31 AM GMT+3
+ *   February 9, 2025 at 1:15:59 PM GMT+3
  *
  */
 /*
@@ -123,7 +123,7 @@ void global_statistics(void) {
 }
 #endif
 
-const memory_methods PRIVATE_API(memory_definition) = {
+const memory_methods PRIVATE_API(memory_methods_definitions) = {
     .alloc = memory_alloc,
     .free = memory_free,
     .realloc = memory_realloc,

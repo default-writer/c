@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 8, 2025 at 6:59:39 PM GMT+3
+ *   February 9, 2025 at 12:09:41 PM GMT+3
  *
  */
 /*
@@ -48,6 +48,10 @@ typedef struct stack_element {
 } stack_element;
 
 typedef struct pointer* pointer_ptr;
+typedef const struct pointer* const_pointer_ptr;
+typedef struct virtual_pointer* virtual_pointer_ptr;
+typedef const struct virtual_pointer* const_virtual_pointer_ptr;
+
 typedef struct type_methods_definitions {
     void (*free)(pointer_ptr ptr);
 } type_methods_definitions;
