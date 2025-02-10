@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM hack2root/c-project:latest
 
 ARG USER_NAME=vscode
 ARG USER_GROUP=vscode
