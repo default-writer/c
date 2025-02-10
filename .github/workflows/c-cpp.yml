@@ -14,7 +14,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: init
-      run: ./bin/init.sh --init --lcov --setup --optional
+      run: ./bin/init.sh --init --no-update --no-upgrade --lcov --setup --optional
     - name: coverage
       run: ./bin/coverageall.sh --all
     - name: Coveralls GitHub Action
