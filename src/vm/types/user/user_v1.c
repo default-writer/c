@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 8, 2025 at 6:37:01 PM GMT+3
+ *   February 10, 2025 at 5:22:13 PM GMT+3
  *
  */
 /*
@@ -24,66 +24,63 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "string_pointer_v1.h"
+#include "user_v1.h"
 
 #include "std/api.h"
 
-#include "vm/v1/pointer/pointer_v1.h"
-#include "vm/v1/virtual/virtual_v1.h"
+#include "vm/pointer/pointer_v1.h"
+#include "vm/virtual/virtual_v1.h"
 
 #define DEFAULT_SIZE 0x100
 
-static const enum type id = TYPE_STRING_POINTER;
+static u64 id = TYPE_NULL;
 
 #ifndef ATTRIBUTE
-void string_pointer_init(void);
+void user_virtual_init(void);
 #endif
 
-/* definition */
-static void string_free(u64 ptr);
+/* internal */
+static u64 user_alloc(void);
+static void user_free(u64 ptr);
 
 /* destructor */
 static void virtual_free(pointer_ptr ptr);
 
-/* internal */
-static void string_virtual_free(pointer_ptr ptr);
-
 /* implementation */
-static void string_virtual_free(pointer_ptr ptr) {
-    pointer->release(ptr);
+static u64 user_alloc(void) {
+    pointer_ptr ptr = pointer->alloc(0, id);
+    u64 virtual_ptr = virtual->alloc(ptr);
+    return virtual_ptr;
 }
 
-static const struct type_methods_definitions _type = {
-    .free = string_virtual_free
-};
-
-static void INIT init(void) {
-    pointer->register_type(id, &_type);
-}
-
-/* api */
-static void string_free(u64 ptr) {
-    pointer_ptr data_ptr = virtual->read(ptr);
+static void user_free(u64 ptr) {
+    pointer_ptr data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return;
     }
-    if (pointer->read_type(data_ptr, TYPE_STRING_POINTER)) {
-        virtual_free(data_ptr);
-        return;
-    }
+    virtual_free(data_ptr);
 }
 
 static void virtual_free(pointer_ptr ptr) {
     pointer->release(ptr);
 }
 
+static const struct type_methods_definitions _type = {
+    .free = virtual_free
+};
+
+static void INIT init(void) {
+    id = pointer->register_type(TYPE_NULL, &_type);
+}
+
 /* public */
-const string_pointer_methods PRIVATE_API(string_pointer_methods_definitions) = {
-    .free = string_free
+const user_methods PRIVATE_API(user_methods_definitions) = {
+    .alloc = user_alloc,
+    .free = user_free
 };
 
 #ifndef ATTRIBUTE
-void string_pointer_init(void) {
+void user_virtual_init(void) {
     init();
 }
 #endif

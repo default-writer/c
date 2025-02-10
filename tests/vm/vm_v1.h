@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 8, 2025 at 6:54:49 PM GMT+3
+ *   February 10, 2025 at 5:22:14 PM GMT+3
  *
  */
 /*
@@ -27,10 +27,10 @@
 #ifndef _VM_V1_H_
 #define _VM_V1_H_
 
-#include "vm/v1/types/object/object_v1.h"
-#include "vm/v1/types/string/string_v1.h"
-#include "vm/v1/types/string_pointer/string_pointer_v1.h"
-#include "vm/v1/types/user/user_v1.h"
+#include "vm/types/object/object_v1.h"
+#include "vm/types/string/string_v1.h"
+#include "vm/types/string_pointer/string_pointer_v1.h"
+#include "vm/types/user/user_v1.h"
 
 #include "std/api.h"
 

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 9, 2025 at 12:37:49 PM GMT+3
+ *   February 10, 2025 at 5:22:15 PM GMT+3
  *
  */
 /*
@@ -30,7 +30,7 @@
 
 #include "sys/list/list_v1.h"
 
-#include "vm/v1/pointer/pointer_v1.h"
+#include "vm/pointer/pointer_v1.h"
 
 /* macros */
 #define DEFAULT_SIZE 0x8 /* 8 */

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 8, 2025 at 6:54:38 PM GMT+3
+ *   February 10, 2025 at 5:23:37 PM GMT+3
  *
  */
 /*
@@ -28,7 +28,7 @@
 
 #define RX_ENABLE_EXTERNAL_LINKING
 
-#include "../../test.h"
+#include "test.h"
 
 #include "test_list.h"
 #include "test_pointer.h"

@@ -41,7 +41,7 @@ while (($#)); do
             nm -D -l "${pwd}/lib/libcsys.so"
             echo ""
             echo "--------libctypes.so--------"
-            nm -D -l "${pwd}/lib/libcsys.so"
+            nm -D -l "${pwd}/lib/libctypes.so"
             echo ""
             ;;
 
