@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 8, 2025 at 6:56:44 PM GMT+3
+ *   February 10, 2025 at 5:22:14 PM GMT+3
  *
  */
 /*
@@ -26,12 +26,12 @@
 
 #include "test_pointer.h"
 
-#include "sys/os/os_v1.h"
-#include "vm/v1/pointer/pointer_v1.h"
-#include "vm/v1/types/data/data_v1.h"
-#include "vm/v1/types/file/file_v1.h"
-#include "vm/v1/types/stack/stack_v1.h"
-#include "vm/v1/vm_v1.h"
+#include "vm/os/os_v1.h"
+#include "vm/pointer/pointer_v1.h"
+#include "vm/types/data/data_v1.h"
+#include "vm/types/file/file_v1.h"
+#include "vm/types/stack/stack_v1.h"
+#include "vm/vm_v1.h"
 
 #define DEFAULT_SIZE 0x100
 

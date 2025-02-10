@@ -250,31 +250,31 @@ set(LIB_SYS_SOURCE
     src/sys/info/info_v1.c
     src/sys/memory/memory_v1.c
     src/sys/options/options_v1.c
-    src/sys/os/os_v1.c
     src/sys/list/list_v1.c)
 
-set(LIB_STD_TYPES1_SOURCE
-    src/vm/v1/pointer/pointer_v1.c
-    src/vm/v1/types/data/data_v1.c
-    src/vm/v1/types/file/file_v1.c
-    src/vm/v1/types/object/object_v1.c
-    src/vm/v1/types/stack/stack_v1.c
-    src/vm/v1/types/string/string_v1.c
-    src/vm/v1/types/string_pointer/string_pointer_v1.c
-    src/vm/v1/types/user/user_v1.c
-    src/vm/v1/virtual/virtual_v1.c)
+set(LIB_VM_SOURCE
+    src/vm/os/os_v1.c
+    src/vm/pointer/pointer_v1.c
+    src/vm/types/data/data_v1.c
+    src/vm/types/file/file_v1.c
+    src/vm/types/object/object_v1.c
+    src/vm/types/stack/stack_v1.c
+    src/vm/types/string/string_v1.c
+    src/vm/types/string_pointer/string_pointer_v1.c
+    src/vm/types/user/user_v1.c
+    src/vm/virtual/virtual_v1.c)
 
-set(TESTS_SRC_LIST tests/vm/v1/test_list.c)
-set(TESTS_SRC_POINTER tests/vm/v1/test_pointer.c)
-set(TESTS_SRC_VM_V1 tests/vm/v1/test_vm_v1.c)
-set(MAIN_TESTS_VM1_SOURCE tests/vm/v1/main-tests_v1.c)
+set(TESTS_SRC_LIST tests/vm/test_list.c)
+set(TESTS_SRC_POINTER tests/vm/test_pointer.c)
+set(TESTS_SRC_VM_V1 tests/vm/test_vm_v1.c)
+set(MAIN_TESTS_VM1_SOURCE tests/vm/main-tests_v1.c)
 
 include_directories(tests)
 include_directories(src)
 include_directories(.rexo/include)
 
 add_library(csys SHARED ${LIB_SYS_SOURCE})
-add_library(ctypes SHARED ${LIB_STD_TYPES1_SOURCE})
+add_library(cvm SHARED ${LIB_VM_SOURCE})
 add_library(ctests SHARED
     ${TESTS_SRC_LIST}
     ${TESTS_SRC_POINTER}
@@ -287,13 +287,13 @@ add_executable(main-tests-vm1
 )
 
 # test
-target_link_libraries(ctypes PRIVATE csys)
-target_link_libraries(ctests PRIVATE ctypes)
+target_link_libraries(cvm PRIVATE csys)
+target_link_libraries(ctests PRIVATE cvm)
 
 # main
 target_link_libraries(main-tests-vm1 PRIVATE
     csys
-    ctypes 
+    cvm 
     ctests
 )
 

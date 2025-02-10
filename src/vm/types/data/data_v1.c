@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 8, 2025 at 6:41:32 PM GMT+3
+ *   February 10, 2025 at 5:22:14 PM GMT+3
  *
  */
 /*
@@ -24,36 +24,40 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "user_v1.h"
+#include "data_v1.h"
 
 #include "std/api.h"
 
-#include "vm/v1/pointer/pointer_v1.h"
-#include "vm/v1/virtual/virtual_v1.h"
+#include "vm/types/data/data_v1.h"
+
+#include "vm/pointer/pointer_v1.h"
+#include "vm/virtual/virtual_v1.h"
 
 #define DEFAULT_SIZE 0x100
 
-static u64 id = TYPE_NULL;
+static const enum type id = TYPE_DATA;
 
 #ifndef ATTRIBUTE
-void user_virtual_init(void);
+void data_init(void);
 #endif
 
 /* internal */
-static u64 user_alloc(void);
-static void user_free(u64 ptr);
+static u64 data_alloc(u64 size);
+static void data_free(u64 ptr);
+static void* data_unsafe(u64 ptr);
+static u64 data_size(u64 ptr);
 
 /* destructor */
-static void virtual_free(pointer_ptr ptr);
+static void virtual_free(pointer_ptr data_ptr);
 
 /* implementation */
-static u64 user_alloc(void) {
-    pointer_ptr ptr = pointer->alloc(0, id);
-    u64 virtual_ptr = virtual->alloc(ptr);
-    return virtual_ptr;
+static u64 data_alloc(u64 size) {
+    pointer_ptr f_ptr = pointer->alloc(size, id);
+    u64 vm_data = virtual->alloc(f_ptr);
+    return vm_data;
 }
 
-static void user_free(u64 ptr) {
+static void data_free(u64 ptr) {
     pointer_ptr data_ptr = virtual->read_type(ptr, id);
     if (data_ptr == 0) {
         return;
@@ -65,22 +69,42 @@ static void virtual_free(pointer_ptr ptr) {
     pointer->release(ptr);
 }
 
+static void* data_unsafe(u64 ptr) {
+    const_pointer_ptr data_ptr = virtual->read_type(ptr, id);
+    if (data_ptr == 0) {
+        return 0;
+    }
+    void* vm_data = pointer->read(data_ptr);
+    return vm_data;
+}
+
+static u64 data_size(u64 ptr) {
+    const_pointer_ptr data_ptr = virtual->read_type(ptr, id);
+    if (data_ptr == 0) {
+        return 0;
+    }
+    u64 size = pointer->size(data_ptr);
+    return size;
+}
+
 static const struct type_methods_definitions _type = {
     .free = virtual_free
 };
 
 static void INIT init(void) {
-    id = pointer->register_type(TYPE_NULL, &_type);
+    pointer->register_type(id, &_type);
 }
 
 /* public */
-const user_methods PRIVATE_API(user_methods_definitions) = {
-    .alloc = user_alloc,
-    .free = user_free
+const data_methods PRIVATE_API(data_methods_definitions) = {
+    .alloc = data_alloc,
+    .free = data_free,
+    .unsafe = data_unsafe,
+    .size = data_size
 };
 
 #ifndef ATTRIBUTE
-void user_virtual_init(void) {
+void data_init(void) {
     init();
 }
 #endif
