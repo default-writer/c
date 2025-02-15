@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 10, 2025 at 5:27:11 PM GMT+3
+ *   February 15, 2025 at 9:16:41 PM GMT+3
  *
  */
 /*
@@ -30,16 +30,8 @@
 #define USING_HEADERS
 
 #include <stdint.h>
-#include <stdlib.h>
-#include <time.h>
-
-#ifdef _WIN32
-#include <windows.h>
-#define PATH_MAX MAX_PATH
-#else
 #include <sys/time.h>
 #include <unistd.h>
-#endif
 
 #include <limits.h>
 
