@@ -137,7 +137,7 @@ while (($#)); do
 
         "--dotnet") # installs dotnet
             update ${updateflags}
-            curl -sL https://dot.net/v1/dotnet-install.sh -o /tmp/dotnet-install.sh
+            curl -sL https://dot.net/dotnet-install.sh -o /tmp/dotnet-install.sh
             chmod +x /tmp/dotnet-install.sh
             bash /tmp/dotnet-install.sh --version 6.0.408 --channel 6.0
             bash /tmp/dotnet-install.sh --version 7.0.203 --channel 7.0

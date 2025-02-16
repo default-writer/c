@@ -13,7 +13,7 @@
   "testFilesOnSave.languageId": "any",
   "testFilesOnSave.testCommands": [
     {
-      "c": "./bin/coverageall.sh --all --clean",
+      "c": "./bin/cmake.sh --all --clean --gc",
       "cpp": "./bin/src.sh --target=${relativeFile}"
     },
     {

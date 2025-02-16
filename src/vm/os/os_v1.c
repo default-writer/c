@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 9, 2025 at 11:12:55 AM GMT+3
+ *   February 15, 2025 at 9:19:05 PM GMT+3
  *
  */
 /*
@@ -32,9 +32,9 @@
 
 #include "sys/memory/memory_v1.h"
 
-#include "vm/v1/pointer/pointer_v1.h"
-#include "vm/v1/types/string/string_v1.h"
-#include "vm/v1/virtual/virtual_v1.h"
+#include "vm/pointer/pointer_v1.h"
+#include "vm/types/string/string_v1.h"
+#include "vm/virtual/virtual_v1.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -62,11 +62,12 @@ static u64 os_getenv(u64 ptr) {
 
 static u64 os_getcwd(void) {
     u64 data_ptr = 0;
-    char* src = sys_memory->alloc(PATH_MAX + 1);
-    if (getcwd(src, PATH_MAX + 1) != 0) {
+    char* src = sys_memory->alloc(PATH_MAX);
+    src[PATH_MAX - 1] = 0;
+    if (getcwd(src, PATH_MAX - 1) != 0) {
         data_ptr = string->load(src);
     }
-    sys_memory->free(src, PATH_MAX + 1);
+    sys_memory->free(src, PATH_MAX);
     return data_ptr;
 }
 

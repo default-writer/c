@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 9, 2025 at 2:11:37 PM GMT+3
+ *   February 15, 2025 at 9:19:05 PM GMT+3
  *
  */
 /*
@@ -32,7 +32,7 @@
 
 #include "sys/memory/memory_v1.h"
 
-#include "vm/v1/virtual/virtual_v1.h"
+#include "vm/virtual/virtual_v1.h"
 
 #include <stdio.h>
 

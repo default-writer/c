@@ -36,13 +36,24 @@ while (($#)); do
             help
             ;;
 
-        "--nm") # [optional] extracts sys library info
+        "--nm-csys") # [optional] extracts sys library info
             echo "--------libcsys.so--------"
             nm -D -l "${pwd}/lib/libcsys.so"
-            echo ""
+            ;;
+
+        "--nm-cvm") # [optional] extracts vm library info
             echo "--------libctypes.so--------"
-            nm -D -l "${pwd}/lib/libcsys.so"
-            echo ""
+            nm -D -l "${pwd}/lib/libcvm.so"
+            ;;
+
+        "--objdump-csys") # [optional] extracts sys library info
+            echo "--------libcsys.so--------"
+            objdump -T "${pwd}/lib/libcsys.so"
+            ;;
+
+        "--objdump-cvm") # [optional] extracts vm library info
+            echo "--------libctypes.so--------"
+            objdump -T "${pwd}/lib/libcvm.so"
             ;;
 
         "--branch-change-main-to-master") # [optional] changes branching strategy to master

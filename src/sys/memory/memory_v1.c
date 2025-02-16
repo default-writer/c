@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 9, 2025 at 1:15:59 PM GMT+3
+ *   February 15, 2025 at 9:15:34 PM GMT+3
  *
  */
 /*
@@ -68,6 +68,9 @@ static void* memory_alloc(u64 size) {
 
 static void memory_free(void* old_ptr, u64 size) {
     void* ptr = old_ptr;
+#if !defined(USE_MEMORY_CLEANUP) && !defined(USE_MEMORY_DEBUG_INFO)
+    (void)size; /* mark as unused when not in debug/cleanup mode */
+#endif
     if (ptr != 0) {
 #ifdef USE_MEMORY_CLEANUP
         memory_set(ptr, 0, size); /* NOLINT */
