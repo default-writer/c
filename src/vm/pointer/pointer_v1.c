@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 15, 2025 at 9:19:05 PM GMT+3
+ *   February 16, 2025 at 1:08:28 PM GMT+3
  *
  */
 /*
@@ -66,11 +66,12 @@ static known_types_ptr vm_types = &known_types_definition;
 
 #ifndef ATTRIBUTE
 extern void data_init(void);
+extern void file_init(void);
+extern void object_init(void);
+extern void stack_init(void);
 extern void string_init(void);
 extern void string_pointer_init(void);
-extern void file_init(void);
-extern void list_init(void);
-extern void object_init(void);
+extern void user_init(void);
 #endif
 
 static struct vm* vm;
@@ -250,11 +251,12 @@ static void pointer_init(u64 size) {
     default_types = sys_memory->alloc(virtual_count * sizeof(struct known_types));
 #ifndef ATTRIBUTE
     data_init();
+    file_init();
+    object_init();
+    stack_init();
     string_init();
     string_pointer_init();
-    file_init();
-    list_init();
-    object_init();
+    user_init();
 #endif
     known_types_ptr current = vm_types;
     while (current->next != 0) {
