@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 10, 2025 at 5:22:13 PM GMT+3
+ *   February 16, 2025 at 1:06:18 PM GMT+3
  *
  */
 /*
@@ -36,7 +36,7 @@
 static u64 id = TYPE_NULL;
 
 #ifndef ATTRIBUTE
-void user_virtual_init(void);
+void user_init(void);
 #endif
 
 /* internal */
@@ -80,7 +80,7 @@ const user_methods PRIVATE_API(user_methods_definitions) = {
 };
 
 #ifndef ATTRIBUTE
-void user_virtual_init(void) {
+void user_init(void) {
     init();
 }
 #endif
