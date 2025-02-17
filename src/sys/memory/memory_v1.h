@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 9, 2025 at 1:15:19 PM GMT+3
+ *   February 17, 2025 at 1:07:43 PM GMT+3
  *
  */
 /*
@@ -29,6 +29,8 @@
 
 #include "std/api.h"
 
+#include "sys/export.h"
+
 #ifdef USE_MEMORY_DEBUG_INFO
 extern void global_statistics(void);
 #endif
@@ -42,6 +44,7 @@ typedef struct PRIVATE_API(memory_methods) {
 #endif
 } memory_methods;
 
+#if !defined(_WIN32)
 /* definition */
 extern const memory_methods PRIVATE_API(memory_methods_definitions);
 
@@ -51,6 +54,14 @@ const memory_methods* memory = &PRIVATE_API(memory_methods_definitions);
 #else
 /* definition */
 static const memory_methods* sys_memory = &PRIVATE_API(memory_methods_definitions);
+#endif
+
+#else
+
+CSYS_EXPORT const memory_methods* _sys_memory();
+
+#define sys_memory _sys_memory()
+
 #endif
 
 #endif /* _GENERIC_MEMORY_H_ */

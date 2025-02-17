@@ -10,9 +10,9 @@
       "name": "bash",
       "terminalKind": "integrated",
       "cwd": "${workspaceFolder}",
-      "program": "./bin/utils/uninstall.sh",
+      "program": "${workspaceFolder}/bin/utils/build.sh",
       "args": [
-        "--submodule-rexo"
+        "--all"
       ]
     },
   ]

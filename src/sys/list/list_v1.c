@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 9, 2025 at 1:15:59 PM GMT+3
+ *   February 17, 2025 at 1:07:18 PM GMT+3
  *
  */
 /*
@@ -220,3 +220,11 @@ const list_methods PRIVATE_API(list_methods_definitions) = {
     .print = list_print
 #endif
 };
+
+#if defined(_WIN32)
+
+CSYS_EXPORT inline const list_methods* _sys_list() {
+    return &PRIVATE_API(list_methods_definitions);
+}
+
+#endif

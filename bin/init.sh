@@ -33,6 +33,12 @@ init="--init"
 while (($#)); do
     case "$1" in
 
+        "--no-update") # [optional] skips system updates
+            ;;
+
+        "--no-upgrade") # [optional] skips system upgrades
+            ;;
+
         "--init") # initializes project dependencies
             init="--init"
             ;;
@@ -95,19 +101,19 @@ if [[ "${silent}" == "--silent" ]]; then
 fi
 
 if [[ "${clean}" == "--clean" ]]; then
-    "${pwd}/bin/utils/cleanup.sh" --all
+    "${pwd}/bin/utils/cleanup.sh" --all $@
 fi
 
 if [[ "${setup}" == "--setup" ]]; then
-    sudo "${pwd}/bin/setup.sh"
+    sudo "${pwd}/bin/setup.sh" $@
 fi
 
 if [[ "${hooks}" == "--hooks" ]]; then
-    "${pwd}/bin/utils/install.sh" --hooks
+    "${pwd}/bin/utils/install.sh" --hooks $@
 fi
 
 if [[ "${clangd}" == "--clangd" ]]; then
-    "${pwd}/bin/utils/install.sh" --clangd
+    "${pwd}/bin/utils/install.sh" --clangd $@
 fi
 
 if [[ "${lcov}" == "--lcov" ]]; then
@@ -115,12 +121,12 @@ if [[ "${lcov}" == "--lcov" ]]; then
 fi
 
 if [[ "${cmake}" == "--cmake" ]]; then
-    "${pwd}/bin/utils/install.sh" --cmake
+    "${pwd}/bin/utils/install.sh" --cmake $@
 fi
 
 if [[ "${init}" == "--init" ]]; then
-    "${pwd}/bin/utils/install.sh" --submodule-rexo
-    "${pwd}/bin/utils/init.sh" --all
+    "${pwd}/bin/utils/install.sh" --submodule-rexo $@
+    "${pwd}/bin/utils/init.sh" --all $@
 fi
 
 if [[ "${silent}" == "--silent" ]]; then

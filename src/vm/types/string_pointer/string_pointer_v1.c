@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 10, 2025 at 5:22:14 PM GMT+3
+ *   February 8, 2025 at 6:37:01 PM GMT+3
  *
  */
 /*
@@ -49,7 +49,8 @@ static void virtual_free(pointer_ptr ptr);
 static void string_virtual_free(pointer_ptr ptr);
 
 /* implementation */
-static void string_virtual_free(pointer_ptr ptr) {
+static void string_virtual_free(pointer_ptr ptr)
+{
     pointer->release(ptr);
 }
 
@@ -57,12 +58,14 @@ static const struct type_methods_definitions _type = {
     .free = string_virtual_free
 };
 
-static void INIT init(void) {
+static void INIT init(void)
+{
     pointer->register_type(id, &_type);
 }
 
 /* api */
-static void string_free(u64 ptr) {
+static void string_free(u64 ptr)
+{
     pointer_ptr data_ptr = virtual->read(ptr);
     if (data_ptr == 0) {
         return;
@@ -73,7 +76,8 @@ static void string_free(u64 ptr) {
     }
 }
 
-static void virtual_free(pointer_ptr ptr) {
+static void virtual_free(pointer_ptr ptr)
+{
     pointer->release(ptr);
 }
 
@@ -83,7 +87,8 @@ const string_pointer_methods PRIVATE_API(string_pointer_methods_definitions) = {
 };
 
 #ifndef ATTRIBUTE
-void string_pointer_init(void) {
+void string_pointer_init(void)
+{
     init();
 }
 #endif

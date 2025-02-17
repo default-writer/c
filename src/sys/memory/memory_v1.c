@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 9, 2025 at 1:15:59 PM GMT+3
+ *   February 10, 2025 at 11:36:46 PM GMT+3
  *
  */
 /*
@@ -131,3 +131,11 @@ const memory_methods PRIVATE_API(memory_methods_definitions) = {
     .set = memory_set
 #endif
 };
+
+#if defined(_WIN32)
+
+CSYS_EXPORT inline const memory_methods* _sys_memory() {
+    return &PRIVATE_API(memory_methods_definitions);
+}
+
+#endif

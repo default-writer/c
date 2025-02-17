@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 9, 2025 at 1:15:21 PM GMT+3
+ *   February 17, 2025 at 1:08:13 PM GMT+3
  *
  */
 /*
@@ -29,6 +29,8 @@
 
 #include "std/api.h"
 
+#include "sys/export.h"
+
 typedef struct PRIVATE_API(list_methods) {
     /* initialize context */
     void (*init)(stack_ptr* current);
@@ -48,15 +50,24 @@ typedef struct PRIVATE_API(list_methods) {
 #endif
 } list_methods;
 
+#if !defined(_WIN32)
 /* definition */
 extern const list_methods PRIVATE_API(list_methods_definitions);
 
 /* definition */
 #ifdef INLINE
-const list_v1* list_methods = &PRIVATE_API(list_methods_definitions);
+const list_methods* list = &PRIVATE_API(list_methods_definitions);
 #else
 /* definition */
 static const list_methods* sys_list = &PRIVATE_API(list_methods_definitions);
+#endif
+
+#else
+
+CSYS_EXPORT const list_methods* _sys_list();
+
+#define sys_list _sys_list()
+
 #endif
 
 #endif /* _LIST_MICRO_DATA_H_ */

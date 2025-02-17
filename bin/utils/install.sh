@@ -28,6 +28,12 @@ install="$1"
 while (($#)); do
     case "$1" in
 
+        "--no-update") # [optional] skips system updates
+            ;;
+
+        "--no-upgrade") # [optional] skips system upgrades
+            ;;
+
         "--appwrite") # installs appwrite. appwrite is a self-hosted backend-as-a-service platform that provides developers with all the core APIs required to build any application.
             docker run -it --rm \
                 --volume /var/run/docker.sock:/var/run/docker.sock \
