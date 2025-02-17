@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 10, 2025 at 10:57:41 PM GMT+3
+ *   February 17, 2025 at 1:55:52 PM GMT+3
  *
  */
 /*
@@ -69,8 +69,12 @@ extern void data_init(void);
 extern void file_init(void);
 extern void object_init(void);
 extern void stack_init(void);
+extern void file_init(void);
+extern void object_init(void);
+extern void stack_init(void);
 extern void string_init(void);
 extern void string_pointer_init(void);
+extern void user_init(void);
 extern void user_init(void);
 #endif
 
@@ -254,8 +258,12 @@ static void pointer_init(u64 size) {
     file_init();
     object_init();
     stack_init();
+    file_init();
+    object_init();
+    stack_init();
     string_init();
     string_pointer_init();
+    user_init();
     user_init();
 #endif
     known_types_ptr current = vm_types;

@@ -26,6 +26,16 @@ set(CONFIG_MEMORY_CLEANUP ON)
 set(CONFIG_MEMORY_ALLOC OFF)
 set(CONFIG_MEMCPY OFF)
 
+execute_process(COMMAND git rev-parse HEAD OUTPUT_VARIABLE GIT_COMMIT_HASH)
+execute_process(COMMAND git log -n 1 --pretty=format:%at OUTPUT_VARIABLE UNIX_TIMESTAMP)
+string(REGEX REPLACE "\n" "" GIT_COMMIT_HASH "${GIT_COMMIT_HASH}")
+string(REGEX REPLACE "\n" "" UNIX_TIMESTAMP "${UNIX_TIMESTAMP}")
+file(WRITE ${CMAKE_SOURCE_DIR}/src/std/version.h 
+    "#define GIT_COMMIT_HASH_VALUE " ${GIT_COMMIT_HASH} "\n"
+    "#define GIT_COMMIT_HASH \"" ${GIT_COMMIT_HASH} "\"\n"
+    "#define UNIX_TIMESTAMP " ${UNIX_TIMESTAMP} "\n"
+)
+
 link_directories(${CMAKE_SOURCE_DIR}/lib)
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
@@ -94,34 +104,6 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
         -Wno-unused-variable
         -Wno-unused-function
     )
-elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    # Windows specific configuration
-    message("Detected Windows OS")
-    # You can add specific CMake options or behavior for Windows here
-elseif(CMAKE_SYSTEM_NAME STREQUAL "MSYS")
-    # Windows specific configuration
-    message("Detected Windows OS")
-    # You can add specific CMake options or behavior for Windows here  
-elseif(CMAKE_SYSTEM_NAME STREQUAL "MINGW64")
-    # Windows specific configuration
-    message("Detected Windows OS")
-    # You can add specific CMake options or behavior for Windows here  
-elseif(CMAKE_SYSTEM_NAME STREQUAL "MSYS")
-    # Windows specific configuration
-    message("Detected Windows OS")
-    # You can add specific CMake options or behavior for Windows here  
-elseif(CMAKE_SYSTEM_NAME STREQUAL "MINGW64")
-    # Windows specific configuration
-    message("Detected Windows OS")
-    # You can add specific CMake options or behavior for Windows here  
-elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-    # macOS specific configuration
-    message("Detected macOS OS")
-    # You can add specific CMake options or behavior for macOS here
-else()
-    # Other/Unknown OS
-    message("Unknown OS: ${CMAKE_SYSTEM_NAME}")
-    # You can add behavior for other/unknown OS here if needed
 endif()
 
 set(STRICT
@@ -340,16 +322,6 @@ FILE(WRITE ${CMAKE_BINARY_DIR}/input-substrings.txt
     "ju\n"
     "juadassjuuiilajuasasjuas\n"
     "as\n"
-)
-
-execute_process(COMMAND git rev-parse HEAD OUTPUT_VARIABLE GIT_COMMIT_HASH)
-execute_process(COMMAND git log -n 1 --pretty=format:%at OUTPUT_VARIABLE UNIX_TIMESTAMP)
-string(REGEX REPLACE "\n" "" GIT_COMMIT_HASH "${GIT_COMMIT_HASH}")
-string(REGEX REPLACE "\n" "" UNIX_TIMESTAMP "${UNIX_TIMESTAMP}")
-file(WRITE ${CMAKE_SOURCE_DIR}/src/std/version.h 
-    "#define GIT_COMMIT_HASH_VALUE " ${GIT_COMMIT_HASH} "\n"
-    "#define GIT_COMMIT_HASH \"" ${GIT_COMMIT_HASH} "\"\n"
-    "#define UNIX_TIMESTAMP " ${UNIX_TIMESTAMP} "\n"
 )
 
 if(TARGETS)

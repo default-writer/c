@@ -42,6 +42,14 @@ while (($#)); do
         "--init") # initializes project dependencies
             init="--init"
             ;;
+
+        "--no-update") # [optional] skips system updates
+            updateflags="--no-update"
+            ;;
+
+        "--no-upgrade") # [optional] skips system upgrades
+            updgradeflags="--no-upgrade"
+            ;;
      
         "--clean") # cleans up directories before build
             clean="--clean"
