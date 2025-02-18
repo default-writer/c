@@ -13,7 +13,7 @@
     "testFilesOnSave.languageId": "any",
     "testFilesOnSave.testCommands": [
         {
-            "c": "./bin/cmake.sh --all --clean --gc",
+            "c": "./bin/coverageall.sh --all --clean",
             "cpp": "./bin/src.sh --target=${relativeFile}"
         },
         {
@@ -338,7 +338,7 @@
         "--clang-tidy",
         "--fallback-style=WebKit"
     ],
-    "clangd.path": "${workspaceFolder}/.tools/clangd_19.1.2/bin/clangd.exe",
+    "clangd.path": "${workspaceFolder}/.tools/clangd-linux-19.1.2/bin/clangd",
     "clangd.checkUpdates": true,
     "clangd.restartAfterCrash": true,
     "clangd.onConfigChanged": "restart",

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 10, 2025 at 5:22:14 PM GMT+3
+ *   February 18, 2025 at 6:29:39 AM GMT+3
  *
  */
 /*
@@ -218,7 +218,11 @@ static void string_strcpy(u64 dest, u64 src) {
         pointer->realloc(dest_ptr, src_size);
     }
     char* data_dest = pointer->read(dest_ptr);
-    strcpy(data_dest, ch); /* NOLINT */
+    #if defined(_WIN32)
+        strcpy_s(data_dest, pointer->size(dest_ptr), ch);
+    #else
+        strcpy(data_dest, ch); /* NOLINT */
+    #endif
 }
 
 static void string_strcat(u64 dest, u64 src) {
@@ -247,7 +251,11 @@ static void string_strcat(u64 dest, u64 src) {
         pointer->realloc(dest_ptr, size);
     }
     char* data_dest = pointer->read(dest_ptr);
+#if defined(_WIN32)
+    strcat_s(data_dest, size, data_src);
+#else
     strcat(data_dest, data_src); /* NOLINT */
+#endif
 }
 
 static u64 string_strrchr(u64 src, u64 match) {

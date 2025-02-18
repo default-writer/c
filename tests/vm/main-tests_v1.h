@@ -27,4 +27,8 @@
 #ifndef _MAIN_TESTS_V1_H_
 #define _MAIN_TESTS_V1_H_
 
+#include "test_list.h"
+#include "test_pointer.h"
+#include "test_vm_v1.h"
+
 #endif /* _MAIN_TESTS_V1_H_ */

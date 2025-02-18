@@ -85,3 +85,5 @@ Testing
 src/std/version.h
 
 .rexo/
+.vs/
+main-tests-vm1/

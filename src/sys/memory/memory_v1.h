@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 17, 2025 at 1:54:26 PM GMT+3
+ *   February 18, 2025 at 12:20:38 AM GMT+3
  *
  */
 /*
@@ -24,8 +24,8 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _GENERIC_MEMORY_H_
-#define _GENERIC_MEMORY_H_
+#ifndef _SYS_MEMORY_H_
+#define _SYS_MEMORY_H_
 
 #include "std/api.h"
 
@@ -46,22 +46,22 @@ typedef struct PRIVATE_API(memory_methods) {
 
 #if !defined(_WIN32)
 /* definition */
-extern const memory_methods PRIVATE_API(memory_methods_definitions);
+CSYS_EXPORT extern const memory_methods PRIVATE_API(memory_methods_definitions);
 
 /* definition */
 #ifdef INLINE
-const memory_methods* memory = &PRIVATE_API(memory_methods_definitions);
+const memory_methods* sys_memory = &PRIVATE_API(memory_methods_definitions);
 #else
 /* definition */
-static const memory_methods* sys_memory = &PRIVATE_API(memory_methods_definitions);
+CSYS_EXPORT extern const memory_methods* sys_memory;
 #endif
 
 #else
 
-CSYS_EXPORT const memory_methods* _sys_memory();
+CSYS_EXPORT extern const memory_methods* _sys_memory();
 
 #define sys_memory _sys_memory()
 
 #endif
 
-#endif /* _GENERIC_MEMORY_H_ */
+#endif /* _SYS_MEMORY_H_ */

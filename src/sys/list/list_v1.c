@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 17, 2025 at 1:53:59 PM GMT+3
+ *   February 18, 2025 at 12:23:18 AM GMT+3
  *
  */
 /*
@@ -23,6 +23,10 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+
+#if defined(_WIN32)
+#define csys_EXPORTS
+#endif
 
 #include "list_v1.h"
 
@@ -221,9 +225,13 @@ const list_methods PRIVATE_API(list_methods_definitions) = {
 #endif
 };
 
-#if defined(_WIN32)
+#if !defined(_WIN32)
 
-CSYS_EXPORT inline const list_methods* _sys_list() {
+CSYS_EXPORT const list_methods* sys_list = &PRIVATE_API(list_methods_definitions);
+
+#else
+
+static inline const list_methods* _sys_list() {
     return &PRIVATE_API(list_methods_definitions);
 }
 

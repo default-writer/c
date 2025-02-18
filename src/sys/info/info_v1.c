@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 9, 2025 at 1:17:27 PM GMT+3
+ *   February 18, 2025 at 6:36:23 AM GMT+3
  *
  */
 /*
@@ -24,6 +24,10 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#if defined(_WIN32)
+#define csys_EXPORTS
+#endif
+
 #include "info_v1.h"
 
 #include "std/api.h"
@@ -34,3 +38,15 @@ const info_methods PRIVATE_API(info_methods_definitions) = {
     .commit = GIT_COMMIT_HASH,
     .version = API_VERSION
 };
+
+#if !defined(_WIN32)
+
+CSYS_EXPORT const info_methods* sys_info = &PRIVATE_API(info_methods_definitions);
+
+#else
+
+static inline const info_methods* _sys_info() {
+    return &PRIVATE_API(info_methods_definitions);
+}
+
+#endif

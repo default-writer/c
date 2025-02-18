@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 10, 2025 at 5:22:14 PM GMT+3
+ *   February 18, 2025 at 6:30:48 AM GMT+3
  *
  */
 /*
@@ -32,6 +32,8 @@
 #include "vm/types/file/file_v1.h"
 #include "vm/types/stack/stack_v1.h"
 #include "vm/vm_v1.h"
+
+#include "test.h"
 
 #define DEFAULT_SIZE 0x100
 
@@ -1324,8 +1326,13 @@ RX_TEST_CASE(tests_v1, test_strcpy, .fixture = test_fixture) {
     RX_ASSERT(path1_len > 0);
     RX_ASSERT(path2_len > 0);
     char* buf = calloc(1, path1_len + path2_len + 1);
+#if defined(_WIN32)
+    strcpy_s(buf, path1_len + path2_len + 1, path1); /* NOLINT */
+    strcat_s(buf, path1_len + path2_len + 1, path2); /* NOLINT */
+#else
     strcpy(buf, path1); /* NOLINT */
     strcat(buf, path2); /* NOLINT */
+#endif    
     char* path_copy = virtual_string->unsafe(path_copy_ptr);
     RX_ASSERT(strlen(path_copy) == strlen(buf));
     RX_ASSERT(strcmp(path_copy, buf) == 0);

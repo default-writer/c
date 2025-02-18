@@ -40,7 +40,6 @@ link_directories(${CMAKE_SOURCE_DIR}/lib)
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
 # Set output directories for all platforms
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
 
@@ -275,7 +274,7 @@ generate_export_header(csys
     EXPORT_FILE_NAME ${CMAKE_SOURCE_DIR}/src/sys/export.h
 )
 target_include_directories(csys PUBLIC 
-    ${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR}/lib
 )
 
 add_library(cvm SHARED ${LIB_VM_SOURCE})
@@ -285,29 +284,24 @@ generate_export_header(cvm
     EXPORT_FILE_NAME ${CMAKE_SOURCE_DIR}/src/vm/export.h
 )
 target_include_directories(cvm PUBLIC 
-    ${CMAKE_CURRENT_BINARY_DIR}
-)
-
-add_library(ctests SHARED
-    ${TESTS_SRC_LIST}
-    ${TESTS_SRC_POINTER}
-    ${TESTS_SRC_VM_V1}
+    ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR}/lib
 )
 
 # main 
 add_executable(main-tests-vm1
     ${MAIN_TESTS_VM1_SOURCE}
+    ${TESTS_SRC_LIST}
+    ${TESTS_SRC_POINTER}
+    ${TESTS_SRC_VM_V1}
 )
 
 # test
 target_link_libraries(cvm PRIVATE csys)
-target_link_libraries(ctests PRIVATE cvm)
 
 # main
 target_link_libraries(main-tests-vm1 PRIVATE
     csys
-    cvm 
-    ctests
+    cvm
 )
 
 configure_file(all_english_words.txt ${CMAKE_BINARY_DIR}/all_english_words.txt COPYONLY)

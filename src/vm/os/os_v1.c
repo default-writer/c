@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 17, 2025 at 1:54:41 PM GMT+3
+ *   February 17, 2025 at 9:09:10 PM GMT+3
  *
  */
 /*
@@ -38,7 +38,13 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
+#ifdef _WIN32
+#include <direct.h> // Windows-specific header for getcwd
+#define __getcwd _getcwd // Map getcwd to _getcwd on Windows
+#else
+#define __getcwd getcwd // Map getcwd to _getcwd on Windows
+#include <unistd.h> // POSIX header for getcwd
+#endif
 #define DEFAULT_SIZE 0x100
 
 /* definition */
@@ -64,7 +70,7 @@ static u64 os_getcwd(void) {
     u64 data_ptr = 0;
     char* src = sys_memory->alloc(PATH_MAX);
     src[PATH_MAX - 1] = 0;
-    if (getcwd(src, PATH_MAX - 1) != 0) {
+    if (__getcwd(src, PATH_MAX - 1) != 0) {
         data_ptr = string->load(src);
     }
     sys_memory->free(src, PATH_MAX);

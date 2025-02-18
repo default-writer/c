@@ -29,7 +29,7 @@
 
 #define USING_TESTS
 
-#include "test.h"
+//#include "test.h"
 
 #include "std/api.h"
 

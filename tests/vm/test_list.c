@@ -26,6 +26,8 @@
 
 #include "test_list.h"
 
+#include "test.h"
+
 #include "sys/list/list_v1.h"
 
 /* allocates memory pointer for list object */

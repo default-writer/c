@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 17, 2025 at 1:18:48 PM GMT+3
+ *   February 17, 2025 at 4:45:11 PM GMT+3
  *
  */
 /*
@@ -34,7 +34,6 @@
 #include "std/api.h"
 
 #if !defined(RX_MAJOR_VERSION)
-
 #if defined(_WIN32)
 #define RXP_PLATFORM_WINDOWS
 #elif defined(__unix__) || defined(__APPLE__)

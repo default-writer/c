@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 17, 2025 at 1:56:24 PM GMT+3
+ *   February 17, 2025 at 2:22:31 PM GMT+3
  *
  */
 /*
@@ -36,7 +36,6 @@
 static u64 id = TYPE_NULL;
 
 #ifndef ATTRIBUTE
-void user_init(void);
 void user_init(void);
 #endif
 

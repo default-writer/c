@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 9, 2025 at 1:15:01 PM GMT+3
+ *   February 18, 2025 at 12:20:44 AM GMT+3
  *
  */
 /*
@@ -29,19 +29,30 @@
 
 #include "std/api.h"
 
+#include "sys/export.h"
+
 typedef struct PRIVATE_API(options_methods) {
     const u64 size;
 } options_methods;
 
+#if !defined(_WIN32)
 /* definition */
-extern const options_methods PRIVATE_API(options_methods_definitions);
+CSYS_EXPORT extern const options_methods PRIVATE_API(options_methods_definitions);
 
 /* definition */
 #ifdef INLINE
-const options_methods* options = &PRIVATE_API(options_methods_definitions);
+const options_methods* sys_options = &PRIVATE_API(options_methods_definitions);
 #else
 /* definition */
-static const options_methods* sys_options = &PRIVATE_API(options_methods_definitions);
+CSYS_EXPORT extern const options_methods* sys_options;
+#endif
+
+#else
+
+CSYS_EXPORT extern const options_methods* _sys_options();
+
+#define sys_options _sys_options()
+
 #endif
 
 #endif /* _VM_V1_OPTIONS_H_ */

@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <ProjectGuid>{4EAA2DE5-1BE0-5C8B-55E3-86ED9F4DF0B1}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectName>main-tests-vm1</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;CONFIG_MEMORY_CLEANUP;CONFIG_MEMORY_DEBUG_INFO;CONFIG_GC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;tests;.rexo;.rexo/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;CONFIG_MEMORY_CLEANUP;CONFIG_MEMORY_DEBUG_INFO;CONFIG_GC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;tests;.rexo;.rexo/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;CONFIG_MEMORY_CLEANUP;CONFIG_MEMORY_DEBUG_INFO;CONFIG_GC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;tests;.rexo;.rexo/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;CONFIG_MEMORY_CLEANUP;CONFIG_MEMORY_DEBUG_INFO;CONFIG_GC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;tests;.rexo;.rexo/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\sys\info\info_v1.c" />
+    <ClCompile Include="src\sys\list\list_v1.c" />
+    <ClCompile Include="src\sys\memory\memory_v1.c" />
+    <ClCompile Include="src\sys\options\options_v1.c" />
+    <ClCompile Include="src\vm\os\os_v1.c" />
+    <ClCompile Include="src\vm\pointer\pointer_v1.c" />
+    <ClCompile Include="src\vm\types\data\data_v1.c" />
+    <ClCompile Include="src\vm\types\file\file_v1.c" />
+    <ClCompile Include="src\vm\types\object\object_v1.c" />
+    <ClCompile Include="src\vm\types\stack\stack_v1.c" />
+    <ClCompile Include="src\vm\types\string\string_v1.c" />
+    <ClCompile Include="src\vm\types\string_pointer\string_pointer_v1.c" />
+    <ClCompile Include="src\vm\types\user\user_v1.c" />
+    <ClCompile Include="src\vm\virtual\virtual_v1.c" />
+    <ClCompile Include="tests\vm\main-tests_v1.c" />
+    <ClCompile Include="tests\vm\test_list.c" />
+    <ClCompile Include="tests\vm\test_pointer.c" />
+    <ClCompile Include="tests\vm\test_vm_v1.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\std\api.h" />
+    <ClInclude Include="src\std\compile.h" />
+    <ClInclude Include="src\std\data.h" />
+    <ClInclude Include="src\std\errors.h" />
+    <ClInclude Include="src\std\headers.h" />
+    <ClInclude Include="src\std\macros.h" />
+    <ClInclude Include="src\std\time.h" />
+    <ClInclude Include="src\std\version.h" />
+    <ClInclude Include="src\sys\export.h" />
+    <ClInclude Include="src\sys\info\info_v1.h" />
+    <ClInclude Include="src\sys\list\list_v1.h" />
+    <ClInclude Include="src\sys\memory\memory_v1.h" />
+    <ClInclude Include="src\sys\options\options_v1.h" />
+    <ClInclude Include="src\vm\export.h" />
+    <ClInclude Include="src\vm\os\os_v1.h" />
+    <ClInclude Include="src\vm\pointer\pointer_v1.h" />
+    <ClInclude Include="src\vm\types\data\data_v1.h" />
+    <ClInclude Include="src\vm\types\file\file_v1.h" />
+    <ClInclude Include="src\vm\types\object\object_v1.h" />
+    <ClInclude Include="src\vm\types\stack\stack_v1.h" />
+    <ClInclude Include="src\vm\types\string\string_v1.h" />
+    <ClInclude Include="src\vm\types\string_pointer\string_pointer_v1.h" />
+    <ClInclude Include="src\vm\types\user\user_v1.h" />
+    <ClInclude Include="src\vm\virtual\virtual_v1.h" />
+    <ClInclude Include="tests\vm\main-tests_v1.h" />
+    <ClInclude Include="tests\vm\test.h" />
+    <ClInclude Include="tests\vm\test_list.h" />
+    <ClInclude Include="tests\vm\test_pointer.h" />
+    <ClInclude Include="tests\vm\test_vm_v1.h" />
+    <ClInclude Include="tests\vm\vm_v1.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
