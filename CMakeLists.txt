@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.22.1)
 project(c VERSION 0.0.1 LANGUAGES C CXX)
 include(GenerateExportHeader)
 
+set(VERBOSE 1)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -264,23 +265,23 @@ include_directories(${CMAKE_SOURCE_DIR}/src)
 include_directories(${CMAKE_SOURCE_DIR}/.rexo)
 include_directories(${CMAKE_SOURCE_DIR}/.rexo/include)
 
-add_library(csys SHARED ${LIB_SYS_SOURCE})
-generate_export_header(csys
+add_library(c-sys SHARED ${LIB_SYS_SOURCE})
+generate_export_header(c-sys
     BASE_NAME csys
     EXPORT_MACRO_NAME CSYS_EXPORT
     EXPORT_FILE_NAME ${CMAKE_SOURCE_DIR}/src/sys/export.h
 )
-target_include_directories(csys PUBLIC 
+target_include_directories(c-sys PUBLIC 
     ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR}/lib
 )
 
-add_library(cvm SHARED ${LIB_VM_SOURCE})
-generate_export_header(cvm
+add_library(c-vm SHARED ${LIB_VM_SOURCE})
+generate_export_header(c-vm
     BASE_NAME cvm
     EXPORT_MACRO_NAME CVM_EXPORT
     EXPORT_FILE_NAME ${CMAKE_SOURCE_DIR}/src/vm/export.h
 )
-target_include_directories(cvm PUBLIC 
+target_include_directories(c-vm PUBLIC 
     ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR}/lib
 )
 
@@ -293,12 +294,12 @@ add_executable(main-tests-vm1
 )
 
 # test
-target_link_libraries(cvm PRIVATE csys)
+target_link_libraries(c-vm PRIVATE c-sys)
 
 # main
 target_link_libraries(main-tests-vm1 PRIVATE
-    csys
-    cvm
+    c-sys
+    c-vm
 )
 
 configure_file(all_english_words.txt ${CMAKE_BINARY_DIR}/all_english_words.txt COPYONLY)

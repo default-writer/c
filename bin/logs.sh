@@ -105,6 +105,11 @@ fi
 if [[ "${clean}" == "--clean" ]]; then
     if [[ -d "${dir}" ]]; then
         rm -rf "${dir}"
+        mkdir -p "${dir}"
+    fi
+    if [[ -d "${build}" ]]; then
+        rm -rf "${build}"
+        mkdir -p "${build}"
     fi
 fi
 

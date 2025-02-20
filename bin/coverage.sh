@@ -140,7 +140,7 @@ if [[ "${silent}" == "--silent" ]]; then
     exec 2>&1 >/dev/null
 fi
 
-build=( "build/coverage-v1" "build/coverage-v2" "build/coverage-v3" "build/coverage-v4" "build/coverage-v5" "build/coverage-v6" )
+build=( "" "build/coverage-v1" "build/coverage-v2" "build/coverage-v3" "build/coverage-v4" "build/coverage-v5" "build/coverage-v6" )
 
 if [[ ! "${dir}" == "" ]]; then
     build="${dir}"
@@ -149,6 +149,11 @@ fi
 if [[ "${clean}" == "--clean" ]]; then
     if [[ -d "${dir}" ]]; then
         rm -rf "${dir}"
+        mkdir -p "${dir}"
+    fi
+    if [[ -d "${build}" ]]; then
+        rm -rf "${build}"
+        mkdir -p "${build}"
     fi
 fi
 

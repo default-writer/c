@@ -104,8 +104,12 @@ fi
 if [[ "${clean}" == "--clean" ]]; then
     if [[ -d "${dir}" ]]; then
         rm -rf "${dir}"
+        mkdir -p "${dir}"
     fi
-    rm -rf "${build}"
+    if [[ -d "${build}" ]]; then
+        rm -rf "${build}"
+        mkdir -p "${build}"
+    fi
 fi
 
 targets=( $(get-source-targets ${source}) )

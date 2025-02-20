@@ -24,7 +24,7 @@ jobs:
           command: ./bin/init.sh --init --no-update --no-upgrade --lcov --optional
       - run:
           name: "coverage"
-          command: ./bin/coverageall.sh --all --clean
+          command: ./bin/coverageall.sh --all
       - store_artifacts:
           path: coverage
       - coveralls/upload:

@@ -102,6 +102,11 @@ fi
 if [[ "${clean}" == "--clean" ]]; then
     if [[ -d "${dir}" ]]; then
         rm -rf "${dir}"
+        mkdir -p "${dir}"
+    fi
+    if [[ -d "${build}" ]]; then
+        rm -rf "${build}"
+        mkdir -p "${build}"
     fi
 fi
 
@@ -164,12 +169,8 @@ ignore=$(get-ignore)
 
 rel_build="${build#$pwd/}"
 
-# strip_path() {
-#     sed "s|SF:${pwd}/|SF:|g"
-# }
-
 strip_path() {
-    sed "s|SF:${pwd}|SF:.|g"
+    sed "s|SF:${pwd}/|SF:|g"
 }
 
 for config in ${targets[@]}; do
