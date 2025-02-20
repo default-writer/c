@@ -152,7 +152,7 @@ done
 
 registered=$(echo "${sanitize} ${gc} ${valgrind} ${callgrind}" | xargs)
 
-[[ ! -d "${pwd}/build" ]] && mkdir "${pwd}/build"
+[[ ! -d "${pwd}/build" ]] && mkdir -p "${pwd}/build"
 
 if [[ "${registered[@]}" == "" || ("${gc}" == "" && "${sanitize}" == "" && "${valgrind}" == "") ]]; then
     "${pwd}/bin/utils/build.sh" --target=${source} --dir=build/build-v1 ${opts[@]}

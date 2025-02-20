@@ -62,8 +62,8 @@ while (($#)); do
             ;;
 
         "--lcov") # installs lcov 1.16
-            [[ ! -d "${pwd}/.tools" ]] && mkdir "${pwd}/.tools"
-            [[ ! -d "${pwd}/.tools/lcov-1.16" ]] && mkdir "${pwd}/.tools/lcov-1.16"
+            [[ ! -d "${pwd}/.tools" ]] && mkdir -p "${pwd}/.tools"
+            [[ ! -d "${pwd}/.tools/lcov-1.16" ]] && mkdir -p "${pwd}/.tools/lcov-1.16"
             [[ ! -f "/tmp/lcov-1.16.tar.gz" ]] && wget https://github.com/linux-test-project/lcov/archive/refs/tags/v1.16.tar.gz -qO "/tmp/lcov-1.16.tar.gz"
             tar -xzf "/tmp/lcov-1.16.tar.gz" -C "/tmp"
             cp -r "/tmp/lcov-1.16/." "${pwd}/.tools/lcov-1.16"
@@ -74,8 +74,8 @@ while (($#)); do
             ;;
 
         "--clangd") # installs clangd 19.1.2
-            [[ ! -d "${pwd}/.tools" ]] && mkdir "${pwd}/.tools"
-            [[ ! -d "${pwd}/.tools/clangd_19.1.2" ]] && mkdir "${pwd}/.tools/clangd-linux-19.1.2"
+            [[ ! -d "${pwd}/.tools" ]] && mkdir -p "${pwd}/.tools"
+            [[ ! -d "${pwd}/.tools/clangd_19.1.2" ]] && mkdir -p "${pwd}/.tools/clangd-linux-19.1.2"
             curl -L https://github.com/clangd/clangd/releases/download/19.1.2/clangd-linux-19.1.2.zip -o "/tmp/clangd-linux-19.1.2.zip"
             unzip -o -q "/tmp/clangd-linux-19.1.2.zip" -d "/tmp"
             cp -r "/tmp/clangd_19.1.2/." "${pwd}/.tools/clangd-linux-19.1.2"
@@ -84,8 +84,8 @@ while (($#)); do
             ;;
 
         "--cmake") # installs cmake
-            [[ ! -d "${pwd}/.tools" ]] && mkdir "${pwd}/.tools"
-            [[ ! -d "${pwd}/.tools/cmake-3.25" ]] && mkdir "${pwd}/.tools/cmake-3.25"
+            [[ ! -d "${pwd}/.tools" ]] && mkdir -p "${pwd}/.tools"
+            [[ ! -d "${pwd}/.tools/cmake-3.25" ]] && mkdir -p "${pwd}/.tools/cmake-3.25"
             [[ ! -f "${pwd}/.tools/cmake-3.25.3-linux-x86_64.sh" ]] && curl -L https://github.com/Kitware/CMake/releases/download/v3.25.3/cmake-3.25.3-linux-x86_64.sh -o "${pwd}/.tools/cmake-3.25.3-linux-x86_64.sh"
             [[ ! -f "${pwd}/.tools/cmake-3.25/bin/cmake" ]] && (chmod +x "${pwd}/.tools/cmake-3.25.3-linux-x86_64.sh"; DEBIAN_FRONTEND=noninteractive "${pwd}/.tools/cmake-3.25.3-linux-x86_64.sh" --prefix="${pwd}/.tools/cmake-3.25" --skip-license)
             rm "${pwd}/.tools/cmake-3.25.3-linux-x86_64.sh"

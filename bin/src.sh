@@ -130,7 +130,7 @@ for target in ${targets[@]}; do
     find "${pwd}" -type f -name "${target}-*.info" -delete
 done
 
-[[ ! -d "${pwd}/coverage" ]] && mkdir "${pwd}/coverage"
+[[ ! -d "${pwd}/coverage" ]] && mkdir -p "${pwd}/coverage"
 
 if [[ -f "${pwd}/coverage/lcov.info" ]]; then 
     rm "${pwd}/coverage/lcov.info"
@@ -138,7 +138,7 @@ fi
 
 for linked_target in ${targets[@]}; do
     case ${linked_target} in
-        c-*) ;& main-*) ;& test-*)
+        main-*) ;& test-*)
             ;;
         *)
             ${pwd}/bin/build.sh --target=${linked_target} ${opts[@]}
@@ -148,7 +148,7 @@ done
 
 for linked_target in ${targets[@]}; do
     case ${linked_target} in
-        c-*) ;& main-*) ;& test-*)
+        main-*) ;& test-*)
             if [[ " ${targets[*]} " == *" ${linked_target} "* ]]; then
                 ${pwd}/bin/coverage.sh --target=${linked_target} ${opts[@]}
             fi
@@ -165,7 +165,7 @@ fi
 
 for linked_target in ${targets[@]}; do
     case ${linked_target} in
-        c-*) ;& main-*) ;& test-*)
+        main-*) ;& test-*)
             if [[ -f "${pwd}/coverage/${linked_target}.info" ]]; then
                rm "${pwd}/coverage/${linked_target}.info"
             fi

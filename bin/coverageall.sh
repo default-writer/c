@@ -117,7 +117,7 @@ fi
 "${pwd}/bin/coverage.sh" --target=${source} --index=6 ${opts[@]}
 "${pwd}/bin/coverage.sh" --target=${source} --coverage ${opts[@]}
 
-[[ ! -d "${pwd}/coverage" ]] && mkdir "${pwd}/coverage"
+[[ ! -d "${pwd}/coverage" ]] && mkdir -p "${pwd}/coverage"
 
 files=$(find "${build}" -type f -name "*.info" -exec echo {} \;)
 if [[ ! "${files[@]}" == "" ]]; then
