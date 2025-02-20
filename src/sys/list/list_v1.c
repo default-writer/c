@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 18, 2025 at 12:23:18 AM GMT+3
+ *   February 19, 2025 at 10:29:51 PM GMT+3
  *
  */
 /*
@@ -23,10 +23,6 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-
-#if defined(_WIN32)
-#define csys_EXPORTS
-#endif
 
 #include "list_v1.h"
 
@@ -59,13 +55,13 @@ static const u64 _size = sizeof(stack_element);
 /* allocates memory pointer */
 static stack_ptr _new(void) {
     /* returns list object */
-    return sys_memory->alloc(_size);
+    return CALL(sys_memory)->alloc(_size);
 }
 
 /* releases memory pointer */
 static void _delete(stack_ptr ptr) {
     /* releases the pointer */
-    sys_memory->free(ptr, _size);
+    CALL(sys_memory)->free(ptr, _size);
 }
 
 /* ptr is not 0 */
@@ -225,14 +221,6 @@ const list_methods PRIVATE_API(list_methods_definitions) = {
 #endif
 };
 
-#if !defined(_WIN32)
-
-CSYS_EXPORT const list_methods* sys_list = &PRIVATE_API(list_methods_definitions);
-
-#else
-
-static inline const list_methods* _sys_list() {
+const list_methods* _sys_list() {
     return &PRIVATE_API(list_methods_definitions);
 }
-
-#endif

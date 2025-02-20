@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 18, 2025 at 12:24:45 AM GMT+3
+ *   February 19, 2025 at 10:19:18 PM GMT+3
  *
  */
 /*
@@ -36,24 +36,8 @@ typedef struct PRIVATE_API(info_methods) {
     const char* version;
 } info_methods;
 
-#if !defined(_WIN32)
 /* definition */
 CSYS_EXPORT extern const info_methods PRIVATE_API(info_methods_definitions);
-
-/* definition */
-#ifdef INLINE
-const info_methods* info = &PRIVATE_API(info_methods_definitions);
-#else
-/* definition */
-CSYS_EXPORT extern const info_methods* sys_info;
-#endif
-
-#else
-
 CSYS_EXPORT extern const info_methods* _sys_info();
-
-#define sys_info _sys_info()
-
-#endif
 
 #endif /* _SYS_INFO_H_ */

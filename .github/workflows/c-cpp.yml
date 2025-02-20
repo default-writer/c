@@ -16,7 +16,7 @@ jobs:
     - name: init
       run: ./bin/init.sh --init --no-update --no-upgrade --lcov --setup --optional
     - name: coverage
-      run: ./bin/coverageall.sh --all
+      run: ./bin/coverageall.sh --all --clean
     - name: Coveralls GitHub Action
       uses: coverallsapp/github-action@v2.3.0
  

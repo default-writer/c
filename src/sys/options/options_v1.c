@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 18, 2025 at 12:13:46 AM GMT+3
+ *   February 19, 2025 at 10:30:05 PM GMT+3
  *
  */
 /*
@@ -24,10 +24,6 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#if defined(_WIN32)
-#define csys_EXPORTS
-#endif
-
 #include "options_v1.h"
 
 #include "std/api.h"
@@ -40,14 +36,6 @@ const options_methods PRIVATE_API(options_methods_definitions) = {
     .size = DEFAULT_SIZE
 };
 
-#if !defined(_WIN32)
-
-CSYS_EXPORT const options_methods* sys_options = &PRIVATE_API(options_methods_definitions);
-
-#else
-
-static inline const options_methods* _sys_options() {
+const options_methods* _sys_options() {
     return &PRIVATE_API(options_methods_definitions);
 }
-
-#endif

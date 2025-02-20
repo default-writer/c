@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 17, 2025 at 2:22:31 PM GMT+3
+ *   February 20, 2025 at 5:53:17 AM GMT+3
  *
  */
 /*
@@ -35,26 +35,22 @@
 
 static u64 id = TYPE_NULL;
 
-#ifndef ATTRIBUTE
-void user_init(void);
-#endif
-
 /* internal */
-static u64 user_alloc(void);
-static void user_free(u64 ptr);
+static u64 virtual_user_alloc(void);
+static void virtual_user_free(u64 ptr);
 
 /* destructor */
 static void virtual_free(pointer_ptr ptr);
 
 /* implementation */
-static u64 user_alloc(void) {
-    pointer_ptr ptr = pointer->alloc(0, id);
-    u64 virtual_ptr = virtual->alloc(ptr);
+static u64 virtual_user_alloc(void) {
+    pointer_ptr ptr = CALL(pointer)->alloc(0, id);
+    u64 virtual_ptr = CALL(virtual)->alloc(ptr);
     return virtual_ptr;
 }
 
-static void user_free(u64 ptr) {
-    pointer_ptr data_ptr = virtual->read_type(ptr, id);
+static void virtual_user_free(u64 ptr) {
+    pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
     if (data_ptr == 0) {
         return;
     }
@@ -62,7 +58,7 @@ static void user_free(u64 ptr) {
 }
 
 static void virtual_free(pointer_ptr ptr) {
-    pointer->release(ptr);
+    CALL(pointer)->release(ptr);
 }
 
 static const struct type_methods_definitions _type = {
@@ -70,17 +66,21 @@ static const struct type_methods_definitions _type = {
 };
 
 static void INIT init(void) {
-    id = pointer->register_type(TYPE_NULL, &_type);
+    id = CALL(pointer)->register_type(TYPE_NULL, &_type);
 }
-
-/* public */
-const user_methods PRIVATE_API(user_methods_definitions) = {
-    .alloc = user_alloc,
-    .free = user_free
-};
 
 #ifndef ATTRIBUTE
 void user_init(void) {
     init();
 }
 #endif
+
+/* public */
+const virtual_user_methods PRIVATE_API(virtual_user_methods_definitions) = {
+    .alloc = virtual_user_alloc,
+    .free = virtual_user_free
+};
+
+const virtual_user_methods* _virtual_user() {
+    return &PRIVATE_API(virtual_user_methods_definitions);
+}

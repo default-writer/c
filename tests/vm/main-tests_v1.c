@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 17, 2025 at 5:06:08 PM GMT+3
+ *   February 19, 2025 at 8:41:51 PM GMT+3
  *
  */
 /*
@@ -43,9 +43,9 @@ const char* commit = GIT_COMMIT_HASH;
 
 static void INIT init() {
 #ifdef GIT_COMMIT_HASH
-    printf("version: v%s\n", sys_info->version);
+    printf("version: v%s\n", CALL(sys_info)->version);
     // Replace the timestamp below with your Unix timestamp
-    time_t unix_timestamp = (time_t)sys_info->timestamp;
+    time_t unix_timestamp = (time_t)CALL(sys_info)->timestamp;
 
     // Convert Unix timestamp to a time structure
     struct tm timeinfo;

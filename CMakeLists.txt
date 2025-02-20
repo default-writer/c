@@ -44,10 +44,6 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
 
 # For Windows-specific DLL placement
-if(WIN32)
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/lib)
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/lib)
-endif()
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
 
 # Check the operating system version
@@ -242,8 +238,9 @@ endif()
 set(LIB_SYS_SOURCE
     src/sys/info/info_v1.c
     src/sys/memory/memory_v1.c
+    src/sys/list/list_v1.c
     src/sys/options/options_v1.c
-    src/sys/list/list_v1.c)
+)
 
 set(LIB_VM_SOURCE
     src/vm/os/os_v1.c

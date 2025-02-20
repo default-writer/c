@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 18, 2025 at 12:20:34 AM GMT+3
+ *   February 19, 2025 at 10:12:15 PM GMT+3
  *
  */
 /*
@@ -50,24 +50,8 @@ typedef struct PRIVATE_API(list_methods) {
 #endif
 } list_methods;
 
-#if !defined(_WIN32)
 /* definition */
 CSYS_EXPORT extern const list_methods PRIVATE_API(list_methods_definitions);
-
-/* definition */
-#ifdef INLINE
-const list_methods* sys_list = &PRIVATE_API(list_methods_definitions);
-#else
-/* definition */
-CSYS_EXPORT extern const list_methods* sys_list;
-#endif
-
-#else
-
 CSYS_EXPORT extern const list_methods* _sys_list();
-
-#define sys_list _sys_list()
-
-#endif
 
 #endif /* _SYS_LIST_H_ */

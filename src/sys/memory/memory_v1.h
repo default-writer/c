@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 18, 2025 at 12:20:38 AM GMT+3
+ *   February 19, 2025 at 10:28:35 PM GMT+3
  *
  */
 /*
@@ -44,24 +44,8 @@ typedef struct PRIVATE_API(memory_methods) {
 #endif
 } memory_methods;
 
-#if !defined(_WIN32)
 /* definition */
 CSYS_EXPORT extern const memory_methods PRIVATE_API(memory_methods_definitions);
-
-/* definition */
-#ifdef INLINE
-const memory_methods* sys_memory = &PRIVATE_API(memory_methods_definitions);
-#else
-/* definition */
-CSYS_EXPORT extern const memory_methods* sys_memory;
-#endif
-
-#else
-
 CSYS_EXPORT extern const memory_methods* _sys_memory();
-
-#define sys_memory _sys_memory()
-
-#endif
 
 #endif /* _SYS_MEMORY_H_ */

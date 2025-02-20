@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 17, 2025 at 1:56:42 PM GMT+3
+ *   February 19, 2025 at 10:32:01 PM GMT+3
  *
  */
 /*
@@ -111,8 +111,8 @@ static pointer_ptr virtual_enumerator_pointer_next_internal(void);
 #endif
 
 static virtual_pointer_ptr vm_init_internal(u64 size, u64 offset) {
-    virtual_pointer_ptr virtual_pointer = sys_memory->alloc(VM_DATA_SIZE);
-    virtual_pointer->bp = sys_memory->alloc(ALLOC_SIZE(size));
+    virtual_pointer_ptr virtual_pointer = CALL(sys_memory)->alloc(VM_DATA_SIZE);
+    virtual_pointer->bp = CALL(sys_memory)->alloc(ALLOC_SIZE(size));
     virtual_pointer->sp = virtual_pointer->bp;
     virtual_pointer->offset = offset;
     virtual_pointer->size = size;
@@ -136,11 +136,11 @@ static pointer_ptr* vm_alloc_internal(u64* address, virtual_pointer_ptr* target)
     virtual_pointer_ptr virtual_pointer = vm->tail;
     pointer_ptr* ptr = 0;
 #ifndef USE_GC
-    struct vm_pointer* list_ptr = sys_list->pop(cache);
+    struct vm_pointer* list_ptr = CALL(sys_list)->pop(cache);
     if (list_ptr != 0) {
         ptr = list_ptr->ptr;
         virtual_pointer = list_ptr->virtual_pointer;
-        sys_memory->free(list_ptr, VM_POINTER_SIZE);
+        CALL(sys_memory)->free(list_ptr, VM_POINTER_SIZE);
     }
     if (ptr == 0) {
 #endif
@@ -184,13 +184,13 @@ static void virtual_enumerator_destroy_internal(void) {
 
 static void vm_init(struct vm** ptr, u64 size) {
 #ifndef USE_GC
-    cache = sys_memory->alloc(PTR_SIZE);
-    sys_list->init(cache);
+    cache = CALL(sys_memory)->alloc(PTR_SIZE);
+    CALL(sys_list)->init(cache);
 #endif
     virtual_pointer_ptr virtual_pointer = vm_init_internal(size == 0 ? DEFAULT_SIZE : size, 0);
     vm->head = virtual_pointer;
     vm->tail = virtual_pointer;
-    struct vm* vm_ptr = sys_memory->alloc(sizeof(struct vm));
+    struct vm* vm_ptr = CALL(sys_memory)->alloc(sizeof(struct vm));
     vm_ptr->head = virtual_pointer;
     vm_ptr->tail = virtual_pointer;
     *ptr = vm_ptr;
@@ -203,15 +203,15 @@ static void vm_destroy(struct vm** ptr) {
     struct vm* current = *ptr;
     vm->head = current->head;
     vm->tail = current->tail;
-    sys_memory->free(current, sizeof(struct vm));
+    CALL(sys_memory)->free(current, sizeof(struct vm));
     *ptr = 0;
 #ifndef USE_GC
     struct vm_pointer* vm_pointer_ptr = 0;
-    while ((vm_pointer_ptr = sys_list->pop(cache)) != 0) {
-        sys_memory->free(vm_pointer_ptr, VM_POINTER_SIZE);
+    while ((vm_pointer_ptr = CALL(sys_list)->pop(cache)) != 0) {
+        CALL(sys_memory)->free(vm_pointer_ptr, VM_POINTER_SIZE);
     }
-    sys_list->destroy(cache);
-    sys_memory->free(cache, PTR_SIZE);
+    CALL(sys_list)->destroy(cache);
+    CALL(sys_memory)->free(cache, PTR_SIZE);
 #ifdef USE_MEMORY_CLEANUP
     cache = 0;
 #endif
@@ -219,8 +219,8 @@ static void vm_destroy(struct vm** ptr) {
     virtual_pointer_ptr virtual_pointer = vm->head;
     while (virtual_pointer != 0) {
         virtual_pointer_ptr next = virtual_pointer->next;
-        sys_memory->free(virtual_pointer->bp, ALLOC_SIZE(virtual_pointer->size));
-        sys_memory->free(virtual_pointer, VM_DATA_SIZE);
+        CALL(sys_memory)->free(virtual_pointer->bp, ALLOC_SIZE(virtual_pointer->size));
+        CALL(sys_memory)->free(virtual_pointer, VM_DATA_SIZE);
         virtual_pointer = next;
     }
     vm->head = 0;
@@ -232,7 +232,7 @@ static void vm_dump(void) {
     virtual_enumerator_init_internal(vm);
     pointer_ptr ptr = 0;
     while ((ptr = virtual_enumerator_pointer_next_internal()) != 0) {
-        pointer->dump(ptr);
+        CALL(pointer)->dump(ptr);
     }
     virtual_enumerator_destroy_internal();
 }
@@ -241,7 +241,7 @@ static void vm_dump_ref(void) {
     virtual_enumerator_init_internal(vm);
     void** ptr = 0;
     while ((ptr = virtual_enumerator_next_internal()) != 0) {
-        pointer->dump_ref(ptr);
+        CALL(pointer)->dump_ref(ptr);
     }
     virtual_enumerator_destroy_internal();
 }
@@ -251,17 +251,17 @@ static void vm_free(const_pointer_ptr ptr) {
     if (!ptr) {
         return;
     }
-    const virtual_pointer_ptr virtual_pointer = pointer->virtual(ptr);
-    pointer_ptr* data = virtual_pointer->bp - virtual_pointer->offset - 1 + pointer->address(ptr);
+    const virtual_pointer_ptr virtual_pointer = CALL(pointer)->ref(ptr);
+    pointer_ptr* data = virtual_pointer->bp - virtual_pointer->offset - 1 + CALL(pointer)->address(ptr);
     if (data != 0) {
 #ifndef USE_GC
-        struct vm_pointer* vm_pointer_ptr = sys_memory->alloc(VM_POINTER_SIZE);
+        struct vm_pointer* vm_pointer_ptr = CALL(sys_memory)->alloc(VM_POINTER_SIZE);
         vm_pointer_ptr->ptr = data;
-        vm_pointer_ptr->virtual_pointer = pointer->virtual(ptr);
-        sys_list->push(cache, vm_pointer_ptr);
+        vm_pointer_ptr->virtual_pointer = CALL(pointer)->ref(ptr);
+        CALL(sys_list)->push(cache, vm_pointer_ptr);
 #endif
 #ifdef USE_MEMORY_DEBUG_INFO
-        printf("  >-: %016llx ! %016llx > %016llx\n", pointer->address(ptr), (u64)ptr, (u64)data);
+        printf("  >-: %016llx ! %016llx > %016llx\n", CALL(pointer)->address(ptr), (u64)ptr, (u64)data);
 #endif
         *data = 0;
     }
@@ -280,7 +280,7 @@ static pointer_ptr vm_read_type(u64 address, u64 id) {
     if (ptr == 0) {
         return 0;
     }
-    if (!pointer->read_type(ptr, id)) {
+    if (!CALL(pointer)->read_type(ptr, id)) {
         return 0;
     }
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -316,7 +316,7 @@ static u64 vm_alloc(pointer_ptr ptr) {
     virtual_pointer_ptr target = 0;
     pointer_ptr* data = vm_alloc_internal(&address, &target);
     *data = ptr;
-    pointer->write(ptr, target, address);
+    CALL(pointer)->write(ptr, target, address);
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("  >+: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)data);
 #endif
@@ -349,7 +349,7 @@ static u64 virtual_enumerator_next(void) {
         if (*ptr != 0) {
             const_pointer_ptr data_ptr = *ptr;
             if (data_ptr != 0) {
-                address = pointer->address(data_ptr);
+                address = CALL(pointer)->address(data_ptr);
                 break;
             }
         }
@@ -390,3 +390,7 @@ const virtual_methods PRIVATE_API(virtual_methods_definitions) = {
     .dump_ref = vm_dump_ref
 #endif
 };
+
+const virtual_methods* _virtual() {
+    return &PRIVATE_API(virtual_methods_definitions);
+}

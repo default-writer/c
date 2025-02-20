@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 18, 2025 at 12:11:51 AM GMT+3
+ *   February 19, 2025 at 10:29:57 PM GMT+3
  *
  */
 /*
@@ -23,10 +23,6 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-
-#if defined(_WIN32)
-#define csys_EXPORTS
-#endif
 
 #include "memory_v1.h"
 
@@ -140,14 +136,6 @@ const memory_methods PRIVATE_API(memory_methods_definitions) = {
 #endif
 };
 
-#if !defined(_WIN32)
-
-CSYS_EXPORT const memory_methods* sys_memory = &PRIVATE_API(memory_methods_definitions);
-
-#else
-
-static inline const memory_methods* _sys_memory() {
+const memory_methods* _sys_memory() {
     return &PRIVATE_API(memory_methods_definitions);
 }
-
-#endif

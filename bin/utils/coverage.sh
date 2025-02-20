@@ -143,7 +143,7 @@ for target in ${targets[@]}; do
 done
 
 export LCOV_PATH=$(which lcov)
-export GENHTML_PATH==$(which genhtml)
+export GENHTML_PATH=$(which genhtml)
 export MAKEFLAGS=-j8
 export LD_LIBRARY_PATH="${pwd}/lib"
 
@@ -162,6 +162,16 @@ ${cmake} \
 
 ignore=$(get-ignore)
 
+rel_build="${build#$pwd/}"
+
+# strip_path() {
+#     sed "s|SF:${pwd}/|SF:|g"
+# }
+
+strip_path() {
+    sed "s|SF:${pwd}|SF:.|g"
+}
+
 for config in ${targets[@]}; do
     target="${config}"
     echo building ${target}
@@ -174,8 +184,9 @@ for config in ${targets[@]}; do
             else
                 timeout --foreground 180 "${build}/${target}" 2>&1 >"${output}/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
             fi
-            lcov --capture --directory "${build}/" --output-file "${build}/${target}-all.info" &>/dev/null
+            lcov --capture --directory "${rel_build}/" --output-file "${build}/${target}-all.info" &>/dev/null
             lcov --remove "${build}/${target}-all.info" -o "${build}/${target}.info" ${ignore}
+            strip_path < "${build}/${target}.info" > "${build}/${target}.info.tmp" && mv "${build}/${target}.info.tmp" "${build}/${target}.info"
             rm "${build}/${target}-all.info"
             ;;
         *)

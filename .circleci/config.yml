@@ -21,10 +21,10 @@ jobs:
           docker_layer_caching: true
       - run:
           name: "init"
-          command: ./bin/init.sh --init --lcov --optional
+          command: ./bin/init.sh --init --no-update --no-upgrade --lcov --optional
       - run:
           name: "coverage"
-          command: ./bin/coverageall.sh --all
+          command: ./bin/coverageall.sh --all --clean
       - store_artifacts:
           path: coverage
       - coveralls/upload:
