@@ -105,6 +105,11 @@ fi
 if [[ "${clean}" == "--clean" ]]; then
     if [[ -d "${dir}" ]]; then
         rm -rf "${dir}"
+        mkdir -p "${dir}"
+    fi
+    if [[ -d "${build}" ]]; then
+        rm -rf "${build}"
+        mkdir -p "${build}"
     fi
 fi
 
@@ -125,10 +130,10 @@ if [[ "${cmake}" == "" ]]; then
     exit 8
 fi
 
-[[ ! -d "${build}" ]] && mkdir "${build}"
+[[ ! -d "${build}" ]] && mkdir -p "${build}"
 
 output="${pwd}/output"
-[[ ! -d "${output}" ]] && mkdir "${output}"
+[[ ! -d "${output}" ]] && mkdir -p "${output}"
 
 for target in ${targets[@]}; do
     if [[ -f "${output}/log-${target}.txt" ]]; then
@@ -158,7 +163,7 @@ for config in ${targets[@]}; do
     echo options "$(cmake-options)"
     ${cmake} --build "${build}" --target "${target}" 2>&1 || (echo ERROR: "${target}" && exit 1)
     case "${target}" in
-        c-*) ;& main-*) ;& test-*)
+        main-*) ;& test-*)
             if [ ! "$(cat /proc/version | grep -c MSYS)" == "1" ] && [ ! "$(cat /proc/version | grep -c MINGW64)" == "1" ]; then
                 timeout --foreground 180 $(cmake-valgrind-options) "${build}/${target}" 2>&1 >"${output}/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
             else

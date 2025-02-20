@@ -102,7 +102,7 @@ if [[ "${silent}" == "--silent" ]]; then
     exec 2>&1 >/dev/null
 fi
 
-build=( "build/build-v1" "build/build-v2" "build/build-v3" "build/build-v4" "build/build-v5" "build/build-v6" )
+build=( "" "build/build-v1" "build/build-v2" "build/build-v3" "build/build-v4" "build/build-v5" "build/build-v6" )
 
 if [[ ! "${dir}" == "" ]]; then
     build="${dir}"
@@ -111,6 +111,11 @@ fi
 if [[ "${clean}" == "--clean" ]]; then
     if [[ -d "${dir}" ]]; then
         rm -rf "${dir}"
+        mkdir -p "${dir}"
+    fi
+    if [[ -d "${build}" ]]; then
+        rm -rf "${build}"
+        mkdir -p "${build}"
     fi
 fi
 
@@ -133,7 +138,6 @@ for directory in ${directories[@]}; do
         if [[ -d "${directory}" ]]; then
             rm -rf "${directory}"
         fi
-        rm -rf "${directory}"
     fi
     if [[ "${clean}" == "" ]]; then
         for f in ${coverage[@]}; do
@@ -148,7 +152,7 @@ done
 
 registered=$(echo "${sanitize} ${gc} ${valgrind} ${callgrind}" | xargs)
 
-[[ ! -d "${pwd}/build" ]] && mkdir "${pwd}/build"
+[[ ! -d "${pwd}/build" ]] && mkdir -p "${pwd}/build"
 
 if [[ "${registered[@]}" == "" || ("${gc}" == "" && "${sanitize}" == "" && "${valgrind}" == "") ]]; then
     "${pwd}/bin/utils/build.sh" --target=${source} --dir=build/build-v1 ${opts[@]}

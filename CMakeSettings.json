@@ -5,12 +5,8 @@
       "InstallDir": "${workspaceRoot}\\build\\install"
     },
     {
-      "environment": "vcpkg",
-      "VcPkgDir": "${workspaceRoot}/.deps/vcpkg/"
-    },
-    {
       "environment": "mingw_64",
-      "MINGW64_ROOT": "D:/msys64/mingw64",
+      "MINGW64_ROOT": "c:/msys64/mingw64",
       "BIN_ROOT": "${env.MINGW64_ROOT}/bin",
       "FLAVOR": "x86_64-w64-mingw32",
       "TOOLSET_VERSION": "10.2.0",
@@ -24,7 +20,7 @@
       "generator": "Ninja",
       "configurationType": "Debug",
       "inheritEnvironments": [
-        "vcpkg"
+        "mingw_64"
       ],
       "buildRoot": "${env.BuildDir}\\${name}",
       "installRoot": "${env.InstallDir}\\${name}",
@@ -33,6 +29,16 @@
       "buildCommandArgs": "-v",
       "ctestCommandArgs": "",
       "variables": [
+        {
+          "name": "CMAKE_C_COMPILER",
+          "value": "gcc",
+          "type": "STRING"
+        },
+        {
+          "name": "CMAKE_CXX_COMPILER",
+          "value": "g++",
+          "type": "STRING"
+        },
         {
           "name": "CONFIG_MEMORY_DEBUG_INFO",
           "value": "ON",
@@ -53,15 +59,14 @@
           "value": "OFF",
           "type": "BOOL"
         }
-      ],
-      "cmakeToolchain": "${env.VcPkgDir}/scripts/buildsystems/vcpkg.cmake"
+      ]
     },
     {
       "name": "x86-Release",
       "generator": "Ninja",
       "configurationType": "RelWithDebInfo",
       "inheritEnvironments": [
-        "vcpkg"
+        "mingw_64"
       ],
       "buildRoot": "${env.BuildDir}\\${name}",
       "installRoot": "${env.InstallDir}\\${name}",
@@ -69,6 +74,16 @@
       "buildCommandArgs": "-v",
       "ctestCommandArgs": "",
       "variables": [
+        {
+          "name": "CMAKE_C_COMPILER",
+          "value": "gcc",
+          "type": "STRING"
+        },
+        {
+          "name": "CMAKE_CXX_COMPILER",
+          "value": "g++",
+          "type": "STRING"
+        },
         {
           "name": "CONFIG_MEMORY_DEBUG_INFO",
           "value": "OFF",
@@ -89,15 +104,14 @@
           "value": "OFF",
           "type": "BOOL"
         }
-      ],
-      "cmakeToolchain": "${env.VcPkgDir}/scripts/buildsystems/vcpkg.cmake"
+      ]
     },
     {
       "name": "x64-Debug",
       "generator": "Ninja",
       "configurationType": "Debug",
       "inheritEnvironments": [
-        "vcpkg"
+        "mingw_64"
       ],
       "buildRoot": "${env.BuildDir}\\${name}",
       "installRoot": "${env.InstallDir}\\${name}",
@@ -105,6 +119,16 @@
       "buildCommandArgs": "-v",
       "ctestCommandArgs": "",
       "variables": [
+        {
+          "name": "CMAKE_C_COMPILER",
+          "value": "gcc",
+          "type": "STRING"
+        },
+        {
+          "name": "CMAKE_CXX_COMPILER",
+          "value": "g++",
+          "type": "STRING"
+        },
         {
           "name": "CONFIG_MEMORY_DEBUG_INFO",
           "value": "ON",
@@ -125,15 +149,14 @@
           "value": "OFF",
           "type": "BOOL"
         }
-      ],
-      "cmakeToolchain": "${env.VcPkgDir}/scripts/buildsystems/vcpkg.cmake"
+      ]
     },
     {
       "name": "x64-Release",
       "generator": "Ninja",
       "configurationType": "RelWithDebInfo",
       "inheritEnvironments": [
-        "vcpkg"
+        "mingw_64"
       ],
       "buildRoot": "${env.BuildDir}\\${name}",
       "installRoot": "${env.InstallDir}\\${name}",
@@ -143,6 +166,16 @@
       "addressSanitizerEnabled": false,
       "variables": [
         {
+          "name": "CMAKE_C_COMPILER",
+          "value": "gcc",
+          "type": "STRING"
+        },
+        {
+          "name": "CMAKE_CXX_COMPILER",
+          "value": "g++",
+          "type": "STRING"
+        },
+        {
           "name": "CONFIG_MEMORY_DEBUG_INFO",
           "value": "OFF",
           "type": "BOOL"
@@ -162,8 +195,7 @@
           "value": "OFF",
           "type": "BOOL"
         }
-      ],
-      "cmakeToolchain": "${env.VcPkgDir}/scripts/buildsystems/vcpkg.cmake"
+      ]
     }
   ]
 }

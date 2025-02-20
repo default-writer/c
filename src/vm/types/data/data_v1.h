@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 8, 2025 at 6:56:25 PM GMT+3
+ *   February 19, 2025 at 10:11:36 PM GMT+3
  *
  */
 /*
@@ -24,33 +24,28 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#ifndef _DATA_V1_H_
+#define _DATA_V1_H_
+
 #define USING_API
 
-#ifndef _POINTER_TYPES_DATA_H_
-#define _POINTER_TYPES_DATA_H_
-
 #include "std/api.h"
+
+#include "vm/export.h"
 
 /*! @file data_v1.h
  *  @brief C API / data
  */
 
-typedef struct PRIVATE_API(data_methods) {
+typedef struct PRIVATE_API(virtual_data_methods) {
     u64 (*alloc)(u64 size);
     void (*free)(u64 ptr);
     void* (*unsafe)(u64 ptr);
     u64 (*size)(u64 ptr);
-} data_methods;
+} virtual_data_methods;
 
 /* definition */
-extern const data_methods PRIVATE_API(data_methods_definitions);
+CVM_EXPORT extern const virtual_data_methods PRIVATE_API(virtual_data_methods_definitions);
+CVM_EXPORT extern const virtual_data_methods* _virtual_data();
 
-/* definition */
-#ifdef INLINE
-const struct data_methods* data = &PRIVATE_API(data_methods_definitions);
-#else
-/* definition */
-static const data_methods* data = &PRIVATE_API(data_methods_definitions);
-#endif
-
-#endif /* _POINTER_TYPES_DATA_H_ */
+#endif /* _DATA_V1_H_ */

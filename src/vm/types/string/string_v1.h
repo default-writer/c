@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 8, 2025 at 8:05:38 PM GMT+3
+ *   February 19, 2025 at 10:12:47 PM GMT+3
  *
  */
 /*
@@ -24,16 +24,20 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _POINTER_TYPES_STRING_H_
-#define _POINTER_TYPES_STRING_H_
+#ifndef _STRING_V1_H_
+#define _STRING_V1_H_
+
+#define USING_API
 
 #include "std/api.h"
+
+#include "vm/export.h"
 
 /*! @file string_v1.h
  *  @brief C API / string
  */
 
-typedef struct API(string_methods) {
+typedef struct API(virtual_string_methods) {
     void (*free)(u64 ptr);
     u64 (*copy)(u64 ptr);
     void (*strcpy)(u64 dest, u64 src);
@@ -57,17 +61,10 @@ typedef struct API(string_methods) {
     u64 (*move_left)(u64 src, u64 nbytes);
     u64 (*move_right)(u64 src, u64 nbytes);
     u64 (*strcmp)(u64 src, u64 dest);
-} string_methods;
+} virtual_string_methods;
 
 /* definition */
-extern const string_methods PRIVATE_API(string_methods_definitions);
+CVM_EXPORT extern const virtual_string_methods PRIVATE_API(virtual_string_methods_definitions);
+CVM_EXPORT extern const virtual_string_methods* _virtual_string();
 
-/* definition */
-#ifdef INLINE
-const string_methods* string = &PRIVATE_API(string_methods_definitions);
-#else
-/* definition */
-static const string_methods* string = &PRIVATE_API(string_methods_definitions);
-#endif
-
-#endif /* _POINTER_TYPES_STRING_H_ */
+#endif /* _STRING_V1_H_ */

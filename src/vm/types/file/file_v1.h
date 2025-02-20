@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 8, 2025 at 5:55:58 PM GMT+3
+ *   February 19, 2025 at 10:16:45 PM GMT+3
  *
  */
 /*
@@ -24,12 +24,14 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _POINTER_TYPES_FILE_H_
-#define _POINTER_TYPES_FILE_H_
+#ifndef _FILE_V1_H_
+#define _FILE_V1_H_
 
 #define USING_API
 
 #include "std/api.h"
+
+#include "vm/export.h"
 
 /*!
     @file file_v1.h
@@ -45,21 +47,14 @@
     ```
 */
 
-typedef struct PRIVATE_API(file_methods) {
+typedef struct PRIVATE_API(virtual_file_methods) {
     u64 (*alloc)(u64 file_path_ptr, u64 mode_ptr);
     void (*free)(u64 ptr);
     u64 (*data)(u64 ptr);
-} file_methods;
+} virtual_file_methods;
 
 /* definition */
-extern const file_methods PRIVATE_API(file_methods_definitions);
+CVM_EXPORT extern const virtual_file_methods PRIVATE_API(virtual_file_methods_definitions);
+CVM_EXPORT extern const virtual_file_methods* _virtual_file();
 
-/* definition */
-#ifdef INLINE
-const file_methods* file = &PRIVATE_API(file_methods_definitions);
-#else
-/* definition */
-static const file_methods* file = &PRIVATE_API(file_methods_definitions);
-#endif
-
-#endif /* _POINTER_TYPES_FILE_H_ */
+#endif /* _FILE_V1_H_ */

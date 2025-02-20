@@ -99,7 +99,7 @@ if [[ "${silent}" == "--silent" ]]; then
     exec 2>&1 >/dev/null
 fi
 
-build=( "build/coverage-v1" "build/coverage-v2" "build/coverage-v3" "build/coverage-v4" "build/coverage-v5" "build/coverage-v6" )
+build=( "" "build/coverage-v1" "build/coverage-v2" "build/coverage-v3" "build/coverage-v4" "build/coverage-v5" "build/coverage-v6" )
 
 if [[ ! "${dir}" == "" ]]; then
     build="${dir}"
@@ -108,6 +108,11 @@ fi
 if [[ "${clean}" == "--clean" ]]; then
     if [[ -d "${dir}" ]]; then
         rm -rf "${dir}"
+        mkdir -p "${dir}"
+    fi
+    if [[ -d "${build}" ]]; then
+        rm -rf "${build}"
+        mkdir -p "${build}"
     fi
 fi
 
@@ -125,7 +130,7 @@ for target in ${targets[@]}; do
     find "${pwd}" -type f -name "${target}-*.info" -delete
 done
 
-[[ ! -d "${pwd}/coverage" ]] && mkdir "${pwd}/coverage"
+[[ ! -d "${pwd}/coverage" ]] && mkdir -p "${pwd}/coverage"
 
 if [[ -f "${pwd}/coverage/lcov.info" ]]; then 
     rm "${pwd}/coverage/lcov.info"
@@ -133,7 +138,7 @@ fi
 
 for linked_target in ${targets[@]}; do
     case ${linked_target} in
-        c-*) ;& main-*) ;& test-*)
+        main-*) ;& test-*)
             ;;
         *)
             ${pwd}/bin/build.sh --target=${linked_target} ${opts[@]}
@@ -143,7 +148,7 @@ done
 
 for linked_target in ${targets[@]}; do
     case ${linked_target} in
-        c-*) ;& main-*) ;& test-*)
+        main-*) ;& test-*)
             if [[ " ${targets[*]} " == *" ${linked_target} "* ]]; then
                 ${pwd}/bin/coverage.sh --target=${linked_target} ${opts[@]}
             fi
@@ -160,7 +165,7 @@ fi
 
 for linked_target in ${targets[@]}; do
     case ${linked_target} in
-        c-*) ;& main-*) ;& test-*)
+        main-*) ;& test-*)
             if [[ -f "${pwd}/coverage/${linked_target}.info" ]]; then
                rm "${pwd}/coverage/${linked_target}.info"
             fi

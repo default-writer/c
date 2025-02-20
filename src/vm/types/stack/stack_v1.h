@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 8, 2025 at 5:55:58 PM GMT+3
+ *   February 19, 2025 at 10:13:28 PM GMT+3
  *
  */
 /*
@@ -24,10 +24,14 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _POINTER_TYPES_LIST_H_
-#define _POINTER_TYPES_LIST_H_
+#ifndef _STACK_V1_H_
+#define _STACK_V1_H_
+
+#define USING_API
 
 #include "std/api.h"
+
+#include "vm/export.h"
 
 /*! @file list_v1.h
  *  @brief C API / list
@@ -36,7 +40,7 @@
  *
  */
 
-typedef struct PRIVATE_API(stack_methods) {
+typedef struct PRIVATE_API(virtual_stack_methods) {
     u64 (*alloc)(void);
     void (*free)(u64 ptr);
     u64 (*peek)(u64 list_ptr);
@@ -51,17 +55,10 @@ typedef struct PRIVATE_API(stack_methods) {
     void (*push)(u64 list_ptr, u64 ptr);
     u64 (*size)(u64 ptr);
     void (*release)(u64 ptr);
-} stack_methods;
+} virtual_stack_methods;
 
 /* definition */
-extern const stack_methods PRIVATE_API(stack_methods_definitions);
+CVM_EXPORT extern const virtual_stack_methods PRIVATE_API(virtual_stack_methods_definitions);
+CVM_EXPORT extern const virtual_stack_methods* _virtual_stack();
 
-/* definition */
-#ifdef INLINE
-const stack_methods* stack = &PRIVATE_API(stack_methods_definitions);
-#else
-/* definition */
-static const stack_methods* stack = &PRIVATE_API(stack_methods_definitions);
-#endif
-
-#endif /* _POINTER_TYPES_LIST_H_ */
+#endif /* _STACK_V1_H_ */

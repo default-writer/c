@@ -1,10 +1,24 @@
-# Installation on Windows (MSYS2/CMAKE)
+# installation on Windows (MSYS2)
 
-- Install [MSys2](https://www.msys2.org/docs/cmake/)
+- install MSYS2 using CLI
 
-- (optionally) Install [Node.js](https://nodejs.org/en/download/prebuilt-installer)
+[MSYS2 CLI](https://repo.msys2.org/distrib/) for `msys2-x86_64-latest`
 
-- Install  packages using msys shell (MSYS2)
+## install MSYS2
+
+- add path at the top to the *system* variables (PATH) i.e. add `C:\tools\install` (C:\tools\install\msys2-x86_64-latest.exe)
+
+```bash
+msys2-x86_64-latest in --confirm-command --accept-messages --root C:/msys64
+```
+
+### start MSYS2 shell (CLANG64)
+
+```bash
+C:\msys64\clang64.exe
+```
+
+- install  packages (MSYS2 shell)
 
 ```bash
 pacman -S --noconfirm \
@@ -22,18 +36,26 @@ pacman -S --noconfirm \
     mingw-w64-clang-x86_64-gdb \
     mingw-w64-clang-x86_64-clang-tools-extra \
     mingw-w64-ucrt-x86_64-clang-tools-extra \
-    cmake ninja clang lcov gdb
+    cmake ninja clang lcov gdb git man
 ```
 
-- Add paths to UCRT binaries/libraries (C:\msys64\ucrt64\bin) at the top to the *system* variable (PATH)
+### select default VSCode profile
 
-    - Add to the top of PATH environment variables value `C:\msys64\clang64\bin` (clang64)
+- add `bash (MSYS2)` as default profile i.e. `C:\msys64\usr\bin\bash.exe`
 
-    or
+## OPTIONAL
 
-    - Add to the top of PATH environment variables value `C:\msys64\clang64\bin` (ucrt64)
+- install [nodejs](https://nodejs.org/en/download/prebuilt-installer)
 
-- Run ./bin/init.sh --init (MSYS2)
+### UCRT64
+
+- add path at the top to the *system* variables (PATH) `C:\msys64\ucrt64\bin` (ucrt64)
+
+### CLANG64
+
+- add path at the top to the *system* variables (PATH) `C:\msys64\clang64\bin` (clang64)
+
+- run ./bin/init.sh --init (MSYS2)
 
 ```cmd
 set PATH="C:\msys64\ucrt64;C:\msys64\ucrt64\bin;C:\msys64\ucrt64\include;C:\msys64\ucrt64\lib;%PATH%"

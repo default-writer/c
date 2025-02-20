@@ -32,7 +32,7 @@ if [[ "${target}" == "" ]]; then
     exit
 fi
 
-[[ ! -d "${logs}" ]] && mkdir "${logs}"
+[[ ! -d "${logs}" ]] && mkdir -p "${logs}"
 
 cmake \
     -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \

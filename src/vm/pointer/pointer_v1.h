@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 9, 2025 at 2:22:56 PM GMT+3
+ *   February 19, 2025 at 9:55:02 PM GMT+3
  *
  */
 /*
@@ -27,7 +27,11 @@
 #ifndef _POINTER_V1_H_
 #define _POINTER_V1_H_
 
+#define USING_API
+
 #include "std/api.h"
+
+#include "vm/export.h"
 
 /*! @file pointer_v1.h
  *  @brief C API / pointer
@@ -42,7 +46,7 @@ typedef struct PRIVATE_API(pointer_methods) {
     u64 (*register_type)(u64 id, const struct type_methods_definitions* data_type);
     void (*free)(u64 ptr);
     u64 (*address)(const_pointer_ptr ptr);
-    virtual_pointer_ptr (*virtual)(const_pointer_ptr ptr);
+    virtual_pointer_ptr (*ref)(const_pointer_ptr ptr);
     void (*release)(pointer_ptr ptr);
     u64 (*size)(const_pointer_ptr ptr);
     void* (*read)(const_pointer_ptr ptr);
@@ -55,14 +59,7 @@ typedef struct PRIVATE_API(pointer_methods) {
 } pointer_methods;
 
 /* definition */
-extern const pointer_methods PRIVATE_API(pointer_methods_definitions);
-
-/* definition */
-#ifdef INLINE
-const spointer_methods* pointer = &PRIVATE_API(pointer_methods_definitions);
-#else
-/* definition */
-static const pointer_methods* pointer = &PRIVATE_API(pointer_methods_definitions);
-#endif
+CVM_EXPORT extern const pointer_methods PRIVATE_API(pointer_methods_definitions);
+CVM_EXPORT extern const pointer_methods* _pointer();
 
 #endif /* _POINTER_V1_H_ */

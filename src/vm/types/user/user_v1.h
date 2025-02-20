@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 8, 2025 at 5:55:56 PM GMT+3
+ *   February 19, 2025 at 10:18:11 PM GMT+3
  *
  */
 /*
@@ -24,31 +24,26 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _POINTER_TYPES_USER_TYPE_H_
-#define _POINTER_TYPES_USER_TYPE_H_
+#ifndef _USER_V1_H_
+#define _USER_V1_H_
 
 #define USING_API
 
 #include "std/api.h"
 
-/*! @file user_v1.h
- *  @brief C API / user
+#include "vm/export.h"
+
+/*! @file virtual_user_v1.h
+ *  @brief C API / virtual_user
  */
 
-typedef struct PRIVATE_API(user_methods) {
+typedef struct PRIVATE_API(virtual_user_methods) {
     u64 (*alloc)(void);
     void (*free)(u64 ptr);
-} user_methods;
+} virtual_user_methods;
 
 /* definition */
-extern const user_methods PRIVATE_API(user_methods_definitions);
+CVM_EXPORT extern const virtual_user_methods PRIVATE_API(virtual_user_methods_definitions);
+CVM_EXPORT extern const virtual_user_methods* _virtual_user();
 
-/* definition */
-#ifdef INLINE
-const user_methods* user = &PRIVATE_API(user_methods_definitions);
-#else
-/* definition */
-static const user_methods* user = &PRIVATE_API(user_methods_definitions);
-#endif
-
-#endif /* _POINTER_TYPES_USER_TYPE_H_ */
+#endif /* _USER_V1_H_ */

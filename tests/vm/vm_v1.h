@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 10, 2025 at 5:22:14 PM GMT+3
+ *   February 19, 2025 at 8:45:51 PM GMT+3
  *
  */
 /*
@@ -29,29 +29,33 @@
 
 #include "vm/types/object/object_v1.h"
 #include "vm/types/string/string_v1.h"
+#include "vm/types/stack/stack_v1.h"
 #include "vm/types/string_pointer/string_pointer_v1.h"
 #include "vm/types/user/user_v1.h"
 
 #include "std/api.h"
 
 /* definition */
-extern const object_methods PRIVATE_API(object_methods_definitions);
-extern const string_methods PRIVATE_API(string_methods_definitions);
-extern const string_pointer_methods PRIVATE_API(string_pointer_methods_definitions);
-extern const user_methods PRIVATE_API(user_methods_definitions);
+// extern const virtual_object_methods PRIVATE_API(virtual_object_methods_definitions);
+// extern const virtual_string_methods PRIVATE_API(virtual_string_methods_definitions);
+// extern const virtual_stack_methods PRIVATE_API(virtual_stack_methods_definitions);
+// extern const virtual_string_pointer_methods PRIVATE_API(virtual_string_pointer_methods_definitions);
+// extern const user_methods PRIVATE_API(user_methods_definitions);
 
 /* definition */
 #ifdef INLINE
-const object_methods* virtual_object = &PRIVATE_API(object_methods_definitions);
-const string_methods* virtual_string = &PRIVATE_API(string_methods_definitions);
-const string_pointer_methods* virtual_string_pointer = &PRIVATE_API(string_pointer_methods_definitions);
-const user_methods* virtual_user = &PRIVATE_API(user_methods_definitions);
+//const virtual_object_methods* virtual_object = &PRIVATE_API(virtual_object_methods_definitions);
+// const virtual_string_methods* virtual_string = &PRIVATE_API(virtual_string_methods_definitions);
+// const virtual_stack_methods* virtual_stack = &PRIVATE_API(virtual_stack_methods_definitions);
+// const virtual_string_pointer_methods* virtual_string_pointer = &PRIVATE_API(virtual_string_pointer_methods_definitions);
+// const user_methods* virtual_user = &PRIVATE_API(user_methods_definitions);
 #else
 /* definition */
-static const object_methods* virtual_object = &PRIVATE_API(object_methods_definitions);
-static const string_methods* virtual_string = &PRIVATE_API(string_methods_definitions);
-static const string_pointer_methods* virtual_string_pointer = &PRIVATE_API(string_pointer_methods_definitions);
-static const user_methods* virtual_user = &PRIVATE_API(user_methods_definitions);
+//static const virtual_object_methods* virtual_object = &PRIVATE_API(virtual_object_methods_definitions);
+// static const virtual_string_methods* virtual_string = &PRIVATE_API(virtual_string_methods_definitions);
+// static const virtual_stack_methods* virtual_stack = &PRIVATE_API(virtual_stack_methods_definitions);
+// static const virtual_string_pointer_methods* virtual_string_pointer = &PRIVATE_API(virtual_string_pointer_methods_definitions);
+// static const user_methods* virtual_user = &PRIVATE_API(user_methods_definitions);
 #endif
 
 #endif /* _VM_V1_H_ */

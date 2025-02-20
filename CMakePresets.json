@@ -12,6 +12,10 @@
             "description": "Default build using Ninja generator",
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/cmake",
+            "architecture": {
+                "value": "x64",
+                "strategy": "external"
+            },            
             "cacheVariables": {
                 "CMAKE_C_COMPILER": "/usr/bin/gcc",
                 "CMAKE_CXX_COMPILER": "/usr/bin/g++",
@@ -48,6 +52,10 @@
             "description": "Default build using Ninja generator",
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/cmake",
+            "architecture": {
+                "value": "x64",
+                "strategy": "external"
+            },
             "cacheVariables": {
                 "CMAKE_C_COMPILER": "cl.exe",
                 "CMAKE_CXX_COMPILER": "cl.exe",
@@ -84,6 +92,10 @@
             "description": "Using compilers: C = /usr/bin/clang-17, CXX = /usr/bin/clang++-17",
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/cmake",
+            "architecture": {
+                "value": "x64",
+                "strategy": "external"
+            },            
             "cacheVariables": {
                 "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
                 "CMAKE_C_COMPILER": "/usr/bin/clang-17",

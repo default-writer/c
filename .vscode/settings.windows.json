@@ -1,5 +1,4 @@
 {
-  "clangd.path": "${workspaceFolder}/.tools/clangd_19.1.2/bin/clangd.exe",
   "sonarlint.pathToNodeExecutable": "${workspaceFolder}/.tools/node-v23.7.0-win-x64/node.exe",
   "cmake.debugConfig": {
     "MIMode": "gdb",

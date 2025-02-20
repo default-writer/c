@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 9, 2025 at 1:17:27 PM GMT+3
+ *   February 20, 2025 at 4:00:25 PM GMT+3
  *
  */
 /*
@@ -34,3 +34,7 @@ const info_methods PRIVATE_API(info_methods_definitions) = {
     .commit = GIT_COMMIT_HASH,
     .version = API_VERSION
 };
+
+const info_methods* _sys_info() {
+    return &PRIVATE_API(info_methods_definitions);
+}

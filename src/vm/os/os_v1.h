@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 8, 2025 at 7:05:39 PM GMT+3
+ *   February 19, 2025 at 10:15:39 PM GMT+3
  *
  */
 /*
@@ -24,10 +24,14 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _POINTER_TYPES_OS_H_
-#define _POINTER_TYPES_OS_H_
+#ifndef _OS_V1_H_
+#define _OS_V1_H_
+
+#define USING_API
 
 #include "std/api.h"
+
+#include "vm/export.h"
 
 /*! @file os_v1.h
  *  @brief C API / os
@@ -40,14 +44,7 @@ typedef struct PRIVATE_API(os_methods) {
 } os_methods;
 
 /* definition */
-extern const os_methods PRIVATE_API(os_methods_definitions);
+CVM_EXPORT extern const os_methods PRIVATE_API(os_methods_definitions);
+CVM_EXPORT extern const os_methods* _os();
 
-/* definition */
-#ifdef INLINE
-const os_methods* os = &PRIVATE_API(os_methods_definitions);
-#else
-/* definition */
-static const os_methods* os = &PRIVATE_API(os_methods_definitions);
-#endif
-
-#endif /* _POINTER_TYPES_OS_H_ */
+#endif /* _OS_V1_H_ */

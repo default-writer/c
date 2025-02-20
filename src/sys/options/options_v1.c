@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 9, 2025 at 1:14:51 PM GMT+3
+ *   February 19, 2025 at 10:30:05 PM GMT+3
  *
  */
 /*
@@ -35,3 +35,7 @@
 const options_methods PRIVATE_API(options_methods_definitions) = {
     .size = DEFAULT_SIZE
 };
+
+const options_methods* _sys_options() {
+    return &PRIVATE_API(options_methods_definitions);
+}
