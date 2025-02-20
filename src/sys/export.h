@@ -7,7 +7,7 @@
 #  define CSYS_NO_EXPORT
 #else
 #  ifndef CSYS_EXPORT
-#    ifdef csys_EXPORTS
+#    ifdef c_sys_EXPORTS
         /* We are building this library */
 #      define CSYS_EXPORT __declspec(dllexport)
 #    else

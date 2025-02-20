@@ -7,7 +7,7 @@
 #  define CVM_NO_EXPORT
 #else
 #  ifndef CVM_EXPORT
-#    ifdef cvm_EXPORTS
+#    ifdef c_vm_EXPORTS
         /* We are building this library */
 #      define CVM_EXPORT __declspec(dllexport)
 #    else
