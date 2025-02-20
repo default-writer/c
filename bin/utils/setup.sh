@@ -214,7 +214,7 @@ while (($#)); do
         "--configuration") # installs keyboard-configuration
             update ${updateflags}
             DEBIAN_FRONTEND=noninteractive apt-get install -y keyboard-configuration gettext-base
-            apt install -y --no-install-recommends curl ca-certificates git build-essential lldb lcov cmake clangd g++ gcc gdb lcov ninja-build pkg-config
+            apt install -y --no-install-recommends curl ca-certificates git build-essential lldb lcov cmake g++ gcc gdb lcov ninja-build pkg-config
             apt install -y --only-upgrade distro-info-data
             upgrade ${updgradeflags}
             ;;
@@ -306,14 +306,12 @@ while (($#)); do
         "--clang-format") # installs clang-format
             update ${updateflags}
             apt install -y clang-format
-            apt install -y apport apport-gtk python3-apport python3-problem-report gnome-remote-desktop grub-common grub-pc grub-pc-bin grub2-common gstreamer1.0-pipewire  open-vm-tools open-vm-tools-desktop python3-software-properties software-properties-common software-properties-gtk libgbm1 libgl1-mesa-dri libglapi-mesa libglx-mesa0 mesa-va-drivers mesa-vulkan-drivers
-            apt install -y --only-upgrade apport apport-gtk python3-apport python3-problem-report gnome-remote-desktop grub-common grub-pc grub-pc-bin grub2-common gstreamer1.0-pipewire  open-vm-tools open-vm-tools-desktop python3-software-properties software-properties-common software-properties-gtk libgbm1 libgl1-mesa-dri libglapi-mesa libglx-mesa0 mesa-va-drivers mesa-vulkan-drivers
             upgrade ${updgradeflags}
             ;;
 
         "--cmake") # installs cmake
             update ${updateflags}
-            apt install -y --no-install-recommends valgrind curl ca-certificates git build-essential lldb lcov cmake clangd clang-format g++ gcc gdb lcov ninja-build bison
+            apt install -y --no-install-recommends valgrind curl ca-certificates git build-essential lldb lcov cmake clang-format g++ gcc gdb lcov ninja-build bison
             upgrade ${updgradeflags}
             ;;
 
