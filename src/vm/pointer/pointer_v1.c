@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 20, 2025 at 6:10:24 AM GMT+3
+ *   February 20, 2025 at 9:13:44 PM GMT+3
  *
  */
 /*
@@ -145,6 +145,11 @@ static void INIT vm_init(void) {
 }
 
 static void DESTROY vm_destroy(void) {
+    while (vm_types->next != 0) {
+        known_types_ptr prev = vm_types->next;
+        CALL(sys_memory)->free(vm_types, sizeof(struct known_types));
+        vm_types = prev;
+    }
 #ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();
 #endif
@@ -269,11 +274,6 @@ static void pointer_init(u64 size) {
 }
 
 static void pointer_destroy(void) {
-    while (vm_types->next != 0) {
-        known_types_ptr prev = vm_types->next;
-        CALL(sys_memory)->free(vm_types, sizeof(struct known_types));
-        vm_types = prev;
-    }
     CALL(sys_memory)->free(default_types, known_types_counter * sizeof(struct known_types));
     CALL(virtual)->destroy(&vm);
 }
