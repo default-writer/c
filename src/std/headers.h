@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 17, 2025 at 5:07:07 PM GMT+3
+ *   February 21, 2025 at 7:04:01 AM GMT+3
  *
  */
 /*
@@ -30,7 +30,6 @@
 #define USING_HEADERS
 
 #include <stdint.h>
-#include <time.h>
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
@@ -41,7 +40,6 @@
 #include <sys/resource.h>
 #include <unistd.h>
 #if defined(_POSIX_C_SOURCE) && _POSIX_C_SOURCE >= 199309L
-#include <time.h>
 #else
 #include <sys/time.h>
 #endif

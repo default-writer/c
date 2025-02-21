@@ -104,37 +104,33 @@ if [[ "${install}" == "" ]]; then
     exit;
 fi
 
-if [[ "${silent}" == "--silent" ]]; then
-    exec 2>&1 >/dev/null
+if [[ "${hooks}" == "--hooks" ]]; then
+    "${pwd}/bin/utils/install.sh" --hooks $@
+fi
+
+if [[ "${init}" == "--init" ]]; then
+    "${pwd}/bin/utils/install.sh" --submodule-rexo $@
 fi
 
 if [[ "${clean}" == "--clean" ]]; then
     "${pwd}/bin/utils/cleanup.sh" --all $@
 fi
 
-if [[ "${setup}" == "--setup" ]]; then
-    sudo "${pwd}/bin/setup.sh" $@
-fi
-
-if [[ "${hooks}" == "--hooks" ]]; then
-    "${pwd}/bin/utils/install.sh" --hooks $@
+if [[ "${cmake}" == "--cmake" ]]; then
+    "${pwd}/bin/utils/install.sh" --cmake $@
 fi
 
 if [[ "${clangd}" == "--clangd" ]]; then
     "${pwd}/bin/utils/install.sh" --clangd $@
 fi
 
+# sudo
+if [[ "${setup}" == "--setup" ]]; then
+    sudo "${pwd}/bin/setup.sh" $@
+fi
+
 if [[ "${lcov}" == "--lcov" ]]; then
     sudo "${pwd}/bin/utils/install.sh" --lcov
-fi
-
-if [[ "${cmake}" == "--cmake" ]]; then
-    "${pwd}/bin/utils/install.sh" --cmake $@
-fi
-
-if [[ "${init}" == "--init" ]]; then
-    "${pwd}/bin/utils/install.sh" --submodule-rexo $@
-    "${pwd}/bin/utils/init.sh" --all $@
 fi
 
 if [[ "${silent}" == "--silent" ]]; then

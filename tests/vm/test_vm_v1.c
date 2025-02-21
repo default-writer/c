@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 19, 2025 at 8:46:21 PM GMT+3
+ *   February 21, 2025 at 7:22:44 AM GMT+3
  *
  */
 /*
@@ -129,7 +129,7 @@ RX_TEST_CASE(tests, test_virtual_free_0, .fixture = test_fixture) {
 /* test init */
 RX_TEST_CASE(tests, test_vm_free_0, .fixture = test_fixture) {
     CALL(virtual)->free(0);
-    RX_ASSERT(0 == 0);
+    RX_ASSERT(0 != 1);
 }
 
 /* test init */
@@ -140,7 +140,7 @@ RX_TEST_CASE(tests, test_vm_read_0, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_init_0, .fixture = test_fixture) {
-    RX_ASSERT(0 == 0);
+    RX_ASSERT(0 != 1);
 }
 
 /* test init */
