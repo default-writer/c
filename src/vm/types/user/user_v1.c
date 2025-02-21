@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 21, 2025 at 4:29:04 AM GMT+3
+ *   February 21, 2025 at 4:45:27 AM GMT+3
  *
  */
 /*
@@ -33,7 +33,7 @@
 
 #define DEFAULT_SIZE 0x100
 
-static u64 id = -1;
+static u64 id = TYPE_USER;
 
 /* internal */
 static u64 virtual_user_alloc(void);
