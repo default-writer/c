@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 9, 2025 at 12:22:59 PM GMT+3
+ *   February 19, 2025 at 9:55:06 PM GMT+3
  *
  */
 /*
@@ -24,10 +24,14 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _VIRTUAL_H_
-#define _VIRTUAL_H_
+#ifndef _VIRTUAL_V1_H_
+#define _VIRTUAL_V1_H_
+
+#define USING_API
 
 #include "std/api.h"
+
+#include "vm/export.h"
 
 struct vm;
 struct pointer;
@@ -49,14 +53,7 @@ typedef struct PRIVATE_API(virtual_methods) {
 } virtual_methods;
 
 /* definition */
-extern const virtual_methods PRIVATE_API(virtual_methods_definitions);
+CVM_EXPORT extern const virtual_methods PRIVATE_API(virtual_methods_definitions);
+CVM_EXPORT extern const virtual_methods* _virtual();
 
-/* definition */
-#ifdef INLINE
-const virtual_methods* virtual = &PRIVATE_API(virtual_methods_definitions);
-#else
-/* definition */
-static const virtual_methods* virtual = &PRIVATE_API(virtual_methods_definitions);
-#endif
-
-#endif /* _VIRTUAL_H_ */
+#endif /* _VIRTUAL_V1_H_ */

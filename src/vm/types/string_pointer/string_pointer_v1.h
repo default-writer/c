@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 8, 2025 at 5:55:56 PM GMT+3
+ *   February 19, 2025 at 10:14:36 PM GMT+3
  *
  */
 /*
@@ -24,30 +24,25 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _POINTER_TYPES_STRING_POINTER_H_
-#define _POINTER_TYPES_STRING_POINTER_H_
+#ifndef _STRING_POINTER_V1_H_
+#define _STRING_POINTER_V1_H_
 
 #define USING_API
 
 #include "std/api.h"
 
+#include "vm/export.h"
+
 /*! @file string_pointer_v1.h
  *  @brief C API / string pointer
  */
 
-typedef struct PRIVATE_API(string_pointer_methods) {
+typedef struct PRIVATE_API(virtual_string_pointer_methods) {
     void (*free)(u64 ptr);
-} string_pointer_methods;
+} virtual_string_pointer_methods;
 
 /* definition */
-extern const string_pointer_methods PRIVATE_API(string_pointer_methods_definitions);
+CVM_EXPORT extern const virtual_string_pointer_methods PRIVATE_API(virtual_string_pointer_methods_definitions);
+CVM_EXPORT extern const virtual_string_pointer_methods* _virtual_string_pointer();
 
-/* definition */
-#ifdef INLINE
-const string_pointer_methods* string_pointer = &PRIVATE_API(string_pointer_methods_definitions);
-#else
-/* definition */
-static const string_pointer_methods* string_pointer = &PRIVATE_API(string_pointer_methods_definitions);
-#endif
-
-#endif /* _POINTER_TYPES_STRING_POINTER_H_ */
+#endif /* _STRING_POINTER_V1_H_ */

@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.22.1)
 
 project(c VERSION 0.0.1 LANGUAGES C CXX)
+include(GenerateExportHeader)
 
+set(VERBOSE 1)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -38,6 +40,12 @@ file(WRITE ${CMAKE_SOURCE_DIR}/src/std/version.h
 link_directories(${CMAKE_SOURCE_DIR}/lib)
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
+# Set output directories for all platforms
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
+
+# For Windows-specific DLL placement
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
 
 # Check the operating system version
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
@@ -231,8 +239,9 @@ endif()
 set(LIB_SYS_SOURCE
     src/sys/info/info_v1.c
     src/sys/memory/memory_v1.c
+    src/sys/list/list_v1.c
     src/sys/options/options_v1.c
-    src/sys/list/list_v1.c)
+)
 
 set(LIB_VM_SOURCE
     src/vm/os/os_v1.c
@@ -251,32 +260,46 @@ set(TESTS_SRC_POINTER tests/vm/test_pointer.c)
 set(TESTS_SRC_VM_V1 tests/vm/test_vm_v1.c)
 set(MAIN_TESTS_VM1_SOURCE tests/vm/main-tests_v1.c)
 
-include_directories(tests)
-include_directories(src)
-include_directories(.rexo/include)
+include_directories(${CMAKE_SOURCE_DIR}/tests)
+include_directories(${CMAKE_SOURCE_DIR}/src)
+include_directories(${CMAKE_SOURCE_DIR}/.rexo)
+include_directories(${CMAKE_SOURCE_DIR}/.rexo/include)
 
-add_library(csys SHARED ${LIB_SYS_SOURCE})
-add_library(cvm SHARED ${LIB_VM_SOURCE})
-add_library(ctests SHARED
-    ${TESTS_SRC_LIST}
-    ${TESTS_SRC_POINTER}
-    ${TESTS_SRC_VM_V1}
+add_library(c-sys SHARED ${LIB_SYS_SOURCE})
+generate_export_header(c-sys
+    BASE_NAME csys
+    EXPORT_MACRO_NAME CSYS_EXPORT
+    EXPORT_FILE_NAME ${CMAKE_SOURCE_DIR}/src/sys/export.h
+)
+target_include_directories(c-sys PUBLIC 
+    ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR}/lib
+)
+
+add_library(c-vm SHARED ${LIB_VM_SOURCE})
+generate_export_header(c-vm
+    BASE_NAME cvm
+    EXPORT_MACRO_NAME CVM_EXPORT
+    EXPORT_FILE_NAME ${CMAKE_SOURCE_DIR}/src/vm/export.h
+)
+target_include_directories(c-vm PUBLIC 
+    ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR}/lib
 )
 
 # main 
 add_executable(main-tests-vm1
     ${MAIN_TESTS_VM1_SOURCE}
+    ${TESTS_SRC_LIST}
+    ${TESTS_SRC_POINTER}
+    ${TESTS_SRC_VM_V1}
 )
 
 # test
-target_link_libraries(cvm PRIVATE csys)
-target_link_libraries(ctests PRIVATE cvm)
+target_link_libraries(c-vm PRIVATE c-sys)
 
 # main
 target_link_libraries(main-tests-vm1 PRIVATE
-    csys
-    cvm 
-    ctests
+    c-sys
+    c-vm
 )
 
 configure_file(all_english_words.txt ${CMAKE_BINARY_DIR}/all_english_words.txt COPYONLY)

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 15, 2025 at 9:19:00 PM GMT+3
+ *   February 19, 2025 at 10:29:51 PM GMT+3
  *
  */
 /*
@@ -55,13 +55,13 @@ static const u64 _size = sizeof(stack_element);
 /* allocates memory pointer */
 static stack_ptr _new(void) {
     /* returns list object */
-    return sys_memory->alloc(_size);
+    return CALL(sys_memory)->alloc(_size);
 }
 
 /* releases memory pointer */
 static void _delete(stack_ptr ptr) {
     /* releases the pointer */
-    sys_memory->free(ptr, _size);
+    CALL(sys_memory)->free(ptr, _size);
 }
 
 /* ptr is not 0 */
@@ -220,3 +220,7 @@ const list_methods PRIVATE_API(list_methods_definitions) = {
     .print = list_print
 #endif
 };
+
+const list_methods* _sys_list() {
+    return &PRIVATE_API(list_methods_definitions);
+}

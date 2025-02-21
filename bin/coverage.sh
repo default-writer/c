@@ -22,6 +22,7 @@ cd "${pwd}"
 
 install="$1"
 
+skip=""
 opts=( "${@:2}" )
 
 . "${pwd}/bin/scripts/load.sh"
@@ -73,6 +74,10 @@ while (($#)); do
 
         "--callgrind") # [optional] runs using valgrind with tool callgrind
             callgrind="--callgrind"
+            ;;
+
+        "--no-memory-leak-detection") # [optional] skip memory leak detection using valgrind / sanitizer
+            skip="--no-memory-leak-detection"
             ;;
 
         "--debug") # [optional] runs using debug messaging
@@ -140,7 +145,7 @@ if [[ "${silent}" == "--silent" ]]; then
     exec 2>&1 >/dev/null
 fi
 
-build=( "build/coverage-v1" "build/coverage-v2" "build/coverage-v3" "build/coverage-v4" "build/coverage-v5" "build/coverage-v6" )
+build=( "" "build/coverage-v1" "build/coverage-v2" "build/coverage-v3" "build/coverage-v4" "build/coverage-v5" "build/coverage-v6" )
 
 if [[ ! "${dir}" == "" ]]; then
     build="${dir}"
@@ -149,6 +154,11 @@ fi
 if [[ "${clean}" == "--clean" ]]; then
     if [[ -d "${dir}" ]]; then
         rm -rf "${dir}"
+        mkdir -p "${dir}"
+    fi
+    if [[ -d "${build}" ]]; then
+        rm -rf "${build}"
+        mkdir -p "${build}"
     fi
 fi
 
@@ -181,36 +191,36 @@ if [[ "${coverage}" == "" ]]; then
     case "${index}" in
 
         "all")
-            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v1 ${opts[@]}
-            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v2 --gc ${opts[@]}
-            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v3 --sanitize ${opts[@]}
-            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v4 --gc --sanitize ${opts[@]}
-            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v5 --valgrind ${opts[@]}
-            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v6 --gc --valgrind ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v1 ${skip} ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v2 --gc ${skip} ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v3 --sanitize ${skip} ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v4 --gc --sanitize ${skip} ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v5 --valgrind ${skip} ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v6 --gc --valgrind ${skip} ${opts[@]}
             ;;
 
         "1")
-            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v1 ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v1 ${skip} ${opts[@]}
             ;;
 
         "2")
-            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v2 --gc ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v2 --gc ${skip} ${opts[@]}
             ;;
 
         "3")
-            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v3 --sanitize ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v3 --sanitize ${skip} ${opts[@]}
             ;;
 
         "4")
-            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v4 --gc --sanitize ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v4 --gc --sanitize ${skip} ${opts[@]}
             ;;
 
         "5")
-            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v5 --valgrind ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v5 --valgrind ${skip} ${opts[@]}
             ;;
 
         "6")
-            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v6 --gc --valgrind ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v6 --gc --valgrind ${skip} ${opts[@]}
             ;;
 
     esac

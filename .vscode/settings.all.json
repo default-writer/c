@@ -13,8 +13,8 @@
   "testFilesOnSave.languageId": "any",
   "testFilesOnSave.testCommands": [
     {
-      "c": "./bin/cmake.sh --all --clean --gc",
-      "cpp": "./bin/src.sh --target=${relativeFile}"
+      "c": "bash ./bin/coverageall.sh --all",
+      "cpp": "bash ./bin/src.sh --target=${relativeFile}"
     },
     {
       "h": "./bin/docs.sh"
@@ -140,7 +140,7 @@
       "command": "extension.git-file-history"
     }
   ],
-  "workbench.editor.enablePreview": true,
+  "workbench.editor.enablePreview": false,
   "workbench.colorTheme": "Yitzchok (rainglow)",
   "editor.tokenColorCustomizations": {
     "textMateRules": [

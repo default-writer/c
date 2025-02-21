@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 10, 2025 at 5:22:14 PM GMT+3
+ *   February 21, 2025 at 4:29:16 AM GMT+3
  *
  */
 /*
@@ -35,10 +35,6 @@
 
 static const enum type id = TYPE_STRING_POINTER;
 
-#ifndef ATTRIBUTE
-void string_pointer_init(void);
-#endif
-
 /* definition */
 static void string_free(u64 ptr);
 
@@ -49,41 +45,50 @@ static void virtual_free(pointer_ptr ptr);
 static void string_virtual_free(pointer_ptr ptr);
 
 /* implementation */
-static void string_virtual_free(pointer_ptr ptr) {
-    pointer->release(ptr);
+static void string_virtual_free(pointer_ptr ptr)
+{
+    CALL(pointer)->release(ptr);
 }
 
 static const struct type_methods_definitions _type = {
     .free = string_virtual_free
 };
 
-static void INIT init(void) {
-    pointer->register_type(id, &_type);
+static void INIT init(void)
+{
+    CALL(pointer)->register_known_type(id, &_type);
 }
 
 /* api */
-static void string_free(u64 ptr) {
-    pointer_ptr data_ptr = virtual->read(ptr);
+static void string_free(u64 ptr)
+{
+    pointer_ptr data_ptr = CALL(virtual)->read(ptr);
     if (data_ptr == 0) {
         return;
     }
-    if (pointer->read_type(data_ptr, TYPE_STRING_POINTER)) {
+    if (CALL(pointer)->read_type(data_ptr, TYPE_STRING_POINTER)) {
         virtual_free(data_ptr);
         return;
     }
 }
 
-static void virtual_free(pointer_ptr ptr) {
-    pointer->release(ptr);
+static void virtual_free(pointer_ptr ptr)
+{
+    CALL(pointer)->release(ptr);
 }
 
-/* public */
-const string_pointer_methods PRIVATE_API(string_pointer_methods_definitions) = {
-    .free = string_free
-};
-
 #ifndef ATTRIBUTE
-void string_pointer_init(void) {
+void string_pointer_init(void)
+{
     init();
 }
 #endif
+
+/* public */
+const virtual_string_pointer_methods PRIVATE_API(virtual_string_pointer_methods_definitions) = {
+    .free = string_free
+};
+
+const virtual_string_pointer_methods* _virtual_string_pointer() {
+    return &PRIVATE_API(virtual_string_pointer_methods_definitions);
+}

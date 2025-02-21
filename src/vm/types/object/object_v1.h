@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 8, 2025 at 5:55:57 PM GMT+3
+ *   February 19, 2025 at 10:17:41 PM GMT+3
  *
  */
 /*
@@ -24,10 +24,14 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _POINTER_TYPES_OBJECT_H_
-#define _POINTER_TYPES_OBJECT_H_
+#ifndef _OBJECT_V1_H_
+#define _OBJECT_V1_H_
+
+#define USING_API
 
 #include "std/api.h"
+
+#include "vm/export.h"
 
 /*! @file object_v1.h
  *  @brief C API / object
@@ -39,17 +43,10 @@ typedef struct API(object_methods) {
     void* (*unsafe)(u64 ptr);
     u64 (*load)(const void* data, u64 size);
     u64 (*size)(u64 ptr);
-} object_methods;
+} virtual_object_methods;
 
 /* definition */
-extern const object_methods PRIVATE_API(object_methods_definitions);
+CVM_EXPORT extern const virtual_object_methods PRIVATE_API(virtual_object_methods_definitions);
+CVM_EXPORT extern const virtual_object_methods* _virtual_object();
 
-/* definition */
-#ifdef INLINE
-const object_methods* string_pointer = &PRIVATE_API(object_methods_definitions);
-#else
-/* definition */
-static const object_methods* object = &PRIVATE_API(object_methods_definitions);
-#endif
-
-#endif /* _POINTER_TYPES_OBJECT_H_ */
+#endif /* _OBJECT_V1_H_ */

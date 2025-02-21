@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 10, 2025 at 5:23:37 PM GMT+3
+ *   February 19, 2025 at 8:41:51 PM GMT+3
  *
  */
 /*
@@ -26,13 +26,10 @@
 
 #include "main-tests_v1.h"
 
-#define RX_ENABLE_EXTERNAL_LINKING
+//#define RX_ENABLE_EXTERNAL_LINKING
+//#define RX_DISABLE_TEST_DISCOVERY
 
 #include "test.h"
-
-#include "test_list.h"
-#include "test_pointer.h"
-#include "test_vm_v1.h"
 
 #include "sys/info/info_v1.h"
 
@@ -46,14 +43,17 @@ const char* commit = GIT_COMMIT_HASH;
 
 static void INIT init() {
 #ifdef GIT_COMMIT_HASH
-    printf("version: v%s\n", sys_info->version);
+    printf("version: v%s\n", CALL(sys_info)->version);
     // Replace the timestamp below with your Unix timestamp
-    time_t unix_timestamp = (time_t)sys_info->timestamp;
+    time_t unix_timestamp = (time_t)CALL(sys_info)->timestamp;
 
     // Convert Unix timestamp to a time structure
     struct tm timeinfo;
+#ifdef _WIN32
+    localtime_s(&timeinfo, &unix_timestamp);
+#else
     localtime_r(&unix_timestamp, &timeinfo);
-
+#endif
     // Format the time structure into a string
     char buffer[160];
     strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", &timeinfo);

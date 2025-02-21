@@ -23,12 +23,12 @@ static u64 read_data(u64 list_ptr, const char* prompt) {
     u64 data_ptr = 0;
     u64 ui_mode_ptr = string->load("UI_MODE");
     u64 mode_ptr = string->load("--ui");
-    u64 value_ptr = os->getenv(ui_mode_ptr);
+    u64 value_ptr = CALL(os)->getenv(ui_mode_ptr);
     if (ui_mode_ptr != 0 && string->strcmp(value_ptr, mode_ptr) != 0) {
         data_ptr = read_input(prompt);
     } else {
         printf(">%s:\n", prompt);
-        data_ptr = sys_list->pop(list_ptr);
+        data_ptr = CALL(sys_list)->pop(list_ptr);
         if (data_ptr == 0) {
             printf("\n");
         }
@@ -39,12 +39,12 @@ static u64 read_data(u64 list_ptr, const char* prompt) {
 
 ```c
 int main(void) {
-    pointer->init(8); // initializes virtual memory manager with chunk size of 8
+    CALL(pointer)->init(8); // initializes virtual memory manager with chunk size of 8
 
     // some work with standard classes: os, string, data, etc.
 
-    pointer->gc();      // releases all resources added to GC
-    pointer->destroy(); // releases virtual memory manager
+    CALL(pointer)->gc();      // releases all resources added to GC
+    CALL(pointer)->destroy(); // releases virtual memory manager
     return 0;
 }
 ```

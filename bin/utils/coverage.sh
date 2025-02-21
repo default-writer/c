@@ -68,6 +68,10 @@ while (($#)); do
             callgrind="--callgrind"
             ;;
 
+        "--no-memory-leak-detection") # [optional] skip runs using valgrind / sanitizer
+           skip="--no-memory-leak-detection"
+            ;;
+
         "--debug") # [optional] runs using debug messaging
             debug="--debug"
             ;;
@@ -102,6 +106,11 @@ fi
 if [[ "${clean}" == "--clean" ]]; then
     if [[ -d "${dir}" ]]; then
         rm -rf "${dir}"
+        mkdir -p "${dir}"
+    fi
+    if [[ -d "${build}" ]]; then
+        rm -rf "${build}"
+        mkdir -p "${build}"
     fi
 fi
 
@@ -122,10 +131,10 @@ if [[ "${cmake}" == "" ]]; then
     exit 8
 fi
 
-[[ ! -d "${build}" ]] && mkdir "${build}"
+[[ ! -d "${build}" ]] && mkdir -p "${build}"
 
 output="${pwd}/output"
-[[ ! -d "${output}" ]] && mkdir "${output}"
+[[ ! -d "${output}" ]] && mkdir -p "${output}"
 
 for target in ${targets[@]}; do
     if [[ -f "${build}/${target}" ]]; then
@@ -143,7 +152,7 @@ for target in ${targets[@]}; do
 done
 
 export LCOV_PATH=$(which lcov)
-export GENHTML_PATH==$(which genhtml)
+export GENHTML_PATH=$(which genhtml)
 export MAKEFLAGS=-j8
 export LD_LIBRARY_PATH="${pwd}/lib"
 
@@ -162,20 +171,27 @@ ${cmake} \
 
 ignore=$(get-ignore)
 
+rel_build="${build#$pwd/}"
+
+strip_path() {
+    sed "s|SF:${pwd}/|SF:|g"
+}
+
 for config in ${targets[@]}; do
     target="${config}"
     echo building ${target}
     echo options "$(cmake-options)"
     ${cmake} --build "${build}" --target "${target}" 2>&1 || (echo ERROR: "${target}" && exit 1)
     case "${target}" in 
-        c-*) ;& main-*) ;& test-*)
-            if [ ! "$(cat /proc/version | grep -c MSYS)" == "1" ] && [ ! "$(cat /proc/version | grep -c MINGW64)" == "1" ]; then
+        main-*) ;& test-*)
+            if [ ! "${skip}" == "--no-memory-leak-detection" ] && [ ! "$(cat /proc/version | grep -c MSYS)" == "1" ] && [ ! "$(cat /proc/version | grep -c MINGW64)" == "1" ]; then
                 timeout --foreground 180 $(cmake-valgrind-options) "${build}/${target}" 2>&1 >"${output}/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
             else
                 timeout --foreground 180 "${build}/${target}" 2>&1 >"${output}/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
             fi
-            lcov --capture --directory "${build}/" --output-file "${build}/${target}-all.info" &>/dev/null
+            lcov --capture --directory "${rel_build}/" --output-file "${build}/${target}-all.info" &>/dev/null
             lcov --remove "${build}/${target}-all.info" -o "${build}/${target}.info" ${ignore}
+            strip_path < "${build}/${target}.info" > "${build}/${target}.info.tmp" && mv "${build}/${target}.info.tmp" "${build}/${target}.info"
             rm "${build}/${target}-all.info"
             ;;
         *)
