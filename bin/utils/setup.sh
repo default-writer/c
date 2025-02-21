@@ -115,6 +115,9 @@ while (($#)); do
             rm -r /tmp/llvm.sh
             ;;
 
+        "--clang-tidy") # installs clang-tidy
+            apt install -y clang-tidy
+            ;;
 
         "--doxygen") # installs doxygen
             update ${updateflags}
