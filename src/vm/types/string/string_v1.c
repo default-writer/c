@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 20, 2025 at 5:53:07 AM GMT+3
+ *   February 21, 2025 at 4:29:27 AM GMT+3
  *
  */
 /*
@@ -795,7 +795,7 @@ static const struct type_methods_definitions _type = {
 };
 
 static void INIT init(void) {
-    CALL(pointer)->register_type(id, &_type);
+    CALL(pointer)->register_known_type(id, &_type);
 }
 
 #ifndef ATTRIBUTE

@@ -140,7 +140,7 @@
             "command": "extension.git-file-history"
         }
     ],
-    "workbench.editor.enablePreview": true,
+    "workbench.editor.enablePreview": false,
     "workbench.colorTheme": "Yitzchok (rainglow)",
     "editor.tokenColorCustomizations": {
         "textMateRules": [
@@ -487,10 +487,9 @@
     "bazel.executable": "$HOME/.bazel/bazel",
     "cmake.options.statusBarVisibility": "visible",
     "editor.fontSize": 12,
-    "sonarlint.pathToNodeExecutable": "${workspaceFolder}/.tools/node-v23.7.0-win-x64/node.exe",
     "cmake.debugConfig": {
         "MIMode": "gdb",
-        "miDebuggerPath": "/c/msys64/ucrt64/bin/gdb.exe",
+        "miDebuggerPath": "/usr/bin/gdb",
         "setupCommands": [
             {
                 "description": "Enable pretty-printing for lldb",

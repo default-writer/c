@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 20, 2025 at 9:13:44 PM GMT+3
+ *   February 21, 2025 at 4:33:49 AM GMT+3
  *
  */
 /*
@@ -53,8 +53,8 @@ typedef struct known_types* known_types_ptr;
 typedef const struct known_types* const_known_types_ptr;
 
 struct known_types {
-    u64 id;
     known_types_ptr next;
+    u64 id;
     void (*free)(pointer_ptr ptr);
 };
 
@@ -62,7 +62,7 @@ struct known_types {
 static struct known_types known_types_definition = { 0, 0, 0 };
 
 /* definition */
-static known_types_ptr vm_types = &known_types_definition;
+static known_types_ptr known_types = &known_types_definition;
 
 #ifndef ATTRIBUTE
 extern void data_init(void);
@@ -119,23 +119,32 @@ static void pointer_write(pointer_ptr ptr, virtual_pointer_ptr virtual_pointer, 
 static u64 pointer_read_type(const_pointer_ptr ptr, u64 virtual_id);
 
 static void pointer_free_internal(pointer_ptr ptr);
+static void known_types_init(u64 id, const type_methods_definitions* data_type);
+static u64 user_types_init(const type_methods_definitions* data_type);
 
 /* free */
-static u64 vm_types_init(u64 id, const type_methods_definitions* data_type);
 static void vm_init(void);
 static void vm_destroy(void);
 
 /* internal */
 
-static u64 known_types_counter;
+static u64 known_types_counter = TYPE_USER;
 
-static u64 vm_types_init(u64 id, const type_methods_definitions* data_type) {
-    known_types_ptr next = CALL(sys_memory)->alloc(sizeof(struct known_types));
-    next->id = id == TYPE_NULL ? known_types_counter++ : id;
-    next->free = data_type->free;
-    next->next = vm_types;
-    vm_types = next;
-    return vm_types->id;
+static void known_types_init(u64 id, const type_methods_definitions* data_type) {
+    known_types_ptr new_type = CALL(sys_memory)->alloc(sizeof(struct known_types));
+    new_type->next = known_types;
+    known_types = new_type;
+    known_types->id = id;
+    known_types->free = data_type->free;
+}
+
+static u64 user_types_init(const type_methods_definitions* data_type) {
+    known_types_ptr new_type = CALL(sys_memory)->alloc(sizeof(struct known_types));
+    new_type->next = known_types;
+    new_type->id = known_types_counter++;
+    new_type->free = data_type->free;
+    known_types = new_type;
+    return known_types->id;
 }
 
 static void INIT vm_init(void) {
@@ -145,10 +154,10 @@ static void INIT vm_init(void) {
 }
 
 static void DESTROY vm_destroy(void) {
-    while (vm_types->next != 0) {
-        known_types_ptr prev = vm_types->next;
-        CALL(sys_memory)->free(vm_types, sizeof(struct known_types));
-        vm_types = prev;
+    while (known_types->next != 0) {
+        known_types_ptr prev = known_types->next;
+        CALL(sys_memory)->free(known_types, sizeof(struct known_types));
+        known_types = prev;
     }
 #ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();
@@ -179,8 +188,12 @@ static void pointer_realloc(pointer_ptr ptr, u64 size) {
     }
 }
 
-u64 pointer_register_type(u64 id, const type_methods_definitions* data_type) {
-    return vm_types_init(id, data_type);
+void pointer_register_known_type(u64 id, const type_methods_definitions* data_type) {
+    known_types_init(id, data_type);
+}
+
+u64 pointer_register_user_type(const type_methods_definitions* data_type) {
+    return user_types_init(data_type);
 }
 
 static void pointer_free(u64 ptr) {
@@ -256,13 +269,12 @@ static u64 pointer_read_type(const_pointer_ptr ptr, u64 virtual_id) {
 
 /* implementation */
 static void pointer_init(u64 size) {
-    known_types_counter = TYPE_USER;
     CALL(virtual)->init(&vm, size);
 #ifndef ATTRIBUTE
     init();
 #endif
     default_types = CALL(sys_memory)->alloc(known_types_counter * sizeof(struct known_types));
-    known_types_ptr current = vm_types;
+    known_types_ptr current = known_types;
     while (current->next != 0) {
         known_types_ptr prev = current->next;
         u64 index = current->id;
@@ -313,7 +325,8 @@ const pointer_methods PRIVATE_API(pointer_methods_definitions) = {
     .gc = pointer_gc,
     .alloc = pointer_alloc,
     .realloc = pointer_realloc,
-    .register_type = pointer_register_type,
+    .register_known_type = pointer_register_known_type,
+    .register_user_type = pointer_register_user_type,
     .free = pointer_free,
     .release = pointer_release,
     .address = pointer_address,

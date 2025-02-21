@@ -140,7 +140,7 @@
       "command": "extension.git-file-history"
     }
   ],
-  "workbench.editor.enablePreview": true,
+  "workbench.editor.enablePreview": false,
   "workbench.colorTheme": "Yitzchok (rainglow)",
   "editor.tokenColorCustomizations": {
     "textMateRules": [

@@ -71,6 +71,10 @@ while (($#)); do
             callgrind="--callgrind"
             ;;
 
+        "--no-memory-leak-detection") # [optional] skip runs using valgrind / sanitizer
+            skip="--no-memory-leak-detection"
+            ;;
+
         "--debug") # [optional] runs using debug messaging
             debug="--debug"
             ;;
@@ -174,7 +178,7 @@ for config in ${targets[@]}; do
     ${cmake} --build "${build}" --target "${target}" 2>&1 || (echo ERROR: "${target}" && exit 1)
     case "${target}" in
         main-*) ;& test-*)
-            if [ ! "$(cat /proc/version | grep -c MSYS)" == "1" ] && [ ! "$(cat /proc/version | grep -c MINGW64)" == "1" ]; then
+            if [ ! "${skip}" == "--no-memory-leak-detection" ] && [ ! "$(cat /proc/version | grep -c MSYS)" == "1" ] && [ ! "$(cat /proc/version | grep -c MINGW64)" == "1" ]; then
                 timeout --foreground 180 $(cmake-valgrind-options) "${build}/${target}" 2>&1 >"${output}/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
             else
                 timeout --foreground 180 "${build}/${target}" 2>&1 >"${output}/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)

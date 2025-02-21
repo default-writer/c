@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 20, 2025 at 5:53:17 AM GMT+3
+ *   February 21, 2025 at 4:29:04 AM GMT+3
  *
  */
 /*
@@ -33,7 +33,7 @@
 
 #define DEFAULT_SIZE 0x100
 
-static u64 id = TYPE_NULL;
+static u64 id = -1;
 
 /* internal */
 static u64 virtual_user_alloc(void);
@@ -66,7 +66,7 @@ static const struct type_methods_definitions _type = {
 };
 
 static void INIT init(void) {
-    id = CALL(pointer)->register_type(TYPE_NULL, &_type);
+    id = CALL(pointer)->register_user_type(&_type);
 }
 
 #ifndef ATTRIBUTE

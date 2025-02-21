@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 19, 2025 at 8:28:01 PM GMT+3
+ *   February 21, 2025 at 4:14:51 AM GMT+3
  *
  */
 /*
@@ -71,7 +71,7 @@ enum type {
     TYPE_STACK = 5,
     /* value used for object type - object */
     TYPE_OBJECT = 6,
-    /* value used for user type - user (id: +0, +1, +2, +3, ...) */
+    /* value used for user type - user (id: +1, +2, +3, ...) */
     TYPE_USER = 7,
 };
 

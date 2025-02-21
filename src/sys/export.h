@@ -9,15 +9,15 @@
 #  ifndef CSYS_EXPORT
 #    ifdef c_sys_EXPORTS
         /* We are building this library */
-#      define CSYS_EXPORT __declspec(dllexport)
+#      define CSYS_EXPORT __attribute__((visibility("default")))
 #    else
         /* We are using this library */
-#      define CSYS_EXPORT __declspec(dllimport)
+#      define CSYS_EXPORT __attribute__((visibility("default")))
 #    endif
 #  endif
 
 #  ifndef CSYS_NO_EXPORT
-#    define CSYS_NO_EXPORT 
+#    define CSYS_NO_EXPORT __attribute__((visibility("hidden")))
 #  endif
 #endif
 
@@ -33,7 +33,6 @@
 #  define CSYS_DEPRECATED_NO_EXPORT CSYS_NO_EXPORT CSYS_DEPRECATED
 #endif
 
-/* NOLINTNEXTLINE(readability-avoid-unconditional-preprocessor-if) */
 #if 0 /* DEFINE_NO_DEPRECATED */
 #  ifndef CSYS_NO_DEPRECATED
 #    define CSYS_NO_DEPRECATED

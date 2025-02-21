@@ -9,15 +9,15 @@
 #  ifndef CVM_EXPORT
 #    ifdef c_vm_EXPORTS
         /* We are building this library */
-#      define CVM_EXPORT __declspec(dllexport)
+#      define CVM_EXPORT __attribute__((visibility("default")))
 #    else
         /* We are using this library */
-#      define CVM_EXPORT __declspec(dllimport)
+#      define CVM_EXPORT __attribute__((visibility("default")))
 #    endif
 #  endif
 
 #  ifndef CVM_NO_EXPORT
-#    define CVM_NO_EXPORT 
+#    define CVM_NO_EXPORT __attribute__((visibility("hidden")))
 #  endif
 #endif
 
@@ -33,7 +33,6 @@
 #  define CVM_DEPRECATED_NO_EXPORT CVM_NO_EXPORT CVM_DEPRECATED
 #endif
 
-/* NOLINTNEXTLINE(readability-avoid-unconditional-preprocessor-if) */
 #if 0 /* DEFINE_NO_DEPRECATED */
 #  ifndef CVM_NO_DEPRECATED
 #    define CVM_NO_DEPRECATED

@@ -5,14 +5,34 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "type": "cppdbg",
+      "request": "launch",
+      "name": "debug-v6",
+      "program": "${workspaceFolder}/build/coverage-v6/main-tests-vm1",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ],
+      "preLaunchTask": "build-v6"
+    },
+    {
       "type": "bashdb",
       "request": "launch",
       "name": "bash",
       "terminalKind": "integrated",
       "cwd": "${workspaceFolder}",
-      "program": "${workspaceFolder}/bin/utils/build.sh",
+      "program": "${workspaceFolder}/bin/utils/cmake.sh",
       "args": [
-        "--all"
+        "--target=main-tests-vm1"
       ]
     }
   ]

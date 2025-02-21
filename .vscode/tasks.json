@@ -2,24 +2,19 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build tests/gcc",
+            "label": "build-v6",
             "type": "shell",
-            "command": "${workspaceFolder}/tests/gcc/build.sh",
+            "command": "${workspaceFolder}/bin/coverage.sh",
             "problemMatcher": [],
-            "args": ["${workspaceFolder}/tests/gcc"],
+            "args": [
+                "--target=main-tests-vm1",
+                "--index=6",
+                "--clean",
+                "--no-memory-leak-detection"
+            ],
             "options": {
-                "cwd": "${workspaceFolder}/tests/gcc",
-            }
-        },
-        {
-            "label": "build tests/mojo",
-            "type": "shell",
-            "command": "${workspaceFolder}/tests/mojo/build.sh",
-            "problemMatcher": [],
-            "args": ["${workspaceFolder}/tests/mojo"],
-            "options": {
-                "cwd": "${workspaceFolder}/tests/mojo",
+                "cwd": "${workspaceFolder}",
             }
         }
-   ]
+    ]
 }
