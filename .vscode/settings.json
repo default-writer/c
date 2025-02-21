@@ -500,5 +500,9 @@
         "console": "integratedTerminal",
         "cwd": "${workspaceRoot}/cmake",
         "environment": []
+    },
+    "sonarlint.connectedMode.project": {
+        "connectionId": "default-writer",
+        "projectKey": "default-writer_c"
     }
 }
