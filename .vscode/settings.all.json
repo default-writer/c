@@ -187,7 +187,6 @@
     "vscode.videoPreview": false,
     "jsProfileVisualizer.cpuprofile.table": false,
     "jsProfileVisualizer.heapprofile.table": false,
-    "pdf.view": false,
     "workbench.editors.gettingStartedInput": false,
     "jupyter-notebook": false,
     "terminalEditor": true,

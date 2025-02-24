@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 20, 2025 at 3:45:07 PM GMT+3
+ *   February 24, 2025 at 9:40:57 AM GMT+3
  *
  */
 /*
@@ -24,6 +24,10 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#define USING_TESTS
+
+#include "std/macros.h"
+
 #include "test_pointer.h"
 
 #include "vm/os/os_v1.h"
@@ -35,7 +39,6 @@
 #include "vm/types/string/string_v1.h"
 #include "vm/types/string_pointer/string_pointer_v1.h"
 #include "vm/types/user/user_v1.h"
-#include "vm/vm_v1.h"
 
 #include "test.h"
 
@@ -910,6 +913,7 @@ RX_TEST_CASE(tests_v1, test_string_pointer_strrchr_match_offset, .fixture = test
 RX_TEST_CASE(tests_v1, test_list_peekn_0_0, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 list_ptr = CALL(virtual_stack)->alloc();
+    ASSERT_DEBUG(list_ptr != 0);
     u64 error_ptr = CALL(virtual_stack)->peekn(0, 0);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -958,6 +962,7 @@ RX_TEST_CASE(tests_v1, test_list_peekn_2, .fixture = test_fixture) {
 RX_TEST_CASE(tests_v1, test_list_popn_0_0, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 list_ptr = CALL(virtual_stack)->alloc();
+    ASSERT_DEBUG(list_ptr != 0);
     u64 error_ptr = CALL(virtual_stack)->popn(0, 0);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -1336,7 +1341,7 @@ RX_TEST_CASE(tests_v1, test_strcpy, .fixture = test_fixture) {
 #else
     strcpy(buf, path1); /* NOLINT */
     strcat(buf, path2); /* NOLINT */
-#endif    
+#endif
     char* path_copy = CALL(virtual_string)->unsafe(path_copy_ptr);
     RX_ASSERT(strlen(path_copy) == strlen(buf));
     RX_ASSERT(strcmp(path_copy, buf) == 0);
@@ -1673,6 +1678,7 @@ RX_TEST_CASE(tests_v1, test_os_getenv, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 ui_mode_ptr = CALL(virtual_string)->load("UI_MODE");
     u64 file_path_ptr = CALL(os)->getenv(ui_mode_ptr);
+    ASSERT_DEBUG(file_path_ptr != 0);
     CALL(pointer)->gc();
     CALL(pointer)->destroy();
 }
@@ -1681,6 +1687,7 @@ RX_TEST_CASE(tests_v1, test_os_getenv, .fixture = test_fixture) {
 RX_TEST_CASE(tests_v1, test_os_getenv_0, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 file_path_ptr = CALL(os)->getenv(0);
+    ASSERT_DEBUG(file_path_ptr == 0);
     CALL(pointer)->gc();
     CALL(pointer)->destroy();
 }
@@ -1690,6 +1697,7 @@ RX_TEST_CASE(tests_v1, test_os_getenv_list, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 list_ptr = CALL(virtual_stack)->alloc();
     u64 file_path_ptr = CALL(os)->getenv(list_ptr);
+    ASSERT_DEBUG(file_path_ptr == 0);
     CALL(pointer)->gc();
     CALL(pointer)->destroy();
 }
@@ -2244,6 +2252,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_0_1, .fixture = test_fi
 RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_1_0, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr = CALL(virtual_string)->load("");
+    ASSERT_DEBUG(quantum_str_ptr == 0);
     u64 error_ptr = CALL(virtual_string)->lessthan(1, 0);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -2254,7 +2263,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_1_0, .fixture = test_fi
 RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_1_1, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->lessthan(1, 1);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -2289,7 +2300,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_b_a, .fixture = test_fi
 RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_1_2, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->lessthan(1, 2);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -2300,7 +2313,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_1_2, .fixture = test_fi
 RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_1_3, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->lessthan(1, 2);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -2311,7 +2326,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_1_3, .fixture = test_fi
 RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_2_1, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->lessthan(2, 1);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -2322,7 +2339,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_2_1, .fixture = test_fi
 RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_a_string_free, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     CALL(virtual_string)->free(quantum_str_ptr2);
     u64 error_ptr = CALL(virtual_string)->lessthan(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -2334,7 +2353,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_a_string_free, .fixture
 RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_string_free_b, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     CALL(virtual_string)->free(quantum_str_ptr1);
     u64 error_ptr = CALL(virtual_string)->lessthan(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -2386,6 +2407,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_0_1, .fixture = test
 RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_1_0, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr = CALL(virtual_string)->load("");
+    ASSERT_DEBUG(quantum_str_ptr == 0);
     u64 error_ptr = CALL(virtual_string)->greaterthan(1, 0);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -2396,7 +2418,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_1_0, .fixture = test
 RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_1_1, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->greaterthan(1, 1);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -2431,7 +2455,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_b_a, .fixture = test
 RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_1_2, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->greaterthan(1, 2);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -2442,7 +2468,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_1_2, .fixture = test
 RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_1_3, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->greaterthan(1, 3);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -2453,7 +2481,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_1_3, .fixture = test
 RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_2_1, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->greaterthan(2, 1);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -2464,7 +2494,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_2_1, .fixture = test
 RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_a_string_free, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     CALL(virtual_string)->free(quantum_str_ptr2);
     u64 error_ptr = CALL(virtual_string)->greaterthan(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -2476,7 +2508,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_a_string_free, .fixt
 RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_string_free_b, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     CALL(virtual_string)->free(quantum_str_ptr1);
     u64 error_ptr = CALL(virtual_string)->greaterthan(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -2488,6 +2522,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_string_free_b, .fixt
 RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_string_list, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 list_ptr2 = CALL(virtual_stack)->alloc();
     u64 error_ptr = CALL(virtual_string)->greaterthan(quantum_str_ptr1, list_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -2528,6 +2563,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_equals_0_1, .fixture = test_fixt
 RX_TEST_CASE(pointer_tests, test_pointer_string_equals_1_0, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr = CALL(virtual_string)->load("");
+    ASSERT_DEBUG(quantum_str_ptr == 0);
     u64 error_ptr = CALL(virtual_string)->equals(1, 0);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -2538,7 +2574,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_equals_1_0, .fixture = test_fixt
 RX_TEST_CASE(pointer_tests, test_pointer_string_equals_1_1, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->equals(1, 1);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -2574,7 +2612,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_equals_b_a, .fixture = test_fixt
 RX_TEST_CASE(pointer_tests, test_pointer_string_equals_1_2, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->equals(1, 2);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -2585,7 +2625,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_equals_1_2, .fixture = test_fixt
 RX_TEST_CASE(pointer_tests, test_pointer_string_equals_1_3, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->equals(1, 3);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -2596,7 +2638,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_equals_1_3, .fixture = test_fixt
 RX_TEST_CASE(pointer_tests, test_pointer_string_equals_2_1, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->equals(2, 1);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -2671,6 +2715,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_compare_0_1, .fixture = test_fix
 RX_TEST_CASE(pointer_tests, test_pointer_string_compare_1_0, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr = CALL(virtual_string)->load("");
+    ASSERT_DEBUG(quantum_str_ptr == 0);
     u64 error_ptr = CALL(virtual_string)->compare(1, 0);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -2681,7 +2726,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_compare_1_0, .fixture = test_fix
 RX_TEST_CASE(pointer_tests, test_pointer_string_compare_1_1, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->compare(1, 1);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -2717,7 +2764,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_compare_b_a, .fixture = test_fix
 RX_TEST_CASE(pointer_tests, test_pointer_string_compare_1_2, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->compare(1, 2);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -2728,7 +2777,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_compare_1_2, .fixture = test_fix
 RX_TEST_CASE(pointer_tests, test_pointer_string_compare_1_3, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->compare(1, 3);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -2739,7 +2790,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_compare_1_3, .fixture = test_fix
 RX_TEST_CASE(pointer_tests, test_pointer_string_compare_2_1, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->compare(2, 1);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -2750,7 +2803,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_compare_2_1, .fixture = test_fix
 RX_TEST_CASE(pointer_tests, test_pointer_string_compare_a_string_free, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     CALL(virtual_string)->free(quantum_str_ptr2);
     u64 error_ptr = CALL(virtual_string)->compare(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -2814,6 +2869,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strcmp_0_1, .fixture = test_fixt
 RX_TEST_CASE(pointer_tests, test_pointer_string_strcmp_1_0, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr = CALL(virtual_string)->load("");
+    ASSERT_DEBUG(quantum_str_ptr == 0);
     u64 error_ptr = CALL(virtual_string)->strcmp(1, 0);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -2824,7 +2880,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strcmp_1_0, .fixture = test_fixt
 RX_TEST_CASE(pointer_tests, test_pointer_string_strcmp_1_1, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->strcmp(1, 1);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -2860,7 +2918,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strcmp_b_a, .fixture = test_fixt
 RX_TEST_CASE(pointer_tests, test_pointer_string_strcmp_1_2, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->strcmp(1, 2);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -2870,7 +2930,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strcmp_1_2, .fixture = test_fixt
 RX_TEST_CASE(pointer_tests, test_pointer_string_strcmp_1_3, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->strcmp(1, 3);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -2881,7 +2943,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strcmp_1_3, .fixture = test_fixt
 RX_TEST_CASE(pointer_tests, test_pointer_string_strcmp_2_1, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->strcmp(2, 1);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -2892,7 +2956,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strcmp_2_1, .fixture = test_fixt
 RX_TEST_CASE(pointer_tests, test_pointer_string_strcmp_a_string_free, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     CALL(virtual_string)->free(quantum_str_ptr2);
     u64 error_ptr = CALL(virtual_string)->strcmp(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -2904,7 +2970,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strcmp_a_string_free, .fixture =
 RX_TEST_CASE(pointer_tests, test_pointer_string_strcmp_string_free_b, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     CALL(virtual_string)->free(quantum_str_ptr1);
     u64 error_ptr = CALL(virtual_string)->strcmp(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -2956,6 +3024,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_right_0_1, .fixture = test_
 RX_TEST_CASE(pointer_tests, test_pointer_string_move_right_1_0, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr = CALL(virtual_string)->load("");
+    ASSERT_DEBUG(quantum_str_ptr == 0);
     u64 error_ptr = CALL(virtual_string)->move_right(1, 0);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -2966,7 +3035,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_right_1_0, .fixture = test_
 RX_TEST_CASE(pointer_tests, test_pointer_string_move_right_1_1, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->move_right(1, 1);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -2977,6 +3048,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_right_1_1, .fixture = test_
 RX_TEST_CASE(pointer_tests, test_pointer_string_move_right_a_b, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("abba");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 error_ptr = CALL(virtual_string)->move_right(quantum_str_ptr1, 1);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -3037,7 +3109,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_right_a_b_free, .fixture = 
 RX_TEST_CASE(pointer_tests, test_pointer_string_move_right_1_2, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->move_right(1, 2);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -3048,7 +3122,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_right_1_2, .fixture = test_
 RX_TEST_CASE(pointer_tests, test_pointer_string_move_right_1_3, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->move_right(1, 3);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -3059,7 +3135,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_right_1_3, .fixture = test_
 RX_TEST_CASE(pointer_tests, test_pointer_string_move_right_2_1, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->move_right(2, 1);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -3134,6 +3212,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_right_0_1, .fixture = test_fixtu
 RX_TEST_CASE(pointer_tests, test_pointer_string_right_1_0, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr = CALL(virtual_string)->load("");
+    ASSERT_DEBUG(quantum_str_ptr == 0);
     u64 error_ptr = CALL(virtual_string)->right(1, 0);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -3144,7 +3223,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_right_1_0, .fixture = test_fixtu
 RX_TEST_CASE(pointer_tests, test_pointer_string_right_1_1, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 data_ptr = CALL(virtual_string)->right(quantum_str_ptr1, 1);
     RX_ASSERT(data_ptr != 0);
     RX_ASSERT(strcmp(CALL(virtual_string)->unsafe(data_ptr), "") == 0);
@@ -3216,7 +3297,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_right_a_b_free, .fixture = test_
 RX_TEST_CASE(pointer_tests, test_pointer_string_right_1_2, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->right(1, 2);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -3227,7 +3310,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_right_1_2, .fixture = test_fixtu
 RX_TEST_CASE(pointer_tests, test_pointer_string_right_1_3, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->right(1, 3);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -3238,6 +3323,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_right_1_3, .fixture = test_fixtu
 RX_TEST_CASE(pointer_tests, test_pointer_string_right_2_1, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("");
     u64 error_ptr = CALL(virtual_string)->right(quantum_str_ptr2, 1);
     RX_ASSERT(error_ptr == 0);
@@ -3249,7 +3335,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_right_2_1, .fixture = test_fixtu
 RX_TEST_CASE(pointer_tests, test_pointer_string_right_a_string_free, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     CALL(virtual_string)->free(quantum_str_ptr2);
     u64 error_ptr = CALL(virtual_string)->right(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -3261,7 +3349,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_right_a_string_free, .fixture = 
 RX_TEST_CASE(pointer_tests, test_pointer_string_right_string_free_b, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     CALL(virtual_string)->free(quantum_str_ptr1);
     u64 error_ptr = CALL(virtual_string)->right(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -3273,6 +3363,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_right_string_free_b, .fixture = 
 RX_TEST_CASE(pointer_tests, test_pointer_string_right_string_list, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 list_ptr2 = CALL(virtual_stack)->alloc();
     u64 error_ptr = CALL(virtual_string)->right(quantum_str_ptr1, list_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -3313,6 +3404,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_0_1, .fixture = test_f
 RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_1_0, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr = CALL(virtual_string)->load("");
+    ASSERT_DEBUG(quantum_str_ptr == 0);
     u64 error_ptr = CALL(virtual_string)->move_left(1, 0);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -3323,7 +3415,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_1_0, .fixture = test_f
 RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_1_1, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->move_left(1, 1);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -3396,7 +3490,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_a_b_free, .fixture = t
 RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_1_2, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->move_left(1, 2);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -3406,7 +3502,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_1_2, .fixture = test_f
 RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_1_3, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->move_left(1, 3);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -3417,7 +3515,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_1_3, .fixture = test_f
 RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_2_1, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->move_left(2, 1);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -3428,7 +3528,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_2_1, .fixture = test_f
 RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_a_string_free, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     CALL(virtual_string)->free(quantum_str_ptr2);
     u64 error_ptr = CALL(virtual_string)->move_left(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -3440,7 +3542,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_a_string_free, .fixtur
 RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_string_free_b, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     CALL(virtual_string)->free(quantum_str_ptr1);
     u64 error_ptr = CALL(virtual_string)->move_left(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -3492,6 +3596,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_0_1, .fixture = tes
 RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_1_0, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr = CALL(virtual_string)->load("");
+    ASSERT_DEBUG(quantum_str_ptr == 0);
     u64 error_ptr = CALL(virtual_string)->left_strncpy(1, 0);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -3502,7 +3607,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_1_0, .fixture = tes
 RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_1_1, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->left_strncpy(1, 1);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -3580,7 +3687,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_a_b_free, .fixture 
 RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_1_2, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->left_strncpy(1, 2);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -3590,7 +3699,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_1_2, .fixture = tes
 RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_1_3, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->left_strncpy(1, 3);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -3601,7 +3712,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_1_3, .fixture = tes
 RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_2_1, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->left_strncpy(2, 1);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -3612,7 +3725,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_2_1, .fixture = tes
 RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_a_string_free, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     CALL(virtual_string)->free(quantum_str_ptr2);
     u64 error_ptr = CALL(virtual_string)->left_strncpy(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -3624,7 +3739,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_a_string_free, .fix
 RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_string_free_b, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     CALL(virtual_string)->free(quantum_str_ptr1);
     u64 error_ptr = CALL(virtual_string)->left_strncpy(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -3636,6 +3753,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_string_free_b, .fix
 RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_string_list, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 list_ptr2 = CALL(virtual_stack)->alloc();
     u64 error_ptr = CALL(virtual_string)->left_strncpy(quantum_str_ptr1, list_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -3648,6 +3766,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_list_string, .fixtu
     CALL(pointer)->init(8);
     u64 list_ptr1 = CALL(virtual_stack)->alloc();
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->left_strncpy(list_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -3676,6 +3795,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_0_1, .fixture = test_fixtur
 RX_TEST_CASE(pointer_tests, test_pointer_string_left_1_0, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr = CALL(virtual_string)->load("");
+    ASSERT_DEBUG(quantum_str_ptr == 0);
     u64 error_ptr = CALL(virtual_string)->left(1, 0);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -3686,7 +3806,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_1_0, .fixture = test_fixtur
 RX_TEST_CASE(pointer_tests, test_pointer_string_left_1_1, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->left(1, 1);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -3764,7 +3886,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_a_b_free, .fixture = test_f
 RX_TEST_CASE(pointer_tests, test_pointer_string_left_1_2, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->left(1, 2);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -3774,7 +3898,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_1_2, .fixture = test_fixtur
 RX_TEST_CASE(pointer_tests, test_pointer_string_left_1_3, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->left(1, 3);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -3785,7 +3911,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_1_3, .fixture = test_fixtur
 RX_TEST_CASE(pointer_tests, test_pointer_string_left_2_1, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->left(2, 1);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -3860,6 +3988,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_0_1, .fixture = test_fix
 RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_1_0, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr = CALL(virtual_string)->load("");
+    ASSERT_DEBUG(quantum_str_ptr == 0);
     u64 error_ptr = CALL(virtual_string)->strncpy(1, 0);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -3870,7 +3999,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_1_0, .fixture = test_fix
 RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_1_1, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->strncpy(1, 1);
     RX_ASSERT(error_ptr == 3);
     CALL(pointer)->gc();
@@ -3961,7 +4092,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_a_b_2_overflow, .fixture
 RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_1_2, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->strncpy(1, 2);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -3972,7 +4105,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_1_2, .fixture = test_fix
 RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_1_3, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->strncpy(1, 3);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();
@@ -3983,7 +4118,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_1_3, .fixture = test_fix
 RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_2_1, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 data_ptr = CALL(virtual_string)->strncpy(2, 1);
     RX_ASSERT(data_ptr != 0);
     CALL(pointer)->gc();
@@ -3994,7 +4131,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_2_1, .fixture = test_fix
 RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_a_string_free, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     CALL(virtual_string)->free(quantum_str_ptr2);
     u64 error_ptr = CALL(virtual_string)->strncpy(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -4006,7 +4145,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_a_string_free, .fixture 
 RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_string_free_b, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("b");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     CALL(virtual_string)->free(quantum_str_ptr1);
     u64 error_ptr = CALL(virtual_string)->strncpy(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -4018,6 +4159,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_string_free_b, .fixture 
 RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_string_list, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 quantum_str_ptr1 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr1 != 0);
     u64 list_ptr2 = CALL(virtual_stack)->alloc();
     u64 error_ptr = CALL(virtual_string)->strncpy(quantum_str_ptr1, list_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -4030,6 +4172,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_list_string, .fixture = 
     CALL(pointer)->init(8);
     u64 list_ptr1 = CALL(virtual_stack)->alloc();
     u64 quantum_str_ptr2 = CALL(virtual_string)->load("a");
+    ASSERT_DEBUG(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(virtual_string)->strncpy(list_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
     CALL(pointer)->gc();

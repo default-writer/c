@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 21, 2025 at 7:04:01 AM GMT+3
+ *   February 23, 2025 at 11:20:57 PM GMT+3
  *
  */
 /*
@@ -28,6 +28,8 @@
 #define _STD_HEADERS_H_
 
 #define USING_HEADERS
+
+#include <assert.h>
 
 #include <stdint.h>
 

@@ -9,15 +9,14 @@
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=default-writer_c&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=default-writer_c)
 
-## funding
-
-![etherium](https://github.com/user-attachments/assets/97e0d121-9efd-45a8-9d8d-f9ee686874ed)
-
-- etherium: 0x035ebC06C7e667200695Cf8FC3686EEBBBD5A452
-
 ## description
 
-- C memory management
+- C memory management and pointer management library
+
+The goal is to conform to the C guidelines in development of critical code.
+
+[The Power of Ten]nasa[] – Rules for Developing Safety Critical Code1,
+> Gerard J. Holzmann, NASA/JPL Laboratory for Reliable Software, Pasadena, CA 91109
 
 ```c
 static u64 read_data(u64 list_ptr, const char* prompt) {
@@ -52,6 +51,7 @@ int main(void) {
 
 ## inspiration
 
+- [NASA](https://spinroot.com/gerard/pdf/P10.pdf)
 - [tilir](https://github.com/tilir/c-graduate)
 - [introduction to C (ru)](https://www.youtube.com/watch?v=7YhRFx-oyW4&ab_channel=KonstantinVladimirov)
 - [practice C bash/linux/gcc (ru)](https://youtu.be/KLv-5jWlKjM)
@@ -80,7 +80,7 @@ int main(void) {
 - development environment:
 
   1. WSL2/devcontainers
-  2. Ubuntu 22.04.3 LTS
+  2. Ubuntu 18.04.6 / 22.04.3 / 24/.04.2 LTS
 
 - C API generated docs (doxygen):
 
@@ -261,6 +261,7 @@ support this project [become a sponsor](https://opencollective.com/c-vm#sponsor)
 
 ### referential documentation
 
+- [nasa] NASA PDF([p10.pdf][nasa])
 - [memory](docs/memory.md) PDF([memory.pdf][memory])
 - [list](docs/list.md) PDF([list.pdf][list])
 - [class](docs/class.md) PDF([class.pdf][class])
@@ -306,4 +307,11 @@ support this project [become a sponsor](https://opencollective.com/c-vm#sponsor)
 [history]: docs/pdf/history.pdf
 [scripts]: docs/pdf/scripts.pdf
 [labs]: docs/pdf/labs.pdf
+[nasa]: docs/P10.pdf
 [ninja]: https://github.com/ninja-build/ninja/releases
+
+## funding
+
+![etherium](https://github.com/user-attachments/assets/97e0d121-9efd-45a8-9d8d-f9ee686874ed)
+
+- etherium: 0x035ebC06C7e667200695Cf8FC3686EEBBBD5A452
