@@ -15,8 +15,10 @@
 
 The goal is to conform to the C guidelines in development of critical code.
 
-[The Power of Ten]nasa[] – Rules for Developing Safety Critical Code1,
-> Gerard J. Holzmann, NASA/JPL Laboratory for Reliable Software, Pasadena, CA 91109
+- [The Power of Ten][nasa] – Rules for Developing Safety Critical Code
+  > Gerard J. Holzmann, NASA/JPL Laboratory for Reliable Software, Pasadena, CA 91109
+
+## code
 
 ```c
 static u64 read_data(u64 list_ptr, const char* prompt) {
