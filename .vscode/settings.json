@@ -187,7 +187,6 @@
         "vscode.videoPreview": false,
         "jsProfileVisualizer.cpuprofile.table": false,
         "jsProfileVisualizer.heapprofile.table": false,
-        "pdf.view": false,
         "workbench.editors.gettingStartedInput": false,
         "jupyter-notebook": false,
         "terminalEditor": true,
@@ -487,6 +486,10 @@
     "bazel.executable": "$HOME/.bazel/bazel",
     "cmake.options.statusBarVisibility": "visible",
     "editor.fontSize": 12,
+    "sonarlint.connectedMode.project": {
+        "connectionId": "default-writer",
+        "projectKey": "default-writer_c"
+    },
     "cmake.debugConfig": {
         "MIMode": "gdb",
         "miDebuggerPath": "/usr/bin/gdb",
@@ -500,9 +503,5 @@
         "console": "integratedTerminal",
         "cwd": "${workspaceRoot}/cmake",
         "environment": []
-    },
-    "sonarlint.connectedMode.project": {
-        "connectionId": "default-writer",
-        "projectKey": "default-writer_c"
     }
 }

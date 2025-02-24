@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 19, 2025 at 10:32:01 PM GMT+3
+ *   February 24, 2025 at 2:06:23 PM GMT+3
  *
  */
 /*
@@ -24,8 +24,11 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#define USING_MACROS
+
 #include "virtual_v1.h"
 
+#include "std/macros.h"
 #include "sys/memory/memory_v1.h"
 
 #include "sys/list/list_v1.h"
@@ -120,6 +123,9 @@ static virtual_pointer_ptr vm_init_internal(u64 size, u64 offset) {
 }
 
 static pointer_ptr* vm_read_internal(u64 address) {
+    if (vm->head == NULL) {
+        return 0;
+    }
     pointer_ptr* ptr = 0;
     const_virtual_pointer_ptr virtual_pointer = vm->head;
     do {
@@ -252,6 +258,9 @@ static void vm_free(const_pointer_ptr ptr) {
         return;
     }
     const virtual_pointer_ptr virtual_pointer = CALL(pointer)->ref(ptr);
+    if (!virtual_pointer) {
+        return;
+    }
     pointer_ptr* data = virtual_pointer->bp - virtual_pointer->offset - 1 + CALL(pointer)->address(ptr);
     if (data != 0) {
 #ifndef USE_GC

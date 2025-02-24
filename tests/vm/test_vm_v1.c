@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 21, 2025 at 7:22:44 AM GMT+3
+ *   February 24, 2025 at 2:09:09 PM GMT+3
  *
  */
 /*
@@ -26,12 +26,13 @@
 
 #include "test_vm_v1.h"
 
+#include "std/macros.h"
 #include "sys/options/options_v1.h"
 #include "vm/pointer/pointer_v1.h"
 #include "vm/types/data/data_v1.h"
 #include "vm/types/stack/stack_v1.h"
+#include "vm/types/user/user_v1.h"
 #include "vm/virtual/virtual_v1.h"
-#include "vm/vm_v1.h"
 
 #define DEFAULT_SIZE 0x100
 
@@ -244,13 +245,56 @@ RX_TEST_CASE(tests, test_list_free_user_free, .fixture = test_pointer_fixture) {
     CALL(pointer)->gc();
     CALL(pointer)->destroy();
 }
-
 /* test init */
 RX_TEST_CASE(tests, test_user_free_0, .fixture = test_pointer_fixture) {
     CALL(pointer)->init(8);
     CALL(virtual_user)->free(0);
     CALL(pointer)->gc();
     CALL(pointer)->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_pointer_alloc_release, .fixture = test_pointer_fixture) {
+    CALL(pointer)->init(8);
+
+    pointer_ptr alloc_ptr = CALL(pointer)->alloc(8, TYPE_USER + 1);
+    CALL(pointer)->release(alloc_ptr);
+
+    CALL(pointer)->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_pointer_alloc_virtual_alloc_release, .fixture = test_pointer_fixture) {
+    CALL(pointer)->init(8);
+
+    pointer_ptr alloc_ptr = CALL(pointer)->alloc(8, TYPE_USER + 1);
+    u64 ptr_id = CALL(virtual)->alloc(alloc_ptr);
+
+    pointer_ptr release_ptr = CALL(virtual)->read_type(ptr_id, TYPE_USER + 1);
+    CALL(pointer)->release(release_ptr);
+
+    ASSERT_DEBUG(alloc_ptr == release_ptr);
+
+    CALL(pointer)->free(0);
+    CALL(pointer)->gc();
+    CALL(pointer)->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_pointer_alloc_gc_destroy_free, .fixture = test_pointer_fixture) {
+    CALL(pointer)->init(8);
+    pointer_ptr byte_data = CALL(pointer)->alloc(8, TYPE_USER);
+    u64 ptr_id = CALL(virtual)->alloc(byte_data);
+
+    virtual_pointer_ptr vptr = CALL(pointer)->ref(byte_data);
+    CALL(pointer)->write(byte_data, vptr, ptr_id);
+
+    pointer_ptr release_ptr = CALL(virtual)->read_type(ptr_id, TYPE_USER);
+    CALL(pointer)->release(release_ptr);
+
+    CALL(pointer)->gc();
+    CALL(pointer)->destroy();
+    CALL(pointer)->free(ptr_id);
 }
 
 static int run(void) {
