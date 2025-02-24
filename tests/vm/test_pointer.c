@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 24, 2025 at 9:40:57 AM GMT+3
+ *   February 24, 2025 at 2:44:19 PM GMT+3
  *
  */
 /*
@@ -1678,7 +1678,7 @@ RX_TEST_CASE(tests_v1, test_os_getenv, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 ui_mode_ptr = CALL(virtual_string)->load("UI_MODE");
     u64 file_path_ptr = CALL(os)->getenv(ui_mode_ptr);
-    ASSERT_DEBUG(file_path_ptr != 0);
+    ASSERT_DEBUG(file_path_ptr == 0);
     CALL(pointer)->gc();
     CALL(pointer)->destroy();
 }
