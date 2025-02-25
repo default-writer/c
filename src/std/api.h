@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 25, 2025 at 2:51:02 PM GMT+3
+ *   February 25, 2025 at 4:38:22 PM GMT+3
  *
  */
 /*
@@ -38,10 +38,6 @@
 #include "std/macros.h"
 
 #include "std/version.h"
-
-#define MAJOR_VERSION 1
-#define MINOR_VERSION 0
-#define PATCH_VERSION 0
 
 #define VM_EXPAND(X) X
 #define VM_CONCAT_(A, B) A##B

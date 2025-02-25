@@ -32,6 +32,9 @@ execute_process(COMMAND git log -n 1 --pretty=format:%at OUTPUT_VARIABLE UNIX_TI
 string(REGEX REPLACE "\n" "" GIT_COMMIT_HASH "${GIT_COMMIT_HASH}")
 string(REGEX REPLACE "\n" "" UNIX_TIMESTAMP "${UNIX_TIMESTAMP}")
 file(WRITE ${CMAKE_SOURCE_DIR}/src/std/version.h 
+    "#define MAJOR_VERSION " ${CMAKE_PROJECT_VERSION_MAJOR} "\n"
+    "#define MINOR_VERSION " ${CMAKE_PROJECT_VERSION_MINOR} "\n"
+    "#define PATCH_VERSION " ${CMAKE_PROJECT_VERSION_PATCH} "\n"
     "#define GIT_COMMIT_HASH_VALUE " ${GIT_COMMIT_HASH} "\n"
     "#define GIT_COMMIT_HASH \"" ${GIT_COMMIT_HASH} "\"\n"
     "#define UNIX_TIMESTAMP " ${UNIX_TIMESTAMP} "\n"
