@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 25, 2025 at 2:50:32 PM GMT+3
+ *   February 25, 2025 at 10:21:42 AM GMT+3
  *
  */
 /*
@@ -24,27 +24,24 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _OS_V1_H_
-#define _OS_V1_H_
+#ifndef _TEST_MEMORY_H_
+#define _TEST_MEMORY_H_
 
-#define USING_API
+#define USING_MEMORY
 
 #include "std/api.h"
 
-#include "vm/export.h"
-
-/*! @file os_v1.h
- *  @brief C API / os
- */
-
-typedef struct PRIVATE_API(os_methods) {
-    u64 (*getenv)(u64 name);
-    u64 (*getcwd)(void);
-    void (*putc)(u64 ptr);
-} os_methods;
+typedef struct PRIVATE_API(test_suite) memory_micro_test_suite;
 
 /* definition */
-CVM_EXPORT extern const os_methods PRIVATE_API(os_methods_definitions);
-CVM_EXPORT extern const os_methods* CALL(os);
+extern const memory_micro_test_suite PRIVATE_API(memory_micro_test_suite_definitions);
 
-#endif /* _OS_V1_H_ */
+/* definition */
+#ifdef INLINE
+const memory_micro_test_suite* memory_micro_test_suite = &PRIVATE_API(memory_micro_test_suite_definitions);
+#else
+/* definition */
+static const memory_micro_test_suite* _memory_micro_test_suite = &PRIVATE_API(memory_micro_test_suite_definitions);
+#endif
+
+#endif /* _TEST_MEMORY_H_ */

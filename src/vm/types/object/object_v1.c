@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 21, 2025 at 4:26:42 AM GMT+3
+ *   February 25, 2025 at 2:54:16 PM GMT+3
  *
  */
 /*
@@ -45,9 +45,21 @@ static u64 object_load(const void* data, u64 size);
 static u64 object_size(u64 ptr);
 
 /* destructor */
-static void virtual_free(pointer_ptr ptr);
+static void type_desctructor(pointer_ptr ptr);
 
 /* implementation */
+static const struct type_methods_definitions _type = {
+    .desctructor = type_desctructor
+};
+
+static void INIT init(void) {
+    CALL(pointer)->register_known_type(id, &_type);
+}
+
+static void type_desctructor(pointer_ptr ptr) {
+    CALL(pointer)->release(ptr);
+}
+
 static u64 object_alloc(u64 size) {
     if (size == 0) {
         return 0;
@@ -58,23 +70,19 @@ static u64 object_alloc(u64 size) {
 }
 
 static void object_free(u64 ptr) {
-    pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
-    if (data_ptr == 0) {
+    pointer_ptr* data_ptr = CALL(virtual)->read_type(ptr, id);
+    if (data_ptr == 0 || *data_ptr == 0) {
         return;
     }
-    virtual_free(data_ptr);
-}
-
-static void virtual_free(pointer_ptr ptr) {
-    CALL(pointer)->release(ptr);
+    type_desctructor(*data_ptr);
 }
 
 static void* object_unsafe(u64 ptr) {
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
-    if (data_ptr == 0) {
+    pointer_ptr* data_ptr = CALL(virtual)->read_type(ptr, id);
+    if (data_ptr == 0 || *data_ptr == 0) {
         return 0;
     }
-    void* object_data = CALL(pointer)->read(data_ptr);
+    void* object_data = CALL(pointer)->read(*data_ptr);
     return object_data;
 }
 
@@ -92,20 +100,12 @@ static u64 object_load(const void* src_data, u64 size) {
 }
 
 static u64 object_size(u64 ptr) {
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
-    if (data_ptr == 0) {
+    pointer_ptr* data_ptr = CALL(virtual)->read_type(ptr, id);
+    if (data_ptr == 0 || *data_ptr == 0) {
         return 0;
     }
-    u64 size = CALL(pointer)->size(data_ptr);
+    u64 size = CALL(pointer)->size(*data_ptr);
     return size;
-}
-
-static const struct type_methods_definitions _type = {
-    .free = virtual_free
-};
-
-static void INIT init(void) {
-    CALL(pointer)->register_known_type(id, &_type);
 }
 
 #ifndef ATTRIBUTE
@@ -123,6 +123,6 @@ const virtual_object_methods PRIVATE_API(virtual_object_methods_definitions) = {
     .size = object_size
 };
 
-const virtual_object_methods* _virtual_object() {
+const virtual_object_methods* CALL(virtual_object) {
     return &PRIVATE_API(virtual_object_methods_definitions);
 }

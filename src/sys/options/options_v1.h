@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 19, 2025 at 10:18:48 PM GMT+3
+ *   February 25, 2025 at 2:50:12 PM GMT+3
  *
  */
 /*
@@ -37,6 +37,6 @@ typedef struct PRIVATE_API(options_methods) {
 
 /* definition */
 CSYS_EXPORT extern const options_methods PRIVATE_API(options_methods_definitions);
-CSYS_EXPORT extern const options_methods* _sys_options();
+CSYS_EXPORT extern const options_methods* CALL(sys_options);
 
 #endif /* _VM_V1_OPTIONS_H_ */

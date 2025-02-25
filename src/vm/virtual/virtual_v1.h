@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 19, 2025 at 9:55:06 PM GMT+3
+ *   February 25, 2025 at 2:48:14 PM GMT+3
  *
  */
 /*
@@ -41,8 +41,8 @@ typedef struct PRIVATE_API(virtual_methods) {
     void (*destroy)(struct vm**);
     u64 (*alloc)(pointer_ptr ptr);
     void (*free)(const_pointer_ptr ptr);
-    pointer_ptr (*read)(u64 address);
-    pointer_ptr (*read_type)(u64 address, u64 id);
+    pointer_ptr* (*read)(u64 address);
+    pointer_ptr* (*read_type)(u64 address, u64 id);
     void (*enumerator_init)(void);
     void (*enumerator_destroy)(void);
     u64 (*enumerator_next)(void);
@@ -54,6 +54,6 @@ typedef struct PRIVATE_API(virtual_methods) {
 
 /* definition */
 CVM_EXPORT extern const virtual_methods PRIVATE_API(virtual_methods_definitions);
-CVM_EXPORT extern const virtual_methods* _virtual();
+CVM_EXPORT extern const virtual_methods* CALL(virtual);
 
 #endif /* _VIRTUAL_V1_H_ */

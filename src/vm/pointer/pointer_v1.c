@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 24, 2025 at 1:17:03 PM GMT+3
+ *   February 25, 2025 at 2:53:52 PM GMT+3
  *
  */
 /*
@@ -55,7 +55,7 @@ typedef const struct known_types* const_known_types_ptr;
 struct known_types {
     known_types_ptr next;
     u64 id;
-    void (*free)(pointer_ptr ptr);
+    desctructor desctructor;
 };
 
 /* definition */
@@ -83,7 +83,7 @@ static void init(void) {
 }
 #endif
 
-static struct vm* vm;
+static struct vm* vm = 0;
 static known_types_ptr default_types;
 
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -118,7 +118,6 @@ static void* pointer_read(const_pointer_ptr ptr);
 static void pointer_write(pointer_ptr ptr, virtual_pointer_ptr virtual_pointer, u64 address);
 static u64 pointer_read_type(const_pointer_ptr ptr, u64 virtual_id);
 
-static void pointer_free_internal(pointer_ptr ptr);
 static void known_types_init(u64 id, const type_methods_definitions* data_type);
 static u64 user_types_init(const type_methods_definitions* data_type);
 
@@ -135,14 +134,14 @@ static void known_types_init(u64 id, const type_methods_definitions* data_type) 
     new_type->next = known_types;
     known_types = new_type;
     known_types->id = id;
-    known_types->free = data_type->free;
+    known_types->desctructor = data_type->desctructor;
 }
 
 static u64 user_types_init(const type_methods_definitions* data_type) {
     known_types_ptr new_type = CALL(sys_memory)->alloc(sizeof(struct known_types));
     new_type->next = known_types;
     new_type->id = known_types_counter++;
-    new_type->free = data_type->free;
+    new_type->desctructor = data_type->desctructor;
     known_types = new_type;
     return known_types->id;
 }
@@ -162,13 +161,6 @@ static void DESTROY vm_destroy(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
     global_statistics();
 #endif
-}
-
-static void pointer_free_internal(pointer_ptr ptr) {
-    const_known_types_ptr virtual_ptr = default_types + ptr->id;
-    if (virtual_ptr->free) {
-        virtual_ptr->free(ptr);
-    }
 }
 
 static pointer_ptr pointer_alloc(u64 size, u64 id) {
@@ -200,11 +192,13 @@ static void pointer_free(u64 ptr) {
     if (ptr == 0) {
         return;
     }
-    pointer_ptr data_ptr = CALL(virtual)->read(ptr);
-    if (data_ptr == 0) {
+    pointer_ptr* data_ptr = CALL(virtual)->read(ptr);
+    if (data_ptr == 0 || *data_ptr == 0) {
         return;
     }
-    pointer_free_internal(data_ptr);
+    u64 type_id = (*data_ptr)->id;
+    const desctructor type_desctructor = (default_types[type_id]).desctructor;
+    type_desctructor(*data_ptr);
 }
 
 static void pointer_release(pointer_ptr ptr) {
@@ -298,8 +292,7 @@ static void pointer_gc(void) {
     CALL(virtual)->enumerator_init();
     u64 ptr = 0;
     while ((ptr = CALL(virtual)->enumerator_next()) != 0) {
-        pointer_ptr data_ptr = CALL(virtual)->read(ptr);
-        pointer_free_internal(data_ptr);
+        pointer_free(ptr);
     }
     CALL(virtual)->enumerator_destroy();
 }
@@ -341,6 +334,6 @@ const pointer_methods PRIVATE_API(pointer_methods_definitions) = {
 #endif
 };
 
-const pointer_methods* _pointer() {
+const pointer_methods* CALL(pointer) {
     return &PRIVATE_API(pointer_methods_definitions);
 }

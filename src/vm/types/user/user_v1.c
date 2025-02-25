@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 21, 2025 at 4:45:27 AM GMT+3
+ *   February 25, 2025 at 2:54:49 PM GMT+3
  *
  */
 /*
@@ -40,9 +40,21 @@ static u64 virtual_user_alloc(void);
 static void virtual_user_free(u64 ptr);
 
 /* destructor */
-static void virtual_free(pointer_ptr ptr);
+static void type_desctructor(pointer_ptr ptr);
 
 /* implementation */
+static const struct type_methods_definitions _type = {
+    .desctructor = type_desctructor
+};
+
+static void INIT init(void) {
+    id = CALL(pointer)->register_user_type(&_type);
+}
+
+static void type_desctructor(pointer_ptr ptr) {
+    CALL(pointer)->release(ptr);
+}
+
 static u64 virtual_user_alloc(void) {
     pointer_ptr ptr = CALL(pointer)->alloc(0, id);
     u64 virtual_ptr = CALL(virtual)->alloc(ptr);
@@ -50,23 +62,11 @@ static u64 virtual_user_alloc(void) {
 }
 
 static void virtual_user_free(u64 ptr) {
-    pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
-    if (data_ptr == 0) {
+    pointer_ptr* data_ptr = CALL(virtual)->read_type(ptr, id);
+    if (data_ptr == 0 || *data_ptr == 0) {
         return;
     }
-    virtual_free(data_ptr);
-}
-
-static void virtual_free(pointer_ptr ptr) {
-    CALL(pointer)->release(ptr);
-}
-
-static const struct type_methods_definitions _type = {
-    .free = virtual_free
-};
-
-static void INIT init(void) {
-    id = CALL(pointer)->register_user_type(&_type);
+    type_desctructor(*data_ptr);
 }
 
 #ifndef ATTRIBUTE
@@ -81,6 +81,6 @@ const virtual_user_methods PRIVATE_API(virtual_user_methods_definitions) = {
     .free = virtual_user_free
 };
 
-const virtual_user_methods* _virtual_user() {
+const virtual_user_methods* CALL(virtual_user) {
     return &PRIVATE_API(virtual_user_methods_definitions);
 }

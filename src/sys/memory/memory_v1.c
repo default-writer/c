@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 24, 2025 at 1:56:11 PM GMT+3
+ *   February 25, 2025 at 2:45:04 PM GMT+3
  *
  */
 /*
@@ -70,16 +70,14 @@ static void memory_free(void* ptr, u64 size) {
 #if !defined(USE_MEMORY_CLEANUP) && !defined(USE_MEMORY_DEBUG_INFO)
     (void)size; /* mark as unused when not in debug/cleanup mode */
 #endif
-    if (ptr != 0) {
 #ifdef USE_MEMORY_CLEANUP
-        memory_set(ptr, 0, size); /* NOLINT */
+    memory_set(ptr, 0, size); /* NOLINT */
 #endif
 #ifdef USE_MEMORY_DEBUG_INFO
-        total_free += size;
-        printf("   -: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_alloc, total_free);
+    total_free += size;
+    printf("   -: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_alloc, total_free);
 #endif
-        free(ptr);
-    }
+    free(ptr);
 }
 
 static void* memory_realloc(void* old_ptr, u64 size, u64 new_size) {
@@ -135,6 +133,6 @@ const memory_methods PRIVATE_API(memory_methods_definitions) = {
 #endif
 };
 
-const memory_methods* _sys_memory() {
+const memory_methods* CALL(sys_memory) {
     return &PRIVATE_API(memory_methods_definitions);
 }

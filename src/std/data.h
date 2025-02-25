@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 21, 2025 at 4:46:58 AM GMT+3
+ *   February 25, 2025 at 1:10:22 PM GMT+3
  *
  */
 /*
@@ -51,9 +51,10 @@ typedef struct pointer* pointer_ptr;
 typedef const struct pointer* const_pointer_ptr;
 typedef struct virtual_pointer* virtual_pointer_ptr;
 typedef const struct virtual_pointer* const_virtual_pointer_ptr;
+typedef void (*desctructor)(pointer_ptr ptr);
 
 typedef struct type_methods_definitions {
-    void (*free)(pointer_ptr ptr);
+    desctructor desctructor;
 } type_methods_definitions;
 
 enum type {

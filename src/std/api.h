@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 24, 2025 at 9:42:05 AM GMT+3
+ *   February 25, 2025 at 2:51:02 PM GMT+3
  *
  */
 /*
@@ -56,7 +56,7 @@
 // #if !defined(_WIN32)
 // #define CALL(x) (x)
 // #else
-#define CALL(x) _##x()
+#define CALL(x) PRIVATE_API(x)()
 // #endif
 
 #endif /* _STD_API_H_ */

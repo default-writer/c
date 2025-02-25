@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 24, 2025 at 1:17:02 PM GMT+3
+ *   February 25, 2025 at 2:55:20 PM GMT+3
  *
  */
 /*
@@ -57,10 +57,11 @@ static u64 os_getenv(u64 ptr) {
     if (ptr == 0) {
         return 0;
     }
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, TYPE_STRING);
-    if (data_ptr == 0) {
+    pointer_ptr* ptr_ptr = CALL(virtual)->read_type(ptr, TYPE_STRING);
+    if (ptr_ptr == 0 || *ptr_ptr == 0) {
         return 0;
     }
+    const_pointer_ptr data_ptr = *ptr_ptr;
     const char* name_data = CALL(pointer)->read(data_ptr);
     u64 value = CALL(virtual_string)->load(getenv(name_data));
     return value;
@@ -92,6 +93,6 @@ const os_methods PRIVATE_API(os_methods_definitions) = {
     .putc = os_putc
 };
 
-const os_methods* _os() {
+const os_methods* CALL(os) {
     return &PRIVATE_API(os_methods_definitions);
 }

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 3, 2025 at 4:07:34 PM GMT+3
+ *   February 25, 2025 at 10:18:10 AM GMT+3
  *
  */
 /*
@@ -27,7 +27,15 @@
 #ifndef _MAIN_TESTS_V1_H_
 #define _MAIN_TESTS_V1_H_
 
+#define USING_TESTS
+
+#define USING_LIST
+#define USING_MEMORY
+#define USING_POINTER
+#define USING_VM
+
 #include "test_list.h"
+#include "test_memory.h"
 #include "test_pointer.h"
 #include "test_vm_v1.h"
 

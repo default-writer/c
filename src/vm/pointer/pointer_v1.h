@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 21, 2025 at 4:25:59 AM GMT+3
+ *   February 25, 2025 at 2:49:12 PM GMT+3
  *
  */
 /*
@@ -61,6 +61,6 @@ typedef struct PRIVATE_API(pointer_methods) {
 
 /* definition */
 CVM_EXPORT extern const pointer_methods PRIVATE_API(pointer_methods_definitions);
-CVM_EXPORT extern const pointer_methods* _pointer();
+CVM_EXPORT extern const pointer_methods* CALL(pointer);
 
 #endif /* _POINTER_V1_H_ */
