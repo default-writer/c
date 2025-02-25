@@ -1,4 +1,3 @@
 --all
 --clean
---debug
---gc
+--sanitize

@@ -37,7 +37,6 @@ chud.log
 
 # Directories
 !.deps/rexo
-.deps*/
 gh*/
 vcpkg*/
 node_modules*/
@@ -52,6 +51,9 @@ coverage*/
 libs*/
 logs*/
 report*/
+pkg*/
+
+.deps*/
 .cache*/
 .history*/
 .venv*/
