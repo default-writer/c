@@ -36,28 +36,22 @@ while (($#)); do
             help
             ;;
 
-        "--nm-csys") # [optional] extracts sys library info
+        "--c-sys") # [optional] extracts sys library info
             echo "--------libcsys.so--------"
             nm -D -l "${pwd}/lib/libc-sys.so"
-            ;;
-
-        "--nm-cvm") # [optional] extracts vm library info
-            echo "--------libctypes.so--------"
-            nm -D -l "${pwd}/lib/libc-vm.so"
-            ;;
-
-        "--objdump-csys") # [optional] extracts sys library info
             echo "--------libcsys.so--------"
             objdump -T "${pwd}/lib/libc-sys.so"
+            echo "--------libcsys.so--------"
+            objdump -p "${pwd}/lib/libc-sys.so" | grep NEEDED
             ;;
 
-        "--objdump-cvm") # [optional] extracts vm library info
-            echo "--------libctypes.so--------"
+        "--c-vm") # [optional] extracts vm library info
+            echo "--------libc-vm.so--------"
+            nm -D -l "${pwd}/lib/libc-vm.so"
+            echo "--------libc-vm.so--------"
             objdump -T "${pwd}/lib/libc-vm.so"
-            ;;
-
-        "--branch-change-main-to-master") # [optional] changes branching strategy to master
-            branch-change-main-to-master
+            echo "--------libc-vm.so--------"
+            objdump -p "${pwd}/lib/libc-vm.so" | grep NEEDED
             ;;
 
         *)
