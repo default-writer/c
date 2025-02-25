@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 19, 2025 at 10:28:35 PM GMT+3
+ *   February 25, 2025 at 2:47:25 PM GMT+3
  *
  */
 /*
@@ -27,6 +27,8 @@
 #ifndef _SYS_MEMORY_H_
 #define _SYS_MEMORY_H_
 
+#define USING_MEMORY
+
 #include "std/api.h"
 
 #include "sys/export.h"
@@ -46,6 +48,6 @@ typedef struct PRIVATE_API(memory_methods) {
 
 /* definition */
 CSYS_EXPORT extern const memory_methods PRIVATE_API(memory_methods_definitions);
-CSYS_EXPORT extern const memory_methods* _sys_memory();
+CSYS_EXPORT extern const memory_methods* CALL(sys_memory);
 
 #endif /* _SYS_MEMORY_H_ */

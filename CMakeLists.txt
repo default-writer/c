@@ -255,9 +255,12 @@ set(LIB_VM_SOURCE
     src/vm/types/user/user_v1.c
     src/vm/virtual/virtual_v1.c)
 
-set(TESTS_SRC_LIST tests/vm/test_list.c)
-set(TESTS_SRC_POINTER tests/vm/test_pointer.c)
-set(TESTS_SRC_VM_V1 tests/vm/test_vm_v1.c)
+set(TESTS_SOURCE
+    tests/vm/test_list.c
+    tests/vm/test_memory.c
+    tests/vm/test_pointer.c
+    tests/vm/test_vm_v1.c)
+
 set(MAIN_TESTS_VM1_SOURCE tests/vm/main-tests_v1.c)
 
 include_directories(${CMAKE_SOURCE_DIR}/tests)
@@ -288,9 +291,7 @@ target_include_directories(c-vm PUBLIC
 # main 
 add_executable(main-tests-vm1
     ${MAIN_TESTS_VM1_SOURCE}
-    ${TESTS_SRC_LIST}
-    ${TESTS_SRC_POINTER}
-    ${TESTS_SRC_VM_V1}
+    ${TESTS_SOURCE}
 )
 
 # test

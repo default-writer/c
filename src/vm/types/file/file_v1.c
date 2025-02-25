@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 21, 2025 at 4:26:33 AM GMT+3
+ *   February 25, 2025 at 2:54:09 PM GMT+3
  *
  */
 /*
@@ -32,22 +32,14 @@
 #include "vm/types/data/data_v1.h"
 #include "vm/virtual/virtual_v1.h"
 
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
 
 #define DEFAULT_SIZE 0x100
 
 static const enum type id = TYPE_FILE;
 
-/* internal */
-static u64 file_alloc(u64 file_path_ptr, u64 mode_ptr);
-static void file_free(u64 ptr);
-static u64 file_data(u64 ptr);
-
-/* destructor */
-static void virtual_free(pointer_ptr ptr);
-
-/* implementation */
+/* definition */
 struct file_handler {
     FILE* file;
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -55,8 +47,34 @@ struct file_handler {
 #endif
 };
 
+/* internal */
+static u64 file_alloc(u64 file_path_ptr, u64 mode_ptr);
+static void file_free(u64 ptr);
+static u64 file_data(u64 ptr);
+
+/* destructor */
+static void type_desctructor(pointer_ptr ptr);
+
+/* implementation */
+static const struct type_methods_definitions _type = {
+    .desctructor = type_desctructor
+};
+
+static void INIT init(void) {
+    CALL(pointer)->register_known_type(id, &_type);
+}
+
+static void type_desctructor(pointer_ptr ptr) {
+    struct file_handler* handler = CALL(pointer)->read(ptr);
+    if (handler->file != 0) {
+        fclose(handler->file);
+        handler->file = 0;
+    }
+    CALL(pointer)->release(ptr);
+}
+
 static int is_valid_fopen_mode(const char* mode) {
-    const char* valid_modes[] = {"r", "w", "a", "r+", "w+", "a+", "rb", "wb", "ab", "r+b", "w+b", "a+b"};
+    const char* valid_modes[] = { "r", "w", "a", "r+", "w+", "a+", "rb", "wb", "ab", "r+b", "w+b", "a+b" };
     size_t num_modes = sizeof(valid_modes) / sizeof(valid_modes[0]);
     for (size_t i = 0; i < num_modes; ++i) {
         if (strcmp(mode, valid_modes[i]) == 0) {
@@ -73,16 +91,17 @@ static u64 file_alloc(u64 file_path, u64 mode) {
     if (mode == 0) {
         return 0;
     }
-    const_pointer_ptr file_path_ptr = CALL(virtual)->read_type(file_path, TYPE_STRING);
-    if (file_path_ptr == 0) {
+    pointer_ptr* ptr = CALL(virtual)->read_type(file_path, TYPE_STRING);
+    if (ptr == 0 || *ptr == 0) {
         return 0;
     }
-    const_pointer_ptr mode_ptr = CALL(virtual)->read_type(mode, TYPE_STRING);
-    if (mode_ptr == 0) {
+    const_pointer_ptr file_path_ptr = *ptr;
+    pointer_ptr* mode_ptr = CALL(virtual)->read_type(mode, TYPE_STRING);
+    if (mode_ptr == 0 || *mode_ptr == 0) {
         return 0;
     }
     const char* file_path_data = CALL(pointer)->read(file_path_ptr);
-    const char* mode_data = CALL(pointer)->read(mode_ptr);
+    const char* mode_data = CALL(pointer)->read(*mode_ptr);
     if (!is_valid_fopen_mode(mode_data)) {
         return 0;
     }
@@ -101,28 +120,19 @@ static u64 file_alloc(u64 file_path, u64 mode) {
 }
 
 static void file_free(u64 ptr) {
-    pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
-    if (data_ptr == 0) {
+    pointer_ptr* data_ptr = CALL(virtual)->read_type(ptr, id);
+    if (data_ptr == 0 || *data_ptr == 0) {
         return;
     }
-    virtual_free(data_ptr);
-}
-
-static void virtual_free(pointer_ptr ptr) {
-    struct file_handler* handler = CALL(pointer)->read(ptr);
-    if (handler->file != 0) {
-        fclose(handler->file);
-        handler->file = 0;
-    }
-    CALL(pointer)->release(ptr);
+    type_desctructor(*data_ptr);
 }
 
 static u64 file_data(u64 ptr) {
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
-    if (data_ptr == 0) {
+    pointer_ptr* data_ptr = CALL(virtual)->read_type(ptr, id);
+    if (data_ptr == 0 || *data_ptr == 0) {
         return 0;
     }
-    struct file_handler* handler = CALL(pointer)->read(data_ptr);
+    struct file_handler* handler = CALL(pointer)->read(*data_ptr);
     FILE* f = handler->file;
     fseek(f, 0, SEEK_END); /* NOLINT */
     u64 size = (u64)ftell(f);
@@ -132,14 +142,6 @@ static u64 file_data(u64 ptr) {
     void* file_data = CALL(virtual_data)->unsafe(data_handle);
     fread(file_data, 1, size, handler->file);
     return data_handle;
-}
-
-static const struct type_methods_definitions _type = {
-    .free = virtual_free
-};
-
-static void INIT init(void) {
-    CALL(pointer)->register_known_type(id, &_type);
 }
 
 #ifndef ATTRIBUTE
@@ -156,6 +158,6 @@ const virtual_file_methods PRIVATE_API(virtual_file_methods_definitions) = {
     .free = file_free
 };
 
-const virtual_file_methods* _virtual_file() {
+const virtual_file_methods* CALL(virtual_file) {
     return &PRIVATE_API(virtual_file_methods_definitions);
 }

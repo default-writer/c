@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 19, 2025 at 7:57:31 PM GMT+3
+ *   February 25, 2025 at 10:26:10 AM GMT+3
  *
  */
 /*
@@ -24,11 +24,13 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#define USING_TESTS
+
 #include "test_list.h"
 
-#include "test.h"
-
 #include "sys/list/list_v1.h"
+
+#include "test.h"
 
 /* allocates memory pointer for list object */
 static stack_ptr new_list(void) {
@@ -292,6 +294,23 @@ RX_TEST_CASE(list_micro_tests, test_init_null_ptr, .fixture = test_fixture) {
     /* pushed to the list */
     stack_ptr ptr = 0;
     stack_ptr* null_ptr = &ptr;
+    CALL(sys_list)->init(null_ptr);
+    const void* data_ptr = CALL(sys_list)->peek(null_ptr);
+    CALL(sys_list)->destroy(null_ptr);
+    /* ensures there is no result on 0 */
+    RX_ASSERT(data_ptr == 0);
+    /* ensures pop does not zeroes the head pointer */
+    RX_ASSERT(*ctx != 0);
+}
+
+/* test case */
+RX_TEST_CASE(list_micro_tests, test_init_init, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    stack_ptr* ctx = &rx->ctx;
+    /* pushed to the list */
+    stack_ptr ptr = 0;
+    stack_ptr* null_ptr = &ptr;
+    CALL(sys_list)->init(null_ptr);
     CALL(sys_list)->init(null_ptr);
     const void* data_ptr = CALL(sys_list)->peek(null_ptr);
     CALL(sys_list)->destroy(null_ptr);

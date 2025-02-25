@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 24, 2025 at 4:48:49 AM GMT+3
+ *   February 25, 2025 at 10:23:59 AM GMT+3
  *
  */
 /*
@@ -27,9 +27,7 @@
 #ifndef _TEST_VM_V1_H_
 #define _TEST_VM_V1_H_
 
-#define USING_TESTS
-
-#include "test.h"
+#define USING_VM
 
 #include "std/api.h"
 

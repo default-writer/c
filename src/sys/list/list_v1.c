@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 24, 2025 at 1:17:03 PM GMT+3
+ *   February 25, 2025 at 2:53:13 PM GMT+3
  *
  */
 /*
@@ -84,7 +84,7 @@ static void list_delete(stack_ptr ptr) {
 
 /* pushes the memory pointer */
 static void list_push(stack_ptr* current, void* payload) {
-    if (!current || !*current) {
+    if (current == 0 || *current == 0) {
         return;
     }
     /* creates empty data chunk */
@@ -99,7 +99,7 @@ static void list_push(stack_ptr* current, void* payload) {
 
 /* pop existing element at the top of the stack/queue/list */
 static void* list_pop(stack_ptr* current) {
-    if (!current || !*current) {
+    if (current == 0 || *current == 0) {
         return 0;
     }
     /* gets the current memory pointer */
@@ -123,7 +123,7 @@ static void* list_pop(stack_ptr* current) {
 
 /* peeks existing element at the top of the stack/queue/list */
 static void* list_peek(stack_ptr* current) {
-    if (!current || !*current) {
+    if (current == 0 || *current == 0) {
         return 0;
     }
     /* gets the current memory pointer */
@@ -141,7 +141,7 @@ static void* list_peek(stack_ptr* current) {
 
 /* initializes the new context's head element */
 static void list_init(stack_ptr* current) {
-    if (!current || *current) {
+    if (current == 0 || *current != 0) {
         return;
     }
     const void* tmp = *current;
@@ -155,7 +155,7 @@ static void list_init(stack_ptr* current) {
 
 /* destroys the memory stack */
 static void list_destroy(stack_ptr* current) {
-    if (!current || !*current) {
+    if (current == 0 || *current == 0) {
         return;
     }
     /* gets the current memory pointer */
@@ -221,6 +221,6 @@ const list_methods PRIVATE_API(list_methods_definitions) = {
 #endif
 };
 
-const list_methods* _sys_list() {
+const list_methods* CALL(sys_list) {
     return &PRIVATE_API(list_methods_definitions);
 }

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 19, 2025 at 10:19:18 PM GMT+3
+ *   February 25, 2025 at 2:49:56 PM GMT+3
  *
  */
 /*
@@ -38,6 +38,6 @@ typedef struct PRIVATE_API(info_methods) {
 
 /* definition */
 CSYS_EXPORT extern const info_methods PRIVATE_API(info_methods_definitions);
-CSYS_EXPORT extern const info_methods* _sys_info();
+CSYS_EXPORT extern const info_methods* CALL(sys_info);
 
 #endif /* _SYS_INFO_H_ */

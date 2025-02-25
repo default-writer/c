@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 24, 2025 at 2:44:19 PM GMT+3
+ *   February 25, 2025 at 2:21:34 PM GMT+3
  *
  */
 /*
@@ -25,8 +25,6 @@
 */
 
 #define USING_TESTS
-
-#include "std/macros.h"
 
 #include "test_pointer.h"
 
@@ -429,6 +427,7 @@ RX_TEST_CASE(tests_v1, test_object_load_string_unsafe_0, .fixture = test_fixture
     CALL(virtual_object)->free(object_ptr);
 #endif
     CALL(pointer)->gc();
+    CALL(virtual_object)->free(object_ptr);
     CALL(pointer)->destroy();
 }
 
@@ -687,6 +686,15 @@ RX_TEST_CASE(tests_v1, test_list_release_string, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 string_ptr = CALL(virtual_string)->load("192.168.0.11");
     CALL(virtual_stack)->release(string_ptr);
+    CALL(pointer)->gc();
+    CALL(pointer)->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(tests_v1, test_list_free_string, .fixture = test_fixture) {
+    CALL(pointer)->init(8);
+    u64 string_ptr = CALL(virtual_string)->load("192.168.0.11");
+    CALL(virtual_stack)->free(string_ptr);
     CALL(pointer)->gc();
     CALL(pointer)->destroy();
 }
@@ -1676,7 +1684,7 @@ RX_TEST_CASE(tests_v1, test_strcpy_load_load, .fixture = test_fixture) {
 /* test init */
 RX_TEST_CASE(tests_v1, test_os_getenv, .fixture = test_fixture) {
     CALL(pointer)->init(8);
-    u64 ui_mode_ptr = CALL(virtual_string)->load("UI_MODE");
+    u64 ui_mode_ptr = CALL(virtual_string)->load("ASDASD_UI_MODE");
     u64 file_path_ptr = CALL(os)->getenv(ui_mode_ptr);
     ASSERT_DEBUG(file_path_ptr == 0);
     CALL(pointer)->gc();
@@ -3928,8 +3936,11 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_a_string_free, .fixture = t
     CALL(virtual_string)->free(quantum_str_ptr2);
     u64 error_ptr = CALL(virtual_string)->left(quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
+    CALL(virtual_string)->free(quantum_str_ptr2);
     CALL(pointer)->gc();
+    CALL(virtual_string)->free(quantum_str_ptr2);
     CALL(pointer)->destroy();
+    CALL(virtual_string)->free(quantum_str_ptr2);
 }
 
 /* test init */

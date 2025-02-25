@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 19, 2025 at 10:12:15 PM GMT+3
+ *   February 25, 2025 at 2:49:50 PM GMT+3
  *
  */
 /*
@@ -52,6 +52,6 @@ typedef struct PRIVATE_API(list_methods) {
 
 /* definition */
 CSYS_EXPORT extern const list_methods PRIVATE_API(list_methods_definitions);
-CSYS_EXPORT extern const list_methods* _sys_list();
+CSYS_EXPORT extern const list_methods* CALL(sys_list);
 
 #endif /* _SYS_LIST_H_ */
