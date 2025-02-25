@@ -19,7 +19,6 @@ pwd=$(cd "$(dirname $(dirname "${BASH_SOURCE[0]}"))" &> /dev/null && pwd)
 
 cd "${pwd}"
 
-
 install="$1"
 
 opts=( "${@:2}" )
@@ -29,6 +28,7 @@ opts=( "${@:2}" )
 ## Builds and tests binaries
 ## Usage: ${script} <option>
 ## ${commands}
+## 
 ## Example .args file:
 ## --all
 ## --clean
@@ -36,16 +36,37 @@ opts=( "${@:2}" )
 ## --sanitize
 ## --gc
 
-case "${install}" in
+while (($#)); do
+    case "$1" in
 
-    "--args") # builds and runs with args from .args file
-        if [ -f "${pwd}/.args" ]; then args=$(cat "${pwd}/.args"); fi
-        "${pwd}/bin/coverage.sh" $args ${opts[@]}
-        ;;
+        "--args") # builds and runs with args from .args file
+            source=".args"
+            ;;
 
-esac
+        *)
+            help
+            ;;
+    esac
+    shift
+done
 
 if [[ "${install}" == "" ]]; then
     help
     exit;
 fi
+
+args=$(get-args)
+
+if [[ -f "${source}" ]]; then
+    "${pwd}/bin/build.sh" ${args}
+else
+    echo "ERROR: ${source} not found"
+fi
+
+if [[ "${silent}" == "--silent" ]]; then
+    exec 1>&2 2>&-
+fi
+
+[[ $SHLVL -gt 2 ]] || echo OK
+
+cd "${pwd}"
