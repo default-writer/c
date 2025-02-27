@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 25, 2025 at 2:47:25 PM GMT+3
+ *   February 27, 2025 at 5:20:38 PM GMT+3
  *
  */
 /*
@@ -41,7 +41,7 @@ typedef struct PRIVATE_API(memory_methods) {
     void* (*alloc)(u64 size);
     void (*free)(void* ptr, u64 size);
     void* (*realloc)(void* old_ptr, u64 size, u64 new_size);
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_MEMORY_CLEANUP
     void (*set)(void* dest, u8 c, u64 count);
 #endif
 } memory_methods;

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 24, 2025 at 8:50:43 AM GMT+3
+ *   February 27, 2025 at 9:32:45 AM GMT+3
  *
  */
 /*
@@ -28,17 +28,6 @@
 #define _STD_MACROS_H_
 
 #define USING_MACROS
-
-#define CLEAN(ptr)  \
-    if (ptr != 0) { \
-        ptr = 0;    \
-    }
-
-#define CLEAN_PTR(ptr) \
-    if (ptr != 0) {    \
-        free(ptr);     \
-        ptr = 0;       \
-    }
 
 #define ASSERT_DEBUG assert
 

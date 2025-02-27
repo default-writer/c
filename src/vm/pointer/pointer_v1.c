@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 25, 2025 at 2:53:52 PM GMT+3
+ *   February 27, 2025 at 7:42:23 PM GMT+3
  *
  */
 /*
@@ -35,6 +35,7 @@
 #include "vm/virtual/virtual_v1.h"
 
 #include <stdio.h>
+#include <string.h>
 
 #define DEFAULT_SIZE 0x100
 #define POINTER_SIZE sizeof(struct pointer)
@@ -132,18 +133,14 @@ static u64 known_types_counter = TYPE_USER;
 static void known_types_init(u64 id, const type_methods_definitions* data_type) {
     known_types_ptr new_type = CALL(sys_memory)->alloc(sizeof(struct known_types));
     new_type->next = known_types;
+    new_type->id = id;
+    new_type->desctructor = data_type->desctructor;
     known_types = new_type;
-    known_types->id = id;
-    known_types->desctructor = data_type->desctructor;
 }
 
 static u64 user_types_init(const type_methods_definitions* data_type) {
-    known_types_ptr new_type = CALL(sys_memory)->alloc(sizeof(struct known_types));
-    new_type->next = known_types;
-    new_type->id = known_types_counter++;
-    new_type->desctructor = data_type->desctructor;
-    known_types = new_type;
-    return known_types->id;
+    known_types_init(known_types_counter, data_type);
+    return known_types_counter++;
 }
 
 static void INIT vm_init(void) {
