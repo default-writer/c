@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 25, 2025 at 10:39:19 AM GMT+3
+ *   February 27, 2025 at 9:09:50 AM GMT+3
  *
  */
 /*
@@ -104,10 +104,10 @@ RX_TEST_CASE(memory_micro_tests, test_realloc_24_8, .fixture = test_fixture) {
 }
 
 /* test case */
-RX_TEST_CASE(memory_micro_tests, test_calloc_free, .fixture = test_fixture) {
+RX_TEST_CASE(memory_micro_tests, test_alloc_free, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
-    stack_ptr new = calloc(1, sizeof(stack_element));
+    stack_ptr new = CALL(sys_memory)->alloc(sizeof(stack_element));
     /* pushed to the list */
     CALL(sys_memory)->free(new, sizeof(stack_element));
     RX_ASSERT(*ctx != 0);

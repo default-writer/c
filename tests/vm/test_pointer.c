@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 25, 2025 at 2:21:34 PM GMT+3
+ *   February 27, 2025 at 9:12:31 AM GMT+3
  *
  */
 /*
@@ -27,6 +27,8 @@
 #define USING_TESTS
 
 #include "test_pointer.h"
+
+#include "sys/memory/memory_v1.h"
 
 #include "vm/os/os_v1.h"
 #include "vm/pointer/pointer_v1.h"
@@ -1342,7 +1344,7 @@ RX_TEST_CASE(tests_v1, test_strcpy, .fixture = test_fixture) {
     u64 path2_len = strlen(path2);
     RX_ASSERT(path1_len > 0);
     RX_ASSERT(path2_len > 0);
-    char* buf = calloc(1, path1_len + path2_len + 1);
+    char* buf = CALL(sys_memory)->alloc(path1_len + path2_len + 1);
 #if defined(_WIN32)
     strcpy_s(buf, path1_len + path2_len + 1, path1); /* NOLINT */
     strcat_s(buf, path1_len + path2_len + 1, path2); /* NOLINT */
@@ -1353,7 +1355,7 @@ RX_TEST_CASE(tests_v1, test_strcpy, .fixture = test_fixture) {
     char* path_copy = CALL(virtual_string)->unsafe(path_copy_ptr);
     RX_ASSERT(strlen(path_copy) == strlen(buf));
     RX_ASSERT(strcmp(path_copy, buf) == 0);
-    free(buf);
+    CALL(sys_memory)->free(buf, path1_len + path2_len + 1);
 #ifndef USE_GC
     CALL(virtual_string)->free(path_ptr1);
     CALL(virtual_string)->free(path_ptr2);

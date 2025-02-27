@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 17, 2025 at 4:45:11 PM GMT+3
+ *   February 27, 2025 at 9:32:36 AM GMT+3
  *
  */
 /*
@@ -59,5 +59,10 @@ typedef struct PRIVATE_API(test_suite) {
         return test_run_##variable;              \
     }                                            \
     int variable = test_run_##variable
+
+#define CLEAN(ptr)  \
+    if (ptr != 0) { \
+        ptr = 0;    \
+    }
 
 #endif /* _TESTS_TEST_H_ */

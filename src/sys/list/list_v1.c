@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 25, 2025 at 2:53:13 PM GMT+3
+ *   February 27, 2025 at 7:44:21 PM GMT+3
  *
  */
 /*
@@ -47,23 +47,6 @@ static void list_print_head(stack_ptr* current);
 static void list_print(stack_ptr* current);
 #endif
 
-/* size of a memory block to allocate */
-static const u64 _size = sizeof(stack_element);
-
-/* implementation */
-
-/* allocates memory pointer */
-static stack_ptr _new(void) {
-    /* returns list object */
-    return CALL(sys_memory)->alloc(_size);
-}
-
-/* releases memory pointer */
-static void _delete(stack_ptr ptr) {
-    /* releases the pointer */
-    CALL(sys_memory)->free(ptr, _size);
-}
-
 /* ptr is not 0 */
 static stack_ptr list_next(stack_ptr ptr) {
     /* ptr is not 0 */
@@ -79,7 +62,7 @@ static void* list_data(stack_ptr ptr) {
 /* deletes the data pointer */
 static void list_delete(stack_ptr ptr) {
     /* releases the pointer */
-    _delete(ptr);
+    CALL(sys_memory)->free(ptr, sizeof(stack_element));
 }
 
 /* pushes the memory pointer */
@@ -88,7 +71,7 @@ static void list_push(stack_ptr* current, void* payload) {
         return;
     }
     /* creates empty data chunk */
-    stack_ptr item = _new();
+    stack_ptr item = CALL(sys_memory)->alloc(sizeof(stack_element));
     /* writes data into allocated memory buffer */
     item->data = payload;
     /* assigns item's next pointer to current pointer */
@@ -148,8 +131,8 @@ static void list_init(stack_ptr* current) {
     /* checks if pointer is null */
     if (tmp == 0) {
         *current = (void*)current;
-        /* sets the current memory pointer */
-        *current = _new();
+        /* sets the current item */
+        *current = CALL(sys_memory)->alloc(sizeof(stack_element));
     }
 }
 
