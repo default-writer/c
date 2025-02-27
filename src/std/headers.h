@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 23, 2025 at 11:20:57 PM GMT+3
+ *   February 26, 2025 at 1:58:18 AM GMT+3
  *
  */
 /*
@@ -30,7 +30,7 @@
 #define USING_HEADERS
 
 #include <assert.h>
-
+#include <limits.h>
 #include <stdint.h>
 
 #ifdef _WIN32
@@ -39,6 +39,7 @@
 #include <windows.h>
 #define PATH_MAX MAX_PATH
 #else
+#include <sys/mman.h>
 #include <sys/resource.h>
 #include <unistd.h>
 #if defined(_POSIX_C_SOURCE) && _POSIX_C_SOURCE >= 199309L
@@ -46,7 +47,5 @@
 #include <sys/time.h>
 #endif
 #endif
-
-#include <limits.h>
 
 #endif /* _STD_HEADERS_H_ */

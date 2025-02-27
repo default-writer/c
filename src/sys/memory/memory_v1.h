@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 25, 2025 at 2:47:25 PM GMT+3
+ *   February 27, 2025 at 4:45:55 AM GMT+3
  *
  */
 /*
@@ -41,13 +41,28 @@ typedef struct PRIVATE_API(memory_methods) {
     void* (*alloc)(u64 size);
     void (*free)(void* ptr, u64 size);
     void* (*realloc)(void* old_ptr, u64 size, u64 new_size);
+    void* (*vma_alloc)(u64 size);
+    void (*vma_free)(void* ptr, u64 size);
+    void* (*vma_realloc)(void* old_ptr, u64 old_size, u64 new_size);
 #ifdef USE_MEMORY_DEBUG_INFO
+    void (*vma_print)();
     void (*set)(void* dest, u8 c, u64 count);
 #endif
 } memory_methods;
 
+typedef void* (*alloc_ptr)(u64 size);
+typedef u64 (*free_ptr)(void* ptr, u64 size);
+
+typedef struct PRIVATE_API(memory_mmap_methods) {
+    alloc_ptr alloc;
+    free_ptr free;
+} memory_mmap_methods;
+
 /* definition */
 CSYS_EXPORT extern const memory_methods PRIVATE_API(memory_methods_definitions);
 CSYS_EXPORT extern const memory_methods* CALL(sys_memory);
+
+CSYS_EXPORT extern memory_mmap_methods PRIVATE_API(memory_mmap_methods_definitions);
+CSYS_EXPORT extern memory_mmap_methods* CALL(sys_memory_mmap);
 
 #endif /* _SYS_MEMORY_H_ */
