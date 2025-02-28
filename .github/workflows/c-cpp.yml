@@ -2,13 +2,15 @@ name: C/C++ CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches:
+      - master
   pull_request:
-    branches: [ "master" ]
+    types: [opened, synchronize, reopened]
 
 jobs:
   build:
-
+    environment: dev
+    name: build
     runs-on: ubuntu-latest
 
     steps:
@@ -17,6 +19,14 @@ jobs:
       run: ./bin/init.sh --init --no-update --no-upgrade --lcov --setup --optional
     - name: coverage
       run: ./bin/coverageall.sh --all
+    - name: collect
+      run: gcovr -r . --xml-pretty --output coverage.xml
+    - name: SonarQube Scan
+      uses: SonarSource/sonarqube-scan-action@v4
+      env:
+        SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
+      with:
+        args: >
+          --define sonar.coverageReportPaths=coverage/coverage.xml
     - name: Coveralls GitHub Action
       uses: coverallsapp/github-action@v2.3.0
- 
