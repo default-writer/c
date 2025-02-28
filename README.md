@@ -5,9 +5,20 @@
 ## status
 
 [![C/C++ CI](https://github.com/default-writer/c/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/default-writer/c/actions/workflows/c-cpp.yml)
-[![Coverage Status](https://coveralls.io/repos/github/default-writer/c/badge.svg?branch=main)](https://coveralls.io/github/default-writer/c?branch=main)
-
+[![Coverage Status](https://coveralls.io/repos/github/default-writer/c/badge.svg?branch=master)](https://coveralls.io/github/default-writer/c?branch=master)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=default-writer_c&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=default-writer_c)
+
+## static analysis
+
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=default-writer_c&metric=bugs)](https://sonarcloud.io/summary/new_code?id=default-writer_c)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=default-writer_c&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=default-writer_c)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=default-writer_c&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=default-writer_c)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=default-writer_c&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=default-writer_c)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=default-writer_c&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=default-writer_c)
+
+## info
+
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=default-writer_c&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=default-writer_c)
 
 ## description
 
