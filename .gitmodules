@@ -1,3 +1,6 @@
 [submodule ".rexo"]
 	path = .rexo
 	url = https://github.com/default-writer/rexo.git
+[submodule ".deps/rexo"]
+	path = .deps/rexo
+	url = https://github.com/default-writer/rexo.git

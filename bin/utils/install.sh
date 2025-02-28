@@ -34,7 +34,7 @@ while (($#)); do
         "--no-upgrade") # [optional] skips system upgrades
             ;;
 
-        "--appwrite") # installs appwrite. appwrite is a self-hosted backend-as-a-service platform that provides developers with all the core APIs required to build any application.
+        "--appwrite") # installs appwrite. appwrite is a self-hosted backend-as-a-service platform.
             docker run -it --rm \
                 --volume /var/run/docker.sock:/var/run/docker.sock \
                 --volume "${pwd}"/appwrite:/usr/src/code/appwrite:rw \
@@ -59,18 +59,6 @@ while (($#)); do
             rm -f /tmp/rustp-init.sh
             . $HOME/.cargo/env
             cargo install slint-viewer
-            ;;
-
-        "--lcov") # installs lcov 1.16
-            [[ ! -d "${pwd}/.tools" ]] && mkdir -p "${pwd}/.tools"
-            [[ ! -d "${pwd}/.tools/lcov-1.16" ]] && mkdir -p "${pwd}/.tools/lcov-1.16"
-            [[ ! -f "/tmp/lcov-1.16.tar.gz" ]] && wget https://github.com/linux-test-project/lcov/archive/refs/tags/v1.16.tar.gz -qO "/tmp/lcov-1.16.tar.gz"
-            tar -xzf "/tmp/lcov-1.16.tar.gz" -C "/tmp"
-            cp -r "/tmp/lcov-1.16/." "${pwd}/.tools/lcov-1.16"
-            cd "${pwd}/.tools/lcov-1.16"
-            make install
-            rm -rf "/tmp/lcov-1.16"
-            rm -f "/tmp/lcov-1.16.tar.gz"
             ;;
 
         "--clangd") # installs clangd 19.1.2
@@ -132,7 +120,7 @@ while (($#)); do
             ;;
 
         "--submodule-rexo") # installs rexo as git submodule
-            submodule-install https://github.com/default-writer/rexo.git .rexo
+            submodule-install https://github.com/default-writer/rexo.git .deps/rexo
             ;;
 
         "--submodule-musl") # installs musl as git submodule
@@ -210,6 +198,6 @@ if [[ "${install}" == "" ]]; then
     exit;
 fi
 
-[[ $SHLVL -gt 2 ]] || echo OK
+[[ ! $SHLVL -gt 2 ]] && echo OK
 
 cd "${pwd}"

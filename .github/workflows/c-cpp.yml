@@ -15,10 +15,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: actions/checkout@v4
       - name: Set up Python 3.8 for gcovr
         uses: actions/setup-python@v4
         with:
@@ -28,7 +26,7 @@ jobs:
           pip install gcovr==5.0
       - name: init
         run: |
-          ./bin/init.sh --init --no-update --no-upgrade --lcov --setup --optional
+          ./bin/init.sh --init --no-update --no-upgrade --lcov --optional
           ./bin/coverageall.sh --all
       - name: collect
         run: |

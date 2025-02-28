@@ -299,7 +299,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include=".rexo\include\rexo.h">
+    <ClInclude Include=".deps\rexo\include\rexo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include=".tools\clangd_19.1.2\lib\clang\19\include\adcintrin.h">

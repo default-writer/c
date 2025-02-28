@@ -61,6 +61,6 @@ if [[ "${install}" == "--clean" ]]; then
     rm -f "${pwd}/src/std/version.h"
 fi
 
-[[ $SHLVL -gt 2 ]] || echo OK
+[[ ! $SHLVL -gt 2 ]] && echo OK
 
 cd "${pwd}"

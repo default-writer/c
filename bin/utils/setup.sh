@@ -229,9 +229,23 @@ while (($#)); do
             upgrade ${updgradeflags}
             ;;
 
-        "--gcov") # installs gcov/gcovr
+        "--gcovr") # installs gcov/gcovr
             update ${updateflags}
             apt install -y gcovr
+            upgrade ${updgradeflags}
+            ;;
+
+        "--lcov") # installs lcov 1.16
+            update ${updateflags}
+            [[ ! -d "${pwd}/.tools" ]] && mkdir -p "${pwd}/.tools"
+            [[ ! -d "${pwd}/.tools/lcov-1.16" ]] && mkdir -p "${pwd}/.tools/lcov-1.16"
+            [[ ! -f "/tmp/lcov-1.16.tar.gz" ]] && wget https://github.com/linux-test-project/lcov/archive/refs/tags/v1.16.tar.gz -qO "/tmp/lcov-1.16.tar.gz"
+            tar -xzf "/tmp/lcov-1.16.tar.gz" -C "/tmp"
+            cp -r "/tmp/lcov-1.16/." "${pwd}/.tools/lcov-1.16"
+            cd "${pwd}/.tools/lcov-1.16"
+            make install
+            rm -rf "/tmp/lcov-1.16"
+            rm -f "/tmp/lcov-1.16.tar.gz"
             upgrade ${updgradeflags}
             ;;
 
@@ -379,6 +393,6 @@ while (($#)); do
     shift
 done
 
-[[ $SHLVL -gt 2 ]] || echo OK
+[[ ! $SHLVL -gt 2 ]] && echo OK
 
 cd "${pwd}"

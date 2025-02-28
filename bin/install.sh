@@ -83,6 +83,6 @@ if [[ "${source}" == "all" || "${raylib}" == "--submodule-raylib" ]]; then
     "${pwd}/bin/utils/install.sh" --submodule-raylib
 fi
 
-[[ $SHLVL -gt 2 ]] || echo OK
+[[ ! $SHLVL -gt 2 ]] && echo OK
 
 cd "${pwd}"
