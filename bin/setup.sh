@@ -65,6 +65,7 @@ fi
 "${pwd}/bin/utils/setup.sh" --clangd --no-update --no-upgrade
 "${pwd}/bin/utils/setup.sh" --configuration --no-update --no-upgrade
 "${pwd}/bin/utils/setup.sh" --cmake --no-update --no-upgrade
+"${pwd}/bin/utils/setup.sh" --gcov --no-update --no-upgrade
 "${pwd}/bin/utils/setup.sh" --clang-tidy --no-update --no-upgrade
 # "${pwd}/bin/utils/setup.sh" --clang-format --no-update --no-upgrade
 # "${pwd}/bin/utils/setup.sh" --nasm

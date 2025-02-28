@@ -229,6 +229,12 @@ while (($#)); do
             upgrade ${updgradeflags}
             ;;
 
+        "--gcov") # installs gcov/gcovr
+            update ${updateflags}
+            apt install -y gcovr
+            upgrade ${updgradeflags}
+            ;;
+
         "--zsh") # installs zsh
             update ${updateflags}
             apt install -y zsh
