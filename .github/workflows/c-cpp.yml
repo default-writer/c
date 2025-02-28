@@ -5,7 +5,8 @@ on:
     branches:
       - master
   pull_request:
-    types: [opened, synchronize, reopened]
+    branches:
+      - master
 
 jobs:
   build:
@@ -15,6 +16,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Set up Python 3.8 for gcovr
         uses: actions/setup-python@v4
         with:
