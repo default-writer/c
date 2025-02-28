@@ -55,7 +55,7 @@ pacman -S --noconfirm \
 
 - add path at the top to the *system* variables (PATH) `C:\msys64\clang64\bin` (clang64)
 
-- run ./bin/init.sh --init (MSYS2)
+- run ./bin/init.sh --init
 
 ```cmd
 set PATH="C:\msys64\ucrt64;C:\msys64\ucrt64\bin;C:\msys64\ucrt64\include;C:\msys64\ucrt64\lib;%PATH%"

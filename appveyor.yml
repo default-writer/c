@@ -1,7 +1,7 @@
 version: 1.0.{build}
 image: Ubuntu
 init:
-- sh: ./bin/init.sh --init --lcov --setup --optional
+- sh: ./bin/init.sh --init --no-update --no-upgrade --lcov --clangd --setup
 test_script:
 - sh: ./bin/coverage.sh --all
 artifacts:

@@ -37,4 +37,4 @@ USER ${USER_NAME}
 WORKDIR /workspace
 
 COPY --chown=root:root --chmod=755 . .
-RUN /workspace/bin/init.sh --init --lcov --setup --optional
+RUN /workspace/bin/init.sh --init --lcov --setup

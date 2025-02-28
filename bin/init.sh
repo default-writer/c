@@ -84,11 +84,6 @@ while (($#)); do
             opts+=( "$1" )
             ;;
 
-        "--optional") # installs optional dependencies
-            optional="--optional"
-            opts+=( "$1" )
-            ;;
-
         "--help") # shows command description
             help
             ;;
