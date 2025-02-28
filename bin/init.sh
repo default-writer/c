@@ -132,7 +132,7 @@ if [[ "${clangd}" == "--clangd" ]]; then
 fi
 
 if [[ "${lcov}" == "--lcov" ]]; then
-   echo sudo "${pwd}/bin/setup.sh" ${updateflags} ${updgradeflags} --lcov
+   sudo "${pwd}/bin/setup.sh" ${updateflags} ${updgradeflags} --lcov
 fi
 
 if [[ "${silent}" == "--silent" ]]; then
