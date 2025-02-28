@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 27, 2025 at 5:20:38 PM GMT+3
+ *   February 28, 2025 at 9:26:54 AM GMT+3
  *
  */
 /*
@@ -45,6 +45,14 @@ typedef struct PRIVATE_API(memory_methods) {
     void (*set)(void* dest, u8 c, u64 count);
 #endif
 } memory_methods;
+
+typedef struct memory_api {
+    void* (*alloc)(size_t __nmemb, size_t __size);
+    void (*free)(void* __ptr);
+} memory_api;
+
+/* api */
+CSYS_EXPORT extern const memory_api* memory;
 
 /* definition */
 CSYS_EXPORT extern const memory_methods PRIVATE_API(memory_methods_definitions);
