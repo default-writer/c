@@ -18,6 +18,16 @@ The goal is to conform to the C guidelines in development of critical code.
 - [The Power of Ten][nasa] – Rules for Developing Safety Critical Code
   > Gerard J. Holzmann, NASA/JPL Laboratory for Reliable Software, Pasadena, CA 91109
 
+## history
+
+- 2025-02-28: added mocks for standart functions calloc/free to simulate out-ouf-memory function call flow
+
+## C standart
+
+- [The Current C Programming Language Standard – ISO/IEC 9899:2024 (C24)](https://blog.ansi.org/c-programming-language-standard-iso-iec-9899-2024/)
+- [ISO/IEC 9899:2024 (en) — N3220 working draft](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf)
+- [C23 (C standard revision)](https://en.wikipedia.org/wiki/C23_(C_standard_revision))
+
 ## code
 
 ```c
