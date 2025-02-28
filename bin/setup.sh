@@ -59,10 +59,10 @@ if [[ "$(get-os-type)" == "win" ]]; then
 fi
 
 # "${pwd}/bin/utils/setup.sh" --update
-# "${pwd}/bin/utils/setup.sh" --curl-openssl --no-update --no-upgrade
-# "${pwd}/bin/utils/setup.sh" --zip --no-update --no-upgrade
-# "${pwd}/bin/utils/setup.sh" --clangd --no-update --no-upgrade
-# "${pwd}/bin/utils/setup.sh" --configuration --no-update --no-upgrade
+"${pwd}/bin/utils/setup.sh" --curl-openssl --no-update --no-upgrade
+"${pwd}/bin/utils/setup.sh" --zip --no-update --no-upgrade
+"${pwd}/bin/utils/setup.sh" --clangd --no-update --no-upgrade
+"${pwd}/bin/utils/setup.sh" --configuration --no-update --no-upgrade
 "${pwd}/bin/utils/setup.sh" --cmake --no-update --no-upgrade
 # "${pwd}/bin/utils/setup.sh" --clang-tidy --no-update --no-upgrade
 # "${pwd}/bin/utils/setup.sh" --gcovr --no-update --no-upgrade
