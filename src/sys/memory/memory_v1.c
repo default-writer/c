@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 28, 2025 at 9:27:54 AM GMT+3
+ *   February 28, 2025 at 10:01:30 AM GMT+3
  *
  */
 /*
@@ -87,7 +87,7 @@ static void memory_free(void* ptr, u64 size) {
     (void)size; /* mark as unused when not in debug/cleanup mode */
 #endif
 #ifdef USE_MEMORY_CLEANUP
-    // memory_set(ptr, 0, size); /* NOLINT */
+    memory_set(ptr, 0, size); /* NOLINT */
 #endif
 #ifdef USE_MEMORY_DEBUG_INFO
     total_free += size;
