@@ -241,7 +241,7 @@ while (($#)); do
             [[ ! -d "${pwd}/.tools/lcov-1.16" ]] && mkdir -p "${pwd}/.tools/lcov-1.16"
             [[ ! -f "/tmp/lcov-1.16.tar.gz" ]] && wget https://github.com/linux-test-project/lcov/archive/refs/tags/v1.16.tar.gz -qO "/tmp/lcov-1.16.tar.gz"
             tar -xzf "/tmp/lcov-1.16.tar.gz" -C "/tmp"
-            cp -r "/tmp/lcov-1.16/." "${pwd}/.tools/lcov-1.16"
+            cp -r "/tmp/lcov-1.16/" "${pwd}/.tools/lcov-1.16"
             cd "${pwd}/.tools/lcov-1.16"
             make install
             rm -rf "/tmp/lcov-1.16"
