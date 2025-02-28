@@ -19,7 +19,7 @@ jobs:
         run: ./bin/init.sh --init --no-update --no-upgrade --lcov --setup --optional
       - name: Run Code Coverage
         run: |
-          ./coverageall.sh --all
+          ./bin/coverageall.sh --all
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v5
         env:
