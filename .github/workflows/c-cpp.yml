@@ -9,6 +9,7 @@ on:
 
 jobs:
   build:
+    environment: dev
     name: build
     runs-on: ubuntu-latest
 
