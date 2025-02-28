@@ -14,19 +14,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: init
-      run: ./bin/init.sh --init --no-update --no-upgrade --lcov --setup --optional
-    - name: coverage
-      run: ./bin/coverageall.sh --all
-    - name: collect
-      run: gcovr -r . --xml-pretty --output coverage/coverage.xml
-    - name: SonarQube Scan
-      uses: SonarSource/sonarqube-scan-action@v4
-      env:
-        SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
-      with:
-        args: >
-          --define sonar.coverageReportPaths=coverage/coverage.xml
-    - name: Coveralls GitHub Action
-      uses: coverallsapp/github-action@v2.3.0
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.8 for gcovr
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.8
+      - name: install gcovr 5.0
+        run: |
+          pip install gcovr==5.0
+      - name: init
+        run: |
+          ./bin/init.sh --init --no-update --no-upgrade --lcov --setup --optional
+          ./bin/coverageall.sh --all
+      - name: collect
+        run: |
+          gcovr --sonarqube > coverage/coverage.xml
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v4
+        env:
+          SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
+        with:
+          args: >
+            --define sonar.coverageReportPaths=coverage/coverage.xml
+      - name: Coveralls GitHub Action
+        uses: coverallsapp/github-action@v2.3.0
