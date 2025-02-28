@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 25, 2025 at 2:45:04 PM GMT+3
+ *   February 28, 2025 at 9:27:54 AM GMT+3
  *
  */
 /*
@@ -52,43 +52,63 @@ static void memory_set(void* dest, u8 c, u64 count);
 #endif
 
 /* api */
+const memory_api memory_api_methods_definitions = {
+    .alloc = &calloc,
+    .free = &free
+};
+
+const memory_api* memory = &memory_api_methods_definitions;
 
 static void* memory_alloc(u64 size) {
-    void* ptr = 0;
-    if (size != 0) {
-        ptr = calloc(1, size);
-#ifdef USE_MEMORY_DEBUG_INFO
-        total_alloc += size;
-        base->used = total_alloc - total_free;
-        printf("   +: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_alloc, total_free);
-#endif
+    if (size == 0) {
+        return 0;
     }
+    void* ptr = 0;
+    ptr = memory->alloc(1, size);
+    if (ptr == 0) {
+        return 0;
+    }
+#ifdef USE_MEMORY_DEBUG_INFO
+    total_alloc += size;
+    base->used = total_alloc - total_free;
+    printf("   +: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_alloc, total_free);
+#endif
     return ptr;
 }
 
 static void memory_free(void* ptr, u64 size) {
+    if (ptr == 0) {
+        return;
+    }
+    if (size == 0) {
+        return;
+    }
 #if !defined(USE_MEMORY_CLEANUP) && !defined(USE_MEMORY_DEBUG_INFO)
     (void)size; /* mark as unused when not in debug/cleanup mode */
 #endif
 #ifdef USE_MEMORY_CLEANUP
-    memory_set(ptr, 0, size); /* NOLINT */
+    // memory_set(ptr, 0, size); /* NOLINT */
 #endif
 #ifdef USE_MEMORY_DEBUG_INFO
     total_free += size;
     printf("   -: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_alloc, total_free);
 #endif
-    free(ptr);
+    memory->free(ptr);
 }
 
 static void* memory_realloc(void* old_ptr, u64 size, u64 new_size) {
-    void* ptr = old_ptr;
-    if (ptr != 0 && new_size > size) {
-        ptr = realloc(ptr, new_size);
-#ifdef USE_MEMORY_DEBUG_INFO
-        total_alloc += new_size - size;
-        printf("  -+: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_alloc, total_free);
-#endif
+    if (old_ptr == 0) {
+        return 0;
     }
+    if (new_size <= size) {
+        return 0;
+    }
+    void* ptr = old_ptr;
+    ptr = realloc(ptr, new_size);
+#ifdef USE_MEMORY_DEBUG_INFO
+    total_alloc += new_size - size;
+    printf("  -+: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_alloc, total_free);
+#endif
     return ptr;
 }
 

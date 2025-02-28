@@ -13,7 +13,7 @@
     "testFilesOnSave.languageId": "any",
     "testFilesOnSave.testCommands": [
         {
-            "c": "bash ./bin/coverageall.sh --all",
+            "c": "bash ./bin/src.sh --target=${relativeFile}",
             "cpp": "bash ./bin/src.sh --target=${relativeFile}"
         },
         {

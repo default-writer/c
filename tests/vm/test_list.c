@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 27, 2025 at 9:33:03 AM GMT+3
+ *   February 28, 2025 at 7:47:52 AM GMT+3
  *
  */
 /*
@@ -71,7 +71,7 @@ static void run_list2(void (*tests)(stack_ptr* const)) {
 
 /* uses the list */
 static void tests(stack_ptr* current) {
-    u8* payload = (void*)0x7bde8421;
+    u8* payload = (void*)0xdeadbeef;
     void* is_null[] = {
         CALL(sys_list)->peek(current),
         CALL(sys_list)->pop(current)
@@ -350,7 +350,7 @@ RX_TEST_CASE(list_micro_tests, test_standard_list_peek_does_not_changes_stack, .
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* prepares the payload */
-    u8* payload = (void*)0x7bde8421;
+    u8* payload = (void*)0xdeadbeef;
     /* pushed to the list */
     CALL(sys_list)->push(ctx, payload);
     /* gets the head pointer to the list */
@@ -386,7 +386,7 @@ RX_TEST_CASE(list_micro_tests, test_alloc_count_eq_1, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* prepares the payload */
-    u8* payload = (void*)0x7bde8421;
+    u8* payload = (void*)0xdeadbeef;
     /* pushes to the list */
     CALL(sys_list)->push(ctx, payload);
     /* ensures data is added to the list */
@@ -397,7 +397,7 @@ RX_TEST_CASE(list_micro_tests, test_alloc_payload, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* prepares the payload */
-    u8* payload = (void*)0x7bde8421;
+    u8* payload = (void*)0xdeadbeef;
     /* pushes to the list */
     CALL(sys_list)->push(ctx, payload);
     /* peeks from the list */
@@ -410,7 +410,7 @@ RX_TEST_CASE(list_micro_tests, test_alloc_pop_count_0, .fixture = test_fixture) 
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* prepares the payload */
-    u8* payload = (void*)0x7bde8421;
+    u8* payload = (void*)0xdeadbeef;
     /* pushes to the list */
     CALL(sys_list)->push(ctx, payload);
     /* pops from the list */
@@ -423,7 +423,7 @@ RX_TEST_CASE(list_micro_tests, test_alloc_pop_payload, .fixture = test_fixture) 
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* prepares the payload */
-    u8* payload = (void*)0x7bde8421;
+    u8* payload = (void*)0xdeadbeef;
     /* pushes to the list */
     CALL(sys_list)->push(ctx, payload);
     /* pops from the list */
