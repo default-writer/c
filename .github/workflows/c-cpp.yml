@@ -19,14 +19,12 @@ jobs:
       run: ./bin/init.sh --init --no-update --no-upgrade --lcov --setup --optional
     - name: coverage
       run: ./bin/coverageall.sh --all
-    - name: collect
-      run: gcovr -r . --sonarqube=coverage/coverage.xml
     - name: SonarQube Scan
       uses: SonarSource/sonarqube-scan-action@v4
       env:
         SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
       with:
         args: >
-          --define sonar.coverageReportPaths=coverage/coverage.xml
+          --define sonar.javascript.lcov.reportPaths=coverage/lcov.info
     - name: Coveralls GitHub Action
       uses: coverallsapp/github-action@v2.3.0
