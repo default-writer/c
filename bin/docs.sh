@@ -31,6 +31,6 @@ cd "${pwd}"
 
 cp "${pwd}/doxygen/latex/refman.pdf" "${pwd}/docs/"
 
-[[ $SHLVL -gt 2 ]] || echo OK
+[[ ! $SHLVL -gt 2 ]] && echo OK
 
 cd "${pwd}"

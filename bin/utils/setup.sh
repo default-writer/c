@@ -379,6 +379,6 @@ while (($#)); do
     shift
 done
 
-[[ $SHLVL -gt 2 ]] || echo OK
+[[ ! $SHLVL -gt 2 ]] && echo OK
 
 cd "${pwd}"

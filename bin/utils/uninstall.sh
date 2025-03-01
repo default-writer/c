@@ -102,6 +102,6 @@ if [[ "${install}" == "" ]]; then
     exit;
 fi
 
-[[ $SHLVL -gt 2 ]] || echo OK
+[[ ! $SHLVL -gt 2 ]] && echo OK
 
 cd "${pwd}"
