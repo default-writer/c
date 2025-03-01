@@ -20,7 +20,7 @@ jobs:
     - name: coverage
       run: ./bin/coverageall.sh --all
     - name: collect
-      run: gcovr -r . --xml-pretty --output coverage.xml
+      run: gcovr -r . --xml-pretty --output coverage/coverage.xml --sonarqube
     - name: SonarQube Scan
       uses: SonarSource/sonarqube-scan-action@v4
       env:
