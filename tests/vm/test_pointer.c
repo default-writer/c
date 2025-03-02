@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 27, 2025 at 9:12:31 AM GMT+3
+ *   March 2, 2025 at 9:46:41 PM GMT+3
  *
  */
 /*
@@ -24,6 +24,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include <string.h>
 #define USING_TESTS
 
 #include "test_pointer.h"
@@ -39,6 +40,7 @@
 #include "vm/types/string/string_v1.h"
 #include "vm/types/string_pointer/string_pointer_v1.h"
 #include "vm/types/user/user_v1.h"
+#include "vm/virtual/virtual_v1.h"
 
 #include "test.h"
 
@@ -48,6 +50,29 @@
 typedef struct test_data {
     void* ptr;
 }* TEST_DATA;
+
+/*api*/
+static pointer_ptr mock_ptr = 0;
+
+static pointer_ptr* mock_read1(u64 address) {
+    return 0;
+}
+
+static pointer_ptr* mock_read2(u64 address) {
+    return &mock_ptr;
+}
+
+static const virtual_methods mock_virtual_methods_definitions_v1 = {
+    .read = mock_read1
+};
+
+static const virtual_methods mock_virtual_methods_definitions_v2 = {
+    .read = mock_read2
+};
+
+static const virtual_methods* mock_virtual_methods_read1 = &mock_virtual_methods_definitions_v1;
+static const virtual_methods* mock_virtual_methods_read2 = &mock_virtual_methods_definitions_v2;
+static const virtual_methods* temp_virtual_methods;
 
 RX_SET_UP(test_set_up) {
     return RX_SUCCESS;
@@ -1807,6 +1832,36 @@ RX_TEST_CASE(tests_v1, test_print_free, .fixture = test_fixture) {
     u64 printing_ptr = CALL(virtual_string)->load("hello, world!");
     CALL(virtual_string)->free(printing_ptr);
     CALL(os)->putc(printing_ptr);
+    CALL(pointer)->gc();
+    CALL(pointer)->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(tests_v1, test_sting_free_0, .fixture = test_fixture) {
+    CALL(pointer)->init(8);
+    /* backup api calls */
+    memcpy(&temp_virtual_methods, &virtual, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    /* prepare to mock api calls */
+    memcpy(&virtual, &mock_virtual_methods_read1, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    /* virtual_string->free fails in virtual->read call */
+    CALL(virtual_string)->free(0);
+    /* restore api calls */
+    memcpy(&virtual, &temp_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    CALL(pointer)->gc();
+    CALL(pointer)->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(tests_v1, test_sting_free_ptr_0, .fixture = test_fixture) {
+    CALL(pointer)->init(8);
+    /* backup api calls */
+    memcpy(&temp_virtual_methods, &virtual, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    /* prepare to mock api calls */
+    memcpy(&virtual, &mock_virtual_methods_read2, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    /* virtual_string->free fails in virtual->read call */
+    CALL(virtual_string)->free(0);
+    /* restore api calls */
+    memcpy(&virtual, &temp_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
     CALL(pointer)->gc();
     CALL(pointer)->destroy();
 }

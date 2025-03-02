@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 25, 2025 at 3:27:27 PM GMT+3
+ *   March 2, 2025 at 9:35:15 PM GMT+3
  *
  */
 /*
@@ -400,5 +400,7 @@ const virtual_methods PRIVATE_API(virtual_methods_definitions) = {
 };
 
 const virtual_methods* CALL(virtual) {
-    return &PRIVATE_API(virtual_methods_definitions);
+    return virtual;
 }
+
+const virtual_methods* virtual = &PRIVATE_API(virtual_methods_definitions);
