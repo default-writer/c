@@ -64,6 +64,8 @@ if [[ "${coverage}" == "--coverage" ]]; then
 
     gcovr -r . --txt-metric branch --sonarqube coverage/sonarqube.xml --gcov-exclude="rexo.h"
 
+    . $HOME/.bashrc
+
     sonar-scanner
 fi
 
