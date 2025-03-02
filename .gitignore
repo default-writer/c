@@ -53,6 +53,8 @@ logs*/
 report*/
 pkg*/
 
+.scannerwork*/
+.sonar*/
 .deps*/
 .cache*/
 .history*/
@@ -89,3 +91,4 @@ src/std/version.h
 .rexo/
 .vs/
 main-tests-vm1/
+.scannerwork/.sonar_lock

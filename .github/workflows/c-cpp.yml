@@ -9,15 +9,15 @@ on:
 
 jobs:
   build:
-
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v4
     - name: init
       run: ./bin/init.sh --init --no-update --no-upgrade --lcov --setup --optional
     - name: coverage
-      run: ./bin/coverageall.sh --all
+      run: ./bin/sonarscanner.sh --coverage
     - name: Coveralls GitHub Action
       uses: coverallsapp/github-action@v2.3.0
  
