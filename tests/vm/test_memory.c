@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 28, 2025 at 9:59:44 AM GMT+3
+ *   March 2, 2025 at 9:13:24 PM GMT+3
  *
  */
 /*
@@ -37,6 +37,23 @@
 typedef struct test_data {
     stack_ptr ctx;
 }* TEST_DATA;
+
+/*api*/
+static void* mock_alloc(size_t __nmemb, size_t __size) {
+    return 0;
+}
+
+static void mock_free(void* __ptr) {
+    memset(__ptr, 0xef, sizeof(u64)); /* NOLINT: sizeof(u64) */
+}
+
+static const memory_api mock_memory_api_methods_definitions = {
+    .alloc = mock_alloc,
+    .free = mock_free
+};
+
+static const memory_api* mock_memory_api = &mock_memory_api_methods_definitions;
+static const memory_api* temp_memory_api;
 
 /* Initialize the data structure. Its allocation is handled by Rexo. */
 RX_SET_UP(test_set_up) {
@@ -77,23 +94,6 @@ RX_TEST_CASE(memory_micro_tests, test_alloc_0, .fixture = test_fixture) {
     /* ensures pop does not zeroes the head pointer */
     RX_ASSERT(*ctx != 0);
 }
-
-/*api*/
-void* mock_alloc(size_t __nmemb, size_t __size) {
-    return 0;
-}
-
-void mock_free(void* __ptr) {
-    memset(__ptr, 0xef, sizeof(u64)); /* NOLINT: sizeof(u64) */
-}
-
-const memory_api mock_memory_api_methods_definitions = {
-    .alloc = mock_alloc,
-    .free = mock_free
-};
-
-const memory_api* mock_memory_api = &mock_memory_api_methods_definitions;
-const memory_api* temp_memory_api;
 
 /* test case */
 RX_TEST_CASE(memory_micro_tests, test_alloc_ret_0, .fixture = test_fixture) {

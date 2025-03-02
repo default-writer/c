@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 28, 2025 at 10:01:30 AM GMT+3
+ *   March 2, 2025 at 9:34:28 PM GMT+3
  *
  */
 /*
@@ -56,8 +56,6 @@ const memory_api memory_api_methods_definitions = {
     .alloc = &calloc,
     .free = &free
 };
-
-const memory_api* memory = &memory_api_methods_definitions;
 
 static void* memory_alloc(u64 size) {
     if (size == 0) {
@@ -156,3 +154,5 @@ const memory_methods PRIVATE_API(memory_methods_definitions) = {
 const memory_methods* CALL(sys_memory) {
     return &PRIVATE_API(memory_methods_definitions);
 }
+
+const memory_api* memory = &memory_api_methods_definitions;
