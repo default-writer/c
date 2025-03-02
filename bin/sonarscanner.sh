@@ -60,11 +60,15 @@ if [[ "${coverage}" == "--coverage" ]]; then
         exit 8;
     fi
 
-    ./bin/coverageall.sh --all --clean
+    "${pwd}/bin/coverageall.sh" --all --clean
 
     gcovr -r . --txt-metric branch --sonarqube coverage/sonarqube.xml --gcov-exclude="rexo.h"
 
-    . $HOME/.bashrc
+    . "${pwd}/bin/utils/install.sh" --sonar-scanner
+
+    export PATH=$SONAR_SCANNER_HOME/bin:$PATH
+
+    echo $PATH
 
     sonar-scanner
 fi
