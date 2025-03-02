@@ -55,10 +55,6 @@ if [[ "${install}" == "--install" ]]; then
 fi
 
 if [[ "${coverage}" == "--coverage" ]]; then
-    if [[ "$(find . -type f -name build-wrapper-linux-x86-64)" == "" ]]; then
-        echo "ERROR: build-wrapper-linux-x86-64 not found"
-        exit 8;
-    fi
 
     "${pwd}/bin/coverageall.sh" --all --clean
 
