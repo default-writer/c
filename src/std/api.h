@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 28, 2025 at 7:37:19 AM GMT+3
+ *   March 2, 2025 at 8:40:10 PM GMT+3
  *
  */
 /*
@@ -49,10 +49,6 @@
 #define API_VERSION VM_EXPAND(VM_CONCAT(, VM_STRINGIFY(VM_CONCAT(MAJOR_VERSION, VM_CONCAT(., VM_CONCAT(MINOR_VERSION, VM_CONCAT(., PATCH_VERSION)))))))
 #define API(x) VM_CONCAT(x, VM_CONCAT(_, VM_CONCAT(v, VM_CONCAT(MAJOR_VERSION, VM_CONCAT(_, VM_CONCAT(MINOR_VERSION, VM_CONCAT(_, PATCH_VERSION)))))))
 
-// #if !defined(_WIN32)
-// #define CALL(x) (x)
-// #else
 #define CALL(x) PRIVATE_API(x)()
-// #endif
 
 #endif /* _STD_API_H_ */

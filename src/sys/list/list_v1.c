@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 27, 2025 at 7:44:21 PM GMT+3
+ *   March 2, 2025 at 8:43:17 PM GMT+3
  *
  */
 /*
@@ -124,16 +124,12 @@ static void* list_peek(stack_ptr* current) {
 
 /* initializes the new context's head element */
 static void list_init(stack_ptr* current) {
+    /* checks if pointer is null */
     if (current == 0 || *current != 0) {
         return;
     }
-    const void* tmp = *current;
-    /* checks if pointer is null */
-    if (tmp == 0) {
-        *current = (void*)current;
-        /* sets the current item */
-        *current = CALL(sys_memory)->alloc(sizeof(stack_element));
-    }
+    /* sets the current item */
+    *current = CALL(sys_memory)->alloc(sizeof(stack_element));
 }
 
 /* destroys the memory stack */
