@@ -25,6 +25,17 @@ case "${install}" in
         curl --silent -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | bash
         ;;
 
+    "--sonar-scanner") # installs sonar-scanner sdk environment variables in .bashrc
+        export SONAR_SCANNER_VERSION=6.2.1.4610
+        grep -qxF '# sonar' $HOME/.bashrc || (tail -1 $HOME/.bashrc | grep -qxF '' || echo '' >> $HOME/.bashrc && echo '# sonar' >> $HOME/.bashrc)
+        grep -qxF "export SONAR_SCANNER_VERSION=${SONAR_SCANNER_VERSION}" $HOME/.bashrc || echo "export SONAR_SCANNER_VERSION=${SONAR_SCANNER_VERSION}" >> $HOME/.bashrc
+        grep -qxF "export SONAR_SCANNER_HOME=${pwd}/.sonar/sonar-scanner-`echo $SONAR_SCANNER_VERSION`-linux-x64" $HOME/.bashrc || echo "export SONAR_SCANNER_HOME=${pwd}/.sonar/sonar-scanner-`echo $SONAR_SCANNER_VERSION`-linux-x64" >> $HOME/.bashrc
+        grep -qxF 'export SONAR_SCANNER_OPTS="-server"' $HOME/.bashrc || echo 'export SONAR_SCANNER_OPTS="-server"' >> $HOME/.bashrc
+        grep -qxF 'export PATH=$SONAR_SCANNER_HOME/bin:$PATH' $HOME/.bashrc || echo 'export PATH=$SONAR_SCANNER_HOME/bin:$PATH' >> $HOME/.bashrc
+        grep -qxF "export SONAR_SCANNER_BUILD_WRAPPER=${pwd}/.sonar/build-wrapper-linux-x86" $HOME/.bashrc || echo "export SONAR_SCANNER_BUILD_WRAPPER=${pwd}/.sonar/build-wrapper-linux-x86" >> $HOME/.bashrc
+        grep -qxF 'export PATH=$SONAR_SCANNER_BUILD_WRAPPER:$PATH' $HOME/.bashrc || echo 'export PATH=$SONAR_SCANNER_BUILD_WRAPPER:$PATH' >> $HOME/.bashrc
+        ;;
+
     "--mojo-sdk") # installs mojo sdk environment variables in .bashrc
         grep -qxF '# mojo' $HOME/.bashrc || (tail -1 $HOME/.bashrc | grep -qxF '' || echo '' >> $HOME/.bashrc && echo '# mojo' >> $HOME/.bashrc)
         grep -qxF 'export MODULAR_HOME=$HOME/.modular' $HOME/.bashrc || echo 'export MODULAR_HOME=$HOME/.modular' >> $HOME/.bashrc

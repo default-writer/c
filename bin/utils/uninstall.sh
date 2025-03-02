@@ -28,6 +28,10 @@ install="$1"
 while (($#)); do
     case "$1" in
 
+        "--sonar-scanner") # uninstalls --sonar-scanner
+            rm -rf "${pwd}/.sonar"
+            ;;
+
         "--clangd") # uninstalls clangd
             rm -rf "${pwd}/.tools/clangd"
             ;;

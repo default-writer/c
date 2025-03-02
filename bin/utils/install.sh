@@ -34,6 +34,21 @@ while (($#)); do
         "--no-upgrade") # [optional] skips system upgrades
             ;;
 
+        "--sonar-scanner") #installs sonar-scanner
+            export SONAR_SCANNER_VERSION=6.2.1.4610
+            export SONAR_SCANNER_HOME=${pwd}/.sonar/sonar-scanner-$SONAR_SCANNER_VERSION-linux-x64
+            curl --silent --proto '=https' --tlsv1.2 -sSf https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux-x64.zip -o /tmp/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux-x64.zip
+            unzip -o -q /tmp/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux-x64.zip -d ${pwd}/.sonar/
+            export PATH=$SONAR_SCANNER_HOME/bin:$PATH
+            export SONAR_SCANNER_OPTS="-server"
+            rm -f /tmp/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux-x64.zip
+
+            curl --silent --proto '=https' --tlsv1.2 -sSf https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip -o /tmp/build-wrapper-linux-x86.zip
+            unzip -o -q /tmp/build-wrapper-linux-x86.zip -d ${pwd}/.sonar/
+            export PATH=${pwd}/.sonar/build-wrapper-linux-x86:$PATH
+            rm -f /tmp/build-wrapper-linux-x86.zip
+            ;;
+
         "--appwrite") # installs appwrite. appwrite is a self-hosted backend-as-a-service platform that provides developers with all the core APIs required to build any application.
             docker run -it --rm \
                 --volume /var/run/docker.sock:/var/run/docker.sock \

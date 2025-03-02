@@ -19,7 +19,6 @@ pwd=$(cd "$(dirname $(dirname "${BASH_SOURCE[0]}"))" &> /dev/null && pwd)
 
 cd "${pwd}"
 
-
 install="$1"
 
 skip=""

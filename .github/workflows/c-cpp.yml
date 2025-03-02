@@ -16,8 +16,10 @@ jobs:
     - uses: actions/checkout@v4
     - name: init
       run: ./bin/init.sh --init --no-update --no-upgrade --lcov --setup --optional
-    - name: coverage
-      run: ./bin/coverageall.sh --all
+    - name: install
+      run: |
+        ./bin/sonarscanner.sh --install
+        ./bin/sonarscanner.sh --coverage
     - name: Coveralls GitHub Action
       uses: coverallsapp/github-action@v2.3.0
  
