@@ -70,7 +70,9 @@ if [[ "${coverage}" == "--coverage" ]]; then
 
     echo $PATH
 
-    sonar-scanner
+    if [[ ! "${SONAR_TOKEN}" == "" ]]; then
+        sonar-scanner
+    fi
 fi
 
 if [[ "${install}" == "" ]]; then
