@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 2, 2025 at 9:35:15 PM GMT+3
+ *   March 3, 2025 at 10:40:20 PM GMT+3
  *
  */
 /*
@@ -105,7 +105,7 @@ static pointer_ptr* virtual_read_internal(u64 address);
 static pointer_ptr* virtual_alloc_internal(u64* address, virtual_pointer_ptr* target);
 static void virtual_enumerator_init(void);
 static void virtual_enumerator_destroy(void);
-static void virtual_enumerator_init_internal(struct vm* ptr);
+static void virtual_enumerator_init_internal(void);
 static void virtual_enumerator_destroy_internal(void);
 static void** virtual_enumerator_next_internal(void);
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -167,15 +167,18 @@ static pointer_ptr* virtual_alloc_internal(u64* address, virtual_pointer_ptr* ta
 }
 
 static void virtual_enumerator_init(void) {
-    virtual_enumerator_init_internal(vm);
+    if (vm->head == NULL) {
+        return;
+    }
+    virtual_enumerator_init_internal();
 }
 
 static void virtual_enumerator_destroy(void) {
     virtual_enumerator_destroy_internal();
 }
 
-static void virtual_enumerator_init_internal(struct vm* ptr) {
-    virtual_pointer_ptr virtual_pointer = ptr->head;
+static void virtual_enumerator_init_internal() {
+    virtual_pointer_ptr virtual_pointer = vm->head;
     state->virtual = virtual_pointer;
     state->ptr = virtual_pointer->bp;
 }
@@ -260,19 +263,18 @@ static void virtual_free(const_pointer_ptr ptr) {
     if (!virtual_pointer) {
         return;
     }
-    pointer_ptr* data = virtual_pointer->bp - virtual_pointer->offset - 1 + CALL(pointer)->address(ptr);
-    if (data != 0) {
+    u64 address = CALL(pointer)->address(ptr);
+    pointer_ptr* data = virtual_pointer->bp - virtual_pointer->offset - 1 + address;
 #ifndef USE_GC
-        struct vm_pointer* vm_pointer_ptr = CALL(sys_memory)->alloc(VM_POINTER_SIZE);
-        vm_pointer_ptr->ptr = data;
-        vm_pointer_ptr->virtual_pointer = CALL(pointer)->ref(ptr);
-        CALL(sys_list)->push(cache, vm_pointer_ptr);
+    struct vm_pointer* vm_pointer_ptr = CALL(sys_memory)->alloc(VM_POINTER_SIZE);
+    vm_pointer_ptr->ptr = data;
+    vm_pointer_ptr->virtual_pointer = CALL(pointer)->ref(ptr);
+    CALL(sys_list)->push(cache, vm_pointer_ptr);
 #endif
 #ifdef USE_MEMORY_DEBUG_INFO
-        printf("  >-: %016llx ! %016llx > %016llx\n", CALL(pointer)->address(ptr), (u64)ptr, (u64)data);
+    printf("  >-: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)data);
 #endif
-        *data = 0;
-    }
+    *data = 0;
 }
 
 static pointer_ptr* virtual_read_type(u64 address, u64 id) {
@@ -280,14 +282,13 @@ static pointer_ptr* virtual_read_type(u64 address, u64 id) {
         return 0;
     }
     pointer_ptr* data = virtual_read_internal(address);
-    const_pointer_ptr ptr = 0;
     if (data == 0) {
         return 0;
     }
-    ptr = *data;
-    if (ptr == 0) {
+    if (*data == 0) {
         return 0;
     }
+    const_pointer_ptr ptr = *data;
     if (!CALL(pointer)->read_type(ptr, id)) {
         return 0;
     }
@@ -366,6 +367,9 @@ static u64 virtual_enumerator_next(void) {
 }
 
 static void** virtual_enumerator_next_internal(void) {
+    if (vm->head == NULL) {
+        return 0;
+    }
     void** data = 0;
     virtual_pointer_ptr virtual_pointer = state->virtual;
     while (data == 0) {

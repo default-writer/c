@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 27, 2025 at 7:42:23 PM GMT+3
+ *   March 3, 2025 at 10:11:48 PM GMT+3
  *
  */
 /*
@@ -260,6 +260,9 @@ static u64 pointer_read_type(const_pointer_ptr ptr, u64 virtual_id) {
 
 /* implementation */
 static void pointer_init(u64 size) {
+    if (vm != 0) {
+        return;
+    }
     CALL(virtual)->init(&vm, size);
 #ifndef ATTRIBUTE
     init();
@@ -277,6 +280,9 @@ static void pointer_init(u64 size) {
 }
 
 static void pointer_destroy(void) {
+    if (vm == 0) {
+        return;
+    }
     CALL(sys_memory)->free(default_types, known_types_counter * sizeof(struct known_types));
     CALL(virtual)->destroy(&vm);
 }
