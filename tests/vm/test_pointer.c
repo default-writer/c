@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 3, 2025 at 9:33:36 AM GMT+3
+ *   March 3, 2025 at 9:46:49 AM GMT+3
  *
  */
 /*
@@ -158,6 +158,34 @@ RX_TEST_CASE(tests_v1, test_load_copy_virtual_read_ptr_0, .fixture = test_fixtur
     memcpy(&mock_virtual_methods_definitions, virtual, sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
     /* setup mocks */
     mock_virtual_methods_definitions.read = mock_virtual_read_zero_ptr;
+    /* setup api endpoint */
+    static const virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
+    /* backup api calls */
+    memcpy(&virtual_methors, &virtual, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    /* init */
+    CALL(pointer)->init(8);
+    u64 char_ptr = CALL(virtual_string)->load("/");
+    /* prepare to mock api calls */
+    memcpy(&virtual, &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    /* virtual_string->free fails in virtual->read call */
+    u64 copy_ptr = CALL(virtual_string)->copy(char_ptr);
+    /* restore api calls */
+    memcpy(&virtual, &virtual_methors, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    RX_ASSERT(char_ptr != 0);
+    RX_ASSERT(copy_ptr == 0);
+    RX_ASSERT(strcmp(CALL(virtual_string)->unsafe(char_ptr), "/") == 0);
+    CALL(virtual_string)->free(char_ptr);
+    CALL(pointer)->gc();
+    CALL(pointer)->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(tests_v1, test_load_copy_virtual_read_0, .fixture = test_fixture) {
+    static virtual_methods mock_virtual_methods_definitions;
+    /*api */
+    memcpy(&mock_virtual_methods_definitions, virtual, sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
+    /* setup mocks */
+    mock_virtual_methods_definitions.read = mock_virtual_read_zero;
     /* setup api endpoint */
     static const virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
     /* backup api calls */
