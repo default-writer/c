@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 3, 2025 at 9:46:49 AM GMT+3
+ *   March 3, 2025 at 10:26:52 PM GMT+3
  *
  */
 /*
@@ -149,6 +149,96 @@ RX_TEST_CASE(tests_v1, test_load_copy, .fixture = test_fixture) {
 #endif
     CALL(pointer)->gc();
     CALL(pointer)->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(tests_v1, test_load_copy_free_gc_destroy_free, .fixture = test_fixture) {
+    CALL(pointer)->init(8);
+    u64 char_ptr = CALL(virtual_string)->load("/");
+    RX_ASSERT(char_ptr != 0);
+#ifndef USE_GC
+    CALL(virtual_string)->free(char_ptr);
+#endif
+    CALL(pointer)->gc();
+    CALL(pointer)->destroy();
+    CALL(virtual_string)->free(char_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests_v1, test_load_copy_free_gc_free_destroy, .fixture = test_fixture) {
+    CALL(pointer)->init(8);
+    u64 char_ptr = CALL(virtual_string)->load("/");
+    RX_ASSERT(char_ptr != 0);
+#ifndef USE_GC
+    CALL(virtual_string)->free(char_ptr);
+#endif
+    CALL(pointer)->gc();
+    CALL(virtual_string)->free(char_ptr);
+    CALL(pointer)->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(tests_v1, test_load_copy_free_free_gc_destroy, .fixture = test_fixture) {
+    CALL(pointer)->init(8);
+    u64 char_ptr = CALL(virtual_string)->load("/");
+    RX_ASSERT(char_ptr != 0);
+#ifndef USE_GC
+    CALL(virtual_string)->free(char_ptr);
+    CALL(virtual_string)->free(char_ptr);
+#endif
+    CALL(pointer)->gc();
+    CALL(pointer)->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(tests_v1, test_load_copy_free_gc_destroy_destroy, .fixture = test_fixture) {
+    CALL(pointer)->init(8);
+    u64 char_ptr = CALL(virtual_string)->load("/");
+    RX_ASSERT(char_ptr != 0);
+#ifndef USE_GC
+    CALL(virtual_string)->free(char_ptr);
+#endif
+    CALL(pointer)->gc();
+    CALL(pointer)->destroy();
+    CALL(pointer)->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(tests_v1, test_init_init_load_free_gc_destroy, .fixture = test_fixture) {
+    CALL(pointer)->init(8);
+    CALL(pointer)->init(8);
+    u64 char_ptr = CALL(virtual_string)->load("/");
+    RX_ASSERT(char_ptr != 0);
+#ifndef USE_GC
+    CALL(virtual_string)->free(char_ptr);
+#endif
+    CALL(pointer)->gc();
+    CALL(pointer)->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(tests_v1, test_init_load_free_gc_gc_destroy, .fixture = test_fixture) {
+    CALL(pointer)->init(8);
+    u64 char_ptr = CALL(virtual_string)->load("/");
+    RX_ASSERT(char_ptr != 0);
+#ifndef USE_GC
+    CALL(virtual_string)->free(char_ptr);
+#endif
+    CALL(pointer)->gc();
+    CALL(pointer)->gc();
+    CALL(pointer)->destroy();
+}
+
+/* test init */
+RX_TEST_CASE(tests_v1, test_init_load_free_destroy_gc, .fixture = test_fixture) {
+    CALL(pointer)->init(8);
+    u64 char_ptr = CALL(virtual_string)->load("/");
+    RX_ASSERT(char_ptr != 0);
+#ifndef USE_GC
+    CALL(virtual_string)->free(char_ptr);
+#endif
+    CALL(pointer)->destroy();
+    CALL(pointer)->gc();
 }
 
 /* test init */
