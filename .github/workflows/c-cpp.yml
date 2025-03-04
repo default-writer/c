@@ -26,7 +26,7 @@ jobs:
         submodules: true
         fetch-depth: 0
     - name: init
-      run:  cmake -B build -DCONFIG_GC:BOOL=TRUE
+      run: ./bin/init.sh --init --lcov --optional
     - name: coverage
       run: ./bin/sonarscanner.sh --coverage
     - name: Coveralls GitHub Action

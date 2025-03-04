@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 if [[ "${BASHOPTS}" != *extdebug* ]]; then
-    set -e
+    set -e -x
 fi
 
 err_report() {

@@ -6,7 +6,7 @@
 #                                                                             #
 ###############################################################################
 
-set -euo pipefail
+set -e -xuo pipefail
 
 readonly TRUNK_LAUNCHER_VERSION="1.2.7" # warning: this line is auto-updated
 
@@ -95,7 +95,7 @@ else
 fi
 
 TRUNK_TMPDIR="${TMPDIR}/trunk-$(
-  set -e
+  set -e -x
   id -u
 )/launcher_logs"
 readonly TRUNK_TMPDIR
@@ -143,14 +143,14 @@ lawk() {
 }
 awk_test() {
   # trunk-ignore-begin(shellcheck/SC2310,shellcheck/SC2312)
-  # SC2310 and SC2312 are about set -e not propagating to the $(); if that happens, the string
+  # SC2310 and SC2312 are about set -e -x not propagating to the $(); if that happens, the string
   # comparison will fail and we'll claim the user's awk doesn't work
   if [[ $(
-    set -e
+    set -e -x
     printf 'k1: v1\n \tk2: v2\r\n' | lawk '/[ \t]+k2:/{print $2}'
   ) == 'v2' &&
   $(
-    set -e
+    set -e -x
     printf 'k1: v1\r\n\t k2: v2\r\n' | lawk '/[ \t]+k2:/{print $2}'
   ) == 'v2' ]]; then
     return
@@ -168,7 +168,7 @@ awk_test
 readonly CURL_FLAGS="${CURL_FLAGS:- -vvv --max-time 120 --retry 3 --fail}"
 readonly WGET_FLAGS="${WGET_FLAGS:- --verbose --tries=3 --limit-rate=10M}"
 TMP_DOWNLOAD_LOG="${TRUNK_TMPDIR}/download-$(
-  set -e
+  set -e -x
   dt_str
 ).log"
 readonly TMP_DOWNLOAD_LOG
@@ -250,7 +250,7 @@ download_url() {
   local download_log
   if ! wait "${download_pid}"; then
     download_log="${TRUNK_TMPDIR}/launcher-download-$(
-      set -e
+      set -e -x
       dt_str
     ).log"
     mv "${TMP_DOWNLOAD_LOG}" "${download_log}"
@@ -304,7 +304,7 @@ read_cli_version_from() {
   local cli_version
 
   cli_version="$(
-    set -e
+    set -e -x
     lawk '/[ \t]+version:/{print $2; exit;}' "${config_abspath}"
   )"
   if [[ -z ${cli_version} ]]; then
@@ -346,7 +346,7 @@ download_cli() {
     echo -e "${PROGRESS_MARKS[0]} ${verifying_text}"
 
     actual_sha256="$(
-      set -e
+      set -e -x
       sha256sum "${DOWNLOAD_TAR_GZ}" | lawk '{print $1}'
     )"
 
@@ -384,7 +384,7 @@ download_cli() {
 ###############################################################################
 
 CONFIG_ABSPATH="$(
-  set -e
+  set -e -x
   trunk_yaml_abspath
 )"
 readonly CONFIG_ABSPATH
@@ -394,22 +394,22 @@ if [[ -n ${version:-} ]]; then
   :
 elif [[ -f ${CONFIG_ABSPATH} ]]; then
   version="$(
-    set -e
+    set -e -x
     read_cli_version_from "${CONFIG_ABSPATH}"
   )"
   version_sha256="$(
-    set -e
+    set -e -x
     lawk "/${PLATFORM_UNDERSCORE}:/"'{print $2}' "${CONFIG_ABSPATH}"
   )"
 else
   readonly LATEST_FILE="${LAUNCHER_TMPDIR}/latest"
   download_url "https://trunk.io/releases/latest" "${LATEST_FILE}"
   version=$(
-    set -e
+    set -e -x
     lawk '/version:/{print $2}' "${LATEST_FILE}"
   )
   version_sha256=$(
-    set -e
+    set -e -x
     lawk "/${PLATFORM_UNDERSCORE}:/"'{print $2}' "${LATEST_FILE}"
   )
 fi
