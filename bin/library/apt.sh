@@ -34,7 +34,7 @@ function update() {
 
     if [ "${skip}" != "--skip" ]; then
         apt install -y --fix-broken
-        apt update -y --fix-missing
+        apt update -qq -y --fix-missing
         dpkg --configure -a
     fi
 

@@ -153,7 +153,7 @@ while (($#)); do
             apt install -y wget curl apt-transport-https software-properties-common
             curl -sL "https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb" -o /tmp/packages-microsoft-prod.deb
             dpkg -i /tmp/packages-microsoft-prod.deb
-            apt update -y
+            apt update -qq -y
             apt install -y powershell
             rm -f /tmp/packages-microsoft-prod.deb
             upgrade ${updgradeflags}
@@ -169,7 +169,7 @@ while (($#)); do
             apt-get install -y ca-certificates curl gnupg
             mkdir -p /etc/apt/keyrings        
             curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
-            apt update -y
+            apt update -qq -y
             chmod a+r /etc/apt/keyrings/nodesource.gpg
             apt install -y nodejs
             upgrade ${updgradeflags}
@@ -285,7 +285,7 @@ while (($#)); do
             apt install -y apt-transport-https
             wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | gpg --batch --yes --dearmor | tee /etc/apt/trusted.gpg.d/sublimehq-archive.gpg >/dev/null
             echo "deb https://download.sublimetext.com/ apt/stable/" | tee /etc/apt/sources.list.d/sublime-text.list
-            apt update -y
+            apt update -qq -y
             apt install -y sublime-merge
             upgrade ${updgradeflags}
             ;;
@@ -335,7 +335,7 @@ while (($#)); do
             mkdir -p /etc/apt/keyrings
             curl --silent -fsSL --use-ascii --retry 5 --retry-all-errors https://download.docker.com/linux/ubuntu/gpg | gpg --batch --yes --dearmor -o /etc/apt/keyrings/docker.gpg
             echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list >/dev/null
-            apt update -y
+            apt update -qq -y
             chmod a+r /etc/apt/keyrings/docker.gpg
             apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
             usermod -a -G sudo $USER
@@ -354,7 +354,7 @@ while (($#)); do
             apt install -y --fix-broken qemu-kvm libvirt-clients libvirt-daemon-system bridge-utils virtinst libvirt-daemon pass uidmap
             systemctl enable --now libvirtd
             curl --silent -L https://desktop.docker.com/linux/main/amd64/docker-desktop-4.15.0-amd64.deb -o /tmp/docker-desktop-4.15.0-amd64.deb
-            apt update -y
+            apt update -qq -y
             dpkg -i /tmp/docker-desktop-4.15.0-amd64.deb
             apt install -y --only-upgrade apport apport-gtk python3-apport python3-problem-report gnome-remote-desktop grub-common grub-pc grub-pc-bin grub2-common gstreamer1.0-pipewire libpipewire-0.3-0 libpipewire-0.3-common libpipewire-0.3-modules open-vm-tools open-vm-tools-desktop python3-software-properties software-properties-common software-properties-gtk libgbm1 libgl1-mesa-dri libglapi-mesa libglx-mesa0 mesa-va-drivers mesa-vulkan-drivers
             upgrade ${updgradeflags}
