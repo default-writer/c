@@ -268,8 +268,7 @@ set(MAIN_TESTS_VM1_SOURCE tests/vm/main-tests_v1.c)
 
 include_directories(${CMAKE_SOURCE_DIR}/tests)
 include_directories(${CMAKE_SOURCE_DIR}/src)
-include_directories(${CMAKE_SOURCE_DIR}/.rexo)
-include_directories(${CMAKE_SOURCE_DIR}/.rexo/include)
+include_directories(${CMAKE_SOURCE_DIR}/.deps/rexo/include)
 
 add_library(c-sys SHARED ${LIB_SYS_SOURCE})
 generate_export_header(c-sys
@@ -306,8 +305,8 @@ target_link_libraries(main-tests-vm1 PRIVATE
     c-vm
 )
 
-configure_file(all_english_words.txt ${CMAKE_BINARY_DIR}/all_english_words.txt COPYONLY)
-configure_file(file.txt ${CMAKE_BINARY_DIR}/file.txt COPYONLY)
+configure_file(data/all_english_words.txt ${CMAKE_BINARY_DIR}/all_english_words.txt COPYONLY)
+configure_file(data/file.txt ${CMAKE_BINARY_DIR}/file.txt COPYONLY)
 
 FILE(WRITE ${CMAKE_BINARY_DIR}/input.txt
     "fopen<\"input.txt\",\"rb\">f (? f==0 perror<\"file not found\" exit<1 : print<\"all ok\")"

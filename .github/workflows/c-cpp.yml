@@ -17,7 +17,7 @@ jobs:
       with:
         fetch-depth: 0
     - name: init
-      run: ./bin/init.sh --init --no-update --no-upgrade --lcov --setup --optional
+      run: ./bin/init.sh --init --optional
     - name: coverage
       run: ./bin/sonarscanner.sh --coverage
     - name: Coveralls GitHub Action

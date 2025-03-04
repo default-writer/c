@@ -2,7 +2,6 @@
 Checks:          'clang-diagnostic-*,clang-analyzer-*'
 WarningsAsErrors: ''
 HeaderFilterRegex: ''
-AnalyzeTemporaryDtors: false
 FormatStyle:     '{BasedOnStyle: WebKit, IndentWidth: 4, BreakBeforeBraces: Attach}'
 User:            user
 CheckOptions:

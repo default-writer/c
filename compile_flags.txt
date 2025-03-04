@@ -1,3 +1,4 @@
+-I.deps/rexo/include
 -Isrc
 -DCONFIG_MEMORY_CLEANUP
 -DCONFIG_MEMORY_DEBUG_INFO

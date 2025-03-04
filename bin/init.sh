@@ -66,11 +66,10 @@ while (($#)); do
             ;;
 
         "--submodule-rexo") # installs rexo
-            rexo="--submodule-rexo"
+            "${pwd}/bin/utils/install.sh" --submodule-rexo
             ;;
 
         "--optional") # installs optional dependencies
-            optional="--optional"
             ;;
 
         "--lcov") # installs lcov

@@ -335,7 +335,8 @@
         "--log=info",
         "--pch-storage=memory",
         "--clang-tidy",
-        "--fallback-style=WebKit"
+        "--fallback-style=WebKit",
+        "--header-insertion=never"
     ],
     "clangd.path": "${workspaceFolder}/.tools/clangd-linux-19.1.2/bin/clangd",
     "clangd.checkUpdates": true,
@@ -347,6 +348,7 @@
     "clang-format.language.c.enable": true,
     "clang-tidy.lintOnSave": true,
     "clang-tidy.compilerArgs": [
+        "-I.deps/rexo/include",
         "-I/usr/include/gtk-4.0"
     ],
     "editor.tabSize": 4,
