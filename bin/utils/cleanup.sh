@@ -44,6 +44,6 @@ esac
 
 git clean -f -q -d -x
 
-[[ $SHLVL -gt 2 ]] || echo OK
+[[ $SHLVL -eq 2 ]] && echo OK
 
 cd "${pwd}"

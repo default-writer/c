@@ -147,7 +147,7 @@ while (($#)); do
             ;;
 
         "--submodule-rexo") # installs rexo as git submodule
-            submodule-install https://github.com/default-writer/rexo.git .rexo
+            submodule-install https://github.com/default-writer/rexo.git .deps/rexo
             ;;
 
         "--submodule-musl") # installs musl as git submodule
@@ -225,6 +225,6 @@ if [[ "${install}" == "" ]]; then
     exit;
 fi
 
-[[ $SHLVL -gt 2 ]] || echo OK
+[[ $SHLVL -eq 2 ]] && echo OK
 
 cd "${pwd}"

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 3, 2025 at 10:11:48 PM GMT+3
+ *   March 4, 2025 at 7:14:12 AM GMT+3
  *
  */
 /*
@@ -35,7 +35,6 @@
 #include "vm/virtual/virtual_v1.h"
 
 #include <stdio.h>
-#include <string.h>
 
 #define DEFAULT_SIZE 0x100
 #define POINTER_SIZE sizeof(struct pointer)

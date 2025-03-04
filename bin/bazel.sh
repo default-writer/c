@@ -70,6 +70,6 @@ if [[ "${silent}" == "--silent" ]]; then
     exec 1>&2 2>&-
 fi
 
-[[ $SHLVL -gt 2 ]] || echo OK
+[[ $SHLVL -eq 2 ]] && echo OK
 
 cd "${pwd}"

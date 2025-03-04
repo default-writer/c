@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 27, 2025 at 9:32:36 AM GMT+3
+ *   March 4, 2025 at 10:03:02 AM GMT+3
  *
  */
 /*
@@ -45,7 +45,7 @@
 #endif
 #endif
 
-#include "../.rexo/include/rexo.h"
+#include "rexo.h"
 
 #endif
 

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 3, 2025 at 10:26:52 PM GMT+3
+ *   March 4, 2025 at 10:48:33 AM GMT+3
  *
  */
 /*
@@ -2349,7 +2349,7 @@ RX_TEST_CASE(tests_v1, test_user, .fixture = test_fixture) {
 RX_TEST_CASE(tests_v1, test_load_open_file_unsafe_hashtable, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 file_path_ptr = CALL(os)->getcwd();
-    u64 file_name_ptr = CALL(virtual_string)->load("/all_english_words.txt");
+    u64 file_name_ptr = CALL(virtual_string)->load("/data/all_english_words.txt");
     CALL(virtual_string)->strcat(file_path_ptr, file_name_ptr);
     CALL(virtual_string)->free(file_name_ptr);
     u64 mode_ptr = CALL(virtual_string)->load("rb");

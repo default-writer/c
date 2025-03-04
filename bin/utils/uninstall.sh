@@ -46,7 +46,7 @@ while (($#)); do
             ;;
 
         "--submodule-rexo") # uninstalls rexo as git submodule
-            submodule-uninstall ${pwd} .rexo
+            submodule-uninstall ${pwd} .deps/rexo
             ;;
 
         "--submodule-musl") # uninstalls muslas git submodule
@@ -106,6 +106,6 @@ if [[ "${install}" == "" ]]; then
     exit;
 fi
 
-[[ $SHLVL -gt 2 ]] || echo OK
+[[ $SHLVL -eq 2 ]] && echo OK
 
 cd "${pwd}"
