@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e -x
+set -e
 
 err_report() {
     echo "ERROR: $0:$*"

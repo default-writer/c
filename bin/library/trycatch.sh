@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 if [[ "${BASHOPTS}" != *extdebug* ]]; then
-    set -e -x
+    set -e
 fi
 
 err_report() {
@@ -36,7 +36,7 @@ function catch()
 
 function throwErrors()
 {
-    set -e -x
+    set -e
 }
 
 function ignoreErrors()
