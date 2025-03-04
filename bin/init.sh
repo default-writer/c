@@ -33,14 +33,8 @@ init="--init"
 while (($#)); do
     case "$1" in
 
-        "--no-update") # [optional] skips system updates
-            ;;
-
-        "--no-upgrade") # [optional] skips system upgrades
-            ;;
-
         "--init") # initializes project dependencies
-            init="--init"
+            "${pwd}/bin/utils/install.sh" --submodule-rexo
             ;;
 
         "--no-update") # [optional] skips system updates
@@ -52,7 +46,7 @@ while (($#)); do
             ;;
      
         "--clean") # cleans up directories before build
-            clean="--clean"
+            "${pwd}/bin/utils/cleanup.sh" --all
             ;;
 
         "--setup") # installs required dependencies setup
@@ -60,19 +54,15 @@ while (($#)); do
             ;;
 
         "--hooks") # installs git hooks
-            hooks="--hooks"
+            "${pwd}/bin/utils/install.sh" --hooks
             ;;
 
         "--clangd") # installs clangd
-            clangd="--clangd"
-            ;;
-
-        "--lcov") # installs lcov
-            lcov="--lcov"
+            "${pwd}/bin/utils/install.sh" --clangd
             ;;
 
         "--cmake") # installs cmake
-            cmake="--cmake"
+            "${pwd}/bin/utils/install.sh" --cmake
             ;;
 
         "--submodule-rexo") # installs rexo
@@ -83,8 +73,13 @@ while (($#)); do
             optional="--optional"
             ;;
 
-        "--silent") # suppress verbose output
-            silent="--silent"
+        "--lcov") # installs lcov
+            sudo "${pwd}/bin/utils/install.sh" ${updateflags} ${updgradeflags} --lcov
+            ;;
+
+        "--setup") # setup requrements
+            sudo "${pwd}/bin/setup.sh"
+            help
             ;;
 
         "--help") # shows command description
@@ -102,39 +97,6 @@ done
 if [[ "${install}" == "" ]]; then
     help
     exit;
-fi
-
-if [[ "${hooks}" == "--hooks" ]]; then
-    "${pwd}/bin/utils/install.sh" --hooks $@
-fi
-
-if [[ "${init}" == "--init" ]]; then
-    "${pwd}/bin/utils/install.sh" --submodule-rexo $@
-fi
-
-if [[ "${clean}" == "--clean" ]]; then
-    "${pwd}/bin/utils/cleanup.sh" --all $@
-fi
-
-if [[ "${cmake}" == "--cmake" ]]; then
-    "${pwd}/bin/utils/install.sh" --cmake $@
-fi
-
-if [[ "${clangd}" == "--clangd" ]]; then
-    "${pwd}/bin/utils/install.sh" --clangd $@
-fi
-
-# sudo
-if [[ "${setup}" == "--setup" ]]; then
-    sudo "${pwd}/bin/setup.sh" $@
-fi
-
-if [[ "${lcov}" == "--lcov" ]]; then
-    sudo "${pwd}/bin/utils/install.sh" --lcov
-fi
-
-if [[ "${silent}" == "--silent" ]]; then
-    exec 1>&2 2>&-
 fi
 
 [[ $SHLVL -gt 2 ]] || echo OK
