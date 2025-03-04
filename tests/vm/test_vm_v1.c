@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 25, 2025 at 10:53:52 AM GMT+3
+ *   March 4, 2025 at 11:31:10 AM GMT+3
  *
  */
 /*
@@ -348,9 +348,7 @@ RX_TEST_CASE(tests, test_pointer_alloc_destroy_read_type_release_0, .fixture = t
     virtual_pointer_ptr vptr = CALL(pointer)->ref(byte_data);
     CALL(pointer)->write(byte_data, vptr, ptr_id);
 
-#ifndef USE_GC
     CALL(pointer)->free(ptr_id);
-#endif
 
     CALL(pointer)->destroy();
 
@@ -368,9 +366,7 @@ RX_TEST_CASE(tests, test_pointer_alloc_alloc_ref_write_gc_destroy_read_type_rele
     virtual_pointer_ptr vptr = CALL(pointer)->ref(byte_data);
     CALL(pointer)->write(byte_data, vptr, ptr_id);
 
-#ifndef USE_GC
     CALL(pointer)->free(ptr_id);
-#endif
 
     CALL(pointer)->gc();
     CALL(pointer)->destroy();
