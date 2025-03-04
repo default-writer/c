@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 3, 2025 at 10:45:34 PM GMT+3
+ *   March 4, 2025 at 5:53:55 PM GMT+3
  *
  */
 /*
@@ -393,6 +393,20 @@ static u64 string_match(u64 src, u64 match) {
     return result;
 }
 
+static char* get_last_match(char* str1, const char* str2, u64* size, u64 offset) {
+    char* pos = str1;
+    char* last_match = 0;
+    u64 orig_size = *size - offset;
+    while (orig_size > 0 && *pos != 0) {
+        if (*pos == *str2) {
+            last_match = pos;
+        }
+        ++pos;
+    }
+    *size = orig_size;
+    return last_match;
+}
+
 static u64 string_offset(u64 src, u64 match) {
     pointer_ptr* ptr = CALL(virtual)->read(src);
     if (ptr == 0 || *ptr == 0) {
@@ -411,18 +425,7 @@ static u64 string_offset(u64 src, u64 match) {
     ch += offset;
     u64 match_size = CALL(pointer)->size(*match_ptr);
     char* str2 = CALL(pointer)->read(*match_ptr);
-    char* str1 = ch;
-    char* pos = str1;
-    char* last_match = 0;
-    u64 orig_size = size - offset;
-    while (orig_size > 0 && *pos != 0) {
-        if (*pos == *str2) {
-            last_match = pos;
-        }
-        ++pos;
-    }
-    size = orig_size;
-    str1 = last_match;
+    char* str1 = get_last_match(ch, str2, &size, offset);
     if (str1 == 0) {
         return 0;
     }
