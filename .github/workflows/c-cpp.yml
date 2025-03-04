@@ -11,7 +11,7 @@ jobs:
   build:
     env:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    runs-on: ubuntu-latest
+    runs-on: hack2root/c-project:latest
     steps:
     - uses: actions/checkout@v2
       if: github.event_name == 'pull_request'
@@ -26,7 +26,7 @@ jobs:
         submodules: true
         fetch-depth: 0
     - name: init
-      run: ./bin/init.sh --init --lcov --setup
+      run: ./bin/init.sh --init
     - name: coverage
       run: ./bin/sonarscanner.sh --coverage
     - name: Coveralls GitHub Action
