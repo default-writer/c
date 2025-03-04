@@ -75,6 +75,6 @@ fi
 # "${pwd}/bin/utils/setup.sh" --doxygen --no-update --no-upgrade
 "${pwd}/bin/utils/setup.sh" --upgrade
 
-[[ $SHLVL -gt 2 ]] || echo OK
+[[ $SHLVL -eq 2 ]] && echo OK
 
 cd "${pwd}"

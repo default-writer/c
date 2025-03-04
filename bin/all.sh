@@ -73,6 +73,6 @@ if [ $? -eq 0 ]; then
     "${pwd}/bin/logs.sh" ${COMMAND_LINE_OPTIONS}
 fi
 
-[[ $SHLVL -gt 2 ]] || echo OK
+[[ $SHLVL -eq 2 ]] && echo OK
 
 cd "${pwd}"
