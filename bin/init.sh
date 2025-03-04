@@ -48,10 +48,6 @@ while (($#)); do
             "${pwd}/bin/utils/cleanup.sh" --all
             ;;
 
-        "--setup") # installs required dependencies setup
-            setup="--setup"
-            ;;
-
         "--hooks") # installs git hooks
             "${pwd}/bin/utils/install.sh" --hooks
             ;;
@@ -75,7 +71,7 @@ while (($#)); do
             sudo "${pwd}/bin/utils/install.sh" ${updateflags} ${updgradeflags} --lcov
             ;;
 
-        "--setup") # setup requrements
+        "--setup") # installs required dependencies setup
             sudo "${pwd}/bin/setup.sh"
             help
             ;;
