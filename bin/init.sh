@@ -73,7 +73,6 @@ while (($#)); do
 
         "--setup") # installs required dependencies setup
             sudo "${pwd}/bin/setup.sh"
-            help
             ;;
 
         "--help") # shows command description
