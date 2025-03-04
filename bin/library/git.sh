@@ -48,7 +48,7 @@ function submodule-install() {
     git submodule sync --recursive
 
     # Pull with rebase
-    git pull origin --recurse-submodules --force
+    git pull origin --recurse-submodules --rebase --force
 }
 
 function submodule-uninstall() {

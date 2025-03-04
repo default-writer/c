@@ -34,7 +34,6 @@ while (($#)); do
     case "$1" in
 
         "--init") # initializes project dependencies
-            "${pwd}/bin/utils/install.sh" --submodule-rexo
             ;;
 
         "--no-update") # [optional] skips system updates
