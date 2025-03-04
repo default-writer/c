@@ -93,7 +93,8 @@ function get-targets() {
     pwd=$(get-cwd)
 
     if [[ ! -d "${pwd}/config" ]]; then
-        exec 2>&1 >/dev/null
+        echo cmake magic is here
+        # exec 2>&1 >/dev/null
 
         cmake=$(get-cmake)
         if [[ "${cmake}" == "" ]]; then
@@ -106,7 +107,7 @@ function get-targets() {
             -B"${pwd}/config" \
             -G "Ninja" 2>&1 >/dev/null
 
-        exec 1>&2 2>&-
+        # exec 1>&2 2>&-
     fi
 
     array=()
