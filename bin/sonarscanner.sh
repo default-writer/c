@@ -64,8 +64,6 @@ if [[ "${coverage}" == "--coverage" ]]; then
 
     export PATH=$SONAR_SCANNER_HOME/bin:$PATH
 
-    echo $PATH
-
     if [[ ! "${SONAR_TOKEN}" == "" ]]; then
         sonar-scanner
     fi
