@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 5, 2025 at 4:32:46 PM GMT+3
+ *   March 6, 2025 at 12:25:28 AM GMT+3
  *
  */
 /*
@@ -119,7 +119,7 @@ RX_TEST_CASE(tests, test_vm_read_1, .fixture = test_fixture) {
 RX_TEST_CASE(tests, test_vm_read_9, .fixture = test_fixture) {
     pointer_ptr ptr = CALL(pointer)->alloc(0, TYPE_DATA);
     u64 virtual_ptr = CALL(virtual)->alloc(ptr);
-    pointer_ptr* vm_ptr = CALL(virtual)->read(CALL(sys_options)->size + 1);
+    pointer_ptr* vm_ptr = CALL(virtual)->read(CALL(system_options)->size + 1);
     RX_ASSERT(ptr != 0);
     RX_ASSERT(virtual_ptr != 0);
     RX_ASSERT(vm_ptr == 0);

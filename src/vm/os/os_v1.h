@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 5, 2025 at 6:03:46 PM GMT+3
+ *   March 6, 2025 at 12:33:35 AM GMT+3
  *
  */
 /*
@@ -44,7 +44,6 @@ typedef struct PRIVATE_API(virtual_os_methods) {
 } virtual_os_methods;
 
 /* definition */
-CVM_EXPORT extern const virtual_os_methods PRIVATE_API(virtual_os_methods_definitions);
 CVM_EXPORT extern const virtual_os_methods* CALL(os);
 
 #endif /* _OS_V1_H_ */

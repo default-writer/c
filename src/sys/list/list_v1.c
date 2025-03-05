@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 2, 2025 at 8:43:17 PM GMT+3
+ *   March 6, 2025 at 12:25:09 AM GMT+3
  *
  */
 /*
@@ -62,7 +62,7 @@ static void* list_data(stack_ptr ptr) {
 /* deletes the data pointer */
 static void list_delete(stack_ptr ptr) {
     /* releases the pointer */
-    CALL(sys_memory)->free(ptr, sizeof(stack_element));
+    CALL(system_memory)->free(ptr, sizeof(stack_element));
 }
 
 /* pushes the memory pointer */
@@ -71,7 +71,7 @@ static void list_push(stack_ptr* current, void* payload) {
         return;
     }
     /* creates empty data chunk */
-    stack_ptr item = CALL(sys_memory)->alloc(sizeof(stack_element));
+    stack_ptr item = CALL(system_memory)->alloc(sizeof(stack_element));
     /* writes data into allocated memory buffer */
     item->data = payload;
     /* assigns item's next pointer to current pointer */
@@ -129,7 +129,7 @@ static void list_init(stack_ptr* current) {
         return;
     }
     /* sets the current item */
-    *current = CALL(sys_memory)->alloc(sizeof(stack_element));
+    *current = CALL(system_memory)->alloc(sizeof(stack_element));
 }
 
 /* destroys the memory stack */
@@ -186,7 +186,7 @@ static void list_print(stack_ptr* current) {
 
 /* public */
 
-const list_methods PRIVATE_API(list_methods_definitions) = {
+const system_list_methods PRIVATE_API(system_list_methods_definitions) = {
     /* generic methods */
     .init = list_init,
     .destroy = list_destroy,
@@ -200,6 +200,6 @@ const list_methods PRIVATE_API(list_methods_definitions) = {
 #endif
 };
 
-const list_methods* CALL(sys_list) {
-    return &PRIVATE_API(list_methods_definitions);
+const system_list_methods* CALL(system_list) {
+    return &PRIVATE_API(system_list_methods_definitions);
 }

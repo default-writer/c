@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 5, 2025 at 10:44:17 PM GMT+3
+ *   March 6, 2025 at 12:37:25 AM GMT+3
  *
  */
 /*
@@ -29,9 +29,10 @@
 #include <stdlib.h>
 
 /* api */
-const sys_api_type PRIVATE_API(sys_api_methods_definitions) = {
+const system_api_type PRIVATE_API(system_api_methods_definitions) = {
     .alloc = &calloc,
-    .free = &free
+    .free = &free,
+    .realloc = &realloc
 };
 
-const sys_api_type* sys_api = &PRIVATE_API(sys_api_methods_definitions);
+const system_api_type* system_api = &PRIVATE_API(system_api_methods_definitions);

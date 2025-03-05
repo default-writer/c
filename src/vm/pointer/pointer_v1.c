@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 5, 2025 at 10:31:59 PM GMT+3
+ *   March 6, 2025 at 12:25:10 AM GMT+3
  *
  */
 /*
@@ -130,7 +130,7 @@ static void vm_destroy(void);
 static u64 known_types_counter = TYPE_USER;
 
 static void known_types_init(u64 id, const type_methods_definitions* data_type) {
-    known_types_ptr new_type = CALL(sys_memory)->alloc(sizeof(struct known_types));
+    known_types_ptr new_type = CALL(system_memory)->alloc(sizeof(struct known_types));
     new_type->next = known_types;
     new_type->id = id;
     new_type->desctructor = data_type->desctructor;
@@ -151,7 +151,7 @@ static void INIT vm_init(void) {
 static void DESTROY vm_destroy(void) {
     while (known_types->next != 0) {
         known_types_ptr prev = known_types->next;
-        CALL(sys_memory)->free(known_types, sizeof(struct known_types));
+        CALL(system_memory)->free(known_types, sizeof(struct known_types));
         known_types = prev;
     }
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -160,9 +160,9 @@ static void DESTROY vm_destroy(void) {
 }
 
 static pointer_ptr pointer_alloc(u64 size, u64 id) {
-    pointer_ptr ptr = CALL(sys_memory)->alloc(POINTER_SIZE);
+    pointer_ptr ptr = CALL(system_memory)->alloc(POINTER_SIZE);
     if (size != 0) {
-        ptr->data = CALL(sys_memory)->alloc(size);
+        ptr->data = CALL(system_memory)->alloc(size);
         ptr->size = size;
     }
     ptr->id = id;
@@ -171,7 +171,7 @@ static pointer_ptr pointer_alloc(u64 size, u64 id) {
 
 static void pointer_realloc(pointer_ptr ptr, u64 size) {
     if (ptr != 0 && ptr->data != 0) {
-        ptr->data = CALL(sys_memory)->realloc(ptr->data, ptr->size, size);
+        ptr->data = CALL(system_memory)->realloc(ptr->data, ptr->size, size);
         ptr->size = size;
     }
 }
@@ -204,10 +204,10 @@ static void pointer_release(pointer_ptr ptr) {
     void* data_ptr = ptr->data;
     u64 size = ptr->size;
     if (data_ptr != 0 && size != 0) {
-        CALL(sys_memory)->free(data_ptr, size);
+        CALL(system_memory)->free(data_ptr, size);
     }
     CALL(virtual)->free(ptr);
-    CALL(sys_memory)->free(ptr, POINTER_SIZE);
+    CALL(system_memory)->free(ptr, POINTER_SIZE);
 }
 
 static u64 pointer_address(const_pointer_ptr ptr) {
@@ -266,7 +266,7 @@ static void pointer_init(u64 size) {
 #ifndef ATTRIBUTE
     init();
 #endif
-    default_types = CALL(sys_memory)->alloc(known_types_counter * sizeof(struct known_types));
+    default_types = CALL(system_memory)->alloc(known_types_counter * sizeof(struct known_types));
     known_types_ptr current = known_types;
     while (current->next != 0) {
         known_types_ptr prev = current->next;
@@ -282,7 +282,7 @@ static void pointer_destroy(void) {
     if (vm == 0) {
         return;
     }
-    CALL(sys_memory)->free(default_types, known_types_counter * sizeof(struct known_types));
+    CALL(system_memory)->free(default_types, known_types_counter * sizeof(struct known_types));
     CALL(virtual)->destroy(&vm);
 }
 

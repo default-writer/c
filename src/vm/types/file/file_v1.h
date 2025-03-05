@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 5, 2025 at 4:32:46 PM GMT+3
+ *   March 6, 2025 at 12:33:49 AM GMT+3
  *
  */
 /*
@@ -54,7 +54,6 @@ typedef struct PRIVATE_API(virtual_file_methods) {
 } virtual_file_methods;
 
 /* definition */
-CVM_EXPORT extern const virtual_file_methods PRIVATE_API(virtual_file_methods_definitions);
 CVM_EXPORT extern const virtual_file_methods* CALL(file);
 
 #endif /* _FILE_V1_H_ */

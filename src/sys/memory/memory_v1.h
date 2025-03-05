@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 5, 2025 at 10:22:09 PM GMT+3
+ *   March 6, 2025 at 12:33:28 AM GMT+3
  *
  */
 /*
@@ -24,8 +24,8 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _SYS_MEMORY_H_
-#define _SYS_MEMORY_H_
+#ifndef _system_memory_H_
+#define _system_memory_H_
 
 #define USING_MEMORY
 
@@ -47,7 +47,6 @@ typedef struct PRIVATE_API(memory_methods) {
 } memory_methods;
 
 /* definition */
-CSYS_EXPORT extern const memory_methods PRIVATE_API(memory_methods_definitions);
-CSYS_EXPORT extern const memory_methods* CALL(sys_memory);
+CSYS_EXPORT extern const memory_methods* CALL(system_memory);
 
-#endif /* _SYS_MEMORY_H_ */
+#endif /* _system_memory_H_ */
