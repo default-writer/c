@@ -19,7 +19,6 @@ pwd=$(cd "$(dirname $(dirname "${BASH_SOURCE[0]}"))" &> /dev/null && pwd)
 
 cd "${pwd}"
 
-
 install="$1"
 
 . "${pwd}/bin/scripts/load.sh"
@@ -30,6 +29,10 @@ install="$1"
 
 while (($#)); do
     case "$1" in
+
+        "--release") # builds RELEASE version
+            release="--release"
+            ;;
 
         "--all") # builds and runs all targets
             source="all"
@@ -75,8 +78,8 @@ while (($#)); do
             skip="--no-memory-leak-detection"
             ;;
 
-        "--debug") # [optional] runs using debug messaging
-            debug="--debug"
+        "--verbose") # [optional] runs using debug output
+            verbose="--verbose"
             ;;
 
         "--help") # [optional] shows command description
@@ -93,7 +96,12 @@ done
 
 if [[ "${install}" == "" ]]; then
     help
-    exit;
+    exit
+fi
+
+config_memory_debug_info="FALSE"
+if [[ "${verbose}" == "--verbose" ]]; then
+    config_memory_debug_info="TRUE"
 fi
 
 if [[ "${silent}" == "--silent" ]]; then
@@ -155,9 +163,19 @@ find "${pwd}" -type f -name "*.s" -delete
 export MAKEFLAGS=-j8
 export LD_LIBRARY_PATH="${pwd}/lib"
 
+cat << EOF | sed 's/[[:space:]]\+/ /g'
 ${cmake} \
     -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
-    -DCMAKE_BUILD_TYPE:STRING=Debug \
+    -DCMAKE_C_COMPILER:FILEPATH=$(get-cmake-c-compiler-path) \
+    -DCMAKE_CXX_COMPILER:FILEPATH=$(get-cmake-cxx-compiler-path) \
+    $(cmake-options) \
+    -S"${pwd}" \
+    -B"${build}" \
+    -G "Ninja" 2>&1 >/dev/null
+EOF
+
+${cmake} \
+    -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
     -DCMAKE_C_COMPILER:FILEPATH=$(get-cmake-c-compiler-path) \
     -DCMAKE_CXX_COMPILER:FILEPATH=$(get-cmake-cxx-compiler-path) \
     $(cmake-options) \
@@ -173,6 +191,7 @@ fi
 
 for config in ${targets[@]}; do
     target="${config}"
+    echo CONFIG_MEMORY_DEBUG_INFO: ${config_memory_debug_info}
     echo building ${target}
     echo options "$(cmake-options)"
     ${cmake} --build "${build}" --target "${target}" 2>&1 || (echo ERROR: "${target}" && exit 1)

@@ -19,7 +19,6 @@ pwd=$(cd "$(dirname $(dirname "${BASH_SOURCE[0]}"))" &> /dev/null && pwd)
 
 cd "${pwd}"
 
-
 install="$1"
 
 opts=( "${@:2}" )
@@ -74,8 +73,8 @@ while (($#)); do
             callgrind="--callgrind"
             ;;
 
-        "--debug") # [optional] runs using debug messaging
-            debug="--debug"
+        "--verbose") # [optional] runs using debug output
+            verbose="--verbose"
             ;;
 
         "--help") # [optional] shows command description
@@ -92,7 +91,12 @@ done
 
 if [[ "${install}" == "" ]]; then
     help
-    exit;
+    exit
+fi
+
+config_memory_debug_info="FALSE"
+if [[ "${verbose}" == "--verbose" ]]; then
+    config_memory_debug_info="TRUE"
 fi
 
 if [[ "${silent}" == "--silent" ]]; then

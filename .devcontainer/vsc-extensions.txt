@@ -13,6 +13,5 @@ streetsidesoftware.code-spell-checker
 Sycl.markdown-command-runner
 tenninebt.vscode-koverage
 tomoki1207.pdf
-twxs.cmake
 UrosVujosevic.explorer-manager
 yzane.markdown-pdf

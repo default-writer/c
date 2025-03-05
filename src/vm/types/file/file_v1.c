@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 4, 2025 at 10:49:05 AM GMT+3
+ *   March 5, 2025 at 11:57:11 PM GMT+3
  *
  */
 /*
@@ -28,6 +28,7 @@
 
 #include "std/api.h"
 
+#include "vm/api/api_v1.h"
 #include "vm/pointer/pointer_v1.h"
 #include "vm/types/data/data_v1.h"
 #include "vm/virtual/virtual_v1.h"
@@ -56,18 +57,18 @@ static u64 file_data(u64 ptr);
 static void type_desctructor(pointer_ptr ptr);
 
 /* implementation */
-static const struct type_methods_definitions _type = {
+static const struct type_methods_definitions file_type = {
     .desctructor = type_desctructor
 };
 
 static void INIT init(void) {
-    CALL(pointer)->register_known_type(id, &_type);
+    CALL(pointer)->register_known_type(id, &file_type);
 }
 
 static void type_desctructor(pointer_ptr ptr) {
     struct file_handler* handler = CALL(pointer)->read(ptr);
     if (handler->file != 0) {
-        fclose(handler->file);
+        virtual_api->fclose(handler->file);
         handler->file = 0;
     }
     CALL(pointer)->release(ptr);
@@ -77,7 +78,7 @@ static int is_valid_fopen_mode(const char* mode) {
     const char* valid_modes[] = { "r", "w", "a", "r+", "w+", "a+", "rb", "wb", "ab", "r+b", "w+b", "a+b" };
     size_t num_modes = sizeof(valid_modes) / sizeof(valid_modes[0]);
     for (size_t i = 0; i < num_modes; ++i) {
-        if (strcmp(mode, valid_modes[i]) == 0) {
+        if (virtual_api->strcmp(mode, valid_modes[i]) == 0) {
             return 1;
         }
     }
@@ -105,7 +106,7 @@ static u64 file_alloc(u64 file_path, u64 mode) {
     if (!is_valid_fopen_mode(mode_data)) {
         return 0;
     }
-    FILE* f = fopen(file_path_data, mode_data); /* NOLINT */
+    FILE* f = virtual_api->fopen(file_path_data, mode_data); /* NOLINT */
     if (f == 0) {
         return 0;
     }
@@ -134,14 +135,14 @@ static u64 file_data(u64 ptr) {
     }
     struct file_handler* handler = CALL(pointer)->read(*data_ptr);
     FILE* f = handler->file;
-    fseek(f, 0, SEEK_END); /* NOLINT */
-    u64 size = (u64)ftell(f);
-    fseek(f, 0, SEEK_SET);
+    virtual_api->fseek(f, 0, SEEK_END); /* NOLINT */
+    u64 size = (u64)virtual_api->ftell(f);
+    virtual_api->fseek(f, 0, SEEK_SET);
     u64 data_size = size + 1;
-    u64 data_handle = CALL(virtual_data)->alloc(data_size);
-    void* file_data = CALL(virtual_data)->unsafe(data_handle);
-    fread(file_data, 1, size, handler->file);
-    return data_handle;
+    u64 data_handle = CALL(data)->alloc(data_size);
+    void* file_data = CALL(data)->unsafe(data_handle);
+    u64 read = virtual_api->fread(file_data, 1, size, handler->file);
+    return read ? data_handle : 0;
 }
 
 #ifndef ATTRIBUTE
@@ -158,6 +159,8 @@ const virtual_file_methods PRIVATE_API(virtual_file_methods_definitions) = {
     .free = file_free
 };
 
-const virtual_file_methods* CALL(virtual_file) {
-    return &PRIVATE_API(virtual_file_methods_definitions);
+const virtual_file_methods* file = &PRIVATE_API(virtual_file_methods_definitions);
+
+const virtual_file_methods* CALL(file) {
+    return file;
 }

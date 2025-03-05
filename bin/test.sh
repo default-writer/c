@@ -46,13 +46,14 @@ while (($#)); do
         *)
             help
             ;;
+
     esac
     shift
 done
 
 if [[ "${install}" == "" ]]; then
     help
-    exit;
+    exit
 fi
 
 args=$(get-args)

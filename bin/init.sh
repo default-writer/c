@@ -19,7 +19,6 @@ pwd=$(cd "$(dirname $(dirname "${BASH_SOURCE[0]}"))" &> /dev/null && pwd)
 
 cd "${pwd}"
 
-
 install="$1"
 
 . "${pwd}/bin/scripts/load.sh"
@@ -44,8 +43,8 @@ while (($#)); do
             updgradeflags="--no-upgrade"
             ;;
      
-        "--clean") # cleans up directories before build
-            "${pwd}/bin/utils/cleanup.sh" --all
+        "--clean") # cleans up git directory
+            "${pwd}/bin/utils/git.sh" --clean
             ;;
 
         "--hooks") # installs git hooks
@@ -89,7 +88,7 @@ done
 
 if [[ "${install}" == "" ]]; then
     help
-    exit;
+    exit
 fi
 
 [[ $SHLVL -eq 2 ]] && echo OK

@@ -23,13 +23,13 @@ install="$1"
 
 . "${pwd}/bin/scripts/load.sh"
 
-## Cleans up directories
+## Cleans up git
 ## Usage: ${script} <option>
 ## ${commands}
 
 case "${install}" in
     
-    "--all") # cleans up all folders
+    "--clean") # cleans up git repo folder
         ;;
  
     "--help") # shows command description

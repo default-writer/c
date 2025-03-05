@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 4, 2025 at 11:31:10 AM GMT+3
+ *   March 5, 2025 at 4:32:46 PM GMT+3
  *
  */
 /*
@@ -208,8 +208,8 @@ RX_FIXTURE(test_pointer_fixture, TEST_POINTER_DATA, .set_up = test_pointer_set_u
 /* test init */
 RX_TEST_CASE(tests, test_list, .fixture = test_pointer_fixture) {
     CALL(pointer)->init(8);
-    u64 list_ptr = CALL(virtual_stack)->alloc();
-    CALL(virtual_stack)->free(list_ptr);
+    u64 list_ptr = CALL(stack)->alloc();
+    CALL(stack)->free(list_ptr);
     CALL(pointer)->gc();
     CALL(pointer)->destroy();
 }
@@ -217,11 +217,11 @@ RX_TEST_CASE(tests, test_list, .fixture = test_pointer_fixture) {
 /* test init */
 RX_TEST_CASE(tests, test_list_user, .fixture = test_pointer_fixture) {
     CALL(pointer)->init(8);
-    u64 list_ptr = CALL(virtual_stack)->alloc();
-    u64 user_ptr = CALL(virtual_user)->alloc();
-    CALL(virtual_stack)->push(list_ptr, user_ptr);
-    CALL(virtual_user)->free(user_ptr);
-    CALL(virtual_stack)->free(list_ptr);
+    u64 list_ptr = CALL(stack)->alloc();
+    u64 user_ptr = CALL(user)->alloc();
+    CALL(stack)->push(list_ptr, user_ptr);
+    CALL(user)->free(user_ptr);
+    CALL(stack)->free(list_ptr);
     CALL(pointer)->gc();
     CALL(pointer)->destroy();
 }
@@ -229,11 +229,11 @@ RX_TEST_CASE(tests, test_list_user, .fixture = test_pointer_fixture) {
 /* test init */
 RX_TEST_CASE(tests, test_list_data, .fixture = test_pointer_fixture) {
     CALL(pointer)->init(8);
-    u64 list_ptr = CALL(virtual_stack)->alloc();
-    u64 data_ptr = CALL(virtual_data)->alloc(1024);
-    CALL(virtual_stack)->push(list_ptr, data_ptr);
-    CALL(virtual_data)->free(data_ptr);
-    CALL(virtual_stack)->free(list_ptr);
+    u64 list_ptr = CALL(stack)->alloc();
+    u64 data_ptr = CALL(data)->alloc(1024);
+    CALL(stack)->push(list_ptr, data_ptr);
+    CALL(data)->free(data_ptr);
+    CALL(stack)->free(list_ptr);
     CALL(pointer)->gc();
     CALL(pointer)->destroy();
 }
@@ -241,18 +241,18 @@ RX_TEST_CASE(tests, test_list_data, .fixture = test_pointer_fixture) {
 /* test init */
 RX_TEST_CASE(tests, test_list_free_user_free, .fixture = test_pointer_fixture) {
     CALL(pointer)->init(8);
-    u64 list_ptr = CALL(virtual_stack)->alloc();
-    u64 user_ptr = CALL(virtual_user)->alloc();
-    CALL(virtual_stack)->push(list_ptr, user_ptr);
-    CALL(virtual_stack)->free(list_ptr);
-    CALL(virtual_user)->free(user_ptr);
+    u64 list_ptr = CALL(stack)->alloc();
+    u64 user_ptr = CALL(user)->alloc();
+    CALL(stack)->push(list_ptr, user_ptr);
+    CALL(stack)->free(list_ptr);
+    CALL(user)->free(user_ptr);
     CALL(pointer)->gc();
     CALL(pointer)->destroy();
 }
 /* test init */
 RX_TEST_CASE(tests, test_user_free_0, .fixture = test_pointer_fixture) {
     CALL(pointer)->init(8);
-    CALL(virtual_user)->free(0);
+    CALL(user)->free(0);
     CALL(pointer)->gc();
     CALL(pointer)->destroy();
 }
@@ -299,8 +299,8 @@ RX_TEST_CASE(tests, test_pointer_alloc_gc_destroy_free_unsafe, .fixture = test_p
     CALL(pointer)->gc();
     CALL(pointer)->destroy();
     CALL(pointer)->free(ptr_id);
-    CALL(virtual_data)->free(ptr_id);
-    void* u = CALL(virtual_data)->unsafe(ptr_id);
+    CALL(data)->free(ptr_id);
+    void* u = CALL(data)->unsafe(ptr_id);
 
     ASSERT_DEBUG(u == 0);
 }

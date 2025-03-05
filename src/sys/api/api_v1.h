@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 6, 2025 at 12:03:47 AM GMT+3
+ *   March 5, 2025 at 11:25:43 PM GMT+3
  *
  */
 /*
@@ -24,43 +24,28 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _TESTS_TEST_H_
-#define _TESTS_TEST_H_
+#ifndef _SYS_API_H_
+#define _SYS_API_H_
 
-#define USING_TESTS
-
-#define RXP_DEBUG_TESTS
+#define USING_API
+#define USING_MEMORY
 
 #include "std/api.h"
 
-#if !defined(RX_MAJOR_VERSION)
-#if defined(__unix__) || defined(__APPLE__)
-#define RXP_PLATFORM_UNIX
-#if defined(__APPLE__)
-#define RXP_PLATFORM_DARWIN
-#elif defined(__linux__)
-#define RXP_PLATFORM_LINUX
-#endif
+#include "sys/export.h"
+
+#include <stdlib.h>
+
+#ifdef USE_MEMORY_DEBUG_INFO
+extern void global_statistics(void);
 #endif
 
-#include "rexo.h"
+typedef struct sys_api {
+    void* (*alloc)(size_t __nmemb, size_t __size);
+    void (*free)(void* __ptr);
+} sys_api_type;
 
-#endif
+/* api */
+CSYS_EXPORT extern const sys_api_type* sys_api;
 
-typedef struct PRIVATE_API(test_suite) {
-    int (*run)(void);
-} test_suite;
-
-#define TEST_RUN(variable, expression)           \
-    int test_run_##variable = expression->run(); \
-    if (test_run_##variable != 0) {              \
-        return test_run_##variable;              \
-    }                                            \
-    int variable = test_run_##variable
-
-#define CLEAN(ptr)  \
-    if (ptr != 0) { \
-        ptr = 0;    \
-    }
-
-#endif /* _TESTS_TEST_H_ */
+#endif /* _SYS_API_H_ */

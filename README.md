@@ -72,6 +72,17 @@ int main(void) {
 }
 ```
 
+## useful commands
+
+```bash
+./bin/init.sh --clangd
+./bin/init.sh --init --setup
+./bin/coverageall.sh --all --clean
+./bin/target.sh --target=main-tests-vm1 --release
+./bin/lib.sh --c-sys
+./bin/lib.sh --c-vm
+```
+
 ## inspiration
 
 - [NASA](https://spinroot.com/gerard/pdf/P10.pdf)
@@ -229,7 +240,7 @@ UI_MODE=--ui ./build/gtk-experiment1
 - detects execution as user or root (sudo)
 - runs with required and optional command-line parameters
 
-## history
+## log
 
 <a href="" target="blank"><img alt="lib" style='height:128px' src='./resources/digital-library.png'></a>
 

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 25, 2025 at 2:49:07 PM GMT+3
+ *   March 5, 2025 at 4:32:45 PM GMT+3
  *
  */
 /*
@@ -46,6 +46,6 @@ typedef struct PRIVATE_API(virtual_data_methods) {
 
 /* definition */
 CVM_EXPORT extern const virtual_data_methods PRIVATE_API(virtual_data_methods_definitions);
-CVM_EXPORT extern const virtual_data_methods* CALL(virtual_data);
+CVM_EXPORT extern const virtual_data_methods* CALL(data);
 
 #endif /* _DATA_V1_H_ */

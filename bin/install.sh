@@ -19,7 +19,6 @@ pwd=$(cd "$(dirname $(dirname "${BASH_SOURCE[0]}"))" &> /dev/null && pwd)
 
 cd "${pwd}"
 
-
 install="$1"
 
 . "${pwd}/bin/scripts/load.sh"
@@ -66,6 +65,11 @@ while (($#)); do
     esac
     shift
 done
+
+if [[ "${install}" == "" ]]; then
+    help
+    exit
+fi
 
 if [[ "${source}" == "all" || "${hooks}" == "--hooks" ]]; then
     "${pwd}/bin/utils/install.sh" --hooks

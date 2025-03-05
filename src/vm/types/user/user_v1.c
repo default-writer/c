@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 25, 2025 at 2:54:49 PM GMT+3
+ *   March 5, 2025 at 6:14:08 PM GMT+3
  *
  */
 /*
@@ -43,12 +43,12 @@ static void virtual_user_free(u64 ptr);
 static void type_desctructor(pointer_ptr ptr);
 
 /* implementation */
-static const struct type_methods_definitions _type = {
+static const struct type_methods_definitions user_type = {
     .desctructor = type_desctructor
 };
 
 static void INIT init(void) {
-    id = CALL(pointer)->register_user_type(&_type);
+    id = CALL(pointer)->register_user_type(&user_type);
 }
 
 static void type_desctructor(pointer_ptr ptr) {
@@ -81,6 +81,8 @@ const virtual_user_methods PRIVATE_API(virtual_user_methods_definitions) = {
     .free = virtual_user_free
 };
 
-const virtual_user_methods* CALL(virtual_user) {
-    return &PRIVATE_API(virtual_user_methods_definitions);
+const virtual_user_methods* user = &PRIVATE_API(virtual_user_methods_definitions);
+
+const virtual_user_methods* CALL(user) {
+    return user;
 }

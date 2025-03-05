@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 5, 2025 at 10:22:09 PM GMT+3
+ *   March 6, 2025 at 12:08:41 AM GMT+3
  *
  */
 /*
@@ -24,30 +24,28 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _SYS_MEMORY_H_
-#define _SYS_MEMORY_H_
+#include "api_v1.h"
 
-#define USING_MEMORY
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
-#include "std/api.h"
+/* api */
+const virtual_api_type PRIVATE_API(virtual_api_methods_definitions) = {
+    .fclose = &fclose,
+    .fopen = &fopen,
+    .fread = &fread,
+    .fseek = &fseek,
+    .ftell = &ftell,
+    .getcwd = &getcwd,
+    .getenv = &getenv,
+    .memcpy = &memcpy,
+    .puts = &puts,
+    .strcmp = &strcmp,
+    .strncat = &strncat,
+    .strncpy = &strncpy,
+    .strlen = &strlen
+};
 
-#include "sys/export.h"
-
-#ifdef USE_MEMORY_DEBUG_INFO
-extern void global_statistics(void);
-#endif
-
-typedef struct PRIVATE_API(memory_methods) {
-    void* (*alloc)(u64 size);
-    void (*free)(void* ptr, u64 size);
-    void* (*realloc)(void* old_ptr, u64 size, u64 new_size);
-#ifdef USE_MEMORY_CLEANUP
-    void (*set)(void* dest, u8 c, u64 count);
-#endif
-} memory_methods;
-
-/* definition */
-CSYS_EXPORT extern const memory_methods PRIVATE_API(memory_methods_definitions);
-CSYS_EXPORT extern const memory_methods* CALL(sys_memory);
-
-#endif /* _SYS_MEMORY_H_ */
+const virtual_api_type* virtual_api = &PRIVATE_API(virtual_api_methods_definitions);

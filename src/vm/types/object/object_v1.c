@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 25, 2025 at 2:54:16 PM GMT+3
+ *   March 5, 2025 at 11:42:57 PM GMT+3
  *
  */
 /*
@@ -28,10 +28,9 @@
 
 #include "std/api.h"
 
+#include "vm/api/api_v1.h"
 #include "vm/pointer/pointer_v1.h"
 #include "vm/virtual/virtual_v1.h"
-
-#include <string.h>
 
 #define DEFAULT_SIZE 0x100
 
@@ -48,12 +47,12 @@ static u64 object_size(u64 ptr);
 static void type_desctructor(pointer_ptr ptr);
 
 /* implementation */
-static const struct type_methods_definitions _type = {
+static const struct type_methods_definitions object_type = {
     .desctructor = type_desctructor
 };
 
 static void INIT init(void) {
-    CALL(pointer)->register_known_type(id, &_type);
+    CALL(pointer)->register_known_type(id, &object_type);
 }
 
 static void type_desctructor(pointer_ptr ptr) {
@@ -94,7 +93,7 @@ static u64 object_load(const void* src_data, u64 size) {
         return 0;
     }
     pointer_ptr data_ptr = CALL(pointer)->alloc(size, id);
-    memcpy(CALL(pointer)->read(data_ptr), src_data, size); /* NOLINT */
+    virtual_api->memcpy(CALL(pointer)->read(data_ptr), src_data, size); /* NOLINT */
     u64 virtual_ptr = CALL(virtual)->alloc(data_ptr);
     return virtual_ptr;
 }
@@ -123,6 +122,8 @@ const virtual_object_methods PRIVATE_API(virtual_object_methods_definitions) = {
     .size = object_size
 };
 
-const virtual_object_methods* CALL(virtual_object) {
-    return &PRIVATE_API(virtual_object_methods_definitions);
+const virtual_object_methods* object = &PRIVATE_API(virtual_object_methods_definitions);
+
+const virtual_object_methods* CALL(object) {
+    return object;
 }

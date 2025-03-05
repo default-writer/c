@@ -19,7 +19,6 @@ pwd=$(cd "$(dirname $(dirname "${BASH_SOURCE[0]}"))" &> /dev/null && pwd)
 
 cd "${pwd}"
 
-
 install="$1"
 
 opts=( "${@:2}" )
@@ -32,6 +31,10 @@ opts=( "${@:2}" )
 
 while (($#)); do
     case "$1" in
+
+        "--release") # builds RELEASE version
+            release="--release"
+            ;;
 
         "--all") # builds and runs all targets
             source="all"
@@ -50,6 +53,10 @@ while (($#)); do
             clean="--clean"
             ;;
 
+        "--verbose") # [optional] runs using debug output
+            verbose="--verbose"
+            ;;
+
         "--help") # [optional] shows command description
             help
             ;;
@@ -64,13 +71,18 @@ done
 
 if [[ "${install}" == "" ]]; then
     help
-    exit;
+    exit
+fi
+
+config_memory_debug_info="FALSE"
+if [[ "${verbose}" == "--verbose" ]]; then
+    config_memory_debug_info="TRUE"
 fi
 
 build="${pwd}/build"
 
 if [ ! -d "${build}" ]; then
-    "${pwd}/bin/build.sh" --all
+    "${pwd}/bin/build.sh" --all ${opts[@]}
 fi
 
 if [[ "${clean}" == "--clean" ]]; then

@@ -222,7 +222,7 @@ done
 
 if [[ "${install}" == "" ]]; then
     help
-    exit;
+    exit
 fi
 
 [[ $SHLVL -eq 2 ]] && echo OK

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 25, 2025 at 2:54:41 PM GMT+3
+ *   March 5, 2025 at 10:30:46 PM GMT+3
  *
  */
 /*
@@ -42,12 +42,12 @@ static void string_free(u64 ptr);
 static void type_desctructor(pointer_ptr ptr);
 
 /* implementation */
-static const struct type_methods_definitions _type = {
+static const struct type_methods_definitions string_pointer_type = {
     .desctructor = type_desctructor
 };
 
 static void INIT init(void) {
-    CALL(pointer)->register_known_type(id, &_type);
+    CALL(pointer)->register_known_type(id, &string_pointer_type);
 }
 
 static void type_desctructor(pointer_ptr ptr) {
@@ -76,6 +76,8 @@ const virtual_string_pointer_methods PRIVATE_API(virtual_string_pointer_methods_
     .free = string_free
 };
 
-const virtual_string_pointer_methods* CALL(virtual_string_pointer) {
-    return &PRIVATE_API(virtual_string_pointer_methods_definitions);
+const virtual_string_pointer_methods* string_pointer = &PRIVATE_API(virtual_string_pointer_methods_definitions);
+
+const virtual_string_pointer_methods* CALL(string_pointer) {
+    return string_pointer;
 }
