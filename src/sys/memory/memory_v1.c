@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 5, 2025 at 10:44:32 PM GMT+3
+ *   March 6, 2025 at 12:37:41 AM GMT+3
  *
  */
 /*
@@ -58,7 +58,7 @@ static void* memory_alloc(u64 size) {
         return 0;
     }
     void* ptr = 0;
-    ptr = sys_api->alloc(1, size);
+    ptr = system_api->alloc(1, size);
     if (ptr == 0) {
         return 0;
     }
@@ -87,7 +87,7 @@ static void memory_free(void* ptr, u64 size) {
     total_free += size;
     printf("   -: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_alloc, total_free);
 #endif
-    sys_api->free(ptr);
+    system_api->free(ptr);
 }
 
 static void* memory_realloc(void* old_ptr, u64 size, u64 new_size) {
@@ -98,7 +98,7 @@ static void* memory_realloc(void* old_ptr, u64 size, u64 new_size) {
         return 0;
     }
     void* ptr = old_ptr;
-    ptr = realloc(ptr, new_size);
+    ptr = system_api->realloc(ptr, new_size);
 #ifdef USE_MEMORY_DEBUG_INFO
     total_alloc += new_size - size;
     printf("  -+: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_alloc, total_free);
@@ -138,7 +138,7 @@ void global_statistics(void) {
 #endif
 
 /* public */
-const memory_methods PRIVATE_API(memory_methods_definitions) = {
+const memory_methods PRIVATE_API(system_memory_methods_definitions) = {
     .alloc = memory_alloc,
     .free = memory_free,
     .realloc = memory_realloc,
@@ -147,6 +147,6 @@ const memory_methods PRIVATE_API(memory_methods_definitions) = {
 #endif
 };
 
-const memory_methods* CALL(sys_memory) {
-    return &PRIVATE_API(memory_methods_definitions);
+const memory_methods* CALL(system_memory) {
+    return &PRIVATE_API(system_memory_methods_definitions);
 }

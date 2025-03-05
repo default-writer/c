@@ -1526,13 +1526,13 @@ RX_TEST_CASE(tests_v1, test_strcpy, .fixture = test_fixture) {
     u64 path2_len = strlen(path2);
     RX_ASSERT(path1_len > 0);
     RX_ASSERT(path2_len > 0);
-    char* buf = CALL(sys_memory)->alloc(path1_len + path2_len + 1);
+    char* buf = CALL(system_memory)->alloc(path1_len + path2_len + 1);
     strcpy(buf, path1); /* NOLINT */
     strcat(buf, path2); /* NOLINT */
     char* path_copy = CALL(string)->unsafe(path_copy_ptr);
     RX_ASSERT(strlen(path_copy) == strlen(buf));
     RX_ASSERT(strcmp(path_copy, buf) == 0);
-    CALL(sys_memory)->free(buf, path1_len + path2_len + 1);
+    CALL(system_memory)->free(buf, path1_len + path2_len + 1);
 #ifndef USE_GC
     CALL(string)->free(path_ptr1);
     CALL(string)->free(path_ptr2);

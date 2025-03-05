@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 25, 2025 at 2:51:35 PM GMT+3
+ *   March 6, 2025 at 12:25:57 AM GMT+3
  *
  */
 /*
@@ -29,12 +29,12 @@
 #include "std/api.h"
 
 /* public */
-const info_methods PRIVATE_API(info_methods_definitions) = {
+const system_info_methods PRIVATE_API(system_info_methods_definitions) = {
     .timestamp = UNIX_TIMESTAMP,
     .commit = GIT_COMMIT_HASH,
     .version = API_VERSION
 };
 
-const info_methods* CALL(sys_info) {
-    return &PRIVATE_API(info_methods_definitions);
+const system_info_methods* CALL(system_info) {
+    return &PRIVATE_API(system_info_methods_definitions);
 }

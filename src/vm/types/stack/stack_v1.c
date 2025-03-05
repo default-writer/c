@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 5, 2025 at 10:31:18 PM GMT+3
+ *   March 6, 2025 at 12:24:45 AM GMT+3
  *
  */
 /*
@@ -74,7 +74,7 @@ static void type_desctructor(pointer_ptr ptr) {
     struct stack_handler* handler = CALL(pointer)->read(ptr);
     handler->size = 0;
     stack_release_internal(&(handler->list));
-    CALL(sys_list)->destroy(&(handler->list));
+    CALL(system_list)->destroy(&(handler->list));
     CALL(pointer)->release(ptr);
 }
 
@@ -82,13 +82,13 @@ static pointer_ptr stack_alloc_internal(void) {
     pointer_ptr ptr = CALL(pointer)->alloc(sizeof(struct stack_handler), id);
     struct stack_handler* handler = CALL(pointer)->read(ptr);
     handler->size = 0;
-    CALL(sys_list)->init(&handler->list);
+    CALL(system_list)->init(&handler->list);
     return ptr;
 }
 
 static void stack_release_internal(stack_ptr* current) {
     u64 ptr = 0;
-    while ((ptr = (u64)CALL(sys_list)->pop(current)) != 0) {
+    while ((ptr = (u64)CALL(system_list)->pop(current)) != 0) {
         CALL(pointer)->free(ptr);
     }
 }
@@ -132,7 +132,7 @@ static void stack_push(u64 ptr_list, u64 ptr) {
         return;
     }
     struct stack_handler* handler = CALL(pointer)->read(*data_ptr);
-    CALL(sys_list)->push(&handler->list, (void*)ptr);
+    CALL(system_list)->push(&handler->list, (void*)ptr);
     handler->size++;
 }
 
@@ -142,7 +142,7 @@ static u64 stack_peek(u64 ptr) {
         return 0;
     }
     struct stack_handler* handler = CALL(pointer)->read(*data_ptr);
-    u64 stack_peek_ptr = (u64)CALL(sys_list)->peek(&handler->list);
+    u64 stack_peek_ptr = (u64)CALL(system_list)->peek(&handler->list);
     return stack_peek_ptr;
 }
 
@@ -164,8 +164,8 @@ static u64 stack_peekn(u64 ptr, u64 nelements) {
     u64 i = nelements;
     while (i-- > 0) {
         stack_ptr current = src_handler->list;
-        u64 stack_peek_ptr = (u64)CALL(sys_list)->peek(&current);
-        CALL(sys_list)->push(&dst_handler->list, (void*)stack_peek_ptr);
+        u64 stack_peek_ptr = (u64)CALL(system_list)->peek(&current);
+        CALL(system_list)->push(&dst_handler->list, (void*)stack_peek_ptr);
         dst_handler->size++;
         current = current->next;
     }
@@ -182,7 +182,7 @@ static u64 stack_pop(u64 ptr) {
     if (handler->size == 0) {
         return 0;
     }
-    u64 stack_pop_ptr = (u64)CALL(sys_list)->pop(&handler->list);
+    u64 stack_pop_ptr = (u64)CALL(system_list)->pop(&handler->list);
     handler->size--;
     return stack_pop_ptr;
 }
@@ -204,8 +204,8 @@ static u64 stack_popn(u64 ptr, u64 nelements) {
     struct stack_handler* dst_handler = CALL(pointer)->read(dst_ptr);
     u64 i = nelements;
     while (i-- > 0) {
-        u64 stack_pop_ptr = (u64)CALL(sys_list)->pop(&src_handler->list);
-        CALL(sys_list)->push(&dst_handler->list, (void*)stack_pop_ptr);
+        u64 stack_pop_ptr = (u64)CALL(system_list)->pop(&src_handler->list);
+        CALL(system_list)->push(&dst_handler->list, (void*)stack_pop_ptr);
         dst_handler->size++;
     }
     u64 dst_data = CALL(virtual)->alloc(dst_ptr);

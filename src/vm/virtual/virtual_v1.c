@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 5, 2025 at 11:26:18 PM GMT+3
+ *   March 6, 2025 at 12:25:10 AM GMT+3
  *
  */
 /*
@@ -113,8 +113,8 @@ static pointer_ptr virtual_enumerator_pointer_next_internal(void);
 #endif
 
 static virtual_pointer_ptr virtual_init_internal(u64 size, u64 offset) {
-    virtual_pointer_ptr virtual_pointer = CALL(sys_memory)->alloc(VM_DATA_SIZE);
-    virtual_pointer->bp = CALL(sys_memory)->alloc(ALLOC_SIZE(size));
+    virtual_pointer_ptr virtual_pointer = CALL(system_memory)->alloc(VM_DATA_SIZE);
+    virtual_pointer->bp = CALL(system_memory)->alloc(ALLOC_SIZE(size));
     virtual_pointer->sp = virtual_pointer->bp;
     virtual_pointer->offset = offset;
     virtual_pointer->size = size;
@@ -141,11 +141,11 @@ static pointer_ptr* virtual_alloc_internal(u64* address, virtual_pointer_ptr* ta
     virtual_pointer_ptr virtual_pointer = vm->tail;
     pointer_ptr* ptr = 0;
 #ifndef USE_GC
-    struct vm_pointer* list_ptr = CALL(sys_list)->pop(cache);
+    struct vm_pointer* list_ptr = CALL(system_list)->pop(cache);
     if (list_ptr != 0) {
         ptr = list_ptr->ptr;
         virtual_pointer = list_ptr->virtual_pointer;
-        CALL(sys_memory)->free(list_ptr, VM_POINTER_SIZE);
+        CALL(system_memory)->free(list_ptr, VM_POINTER_SIZE);
     }
     if (ptr == 0) {
 #endif
@@ -192,13 +192,13 @@ static void virtual_enumerator_destroy_internal(void) {
 
 static void virtual_init(struct vm** ptr, u64 size) {
 #ifndef USE_GC
-    cache = CALL(sys_memory)->alloc(PTR_SIZE);
-    CALL(sys_list)->init(cache);
+    cache = CALL(system_memory)->alloc(PTR_SIZE);
+    CALL(system_list)->init(cache);
 #endif
     virtual_pointer_ptr virtual_pointer = virtual_init_internal(size == 0 ? DEFAULT_SIZE : size, 0);
     vm->head = virtual_pointer;
     vm->tail = virtual_pointer;
-    struct vm* vm_ptr = CALL(sys_memory)->alloc(sizeof(struct vm));
+    struct vm* vm_ptr = CALL(system_memory)->alloc(sizeof(struct vm));
     vm_ptr->head = virtual_pointer;
     vm_ptr->tail = virtual_pointer;
     *ptr = vm_ptr;
@@ -211,15 +211,15 @@ static void virtual_destroy(struct vm** ptr) {
     struct vm* current = *ptr;
     vm->head = current->head;
     vm->tail = current->tail;
-    CALL(sys_memory)->free(current, sizeof(struct vm));
+    CALL(system_memory)->free(current, sizeof(struct vm));
     *ptr = 0;
 #ifndef USE_GC
     struct vm_pointer* vm_pointer_ptr = 0;
-    while ((vm_pointer_ptr = CALL(sys_list)->pop(cache)) != 0) {
-        CALL(sys_memory)->free(vm_pointer_ptr, VM_POINTER_SIZE);
+    while ((vm_pointer_ptr = CALL(system_list)->pop(cache)) != 0) {
+        CALL(system_memory)->free(vm_pointer_ptr, VM_POINTER_SIZE);
     }
-    CALL(sys_list)->destroy(cache);
-    CALL(sys_memory)->free(cache, PTR_SIZE);
+    CALL(system_list)->destroy(cache);
+    CALL(system_memory)->free(cache, PTR_SIZE);
 #ifdef USE_MEMORY_CLEANUP
     cache = 0;
 #endif
@@ -227,8 +227,8 @@ static void virtual_destroy(struct vm** ptr) {
     virtual_pointer_ptr virtual_pointer = vm->head;
     while (virtual_pointer != 0) {
         virtual_pointer_ptr next = virtual_pointer->next;
-        CALL(sys_memory)->free(virtual_pointer->bp, ALLOC_SIZE(virtual_pointer->size));
-        CALL(sys_memory)->free(virtual_pointer, VM_DATA_SIZE);
+        CALL(system_memory)->free(virtual_pointer->bp, ALLOC_SIZE(virtual_pointer->size));
+        CALL(system_memory)->free(virtual_pointer, VM_DATA_SIZE);
         virtual_pointer = next;
     }
     vm->head = 0;
@@ -266,10 +266,10 @@ static void virtual_free(const_pointer_ptr ptr) {
     u64 address = CALL(pointer)->address(ptr);
     pointer_ptr* data = virtual_pointer->bp - virtual_pointer->offset - 1 + address;
 #ifndef USE_GC
-    struct vm_pointer* vm_pointer_ptr = CALL(sys_memory)->alloc(VM_POINTER_SIZE);
+    struct vm_pointer* vm_pointer_ptr = CALL(system_memory)->alloc(VM_POINTER_SIZE);
     vm_pointer_ptr->ptr = data;
     vm_pointer_ptr->virtual_pointer = CALL(pointer)->ref(ptr);
-    CALL(sys_list)->push(cache, vm_pointer_ptr);
+    CALL(system_list)->push(cache, vm_pointer_ptr);
 #endif
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("  >-: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)data);

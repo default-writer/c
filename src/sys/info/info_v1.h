@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 25, 2025 at 2:49:56 PM GMT+3
+ *   March 6, 2025 at 12:33:14 AM GMT+3
  *
  */
 /*
@@ -23,21 +23,20 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#ifndef _SYS_INFO_H_
-#define _SYS_INFO_H_
+#ifndef _system_info_H_
+#define _system_info_H_
 
 #include "std/api.h"
 
 #include "sys/export.h"
 
-typedef struct PRIVATE_API(info_methods) {
+typedef struct PRIVATE_API(system_info_methods) {
     const u64 timestamp;
     const char* commit;
     const char* version;
-} info_methods;
+} system_info_methods;
 
 /* definition */
-CSYS_EXPORT extern const info_methods PRIVATE_API(info_methods_definitions);
-CSYS_EXPORT extern const info_methods* CALL(sys_info);
+CSYS_EXPORT extern const system_info_methods* CALL(system_info);
 
-#endif /* _SYS_INFO_H_ */
+#endif /* _system_info_H_ */

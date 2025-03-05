@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 5, 2025 at 11:25:43 PM GMT+3
+ *   March 6, 2025 at 12:37:04 AM GMT+3
  *
  */
 /*
@@ -24,8 +24,8 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _SYS_API_H_
-#define _SYS_API_H_
+#ifndef _system_api_H_
+#define _system_api_H_
 
 #define USING_API
 #define USING_MEMORY
@@ -40,12 +40,13 @@
 extern void global_statistics(void);
 #endif
 
-typedef struct sys_api {
+typedef struct system_api {
     void* (*alloc)(size_t __nmemb, size_t __size);
+    void* (*realloc)(void* __ptr, size_t __size);
     void (*free)(void* __ptr);
-} sys_api_type;
+} system_api_type;
 
 /* api */
-CSYS_EXPORT extern const sys_api_type* sys_api;
+CSYS_EXPORT extern const system_api_type* system_api;
 
-#endif /* _SYS_API_H_ */
+#endif /* _system_api_H_ */

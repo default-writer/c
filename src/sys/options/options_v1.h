@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 5, 2025 at 10:25:00 PM GMT+3
+ *   March 6, 2025 at 12:33:31 AM GMT+3
  *
  */
 /*
@@ -24,8 +24,8 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _SYS_OPTIONS_H_
-#define _SYS_OPTIONS_H_
+#ifndef _system_options_H_
+#define _system_options_H_
 
 #include "std/api.h"
 
@@ -36,7 +36,6 @@ typedef struct PRIVATE_API(options_methods) {
 } options_methods;
 
 /* definition */
-CSYS_EXPORT extern const options_methods PRIVATE_API(options_methods_definitions);
-CSYS_EXPORT extern const options_methods* CALL(sys_options);
+CSYS_EXPORT extern const options_methods* CALL(system_options);
 
-#endif /* _SYS_OPTIONS_H_ */
+#endif /* _system_options_H_ */

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 5, 2025 at 10:25:55 PM GMT+3
+ *   March 6, 2025 at 12:34:35 AM GMT+3
  *
  */
 /*
@@ -32,10 +32,10 @@
 #define DEFAULT_SIZE 0x8 /* 8 */
 
 /* public */
-const options_methods PRIVATE_API(options_methods_definitions) = {
+const options_methods PRIVATE_API(system_options_methods_definitions) = {
     .size = DEFAULT_SIZE
 };
 
-const options_methods* CALL(sys_options) {
-    return &PRIVATE_API(options_methods_definitions);
+const options_methods* CALL(system_options) {
+    return &PRIVATE_API(system_options_methods_definitions);
 }

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 5, 2025 at 11:24:03 PM GMT+3
+ *   March 6, 2025 at 12:25:09 AM GMT+3
  *
  */
 /*
@@ -49,19 +49,19 @@ static void mock_free(void* __ptr) {
     memset(__ptr, 0xef, sizeof(u64)); /* NOLINT: sizeof(u64) */
 }
 
-static const sys_api_type mock_sys_api_methods_definitions = {
+static const system_api_type mock_system_api_methods_definitions = {
     .alloc = mock_alloc,
     .free = mock_free
 };
 
-static const sys_api_type* mock_sys_api = &mock_sys_api_methods_definitions;
-static const sys_api_type* temp_sys_api;
+static const system_api_type* mock_system_api = &mock_system_api_methods_definitions;
+static const system_api_type* temp_system_api;
 
 /* Initialize the data structure. Its allocation is handled by Rexo. */
 RX_SET_UP(test_set_up) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
-    *ctx = CALL(sys_memory)->alloc(sizeof(stack_element));
+    *ctx = CALL(system_memory)->alloc(sizeof(stack_element));
     return RX_SUCCESS;
 }
 
@@ -69,7 +69,7 @@ RX_TEAR_DOWN(test_tear_down) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* destroy list */
-    CALL(sys_memory)->free(*ctx, sizeof(stack_element));
+    CALL(system_memory)->free(*ctx, sizeof(stack_element));
     /* initializes to 0 */
     *ctx = 0;
 }
@@ -90,7 +90,7 @@ RX_TEST_CASE(memory_micro_tests, test_alloc_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* pushed to the list */
-    const void* data_ptr = CALL(sys_memory)->alloc(0);
+    const void* data_ptr = CALL(system_memory)->alloc(0);
     /* ensures there is no result on 0 */
     RX_ASSERT(data_ptr == 0);
     /* ensures pop does not zeroes the head pointer */
@@ -102,17 +102,17 @@ RX_TEST_CASE(memory_micro_tests, test_alloc_ret_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* backup api calls */
-    memcpy(&temp_sys_api, &sys_api, sizeof(sys_api_type*)); /* NOLINT: sizeof(sys_api_type*) */
+    memcpy(&temp_system_api, &system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
     /* prepare to mock api calls */
-    memcpy(&sys_api, &mock_sys_api, sizeof(sys_api_type*)); /* NOLINT: sizeof(sys_api_type*) */
+    memcpy(&system_api, &mock_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
     /* pushed to the list */
-    const void* data_ptr = CALL(sys_memory)->alloc(16);
+    const void* data_ptr = CALL(system_memory)->alloc(16);
     /* ensures there is no result on 0 */
     RX_ASSERT(data_ptr == 0);
     /* ensures pop does not zeroes the head pointer */
     RX_ASSERT(*ctx != 0);
     /* restore api calls */
-    memcpy(&sys_api, &temp_sys_api, sizeof(sys_api_type*)); /* NOLINT: sizeof(sys_api_type*) */
+    memcpy(&system_api, &temp_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
 }
 
 /* test case */
@@ -120,15 +120,15 @@ RX_TEST_CASE(memory_micro_tests, test_free_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* backup api calls */
-    memcpy(&temp_sys_api, &sys_api, sizeof(sys_api_type*)); /* NOLINT: sizeof(sys_api_type*) */
+    memcpy(&temp_system_api, &system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
     /* prepare to mock api calls */
-    memcpy(&sys_api, &mock_sys_api, sizeof(sys_api_type*)); /* NOLINT: sizeof(sys_api_type*) */
+    memcpy(&system_api, &mock_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
     /* pushed to the list */
-    CALL(sys_memory)->free((void*)0, 0);
+    CALL(system_memory)->free((void*)0, 0);
     /* ensures pop does not zeroes the head pointer */
     RX_ASSERT(*ctx != 0);
     /* restore api calls */
-    memcpy(&sys_api, &temp_sys_api, sizeof(sys_api_type*)); /* NOLINT: sizeof(sys_api_type*) */
+    memcpy(&system_api, &temp_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
 }
 
 /* test case */
@@ -136,15 +136,15 @@ RX_TEST_CASE(memory_micro_tests, test_free_size_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* backup api calls */
-    memcpy(&temp_sys_api, &sys_api, sizeof(sys_api_type*)); /* NOLINT: sizeof(sys_api_type*) */
+    memcpy(&temp_system_api, &system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
     /* prepare to mock api calls */
-    memcpy(&sys_api, &mock_sys_api, sizeof(sys_api_type*)); /* NOLINT: sizeof(sys_api_type*) */
+    memcpy(&system_api, &mock_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
     /* pushed to the list */
-    CALL(sys_memory)->free((void*)0xdeadbeef, 0);
+    CALL(system_memory)->free((void*)0xdeadbeef, 0);
     /* ensures pop does not zeroes the head pointer */
     RX_ASSERT(*ctx != 0);
     /* restore api calls */
-    memcpy(&sys_api, &temp_sys_api, sizeof(sys_api_type*)); /* NOLINT: sizeof(sys_api_type*) */
+    memcpy(&system_api, &temp_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
 }
 
 /* test case */
@@ -153,13 +153,13 @@ RX_TEST_CASE(memory_micro_tests, test_free_size_8, .fixture = test_fixture) {
     stack_ptr* ctx = &rx->ctx;
     uint64_t expected_pattern = 0xefefefefefefefef;
     /* backup api calls */
-    memcpy(&temp_sys_api, &sys_api, sizeof(sys_api_type*)); /* NOLINT: sizeof(sys_api_type*) */
+    memcpy(&temp_system_api, &system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
     /* prepare to mock api calls */
-    memcpy(&sys_api, &mock_sys_api, sizeof(sys_api_type*)); /* NOLINT: sizeof(sys_api_type*) */
+    memcpy(&system_api, &mock_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
     void* ptr = calloc(1, 16);
     u64 value = (u64)0xdeadbeef;
-    memcpy(ptr, &value, 8); /* NOLINT: sizeof(sys_api_type*) */
-    CALL(sys_memory)->free(ptr, 8); /* NOLINT: mock api */
+    memcpy(ptr, &value, 8); /* NOLINT: sizeof(system_api_type*) */
+    CALL(system_memory)->free(ptr, 8); /* NOLINT: mock api */
     /* compare to make sure mock memory free function is called */
     RX_ASSERT(memcmp(ptr, &expected_pattern, sizeof(expected_pattern)) == 0);
     /* ensures pop does not zeroes the head pointer */
@@ -167,7 +167,7 @@ RX_TEST_CASE(memory_micro_tests, test_free_size_8, .fixture = test_fixture) {
     /* free ptr */
     free(ptr);
     /* restore api calls */
-    memcpy(&sys_api, &temp_sys_api, sizeof(sys_api_type*)); /* NOLINT: sizeof(sys_api_type*) */
+    memcpy(&system_api, &temp_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
 }
 
 /* test case */
@@ -177,7 +177,7 @@ RX_TEST_CASE(memory_micro_tests, test_realloc_0_0, .fixture = test_fixture) {
     /* pushed to the list */
     stack_ptr ptr = 0;
     stack_ptr* null_ptr = &ptr;
-    const void* data_ptr = CALL(sys_memory)->realloc(null_ptr, 0, 0);
+    const void* data_ptr = CALL(system_memory)->realloc(null_ptr, 0, 0);
     /* ensures there is no result on 0 */
     RX_ASSERT(null_ptr != 0);
     RX_ASSERT(data_ptr == 0);
@@ -191,7 +191,7 @@ RX_TEST_CASE(memory_micro_tests, test_realloc_0_ptr, .fixture = test_fixture) {
     /* pushed to the list */
     stack_ptr ptr = 0;
     stack_ptr* null_ptr = &ptr;
-    const void* data_ptr = CALL(sys_memory)->realloc(0, 24, 8);
+    const void* data_ptr = CALL(system_memory)->realloc(0, 24, 8);
     /* ensures there is no result on 0 */
     RX_ASSERT(null_ptr != 0);
     RX_ASSERT(data_ptr == 0);
@@ -202,9 +202,9 @@ RX_TEST_CASE(memory_micro_tests, test_realloc_0_ptr, .fixture = test_fixture) {
 RX_TEST_CASE(memory_micro_tests, test_alloc_free, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
-    stack_ptr new = CALL(sys_memory)->alloc(sizeof(stack_element));
+    stack_ptr new = CALL(system_memory)->alloc(sizeof(stack_element));
     /* pushed to the list */
-    CALL(sys_memory)->free(new, sizeof(stack_element));
+    CALL(system_memory)->free(new, sizeof(stack_element));
     RX_ASSERT(*ctx != 0);
 }
 

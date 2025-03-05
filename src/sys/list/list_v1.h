@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 25, 2025 at 2:49:50 PM GMT+3
+ *   March 6, 2025 at 12:33:18 AM GMT+3
  *
  */
 /*
@@ -24,14 +24,14 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _SYS_LIST_H_
-#define _SYS_LIST_H_
+#ifndef _system_list_H_
+#define _system_list_H_
 
 #include "std/api.h"
 
 #include "sys/export.h"
 
-typedef struct PRIVATE_API(list_methods) {
+typedef struct PRIVATE_API(system_list_methods) {
     /* initialize context */
     void (*init)(stack_ptr* current);
     /* destroy context */
@@ -48,10 +48,9 @@ typedef struct PRIVATE_API(list_methods) {
     /* print */
     void (*print)(stack_ptr* current);
 #endif
-} list_methods;
+} system_list_methods;
 
 /* definition */
-CSYS_EXPORT extern const list_methods PRIVATE_API(list_methods_definitions);
-CSYS_EXPORT extern const list_methods* CALL(sys_list);
+CSYS_EXPORT extern const system_list_methods* CALL(system_list);
 
-#endif /* _SYS_LIST_H_ */
+#endif /* _system_list_H_ */
