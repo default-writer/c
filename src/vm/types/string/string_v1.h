@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 25, 2025 at 2:48:38 PM GMT+3
+ *   March 5, 2025 at 4:32:45 PM GMT+3
  *
  */
 /*
@@ -65,6 +65,6 @@ typedef struct API(virtual_string_methods) {
 
 /* definition */
 CVM_EXPORT extern const virtual_string_methods PRIVATE_API(virtual_string_methods_definitions);
-CVM_EXPORT extern const virtual_string_methods* CALL(virtual_string);
+CVM_EXPORT extern const virtual_string_methods* CALL(string);
 
 #endif /* _STRING_V1_H_ */

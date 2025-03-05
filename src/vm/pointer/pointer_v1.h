@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 25, 2025 at 2:49:12 PM GMT+3
+ *   March 5, 2025 at 5:54:53 PM GMT+3
  *
  */
 /*
@@ -37,7 +37,7 @@
  *  @brief C API / pointer
  */
 
-typedef struct PRIVATE_API(pointer_methods) {
+typedef struct PRIVATE_API(virtual_pointer_methods) {
     void (*init)(u64 size);
     void (*destroy)(void);
     void (*gc)(void);
@@ -57,10 +57,10 @@ typedef struct PRIVATE_API(pointer_methods) {
     void (*dump)(pointer_ptr ptr);
     void (*dump_ref)(void** ptr);
 #endif
-} pointer_methods;
+} virtual_pointer_methods;
 
 /* definition */
-CVM_EXPORT extern const pointer_methods PRIVATE_API(pointer_methods_definitions);
-CVM_EXPORT extern const pointer_methods* CALL(pointer);
+CVM_EXPORT extern const virtual_pointer_methods PRIVATE_API(pointer_methods_definitions);
+CVM_EXPORT extern const virtual_pointer_methods* CALL(pointer);
 
 #endif /* _POINTER_V1_H_ */

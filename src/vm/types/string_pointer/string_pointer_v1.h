@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 25, 2025 at 2:50:44 PM GMT+3
+ *   March 5, 2025 at 4:32:46 PM GMT+3
  *
  */
 /*
@@ -43,6 +43,6 @@ typedef struct PRIVATE_API(virtual_string_pointer_methods) {
 
 /* definition */
 CVM_EXPORT extern const virtual_string_pointer_methods PRIVATE_API(virtual_string_pointer_methods_definitions);
-CVM_EXPORT extern const virtual_string_pointer_methods* CALL(virtual_string_pointer);
+CVM_EXPORT extern const virtual_string_pointer_methods* CALL(string_pointer);
 
 #endif /* _STRING_POINTER_V1_H_ */

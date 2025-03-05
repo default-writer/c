@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 4, 2025 at 7:14:12 AM GMT+3
+ *   March 5, 2025 at 10:31:59 PM GMT+3
  *
  */
 /*
@@ -314,7 +314,7 @@ static void pointer_dump_ref(void** ptr) {
 
 /* public */
 
-const pointer_methods PRIVATE_API(pointer_methods_definitions) = {
+const virtual_pointer_methods PRIVATE_API(virtual_pointer_methods_definitions) = {
     .init = pointer_init,
     .destroy = pointer_destroy,
     .gc = pointer_gc,
@@ -336,6 +336,8 @@ const pointer_methods PRIVATE_API(pointer_methods_definitions) = {
 #endif
 };
 
-const pointer_methods* CALL(pointer) {
-    return &PRIVATE_API(pointer_methods_definitions);
+const virtual_pointer_methods* pointer = &PRIVATE_API(virtual_pointer_methods_definitions);
+
+const virtual_pointer_methods* CALL(pointer) {
+    return pointer;
 }

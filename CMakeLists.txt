@@ -18,12 +18,12 @@ option(CONFIG_MEMORY_ALLOC "Enables memory allocator")
 option(CONFIG_MEMCPY "Enables use of memcpy")
 
 set(CONFIG_MEMORY_DEBUG_INFO ON CACHE BOOL "Enable debug information?")
-set(CONFIG_MEMORY_CLEANUP ON CACHE BOOL "Enable memory cleanup?")
+set(CONFIG_MEMORY_CLEANUP OFF CACHE BOOL "Enable memory cleanup?")
 set(CONFIG_MEMORY_ALLOC OFF CACHE BOOL "Enable memory allocator?")
 set(CONFIG_MEMCPY OFF CACHE BOOL "Enable use of memcpy?")
 
 set(CONFIG_MEMORY_DEBUG_INFO ON)
-set(CONFIG_MEMORY_CLEANUP ON)
+set(CONFIG_MEMORY_CLEANUP OFF)
 set(CONFIG_MEMORY_ALLOC OFF)
 set(CONFIG_MEMCPY OFF)
 
@@ -239,7 +239,13 @@ if(UNIX)
     add_definitions(-D_POSIX_C_SOURCE=199309L)
 endif()
 
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -s")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -s")
+endif()
+
 set(LIB_SYS_SOURCE
+    src/sys/api/api_v1.c
     src/sys/info/info_v1.c
     src/sys/memory/memory_v1.c
     src/sys/list/list_v1.c
@@ -247,6 +253,7 @@ set(LIB_SYS_SOURCE
 )
 
 set(LIB_VM_SOURCE
+    src/vm/api/api_v1.c
     src/vm/os/os_v1.c
     src/vm/pointer/pointer_v1.c
     src/vm/types/data/data_v1.c
@@ -305,10 +312,10 @@ target_link_libraries(main-tests-vm1 PRIVATE
     c-vm
 )
 
-configure_file(data/all_english_words.txt ${CMAKE_BINARY_DIR}/all_english_words.txt COPYONLY)
-configure_file(data/file.txt ${CMAKE_BINARY_DIR}/file.txt COPYONLY)
+configure_file(data/all_english_words.txt ${CMAKE_BINARY_DIR}/data/all_english_words.txt COPYONLY)
+configure_file(data/file.txt ${CMAKE_BINARY_DIR}/data/file.txt COPYONLY)
 
-FILE(WRITE ${CMAKE_BINARY_DIR}/input.txt
+FILE(WRITE ${CMAKE_BINARY_DIR}/data/input.txt
     "fopen<\"input.txt\",\"rb\">f (? f==0 perror<\"file not found\" exit<1 : print<\"all ok\")"
 )
 

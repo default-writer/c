@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 25, 2025 at 10:26:45 AM GMT+3
+ *   March 5, 2025 at 11:48:02 PM GMT+3
  *
  */
 /*
@@ -51,15 +51,10 @@ static void INIT init() {
 
     // Convert Unix timestamp to a time structure
     struct tm timeinfo;
-#ifdef _WIN32
-    localtime_s(&timeinfo, &unix_timestamp);
-#else
     localtime_r(&unix_timestamp, &timeinfo);
-#endif
     // Format the time structure into a string
     char buffer[160];
     strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", &timeinfo);
-
     // Print the formatted string
     printf("timestamp: %s\n", buffer);
 #endif

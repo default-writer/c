@@ -72,7 +72,15 @@ function get-cmake() {
 
     pwd=$(get-cwd)
 
-    [ -d "${pwd}/.tools/cmake-3.25/bin" ] && cmake="${pwd}/.tools/cmake-3.25/ucrt64/bin/cmake" || cmake=${cmake}
+    if [[ -d "${pwd}/.tools/cmake-3.25/bin" ]]; then
+        if [[ -f "${pwd}/.tools/cmake-3.25/ucrt64/bin/cmake" ]]; then
+            cmake="${pwd}/.tools/cmake-3.25/ucrt64/bin/cmake"
+        fi
+        if [[ -f "${pwd}/.tools/cmake-3.25/bin/cmake" ]]; then
+            cmake="${pwd}/.tools/cmake-3.25/bin/cmake"
+        fi
+    fi
+
     if [[ "${cmake}" == "" ]]; then
         cmake=$(command -v cmake)
     fi
@@ -93,12 +101,13 @@ function get-targets() {
     pwd=$(get-cwd)
 
     if [[ ! -d "${pwd}/config" ]]; then
-        echo cmake magic is here
-        # exec 2>&1 >/dev/null
+        exec 2>&1 >/dev/null
 
         cmake=$(get-cmake)
+
         if [[ "${cmake}" == "" ]]; then
-            return
+            echo cmake not found. please run "${pwd}/bin/utils/install.sh" --cmake
+            exit 8
         fi
 
         ${cmake} \
@@ -107,7 +116,7 @@ function get-targets() {
             -B"${pwd}/config" \
             -G "Ninja" 2>&1 >/dev/null
 
-        # exec 1>&2 2>&-
+        exec 1>&2 2>&-
     fi
 
     array=()
@@ -243,8 +252,10 @@ function get-source-targets() {
     source=$1
 
     cmake=$(get-cmake)
+
     if [[ "${cmake}" == "" ]]; then
-        return
+        echo cmake not found. please run "${pwd}/bin/utils/install.sh" --cmake
+        exit 8
     fi
 
     if [[ ! -d "${pwd}/config" ]]; then
@@ -254,6 +265,7 @@ function get-source-targets() {
         ${cmake} \
             -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
             -DTARGETS:BOOL=ON \
+            ${cmake-options} \
             -S"${pwd}" \
             -B"${build}" \
             -G "Ninja" 2>&1 >/dev/null
@@ -297,6 +309,10 @@ function get-options() {
     for opt in ${opts[@]}; do
         case ${opt} in
 
+            "--release") # builds RELEASE version
+                release="--release"
+                ;;
+
             "--clean") # [optional] cleans up directories before build
                 clean="--clean"
                 ;;
@@ -325,8 +341,8 @@ function get-options() {
                 callgrind="--callgrind"
                 ;;
 
-            "--debug") # [optional] runs using debug messaging
-                debug="--debug"
+            "--verbose") # [optional] runs using debug output
+                verbose="--verbose"
                 ;;
 
             "--help") # [optional] shows command description
@@ -340,7 +356,7 @@ function get-options() {
         esac
     done
 
-    echo " ${target} ${clean} ${sanitize} ${mocks} ${gc} ${silent} ${valgrind} ${callgrind} ${debug} ${help}"
+    echo " ${clean} ${sanitize} ${mocks} ${gc} ${silent} ${valgrind} ${callgrind} ${release} ${verbose} ${help}"
 }
 
 function cmake-options() {
@@ -348,6 +364,7 @@ function cmake-options() {
     local mocks_options
     local gc_options
     local verbose_options
+    local build_type_options
 
     if [ "${sanitize}" == "--sanitize" ] && [ "${valgrind}" == "" ]; then
         sanitize_options=-DCODE_SANITIZER:BOOL=TRUE
@@ -361,17 +378,21 @@ function cmake-options() {
         gc_options=-DCONFIG_GC:BOOL=TRUE
     fi
 
-    if [ "${debug}" == "--debug" ]; then
-        debug_options=-DCONFIG_MEMORY_DEBUG_INFO:BOOL=TRUE
+    build_type_options=-DCMAKE_BUILD_TYPE:STRING=Debug
+    if [ "${release}" == "--release" ]; then
+        build_type_options=-DCMAKE_BUILD_TYPE:STRING=Release
     fi
 
-    echo " ${sanitize_options} ${mocs_options} ${gc_options} ${debug_options} ${verbose_options}"
+    if [ "${verbose}" == "--verbose" ]; then
+        verbose_options=-DCONFIG_MEMORY_DEBUG_INFO:BOOL=TRUE
+    fi
+
+    echo " ${sanitize_options} ${mocs_options} ${gc_options} ${verbose_options} ${build_type_options}"
 }
 
 function cmake-coverage-options() {
     local sanitize_options
     local mocks_options
-    local debug_options
     local verbose_options
 
     if [ "${sanitize}" == "--sanitize" ] && [ "${valgrind}" == "" ]; then
@@ -382,11 +403,16 @@ function cmake-coverage-options() {
         mocks_options=-DMOCKS:BOOL=TRUE
     fi
 
-    if [ "${debug}" == "--debug" ]; then
-        debug_options=-DCONFIG_MEMORY_DEBUG_INFO:BOOL=TRUE
+    build_type_options=-DCMAKE_BUILD_TYPE:STRING=Debug
+    if [ "${release}" == "--release" ]; then
+        build_type_options=-DCMAKE_BUILD_TYPE:STRING=Release
     fi
 
-    echo " ${sanitize_options} ${mocs_options} ${debug_options} ${verbose_options}"
+    if [ "${verbose}" == "--verbose" ]; then
+        verbose_options=-DCONFIG_MEMORY_DEBUG_INFO:BOOL=TRUE
+    fi
+
+    echo " ${sanitize_options} ${mocs_options} ${verbose_options} ${build_type_options}"
 }
 
 function cmake-valgrind-options() {

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 25, 2025 at 2:54:25 PM GMT+3
+ *   March 5, 2025 at 10:31:18 PM GMT+3
  *
  */
 /*
@@ -62,12 +62,12 @@ struct stack_handler {
 static void type_desctructor(pointer_ptr ptr);
 
 /* implementation */
-static const struct type_methods_definitions _type = {
+static const struct type_methods_definitions stack_type = {
     .desctructor = type_desctructor
 };
 
 static void INIT init(void) {
-    CALL(pointer)->register_known_type(id, &_type);
+    CALL(pointer)->register_known_type(id, &stack_type);
 }
 
 static void type_desctructor(pointer_ptr ptr) {
@@ -241,6 +241,8 @@ const virtual_stack_methods PRIVATE_API(virtual_stack_methods_definitions) = {
     .release = stack_release
 };
 
-const virtual_stack_methods* CALL(virtual_stack) {
-    return &PRIVATE_API(virtual_stack_methods_definitions);
+const virtual_stack_methods* stack = &PRIVATE_API(virtual_stack_methods_definitions);
+
+const virtual_stack_methods* CALL(stack) {
+    return stack;
 }

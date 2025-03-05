@@ -19,7 +19,6 @@ pwd=$(cd "$(dirname $(dirname "${BASH_SOURCE[0]}"))" &> /dev/null && pwd)
 
 cd "${pwd}"
 
-
 install="$1"
 
 . "${pwd}/bin/scripts/load.sh"
@@ -78,7 +77,7 @@ done
 
 if [[ "${install}" == "" ]]; then
     help
-    exit;
+    exit
 fi
 
 main=$(find "${pwd}/src" -type f -name "*.[c|h]" -exec echo {} \; | grep -v -s "rexo" | sed -n -e 's/^.*\/\(src.*\)$/\1/p')

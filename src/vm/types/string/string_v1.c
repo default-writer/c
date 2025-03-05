@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 4, 2025 at 5:53:55 PM GMT+3
+ *   March 6, 2025 at 12:04:26 AM GMT+3
  *
  */
 /*
@@ -29,6 +29,7 @@
 #include "std/api.h"
 
 #include "std/data.h"
+#include "vm/api/api_v1.h"
 #include "vm/pointer/pointer_v1.h"
 #include "vm/virtual/virtual_v1.h"
 
@@ -82,12 +83,12 @@ struct string_reference {
 static void type_desctructor(pointer_ptr ptr);
 
 /* implementation */
-static const struct type_methods_definitions _type = {
+static const struct type_methods_definitions string_type = {
     .desctructor = type_desctructor
 };
 
 static void INIT init(void) {
-    CALL(pointer)->register_known_type(id, &_type);
+    CALL(pointer)->register_known_type(id, &string_type);
 }
 
 static void type_desctructor(pointer_ptr ptr) {
@@ -205,7 +206,7 @@ static u64 string_copy(u64 src) {
     }
     ch += offset;
     pointer_ptr data_ptr = CALL(pointer)->alloc(size - offset, id);
-    memcpy(CALL(pointer)->read(data_ptr), ch, size - offset); /* NOLINT */
+    virtual_api->memcpy(CALL(pointer)->read(data_ptr), ch, size - offset); /* NOLINT */
     u64 result = CALL(virtual)->alloc(data_ptr);
     return result;
 }
@@ -234,12 +235,8 @@ static void string_strcpy(u64 dest, u64 src) {
         CALL(pointer)->realloc(*dest_ptr, src_size);
     }
     char* data_dest = CALL(pointer)->read(*dest_ptr);
-#if defined(_WIN32)
-    strcpy_s(data_dest, CALL(pointer)->size(dest_ptr), ch);
-#else
-    strncpy(data_dest, ch, src_size - src_offset); /* NOLINT: strncpy is safe here because the destination buffer is guaranteed to be large enough */
+    virtual_api->strncpy(data_dest, ch, src_size - src_offset); /* NOLINT: strncpy is safe here because the destination buffer is guaranteed to be large enough */
     data_dest[src_size - src_offset - 1] = 0;
-#endif
 }
 
 static void string_strcat(u64 dest, u64 src) {
@@ -267,12 +264,8 @@ static void string_strcat(u64 dest, u64 src) {
         CALL(pointer)->realloc(*dest_ptr, size);
     }
     char* data_dest = CALL(pointer)->read(*dest_ptr);
-#if defined(_WIN32)
-    strcat_s(data_dest, size, data_src);
-#else
-    strncat(data_dest, data_src, size - dest_size); /* NOLINT: strncat is safe here because the destination buffer is guaranteed to be large enough */
+    virtual_api->strncat(data_dest, data_src, size - dest_size); /* NOLINT: strncat is safe here because the destination buffer is guaranteed to be large enough */
     data_dest[size - 1] = 0;
-#endif
 }
 
 static u64 string_strrchr(u64 src, u64 match) {
@@ -476,7 +469,7 @@ static u64 string_load(const char* ch) {
     }
     u64 size = strlen(ch) + 1;
     pointer_ptr data_ptr = CALL(pointer)->alloc(size, id);
-    memcpy(CALL(pointer)->read(data_ptr), ch, size); /* NOLINT */
+    virtual_api->memcpy(CALL(pointer)->read(data_ptr), ch, size); /* NOLINT */
     u64 result = CALL(virtual)->alloc(data_ptr);
     return result;
 }
@@ -692,7 +685,7 @@ static u64 string_strncpy(u64 src, u64 nbytes) {
     }
     ch += offset;
     pointer_ptr data_ptr = CALL(pointer)->alloc(nbytes + 1, id);
-    memcpy(CALL(pointer)->read(data_ptr), ch, nbytes); /* NOLINT */
+    virtual_api->memcpy(CALL(pointer)->read(data_ptr), ch, nbytes); /* NOLINT */
     u64 result = CALL(virtual)->alloc(data_ptr);
     return result;
 }
@@ -713,7 +706,7 @@ static u64 string_left_strncpy(u64 src, u64 nbytes) {
     }
     ch += (offset - nbytes);
     pointer_ptr data_ptr = CALL(pointer)->alloc(nbytes + 1, id);
-    memcpy(CALL(pointer)->read(data_ptr), ch, nbytes); /* NOLINT */
+    virtual_api->memcpy(CALL(pointer)->read(data_ptr), ch, nbytes); /* NOLINT */
     u64 result = CALL(virtual)->alloc(data_ptr);
     return result;
 }
@@ -808,7 +801,7 @@ static u64 string_strcmp(u64 src, u64 dest) {
     if (dest_data == 0) {
         return 0;
     }
-    if (strcmp(src_data, dest_data) != 0) {
+    if (virtual_api->strcmp(src_data, dest_data) != 0) {
         return 0;
     }
     return (u64)(0 - 1);
@@ -847,6 +840,8 @@ const virtual_string_methods PRIVATE_API(virtual_string_methods_definitions) = {
     .strcmp = string_strcmp
 };
 
-const virtual_string_methods* CALL(virtual_string) {
-    return &PRIVATE_API(virtual_string_methods_definitions);
+const virtual_string_methods* string = &PRIVATE_API(virtual_string_methods_definitions);
+
+const virtual_string_methods* CALL(string) {
+    return string;
 }

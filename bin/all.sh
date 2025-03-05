@@ -59,7 +59,7 @@ done
 
 if [[ "${install}" == "" ]]; then
     help
-    exit;
+    exit
 fi
 
 COMMAND_LINE_OPTIONS=$(get-options ${opts[@]})

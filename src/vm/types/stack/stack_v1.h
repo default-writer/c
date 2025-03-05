@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 25, 2025 at 2:48:48 PM GMT+3
+ *   March 5, 2025 at 4:32:45 PM GMT+3
  *
  */
 /*
@@ -59,6 +59,6 @@ typedef struct PRIVATE_API(virtual_stack_methods) {
 
 /* definition */
 CVM_EXPORT extern const virtual_stack_methods PRIVATE_API(virtual_stack_methods_definitions);
-CVM_EXPORT extern const virtual_stack_methods* CALL(virtual_stack);
+CVM_EXPORT extern const virtual_stack_methods* CALL(stack);
 
 #endif /* _STACK_V1_H_ */

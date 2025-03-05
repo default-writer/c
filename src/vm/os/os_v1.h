@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 25, 2025 at 2:50:32 PM GMT+3
+ *   March 5, 2025 at 6:03:46 PM GMT+3
  *
  */
 /*
@@ -37,14 +37,14 @@
  *  @brief C API / os
  */
 
-typedef struct PRIVATE_API(os_methods) {
+typedef struct PRIVATE_API(virtual_os_methods) {
     u64 (*getenv)(u64 name);
     u64 (*getcwd)(void);
     void (*putc)(u64 ptr);
-} os_methods;
+} virtual_os_methods;
 
 /* definition */
-CVM_EXPORT extern const os_methods PRIVATE_API(os_methods_definitions);
-CVM_EXPORT extern const os_methods* CALL(os);
+CVM_EXPORT extern const virtual_os_methods PRIVATE_API(virtual_os_methods_definitions);
+CVM_EXPORT extern const virtual_os_methods* CALL(os);
 
 #endif /* _OS_V1_H_ */

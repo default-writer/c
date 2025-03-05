@@ -25,7 +25,7 @@ opts=( "${@:2}" )
 
 . "${pwd}/bin/scripts/load.sh"
 
-## Clean up root directory
+## Cleans up build directories
 ## Usage: ${script} <option> [optional]
 ## ${commands}
 
@@ -50,7 +50,7 @@ done
 
 if [[ "${install}" == "" ]]; then
     help
-    exit;
+    exit
 fi
 
 if [[ "${install}" == "--clean" ]]; then
@@ -58,6 +58,7 @@ if [[ "${install}" == "--clean" ]]; then
     rm -rf "${pwd}/cmake"
     rm -rf "${pwd}/config"
     rm -rf "${pwd}/lib"
+    rm -rf "${pwd}/logs"
     rm -f "${pwd}/src/std/version.h"
 fi
 

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 25, 2025 at 4:26:07 PM GMT+3
+ *   March 5, 2025 at 11:58:29 PM GMT+3
  *
  */
 /*
@@ -32,19 +32,12 @@
 
 #include "sys/memory/memory_v1.h"
 
+#include "vm/api/api_v1.h"
 #include "vm/pointer/pointer_v1.h"
 #include "vm/types/string/string_v1.h"
 #include "vm/virtual/virtual_v1.h"
 
 #include <stdio.h>
-#include <stdlib.h>
-#ifdef _WIN32
-#include <direct.h> // Windows-specific header for getcwd
-#define __getcwd _getcwd // Map getcwd to _getcwd on Windows
-#else
-#define __getcwd getcwd // Map getcwd to _getcwd on Windows
-#include <unistd.h> // POSIX header for getcwd
-#endif
 #define DEFAULT_SIZE 0x100
 
 /* definition */
@@ -63,7 +56,7 @@ static u64 os_getenv(u64 ptr) {
     }
     const_pointer_ptr data_ptr = *ptr_ptr;
     const char* name_data = CALL(pointer)->read(data_ptr);
-    u64 value = CALL(virtual_string)->load(getenv(name_data));
+    u64 value = CALL(string)->load(virtual_api->getenv(name_data));
     return value;
 }
 
@@ -71,28 +64,30 @@ static u64 os_getcwd(void) {
     u64 data_ptr = 0;
     char* src = CALL(sys_memory)->alloc(PATH_MAX);
     src[PATH_MAX - 1] = 0;
-    if (__getcwd(src, PATH_MAX - 1) != 0) {
-        data_ptr = CALL(virtual_string)->load(src);
+    if (virtual_api->getcwd(src, PATH_MAX - 1) != 0) {
+        data_ptr = CALL(string)->load(src);
     }
     CALL(sys_memory)->free(src, PATH_MAX);
     return data_ptr;
 }
 
 static void os_putc(u64 ptr) {
-    const char* unsafe_data = CALL(virtual_string)->unsafe(ptr);
+    const char* unsafe_data = CALL(string)->unsafe(ptr);
     if (unsafe_data == 0) {
         return;
     }
-    puts(unsafe_data);
+    virtual_api->puts(unsafe_data);
 }
 
 /* public */
-const os_methods PRIVATE_API(os_methods_definitions) = {
+const virtual_os_methods PRIVATE_API(virtual_os_methods_definitions) = {
     .getenv = os_getenv,
     .getcwd = os_getcwd,
     .putc = os_putc
 };
 
-const os_methods* CALL(os) {
-    return &PRIVATE_API(os_methods_definitions);
+const virtual_os_methods* os = &PRIVATE_API(virtual_os_methods_definitions);
+
+const virtual_os_methods* CALL(os) {
+    return os;
 }

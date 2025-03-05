@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 25, 2025 at 2:48:29 PM GMT+3
+ *   March 5, 2025 at 5:38:07 PM GMT+3
  *
  */
 /*
@@ -44,6 +44,6 @@ typedef struct PRIVATE_API(virtual_user_methods) {
 
 /* definition */
 CVM_EXPORT extern const virtual_user_methods PRIVATE_API(virtual_user_methods_definitions);
-CVM_EXPORT extern const virtual_user_methods* CALL(virtual_user);
+CVM_EXPORT extern const virtual_user_methods* CALL(user);
 
 #endif /* _USER_V1_H_ */

@@ -38,20 +38,28 @@ while (($#)); do
 
         "--c-sys") # [optional] extracts sys library info
             echo "--------libcsys.so--------"
-            nm -D -l "${pwd}/lib/libc-sys.so"
+            nm -D -l "${pwd}/lib/libc-sys.so" | sort
             echo "--------libcsys.so--------"
-            objdump -T "${pwd}/lib/libc-sys.so"
+            objdump -T "${pwd}/lib/libc-sys.so" | grep "DF \*UND\*" | sort
             echo "--------libcsys.so--------"
-            objdump -p "${pwd}/lib/libc-sys.so" | grep NEEDED
+            objdump -T "${pwd}/lib/libc-sys.so" | grep ".data.rel.ro" | sort
+            echo "--------libcsys.so--------"
+            objdump -p "${pwd}/lib/libc-sys.so" | grep "NEEDED" | sort
+            echo "--------libcsys.so--------"
+            file -b "${pwd}/lib/libc-sys.so"
             ;;
 
         "--c-vm") # [optional] extracts vm library info
             echo "--------libc-vm.so--------"
-            nm -D -l "${pwd}/lib/libc-vm.so"
+            nm -D -l "${pwd}/lib/libc-vm.so" | sort
             echo "--------libc-vm.so--------"
-            objdump -T "${pwd}/lib/libc-vm.so"
+            objdump -T "${pwd}/lib/libc-vm.so" | grep "DF \*UND\*" | sort
             echo "--------libc-vm.so--------"
-            objdump -p "${pwd}/lib/libc-vm.so" | grep NEEDED
+            objdump -T "${pwd}/lib/libc-vm.so" | grep ".data.rel.ro" | sort
+            echo "--------libc-vm.so--------"
+            objdump -p "${pwd}/lib/libc-vm.so" | grep "NEEDED" | sort
+            echo "--------libc-vm.so--------"
+            file -b "${pwd}/lib/libc-vm.so"
             ;;
 
         *)
@@ -64,7 +72,7 @@ done
 
 if [[ "${install}" == "" ]]; then
     help
-    exit;
+    exit
 fi
 
 [[ $SHLVL -eq 2 ]] && echo OK

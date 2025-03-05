@@ -32,6 +32,10 @@ opts=( "${@:2}" )
 while (($#)); do
     case "$1" in
 
+        "--release") # builds RELEASE version
+            release="--release"
+            ;;
+
         "--all") # builds and runs all targets
             source="all"
             ;;
@@ -77,8 +81,8 @@ while (($#)); do
             callgrind="--callgrind"
             ;;
 
-        "--debug") # [optional] runs using debug messaging
-            debug="--debug"
+        "--verbose") # [optional] runs using debug output
+            verbose="--verbose"
             ;;
 
         "--help") # [optional] shows command description
@@ -95,7 +99,12 @@ done
 
 if [[ "${install}" == "" ]]; then
     help
-    exit;
+    exit
+fi
+
+config_memory_debug_info="FALSE"
+if [[ "${verbose}" == "--verbose" ]]; then
+    config_memory_debug_info="TRUE"
 fi
 
 if [[ "${silent}" == "--silent" ]]; then

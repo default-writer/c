@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 2, 2025 at 9:34:28 PM GMT+3
+ *   March 5, 2025 at 10:44:32 PM GMT+3
  *
  */
 /*
@@ -23,6 +23,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+
+#include "sys/api/api_v1.h"
 
 #include "memory_v1.h"
 
@@ -51,18 +53,12 @@ static void* memory_realloc(void* old_ptr, u64 size, u64 new_size);
 static void memory_set(void* dest, u8 c, u64 count);
 #endif
 
-/* api */
-const memory_api memory_api_methods_definitions = {
-    .alloc = &calloc,
-    .free = &free
-};
-
 static void* memory_alloc(u64 size) {
     if (size == 0) {
         return 0;
     }
     void* ptr = 0;
-    ptr = memory->alloc(1, size);
+    ptr = sys_api->alloc(1, size);
     if (ptr == 0) {
         return 0;
     }
@@ -91,7 +87,7 @@ static void memory_free(void* ptr, u64 size) {
     total_free += size;
     printf("   -: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_alloc, total_free);
 #endif
-    memory->free(ptr);
+    sys_api->free(ptr);
 }
 
 static void* memory_realloc(void* old_ptr, u64 size, u64 new_size) {
@@ -154,5 +150,3 @@ const memory_methods PRIVATE_API(memory_methods_definitions) = {
 const memory_methods* CALL(sys_memory) {
     return &PRIVATE_API(memory_methods_definitions);
 }
-
-const memory_api* memory = &memory_api_methods_definitions;

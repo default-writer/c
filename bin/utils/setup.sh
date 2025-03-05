@@ -379,6 +379,11 @@ while (($#)); do
     shift
 done
 
+if [[ "${install}" == "" ]]; then
+    help
+    exit
+fi
+
 [[ $SHLVL -eq 2 ]] && echo OK
 
 cd "${pwd}"

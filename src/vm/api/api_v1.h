@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 5, 2025 at 10:22:09 PM GMT+3
+ *   March 6, 2025 at 12:05:38 AM GMT+3
  *
  */
 /*
@@ -24,9 +24,12 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _SYS_MEMORY_H_
-#define _SYS_MEMORY_H_
+#ifndef _VM_API_H_
+#define _VM_API_H_
 
+#include <stdio.h>
+
+#define USING_API
 #define USING_MEMORY
 
 #include "std/api.h"
@@ -37,17 +40,23 @@
 extern void global_statistics(void);
 #endif
 
-typedef struct PRIVATE_API(memory_methods) {
-    void* (*alloc)(u64 size);
-    void (*free)(void* ptr, u64 size);
-    void* (*realloc)(void* old_ptr, u64 size, u64 new_size);
-#ifdef USE_MEMORY_CLEANUP
-    void (*set)(void* dest, u8 c, u64 count);
-#endif
-} memory_methods;
+typedef struct virtual_api {
+    int (*fclose)(FILE* __stream);
+    FILE* (*fopen)(const char* __filename, const char* __modes);
+    size_t (*fread)(void* __ptr, size_t __size, size_t __n, FILE* __stream);
+    int (*fseek)(FILE* __stream, long int __off, int __whence);
+    long (*ftell)(FILE* __stream);
+    char* (*getcwd)(char* __buf, size_t __size);
+    char* (*getenv)(const char* __name);
+    void* (*memcpy)(void* __dest, const void* __src, size_t __n);
+    int (*puts)(const char* __s);
+    int (*strcmp)(const char* __s1, const char* __s2);
+    char* (*strncat)(char* __dest, const char* __src, size_t __n);
+    char* (*strncpy)(char* __dest, const char* __src, size_t __n);
+    size_t (*strlen)(const char* __s);
+} virtual_api_type;
 
-/* definition */
-CSYS_EXPORT extern const memory_methods PRIVATE_API(memory_methods_definitions);
-CSYS_EXPORT extern const memory_methods* CALL(sys_memory);
+/* api */
+CSYS_EXPORT extern const virtual_api_type* virtual_api;
 
-#endif /* _SYS_MEMORY_H_ */
+#endif /* _VM_API_H_ */

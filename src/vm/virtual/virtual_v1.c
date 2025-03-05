@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 3, 2025 at 10:40:20 PM GMT+3
+ *   March 5, 2025 at 11:26:18 PM GMT+3
  *
  */
 /*
@@ -122,7 +122,7 @@ static virtual_pointer_ptr virtual_init_internal(u64 size, u64 offset) {
 }
 
 static pointer_ptr* virtual_read_internal(u64 address) {
-    if (vm->head == NULL) {
+    if (vm->head == 0) {
         return 0;
     }
     pointer_ptr* ptr = 0;
@@ -167,7 +167,7 @@ static pointer_ptr* virtual_alloc_internal(u64* address, virtual_pointer_ptr* ta
 }
 
 static void virtual_enumerator_init(void) {
-    if (vm->head == NULL) {
+    if (vm->head == 0) {
         return;
     }
     virtual_enumerator_init_internal();
@@ -367,7 +367,7 @@ static u64 virtual_enumerator_next(void) {
 }
 
 static void** virtual_enumerator_next_internal(void) {
-    if (vm->head == NULL) {
+    if (vm->head == 0) {
         return 0;
     }
     void** data = 0;
@@ -403,8 +403,8 @@ const virtual_methods PRIVATE_API(virtual_methods_definitions) = {
 #endif
 };
 
+const virtual_methods* virtual = &PRIVATE_API(virtual_methods_definitions);
+
 const virtual_methods* CALL(virtual) {
     return virtual;
 }
-
-const virtual_methods* virtual = &PRIVATE_API(virtual_methods_definitions);

@@ -63,7 +63,7 @@ done
 
 if [[ "${install}" == "" ]]; then
     help
-    exit;
+    exit
 fi
 
 if [[ "${silent}" == "--silent" ]]; then

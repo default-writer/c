@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 2, 2025 at 9:26:59 PM GMT+3
+ *   March 5, 2025 at 6:22:34 PM GMT+3
  *
  */
 /*
@@ -53,7 +53,6 @@ typedef struct PRIVATE_API(virtual_methods) {
 } virtual_methods;
 
 /* api */
-CVM_EXPORT extern const virtual_methods* virtual;
 
 /* definition */
 CVM_EXPORT extern const virtual_methods PRIVATE_API(virtual_methods_definitions);

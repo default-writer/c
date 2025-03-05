@@ -5,7 +5,7 @@
 # Learn more from ready-to-use templates: https://www.gitpod.io/docs/introduction/getting-started/quickstart
 
 tasks:
-  - init: ./bin/utils/init.sh
+  - init: ./bin/init.sh --init --lcov --setup
     command: ./bin/test.sh --args
 
 github:
@@ -25,7 +25,6 @@ vscode:
     - codezombiech.gitignore
     - sonarsource.sonarlint-vscode
     - tenninebt.vscode-koverage
-    - twxs.cmake
     - ryanluker.vscode-coverage-gutters
     - ms-vscode.cmake-tools
     - ms-vscode.live-server

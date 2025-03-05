@@ -19,7 +19,6 @@ pwd=$(cd "$(dirname $(dirname "${BASH_SOURCE[0]}"))" &> /dev/null && pwd)
 
 cd "${pwd}"
 
-
 install="$1"
 
 opts=( "${@:2}" )
@@ -49,6 +48,11 @@ while (($#)); do
     shift
 done
 
+if [[ "${install}" == "" ]]; then
+    help
+    exit
+fi
+
 if [[ "${install}" == "--install" ]]; then
     ./bin/utils/install.sh --sonar-scanner
     ./bin/utils/env.sh --sonar-scanner
@@ -71,7 +75,7 @@ fi
 
 if [[ "${install}" == "" ]]; then
     help
-    exit;
+    exit
 fi
 
 [[ $SHLVL -eq 2 ]] && echo OK

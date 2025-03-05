@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 25, 2025 at 2:54:03 PM GMT+3
+ *   March 5, 2025 at 10:31:50 PM GMT+3
  *
  */
 /*
@@ -47,12 +47,12 @@ static u64 data_size(u64 ptr);
 static void type_desctructor(pointer_ptr data_ptr);
 
 /* implementation */
-static const struct type_methods_definitions _type = {
+static const struct type_methods_definitions data_type = {
     .desctructor = type_desctructor
 };
 
 static void INIT init(void) {
-    CALL(pointer)->register_known_type(id, &_type);
+    CALL(pointer)->register_known_type(id, &data_type);
 }
 
 static void type_desctructor(pointer_ptr ptr) {
@@ -105,6 +105,8 @@ const virtual_data_methods PRIVATE_API(virtual_data_methods_definitions) = {
     .size = data_size
 };
 
-const virtual_data_methods* CALL(virtual_data) {
-    return &PRIVATE_API(virtual_data_methods_definitions);
+const virtual_data_methods* data = &PRIVATE_API(virtual_data_methods_definitions);
+
+const virtual_data_methods* CALL(data) {
+    return data;
 }
