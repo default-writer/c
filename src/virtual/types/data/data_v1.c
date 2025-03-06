@@ -44,7 +44,7 @@ static void* data_unsafe(u64 ptr);
 static u64 data_size(u64 ptr);
 
 /* destructor */
-static void type_desctructor(pointer_ptr data_ptr);
+static void type_desctructor(const_pointer_ptr data_ptr);
 
 /* implementation */
 static const struct type_methods_definitions data_type = {
@@ -55,7 +55,7 @@ static void INIT init(void) {
     CALL(pointer)->register_known_type(id, &data_type);
 }
 
-static void type_desctructor(pointer_ptr ptr) {
+static void type_desctructor(const_pointer_ptr ptr) {
     CALL(pointer)->release(ptr);
 }
 
@@ -66,7 +66,7 @@ static u64 data_alloc(u64 size) {
 }
 
 static void data_free(u64 ptr) {
-    pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
     if (data_ptr == 0) {
         return;
     }
@@ -74,7 +74,7 @@ static void data_free(u64 ptr) {
 }
 
 static void* data_unsafe(u64 ptr) {
-    pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
@@ -83,7 +83,7 @@ static void* data_unsafe(u64 ptr) {
 }
 
 static u64 data_size(u64 ptr) {
-    pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }

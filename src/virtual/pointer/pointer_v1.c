@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 6, 2025 at 1:01:02 AM GMT+3
+ *   March 6, 2025 at 9:04:16 AM GMT+3
  *
  */
 /*
@@ -32,6 +32,7 @@
 
 #include "system/memory/memory_v1.h"
 
+#include "virtual/api/api_v1.h"
 #include "virtual/virtual/virtual_v1.h"
 
 #include <stdio.h>
@@ -110,13 +111,14 @@ static void pointer_gc(void);
 static pointer_ptr pointer_alloc(u64 size, u64 id);
 static void pointer_realloc(pointer_ptr ptr, u64 size);
 static void pointer_free(u64 ptr);
-static void pointer_release(pointer_ptr ptr);
+static void pointer_release(const_pointer_ptr ptr);
 static u64 pointer_address(const_pointer_ptr ptr);
 static virtual_pointer_ptr pointer_ref(const_pointer_ptr ptr);
 static u64 pointer_size(const_pointer_ptr ptr);
 static void* pointer_read(const_pointer_ptr ptr);
 static void pointer_write(pointer_ptr ptr, virtual_pointer_ptr virtual_pointer, u64 address);
 static u64 pointer_read_type(const_pointer_ptr ptr, u64 virtual_id);
+static void pointer_memcpy(const_pointer_ptr ptr, const void* data, u64 size);
 
 static void known_types_init(u64 id, const type_methods_definitions* data_type);
 static u64 user_types_init(const type_methods_definitions* data_type);
@@ -188,7 +190,7 @@ static void pointer_free(u64 ptr) {
     if (ptr == 0) {
         return;
     }
-    pointer_ptr data_ptr = CALL(virtual)->read(ptr);
+    const_pointer_ptr data_ptr = CALL(virtual)->read(ptr);
     if (data_ptr == 0) {
         return;
     }
@@ -197,7 +199,7 @@ static void pointer_free(u64 ptr) {
     type_desctructor(data_ptr);
 }
 
-static void pointer_release(pointer_ptr ptr) {
+static void pointer_release(const_pointer_ptr ptr) {
     if (ptr == 0) {
         return;
     }
@@ -207,7 +209,9 @@ static void pointer_release(pointer_ptr ptr) {
         CALL(system_memory)->free(data_ptr, size);
     }
     CALL(virtual)->free(ptr);
-    CALL(system_memory)->free(ptr, POINTER_SIZE);
+    safe_pointer_ptr safe_ptr;
+    safe_ptr.cptr = ptr;
+    CALL(system_memory)->free(safe_ptr.ptr, POINTER_SIZE);
 }
 
 static u64 pointer_address(const_pointer_ptr ptr) {
@@ -255,6 +259,10 @@ static u64 pointer_read_type(const_pointer_ptr ptr, u64 virtual_id) {
         id = virtual_id;
     }
     return id;
+}
+
+static void pointer_memcpy(const_pointer_ptr ptr, const void* data, u64 size) {
+    virtual_api->memcpy(pointer_read(ptr), data, size);
 }
 
 /* implementation */
@@ -329,6 +337,7 @@ const virtual_pointer_methods PRIVATE_API(virtual_pointer_methods_definitions) =
     .size = pointer_size,
     .read = pointer_read,
     .read_type = pointer_read_type,
+    .memcpy = pointer_memcpy,
     .write = pointer_write,
 #ifdef USE_MEMORY_DEBUG_INFO
     .dump = pointer_dump,

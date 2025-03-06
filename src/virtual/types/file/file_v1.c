@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 5, 2025 at 11:57:11 PM GMT+3
+ *   March 6, 2025 at 8:04:29 AM GMT+3
  *
  */
 /*
@@ -54,7 +54,7 @@ static void file_free(u64 ptr);
 static u64 file_data(u64 ptr);
 
 /* destructor */
-static void type_desctructor(pointer_ptr ptr);
+static void type_desctructor(const_pointer_ptr ptr);
 
 /* implementation */
 static const struct type_methods_definitions file_type = {
@@ -65,7 +65,7 @@ static void INIT init(void) {
     CALL(pointer)->register_known_type(id, &file_type);
 }
 
-static void type_desctructor(pointer_ptr ptr) {
+static void type_desctructor(const_pointer_ptr ptr) {
     struct file_handler* handler = CALL(pointer)->read(ptr);
     if (handler->file != 0) {
         virtual_api->fclose(handler->file);
@@ -92,12 +92,12 @@ static u64 file_alloc(u64 file_path, u64 mode) {
     if (mode == 0) {
         return 0;
     }
-    pointer_ptr ptr = CALL(virtual)->read_type(file_path, TYPE_STRING);
+    const_pointer_ptr ptr = CALL(virtual)->read_type(file_path, TYPE_STRING);
     if (ptr == 0) {
         return 0;
     }
     const_pointer_ptr file_path_ptr = ptr;
-    pointer_ptr mode_ptr = CALL(virtual)->read_type(mode, TYPE_STRING);
+    const_pointer_ptr mode_ptr = CALL(virtual)->read_type(mode, TYPE_STRING);
     if (mode_ptr == 0) {
         return 0;
     }
@@ -110,7 +110,7 @@ static u64 file_alloc(u64 file_path, u64 mode) {
     if (f == 0) {
         return 0;
     }
-    pointer_ptr f_ptr = CALL(pointer)->alloc(sizeof(struct file_handler), id);
+    const_pointer_ptr f_ptr = CALL(pointer)->alloc(sizeof(struct file_handler), id);
     struct file_handler* handler = CALL(pointer)->read(f_ptr);
     handler->file = f;
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -121,7 +121,7 @@ static u64 file_alloc(u64 file_path, u64 mode) {
 }
 
 static void file_free(u64 ptr) {
-    pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
     if (data_ptr == 0) {
         return;
     }
@@ -129,7 +129,7 @@ static void file_free(u64 ptr) {
 }
 
 static u64 file_data(u64 ptr) {
-    pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
     if (data_ptr == 0) {
         return 0;
     }

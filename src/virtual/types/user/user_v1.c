@@ -40,7 +40,7 @@ static u64 virtual_user_alloc(void);
 static void virtual_user_free(u64 ptr);
 
 /* destructor */
-static void type_desctructor(pointer_ptr ptr);
+static void type_desctructor(const_pointer_ptr ptr);
 
 /* implementation */
 static const struct type_methods_definitions user_type = {
@@ -51,7 +51,7 @@ static void INIT init(void) {
     id = CALL(pointer)->register_user_type(&user_type);
 }
 
-static void type_desctructor(pointer_ptr ptr) {
+static void type_desctructor(const_pointer_ptr ptr) {
     CALL(pointer)->release(ptr);
 }
 
@@ -62,7 +62,7 @@ static u64 virtual_user_alloc(void) {
 }
 
 static void virtual_user_free(u64 ptr) {
-    pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
     if (data_ptr == 0) {
         return;
     }

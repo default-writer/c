@@ -38,7 +38,7 @@ typedef struct vm* vm_ptr;
 typedef struct PRIVATE_API(virtual_methods) {
     void (*init)(vm_ptr*, u64 size);
     void (*destroy)(vm_ptr*);
-    u64 (*alloc)(pointer_ptr ptr);
+    u64 (*alloc)(const_pointer_ptr ptr);
     void (*free)(const_pointer_ptr ptr);
     pointer_ptr (*read)(u64 address);
     pointer_ptr (*read_type)(u64 address, u64 id);
