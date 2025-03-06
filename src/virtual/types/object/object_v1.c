@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 6, 2025 at 9:09:30 AM GMT+3
+ *   March 6, 2025 at 4:06:01 PM GMT+3
  *
  */
 /*
@@ -62,9 +62,7 @@ static u64 object_alloc(u64 size) {
     if (size == 0) {
         return 0;
     }
-    const_pointer_ptr ptr = CALL(pointer)->alloc(size, id);
-    u64 virtual_ptr = CALL(virtual)->alloc(ptr);
-    return virtual_ptr;
+    return CALL(virtual)->pointer(size, id);
 }
 
 static void object_free(u64 ptr) {
@@ -91,8 +89,7 @@ static u64 object_load(const void* src_data, u64 size) {
     if (size == 0) {
         return 0;
     }
-    const_pointer_ptr data_ptr = CALL(pointer)->alloc(size, id);
-    CALL(pointer)->memcpy(data_ptr, src_data, size);
+    const_pointer_ptr data_ptr = CALL(pointer)->copy(src_data, size, id);
     u64 virtual_ptr = CALL(virtual)->alloc(data_ptr);
     return virtual_ptr;
 }
