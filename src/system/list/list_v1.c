@@ -26,7 +26,7 @@
 
 #include "list_v1.h"
 
-#include "sys/memory/memory_v1.h"
+#include "system/memory/memory_v1.h"
 
 #ifdef USE_MEMORY_DEBUG_INFO
 #include <stdio.h>

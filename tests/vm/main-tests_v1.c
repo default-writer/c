@@ -31,7 +31,7 @@
 // #define RX_ENABLE_EXTERNAL_LINKING
 // #define RX_DISABLE_TEST_DISCOVERY
 
-#include "sys/info/info_v1.h"
+#include "system/info/info_v1.h"
 
 #include "test.h"
 

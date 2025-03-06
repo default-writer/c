@@ -33,16 +33,15 @@
 
 #include "vm/export.h"
 
-struct vm;
-struct pointer;
+typedef struct vm* vm_ptr;
 
 typedef struct PRIVATE_API(virtual_methods) {
-    void (*init)(struct vm**, u64 size);
-    void (*destroy)(struct vm**);
+    void (*init)(vm_ptr*, u64 size);
+    void (*destroy)(vm_ptr*);
     u64 (*alloc)(pointer_ptr ptr);
     void (*free)(const_pointer_ptr ptr);
-    pointer_ptr* (*read)(u64 address);
-    pointer_ptr* (*read_type)(u64 address, u64 id);
+    pointer_ptr (*read)(u64 address);
+    pointer_ptr (*read_type)(u64 address, u64 id);
     void (*enumerator_init)(void);
     void (*enumerator_destroy)(void);
     u64 (*enumerator_next)(void);

@@ -28,9 +28,9 @@
 
 #include "std/api.h"
 
-#include "vm/api/api_v1.h"
-#include "vm/pointer/pointer_v1.h"
-#include "vm/virtual/virtual_v1.h"
+#include "virtual/api/api_v1.h"
+#include "virtual/pointer/pointer_v1.h"
+#include "virtual/virtual/virtual_v1.h"
 
 #define DEFAULT_SIZE 0x100
 
@@ -69,19 +69,19 @@ static u64 object_alloc(u64 size) {
 }
 
 static void object_free(u64 ptr) {
-    pointer_ptr* data_ptr = CALL(virtual)->read_type(ptr, id);
-    if (data_ptr == 0 || *data_ptr == 0) {
+    pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
+    if (data_ptr == 0) {
         return;
     }
-    type_desctructor(*data_ptr);
+    type_desctructor(data_ptr);
 }
 
 static void* object_unsafe(u64 ptr) {
-    pointer_ptr* data_ptr = CALL(virtual)->read_type(ptr, id);
-    if (data_ptr == 0 || *data_ptr == 0) {
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
+    if (data_ptr == 0) {
         return 0;
     }
-    void* object_data = CALL(pointer)->read(*data_ptr);
+    void* object_data = CALL(pointer)->read(data_ptr);
     return object_data;
 }
 
@@ -99,11 +99,11 @@ static u64 object_load(const void* src_data, u64 size) {
 }
 
 static u64 object_size(u64 ptr) {
-    pointer_ptr* data_ptr = CALL(virtual)->read_type(ptr, id);
-    if (data_ptr == 0 || *data_ptr == 0) {
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
+    if (data_ptr == 0) {
         return 0;
     }
-    u64 size = CALL(pointer)->size(*data_ptr);
+    u64 size = CALL(pointer)->size(data_ptr);
     return size;
 }
 

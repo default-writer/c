@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 6, 2025 at 12:25:10 AM GMT+3
+ *   March 6, 2025 at 1:01:02 AM GMT+3
  *
  */
 /*
@@ -30,9 +30,9 @@
 
 #include "std/api.h"
 
-#include "sys/memory/memory_v1.h"
+#include "system/memory/memory_v1.h"
 
-#include "vm/virtual/virtual_v1.h"
+#include "virtual/virtual/virtual_v1.h"
 
 #include <stdio.h>
 
@@ -83,12 +83,12 @@ static void init(void) {
 }
 #endif
 
-static struct vm* vm = 0;
+static vm_ptr vm = 0;
 static known_types_ptr default_types;
 
 #ifdef USE_MEMORY_DEBUG_INFO
 static void pointer_dump(pointer_ptr ptr);
-static void pointer_dump_ref(void** ptr);
+static void pointer_dump_ref(pointer_ptr* ptr);
 #endif
 
 /* internal */
@@ -188,13 +188,13 @@ static void pointer_free(u64 ptr) {
     if (ptr == 0) {
         return;
     }
-    pointer_ptr* data_ptr = CALL(virtual)->read(ptr);
-    if (data_ptr == 0 || *data_ptr == 0) {
+    pointer_ptr data_ptr = CALL(virtual)->read(ptr);
+    if (data_ptr == 0) {
         return;
     }
-    u64 type_id = (*data_ptr)->id;
+    u64 type_id = data_ptr->id;
     const desctructor type_desctructor = (default_types[type_id]).desctructor;
-    type_desctructor(*data_ptr);
+    type_desctructor(data_ptr);
 }
 
 static void pointer_release(pointer_ptr ptr) {
@@ -304,7 +304,7 @@ static void pointer_dump(pointer_ptr ptr) {
     printf("   ^: %016llx > %016llx\n", (u64)ptr, (u64)ptr->data);
 }
 
-static void pointer_dump_ref(void** ptr) {
+static void pointer_dump_ref(pointer_ptr* ptr) {
     if (*ptr == 0) {
         return;
     }
