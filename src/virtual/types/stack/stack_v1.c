@@ -59,7 +59,7 @@ struct stack_handler {
 };
 
 /* destructor */
-static void type_desctructor(pointer_ptr ptr);
+static void type_desctructor(const_pointer_ptr ptr);
 
 /* implementation */
 static const struct type_methods_definitions stack_type = {
@@ -70,7 +70,7 @@ static void INIT init(void) {
     CALL(pointer)->register_known_type(id, &stack_type);
 }
 
-static void type_desctructor(pointer_ptr ptr) {
+static void type_desctructor(const_pointer_ptr ptr) {
     struct stack_handler* handler = CALL(pointer)->read(ptr);
     handler->size = 0;
     stack_release_internal(&(handler->list));
@@ -110,7 +110,7 @@ static void stack_release(u64 ptr) {
 }
 
 static void stack_free(u64 ptr) {
-    pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
     if (data_ptr == 0) {
         return;
     }
@@ -159,7 +159,7 @@ static u64 stack_peekn(u64 ptr, u64 nelements) {
     if (size < nelements) {
         return 0;
     }
-    pointer_ptr dst_ptr = stack_alloc_internal();
+    const_pointer_ptr dst_ptr = stack_alloc_internal();
     struct stack_handler* dst_handler = CALL(pointer)->read(dst_ptr);
     u64 i = nelements;
     while (i-- > 0) {
@@ -200,7 +200,7 @@ static u64 stack_popn(u64 ptr, u64 nelements) {
     if (size < nelements) {
         return 0;
     }
-    pointer_ptr dst_ptr = stack_alloc_internal();
+    const_pointer_ptr dst_ptr = stack_alloc_internal();
     struct stack_handler* dst_handler = CALL(pointer)->read(dst_ptr);
     u64 i = nelements;
     while (i-- > 0) {

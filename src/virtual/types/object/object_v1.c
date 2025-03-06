@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 5, 2025 at 11:42:57 PM GMT+3
+ *   March 6, 2025 at 9:09:30 AM GMT+3
  *
  */
 /*
@@ -28,7 +28,6 @@
 
 #include "std/api.h"
 
-#include "virtual/api/api_v1.h"
 #include "virtual/pointer/pointer_v1.h"
 #include "virtual/virtual/virtual_v1.h"
 
@@ -44,7 +43,7 @@ static u64 object_load(const void* data, u64 size);
 static u64 object_size(u64 ptr);
 
 /* destructor */
-static void type_desctructor(pointer_ptr ptr);
+static void type_desctructor(const_pointer_ptr ptr);
 
 /* implementation */
 static const struct type_methods_definitions object_type = {
@@ -55,7 +54,7 @@ static void INIT init(void) {
     CALL(pointer)->register_known_type(id, &object_type);
 }
 
-static void type_desctructor(pointer_ptr ptr) {
+static void type_desctructor(const_pointer_ptr ptr) {
     CALL(pointer)->release(ptr);
 }
 
@@ -63,13 +62,13 @@ static u64 object_alloc(u64 size) {
     if (size == 0) {
         return 0;
     }
-    pointer_ptr ptr = CALL(pointer)->alloc(size, id);
+    const_pointer_ptr ptr = CALL(pointer)->alloc(size, id);
     u64 virtual_ptr = CALL(virtual)->alloc(ptr);
     return virtual_ptr;
 }
 
 static void object_free(u64 ptr) {
-    pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
     if (data_ptr == 0) {
         return;
     }
@@ -92,8 +91,8 @@ static u64 object_load(const void* src_data, u64 size) {
     if (size == 0) {
         return 0;
     }
-    pointer_ptr data_ptr = CALL(pointer)->alloc(size, id);
-    virtual_api->memcpy(CALL(pointer)->read(data_ptr), src_data, size); /* NOLINT */
+    const_pointer_ptr data_ptr = CALL(pointer)->alloc(size, id);
+    CALL(pointer)->memcpy(data_ptr, src_data, size);
     u64 virtual_ptr = CALL(virtual)->alloc(data_ptr);
     return virtual_ptr;
 }

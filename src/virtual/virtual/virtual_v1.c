@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 6, 2025 at 1:01:02 AM GMT+3
+ *   March 6, 2025 at 8:52:06 AM GMT+3
  *
  */
 /*
@@ -92,7 +92,7 @@ static void virtual_destroy(vm_ptr*);
 static void vm_dump(void);
 static void vm_dump_ref(void);
 #endif
-static u64 virtual_alloc(pointer_ptr ptr);
+static u64 virtual_alloc(const_pointer_ptr ptr);
 static void virtual_free(const_pointer_ptr ptr);
 static pointer_ptr virtual_read(u64 address);
 static pointer_ptr virtual_read_type(u64 address, u64 id);
@@ -311,15 +311,17 @@ static pointer_ptr virtual_read(u64 address) {
     return ptr;
 }
 
-static u64 virtual_alloc(pointer_ptr ptr) {
+static u64 virtual_alloc(const_pointer_ptr ptr) {
     if (!ptr) {
         return 0;
     }
     u64 address = 0;
     virtual_pointer_ptr target = 0;
     pointer_ptr* data = virtual_alloc_internal(&address, &target);
-    *data = ptr;
-    CALL(pointer)->write(ptr, target, address);
+    safe_pointer_ptr safe_ptr;
+    safe_ptr.cptr = ptr;
+    *data = safe_ptr.ptr;
+    CALL(pointer)->write(safe_ptr.ptr, target, address);
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("  >+: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)data);
 #endif
@@ -375,7 +377,7 @@ static pointer_ptr* virtual_enumerator_next_internal(void) {
             state->virtual = virtual_pointer;
             state->ptr = virtual_pointer->bp;
         }
-        data = (pointer_ptr*)state->ptr++;
+        data = state->ptr++; //(pointer_ptr*)
     }
     return data;
 }

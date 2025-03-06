@@ -37,7 +37,6 @@
 #include "virtual/types/string/string_v1.h"
 #include "virtual/virtual/virtual_v1.h"
 
-#include <stdio.h>
 #define DEFAULT_SIZE 0x100
 
 /* definition */
@@ -50,7 +49,7 @@ static u64 os_getenv(u64 address) {
     if (address == 0) {
         return 0;
     }
-    pointer_ptr ptr = CALL(virtual)->read_type(address, TYPE_STRING);
+    const_pointer_ptr ptr = CALL(virtual)->read_type(address, TYPE_STRING);
     if (ptr == 0) {
         return 0;
     }

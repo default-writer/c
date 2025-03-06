@@ -39,7 +39,7 @@ static const enum type id = TYPE_STRING_POINTER;
 static void string_free(u64 ptr);
 
 /* destructor */
-static void type_desctructor(pointer_ptr ptr);
+static void type_desctructor(const_pointer_ptr ptr);
 
 /* implementation */
 static const struct type_methods_definitions string_pointer_type = {
@@ -50,13 +50,13 @@ static void INIT init(void) {
     CALL(pointer)->register_known_type(id, &string_pointer_type);
 }
 
-static void type_desctructor(pointer_ptr ptr) {
+static void type_desctructor(const_pointer_ptr ptr) {
     CALL(pointer)->release(ptr);
 }
 
 /* api */
 static void string_free(u64 ptr) {
-    pointer_ptr data_ptr = CALL(virtual)->read(ptr);
+    const_pointer_ptr data_ptr = CALL(virtual)->read(ptr);
     if (data_ptr == 0) {
         return;
     }
