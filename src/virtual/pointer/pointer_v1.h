@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 6, 2025 at 9:00:18 AM GMT+3
+ *   March 6, 2025 at 4:39:48 PM GMT+3
  *
  */
 /*
@@ -42,6 +42,9 @@ typedef struct PRIVATE_API(virtual_pointer_methods) {
     void (*destroy)(void);
     void (*gc)(void);
     pointer_ptr (*alloc)(u64 size, u64 id);
+    const_pointer_ptr (*copy)(const void* src, u64 size, u64 id);
+    const_pointer_ptr (*copy_guard)(const void* src, u64 size, u64 offset, u64 id);
+    void (*memcpy)(const_pointer_ptr ptr, const void* src, u64 size);
     void (*realloc)(pointer_ptr ptr, u64 size);
     void (*register_known_type)(u64 id, const struct type_methods_definitions* data_type);
     u64 (*register_user_type)(const struct type_methods_definitions* data_type);
@@ -51,8 +54,9 @@ typedef struct PRIVATE_API(virtual_pointer_methods) {
     void (*release)(const_pointer_ptr ptr);
     u64 (*size)(const_pointer_ptr ptr);
     void* (*read)(const_pointer_ptr ptr);
+    void* (*read_guard)(const_pointer_ptr ptr, u64 offset);
+    void (*guard)(const_pointer_ptr ptr, u64 offset);
     u64 (*read_type)(const_pointer_ptr ptr, u64 id);
-    void (*memcpy)(const_pointer_ptr ptr, const void* src, u64 size);
     void (*write)(pointer_ptr ptr, virtual_pointer_ptr m, u64 address);
 #ifdef USE_MEMORY_DEBUG_INFO
     void (*dump)(pointer_ptr ptr);

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 5, 2025 at 10:31:50 PM GMT+3
+ *   March 6, 2025 at 9:29:07 AM GMT+3
  *
  */
 /*
@@ -60,9 +60,7 @@ static void type_desctructor(const_pointer_ptr ptr) {
 }
 
 static u64 data_alloc(u64 size) {
-    pointer_ptr f_ptr = CALL(pointer)->alloc(size, id);
-    u64 vm_data = CALL(virtual)->alloc(f_ptr);
-    return vm_data;
+    return CALL(virtual)->pointer(size, id);
 }
 
 static void data_free(u64 ptr) {

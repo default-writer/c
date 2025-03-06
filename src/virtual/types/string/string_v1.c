@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 6, 2025 at 9:10:13 AM GMT+3
+ *   March 6, 2025 at 4:41:02 PM GMT+3
  *
  */
 /*
@@ -73,10 +73,12 @@ struct list_handler {
     stack_ptr list;
 };
 
-struct string_reference {
+typedef struct string_reference* string_reference_ptr;
+typedef const struct string_reference* const_string_reference_ptr;
+typedef struct string_reference {
     u64 address;
     u64 offset;
-};
+} string_reference;
 
 /* destructor */
 static void type_desctructor(const_pointer_ptr ptr);
@@ -108,7 +110,7 @@ static char* string_pointer_internal(const_pointer_ptr data_ptr, u64* data_size,
     }
     u64 str_ptr2 = CALL(pointer)->read_type(data_ptr, TYPE_STRING_POINTER);
     if (str_ptr2) {
-        const struct string_reference* ref = CALL(pointer)->read(data_ptr);
+        const_string_reference_ptr ref = CALL(pointer)->read(data_ptr);
         while ((ptr = CALL(virtual)->read(ref->address)) != 0) {
             if (!CALL(pointer)->read_type(ptr, TYPE_STRING_POINTER)) {
                 break;
@@ -180,7 +182,7 @@ static void string_free(u64 ptr) {
     }
     u64 str_ptr2 = CALL(pointer)->read_type(data_ptr, TYPE_STRING_POINTER);
     if (str_ptr2) {
-        const struct string_reference* ref = CALL(pointer)->read(data_ptr);
+        const_string_reference_ptr ref = CALL(pointer)->read(data_ptr);
         const_pointer_ptr p_ptr = CALL(virtual)->read_type(ref->address, TYPE_STRING_POINTER);
         if (p_ptr == 0) {
             return;
@@ -203,9 +205,7 @@ static u64 string_copy(u64 src) {
         return 0;
     }
     ch += offset;
-    const_pointer_ptr data_ptr = CALL(pointer)->alloc(size - offset, id);
-    CALL(pointer)->memcpy(data_ptr, ch, size - offset);
-    u64 result = CALL(virtual)->alloc(data_ptr);
+    u64 result = CALL(virtual)->memcpy(size - offset, ch, id);
     return result;
 }
 
@@ -232,9 +232,9 @@ static void string_strcpy(u64 dest, u64 src) {
     if (dest_size < src_size) {
         CALL(pointer)->realloc(dest_ptr, src_size);
     }
-    char* data_dest = CALL(pointer)->read(dest_ptr);
-    virtual_api->strncpy(data_dest, ch, src_size - src_offset); /* NOLINT: strncpy is safe here because the destination buffer is guaranteed to be large enough */
-    data_dest[src_size - src_offset - 1] = 0;
+    u64 size = src_size - src_offset;
+    char* data = CALL(pointer)->read_guard(dest_ptr, size - 1);
+    virtual_api->strncpy(data, ch, size); /* NOLINT: strncpy is safe here because the destination buffer is guaranteed to be large enough */
 }
 
 static void string_strcat(u64 dest, u64 src) {
@@ -255,15 +255,14 @@ static void string_strcat(u64 dest, u64 src) {
     if (ch == 0) {
         return;
     }
-    const char* data_src = ch + offset; /* NOLINT */
+    const char* data_src = ch + offset; /* NOLINT: memory bounds check */
     u64 dest_size = CALL(pointer)->size(dest_ptr);
     size += dest_size - 1;
     if (dest_size < size) {
         CALL(pointer)->realloc(dest_ptr, size);
     }
-    char* data_dest = CALL(pointer)->read(dest_ptr);
-    virtual_api->strncat(data_dest, data_src, size - dest_size); /* NOLINT: strncat is safe here because the destination buffer is guaranteed to be large enough */
-    data_dest[size - 1] = 0;
+    char* data = CALL(pointer)->read_guard(dest_ptr, size - 1);
+    virtual_api->strncat(data, data_src, size - dest_size); /* NOLINT: strncat is safe here because the destination buffer is guaranteed to be large enough */
 }
 
 static u64 string_strrchr(u64 src, u64 match) {
@@ -289,8 +288,8 @@ static u64 string_strrchr(u64 src, u64 match) {
     }
     ch += offset;
     offset = (u64)(str1 - ch);
-    const_pointer_ptr data_ptr = CALL(pointer)->alloc(sizeof(struct string_reference), TYPE_STRING_POINTER);
-    struct string_reference* ref = CALL(pointer)->read(data_ptr);
+    const_pointer_ptr data_ptr = CALL(pointer)->alloc(sizeof(string_reference), TYPE_STRING_POINTER);
+    string_reference_ptr ref = CALL(pointer)->read(data_ptr);
     ref->address = src;
     ref->offset = offset;
     u64 result = CALL(virtual)->alloc(data_ptr);
@@ -320,8 +319,8 @@ static u64 string_strchr(u64 src, u64 match) {
     }
     ch += offset;
     offset = (u64)(str1 - ch);
-    const_pointer_ptr data_ptr = CALL(pointer)->alloc(sizeof(struct string_reference), TYPE_STRING_POINTER);
-    struct string_reference* ref = CALL(pointer)->read(data_ptr);
+    const_pointer_ptr data_ptr = CALL(pointer)->alloc(sizeof(string_reference), TYPE_STRING_POINTER);
+    string_reference_ptr ref = CALL(pointer)->read(data_ptr);
     ref->address = src;
     ref->offset = offset;
     u64 result = CALL(virtual)->alloc(data_ptr);
@@ -376,8 +375,8 @@ static u64 string_match(u64 src, u64 match) {
         str2 = ptr2;
     }
     offset = (u64)(str1 - ch);
-    const_pointer_ptr data_ptr = CALL(pointer)->alloc(sizeof(struct string_reference), TYPE_STRING_POINTER);
-    struct string_reference* ref = CALL(pointer)->read(data_ptr);
+    const_pointer_ptr data_ptr = CALL(pointer)->alloc(sizeof(string_reference), TYPE_STRING_POINTER);
+    string_reference_ptr ref = CALL(pointer)->read(data_ptr);
     ref->address = src;
     ref->offset = offset;
     u64 result = CALL(virtual)->alloc(data_ptr);
@@ -450,8 +449,8 @@ static u64 string_offset(u64 src, u64 match) {
         str2 = ptr2;
     }
     offset = (u64)(str1 - ch);
-    const_pointer_ptr data_ptr = CALL(pointer)->alloc(sizeof(struct string_reference), TYPE_STRING_POINTER);
-    struct string_reference* ref = CALL(pointer)->read(data_ptr);
+    const_pointer_ptr data_ptr = CALL(pointer)->alloc(sizeof(string_reference), TYPE_STRING_POINTER);
+    string_reference_ptr ref = CALL(pointer)->read(data_ptr);
     ref->address = src;
     ref->offset = offset;
     u64 result = CALL(virtual)->alloc(data_ptr);
@@ -466,8 +465,7 @@ static u64 string_load(const char* ch) {
         return 0;
     }
     u64 size = virtual_api->strlen(ch) + 1;
-    const_pointer_ptr data_ptr = CALL(pointer)->alloc(size, id);
-    CALL(pointer)->memcpy(data_ptr, ch, size);
+    const_pointer_ptr data_ptr = CALL(pointer)->copy_guard(ch, size, size - 1, id);
     u64 result = CALL(virtual)->alloc(data_ptr);
     return result;
 }
@@ -659,8 +657,8 @@ static u64 string_left(u64 src, u64 shift) {
     if (offset < shift) {
         return 0;
     }
-    const_pointer_ptr data_ptr = CALL(pointer)->alloc(sizeof(struct string_reference), TYPE_STRING_POINTER);
-    struct string_reference* ref = CALL(pointer)->read(data_ptr);
+    const_pointer_ptr data_ptr = CALL(pointer)->alloc(sizeof(string_reference), TYPE_STRING_POINTER);
+    string_reference_ptr ref = CALL(pointer)->read(data_ptr);
     ref->address = src;
     ref->offset = 0 - shift;
     u64 result = CALL(virtual)->alloc(data_ptr);
@@ -682,8 +680,8 @@ static u64 string_strncpy(u64 src, u64 nbytes) {
         return 0;
     }
     ch += offset;
-    const_pointer_ptr data_ptr = CALL(pointer)->alloc(nbytes + 1, id);
-    CALL(pointer)->memcpy(data_ptr, ch, nbytes);
+    size = nbytes + 1;
+    const_pointer_ptr data_ptr = CALL(pointer)->copy_guard(ch, size, size - 1, id);
     u64 result = CALL(virtual)->alloc(data_ptr);
     return result;
 }
@@ -703,8 +701,8 @@ static u64 string_left_strncpy(u64 src, u64 nbytes) {
         return 0;
     }
     ch += (offset - nbytes);
-    const_pointer_ptr data_ptr = CALL(pointer)->alloc(nbytes + 1, id);
-    CALL(pointer)->memcpy(data_ptr, ch, nbytes);
+    size = nbytes + 1;
+    const_pointer_ptr data_ptr = CALL(pointer)->copy_guard(ch, size, size - 1, id);
     u64 result = CALL(virtual)->alloc(data_ptr);
     return result;
 }
@@ -723,8 +721,8 @@ static u64 string_right(u64 src, u64 nbytes) {
     if (offset + nbytes >= size) {
         return 0;
     }
-    const_pointer_ptr data_ptr = CALL(pointer)->alloc(sizeof(struct string_reference), TYPE_STRING_POINTER);
-    struct string_reference* ref = CALL(pointer)->read(data_ptr);
+    const_pointer_ptr data_ptr = CALL(pointer)->alloc(sizeof(string_reference), TYPE_STRING_POINTER);
+    string_reference_ptr ref = CALL(pointer)->read(data_ptr);
     ref->address = src;
     ref->offset = nbytes;
     u64 result = CALL(virtual)->alloc(data_ptr);
@@ -748,7 +746,7 @@ static u64 string_move_left(u64 src, u64 nbytes) {
     if (offset < nbytes) {
         return 0;
     }
-    struct string_reference* ref = CALL(pointer)->read(ptr);
+    string_reference_ptr ref = CALL(pointer)->read(ptr);
     ref->offset -= nbytes;
     return (u64)(0 - 1);
 }
@@ -770,7 +768,7 @@ static u64 string_move_right(u64 src, u64 nbytes) {
     if (offset + nbytes >= size) {
         return 0;
     }
-    struct string_reference* ref = CALL(pointer)->read(ptr);
+    string_reference_ptr ref = CALL(pointer)->read(ptr);
     ref->offset += nbytes;
     return (u64)(0 - 1);
 }

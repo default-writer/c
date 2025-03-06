@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 6, 2025 at 12:24:45 AM GMT+3
+ *   March 6, 2025 at 9:15:49 AM GMT+3
  *
  */
 /*
@@ -38,7 +38,7 @@
 static const enum type id = TYPE_STACK;
 
 /* internal */
-static pointer_ptr stack_alloc_internal(void);
+static const_pointer_ptr stack_alloc_internal(void);
 static void stack_release_internal(stack_ptr* curent);
 
 /* api */
@@ -78,8 +78,8 @@ static void type_desctructor(const_pointer_ptr ptr) {
     CALL(pointer)->release(ptr);
 }
 
-static pointer_ptr stack_alloc_internal(void) {
-    pointer_ptr ptr = CALL(pointer)->alloc(sizeof(struct stack_handler), id);
+static const_pointer_ptr stack_alloc_internal(void) {
+    const_pointer_ptr ptr = CALL(pointer)->alloc(sizeof(struct stack_handler), id);
     struct stack_handler* handler = CALL(pointer)->read(ptr);
     handler->size = 0;
     CALL(system_list)->init(&handler->list);
@@ -94,7 +94,7 @@ static void stack_release_internal(stack_ptr* current) {
 }
 
 static u64 stack_alloc(void) {
-    pointer_ptr ptr = stack_alloc_internal();
+    const_pointer_ptr ptr = stack_alloc_internal();
     u64 virtual_ptr = CALL(virtual)->alloc(ptr);
     return virtual_ptr;
 }

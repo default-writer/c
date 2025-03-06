@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 6, 2025 at 8:52:06 AM GMT+3
+ *   March 6, 2025 at 9:56:02 AM GMT+3
  *
  */
 /*
@@ -93,6 +93,8 @@ static void vm_dump(void);
 static void vm_dump_ref(void);
 #endif
 static u64 virtual_alloc(const_pointer_ptr ptr);
+static u64 virtual_pointer(u64 size, u64 id);
+static u64 virtual_memcpy(u64 size, const void* data, u64 id);
 static void virtual_free(const_pointer_ptr ptr);
 static pointer_ptr virtual_read(u64 address);
 static pointer_ptr virtual_read_type(u64 address, u64 id);
@@ -328,6 +330,16 @@ static u64 virtual_alloc(const_pointer_ptr ptr) {
     return address;
 }
 
+static u64 virtual_pointer(u64 size, u64 id) {
+    const_pointer_ptr ptr = CALL(pointer)->alloc(size, id);
+    return virtual_alloc(ptr);
+}
+static u64 virtual_memcpy(u64 size, const void* data, u64 id) {
+    const_pointer_ptr data_ptr = CALL(pointer)->alloc(size, id);
+    CALL(pointer)->memcpy(data_ptr, data, size);
+    return virtual_alloc(data_ptr);
+}
+
 #ifdef USE_MEMORY_DEBUG_INFO
 static pointer_ptr virtual_enumerator_pointer_next_internal(void) {
     pointer_ptr data = 0;
@@ -377,7 +389,7 @@ static pointer_ptr* virtual_enumerator_next_internal(void) {
             state->virtual = virtual_pointer;
             state->ptr = virtual_pointer->bp;
         }
-        data = state->ptr++; //(pointer_ptr*)
+        data = state->ptr++;
     }
     return data;
 }
@@ -387,6 +399,8 @@ const virtual_methods PRIVATE_API(virtual_methods_definitions) = {
     .init = virtual_init,
     .destroy = virtual_destroy,
     .alloc = virtual_alloc,
+    .pointer = virtual_pointer,
+    .memcpy = virtual_memcpy,
     .free = virtual_free,
     .read = virtual_read,
     .read_type = virtual_read_type,

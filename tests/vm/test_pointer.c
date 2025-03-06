@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 6, 2025 at 12:03:24 AM GMT+3
+ *   March 6, 2025 at 2:27:53 PM GMT+3
  *
  */
 /*
@@ -721,6 +721,7 @@ RX_TEST_CASE(tests_v1, test_string_pointer_free_list, .fixture = test_fixture) {
     u64 string_ptr = CALL(string)->load("hello");
     u64 e_ptr = CALL(string)->load("e");
     u64 string_pointer_ptr = CALL(string)->offset(string_ptr, e_ptr);
+    RX_ASSERT(strcmp("llo", CALL(string)->unsafe(string_pointer_ptr)) == 0);
     CALL(string)->free(list_ptr);
     CALL(string)->free(string_pointer_ptr);
     CALL(string)->free(string_ptr);
@@ -2115,8 +2116,7 @@ RX_TEST_CASE(tests_v1, test_list_size, .fixture = test_fixture) {
     CALL(pointer)->init(8);
     u64 list_ptr = CALL(stack)->alloc();
     u64 size_actual = CALL(string)->size(list_ptr);
-    u64 size_expected = 0;
-    RX_ASSERT(size_expected == size_actual);
+    RX_ASSERT(size_actual == 0);
 #ifndef USE_GC
     CALL(stack)->free(list_ptr);
 #endif
