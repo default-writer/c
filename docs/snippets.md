@@ -50,8 +50,8 @@ typedef void (*function)();
 /* private */
 
 // // global allocated memory
-// static void** memory = 0;
-// static void** ptr = 0;
+// static pointer_ptr* memory = 0;
+// static pointer_ptr* ptr = 0;
 
 // static void init() {
 //     ptr = memory = calloc(1, MAX_MEMORY);

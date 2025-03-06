@@ -28,8 +28,8 @@
 
 #include "test_memory.h"
 
-#include "sys/api/api_v1.h"
-#include "sys/memory/memory_v1.h"
+#include "system/api/api_v1.h"
+#include "system/memory/memory_v1.h"
 
 #include "test.h"
 

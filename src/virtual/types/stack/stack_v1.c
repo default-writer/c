@@ -28,10 +28,10 @@
 
 #include "std/api.h"
 
-#include "sys/list/list_v1.h"
+#include "system/list/list_v1.h"
 
-#include "vm/pointer/pointer_v1.h"
-#include "vm/virtual/virtual_v1.h"
+#include "virtual/pointer/pointer_v1.h"
+#include "virtual/virtual/virtual_v1.h"
 
 #define DEFAULT_SIZE 0x100
 
@@ -100,21 +100,21 @@ static u64 stack_alloc(void) {
 }
 
 static void stack_release(u64 ptr) {
-    pointer_ptr* data_ptr = CALL(virtual)->read_type(ptr, id);
-    if (data_ptr == 0 || *data_ptr == 0) {
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
+    if (data_ptr == 0) {
         return;
     }
-    struct stack_handler* handler = CALL(pointer)->read(*data_ptr);
+    struct stack_handler* handler = CALL(pointer)->read(data_ptr);
     handler->size = 0;
     stack_release_internal(&handler->list);
 }
 
 static void stack_free(u64 ptr) {
-    pointer_ptr* data_ptr = CALL(virtual)->read_type(ptr, id);
-    if (data_ptr == 0 || *data_ptr == 0) {
+    pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
+    if (data_ptr == 0) {
         return;
     }
-    type_desctructor(*data_ptr);
+    type_desctructor(data_ptr);
 }
 
 static void stack_push(u64 ptr_list, u64 ptr) {
@@ -127,31 +127,31 @@ static void stack_push(u64 ptr_list, u64 ptr) {
     if (ptr == 0) {
         return;
     }
-    pointer_ptr* data_ptr = CALL(virtual)->read_type(ptr_list, id);
-    if (data_ptr == 0 || *data_ptr == 0) {
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(ptr_list, id);
+    if (data_ptr == 0) {
         return;
     }
-    struct stack_handler* handler = CALL(pointer)->read(*data_ptr);
+    struct stack_handler* handler = CALL(pointer)->read(data_ptr);
     CALL(system_list)->push(&handler->list, (void*)ptr);
     handler->size++;
 }
 
 static u64 stack_peek(u64 ptr) {
-    pointer_ptr* data_ptr = CALL(virtual)->read_type(ptr, id);
-    if (data_ptr == 0 || *data_ptr == 0) {
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
+    if (data_ptr == 0) {
         return 0;
     }
-    struct stack_handler* handler = CALL(pointer)->read(*data_ptr);
+    struct stack_handler* handler = CALL(pointer)->read(data_ptr);
     u64 stack_peek_ptr = (u64)CALL(system_list)->peek(&handler->list);
     return stack_peek_ptr;
 }
 
 static u64 stack_peekn(u64 ptr, u64 nelements) {
-    pointer_ptr* data_ptr = CALL(virtual)->read_type(ptr, id);
-    if (data_ptr == 0 || *data_ptr == 0) {
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
+    if (data_ptr == 0) {
         return 0;
     }
-    struct stack_handler* src_handler = CALL(pointer)->read(*data_ptr);
+    struct stack_handler* src_handler = CALL(pointer)->read(data_ptr);
     u64 size = src_handler->size;
     if (size == 0) {
         return 0;
@@ -174,11 +174,11 @@ static u64 stack_peekn(u64 ptr, u64 nelements) {
 }
 
 static u64 stack_pop(u64 ptr) {
-    pointer_ptr* data_ptr = CALL(virtual)->read_type(ptr, id);
-    if (data_ptr == 0 || *data_ptr == 0) {
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
+    if (data_ptr == 0) {
         return 0;
     }
-    struct stack_handler* handler = CALL(pointer)->read(*data_ptr);
+    struct stack_handler* handler = CALL(pointer)->read(data_ptr);
     if (handler->size == 0) {
         return 0;
     }
@@ -188,11 +188,11 @@ static u64 stack_pop(u64 ptr) {
 }
 
 static u64 stack_popn(u64 ptr, u64 nelements) {
-    pointer_ptr* data_ptr = CALL(virtual)->read_type(ptr, id);
-    if (data_ptr == 0 || *data_ptr == 0) {
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
+    if (data_ptr == 0) {
         return 0;
     }
-    struct stack_handler* src_handler = CALL(pointer)->read(*data_ptr);
+    struct stack_handler* src_handler = CALL(pointer)->read(data_ptr);
     u64 size = src_handler->size;
     if (size == 0) {
         return 0;
@@ -213,11 +213,11 @@ static u64 stack_popn(u64 ptr, u64 nelements) {
 }
 
 static u64 stack_size(u64 ptr) {
-    pointer_ptr* data_ptr = CALL(virtual)->read_type(ptr, id);
-    if (data_ptr == 0 || *data_ptr == 0) {
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
+    if (data_ptr == 0) {
         return 0;
     }
-    const struct stack_handler* handler = CALL(pointer)->read(*data_ptr);
+    const struct stack_handler* handler = CALL(pointer)->read(data_ptr);
     u64 size = handler->size;
     return size;
 }

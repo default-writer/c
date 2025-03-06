@@ -30,7 +30,7 @@ I hope it will help you to make a code review.
 /*private*/
 
 // global allocated memory
-static void** ptr = 0;
+static pointer_ptr* ptr = 0;
 
 static void list_init(void) { ptr = calloc(1, MAX_MEMORY); }
 static void list_destroy(void) { free(ptr); }

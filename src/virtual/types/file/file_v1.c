@@ -28,10 +28,10 @@
 
 #include "std/api.h"
 
-#include "vm/api/api_v1.h"
-#include "vm/pointer/pointer_v1.h"
-#include "vm/types/data/data_v1.h"
-#include "vm/virtual/virtual_v1.h"
+#include "virtual/api/api_v1.h"
+#include "virtual/pointer/pointer_v1.h"
+#include "virtual/types/data/data_v1.h"
+#include "virtual/virtual/virtual_v1.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -92,17 +92,17 @@ static u64 file_alloc(u64 file_path, u64 mode) {
     if (mode == 0) {
         return 0;
     }
-    pointer_ptr* ptr = CALL(virtual)->read_type(file_path, TYPE_STRING);
-    if (ptr == 0 || *ptr == 0) {
+    pointer_ptr ptr = CALL(virtual)->read_type(file_path, TYPE_STRING);
+    if (ptr == 0) {
         return 0;
     }
-    const_pointer_ptr file_path_ptr = *ptr;
-    pointer_ptr* mode_ptr = CALL(virtual)->read_type(mode, TYPE_STRING);
-    if (mode_ptr == 0 || *mode_ptr == 0) {
+    const_pointer_ptr file_path_ptr = ptr;
+    pointer_ptr mode_ptr = CALL(virtual)->read_type(mode, TYPE_STRING);
+    if (mode_ptr == 0) {
         return 0;
     }
     const char* file_path_data = CALL(pointer)->read(file_path_ptr);
-    const char* mode_data = CALL(pointer)->read(*mode_ptr);
+    const char* mode_data = CALL(pointer)->read(mode_ptr);
     if (!is_valid_fopen_mode(mode_data)) {
         return 0;
     }
@@ -121,19 +121,19 @@ static u64 file_alloc(u64 file_path, u64 mode) {
 }
 
 static void file_free(u64 ptr) {
-    pointer_ptr* data_ptr = CALL(virtual)->read_type(ptr, id);
-    if (data_ptr == 0 || *data_ptr == 0) {
+    pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
+    if (data_ptr == 0) {
         return;
     }
-    type_desctructor(*data_ptr);
+    type_desctructor(data_ptr);
 }
 
 static u64 file_data(u64 ptr) {
-    pointer_ptr* data_ptr = CALL(virtual)->read_type(ptr, id);
-    if (data_ptr == 0 || *data_ptr == 0) {
+    pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
+    if (data_ptr == 0) {
         return 0;
     }
-    struct file_handler* handler = CALL(pointer)->read(*data_ptr);
+    struct file_handler* handler = CALL(pointer)->read(data_ptr);
     FILE* f = handler->file;
     virtual_api->fseek(f, 0, SEEK_END); /* NOLINT */
     u64 size = (u64)virtual_api->ftell(f);

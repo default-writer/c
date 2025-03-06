@@ -28,7 +28,7 @@
 
 #include "test_list.h"
 
-#include "sys/list/list_v1.h"
+#include "system/list/list_v1.h"
 
 #include "test.h"
 

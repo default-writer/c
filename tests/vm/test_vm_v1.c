@@ -29,12 +29,12 @@
 #include "test_vm_v1.h"
 
 #include "std/macros.h"
-#include "sys/options/options_v1.h"
-#include "vm/pointer/pointer_v1.h"
-#include "vm/types/data/data_v1.h"
-#include "vm/types/stack/stack_v1.h"
-#include "vm/types/user/user_v1.h"
-#include "vm/virtual/virtual_v1.h"
+#include "system/options/options_v1.h"
+#include "virtual/pointer/pointer_v1.h"
+#include "virtual/types/data/data_v1.h"
+#include "virtual/types/stack/stack_v1.h"
+#include "virtual/types/user/user_v1.h"
+#include "virtual/virtual/virtual_v1.h"
 
 #include "test.h"
 
@@ -42,19 +42,19 @@
 
 /* Data structure to use at the core of our fixture. */
 typedef struct test_data {
-    struct vm* ctx;
+    vm_ptr ctx;
 }* TEST_DATA;
 
 RX_SET_UP(test_set_up) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct vm** ctx = &rx->ctx;
+    vm_ptr* ctx = &rx->ctx;
     CALL(virtual)->init(ctx, 0);
     return RX_SUCCESS;
 }
 
 RX_TEAR_DOWN(test_tear_down) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
-    struct vm** ctx = &rx->ctx;
+    vm_ptr* ctx = &rx->ctx;
     CALL(virtual)->destroy(ctx);
 }
 
@@ -63,33 +63,33 @@ RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tea
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_read_virtual_0, .fixture = test_fixture) {
-    pointer_ptr* ptr = CALL(virtual)->read_type(0, TYPE_DATA);
+    pointer_ptr ptr = CALL(virtual)->read_type(0, TYPE_DATA);
     RX_ASSERT(ptr == 0);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_destroy_0, .fixture = test_fixture) {
-    struct vm** ptr = 0;
+    vm_ptr* ptr = 0;
     CALL(virtual)->destroy(ptr);
     RX_ASSERT(ptr == 0);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_destroy_null, .fixture = test_fixture) {
-    struct vm* vm_ptr = 0;
-    struct vm** ptr = &vm_ptr;
+    vm_ptr ref = 0;
+    vm_ptr* ptr = &ref;
     CALL(virtual)->destroy(ptr);
-    RX_ASSERT(vm_ptr == 0);
+    RX_ASSERT(ref == 0);
 }
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_alloc_user, .fixture = test_fixture) {
     pointer_ptr ptr = CALL(pointer)->alloc(0, TYPE_NULL);
     u64 virtual_ptr = CALL(virtual)->alloc(ptr);
-    pointer_ptr* vm_ptr = CALL(virtual)->read(virtual_ptr);
+    pointer_ptr ref = CALL(virtual)->read(virtual_ptr);
     RX_ASSERT(ptr != 0);
     RX_ASSERT(virtual_ptr != 0);
-    RX_ASSERT(*vm_ptr == ptr);
+    RX_ASSERT(ref == ptr);
     CALL(pointer)->release(ptr);
 }
 
@@ -97,10 +97,10 @@ RX_TEST_CASE(tests, test_vm_alloc_user, .fixture = test_fixture) {
 RX_TEST_CASE(tests, test_vm_read_data, .fixture = test_fixture) {
     pointer_ptr ptr = CALL(pointer)->alloc(0, TYPE_DATA);
     u64 virtual_ptr = CALL(virtual)->alloc(ptr);
-    pointer_ptr* vm_ptr = CALL(virtual)->read(virtual_ptr);
+    pointer_ptr ref = CALL(virtual)->read(virtual_ptr);
     RX_ASSERT(ptr != 0);
     RX_ASSERT(virtual_ptr != 0);
-    RX_ASSERT(*vm_ptr == ptr);
+    RX_ASSERT(ref == ptr);
     CALL(pointer)->release(ptr);
 }
 
@@ -108,10 +108,10 @@ RX_TEST_CASE(tests, test_vm_read_data, .fixture = test_fixture) {
 RX_TEST_CASE(tests, test_vm_read_1, .fixture = test_fixture) {
     pointer_ptr ptr = CALL(pointer)->alloc(0, TYPE_DATA);
     u64 virtual_ptr = CALL(virtual)->alloc(ptr);
-    pointer_ptr* vm_ptr = CALL(virtual)->read(1);
+    pointer_ptr ref = CALL(virtual)->read(1);
     RX_ASSERT(ptr != 0);
     RX_ASSERT(virtual_ptr != 0);
-    RX_ASSERT(*vm_ptr == ptr);
+    RX_ASSERT(ref == ptr);
     CALL(pointer)->release(ptr);
 }
 
@@ -119,10 +119,10 @@ RX_TEST_CASE(tests, test_vm_read_1, .fixture = test_fixture) {
 RX_TEST_CASE(tests, test_vm_read_9, .fixture = test_fixture) {
     pointer_ptr ptr = CALL(pointer)->alloc(0, TYPE_DATA);
     u64 virtual_ptr = CALL(virtual)->alloc(ptr);
-    pointer_ptr* vm_ptr = CALL(virtual)->read(CALL(system_options)->size + 1);
+    pointer_ptr ref = CALL(virtual)->read(CALL(system_options)->size + 1);
     RX_ASSERT(ptr != 0);
     RX_ASSERT(virtual_ptr != 0);
-    RX_ASSERT(vm_ptr == 0);
+    RX_ASSERT(ref == 0);
     CALL(pointer)->release(ptr);
 }
 
@@ -139,7 +139,7 @@ RX_TEST_CASE(tests, test_vm_free_0, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_read_0, .fixture = test_fixture) {
-    pointer_ptr* ptr = CALL(virtual)->read(0);
+    pointer_ptr ptr = CALL(virtual)->read(0);
     RX_ASSERT(ptr == 0);
 }
 
@@ -150,7 +150,7 @@ RX_TEST_CASE(tests, test_vm_init_0, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests, test_vm_read_virtual_1, .fixture = test_fixture) {
-    pointer_ptr* ptr = CALL(virtual)->read_type(1, TYPE_DATA);
+    pointer_ptr ptr = CALL(virtual)->read_type(1, TYPE_DATA);
     RX_ASSERT(ptr == 0);
 }
 
@@ -164,10 +164,10 @@ RX_TEST_CASE(tests, test_vm_write_0, .fixture = test_fixture) {
 RX_TEST_CASE(tests, test_vm_read_virtual_write_1_read_1, .fixture = test_fixture) {
     pointer_ptr ptr = CALL(pointer)->alloc(0, TYPE_DATA);
     u64 virtual_ptr = CALL(virtual)->alloc(ptr);
-    pointer_ptr* vm_ptr = CALL(virtual)->read_type(virtual_ptr, TYPE_DATA);
+    pointer_ptr ref = CALL(virtual)->read_type(virtual_ptr, TYPE_DATA);
     RX_ASSERT(ptr != 0);
     RX_ASSERT(virtual_ptr != 0);
-    RX_ASSERT(*vm_ptr == ptr);
+    RX_ASSERT(ref == ptr);
     CALL(pointer)->release(ptr);
 }
 
@@ -175,10 +175,10 @@ RX_TEST_CASE(tests, test_vm_read_virtual_write_1_read_1, .fixture = test_fixture
 RX_TEST_CASE(tests, test_vm_read_virtual_write_1_read_2, .fixture = test_fixture) {
     pointer_ptr ptr = CALL(pointer)->alloc(0, TYPE_DATA);
     u64 virtual_ptr = CALL(virtual)->alloc(ptr);
-    pointer_ptr* vm_ptr = CALL(virtual)->read_type(virtual_ptr + 1, TYPE_DATA);
+    pointer_ptr ref = CALL(virtual)->read_type(virtual_ptr + 1, TYPE_DATA);
     RX_ASSERT(ptr != 0);
     RX_ASSERT(virtual_ptr != 0);
-    RX_ASSERT(vm_ptr == 0);
+    RX_ASSERT(ref == 0);
     CALL(pointer)->release(ptr);
 }
 
@@ -274,13 +274,12 @@ RX_TEST_CASE(tests, test_pointer_alloc_virtual_alloc_release, .fixture = test_po
     pointer_ptr alloc_ptr = CALL(pointer)->alloc(8, TYPE_USER + 1);
     u64 ptr_id = CALL(virtual)->alloc(alloc_ptr);
 
-    pointer_ptr* data_ptr = CALL(virtual)->read_type(ptr_id, TYPE_USER + 1);
+    pointer_ptr data_ptr = CALL(virtual)->read_type(ptr_id, TYPE_USER + 1);
     ASSERT_DEBUG(data_ptr != 0);
-    CALL(pointer)->release(*data_ptr);
+    CALL(pointer)->release(data_ptr);
 
     ASSERT_DEBUG(data_ptr != 0);
-    ASSERT_DEBUG(*data_ptr == 0);
-    ASSERT_DEBUG(alloc_ptr != *data_ptr);
+    ASSERT_DEBUG(alloc_ptr == data_ptr);
 
     CALL(pointer)->free(0);
     CALL(pointer)->gc();
@@ -318,7 +317,7 @@ RX_TEST_CASE(tests, test_pointer_alloc_release_0gc_destroy_read_type, .fixture =
     CALL(pointer)->gc();
     CALL(pointer)->destroy();
 
-    pointer_ptr* data_ptr = CALL(virtual)->read_type(ptr_id, TYPE_DATA);
+    pointer_ptr data_ptr = CALL(virtual)->read_type(ptr_id, TYPE_DATA);
     ASSERT_DEBUG(data_ptr == 0);
 }
 
@@ -334,7 +333,7 @@ RX_TEST_CASE(tests, test_pointer_alloc_gc_destroy_read_type_release_0, .fixture 
     CALL(pointer)->gc();
     CALL(pointer)->destroy();
 
-    pointer_ptr* data_ptr = CALL(virtual)->read_type(ptr_id, TYPE_DATA);
+    pointer_ptr data_ptr = CALL(virtual)->read_type(ptr_id, TYPE_DATA);
     ASSERT_DEBUG(data_ptr == 0);
     CALL(pointer)->release(0);
 }
@@ -352,7 +351,7 @@ RX_TEST_CASE(tests, test_pointer_alloc_destroy_read_type_release_0, .fixture = t
 
     CALL(pointer)->destroy();
 
-    pointer_ptr* data_ptr = CALL(virtual)->read_type(ptr_id, TYPE_DATA);
+    pointer_ptr data_ptr = CALL(virtual)->read_type(ptr_id, TYPE_DATA);
     ASSERT_DEBUG(data_ptr == 0);
     CALL(pointer)->release(0);
 }
@@ -371,7 +370,7 @@ RX_TEST_CASE(tests, test_pointer_alloc_alloc_ref_write_gc_destroy_read_type_rele
     CALL(pointer)->gc();
     CALL(pointer)->destroy();
 
-    pointer_ptr* data_ptr = CALL(virtual)->read_type(ptr_id, TYPE_DATA);
+    pointer_ptr data_ptr = CALL(virtual)->read_type(ptr_id, TYPE_DATA);
     ASSERT_DEBUG(data_ptr == 0);
     CALL(pointer)->release(0);
 }

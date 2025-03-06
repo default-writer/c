@@ -24,7 +24,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "sys/api/api_v1.h"
+#include "system/api/api_v1.h"
 
 #include "memory_v1.h"
 
@@ -57,8 +57,7 @@ static void* memory_alloc(u64 size) {
     if (size == 0) {
         return 0;
     }
-    void* ptr = 0;
-    ptr = system_api->alloc(1, size);
+    void* ptr = system_api->alloc(1, size);
     if (ptr == 0) {
         return 0;
     }

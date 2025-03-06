@@ -245,25 +245,25 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
 endif()
 
 set(LIB_SYS_SOURCE
-    src/sys/api/api_v1.c
-    src/sys/info/info_v1.c
-    src/sys/memory/memory_v1.c
-    src/sys/list/list_v1.c
-    src/sys/options/options_v1.c
+    src/system/api/api_v1.c
+    src/system/info/info_v1.c
+    src/system/memory/memory_v1.c
+    src/system/list/list_v1.c
+    src/system/options/options_v1.c
 )
 
 set(LIB_VM_SOURCE
-    src/vm/api/api_v1.c
-    src/vm/os/os_v1.c
-    src/vm/pointer/pointer_v1.c
-    src/vm/types/data/data_v1.c
-    src/vm/types/file/file_v1.c
-    src/vm/types/object/object_v1.c
-    src/vm/types/stack/stack_v1.c
-    src/vm/types/string/string_v1.c
-    src/vm/types/string_pointer/string_pointer_v1.c
-    src/vm/types/user/user_v1.c
-    src/vm/virtual/virtual_v1.c)
+    src/virtual/api/api_v1.c
+    src/virtual/os/os_v1.c
+    src/virtual/pointer/pointer_v1.c
+    src/virtual/types/data/data_v1.c
+    src/virtual/types/file/file_v1.c
+    src/virtual/types/object/object_v1.c
+    src/virtual/types/stack/stack_v1.c
+    src/virtual/types/string/string_v1.c
+    src/virtual/types/string_pointer/string_pointer_v1.c
+    src/virtual/types/user/user_v1.c
+    src/virtual/virtual/virtual_v1.c)
 
 set(TESTS_SOURCE
     tests/vm/test_list.c
@@ -281,7 +281,7 @@ add_library(c-sys SHARED ${LIB_SYS_SOURCE})
 generate_export_header(c-sys
     BASE_NAME csys
     EXPORT_MACRO_NAME CSYS_EXPORT
-    EXPORT_FILE_NAME ${CMAKE_SOURCE_DIR}/src/sys/export.h
+    EXPORT_FILE_NAME ${CMAKE_SOURCE_DIR}/src/system/export.h
 )
 target_include_directories(c-sys PUBLIC 
     ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR}/lib
@@ -291,7 +291,7 @@ add_library(c-vm SHARED ${LIB_VM_SOURCE})
 generate_export_header(c-vm
     BASE_NAME cvm
     EXPORT_MACRO_NAME CVM_EXPORT
-    EXPORT_FILE_NAME ${CMAKE_SOURCE_DIR}/src/vm/export.h
+    EXPORT_FILE_NAME ${CMAKE_SOURCE_DIR}/src/virtual/export.h
 )
 target_include_directories(c-vm PUBLIC 
     ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR}/lib

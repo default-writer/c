@@ -28,10 +28,10 @@
 
 #include "std/api.h"
 
-#include "vm/types/data/data_v1.h"
+#include "virtual/types/data/data_v1.h"
 
-#include "vm/pointer/pointer_v1.h"
-#include "vm/virtual/virtual_v1.h"
+#include "virtual/pointer/pointer_v1.h"
+#include "virtual/virtual/virtual_v1.h"
 
 #define DEFAULT_SIZE 0x100
 
@@ -66,28 +66,28 @@ static u64 data_alloc(u64 size) {
 }
 
 static void data_free(u64 ptr) {
-    pointer_ptr* data_ptr = CALL(virtual)->read_type(ptr, id);
-    if (data_ptr == 0 || *data_ptr == 0) {
+    pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
+    if (data_ptr == 0) {
         return;
     }
-    type_desctructor(*data_ptr);
+    type_desctructor(data_ptr);
 }
 
 static void* data_unsafe(u64 ptr) {
-    pointer_ptr* data_ptr = CALL(virtual)->read_type(ptr, id);
-    if (data_ptr == 0 || *data_ptr == 0) {
+    pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
+    if (data_ptr == 0) {
         return 0;
     }
-    void* vm_data = CALL(pointer)->read(*data_ptr);
+    void* vm_data = CALL(pointer)->read(data_ptr);
     return vm_data;
 }
 
 static u64 data_size(u64 ptr) {
-    pointer_ptr* data_ptr = CALL(virtual)->read_type(ptr, id);
-    if (data_ptr == 0 || *data_ptr == 0) {
+    pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
+    if (data_ptr == 0) {
         return 0;
     }
-    u64 size = CALL(pointer)->size(*data_ptr);
+    u64 size = CALL(pointer)->size(data_ptr);
     return size;
 }
 

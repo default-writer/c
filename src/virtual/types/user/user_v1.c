@@ -28,8 +28,8 @@
 
 #include "std/api.h"
 
-#include "vm/pointer/pointer_v1.h"
-#include "vm/virtual/virtual_v1.h"
+#include "virtual/pointer/pointer_v1.h"
+#include "virtual/virtual/virtual_v1.h"
 
 #define DEFAULT_SIZE 0x100
 
@@ -62,11 +62,11 @@ static u64 virtual_user_alloc(void) {
 }
 
 static void virtual_user_free(u64 ptr) {
-    pointer_ptr* data_ptr = CALL(virtual)->read_type(ptr, id);
-    if (data_ptr == 0 || *data_ptr == 0) {
+    pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
+    if (data_ptr == 0) {
         return;
     }
-    type_desctructor(*data_ptr);
+    type_desctructor(data_ptr);
 }
 
 #ifndef ATTRIBUTE

@@ -30,18 +30,18 @@
 
 #include "test_pointer.h"
 
-#include "sys/memory/memory_v1.h"
+#include "system/memory/memory_v1.h"
 
-#include "vm/os/os_v1.h"
-#include "vm/pointer/pointer_v1.h"
-#include "vm/types/data/data_v1.h"
-#include "vm/types/file/file_v1.h"
-#include "vm/types/object/object_v1.h"
-#include "vm/types/stack/stack_v1.h"
-#include "vm/types/string/string_v1.h"
-#include "vm/types/string_pointer/string_pointer_v1.h"
-#include "vm/types/user/user_v1.h"
-#include "vm/virtual/virtual_v1.h"
+#include "virtual/os/os_v1.h"
+#include "virtual/pointer/pointer_v1.h"
+#include "virtual/types/data/data_v1.h"
+#include "virtual/types/file/file_v1.h"
+#include "virtual/types/object/object_v1.h"
+#include "virtual/types/stack/stack_v1.h"
+#include "virtual/types/string/string_v1.h"
+#include "virtual/types/string_pointer/string_pointer_v1.h"
+#include "virtual/types/user/user_v1.h"
+#include "virtual/virtual/virtual_v1.h"
 
 #include "test.h"
 
@@ -69,20 +69,16 @@ static const virtual_methods* virtual_methors;
 
 /* mocks */
 static pointer_ptr mock_zero_ptr = 0;
-static pointer_ptr* mock_virtual_read_zero(u64 address);
-static pointer_ptr* mock_virtual_read_zero_ptr(u64 address);
-static pointer_ptr* mock_virtual_read_type_zero_ptr(u64 address, u64 type);
+static pointer_ptr mock_virtual_read_zero(u64 address);
+static pointer_ptr mock_virtual_read_type_zero(u64 address, u64 type);
 
 /* implementation */
-static pointer_ptr* mock_virtual_read_zero(u64 address) {
+static pointer_ptr mock_virtual_read_zero(u64 address) {
     return 0;
 }
 
-static pointer_ptr* mock_virtual_read_zero_ptr(u64 address) {
-    return &mock_zero_ptr;
-}
-static pointer_ptr* mock_virtual_read_type_zero_ptr(u64 address, u64 type) {
-    return &mock_zero_ptr;
+static pointer_ptr mock_virtual_read_type_zero(u64 address, u64 type) {
+    return 0;
 }
 
 RX_SET_UP(test_set_up) {
@@ -260,7 +256,7 @@ RX_TEST_CASE(tests_v1, test_load_copy_virtual_read_ptr_0, .fixture = test_fixtur
     /*api */
     memcpy(&mock_virtual_methods_definitions, virtual, sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
     /* setup mocks */
-    mock_virtual_methods_definitions.read = mock_virtual_read_zero_ptr;
+    mock_virtual_methods_definitions.read = mock_virtual_read_zero;
     /* setup api endpoint */
     static const virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
     /* backup api calls */
@@ -2019,7 +2015,7 @@ RX_TEST_CASE(tests_v1, test_sting_free_ptr_0, .fixture = test_fixture) {
     /*api */
     memcpy(&mock_virtual_methods_definitions, virtual, sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
     /* setup mocks */
-    mock_virtual_methods_definitions.read = mock_virtual_read_zero_ptr;
+    mock_virtual_methods_definitions.read = mock_virtual_read_zero;
     /* setup api endpoint */
     static const virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
     /* backup api calls */
@@ -2042,7 +2038,7 @@ RX_TEST_CASE(tests_v1, test_print_string_pointer_virtual_read_type, .fixture = t
     /*api */
     memcpy(&mock_virtual_methods_definitions, virtual, sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
     /* setup mocks */
-    mock_virtual_methods_definitions.read_type = mock_virtual_read_type_zero_ptr;
+    mock_virtual_methods_definitions.read_type = mock_virtual_read_type_zero;
     /* setup api endpoint */
     static const virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
     /* backup api calls */
