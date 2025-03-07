@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 6, 2025 at 4:06:01 PM GMT+3
+ *   March 7, 2025 at 2:42:57 PM GMT+3
  *
  */
 /*
@@ -43,7 +43,7 @@ static u64 object_load(const void* data, u64 size);
 static u64 object_size(u64 ptr);
 
 /* destructor */
-static void type_desctructor(const_pointer_ptr ptr);
+static void type_desctructor(const_pointer_ptr const_ptr);
 
 /* implementation */
 static const struct type_methods_definitions object_type = {
@@ -54,8 +54,8 @@ static void INIT init(void) {
     CALL(pointer)->register_known_type(id, &object_type);
 }
 
-static void type_desctructor(const_pointer_ptr ptr) {
-    CALL(pointer)->release(ptr);
+static void type_desctructor(const_pointer_ptr const_ptr) {
+    CALL(pointer)->release(const_ptr);
 }
 
 static u64 object_alloc(u64 size) {

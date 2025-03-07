@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 6, 2025 at 9:34:30 AM GMT+3
+ *   March 7, 2025 at 2:47:00 PM GMT+3
  *
  */
 /*
@@ -40,7 +40,7 @@ static u64 virtual_user_alloc(void);
 static void virtual_user_free(u64 ptr);
 
 /* destructor */
-static void type_desctructor(const_pointer_ptr ptr);
+static void type_desctructor(const_pointer_ptr const_ptr);
 
 /* implementation */
 static const struct type_methods_definitions user_type = {
@@ -51,8 +51,8 @@ static void INIT init(void) {
     id = CALL(pointer)->register_user_type(&user_type);
 }
 
-static void type_desctructor(const_pointer_ptr ptr) {
-    CALL(pointer)->release(ptr);
+static void type_desctructor(const_pointer_ptr const_ptr) {
+    CALL(pointer)->release(const_ptr);
 }
 
 static u64 virtual_user_alloc(void) {

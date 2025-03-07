@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 6, 2025 at 12:25:09 AM GMT+3
+ *   March 7, 2025 at 2:33:44 PM GMT+3
  *
  */
 /*
@@ -49,11 +49,11 @@ static u64 os_getenv(u64 address) {
     if (address == 0) {
         return 0;
     }
-    const_pointer_ptr ptr = CALL(virtual)->read_type(address, TYPE_STRING);
-    if (ptr == 0) {
+    const_pointer_ptr const_ptr = CALL(virtual)->read_type(address, TYPE_STRING);
+    if (const_ptr == 0) {
         return 0;
     }
-    const_pointer_ptr data_ptr = ptr;
+    const_pointer_ptr data_ptr = const_ptr;
     const char* name_data = CALL(pointer)->read(data_ptr);
     u64 value = CALL(string)->load(virtual_api->getenv(name_data));
     return value;

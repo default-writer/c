@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 7, 2025 at 2:20:24 PM GMT+3
+ *   March 7, 2025 at 2:43:28 PM GMT+3
  *
  */
 /*
@@ -62,7 +62,7 @@ typedef struct stack_handler {
 } stack_handler_type;
 
 /* destructor */
-static void type_desctructor(const_pointer_ptr ptr);
+static void type_desctructor(const_pointer_ptr const_ptr);
 
 /* implementation */
 static const struct type_methods_definitions stack_type = {
@@ -73,20 +73,20 @@ static void INIT init(void) {
     CALL(pointer)->register_known_type(id, &stack_type);
 }
 
-static void type_desctructor(const_pointer_ptr ptr) {
-    stack_handler_ptr handler = CALL(pointer)->read(ptr);
+static void type_desctructor(const_pointer_ptr const_ptr) {
+    stack_handler_ptr handler = CALL(pointer)->read(const_ptr);
     handler->size = 0;
     stack_release_internal(&(handler->list));
     CALL(system_list)->destroy(&(handler->list));
-    CALL(pointer)->release(ptr);
+    CALL(pointer)->release(const_ptr);
 }
 
 static const_pointer_ptr stack_alloc_internal(void) {
-    const_pointer_ptr ptr = CALL(pointer)->alloc(STACK_HANDLER_SIZE, id);
-    stack_handler_ptr handler = CALL(pointer)->read(ptr);
+    const_pointer_ptr const_ptr = CALL(pointer)->alloc(STACK_HANDLER_SIZE, id);
+    stack_handler_ptr handler = CALL(pointer)->read(const_ptr);
     handler->size = 0;
     CALL(system_list)->init(&handler->list);
-    return ptr;
+    return const_ptr;
 }
 
 static void stack_release_internal(stack_ptr* current) {
@@ -97,8 +97,8 @@ static void stack_release_internal(stack_ptr* current) {
 }
 
 static u64 stack_alloc(void) {
-    const_pointer_ptr ptr = stack_alloc_internal();
-    u64 virtual_ptr = CALL(virtual)->alloc(ptr);
+    const_pointer_ptr const_ptr = stack_alloc_internal();
+    u64 virtual_ptr = CALL(virtual)->alloc(const_ptr);
     return virtual_ptr;
 }
 
