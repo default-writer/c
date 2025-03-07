@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 6, 2025 at 4:39:48 PM GMT+3
+ *   March 7, 2025 at 2:10:56 PM GMT+3
  *
  */
 /*
@@ -37,6 +37,11 @@
  *  @brief C API / pointer
  */
 
+typedef struct public_pointer {
+    virtual_pointer_ptr vptr;
+    u64 address;
+} public_pointer_type;
+
 typedef struct PRIVATE_API(virtual_pointer_methods) {
     void (*init)(u64 size);
     void (*destroy)(void);
@@ -50,14 +55,12 @@ typedef struct PRIVATE_API(virtual_pointer_methods) {
     u64 (*register_user_type)(const struct type_methods_definitions* data_type);
     void (*free)(u64 ptr);
     u64 (*address)(const_pointer_ptr ptr);
-    virtual_pointer_ptr (*ref)(const_pointer_ptr ptr);
     void (*release)(const_pointer_ptr ptr);
     u64 (*size)(const_pointer_ptr ptr);
     void* (*read)(const_pointer_ptr ptr);
     void* (*read_guard)(const_pointer_ptr ptr, u64 offset);
     void (*guard)(const_pointer_ptr ptr, u64 offset);
     u64 (*read_type)(const_pointer_ptr ptr, u64 id);
-    void (*write)(pointer_ptr ptr, virtual_pointer_ptr m, u64 address);
 #ifdef USE_MEMORY_DEBUG_INFO
     void (*dump)(pointer_ptr ptr);
     void (*dump_ref)(pointer_ptr* ptr);
