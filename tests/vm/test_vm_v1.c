@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 7, 2025 at 2:11:49 PM GMT+3
+ *   March 7, 2025 at 4:31:09 PM GMT+3
  *
  */
 /*
@@ -32,7 +32,9 @@
 #include "system/options/options_v1.h"
 #include "virtual/pointer/pointer_v1.h"
 #include "virtual/types/data/data_v1.h"
+#include "virtual/types/file/file_v1.h"
 #include "virtual/types/stack/stack_v1.h"
+#include "virtual/types/string/string_v1.h"
 #include "virtual/types/user/user_v1.h"
 #include "virtual/virtual/virtual_v1.h"
 
@@ -131,6 +133,35 @@ RX_TEST_CASE(tests, test_vm_read_guard_1, .fixture = test_fixture) {
     RX_ASSERT(dest_ptr != 0);
     CALL(pointer)->release(ptr);
     CALL(pointer)->release(dest_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_vm_read_guard_0, .fixture = test_fixture) {
+    pointer_ptr ptr = CALL(pointer)->alloc(4, TYPE_DATA);
+    u64 file_path_ptr = CALL(string)->load("data");
+    pointer_ptr dest_ptr = CALL(virtual)->read_type(file_path_ptr, TYPE_STRING);
+    u8* data_ptr = CALL(pointer)->read_guard(dest_ptr, 0);
+    u64 mode_ptr = CALL(string)->load("rb");
+    u64 f_ptr = CALL(file)->alloc(file_path_ptr, mode_ptr);
+    RX_ASSERT(data_ptr != 0);
+    RX_ASSERT(f_ptr == 0);
+    CALL(string)->free(file_path_ptr);
+    CALL(string)->free(mode_ptr);
+    CALL(pointer)->release(ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests, test_vm_guard_0, .fixture = test_fixture) {
+    pointer_ptr ptr = CALL(pointer)->alloc(4, TYPE_DATA);
+    u64 file_path_ptr = CALL(string)->load("data");
+    pointer_ptr dest_ptr = CALL(virtual)->read_type(file_path_ptr, TYPE_STRING);
+    CALL(pointer)->guard(dest_ptr, 0);
+    u64 mode_ptr = CALL(string)->load("rb");
+    u64 f_ptr = CALL(file)->alloc(file_path_ptr, mode_ptr);
+    RX_ASSERT(f_ptr == 0);
+    CALL(string)->free(file_path_ptr);
+    CALL(string)->free(mode_ptr);
+    CALL(pointer)->release(ptr);
 }
 
 /* test init */
