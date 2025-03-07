@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 6, 2025 at 12:37:41 AM GMT+3
+ *   March 7, 2025 at 2:38:03 AM GMT+3
  *
  */
 /*
@@ -27,8 +27,6 @@
 #include "system/api/api_v1.h"
 
 #include "memory_v1.h"
-
-#include <stdlib.h>
 
 #ifdef USE_MEMORY_DEBUG_INFO
 static u64 total_alloc = 0;

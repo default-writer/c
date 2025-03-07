@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 6, 2025 at 4:44:10 PM GMT+3
+ *   March 7, 2025 at 2:25:45 PM GMT+3
  *
  */
 /*
@@ -40,27 +40,28 @@
 #define DEFAULT_SIZE 0x100
 #define POINTER_SIZE sizeof(struct pointer)
 
+#define KNOWN_TYPES_SIZE sizeof(known_types_type)
+
 /* private */
 struct pointer {
-    virtual_pointer_ptr ref;
-    void* data;
+    public_pointer_type pointer;
     u64 size;
-    u64 address;
     u64 id;
+    void* data;
 };
 
 /* private */
 typedef struct known_types* known_types_ptr;
 typedef const struct known_types* const_known_types_ptr;
 
-struct known_types {
+typedef struct known_types {
     known_types_ptr next;
     u64 id;
     desctructor desctructor;
-};
+} known_types_type;
 
 /* definition */
-static struct known_types known_types_definition = { 0, 0, 0 };
+static known_types_type known_types_definition = { 0, 0, 0 };
 
 /* definition */
 static known_types_ptr known_types = &known_types_definition;
@@ -116,12 +117,11 @@ static void pointer_realloc(pointer_ptr ptr, u64 size);
 static void pointer_free(u64 ptr);
 static void pointer_release(const_pointer_ptr ptr);
 static u64 pointer_address(const_pointer_ptr ptr);
-static virtual_pointer_ptr pointer_ref(const_pointer_ptr ptr);
 static u64 pointer_size(const_pointer_ptr ptr);
 static void* pointer_read(const_pointer_ptr ptr);
 static void* pointer_read_guard(const_pointer_ptr ptr, u64 offset);
 static void pointer_guard(const_pointer_ptr ptr, u64 offset);
-static void pointer_write(pointer_ptr ptr, virtual_pointer_ptr virtual_pointer, u64 address);
+static void pointer_write(pointer_ptr ptr, virtual_pointer_ptr vptr, u64 address);
 static u64 pointer_read_type(const_pointer_ptr ptr, u64 virtual_id);
 
 static void known_types_init(u64 id, const type_methods_definitions* data_type);
@@ -136,7 +136,7 @@ static void vm_destroy(void);
 static u64 known_types_counter = TYPE_USER;
 
 static void known_types_init(u64 id, const type_methods_definitions* data_type) {
-    known_types_ptr new_type = CALL(system_memory)->alloc(sizeof(struct known_types));
+    known_types_ptr new_type = CALL(system_memory)->alloc(KNOWN_TYPES_SIZE);
     new_type->next = known_types;
     new_type->id = id;
     new_type->desctructor = data_type->desctructor;
@@ -157,7 +157,7 @@ static void INIT vm_init(void) {
 static void DESTROY vm_destroy(void) {
     while (known_types->next != 0) {
         known_types_ptr prev = known_types->next;
-        CALL(system_memory)->free(known_types, sizeof(struct known_types));
+        CALL(system_memory)->free(known_types, KNOWN_TYPES_SIZE);
         known_types = prev;
     }
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -182,8 +182,11 @@ static const_pointer_ptr pointer_copy(const void* data, u64 size, u64 id) {
 }
 
 static const_pointer_ptr pointer_copy_guard(const void* data, u64 size, u64 offset, u64 id) {
-    const_pointer_ptr data_ptr = pointer_copy(data, size, id);
-    pointer_guard(data_ptr, offset);
+    const_pointer_ptr data_ptr = 0;
+    if (size > offset) {
+        data_ptr = pointer_copy(data, size, id);
+        pointer_guard(data_ptr, offset);
+    }
     return data_ptr;
 }
 
@@ -215,7 +218,7 @@ static void pointer_free(u64 ptr) {
         return;
     }
     u64 type_id = data_ptr->id;
-    const desctructor type_desctructor = (default_types[type_id]).desctructor;
+    const desctructor type_desctructor = default_types[type_id].desctructor;
     type_desctructor(data_ptr);
 }
 
@@ -223,31 +226,24 @@ static void pointer_release(const_pointer_ptr ptr) {
     if (ptr == 0) {
         return;
     }
-    void* data_ptr = ptr->data;
-    u64 size = ptr->size;
-    if (data_ptr != 0 && size != 0) {
-        CALL(system_memory)->free(data_ptr, size);
-    }
-    CALL(virtual)->free(ptr);
     safe_pointer_ptr safe_ptr;
-    safe_ptr.cptr = ptr;
-    CALL(system_memory)->free(safe_ptr.ptr, POINTER_SIZE);
+    safe_ptr.const_ptr = ptr;
+    void* data_ptr = ptr->data;
+    if (data_ptr != 0 && ptr->size != 0) {
+        CALL(system_memory)->free(data_ptr, ptr->size);
+        safe_ptr.public.ptr->data = 0;
+    }
+    CALL(virtual)->free(ptr->pointer.address);
+    safe_ptr.public.ptr->pointer.address = 0;
+    CALL(system_memory)->free(safe_ptr.public.ptr, POINTER_SIZE);
 }
 
 static u64 pointer_address(const_pointer_ptr ptr) {
     u64 address = 0;
     if (ptr) {
-        address = ptr->address;
+        address = ptr->pointer.address;
     }
     return address;
-}
-
-static virtual_pointer_ptr pointer_ref(const_pointer_ptr ptr) {
-    virtual_pointer_ptr ref = 0;
-    if (ptr) {
-        ref = ptr->ref;
-    }
-    return ref;
 }
 
 static u64 pointer_size(const_pointer_ptr ptr) {
@@ -267,20 +263,21 @@ static void* pointer_read(const_pointer_ptr ptr) {
 }
 
 static void* pointer_read_guard(const_pointer_ptr ptr, u64 offset) {
-    u8* data = pointer_read(ptr);
-    data[offset] = 0;
-    return data;
+    void* data_ptr = 0;
+    if (ptr && offset < ptr->size) {
+        data_ptr = pointer_read(ptr);
+        if (data_ptr) {
+            u8* data = data_ptr;
+            data[offset] = 0;
+        }
+    }
+    return data_ptr;
 }
 
 static void pointer_guard(const_pointer_ptr ptr, u64 offset) {
     u8* data = pointer_read(ptr);
-    data[offset] = 0;
-}
-
-static void pointer_write(pointer_ptr ptr, virtual_pointer_ptr ref, u64 address) {
-    if (ptr) {
-        ptr->ref = ref;
-        ptr->address = address;
+    if (data) {
+        data[offset] = 0;
     }
 }
 
@@ -301,7 +298,7 @@ static void pointer_init(u64 size) {
 #ifndef ATTRIBUTE
     init();
 #endif
-    default_types = CALL(system_memory)->alloc(known_types_counter * sizeof(struct known_types));
+    default_types = CALL(system_memory)->alloc(known_types_counter * KNOWN_TYPES_SIZE);
     known_types_ptr current = known_types;
     while (current->next != 0) {
         known_types_ptr prev = current->next;
@@ -317,7 +314,7 @@ static void pointer_destroy(void) {
     if (vm == 0) {
         return;
     }
-    CALL(system_memory)->free(default_types, known_types_counter * sizeof(struct known_types));
+    CALL(system_memory)->free(default_types, known_types_counter * KNOWN_TYPES_SIZE);
     CALL(virtual)->destroy(&vm);
 }
 
@@ -363,13 +360,11 @@ const virtual_pointer_methods PRIVATE_API(virtual_pointer_methods_definitions) =
     .free = pointer_free,
     .release = pointer_release,
     .address = pointer_address,
-    .ref = pointer_ref,
     .size = pointer_size,
     .read = pointer_read,
     .read_guard = pointer_read_guard,
     .guard = pointer_guard,
     .read_type = pointer_read_type,
-    .write = pointer_write,
 #ifdef USE_MEMORY_DEBUG_INFO
     .dump = pointer_dump,
     .dump_ref = pointer_dump_ref,

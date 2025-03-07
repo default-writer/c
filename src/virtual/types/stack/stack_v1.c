@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 6, 2025 at 9:15:49 AM GMT+3
+ *   March 7, 2025 at 2:20:24 PM GMT+3
  *
  */
 /*
@@ -34,6 +34,7 @@
 #include "virtual/virtual/virtual_v1.h"
 
 #define DEFAULT_SIZE 0x100
+#define STACK_HANDLER_SIZE sizeof(stack_handler_type)
 
 static const enum type id = TYPE_STACK;
 
@@ -53,10 +54,12 @@ static u64 stack_size(u64 ptr);
 static void stack_release(u64 ptr);
 
 /* definition */
-struct stack_handler {
+typedef struct stack_handler* stack_handler_ptr;
+typedef const struct stack_handler* const_stack_handler_ptr;
+typedef struct stack_handler {
     u64 size;
     stack_ptr list;
-};
+} stack_handler_type;
 
 /* destructor */
 static void type_desctructor(const_pointer_ptr ptr);
@@ -71,7 +74,7 @@ static void INIT init(void) {
 }
 
 static void type_desctructor(const_pointer_ptr ptr) {
-    struct stack_handler* handler = CALL(pointer)->read(ptr);
+    stack_handler_ptr handler = CALL(pointer)->read(ptr);
     handler->size = 0;
     stack_release_internal(&(handler->list));
     CALL(system_list)->destroy(&(handler->list));
@@ -79,8 +82,8 @@ static void type_desctructor(const_pointer_ptr ptr) {
 }
 
 static const_pointer_ptr stack_alloc_internal(void) {
-    const_pointer_ptr ptr = CALL(pointer)->alloc(sizeof(struct stack_handler), id);
-    struct stack_handler* handler = CALL(pointer)->read(ptr);
+    const_pointer_ptr ptr = CALL(pointer)->alloc(STACK_HANDLER_SIZE, id);
+    stack_handler_ptr handler = CALL(pointer)->read(ptr);
     handler->size = 0;
     CALL(system_list)->init(&handler->list);
     return ptr;
@@ -104,7 +107,7 @@ static void stack_release(u64 ptr) {
     if (data_ptr == 0) {
         return;
     }
-    struct stack_handler* handler = CALL(pointer)->read(data_ptr);
+    stack_handler_ptr handler = CALL(pointer)->read(data_ptr);
     handler->size = 0;
     stack_release_internal(&handler->list);
 }
@@ -131,7 +134,7 @@ static void stack_push(u64 ptr_list, u64 ptr) {
     if (data_ptr == 0) {
         return;
     }
-    struct stack_handler* handler = CALL(pointer)->read(data_ptr);
+    stack_handler_ptr handler = CALL(pointer)->read(data_ptr);
     CALL(system_list)->push(&handler->list, (void*)ptr);
     handler->size++;
 }
@@ -141,7 +144,7 @@ static u64 stack_peek(u64 ptr) {
     if (data_ptr == 0) {
         return 0;
     }
-    struct stack_handler* handler = CALL(pointer)->read(data_ptr);
+    stack_handler_ptr handler = CALL(pointer)->read(data_ptr);
     u64 stack_peek_ptr = (u64)CALL(system_list)->peek(&handler->list);
     return stack_peek_ptr;
 }
@@ -151,7 +154,7 @@ static u64 stack_peekn(u64 ptr, u64 nelements) {
     if (data_ptr == 0) {
         return 0;
     }
-    struct stack_handler* src_handler = CALL(pointer)->read(data_ptr);
+    stack_handler_ptr src_handler = CALL(pointer)->read(data_ptr);
     u64 size = src_handler->size;
     if (size == 0) {
         return 0;
@@ -160,7 +163,7 @@ static u64 stack_peekn(u64 ptr, u64 nelements) {
         return 0;
     }
     const_pointer_ptr dst_ptr = stack_alloc_internal();
-    struct stack_handler* dst_handler = CALL(pointer)->read(dst_ptr);
+    stack_handler_ptr dst_handler = CALL(pointer)->read(dst_ptr);
     u64 i = nelements;
     while (i-- > 0) {
         stack_ptr current = src_handler->list;
@@ -178,7 +181,7 @@ static u64 stack_pop(u64 ptr) {
     if (data_ptr == 0) {
         return 0;
     }
-    struct stack_handler* handler = CALL(pointer)->read(data_ptr);
+    stack_handler_ptr handler = CALL(pointer)->read(data_ptr);
     if (handler->size == 0) {
         return 0;
     }
@@ -192,7 +195,7 @@ static u64 stack_popn(u64 ptr, u64 nelements) {
     if (data_ptr == 0) {
         return 0;
     }
-    struct stack_handler* src_handler = CALL(pointer)->read(data_ptr);
+    stack_handler_ptr src_handler = CALL(pointer)->read(data_ptr);
     u64 size = src_handler->size;
     if (size == 0) {
         return 0;
@@ -201,7 +204,7 @@ static u64 stack_popn(u64 ptr, u64 nelements) {
         return 0;
     }
     const_pointer_ptr dst_ptr = stack_alloc_internal();
-    struct stack_handler* dst_handler = CALL(pointer)->read(dst_ptr);
+    stack_handler_ptr dst_handler = CALL(pointer)->read(dst_ptr);
     u64 i = nelements;
     while (i-- > 0) {
         u64 stack_pop_ptr = (u64)CALL(system_list)->pop(&src_handler->list);
@@ -217,7 +220,7 @@ static u64 stack_size(u64 ptr) {
     if (data_ptr == 0) {
         return 0;
     }
-    const struct stack_handler* handler = CALL(pointer)->read(data_ptr);
+    const_stack_handler_ptr handler = CALL(pointer)->read(data_ptr);
     u64 size = handler->size;
     return size;
 }
