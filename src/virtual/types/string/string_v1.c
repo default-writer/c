@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 7, 2025 at 3:01:17 PM GMT+3
+ *   March 7, 2025 at 4:39:48 PM GMT+3
  *
  */
 /*
@@ -466,9 +466,7 @@ static u64 string_load(const char* ch) {
         return 0;
     }
     u64 size = virtual_api->strlen(ch) + 1;
-    const_pointer_ptr data_ptr = CALL(pointer)->copy_guard(ch, size, size - 1, id);
-    u64 result = CALL(virtual)->alloc(data_ptr);
-    return result;
+    return CALL(pointer)->alloc_guard(ch, size, size - 1, id);
 }
 
 static void string_put_char(u64 src, char value) {
@@ -682,9 +680,7 @@ static u64 string_strncpy(u64 src, u64 nbytes) {
     }
     ch += offset;
     size = nbytes + 1;
-    const_pointer_ptr data_ptr = CALL(pointer)->copy_guard(ch, size, size - 1, id);
-    u64 result = CALL(virtual)->alloc(data_ptr);
-    return result;
+    return CALL(pointer)->alloc_guard(ch, size, size - 1, id);
 }
 
 static u64 string_left_strncpy(u64 src, u64 nbytes) {
@@ -703,9 +699,7 @@ static u64 string_left_strncpy(u64 src, u64 nbytes) {
     }
     ch += (offset - nbytes);
     size = nbytes + 1;
-    const_pointer_ptr data_ptr = CALL(pointer)->copy_guard(ch, size, size - 1, id);
-    u64 result = CALL(virtual)->alloc(data_ptr);
-    return result;
+    return CALL(pointer)->alloc_guard(ch, size, size - 1, id);
 }
 
 static u64 string_right(u64 src, u64 nbytes) {

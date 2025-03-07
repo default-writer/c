@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 7, 2025 at 3:18:36 PM GMT+3
+ *   March 7, 2025 at 4:43:04 PM GMT+3
  *
  */
 /*
@@ -111,6 +111,7 @@ static void pointer_gc(void);
 static pointer_ptr pointer_alloc(u64 size, u64 id);
 static const_pointer_ptr pointer_copy(const void* data, u64 size, u64 id);
 static const_pointer_ptr pointer_copy_guard(const void* data, u64 size, u64 offset, u64 id);
+static u64 pointer_alloc_guard(const void* data, u64 size, u64 offset, u64 id);
 static void pointer_memcpy(const_pointer_ptr const_ptr, const void* data, u64 size);
 static void pointer_realloc(pointer_ptr ptr, u64 size);
 static void pointer_free(u64 ptr);
@@ -186,6 +187,16 @@ static const_pointer_ptr pointer_copy_guard(const void* data, u64 size, u64 offs
         pointer_guard(data_ptr, offset);
     }
     return data_ptr;
+}
+
+static u64 pointer_alloc_guard(const void* data, u64 size, u64 offset, u64 id) {
+    const_pointer_ptr data_ptr = 0;
+    if (size > offset) {
+        data_ptr = pointer_copy(data, size, id);
+        pointer_guard(data_ptr, offset);
+    }
+    u64 result = CALL(virtual)->alloc(data_ptr);
+    return result;
 }
 
 static void pointer_memcpy(const_pointer_ptr const_ptr, const void* data, u64 size) {
@@ -343,6 +354,7 @@ const virtual_pointer_methods PRIVATE_API(virtual_pointer_methods_definitions) =
     .alloc = pointer_alloc,
     .copy = pointer_copy,
     .copy_guard = pointer_copy_guard,
+    .alloc_guard = pointer_alloc_guard,
     .memcpy = pointer_memcpy,
     .realloc = pointer_realloc,
     .register_known_type = pointer_register_known_type,

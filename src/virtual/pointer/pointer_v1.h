@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 7, 2025 at 2:42:05 PM GMT+3
+ *   March 7, 2025 at 4:38:39 PM GMT+3
  *
  */
 /*
@@ -49,6 +49,7 @@ typedef struct PRIVATE_API(virtual_pointer_methods) {
     pointer_ptr (*alloc)(u64 size, u64 id);
     const_pointer_ptr (*copy)(const void* src, u64 size, u64 id);
     const_pointer_ptr (*copy_guard)(const void* src, u64 size, u64 offset, u64 id);
+    u64 (*alloc_guard)(const void* src, u64 size, u64 offset, u64 id);
     void (*memcpy)(const_pointer_ptr const_ptr, const void* src, u64 size);
     void (*realloc)(pointer_ptr ptr, u64 size);
     void (*register_known_type)(u64 id, const struct type_methods_definitions* data_type);
