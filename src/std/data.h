@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 7, 2025 at 2:25:35 PM GMT+3
+ *   March 7, 2025 at 2:33:17 PM GMT+3
  *
  */
 /*
@@ -52,7 +52,7 @@ typedef struct public_pointer* public_pointer_ptr;
 typedef const struct pointer* const_pointer_ptr;
 typedef struct virtual_pointer* virtual_pointer_ptr;
 typedef const struct virtual_pointer* const_virtual_pointer_ptr;
-typedef void (*desctructor)(const_pointer_ptr ptr);
+typedef void (*desctructor)(const_pointer_ptr const_ptr);
 typedef union {
     const_pointer_ptr const_ptr;
     union {

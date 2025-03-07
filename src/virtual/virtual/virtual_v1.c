@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 7, 2025 at 2:27:00 PM GMT+3
+ *   March 7, 2025 at 3:03:39 PM GMT+3
  *
  */
 /*
@@ -94,7 +94,7 @@ static void virtual_destroy(vm_ptr*);
 static void vm_dump(void);
 static void vm_dump_ref(void);
 #endif
-static u64 virtual_alloc(const_pointer_ptr ptr);
+static u64 virtual_alloc(const_pointer_ptr const_ptr);
 static u64 virtual_pointer(u64 size, u64 id);
 static u64 virtual_memcpy(u64 size, const void* data, u64 id);
 static void virtual_free(u64 address);
@@ -110,7 +110,6 @@ static u64 get_address(pointer_ptr* ptr, const_virtual_pointer_ptr vptr);
 
 static virtual_pointer_ptr virtual_init_internal(u64 size);
 static pointer_ptr virtual_read_internal(u64 address);
-static u64 virtual_alloc_internal(const_pointer_ptr ptr);
 static void virtual_enumerator_init(void);
 static void virtual_enumerator_destroy(void);
 static void virtual_enumerator_init_internal(void);
@@ -152,45 +151,6 @@ static pointer_ptr virtual_read_internal(u64 address) {
         return 0;
     }
     return *ptr;
-}
-
-static u64 virtual_alloc_internal(const_pointer_ptr const_ptr) {
-    u64 address = 0;
-    pointer_ptr* ptr = 0;
-    virtual_pointer_ptr vptr;
-#ifndef USE_GC
-    vm_pointer_ptr item = CALL(system_list)->pop(cache);
-    if (item != 0) {
-        ptr = item->ptr;
-        vptr = item->vptr;
-        CALL(system_memory)->free(item, VM_POINTER_SIZE);
-    }
-    if (ptr == 0) {
-#endif
-        vptr = vm->tail;
-        if ((u64)(vptr->sp - vptr->bp) == vptr->size) {
-            virtual_pointer_ptr prev = vptr;
-            vptr = virtual_init_internal(prev->size);
-            vptr->offset = prev->offset + prev->size;
-            vptr->prev = prev;
-            prev->next = vptr;
-            vm->tail = vptr;
-        }
-        ptr = vptr->sp;
-        ++vptr->sp;
-#ifndef USE_GC
-    }
-#endif
-    address = get_address(ptr, vptr);
-    safe_pointer_ptr safe_ptr;
-    safe_ptr.const_ptr = const_ptr;
-    *ptr = safe_ptr.public.ptr;
-    safe_ptr.public.pointer->vptr = vptr;
-    safe_ptr.public.pointer->address = address;
-#ifdef USE_MEMORY_DEBUG_INFO
-    printf("  >+: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)data);
-#endif
-    return address;
 }
 
 static void virtual_enumerator_init(void) {
@@ -342,16 +302,51 @@ static pointer_ptr virtual_read(u64 address) {
     return ptr;
 }
 
-static u64 virtual_alloc(const_pointer_ptr ptr) {
-    if (!ptr) {
+static u64 virtual_alloc(const_pointer_ptr const_ptr) {
+    if (!const_ptr) {
         return 0;
     }
-    return virtual_alloc_internal(ptr);
+    u64 address = 0;
+    pointer_ptr* ptr = 0;
+    virtual_pointer_ptr vptr;
+#ifndef USE_GC
+    vm_pointer_ptr item = CALL(system_list)->pop(cache);
+    if (item != 0) {
+        ptr = item->ptr;
+        vptr = item->vptr;
+        CALL(system_memory)->free(item, VM_POINTER_SIZE);
+    }
+    if (ptr == 0) {
+#endif
+        vptr = vm->tail;
+        if ((u64)(vptr->sp - vptr->bp) == vptr->size) {
+            virtual_pointer_ptr prev = vptr;
+            vptr = virtual_init_internal(prev->size);
+            vptr->offset = prev->offset + prev->size;
+            vptr->prev = prev;
+            prev->next = vptr;
+            vm->tail = vptr;
+        }
+        ptr = vptr->sp;
+        ++vptr->sp;
+#ifndef USE_GC
+    }
+#endif
+    address = get_address(ptr, vptr);
+    safe_pointer_ptr safe_ptr;
+    safe_ptr.const_ptr = const_ptr;
+    safe_ptr.public.pointer->vptr = vptr;
+    safe_ptr.public.pointer->address = address;
+    *ptr = safe_ptr.public.ptr;
+#ifdef USE_MEMORY_DEBUG_INFO
+    printf("  >+: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)data);
+#endif
+    return address;
 }
 
 static u64 virtual_pointer(u64 size, u64 id) {
-    const_pointer_ptr ptr = CALL(pointer)->alloc(size, id);
-    return virtual_alloc(ptr);
+    const_pointer_ptr const_ptr = CALL(pointer)->alloc(size, id);
+    return virtual_alloc(const_ptr);
 }
 static u64 virtual_memcpy(u64 size, const void* data, u64 id) {
     const_pointer_ptr data_ptr = CALL(pointer)->alloc(size, id);
@@ -385,7 +380,9 @@ static u64 virtual_enumerator_next(void) {
         if (*ptr != 0) {
             const_pointer_ptr data_ptr = *ptr;
             if (data_ptr != 0) {
-                address = CALL(pointer)->address(data_ptr);
+                safe_pointer_ptr safe_ptr;
+                safe_ptr.const_ptr = data_ptr;
+                address = safe_ptr.public.pointer->address;
                 break;
             }
         }

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 5, 2025 at 10:30:46 PM GMT+3
+ *   March 7, 2025 at 2:46:59 PM GMT+3
  *
  */
 /*
@@ -39,7 +39,7 @@ static const enum type id = TYPE_STRING_POINTER;
 static void string_free(u64 ptr);
 
 /* destructor */
-static void type_desctructor(const_pointer_ptr ptr);
+static void type_desctructor(const_pointer_ptr const_ptr);
 
 /* implementation */
 static const struct type_methods_definitions string_pointer_type = {
@@ -50,8 +50,8 @@ static void INIT init(void) {
     CALL(pointer)->register_known_type(id, &string_pointer_type);
 }
 
-static void type_desctructor(const_pointer_ptr ptr) {
-    CALL(pointer)->release(ptr);
+static void type_desctructor(const_pointer_ptr const_ptr) {
+    CALL(pointer)->release(const_ptr);
 }
 
 /* api */

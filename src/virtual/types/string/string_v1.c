@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 7, 2025 at 2:21:43 PM GMT+3
+ *   March 7, 2025 at 3:01:17 PM GMT+3
  *
  */
 /*
@@ -82,7 +82,7 @@ typedef struct string_reference {
 } string_reference_type;
 
 /* destructor */
-static void type_desctructor(const_pointer_ptr ptr);
+static void type_desctructor(const_pointer_ptr const_ptr);
 
 /* implementation */
 static const struct type_methods_definitions string_type = {
@@ -93,40 +93,40 @@ static void INIT init(void) {
     CALL(pointer)->register_known_type(id, &string_type);
 }
 
-static void type_desctructor(const_pointer_ptr ptr) {
-    CALL(pointer)->release(ptr);
+static void type_desctructor(const_pointer_ptr const_ptr) {
+    CALL(pointer)->release(const_ptr);
 }
 
 /* implementation */
 static char* string_pointer_internal(const_pointer_ptr data_ptr, u64* data_size, u64* data_offset) {
     u64 offset = 0;
-    const_pointer_ptr ptr;
+    const_pointer_ptr const_ptr;
     u64 str_ptr1 = CALL(pointer)->read_type(data_ptr, TYPE_STRING);
     if (str_ptr1) {
-        ptr = data_ptr;
-        *data_size = CALL(pointer)->size(ptr);
+        const_ptr = data_ptr;
+        *data_size = CALL(pointer)->size(const_ptr);
         *data_offset = offset;
-        char* ch = CALL(pointer)->read(ptr);
+        char* ch = CALL(pointer)->read(const_ptr);
         return ch;
     }
     u64 str_ptr2 = CALL(pointer)->read_type(data_ptr, TYPE_STRING_POINTER);
     if (str_ptr2) {
         const_string_reference_ptr ref = CALL(pointer)->read(data_ptr);
-        while ((ptr = CALL(virtual)->read(ref->address)) != 0) {
-            if (!CALL(pointer)->read_type(ptr, TYPE_STRING_POINTER)) {
+        while ((const_ptr = CALL(virtual)->read(ref->address)) != 0) {
+            if (!CALL(pointer)->read_type(const_ptr, TYPE_STRING_POINTER)) {
                 break;
             }
             offset += ref->offset;
-            ref = CALL(pointer)->read(ptr);
+            ref = CALL(pointer)->read(const_ptr);
         }
-        ptr = CALL(virtual)->read_type(ref->address, TYPE_STRING);
-        if (ptr == 0) {
+        const_ptr = CALL(virtual)->read_type(ref->address, TYPE_STRING);
+        if (const_ptr == 0) {
             return 0;
         }
         offset += ref->offset;
-        *data_size = CALL(pointer)->size(ptr);
+        *data_size = CALL(pointer)->size(const_ptr);
         *data_offset = offset;
-        char* ch = CALL(pointer)->read(ptr);
+        char* ch = CALL(pointer)->read(const_ptr);
         return ch;
     }
     return 0;
@@ -195,13 +195,13 @@ static void string_free(u64 ptr) {
 }
 
 static u64 string_copy(u64 src) {
-    const_pointer_ptr ptr = CALL(virtual)->read(src);
-    if (ptr == 0) {
+    const_pointer_ptr const_ptr = CALL(virtual)->read(src);
+    if (const_ptr == 0) {
         return 0;
     }
     u64 size = 0;
     u64 offset = 0;
-    const char* ch = string_pointer_internal(ptr, &size, &offset);
+    const char* ch = string_pointer_internal(const_ptr, &size, &offset);
     if (ch == 0) {
         return 0;
     }
@@ -267,13 +267,13 @@ static void string_strcat(u64 dest, u64 src) {
 }
 
 static u64 string_strrchr(u64 src, u64 match) {
-    const_pointer_ptr ptr = CALL(virtual)->read(src);
-    if (ptr == 0) {
+    const_pointer_ptr const_ptr = CALL(virtual)->read(src);
+    if (const_ptr == 0) {
         return 0;
     }
     u64 size = 0;
     u64 offset = 0;
-    char* ch = string_pointer_internal(ptr, &size, &offset);
+    char* ch = string_pointer_internal(const_ptr, &size, &offset);
     if (ch == 0) {
         return 0;
     }
@@ -298,13 +298,13 @@ static u64 string_strrchr(u64 src, u64 match) {
 }
 
 static u64 string_strchr(u64 src, u64 match) {
-    const_pointer_ptr ptr = CALL(virtual)->read(src);
-    if (ptr == 0) {
+    const_pointer_ptr const_ptr = CALL(virtual)->read(src);
+    if (const_ptr == 0) {
         return 0;
     }
     u64 size = 0;
     u64 offset = 0;
-    char* ch = string_pointer_internal(ptr, &size, &offset);
+    char* ch = string_pointer_internal(const_ptr, &size, &offset);
     if (ch == 0) {
         return 0;
     }
@@ -329,13 +329,13 @@ static u64 string_strchr(u64 src, u64 match) {
 }
 
 static u64 string_match(u64 src, u64 match) {
-    const_pointer_ptr ptr = CALL(virtual)->read(src);
-    if (ptr == 0) {
+    const_pointer_ptr const_ptr = CALL(virtual)->read(src);
+    if (const_ptr == 0) {
         return 0;
     }
     u64 size = 0;
     u64 offset = 0;
-    char* ch = string_pointer_internal(ptr, &size, &offset);
+    char* ch = string_pointer_internal(const_ptr, &size, &offset);
     if (ch == 0) {
         return 0;
     }
@@ -399,13 +399,13 @@ static char* get_last_match(char* str1, const char* str2, u64* size, u64 offset)
 }
 
 static u64 string_offset(u64 src, u64 match) {
-    const_pointer_ptr ptr = CALL(virtual)->read(src);
-    if (ptr == 0) {
+    const_pointer_ptr const_ptr = CALL(virtual)->read(src);
+    if (const_ptr == 0) {
         return 0;
     }
     u64 size = 0;
     u64 offset = 0;
-    char* ch = string_pointer_internal(ptr, &size, &offset);
+    char* ch = string_pointer_internal(const_ptr, &size, &offset);
     if (ch == 0) {
         return 0;
     }
@@ -472,13 +472,13 @@ static u64 string_load(const char* ch) {
 }
 
 static void string_put_char(u64 src, char value) {
-    const_pointer_ptr ptr = CALL(virtual)->read(src);
-    if (ptr == 0) {
+    const_pointer_ptr const_ptr = CALL(virtual)->read(src);
+    if (const_ptr == 0) {
         return;
     }
     u64 size = 0;
     u64 offset = 0;
-    char* ch = string_pointer_internal(ptr, &size, &offset);
+    char* ch = string_pointer_internal(const_ptr, &size, &offset);
     if (ch == 0) {
         return;
     }
@@ -487,13 +487,13 @@ static void string_put_char(u64 src, char value) {
 }
 
 static char* string_unsafe(u64 src) {
-    const_pointer_ptr ptr = CALL(virtual)->read(src);
-    if (ptr == 0) {
+    const_pointer_ptr const_ptr = CALL(virtual)->read(src);
+    if (const_ptr == 0) {
         return 0;
     }
     u64 size = 0;
     u64 offset = 0;
-    char* ch = string_pointer_internal(ptr, &size, &offset);
+    char* ch = string_pointer_internal(const_ptr, &size, &offset);
     if (ch == 0) {
         return 0;
     }
@@ -502,13 +502,13 @@ static char* string_unsafe(u64 src) {
 }
 
 static u64 string_size(u64 src) {
-    const_pointer_ptr ptr = CALL(virtual)->read(src);
-    if (ptr == 0) {
+    const_pointer_ptr const_ptr = CALL(virtual)->read(src);
+    if (const_ptr == 0) {
         return 0;
     }
     u64 size = 0;
     u64 offset = 0;
-    const char* ch = string_pointer_internal(ptr, &size, &offset);
+    const char* ch = string_pointer_internal(const_ptr, &size, &offset);
     if (ch == 0) {
         return 0;
     }
@@ -645,13 +645,13 @@ static u64 string_compare(u64 src, u64 dst) {
 }
 
 static u64 string_left(u64 src, u64 shift) {
-    const_pointer_ptr ptr = CALL(virtual)->read(src);
-    if (ptr == 0) {
+    const_pointer_ptr const_ptr = CALL(virtual)->read(src);
+    if (const_ptr == 0) {
         return 0;
     }
     u64 size = 0;
     u64 offset = 0;
-    const char* ch = string_pointer_internal(ptr, &size, &offset);
+    const char* ch = string_pointer_internal(const_ptr, &size, &offset);
     if (ch == 0) {
         return 0;
     }
@@ -667,13 +667,13 @@ static u64 string_left(u64 src, u64 shift) {
 }
 
 static u64 string_strncpy(u64 src, u64 nbytes) {
-    const_pointer_ptr ptr = CALL(virtual)->read(src);
-    if (ptr == 0) {
+    const_pointer_ptr const_ptr = CALL(virtual)->read(src);
+    if (const_ptr == 0) {
         return 0;
     }
     u64 size = 0;
     u64 offset = 0;
-    const char* ch = string_pointer_internal(ptr, &size, &offset);
+    const char* ch = string_pointer_internal(const_ptr, &size, &offset);
     if (ch == 0) {
         return 0;
     }
@@ -688,13 +688,13 @@ static u64 string_strncpy(u64 src, u64 nbytes) {
 }
 
 static u64 string_left_strncpy(u64 src, u64 nbytes) {
-    const_pointer_ptr ptr = CALL(virtual)->read(src);
-    if (ptr == 0) {
+    const_pointer_ptr const_ptr = CALL(virtual)->read(src);
+    if (const_ptr == 0) {
         return 0;
     }
     u64 size = 0;
     u64 offset = 0;
-    const char* ch = string_pointer_internal(ptr, &size, &offset);
+    const char* ch = string_pointer_internal(const_ptr, &size, &offset);
     if (ch == 0) {
         return 0;
     }
@@ -709,13 +709,13 @@ static u64 string_left_strncpy(u64 src, u64 nbytes) {
 }
 
 static u64 string_right(u64 src, u64 nbytes) {
-    const_pointer_ptr ptr = CALL(virtual)->read(src);
-    if (ptr == 0) {
+    const_pointer_ptr const_ptr = CALL(virtual)->read(src);
+    if (const_ptr == 0) {
         return 0;
     }
     u64 size = 0;
     u64 offset = 0;
-    const char* ch = string_pointer_internal(ptr, &size, &offset);
+    const char* ch = string_pointer_internal(const_ptr, &size, &offset);
     if (ch == 0) {
         return 0;
     }
@@ -731,45 +731,45 @@ static u64 string_right(u64 src, u64 nbytes) {
 }
 
 static u64 string_move_left(u64 src, u64 nbytes) {
-    const_pointer_ptr ptr = CALL(virtual)->read(src);
-    if (ptr == 0) {
+    const_pointer_ptr const_ptr = CALL(virtual)->read(src);
+    if (const_ptr == 0) {
         return 0;
     }
-    if (!CALL(pointer)->read_type(ptr, TYPE_STRING_POINTER)) {
+    if (!CALL(pointer)->read_type(const_ptr, TYPE_STRING_POINTER)) {
         return 0;
     }
     u64 size = 0;
     u64 offset = 0;
-    const char* ch = string_pointer_internal(ptr, &size, &offset);
+    const char* ch = string_pointer_internal(const_ptr, &size, &offset);
     if (ch == 0) {
         return 0;
     }
     if (offset < nbytes) {
         return 0;
     }
-    string_reference_ptr ref = CALL(pointer)->read(ptr);
+    string_reference_ptr ref = CALL(pointer)->read(const_ptr);
     ref->offset -= nbytes;
     return (u64)(0 - 1);
 }
 
 static u64 string_move_right(u64 src, u64 nbytes) {
-    const_pointer_ptr ptr = CALL(virtual)->read(src);
-    if (ptr == 0) {
+    const_pointer_ptr const_ptr = CALL(virtual)->read(src);
+    if (const_ptr == 0) {
         return 0;
     }
     u64 size = 0;
     u64 offset = 0;
-    if (!CALL(pointer)->read_type(ptr, TYPE_STRING_POINTER)) {
+    if (!CALL(pointer)->read_type(const_ptr, TYPE_STRING_POINTER)) {
         return 0;
     }
-    const char* ch = string_pointer_internal(ptr, &size, &offset);
+    const char* ch = string_pointer_internal(const_ptr, &size, &offset);
     if (ch == 0) {
         return 0;
     }
     if (offset + nbytes >= size) {
         return 0;
     }
-    string_reference_ptr ref = CALL(pointer)->read(ptr);
+    string_reference_ptr ref = CALL(pointer)->read(const_ptr);
     ref->offset += nbytes;
     return (u64)(0 - 1);
 }

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 7, 2025 at 2:25:45 PM GMT+3
+ *   March 7, 2025 at 2:42:44 PM GMT+3
  *
  */
 /*
@@ -112,17 +112,16 @@ static void pointer_gc(void);
 static pointer_ptr pointer_alloc(u64 size, u64 id);
 static const_pointer_ptr pointer_copy(const void* data, u64 size, u64 id);
 static const_pointer_ptr pointer_copy_guard(const void* data, u64 size, u64 offset, u64 id);
-static void pointer_memcpy(const_pointer_ptr ptr, const void* data, u64 size);
+static void pointer_memcpy(const_pointer_ptr const_ptr, const void* data, u64 size);
 static void pointer_realloc(pointer_ptr ptr, u64 size);
 static void pointer_free(u64 ptr);
-static void pointer_release(const_pointer_ptr ptr);
-static u64 pointer_address(const_pointer_ptr ptr);
-static u64 pointer_size(const_pointer_ptr ptr);
-static void* pointer_read(const_pointer_ptr ptr);
-static void* pointer_read_guard(const_pointer_ptr ptr, u64 offset);
-static void pointer_guard(const_pointer_ptr ptr, u64 offset);
+static void pointer_release(const_pointer_ptr const_ptr);
+static u64 pointer_size(const_pointer_ptr const_ptr);
+static void* pointer_read(const_pointer_ptr const_ptr);
+static void* pointer_read_guard(const_pointer_ptr const_ptr, u64 offset);
+static void pointer_guard(const_pointer_ptr const_ptr, u64 offset);
 static void pointer_write(pointer_ptr ptr, virtual_pointer_ptr vptr, u64 address);
-static u64 pointer_read_type(const_pointer_ptr ptr, u64 virtual_id);
+static u64 pointer_read_type(const_pointer_ptr const_ptr, u64 virtual_id);
 
 static void known_types_init(u64 id, const type_methods_definitions* data_type);
 static u64 user_types_init(const type_methods_definitions* data_type);
@@ -190,8 +189,8 @@ static const_pointer_ptr pointer_copy_guard(const void* data, u64 size, u64 offs
     return data_ptr;
 }
 
-static void pointer_memcpy(const_pointer_ptr ptr, const void* data, u64 size) {
-    virtual_api->memcpy(pointer_read(ptr), data, size);
+static void pointer_memcpy(const_pointer_ptr const_ptr, const void* data, u64 size) {
+    virtual_api->memcpy(pointer_read(const_ptr), data, size);
 }
 
 static void pointer_realloc(pointer_ptr ptr, u64 size) {
@@ -222,50 +221,42 @@ static void pointer_free(u64 ptr) {
     type_desctructor(data_ptr);
 }
 
-static void pointer_release(const_pointer_ptr ptr) {
-    if (ptr == 0) {
+static void pointer_release(const_pointer_ptr const_ptr) {
+    if (const_ptr == 0) {
         return;
     }
     safe_pointer_ptr safe_ptr;
-    safe_ptr.const_ptr = ptr;
-    void* data_ptr = ptr->data;
-    if (data_ptr != 0 && ptr->size != 0) {
-        CALL(system_memory)->free(data_ptr, ptr->size);
+    safe_ptr.const_ptr = const_ptr;
+    void* data_ptr = const_ptr->data;
+    if (data_ptr != 0 && const_ptr->size != 0) {
+        CALL(system_memory)->free(data_ptr, const_ptr->size);
         safe_ptr.public.ptr->data = 0;
     }
-    CALL(virtual)->free(ptr->pointer.address);
+    CALL(virtual)->free(const_ptr->pointer.address);
     safe_ptr.public.ptr->pointer.address = 0;
     CALL(system_memory)->free(safe_ptr.public.ptr, POINTER_SIZE);
 }
 
-static u64 pointer_address(const_pointer_ptr ptr) {
-    u64 address = 0;
-    if (ptr) {
-        address = ptr->pointer.address;
-    }
-    return address;
-}
-
-static u64 pointer_size(const_pointer_ptr ptr) {
+static u64 pointer_size(const_pointer_ptr const_ptr) {
     u64 size = 0;
-    if (ptr) {
-        size = ptr->size;
+    if (const_ptr) {
+        size = const_ptr->size;
     }
     return size;
 }
 
-static void* pointer_read(const_pointer_ptr ptr) {
+static void* pointer_read(const_pointer_ptr const_ptr) {
     void* data_ptr = 0;
-    if (ptr) {
-        data_ptr = ptr->data;
+    if (const_ptr) {
+        data_ptr = const_ptr->data;
     }
     return data_ptr;
 }
 
-static void* pointer_read_guard(const_pointer_ptr ptr, u64 offset) {
+static void* pointer_read_guard(const_pointer_ptr const_ptr, u64 offset) {
     void* data_ptr = 0;
-    if (ptr && offset < ptr->size) {
-        data_ptr = pointer_read(ptr);
+    if (const_ptr && offset < const_ptr->size) {
+        data_ptr = pointer_read(const_ptr);
         if (data_ptr) {
             u8* data = data_ptr;
             data[offset] = 0;
@@ -274,16 +265,16 @@ static void* pointer_read_guard(const_pointer_ptr ptr, u64 offset) {
     return data_ptr;
 }
 
-static void pointer_guard(const_pointer_ptr ptr, u64 offset) {
-    u8* data = pointer_read(ptr);
+static void pointer_guard(const_pointer_ptr const_ptr, u64 offset) {
+    u8* data = pointer_read(const_ptr);
     if (data) {
         data[offset] = 0;
     }
 }
 
-static u64 pointer_read_type(const_pointer_ptr ptr, u64 virtual_id) {
+static u64 pointer_read_type(const_pointer_ptr const_ptr, u64 virtual_id) {
     u64 id = 0;
-    if (ptr && ptr->id == virtual_id) {
+    if (const_ptr && const_ptr->id == virtual_id) {
         id = virtual_id;
     }
     return id;
@@ -359,7 +350,6 @@ const virtual_pointer_methods PRIVATE_API(virtual_pointer_methods_definitions) =
     .register_user_type = pointer_register_user_type,
     .free = pointer_free,
     .release = pointer_release,
-    .address = pointer_address,
     .size = pointer_size,
     .read = pointer_read,
     .read_guard = pointer_read_guard,
