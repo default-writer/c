@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 6, 2025 at 8:04:29 AM GMT+3
+ *   March 7, 2025 at 3:25:31 PM GMT+3
  *
  */
 /*
@@ -37,16 +37,17 @@
 #include <string.h>
 
 #define DEFAULT_SIZE 0x100
+#define FILE_HANDLER_SIZE sizeof(file_handler_type)
 
 static const enum type id = TYPE_FILE;
 
 /* definition */
-struct file_handler {
+typedef struct file_handler {
     FILE* file;
 #ifdef USE_MEMORY_DEBUG_INFO
     char* path;
 #endif
-};
+} file_handler_type;
 
 /* internal */
 static u64 file_alloc(u64 file_path_ptr, u64 mode_ptr);
@@ -74,7 +75,15 @@ static void type_desctructor(const_pointer_ptr ptr) {
     CALL(pointer)->release(ptr);
 }
 
-static int is_valid_fopen_mode(const char* mode) {
+static int is_valid_file_path(const char* file_path) {
+    size_t size = virtual_api->strlen(file_path);
+    if (size > 0 && size <= PATH_MAX - 1) {
+        return 1;
+    }
+    return 0;
+}
+
+static int is_valid_mode(const char* mode) {
     const char* valid_modes[] = { "r", "w", "a", "r+", "w+", "a+", "rb", "wb", "ab", "r+b", "w+b", "a+b" };
     size_t num_modes = sizeof(valid_modes) / sizeof(valid_modes[0]);
     for (size_t i = 0; i < num_modes; ++i) {
@@ -92,25 +101,27 @@ static u64 file_alloc(u64 file_path, u64 mode) {
     if (mode == 0) {
         return 0;
     }
-    const_pointer_ptr ptr = CALL(virtual)->read_type(file_path, TYPE_STRING);
-    if (ptr == 0) {
+    const_pointer_ptr file_path_ptr = CALL(virtual)->read_type(file_path, TYPE_STRING);
+    if (file_path_ptr == 0) {
         return 0;
     }
-    const_pointer_ptr file_path_ptr = ptr;
     const_pointer_ptr mode_ptr = CALL(virtual)->read_type(mode, TYPE_STRING);
     if (mode_ptr == 0) {
         return 0;
     }
     const char* file_path_data = CALL(pointer)->read(file_path_ptr);
+    if (!is_valid_file_path(file_path_data)) {
+        return 0;
+    }
     const char* mode_data = CALL(pointer)->read(mode_ptr);
-    if (!is_valid_fopen_mode(mode_data)) {
+    if (!is_valid_mode(mode_data)) {
         return 0;
     }
     FILE* f = virtual_api->fopen(file_path_data, mode_data); /* NOLINT */
     if (f == 0) {
         return 0;
     }
-    const_pointer_ptr f_ptr = CALL(pointer)->alloc(sizeof(struct file_handler), id);
+    const_pointer_ptr f_ptr = CALL(pointer)->alloc(FILE_HANDLER_SIZE, id);
     struct file_handler* handler = CALL(pointer)->read(f_ptr);
     handler->file = f;
 #ifdef USE_MEMORY_DEBUG_INFO

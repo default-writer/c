@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 7, 2025 at 2:42:44 PM GMT+3
+ *   March 7, 2025 at 3:18:36 PM GMT+3
  *
  */
 /*
@@ -38,17 +38,16 @@
 #include <stdio.h>
 
 #define DEFAULT_SIZE 0x100
-#define POINTER_SIZE sizeof(struct pointer)
-
+#define POINTER_SIZE sizeof(pointer_type)
 #define KNOWN_TYPES_SIZE sizeof(known_types_type)
 
 /* private */
-struct pointer {
+typedef struct pointer {
     public_pointer_type pointer;
     u64 size;
     u64 id;
     void* data;
-};
+} pointer_type;
 
 /* private */
 typedef struct known_types* known_types_ptr;

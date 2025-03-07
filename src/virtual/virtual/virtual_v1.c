@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 7, 2025 at 3:03:39 PM GMT+3
+ *   March 7, 2025 at 3:18:15 PM GMT+3
  *
  */
 /*
@@ -25,6 +25,7 @@
 */
 
 #define USING_MACROS
+#define VM_SIZE sizeof(vm_type)
 
 #include "virtual_v1.h"
 
@@ -37,7 +38,7 @@
 /* macros */
 #define DEFAULT_SIZE 0x8 /* 8 */
 #define PTR_SIZE sizeof(void*) /* size of a pointer */
-#define VM_DATA_SIZE sizeof(struct virtual_pointer)
+#define VM_DATA_SIZE sizeof(virtual_pointer_type)
 #define ALLOC_SIZE(size) (size * PTR_SIZE)
 
 #ifndef USE_GC
@@ -185,7 +186,7 @@ static void virtual_init(vm_ptr* ptr, u64 size) {
     virtual_pointer_ptr vptr = virtual_init_internal(size == 0 ? DEFAULT_SIZE : size);
     vm->head = vptr;
     vm->tail = vptr;
-    vm_ptr ref = CALL(system_memory)->alloc(sizeof(vm_type));
+    vm_ptr ref = CALL(system_memory)->alloc(VM_SIZE);
     ref->head = vptr;
     ref->tail = vptr;
     *ptr = ref;
@@ -198,7 +199,7 @@ static void virtual_destroy(vm_ptr* ptr) {
     vm_ptr current = *ptr;
     vm->head = current->head;
     vm->tail = current->tail;
-    CALL(system_memory)->free(current, sizeof(struct vm));
+    CALL(system_memory)->free(current, VM_SIZE);
     *ptr = 0;
 #ifndef USE_GC
     vm_pointer_ptr item;
