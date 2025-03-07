@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 7, 2025 at 4:31:09 PM GMT+3
+ *   March 7, 2025 at 4:44:18 PM GMT+3
  *
  */
 /*
@@ -93,6 +93,14 @@ RX_TEST_CASE(tests, test_vm_copy_guard, .fixture = test_fixture) {
     RX_ASSERT(virtual_ptr != 0);
     RX_ASSERT(data_ptr != 0);
     CALL(pointer)->release(data_ptr);
+}
+/* test init */
+RX_TEST_CASE(tests, test_vm_alloc_guard, .fixture = test_fixture) {
+    const char* data = "hello";
+    u64 size = strlen(data) + 1;
+    u64 virtual_ptr = CALL(pointer)->alloc_guard(data, size, size - 1, TYPE_USER);
+    RX_ASSERT(virtual_ptr != 0);
+    CALL(string)->free(virtual_ptr);
 }
 
 /* test init */
