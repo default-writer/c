@@ -44,8 +44,8 @@ The goal is to conform to the C guidelines in development of critical code.
 ```c
 static u64 read_data(const_vm_ptr vm, u64 list_ptr, const char* prompt) {
     u64 data_ptr = 0;
-    u64 ui_mode_ptr = string->load("UI_MODE");
-    u64 mode_ptr = string->load("--ui");
+    u64 ui_mode_ptr = CALL(string)->load(vm, "UI_MODE");
+    u64 mode_ptr = CALL(string)->load(vm, "--ui");
     u64 value_ptr = CALL(os)->getenv(vm, ui_mode_ptr);
     if (ui_mode_ptr != 0 && CALL(string)->strcmp(vm, value_ptr, mode_ptr) != 0) {
         data_ptr = read_input(prompt);
