@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 7, 2025 at 3:25:31 PM GMT+3
+ *   March 9, 2025 at 6:42:07 PM GMT+3
  *
  */
 /*
@@ -50,20 +50,22 @@ typedef struct file_handler {
 } file_handler_type;
 
 /* internal */
-static u64 file_alloc(u64 file_path_ptr, u64 mode_ptr);
-static void file_free(u64 ptr);
-static u64 file_data(u64 ptr);
+static u64 file_alloc(const_vm_ptr vm, u64 file_path_ptr, u64 mode_ptr);
+static void file_free(const_vm_ptr vm, u64 ptr);
+static u64 file_data(const_vm_ptr vm, u64 ptr);
 
 /* destructor */
 static void type_desctructor(const_pointer_ptr ptr);
 
 /* implementation */
-static const struct type_methods_definitions file_type = {
+static struct type_methods_definitions file_type = {
     .desctructor = type_desctructor
 };
 
 static void INIT init(void) {
-    CALL(pointer)->register_known_type(id, &file_type);
+    safe_type_methods_definitions safe_ptr;
+    safe_ptr.const_ptr = &file_type;
+    CALL(pointer)->register_known_type(id, safe_ptr.ptr);
 }
 
 static void type_desctructor(const_pointer_ptr ptr) {
@@ -94,18 +96,21 @@ static int is_valid_mode(const char* mode) {
     return 0;
 }
 
-static u64 file_alloc(u64 file_path, u64 mode) {
+static u64 file_alloc(const_vm_ptr vm, u64 file_path, u64 mode) {
+    if (vm == 0 || *vm == 0) {
+        return 0;
+    }
     if (file_path == 0) {
         return 0;
     }
     if (mode == 0) {
         return 0;
     }
-    const_pointer_ptr file_path_ptr = CALL(virtual)->read_type(file_path, TYPE_STRING);
+    const_pointer_ptr file_path_ptr = CALL(virtual)->read_type(vm, file_path, TYPE_STRING);
     if (file_path_ptr == 0) {
         return 0;
     }
-    const_pointer_ptr mode_ptr = CALL(virtual)->read_type(mode, TYPE_STRING);
+    const_pointer_ptr mode_ptr = CALL(virtual)->read_type(vm, mode, TYPE_STRING);
     if (mode_ptr == 0) {
         return 0;
     }
@@ -127,20 +132,25 @@ static u64 file_alloc(u64 file_path, u64 mode) {
 #ifdef USE_MEMORY_DEBUG_INFO
     handler->path = CALL(pointer)->read(file_path_ptr);
 #endif
-    u64 data_ptr = CALL(virtual)->alloc(f_ptr);
-    return data_ptr;
+    return CALL(virtual)->alloc(vm, f_ptr);
 }
 
-static void file_free(u64 ptr) {
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
+static void file_free(const_vm_ptr vm, u64 ptr) {
+    if (vm == 0 || *vm == 0) {
+        return;
+    }
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
     if (data_ptr == 0) {
         return;
     }
     type_desctructor(data_ptr);
 }
 
-static u64 file_data(u64 ptr) {
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
+static u64 file_data(const_vm_ptr vm, u64 ptr) {
+    if (vm == 0 || *vm == 0) {
+        return 0;
+    }
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
@@ -150,17 +160,15 @@ static u64 file_data(u64 ptr) {
     u64 size = (u64)virtual_api->ftell(f);
     virtual_api->fseek(f, 0, SEEK_SET);
     u64 data_size = size + 1;
-    u64 data_handle = CALL(data)->alloc(data_size);
-    void* file_data = CALL(data)->unsafe(data_handle);
+    u64 data_handle = CALL(data)->alloc(vm, data_size);
+    void* file_data = CALL(data)->unsafe(vm, data_handle);
     u64 read = virtual_api->fread(file_data, 1, size, handler->file);
     return read ? data_handle : 0;
 }
 
-#ifndef ATTRIBUTE
-void file_init(void) {
+CVM_EXPORT void file_init(void) {
     init();
 }
-#endif
 
 /* public */
 /*! definition (initialization) of file_methods structure */

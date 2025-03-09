@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 7, 2025 at 3:18:15 PM GMT+3
+ *   March 9, 2025 at 6:52:58 PM GMT+3
  *
  */
 /*
@@ -62,10 +62,6 @@ typedef struct vm {
 static stack_ptr* cache;
 #endif
 
-static vm_type vm_definition_v1;
-
-static vm_ptr vm = &vm_definition_v1;
-
 typedef struct virtual_pointer {
     pointer_ptr* sp; /* stack pointer */
     pointer_ptr* bp; /* base pointer */
@@ -89,19 +85,19 @@ static struct vm_state* state = &vm_state;
 
 /* api */
 
-static void virtual_init(vm_ptr*, u64 size);
-static void virtual_destroy(vm_ptr*);
+static void virtual_init(const_vm_ptr vm, u64 size);
+static void virtual_destroy(const_vm_ptr vm);
 #ifdef USE_MEMORY_DEBUG_INFO
 static void vm_dump(void);
 static void vm_dump_ref(void);
 #endif
-static u64 virtual_alloc(const_pointer_ptr const_ptr);
-static u64 virtual_pointer(u64 size, u64 id);
-static u64 virtual_memcpy(u64 size, const void* data, u64 id);
-static void virtual_free(u64 address);
-static pointer_ptr virtual_read(u64 address);
-static pointer_ptr virtual_read_type(u64 address, u64 id);
-static u64 virtual_enumerator_next(void);
+static u64 virtual_alloc(const_vm_ptr vm, const_pointer_ptr const_ptr);
+static u64 virtual_pointer(const_vm_ptr vm, u64 size, u64 id);
+static u64 virtual_memcpy(const_vm_ptr vm, u64 size, const void* data, u64 id);
+static void virtual_free(const_vm_ptr vm, u64 address);
+static pointer_ptr virtual_read(const_vm_ptr vm, u64 address);
+static pointer_ptr virtual_read_type(const_vm_ptr vm, u64 address, u64 id);
+static u64 virtual_enumerator_next(const_vm_ptr vm);
 
 /* helper functions */
 
@@ -110,10 +106,10 @@ static u64 get_address(pointer_ptr* ptr, const_virtual_pointer_ptr vptr);
 /* internal */
 
 static virtual_pointer_ptr virtual_init_internal(u64 size);
-static pointer_ptr virtual_read_internal(u64 address);
-static void virtual_enumerator_init(void);
+static pointer_ptr virtual_read_internal(const_vm_ptr vm, u64 address);
+static void virtual_enumerator_init(const_vm_ptr vm);
 static void virtual_enumerator_destroy(void);
-static void virtual_enumerator_init_internal(void);
+static void virtual_enumerator_init_internal(const_vm_ptr vm);
 static void virtual_enumerator_destroy_internal(void);
 static pointer_ptr* virtual_enumerator_next_internal(void);
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -135,12 +131,9 @@ static virtual_pointer_ptr virtual_init_internal(u64 size) {
     return vptr;
 }
 
-static pointer_ptr virtual_read_internal(u64 address) {
-    if (vm->head == 0) {
-        return 0;
-    }
+static pointer_ptr virtual_read_internal(const_vm_ptr vm, u64 address) {
     pointer_ptr* ptr = 0;
-    const_virtual_pointer_ptr vptr = vm->head;
+    const_virtual_pointer_ptr vptr = (*vm)->head;
     do {
         if (address > vptr->offset && address <= vptr->offset + vptr->size) {
             ptr = vptr->bp + address - vptr->offset - 1;
@@ -154,19 +147,19 @@ static pointer_ptr virtual_read_internal(u64 address) {
     return *ptr;
 }
 
-static void virtual_enumerator_init(void) {
-    if (vm->head == 0) {
+static void virtual_enumerator_init(const_vm_ptr vm) {
+    if (vm == 0 || *vm == 0) {
         return;
     }
-    virtual_enumerator_init_internal();
+    virtual_enumerator_init_internal(vm);
 }
 
 static void virtual_enumerator_destroy(void) {
     virtual_enumerator_destroy_internal();
 }
 
-static void virtual_enumerator_init_internal() {
-    virtual_pointer_ptr vptr = vm->head;
+static void virtual_enumerator_init_internal(const_vm_ptr vm) {
+    virtual_pointer_ptr vptr = (*vm)->head;
     state->vptr = vptr;
     state->ptr = vptr->bp;
 }
@@ -178,29 +171,27 @@ static void virtual_enumerator_destroy_internal(void) {
 
 /* implementation */
 
-static void virtual_init(vm_ptr* ptr, u64 size) {
+static void virtual_init(const_vm_ptr vm, u64 size) {
+    if (vm == 0 || *vm != 0) {
+        return;
+    }
 #ifndef USE_GC
     cache = CALL(system_memory)->alloc(PTR_SIZE);
     CALL(system_list)->init(cache);
 #endif
-    virtual_pointer_ptr vptr = virtual_init_internal(size == 0 ? DEFAULT_SIZE : size);
-    vm->head = vptr;
-    vm->tail = vptr;
     vm_ptr ref = CALL(system_memory)->alloc(VM_SIZE);
+    virtual_pointer_ptr vptr = virtual_init_internal(size == 0 ? DEFAULT_SIZE : size);
     ref->head = vptr;
     ref->tail = vptr;
-    *ptr = ref;
+    safe_vm_ptr safe_ptr;
+    safe_ptr.const_ptr = vm;
+    *safe_ptr.ptr = ref;
 }
 
-static void virtual_destroy(vm_ptr* ptr) {
-    if (ptr == 0 || *ptr == 0) {
+static void virtual_destroy(const_vm_ptr vm) {
+    if (vm == 0 || *vm == 0) {
         return;
     }
-    vm_ptr current = *ptr;
-    vm->head = current->head;
-    vm->tail = current->tail;
-    CALL(system_memory)->free(current, VM_SIZE);
-    *ptr = 0;
 #ifndef USE_GC
     vm_pointer_ptr item;
     while ((item = CALL(system_list)->pop(cache)) != 0) {
@@ -212,19 +203,24 @@ static void virtual_destroy(vm_ptr* ptr) {
     cache = 0;
 #endif
 #endif
-    virtual_pointer_ptr vptr = vm->head;
+    safe_vm_ptr safe_ptr;
+    safe_ptr.const_ptr = vm;
+    vm_ptr ptr = *safe_ptr.ptr;
+    virtual_pointer_ptr vptr = ptr->head;
     while (vptr != 0) {
         virtual_pointer_ptr next = vptr->next;
         CALL(system_memory)->free(vptr->bp, ALLOC_SIZE(vptr->size));
         CALL(system_memory)->free(vptr, VM_DATA_SIZE);
         vptr = next;
     }
-    vm->head = 0;
-    vm->tail = 0;
+    ptr->head = 0;
+    ptr->tail = 0;
+    CALL(system_memory)->free(ptr, VM_SIZE);
+    *safe_ptr.ptr = 0;
 }
 
 #ifdef USE_MEMORY_DEBUG_INFO
-static void virtual_dump(void) {
+static void virtual_dump(const_vm_ptr vm) {
     virtual_enumerator_init_internal(vm);
     pointer_ptr ptr = 0;
     while ((ptr = virtual_enumerator_pointer_next_internal()) != 0) {
@@ -233,7 +229,7 @@ static void virtual_dump(void) {
     virtual_enumerator_destroy_internal();
 }
 
-static void virtual_dump_ref(void) {
+static void virtual_dump_ref(const_vm_ptr vm) {
     virtual_enumerator_init_internal(vm);
     pointer_ptr* ptr = 0;
     while ((ptr = virtual_enumerator_next_internal()) != 0) {
@@ -243,11 +239,14 @@ static void virtual_dump_ref(void) {
 }
 #endif
 
-static void virtual_free(u64 address) {
+static void virtual_free(const_vm_ptr vm, u64 address) {
+    if (vm == 0 || *vm == 0) {
+        return;
+    }
     if (address == 0) {
         return;
     }
-    const_pointer_ptr const_ptr = virtual_read_internal(address);
+    const_pointer_ptr const_ptr = virtual_read_internal(vm, address);
     if (const_ptr == 0) {
         return;
     }
@@ -272,11 +271,14 @@ static void virtual_free(u64 address) {
     }
 }
 
-static pointer_ptr virtual_read_type(u64 address, u64 id) {
-    if (!address) {
+static pointer_ptr virtual_read_type(const_vm_ptr vm, u64 address, u64 id) {
+    if (vm == 0 || *vm == 0) {
         return 0;
     }
-    pointer_ptr ptr = virtual_read_internal(address);
+    if (address == 0) {
+        return 0;
+    }
+    pointer_ptr ptr = virtual_read_internal(vm, address);
     if (ptr == 0) {
         return 0;
     }
@@ -289,11 +291,14 @@ static pointer_ptr virtual_read_type(u64 address, u64 id) {
     return ptr;
 }
 
-static pointer_ptr virtual_read(u64 address) {
-    if (!address) {
+static pointer_ptr virtual_read(const_vm_ptr vm, u64 address) {
+    if (vm == 0 || *vm == 0) {
         return 0;
     }
-    pointer_ptr ptr = virtual_read_internal(address);
+    if (address == 0) {
+        return 0;
+    }
+    pointer_ptr ptr = virtual_read_internal(vm, address);
     if (ptr == 0) {
         return 0;
     }
@@ -303,7 +308,10 @@ static pointer_ptr virtual_read(u64 address) {
     return ptr;
 }
 
-static u64 virtual_alloc(const_pointer_ptr const_ptr) {
+static u64 virtual_alloc(const_vm_ptr vm, const_pointer_ptr const_ptr) {
+    if (vm == 0 || *vm == 0) {
+        return 0;
+    }
     if (!const_ptr) {
         return 0;
     }
@@ -319,14 +327,14 @@ static u64 virtual_alloc(const_pointer_ptr const_ptr) {
     }
     if (ptr == 0) {
 #endif
-        vptr = vm->tail;
+        vptr = (*vm)->tail;
         if ((u64)(vptr->sp - vptr->bp) == vptr->size) {
             virtual_pointer_ptr prev = vptr;
             vptr = virtual_init_internal(prev->size);
             vptr->offset = prev->offset + prev->size;
             vptr->prev = prev;
             prev->next = vptr;
-            vm->tail = vptr;
+            (*vm)->tail = vptr;
         }
         ptr = vptr->sp;
         ++vptr->sp;
@@ -345,14 +353,21 @@ static u64 virtual_alloc(const_pointer_ptr const_ptr) {
     return address;
 }
 
-static u64 virtual_pointer(u64 size, u64 id) {
+static u64 virtual_pointer(const_vm_ptr vm, u64 size, u64 id) {
+    if (vm == 0 || *vm == 0) {
+        return 0;
+    }
     const_pointer_ptr const_ptr = CALL(pointer)->alloc(size, id);
-    return virtual_alloc(const_ptr);
+    return virtual_alloc(vm, const_ptr);
 }
-static u64 virtual_memcpy(u64 size, const void* data, u64 id) {
+
+static u64 virtual_memcpy(const_vm_ptr vm, u64 size, const void* data, u64 id) {
+    if (vm == 0 || *vm == 0) {
+        return 0;
+    }
     const_pointer_ptr data_ptr = CALL(pointer)->alloc(size, id);
     CALL(pointer)->memcpy(data_ptr, data, size);
-    return virtual_alloc(data_ptr);
+    return virtual_alloc(vm, data_ptr);
 }
 
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -374,7 +389,10 @@ static pointer_ptr virtual_enumerator_pointer_next_internal(void) {
 }
 #endif
 
-static u64 virtual_enumerator_next(void) {
+static u64 virtual_enumerator_next(const_vm_ptr vm) {
+    if (vm == 0 || *vm == 0) {
+        return 0;
+    }
     u64 address = 0;
     pointer_ptr* ptr;
     while ((ptr = virtual_enumerator_next_internal()) != 0) {
@@ -392,9 +410,6 @@ static u64 virtual_enumerator_next(void) {
 }
 
 static pointer_ptr* virtual_enumerator_next_internal(void) {
-    if (vm->head == 0) {
-        return 0;
-    }
     pointer_ptr* data = 0;
     virtual_pointer_ptr vptr = state->vptr;
     while (data == 0) {

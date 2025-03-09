@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 7, 2025 at 3:18:36 PM GMT+3
+ *   March 9, 2025 at 9:01:51 PM GMT+3
  *
  */
 /*
@@ -54,9 +54,9 @@ typedef struct known_types* known_types_ptr;
 typedef const struct known_types* const_known_types_ptr;
 
 typedef struct known_types {
-    known_types_ptr next;
     u64 id;
-    desctructor desctructor;
+    known_types_ptr next;
+    type_methods_definitions_ptr methods;
 } known_types_type;
 
 /* definition */
@@ -65,15 +65,15 @@ static known_types_type known_types_definition = { 0, 0, 0 };
 /* definition */
 static known_types_ptr known_types = &known_types_definition;
 
-#ifndef ATTRIBUTE
-extern void data_init(void);
-extern void file_init(void);
-extern void object_init(void);
-extern void stack_init(void);
-extern void string_init(void);
-extern void string_pointer_init(void);
-extern void user_init(void);
-static void init(void) {
+CVM_EXPORT extern void data_init(void);
+CVM_EXPORT extern void file_init(void);
+CVM_EXPORT extern void object_init(void);
+CVM_EXPORT extern void stack_init(void);
+CVM_EXPORT extern void string_init(void);
+CVM_EXPORT extern void string_pointer_init(void);
+CVM_EXPORT extern void user_init(void);
+
+static void register_known_types(void) {
     data_init();
     file_init();
     object_init();
@@ -82,7 +82,6 @@ static void init(void) {
     string_pointer_init();
     user_init();
 }
-#endif
 
 static vm_ptr vm = 0;
 static known_types_ptr default_types;
@@ -104,13 +103,14 @@ struct list_handler {
     stack_ptr list;
 };
 
-static void pointer_init(u64 size);
+static const_vm_ptr pointer_init(u64 size);
 static void pointer_destroy(void);
 static void pointer_gc(void);
 
 static pointer_ptr pointer_alloc(u64 size, u64 id);
 static const_pointer_ptr pointer_copy(const void* data, u64 size, u64 id);
 static const_pointer_ptr pointer_copy_guard(const void* data, u64 size, u64 offset, u64 id);
+static u64 pointer_alloc_guard(const void* data, u64 size, u64 offset, u64 id);
 static void pointer_memcpy(const_pointer_ptr const_ptr, const void* data, u64 size);
 static void pointer_realloc(pointer_ptr ptr, u64 size);
 static void pointer_free(u64 ptr);
@@ -122,8 +122,9 @@ static void pointer_guard(const_pointer_ptr const_ptr, u64 offset);
 static void pointer_write(pointer_ptr ptr, virtual_pointer_ptr vptr, u64 address);
 static u64 pointer_read_type(const_pointer_ptr const_ptr, u64 virtual_id);
 
-static void known_types_init(u64 id, const type_methods_definitions* data_type);
-static u64 user_types_init(const type_methods_definitions* data_type);
+static void known_types_init(u64 id, type_methods_definitions_ptr data_type);
+static void user_types_init(type_methods_definitions_ptr data_type);
+static u64 check_existing_type(known_types_ptr current, const_type_methods_definitions_ptr data_type);
 
 /* free */
 static void vm_init(void);
@@ -133,17 +134,43 @@ static void vm_destroy(void);
 
 static u64 known_types_counter = TYPE_USER;
 
-static void known_types_init(u64 id, const type_methods_definitions* data_type) {
-    known_types_ptr new_type = CALL(system_memory)->alloc(KNOWN_TYPES_SIZE);
-    new_type->next = known_types;
-    new_type->id = id;
-    new_type->desctructor = data_type->desctructor;
-    known_types = new_type;
+static u64 check_existing_type(known_types_ptr current, const_type_methods_definitions_ptr data_type) {
+    while (current->next != 0) {
+        known_types_ptr prev = current->next;
+        if (current->methods == data_type) {
+            return 0;
+        }
+        current = prev;
+    }
+    return 1;
 }
 
-static u64 user_types_init(const type_methods_definitions* data_type) {
-    known_types_init(known_types_counter, data_type);
-    return known_types_counter++;
+static void known_types_init(u64 id, type_methods_definitions_ptr data_type) {
+    if (vm == 0) {
+        return;
+    }
+    if (check_existing_type(known_types, data_type) == 0) {
+        return;
+    }
+    known_types_ptr obj = CALL(system_memory)->alloc(KNOWN_TYPES_SIZE);
+    obj->id = id;
+    obj->next = known_types;
+    obj->methods = data_type;
+    data_type->id = id;
+    data_type->vm = &vm;
+    known_types = obj;
+}
+
+static void user_types_init(type_methods_definitions_ptr data_type) {
+    if (vm == 0) {
+        return;
+    }
+    if (check_existing_type(known_types, data_type) == 0) {
+        return;
+    }
+    u64 id = known_types_counter;
+    known_types_counter++;
+    known_types_init(id, data_type);
 }
 
 static void INIT vm_init(void) {
@@ -188,6 +215,18 @@ static const_pointer_ptr pointer_copy_guard(const void* data, u64 size, u64 offs
     return data_ptr;
 }
 
+static u64 pointer_alloc_guard(const void* data, u64 size, u64 offset, u64 id) {
+    if (vm == 0) {
+        return 0;
+    }
+    const_pointer_ptr data_ptr = 0;
+    if (size > offset) {
+        data_ptr = pointer_copy(data, size, id);
+        pointer_guard(data_ptr, offset);
+    }
+    return CALL(virtual)->alloc(&vm, data_ptr);
+}
+
 static void pointer_memcpy(const_pointer_ptr const_ptr, const void* data, u64 size) {
     virtual_api->memcpy(pointer_read(const_ptr), data, size);
 }
@@ -199,28 +238,36 @@ static void pointer_realloc(pointer_ptr ptr, u64 size) {
     }
 }
 
-void pointer_register_known_type(u64 id, const type_methods_definitions* data_type) {
+void pointer_register_known_type(u64 id, type_methods_definitions_ptr data_type) {
     known_types_init(id, data_type);
 }
 
-u64 pointer_register_user_type(const type_methods_definitions* data_type) {
-    return user_types_init(data_type);
+void pointer_register_user_type(type_methods_definitions_ptr data_type) {
+    user_types_init(data_type);
 }
 
 static void pointer_free(u64 ptr) {
+    if (vm == 0) {
+        return;
+    }
     if (ptr == 0) {
         return;
     }
-    const_pointer_ptr data_ptr = CALL(virtual)->read(ptr);
+    const_pointer_ptr data_ptr = CALL(virtual)->read(&vm, ptr);
     if (data_ptr == 0) {
         return;
     }
     u64 type_id = data_ptr->id;
-    const desctructor type_desctructor = default_types[type_id].desctructor;
-    type_desctructor(data_ptr);
+    if (type_id > 0 && type_id <= known_types_counter - 1) {
+        const_type_methods_definitions_ptr methods = default_types[type_id].methods;
+        methods->desctructor(data_ptr);
+    }
 }
 
 static void pointer_release(const_pointer_ptr const_ptr) {
+    if (vm == 0) {
+        return;
+    }
     if (const_ptr == 0) {
         return;
     }
@@ -231,7 +278,7 @@ static void pointer_release(const_pointer_ptr const_ptr) {
         CALL(system_memory)->free(data_ptr, const_ptr->size);
         safe_ptr.public.ptr->data = 0;
     }
-    CALL(virtual)->free(const_ptr->pointer.address);
+    CALL(virtual)->free(&vm, const_ptr->pointer.address);
     safe_ptr.public.ptr->pointer.address = 0;
     CALL(system_memory)->free(safe_ptr.public.ptr, POINTER_SIZE);
 }
@@ -280,14 +327,12 @@ static u64 pointer_read_type(const_pointer_ptr const_ptr, u64 virtual_id) {
 }
 
 /* implementation */
-static void pointer_init(u64 size) {
+static const_vm_ptr pointer_init(u64 size) {
     if (vm != 0) {
-        return;
+        return &vm;
     }
     CALL(virtual)->init(&vm, size);
-#ifndef ATTRIBUTE
-    init();
-#endif
+    register_known_types();
     default_types = CALL(system_memory)->alloc(known_types_counter * KNOWN_TYPES_SIZE);
     known_types_ptr current = known_types;
     while (current->next != 0) {
@@ -298,6 +343,7 @@ static void pointer_init(u64 size) {
         }
         current = prev;
     }
+    return &vm;
 }
 
 static void pointer_destroy(void) {
@@ -306,6 +352,7 @@ static void pointer_destroy(void) {
     }
     CALL(system_memory)->free(default_types, known_types_counter * KNOWN_TYPES_SIZE);
     CALL(virtual)->destroy(&vm);
+    vm = 0;
 }
 
 static void pointer_gc(void) {
@@ -313,9 +360,9 @@ static void pointer_gc(void) {
     CALL(virtual)->dump_ref();
     CALL(virtual)->dump();
 #endif
-    CALL(virtual)->enumerator_init();
+    CALL(virtual)->enumerator_init(&vm);
     u64 ptr = 0;
-    while ((ptr = CALL(virtual)->enumerator_next()) != 0) {
+    while ((ptr = CALL(virtual)->enumerator_next(&vm)) != 0) {
         pointer_free(ptr);
     }
     CALL(virtual)->enumerator_destroy();
@@ -343,6 +390,7 @@ const virtual_pointer_methods PRIVATE_API(virtual_pointer_methods_definitions) =
     .alloc = pointer_alloc,
     .copy = pointer_copy,
     .copy_guard = pointer_copy_guard,
+    .alloc_guard = pointer_alloc_guard,
     .memcpy = pointer_memcpy,
     .realloc = pointer_realloc,
     .register_known_type = pointer_register_known_type,

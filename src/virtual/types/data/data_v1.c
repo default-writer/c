@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 7, 2025 at 2:42:51 PM GMT+3
+ *   March 9, 2025 at 7:28:21 PM GMT+3
  *
  */
 /*
@@ -38,41 +38,52 @@
 static const enum type id = TYPE_DATA;
 
 /* internal */
-static u64 data_alloc(u64 size);
-static void data_free(u64 ptr);
-static void* data_unsafe(u64 ptr);
-static u64 data_size(u64 ptr);
+static u64 data_alloc(const_vm_ptr vm, u64 size);
+static void data_free(const_vm_ptr vm, u64 ptr);
+static void* data_unsafe(const_vm_ptr vm, u64 ptr);
+static u64 data_size(const_vm_ptr vm, u64 ptr);
 
 /* destructor */
 static void type_desctructor(const_pointer_ptr data_ptr);
 
 /* implementation */
-static const struct type_methods_definitions data_type = {
+static struct type_methods_definitions data_type = {
     .desctructor = type_desctructor
 };
 
 static void INIT init(void) {
-    CALL(pointer)->register_known_type(id, &data_type);
+    safe_type_methods_definitions safe_ptr;
+    safe_ptr.const_ptr = &data_type;
+    CALL(pointer)->register_known_type(id, safe_ptr.ptr);
 }
 
 static void type_desctructor(const_pointer_ptr const_ptr) {
     CALL(pointer)->release(const_ptr);
 }
 
-static u64 data_alloc(u64 size) {
-    return CALL(virtual)->pointer(size, id);
+static u64 data_alloc(const_vm_ptr vm, u64 size) {
+    if (vm == 0 || *vm == 0) {
+        return 0;
+    }
+    return CALL(virtual)->pointer(vm, size, id);
 }
 
-static void data_free(u64 ptr) {
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
+static void data_free(const_vm_ptr vm, u64 ptr) {
+    if (vm == 0 || *vm == 0) {
+        return;
+    }
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
     if (data_ptr == 0) {
         return;
     }
     type_desctructor(data_ptr);
 }
 
-static void* data_unsafe(u64 ptr) {
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
+static void* data_unsafe(const_vm_ptr vm, u64 ptr) {
+    if (vm == 0 || *vm == 0) {
+        return 0;
+    }
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
@@ -80,20 +91,20 @@ static void* data_unsafe(u64 ptr) {
     return vm_data;
 }
 
-static u64 data_size(u64 ptr) {
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
+static u64 data_size(const_vm_ptr vm, u64 ptr) {
+    if (vm == 0 || *vm == 0) {
+        return 0;
+    }
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
-    u64 size = CALL(pointer)->size(data_ptr);
-    return size;
+    return CALL(pointer)->size(data_ptr);
 }
 
-#ifndef ATTRIBUTE
-void data_init(void) {
+CVM_EXPORT void data_init(void) {
     init();
 }
-#endif
 
 /* public */
 const virtual_data_methods PRIVATE_API(virtual_data_methods_definitions) = {

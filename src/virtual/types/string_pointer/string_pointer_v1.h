@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 6, 2025 at 12:34:03 AM GMT+3
+ *   March 9, 2025 at 11:59:58 AM GMT+3
  *
  */
 /*
@@ -38,7 +38,7 @@
  */
 
 typedef struct PRIVATE_API(virtual_string_pointer_methods) {
-    void (*free)(u64 ptr);
+    void (*free)(const_vm_ptr vm, u64 ptr);
 } virtual_string_pointer_methods;
 
 /* definition */

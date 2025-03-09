@@ -492,6 +492,8 @@
         "connectionId": "default-writer",
         "projectKey": "default-writer_c"
     },
+    "cmake.deleteBuildDirOnCleanConfigure": true,
+    "git.fetchOnPull": true,
     "cmake.debugConfig": {
         "MIMode": "gdb",
         "miDebuggerPath": "/usr/bin/gdb",

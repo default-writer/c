@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 6, 2025 at 12:33:58 AM GMT+3
+ *   March 9, 2025 at 8:01:57 PM GMT+3
  *
  */
 /*
@@ -38,29 +38,29 @@
  */
 
 typedef struct API(virtual_string_methods) {
-    void (*free)(u64 ptr);
-    u64 (*copy)(u64 ptr);
-    void (*strcpy)(u64 dest, u64 src);
-    void (*strcat)(u64 dest, u64 src);
-    u64 (*strrchr)(u64 src_ptr, u64 match_prt);
-    u64 (*strchr)(u64 src_ptr, u64 match_prt);
-    u64 (*match)(u64 src_ptr, u64 match_prt);
-    u64 (*offset)(u64 src_ptr, u64 match_prt);
-    u64 (*load)(const char* data);
-    void (*put_char)(u64 ptr, char value);
-    char* (*unsafe)(u64 ptr);
-    u64 (*size)(u64 ptr);
-    u64 (*lessthan)(u64 src, u64 dest);
-    u64 (*greaterthan)(u64 src, u64 dest);
-    u64 (*equals)(u64 src, u64 dest);
-    u64 (*compare)(u64 src, u64 dest);
-    u64 (*left)(u64 src, u64 offset);
-    u64 (*strncpy)(u64 src, u64 nbytes);
-    u64 (*left_strncpy)(u64 src, u64 offset);
-    u64 (*right)(u64 src, u64 offset);
-    u64 (*move_left)(u64 src, u64 nbytes);
-    u64 (*move_right)(u64 src, u64 nbytes);
-    u64 (*strcmp)(u64 src, u64 dest);
+    void (*free)(const_vm_ptr vm, u64 ptr);
+    u64 (*copy)(const_vm_ptr vm, u64 ptr);
+    void (*strcpy)(const_vm_ptr vm, u64 dest, u64 src);
+    void (*strcat)(const_vm_ptr vm, u64 dest, u64 src);
+    u64 (*strrchr)(const_vm_ptr vm, u64 src_ptr, u64 match_prt);
+    u64 (*strchr)(const_vm_ptr vm, u64 src_ptr, u64 match_prt);
+    u64 (*match)(const_vm_ptr vm, u64 src_ptr, u64 match_prt);
+    u64 (*offset)(const_vm_ptr vm, u64 src_ptr, u64 match_prt);
+    u64 (*load)(const_vm_ptr vm, const char* data);
+    void (*put_char)(const_vm_ptr vm, u64 ptr, char value);
+    char* (*unsafe)(const_vm_ptr vm, u64 ptr);
+    u64 (*size)(const_vm_ptr vm, u64 ptr);
+    u64 (*lessthan)(const_vm_ptr vm, u64 src, u64 dest);
+    u64 (*greaterthan)(const_vm_ptr vm, u64 src, u64 dest);
+    u64 (*equals)(const_vm_ptr vm, u64 src, u64 dest);
+    u64 (*compare)(const_vm_ptr vm, u64 src, u64 dest);
+    u64 (*left)(const_vm_ptr vm, u64 src, u64 offset);
+    u64 (*strncpy)(const_vm_ptr vm, u64 src, u64 nbytes);
+    u64 (*left_strncpy)(const_vm_ptr vm, u64 src, u64 offset);
+    u64 (*right)(const_vm_ptr vm, u64 src, u64 offset);
+    u64 (*move_left)(const_vm_ptr vm, u64 src, u64 nbytes);
+    u64 (*move_right)(const_vm_ptr vm, u64 src, u64 nbytes);
+    u64 (*strcmp)(const_vm_ptr vm, u64 src, u64 dest);
 } virtual_string_methods;
 
 /* definition */

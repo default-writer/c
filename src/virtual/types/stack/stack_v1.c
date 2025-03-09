@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 7, 2025 at 2:43:28 PM GMT+3
+ *   March 9, 2025 at 7:48:04 PM GMT+3
  *
  */
 /*
@@ -43,15 +43,15 @@ static const_pointer_ptr stack_alloc_internal(void);
 static void stack_release_internal(stack_ptr* curent);
 
 /* api */
-static u64 stack_alloc(void);
-static void stack_free(u64 ptr);
-static void stack_push(u64 ptr, u64 data_ptr);
-static u64 stack_peek(u64 ptr);
-static u64 stack_peekn(u64 ptr, u64 nelements);
-static u64 stack_pop(u64 ptr);
-static u64 stack_popn(u64 ptr, u64 nelements);
-static u64 stack_size(u64 ptr);
-static void stack_release(u64 ptr);
+static u64 stack_alloc(const_vm_ptr vm);
+static void stack_free(const_vm_ptr vm, u64 ptr);
+static void stack_push(const_vm_ptr vm, u64 ptr, u64 data_ptr);
+static u64 stack_peek(const_vm_ptr vm, u64 ptr);
+static u64 stack_peekn(const_vm_ptr vm, u64 ptr, u64 nelements);
+static u64 stack_pop(const_vm_ptr vm, u64 ptr);
+static u64 stack_popn(const_vm_ptr vm, u64 ptr, u64 nelements);
+static u64 stack_size(const_vm_ptr vm, u64 ptr);
+static void stack_release(const_vm_ptr vm, u64 ptr);
 
 /* definition */
 typedef struct stack_handler* stack_handler_ptr;
@@ -65,12 +65,14 @@ typedef struct stack_handler {
 static void type_desctructor(const_pointer_ptr const_ptr);
 
 /* implementation */
-static const struct type_methods_definitions stack_type = {
+static struct type_methods_definitions stack_type = {
     .desctructor = type_desctructor
 };
 
 static void INIT init(void) {
-    CALL(pointer)->register_known_type(id, &stack_type);
+    safe_type_methods_definitions safe_ptr;
+    safe_ptr.const_ptr = &stack_type;
+    CALL(pointer)->register_known_type(id, safe_ptr.ptr);
 }
 
 static void type_desctructor(const_pointer_ptr const_ptr) {
@@ -96,14 +98,19 @@ static void stack_release_internal(stack_ptr* current) {
     }
 }
 
-static u64 stack_alloc(void) {
+static u64 stack_alloc(const_vm_ptr vm) {
+    if (vm == 0 || *vm == 0) {
+        return 0;
+    }
     const_pointer_ptr const_ptr = stack_alloc_internal();
-    u64 virtual_ptr = CALL(virtual)->alloc(const_ptr);
-    return virtual_ptr;
+    return CALL(virtual)->alloc(vm, const_ptr);
 }
 
-static void stack_release(u64 ptr) {
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
+static void stack_release(const_vm_ptr vm, u64 ptr) {
+    if (vm == 0 || *vm == 0) {
+        return;
+    }
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
     if (data_ptr == 0) {
         return;
     }
@@ -112,15 +119,21 @@ static void stack_release(u64 ptr) {
     stack_release_internal(&handler->list);
 }
 
-static void stack_free(u64 ptr) {
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
+static void stack_free(const_vm_ptr vm, u64 ptr) {
+    if (vm == 0 || *vm == 0) {
+        return;
+    }
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
     if (data_ptr == 0) {
         return;
     }
     type_desctructor(data_ptr);
 }
 
-static void stack_push(u64 ptr_list, u64 ptr) {
+static void stack_push(const_vm_ptr vm, u64 ptr_list, u64 ptr) {
+    if (vm == 0 || *vm == 0) {
+        return;
+    }
     if (ptr_list == ptr) {
         return;
     }
@@ -130,7 +143,7 @@ static void stack_push(u64 ptr_list, u64 ptr) {
     if (ptr == 0) {
         return;
     }
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(ptr_list, id);
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr_list, id);
     if (data_ptr == 0) {
         return;
     }
@@ -139,8 +152,11 @@ static void stack_push(u64 ptr_list, u64 ptr) {
     handler->size++;
 }
 
-static u64 stack_peek(u64 ptr) {
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
+static u64 stack_peek(const_vm_ptr vm, u64 ptr) {
+    if (vm == 0 || *vm == 0) {
+        return 0;
+    }
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
@@ -149,8 +165,11 @@ static u64 stack_peek(u64 ptr) {
     return stack_peek_ptr;
 }
 
-static u64 stack_peekn(u64 ptr, u64 nelements) {
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
+static u64 stack_peekn(const_vm_ptr vm, u64 ptr, u64 nelements) {
+    if (vm == 0 || *vm == 0) {
+        return 0;
+    }
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
@@ -172,12 +191,14 @@ static u64 stack_peekn(u64 ptr, u64 nelements) {
         dst_handler->size++;
         current = current->next;
     }
-    u64 dst_data = CALL(virtual)->alloc(dst_ptr);
-    return dst_data;
+    return CALL(virtual)->alloc(vm, dst_ptr);
 }
 
-static u64 stack_pop(u64 ptr) {
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
+static u64 stack_pop(const_vm_ptr vm, u64 ptr) {
+    if (vm == 0 || *vm == 0) {
+        return 0;
+    }
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
@@ -190,8 +211,11 @@ static u64 stack_pop(u64 ptr) {
     return stack_pop_ptr;
 }
 
-static u64 stack_popn(u64 ptr, u64 nelements) {
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
+static u64 stack_popn(const_vm_ptr vm, u64 ptr, u64 nelements) {
+    if (vm == 0 || *vm == 0) {
+        return 0;
+    }
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
@@ -211,12 +235,14 @@ static u64 stack_popn(u64 ptr, u64 nelements) {
         CALL(system_list)->push(&dst_handler->list, (void*)stack_pop_ptr);
         dst_handler->size++;
     }
-    u64 dst_data = CALL(virtual)->alloc(dst_ptr);
-    return dst_data;
+    return CALL(virtual)->alloc(vm, dst_ptr);
 }
 
-static u64 stack_size(u64 ptr) {
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(ptr, id);
+static u64 stack_size(const_vm_ptr vm, u64 ptr) {
+    if (vm == 0 || *vm == 0) {
+        return 0;
+    }
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
     if (data_ptr == 0) {
         return 0;
     }
@@ -225,11 +251,9 @@ static u64 stack_size(u64 ptr) {
     return size;
 }
 
-#ifndef ATTRIBUTE
-void stack_init(void) {
+CVM_EXPORT void stack_init(void) {
     init();
 }
-#endif
 
 /* public */
 const virtual_stack_methods PRIVATE_API(virtual_stack_methods_definitions) = {

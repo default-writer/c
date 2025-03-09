@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 27, 2025 at 9:32:45 AM GMT+3
+ *   March 9, 2025 at 11:48:23 AM GMT+3
  *
  */
 /*
@@ -41,7 +41,5 @@
 #define DESTROY
 #define FALL_THROUGH ((void)0)
 #endif /* __GNUC__ >= 7 */
-
-#define RXP_DEBUG_TESTS
 
 #endif /* _STD_MACROS_H_ */

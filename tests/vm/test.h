@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 6, 2025 at 12:03:47 AM GMT+3
+ *   March 9, 2025 at 11:48:16 AM GMT+3
  *
  */
 /*
@@ -29,8 +29,6 @@
 
 #define USING_TESTS
 
-#define RXP_DEBUG_TESTS
-
 #include "std/api.h"
 
 #if !defined(RX_MAJOR_VERSION)
@@ -42,6 +40,8 @@
 #define RXP_PLATFORM_LINUX
 #endif
 #endif
+
+#define RXP_DEBUG_TESTS
 
 #include "rexo.h"
 
