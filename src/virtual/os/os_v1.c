@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 7, 2025 at 2:33:44 PM GMT+3
+ *   March 9, 2025 at 9:01:55 PM GMT+3
  *
  */
 /*
@@ -40,38 +40,41 @@
 #define DEFAULT_SIZE 0x100
 
 /* definition */
-static u64 os_getenv(u64 name);
-static u64 os_getcwd(void);
-static void os_putc(u64 ptr);
+static u64 os_getenv(const_vm_ptr vm, u64 name);
+static u64 os_getcwd(const_vm_ptr vm);
+static void os_putc(const_vm_ptr vm, u64 ptr);
 
 /* implementation */
-static u64 os_getenv(u64 address) {
+static u64 os_getenv(const_vm_ptr vm, u64 address) {
+    if (vm == 0) {
+        return 0;
+    }
     if (address == 0) {
         return 0;
     }
-    const_pointer_ptr const_ptr = CALL(virtual)->read_type(address, TYPE_STRING);
+    const_pointer_ptr const_ptr = CALL(virtual)->read_type(vm, address, TYPE_STRING);
     if (const_ptr == 0) {
         return 0;
     }
     const_pointer_ptr data_ptr = const_ptr;
     const char* name_data = CALL(pointer)->read(data_ptr);
-    u64 value = CALL(string)->load(virtual_api->getenv(name_data));
-    return value;
+    const char* ch = virtual_api->getenv(name_data);
+    return CALL(string)->load(vm, ch);
 }
 
-static u64 os_getcwd(void) {
+static u64 os_getcwd(const_vm_ptr vm) {
     u64 data_ptr = 0;
     char* src = CALL(system_memory)->alloc(PATH_MAX);
     src[PATH_MAX - 1] = 0;
     if (virtual_api->getcwd(src, PATH_MAX - 1) != 0) {
-        data_ptr = CALL(string)->load(src);
+        data_ptr = CALL(string)->load(vm, src);
     }
     CALL(system_memory)->free(src, PATH_MAX);
     return data_ptr;
 }
 
-static void os_putc(u64 ptr) {
-    const char* unsafe_data = CALL(string)->unsafe(ptr);
+static void os_putc(const_vm_ptr vm, u64 ptr) {
+    const char* unsafe_data = CALL(string)->unsafe(vm, ptr);
     if (unsafe_data == 0) {
         return;
     }

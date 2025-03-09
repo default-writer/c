@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 6, 2025 at 12:25:09 AM GMT+3
+ *   March 8, 2025 at 10:21:09 AM GMT+3
  *
  */
 /*
@@ -27,6 +27,8 @@
 #include "list_v1.h"
 
 #include "system/memory/memory_v1.h"
+
+#define STACK_ELEMENT_SIZE sizeof(stack_element_type)
 
 #ifdef USE_MEMORY_DEBUG_INFO
 #include <stdio.h>
@@ -62,7 +64,7 @@ static void* list_data(stack_ptr ptr) {
 /* deletes the data pointer */
 static void list_delete(stack_ptr ptr) {
     /* releases the pointer */
-    CALL(system_memory)->free(ptr, sizeof(stack_element));
+    CALL(system_memory)->free(ptr, STACK_ELEMENT_SIZE);
 }
 
 /* pushes the memory pointer */
@@ -71,7 +73,7 @@ static void list_push(stack_ptr* current, void* payload) {
         return;
     }
     /* creates empty data chunk */
-    stack_ptr item = CALL(system_memory)->alloc(sizeof(stack_element));
+    stack_ptr item = CALL(system_memory)->alloc(STACK_ELEMENT_SIZE);
     /* writes data into allocated memory buffer */
     item->data = payload;
     /* assigns item's next pointer to current pointer */
@@ -112,7 +114,7 @@ static void* list_peek(stack_ptr* current) {
     /* gets the current memory pointer */
     stack_ptr ptr = *current;
     /* gets next pointer */
-    const stack_element* next = list_next(ptr);
+    const_stack_element_ptr next = list_next(ptr);
     /* if we call method on empty stack, do not return head element, return null element by convention */
     if (next == 0) {
         /* returns default element as null element */
@@ -129,7 +131,7 @@ static void list_init(stack_ptr* current) {
         return;
     }
     /* sets the current item */
-    *current = CALL(system_memory)->alloc(sizeof(stack_element));
+    *current = CALL(system_memory)->alloc(STACK_ELEMENT_SIZE);
 }
 
 /* destroys the memory stack */

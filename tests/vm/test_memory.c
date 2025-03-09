@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 6, 2025 at 12:25:09 AM GMT+3
+ *   March 8, 2025 at 10:21:56 AM GMT+3
  *
  */
 /*
@@ -61,7 +61,7 @@ static const system_api_type* temp_system_api;
 RX_SET_UP(test_set_up) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
-    *ctx = CALL(system_memory)->alloc(sizeof(stack_element));
+    *ctx = CALL(system_memory)->alloc(sizeof(stack_element_type));
     return RX_SUCCESS;
 }
 
@@ -69,7 +69,7 @@ RX_TEAR_DOWN(test_tear_down) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* destroy list */
-    CALL(system_memory)->free(*ctx, sizeof(stack_element));
+    CALL(system_memory)->free(*ctx, sizeof(stack_element_type));
     /* initializes to 0 */
     *ctx = 0;
 }
@@ -202,9 +202,9 @@ RX_TEST_CASE(memory_micro_tests, test_realloc_0_ptr, .fixture = test_fixture) {
 RX_TEST_CASE(memory_micro_tests, test_alloc_free, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
-    stack_ptr new = CALL(system_memory)->alloc(sizeof(stack_element));
+    stack_ptr new = CALL(system_memory)->alloc(sizeof(stack_element_type));
     /* pushed to the list */
-    CALL(system_memory)->free(new, sizeof(stack_element));
+    CALL(system_memory)->free(new, sizeof(stack_element_type));
     RX_ASSERT(*ctx != 0);
 }
 

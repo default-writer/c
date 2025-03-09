@@ -62,8 +62,8 @@ index 51557bd9..ec3517d9 100644
 +        return 0;
 +    }
      u64 data_size = size + 1;
-     u64 data_handle = CALL(data)->alloc(data_size);
-     void* file_data = CALL(data)->unsafe(data_handle);
+     u64 data_handle = CALL(data)->alloc(vm, data_size);
+     void* file_data = CALL(data)->unsafe(vm, data_handle);
 -    fread(file_data, 1, size, handler->file);
 +    size_t read_bytes = fread(file_data, 1, size, handler->file);
 +    if (read_bytes < size) {

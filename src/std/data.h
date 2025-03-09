@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 7, 2025 at 2:33:17 PM GMT+3
+ *   March 8, 2025 at 10:25:15 AM GMT+3
  *
  */
 /*
@@ -40,13 +40,13 @@ typedef signed short int s16;
 typedef signed char s8;
 
 typedef struct stack_element* stack_ptr;
+typedef const struct stack_element* const_stack_element_ptr;
 typedef struct stack_element {
     /* points to next node */
     stack_ptr next;
     /* data */
     void* data;
-} stack_element;
-
+} stack_element_type;
 typedef struct pointer* pointer_ptr;
 typedef struct public_pointer* public_pointer_ptr;
 typedef const struct pointer* const_pointer_ptr;
@@ -60,9 +60,23 @@ typedef union {
         public_pointer_ptr pointer;
     } public;
 } safe_pointer_ptr;
+typedef struct vm* vm_ptr;
+typedef const vm_ptr* const_vm_ptr;
+typedef union {
+    const_vm_ptr const_ptr;
+    vm_ptr* ptr;
+} safe_vm_ptr;
+typedef struct type_methods_definitions* type_methods_definitions_ptr;
+typedef const struct type_methods_definitions* const_type_methods_definitions_ptr;
+typedef union {
+    const_type_methods_definitions_ptr const_ptr;
+    type_methods_definitions_ptr ptr;
+} safe_type_methods_definitions;
 typedef struct type_methods_definitions {
+    u64 id;
+    vm_ptr* vm;
     desctructor desctructor;
-} type_methods_definitions;
+} type_methods_definitions_type;
 
 enum type {
     /* value used for ephemeral type - null */

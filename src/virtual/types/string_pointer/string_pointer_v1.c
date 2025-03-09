@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 7, 2025 at 2:46:59 PM GMT+3
+ *   March 9, 2025 at 12:00:27 PM GMT+3
  *
  */
 /*
@@ -36,18 +36,20 @@
 static const enum type id = TYPE_STRING_POINTER;
 
 /* definition */
-static void string_free(u64 ptr);
+static void string_free(const_vm_ptr vm, u64 ptr);
 
 /* destructor */
 static void type_desctructor(const_pointer_ptr const_ptr);
 
 /* implementation */
-static const struct type_methods_definitions string_pointer_type = {
+static struct type_methods_definitions string_pointer_type = {
     .desctructor = type_desctructor
 };
 
 static void INIT init(void) {
-    CALL(pointer)->register_known_type(id, &string_pointer_type);
+    safe_type_methods_definitions safe_ptr;
+    safe_ptr.const_ptr = &string_pointer_type;
+    CALL(pointer)->register_known_type(id, safe_ptr.ptr);
 }
 
 static void type_desctructor(const_pointer_ptr const_ptr) {
@@ -55,8 +57,11 @@ static void type_desctructor(const_pointer_ptr const_ptr) {
 }
 
 /* api */
-static void string_free(u64 ptr) {
-    const_pointer_ptr data_ptr = CALL(virtual)->read(ptr);
+static void string_free(const_vm_ptr vm, u64 ptr) {
+    if (vm == 0 || *vm == 0) {
+        return;
+    }
+    const_pointer_ptr data_ptr = CALL(virtual)->read(vm, ptr);
     if (data_ptr == 0) {
         return;
     }
@@ -65,11 +70,9 @@ static void string_free(u64 ptr) {
     }
 }
 
-#ifndef ATTRIBUTE
-void string_pointer_init(void) {
+CVM_EXPORT void string_pointer_init(void) {
     init();
 }
-#endif
 
 /* public */
 const virtual_string_pointer_methods PRIVATE_API(virtual_string_pointer_methods_definitions) = {
