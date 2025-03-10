@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 10, 2025 at 8:00:53 AM GMT+3
+ *   March 10, 2025 at 8:27:12 AM GMT+3
  *
  */
 /*
@@ -2169,9 +2169,9 @@ RX_TEST_CASE(tests_v1, test_vm_0_os_putc, .fixture = test_fixture) {
     RX_ASSERT(0 != 1);
 }
 
-/****************/
-/* poionter API */
-/****************/
+/***************/
+/* pointer API */
+/***************/
 
 RX_TEST_CASE(tests_v1, test_vm_0_pointer_alloc, .fixture = test_fixture_pointer) {
     CALL(pointer)->alloc(0, 0);
