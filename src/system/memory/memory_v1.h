@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 6, 2025 at 8:08:52 AM GMT+3
+ *   March 10, 2025 at 1:01:42 AM GMT+3
  *
  */
 /*
@@ -34,7 +34,8 @@
 #include "sys/export.h"
 
 #ifdef USE_MEMORY_DEBUG_INFO
-extern void global_statistics(void);
+CSYS_EXPORT extern void init_statistics(void);
+CSYS_EXPORT extern void result_statistics(void);
 #endif
 
 typedef struct PRIVATE_API(memory_methods) {

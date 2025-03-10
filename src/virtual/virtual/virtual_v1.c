@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 9, 2025 at 6:52:58 PM GMT+3
+ *   March 10, 2025 at 8:11:50 AM GMT+3
  *
  */
 /*
@@ -34,6 +34,10 @@
 #include "system/list/list_v1.h"
 
 #include "virtual/pointer/pointer_v1.h"
+
+#ifdef USE_MEMORY_DEBUG_INFO
+#include <stdio.h>
+#endif
 
 /* macros */
 #define DEFAULT_SIZE 0x8 /* 8 */
@@ -221,6 +225,9 @@ static void virtual_destroy(const_vm_ptr vm) {
 
 #ifdef USE_MEMORY_DEBUG_INFO
 static void virtual_dump(const_vm_ptr vm) {
+    if (vm == 0 || *vm == 0) {
+        return;
+    }
     virtual_enumerator_init_internal(vm);
     pointer_ptr ptr = 0;
     while ((ptr = virtual_enumerator_pointer_next_internal()) != 0) {
@@ -230,6 +237,9 @@ static void virtual_dump(const_vm_ptr vm) {
 }
 
 static void virtual_dump_ref(const_vm_ptr vm) {
+    if (vm == 0 || *vm == 0) {
+        return;
+    }
     virtual_enumerator_init_internal(vm);
     pointer_ptr* ptr = 0;
     while ((ptr = virtual_enumerator_next_internal()) != 0) {
@@ -263,7 +273,7 @@ static void virtual_free(const_vm_ptr vm, u64 address) {
         CALL(system_list)->push(cache, item);
 #endif
 #ifdef USE_MEMORY_DEBUG_INFO
-        printf("  >-: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)data);
+        printf("  >-: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)vptr);
 #endif
         safe_ptr.public.pointer->vptr = 0;
         safe_ptr.public.pointer->address = 0;
@@ -286,7 +296,8 @@ static pointer_ptr virtual_read_type(const_vm_ptr vm, u64 address, u64 id) {
         return 0;
     }
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("  ?v: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)data);
+    virtual_pointer_ptr vptr = *(virtual_pointer_ptr*)ptr;
+    printf("  ?v: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)vptr);
 #endif
     return ptr;
 }
@@ -303,7 +314,8 @@ static pointer_ptr virtual_read(const_vm_ptr vm, u64 address) {
         return 0;
     }
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("  !v: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)data);
+    virtual_pointer_ptr vptr = *(virtual_pointer_ptr*)ptr;
+    printf("  !v: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)vptr);
 #endif
     return ptr;
 }
@@ -348,7 +360,7 @@ static u64 virtual_alloc(const_vm_ptr vm, const_pointer_ptr const_ptr) {
     safe_ptr.public.pointer->address = address;
     *ptr = safe_ptr.public.ptr;
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("  >+: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)data);
+    printf("  >+: %016llx ! %016llx > %016llx\n", address, (u64)const_ptr, (u64)vptr);
 #endif
     return address;
 }

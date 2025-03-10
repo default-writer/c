@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 6, 2025 at 12:37:04 AM GMT+3
+ *   March 10, 2025 at 12:55:34 AM GMT+3
  *
  */
 /*
@@ -36,8 +36,9 @@
 
 #include <stdlib.h>
 
-#ifdef USE_MEMORY_DEBUG_INFO
-extern void global_statistics(void);
+#if defined(USE_MEMORY_DEBUG_INFO)
+CSYS_EXPORT extern void init_statistics(void);
+CSYS_EXPORT extern void result_statistics(void);
 #endif
 
 typedef struct system_api {

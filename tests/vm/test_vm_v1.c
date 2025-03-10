@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 9, 2025 at 8:57:19 PM GMT+3
+ *   March 10, 2025 at 7:40:45 AM GMT+3
  *
  */
 /*
@@ -370,7 +370,7 @@ RX_SET_UP(test_pointer_set_up) {
 }
 
 RX_TEAR_DOWN(test_pointer_tear_down) {
-    /* nothing */
+    /* nothing to cleanup */
 }
 
 /* Define the fixture. */
