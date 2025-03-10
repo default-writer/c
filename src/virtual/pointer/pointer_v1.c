@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 10, 2025 at 7:55:41 AM GMT+3
+ *   March 10, 2025 at 10:24:18 PM GMT+3
  *
  */
 /*
@@ -108,12 +108,12 @@ static const_vm_ptr pointer_init(u64 size);
 static void pointer_destroy(void);
 static void pointer_gc(void);
 
-static pointer_ptr pointer_alloc(u64 size, u64 id);
+static const_pointer_ptr pointer_alloc(u64 size, u64 id);
 static const_pointer_ptr pointer_copy(const void* data, u64 size, u64 id);
 static const_pointer_ptr pointer_copy_guard(const void* data, u64 size, u64 offset, u64 id);
 static u64 pointer_alloc_guard(const void* data, u64 size, u64 offset, u64 id);
 static void pointer_memcpy(const_pointer_ptr const_ptr, const void* data, u64 size);
-static void pointer_realloc(pointer_ptr ptr, u64 size);
+static void pointer_realloc(const_pointer_ptr ptr, u64 size);
 static void pointer_free(u64 ptr);
 static void pointer_release(const_pointer_ptr const_ptr);
 static u64 pointer_size(const_pointer_ptr const_ptr);
@@ -184,7 +184,7 @@ static void DESTROY vm_destroy(void) {
     }
 }
 
-static pointer_ptr pointer_alloc(u64 size, u64 id) {
+static const_pointer_ptr pointer_alloc(u64 size, u64 id) {
     if (vm == 0) {
         return 0;
     }
@@ -237,10 +237,13 @@ static void pointer_memcpy(const_pointer_ptr const_ptr, const void* data, u64 si
     virtual_api->memcpy(pointer_read(const_ptr), data, size);
 }
 
-static void pointer_realloc(pointer_ptr ptr, u64 size) {
+static void pointer_realloc(const_pointer_ptr const_ptr, u64 size) {
     if (vm == 0) {
         return;
     }
+    safe_pointer_ptr safe_ptr;
+    safe_ptr.const_ptr = const_ptr;
+    pointer_ptr ptr = safe_ptr.public.ptr;
     if (ptr != 0 && ptr->data != 0) {
         ptr->data = CALL(system_memory)->realloc(ptr->data, ptr->size, size);
         ptr->size = size;
