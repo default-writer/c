@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 8, 2025 at 10:25:15 AM GMT+3
+ *   March 9, 2025 at 9:46:46 PM GMT+3
  *
  */
 /*
@@ -74,7 +74,6 @@ typedef union {
 } safe_type_methods_definitions;
 typedef struct type_methods_definitions {
     u64 id;
-    vm_ptr* vm;
     desctructor desctructor;
 } type_methods_definitions_type;
 

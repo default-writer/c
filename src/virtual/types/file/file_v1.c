@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 9, 2025 at 6:42:07 PM GMT+3
+ *   March 10, 2025 at 1:48:58 AM GMT+3
  *
  */
 /*
@@ -55,7 +55,7 @@ static void file_free(const_vm_ptr vm, u64 ptr);
 static u64 file_data(const_vm_ptr vm, u64 ptr);
 
 /* destructor */
-static void type_desctructor(const_pointer_ptr ptr);
+static void type_desctructor(const_pointer_ptr const_ptr);
 
 /* implementation */
 static struct type_methods_definitions file_type = {
@@ -68,13 +68,13 @@ static void INIT init(void) {
     CALL(pointer)->register_known_type(id, safe_ptr.ptr);
 }
 
-static void type_desctructor(const_pointer_ptr ptr) {
-    struct file_handler* handler = CALL(pointer)->read(ptr);
+static void type_desctructor(const_pointer_ptr const_ptr) {
+    struct file_handler* handler = CALL(pointer)->read(const_ptr);
     if (handler->file != 0) {
         virtual_api->fclose(handler->file);
         handler->file = 0;
     }
-    CALL(pointer)->release(ptr);
+    CALL(pointer)->release(const_ptr);
 }
 
 static int is_valid_file_path(const char* file_path) {

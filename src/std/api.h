@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 2, 2025 at 8:40:10 PM GMT+3
+ *   March 9, 2025 at 10:11:39 PM GMT+3
  *
  */
 /*
@@ -29,10 +29,12 @@
 
 #define USING_API
 
+#define USING_COMPILE
 #define USING_DATA
 #define USING_HEADERS
 #define USING_MACROS
 
+#include "std/compile.h"
 #include "std/data.h"
 #include "std/headers.h"
 #include "std/macros.h"

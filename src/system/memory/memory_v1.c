@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 7, 2025 at 2:38:03 AM GMT+3
+ *   March 10, 2025 at 1:06:05 AM GMT+3
  *
  */
 /*
@@ -29,6 +29,10 @@
 #include "memory_v1.h"
 
 #ifdef USE_MEMORY_DEBUG_INFO
+#include <stdio.h>
+#endif
+
+#ifdef USE_MEMORY_DEBUG_INFO
 static u64 total_alloc = 0;
 static u64 total_free = 0;
 #endif
@@ -47,7 +51,7 @@ static struct memory_info_data* base = &memory_info;
 static void* memory_alloc(u64 size);
 static void memory_free(void* ptr, u64 size);
 static void* memory_realloc(void* old_ptr, u64 size, u64 new_size);
-#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_MEMORY_CLEANUP
 static void memory_set(void* dest, u8 c, u64 count);
 #endif
 
@@ -97,7 +101,8 @@ static void* memory_realloc(void* old_ptr, u64 size, u64 new_size) {
     void* ptr = old_ptr;
     ptr = system_api->realloc(ptr, new_size);
 #ifdef USE_MEMORY_DEBUG_INFO
-    total_alloc += new_size - size;
+    total_alloc += new_size;
+    total_free += size;
     printf("  -+: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_alloc, total_free);
 #endif
     return ptr;
@@ -127,10 +132,14 @@ static void memory_set(void* dest, u8 c, u64 count) {
         dest_ptr1[block_idx] = c;
 }
 #endif
-
+CSYS_EXPORT void init_statistics(void) {
+    total_alloc = 0;
+    total_free = 0;
+    printf("   .: %16s ! %16lld . %16lld : %16lld : %16lld\n", "", (u64)0, total_alloc - total_free, total_free, total_alloc);
+}
 #ifdef USE_MEMORY_DEBUG_INFO
-void global_statistics(void) {
-    printf("   .: %16s ! %16lld . %16lld : %16lld : %16lld\n", "", (u64)0, total_alloc - total_free, total_alloc, total_free);
+CSYS_EXPORT void result_statistics(void) {
+    printf("   .: %16s ! %16lld . %16lld : %16lld : %16lld\n", "", (u64)0, total_alloc - total_free, total_free, total_alloc);
 }
 #endif
 
