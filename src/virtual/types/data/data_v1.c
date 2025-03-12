@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 12, 2025 at 5:48:20 PM GMT+3
+ *   March 12, 2025 at 9:15:06 PM GMT+3
  *
  */
 /*
@@ -33,7 +33,7 @@
 
 #define DEFAULT_SIZE 0x100
 
-static const enum type id = TYPE_DATA;
+static const enum type type_id = TYPE_DATA;
 
 /* internal */
 static u64 data_alloc(const_vm_ptr vm, u64 size);
@@ -52,7 +52,7 @@ static struct type_methods_definitions data_type = {
 static void INIT init(void) {
     safe_type_methods_definitions safe_ptr;
     safe_ptr.const_ptr = &data_type;
-    CALL(pointer)->register_known_type(id, safe_ptr.ptr);
+    CALL(pointer)->register_known_type(type_id, safe_ptr.ptr);
 }
 
 static void type_desctructor(const_pointer_ptr const_ptr) {
@@ -63,14 +63,14 @@ static u64 data_alloc(const_vm_ptr vm, u64 size) {
     if (vm == 0 || *vm == 0) {
         return FALSE;
     }
-    return CALL(virtual)->pointer(vm, size, id);
+    return CALL(virtual)->pointer(vm, size, type_id);
 }
 
 static u64 data_free(const_vm_ptr vm, u64 ptr) {
     if (vm == 0 || *vm == 0) {
         return FALSE;
     }
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, type_id);
     if (data_ptr == 0) {
         return FALSE;
     }
@@ -82,7 +82,7 @@ static void* data_unsafe(const_vm_ptr vm, u64 ptr) {
     if (vm == 0 || *vm == 0) {
         return NULL_PTR;
     }
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, type_id);
     if (data_ptr == 0) {
         return NULL_PTR;
     }
@@ -94,7 +94,7 @@ static u64 data_size(const_vm_ptr vm, u64 ptr) {
     if (vm == 0 || *vm == 0) {
         return FALSE;
     }
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, type_id);
     if (data_ptr == 0) {
         return FALSE;
     }

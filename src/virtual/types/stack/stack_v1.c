@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 12, 2025 at 4:20:46 PM GMT+3
+ *   March 12, 2025 at 9:19:48 PM GMT+3
  *
  */
 /*
@@ -38,7 +38,7 @@
 #define DEFAULT_SIZE 0x100
 #define STACK_HANDLER_SIZE sizeof(stack_handler_type)
 
-static const enum type id = TYPE_STACK;
+static const enum type type_id = TYPE_STACK;
 
 /* internal */
 static const_pointer_ptr stack_alloc_internal(void);
@@ -74,7 +74,7 @@ static struct type_methods_definitions stack_type = {
 static void INIT init(void) {
     safe_type_methods_definitions safe_ptr;
     safe_ptr.const_ptr = &stack_type;
-    CALL(pointer)->register_known_type(id, safe_ptr.ptr);
+    CALL(pointer)->register_known_type(type_id, safe_ptr.ptr);
 }
 
 static void type_desctructor(const_pointer_ptr const_ptr) {
@@ -86,7 +86,7 @@ static void type_desctructor(const_pointer_ptr const_ptr) {
 }
 
 static const_pointer_ptr stack_alloc_internal(void) {
-    const_pointer_ptr const_ptr = CALL(pointer)->alloc(STACK_HANDLER_SIZE, id);
+    const_pointer_ptr const_ptr = CALL(pointer)->alloc(STACK_HANDLER_SIZE, type_id);
     stack_handler_ptr handler = CALL(pointer)->data(const_ptr);
     handler->size = 0;
     CALL(system_list)->init(&handler->list);
@@ -114,7 +114,7 @@ static u64 stack_release(const_vm_ptr vm, u64 ptr) {
         ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
         return FALSE;
     }
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, type_id);
     if (data_ptr == 0) {
         return FALSE;
     }
@@ -129,7 +129,7 @@ static u64 stack_free(const_vm_ptr vm, u64 ptr) {
         ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
         return FALSE;
     }
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, type_id);
     if (data_ptr == 0) {
         return FALSE;
     }
@@ -151,7 +151,7 @@ static u64 stack_push(const_vm_ptr vm, u64 ptr_list, u64 ptr) {
     if (ptr == 0) {
         return FALSE;
     }
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr_list, id);
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr_list, type_id);
     if (data_ptr == 0) {
         return FALSE;
     }
@@ -166,7 +166,7 @@ static u64 stack_peek(const_vm_ptr vm, u64 ptr) {
         ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
         return FALSE;
     }
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, type_id);
     if (data_ptr == 0) {
         return FALSE;
     }
@@ -180,7 +180,7 @@ static u64 stack_peekn(const_vm_ptr vm, u64 ptr, u64 nelements) {
         ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
         return FALSE;
     }
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, type_id);
     if (data_ptr == 0) {
         return FALSE;
     }
@@ -211,7 +211,7 @@ static u64 stack_pop(const_vm_ptr vm, u64 ptr) {
         ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
         return FALSE;
     }
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, type_id);
     if (data_ptr == 0) {
         return FALSE;
     }
@@ -229,7 +229,7 @@ static u64 stack_popn(const_vm_ptr vm, u64 ptr, u64 nelements) {
         ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
         return FALSE;
     }
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, type_id);
     if (data_ptr == 0) {
         return FALSE;
     }
@@ -258,7 +258,7 @@ static u64 stack_size(const_vm_ptr vm, u64 ptr) {
         ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
         return FALSE;
     }
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, type_id);
     if (data_ptr == 0) {
         return FALSE;
     }
