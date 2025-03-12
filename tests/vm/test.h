@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 9, 2025 at 11:48:16 AM GMT+3
+ *   March 12, 2025 at 6:32:53 PM GMT+3
  *
  */
 /*
@@ -28,6 +28,7 @@
 #define _TESTS_TEST_H_
 
 #define USING_TESTS
+#define USING_API
 
 #include "std/api.h"
 

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 12, 2025 at 5:30:47 PM GMT+3
+ *   March 12, 2025 at 6:34:49 PM GMT+3
  *
  */
 /*
@@ -24,17 +24,20 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include "test.h"
+
 #define USING_TESTS
 
 #include "main-tests_v1.h"
 
-#include "system/info/info_v1.h"
+#include <stdio.h>
+#include <time.h>
 
 #define USING_API
 
 #include "system/api/api_v1.h"
 
-#include "test.h"
+#include "system/info/info_v1.h"
 
 #define DEFAULT_SIZE 0x100
 
