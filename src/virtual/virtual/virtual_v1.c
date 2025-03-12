@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 12, 2025 at 5:52:52 PM GMT+3
+ *   March 12, 2025 at 9:58:46 PM GMT+3
  *
  */
 /*
@@ -292,19 +292,22 @@ static const_pointer_ptr virtual_read_type(const_vm_ptr vm, u64 address, u64 typ
         ERROR_ADDRESS_NOT_INITIALIZED(address == 0);
         return NULL_PTR;
     }
-    const_pointer_ptr ptr = virtual_read_internal(vm, address);
-    if (ptr == 0) {
-        ERROR_POINTER_NOT_INITIALIZED(ptr == 0);
+    const_pointer_ptr const_ptr = virtual_read_internal(vm, address);
+    if (const_ptr == 0) {
+        ERROR_POINTER_NOT_INITIALIZED(const_ptr == 0);
         return NULL_PTR;
     }
-    if (CALL(pointer)->get_type(ptr) != type_id) {
+    if (CALL(pointer)->get_type(const_ptr) != type_id) {
         return NULL_PTR;
     }
 #ifdef USE_MEMORY_DEBUG_INFO
+    safe_pointer_ptr safe_ptr;
+    safe_ptr.const_ptr = const_ptr;
+    pointer_ptr ptr = safe_ptr.ptr;
     virtual_pointer_ptr vptr = *(virtual_pointer_ptr*)ptr;
     printf("  ?v: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)vptr);
 #endif
-    return ptr;
+    return const_ptr;
 }
 
 static const_pointer_ptr virtual_read(const_vm_ptr vm, u64 address) {
@@ -316,16 +319,19 @@ static const_pointer_ptr virtual_read(const_vm_ptr vm, u64 address) {
         ERROR_ADDRESS_NOT_INITIALIZED(address == 0);
         return NULL_PTR;
     }
-    const_pointer_ptr ptr = virtual_read_internal(vm, address);
-    if (ptr == 0) {
-        ERROR_POINTER_NOT_INITIALIZED(ptr == 0);
+    const_pointer_ptr const_ptr = virtual_read_internal(vm, address);
+    if (const_ptr == 0) {
+        ERROR_POINTER_NOT_INITIALIZED(const_ptr == 0);
         return NULL_PTR;
     }
 #ifdef USE_MEMORY_DEBUG_INFO
+    safe_pointer_ptr safe_ptr;
+    safe_ptr.const_ptr = const_ptr;
+    pointer_ptr ptr = safe_ptr.ptr;
     virtual_pointer_ptr vptr = *(virtual_pointer_ptr*)ptr;
     printf("  !v: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)vptr);
 #endif
-    return ptr;
+    return const_ptr;
 }
 
 static u64 virtual_alloc(const_vm_ptr vm, const_pointer_ptr const_ptr) {
@@ -369,7 +375,7 @@ static u64 virtual_alloc(const_vm_ptr vm, const_pointer_ptr const_ptr) {
     safe_ptr.const_ptr = const_ptr;
     *ptr = safe_ptr.ptr;
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("  >+: %016llx ! %016llx > %016llx\n", address, (u64)const_ptr, (u64)vptr);
+    printf("  >+: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)vptr);
 #endif
     return address;
 }
