@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 12, 2025 at 4:29:02 PM GMT+3
+ *   March 12, 2025 at 9:18:46 PM GMT+3
  *
  */
 /*
@@ -43,7 +43,7 @@
 #define DEFAULT_SIZE 0x100
 #define FILE_HANDLER_SIZE sizeof(file_handler_type)
 
-static const enum type id = TYPE_FILE;
+static const enum type type_id = TYPE_FILE;
 
 /* definition */
 typedef struct file_handler* file_handler_ptr;
@@ -70,7 +70,7 @@ static struct type_methods_definitions file_type = {
 static void INIT init(void) {
     safe_type_methods_definitions safe_ptr;
     safe_ptr.const_ptr = &file_type;
-    CALL(pointer)->register_known_type(id, safe_ptr.ptr);
+    CALL(pointer)->register_known_type(type_id, safe_ptr.ptr);
 }
 
 static void type_desctructor(const_pointer_ptr const_ptr) {
@@ -139,7 +139,7 @@ static u64 file_alloc(const_vm_ptr vm, u64 file_path, u64 mode) {
         ERROR_POINTER_NOT_INITIALIZED(f == 0);
         return FALSE;
     }
-    const_pointer_ptr f_ptr = CALL(pointer)->alloc(FILE_HANDLER_SIZE, id);
+    const_pointer_ptr f_ptr = CALL(pointer)->alloc(FILE_HANDLER_SIZE, type_id);
     file_handler_ptr handler = CALL(pointer)->data(f_ptr);
     handler->file = f;
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -153,7 +153,7 @@ static u64 file_free(const_vm_ptr vm, u64 ptr) {
         ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
         return FALSE;
     }
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, type_id);
     if (data_ptr == 0) {
         ERROR_POINTER_NOT_INITIALIZED(data_ptr == 0);
         return FALSE;
@@ -168,7 +168,7 @@ static u64 file_data(const_vm_ptr vm, u64 ptr) {
         ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
         return FALSE;
     }
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, type_id);
     if (data_ptr == 0) {
         ERROR_POINTER_NOT_INITIALIZED(data_ptr == 0);
         return FALSE;

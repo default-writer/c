@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 12, 2025 at 12:40:21 PM GMT+3
+ *   March 12, 2025 at 9:23:48 PM GMT+3
  *
  */
 /*
@@ -31,7 +31,7 @@
 
 #define DEFAULT_SIZE 0x100
 
-static const enum type id = TYPE_STRING_POINTER;
+static const enum type type_id = TYPE_STRING_POINTER;
 
 /* definition */
 static u64 string_free(const_vm_ptr vm, u64 ptr);
@@ -47,7 +47,7 @@ static struct type_methods_definitions string_pointer_type = {
 static void INIT init(void) {
     safe_type_methods_definitions safe_ptr;
     safe_ptr.const_ptr = &string_pointer_type;
-    CALL(pointer)->register_known_type(id, safe_ptr.ptr);
+    CALL(pointer)->register_known_type(type_id, safe_ptr.ptr);
 }
 
 static void type_desctructor(const_pointer_ptr const_ptr) {

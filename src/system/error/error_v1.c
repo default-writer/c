@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 12, 2025 at 6:04:23 PM GMT+3
+ *   March 12, 2025 at 7:32:31 PM GMT+3
  *
  */
 /*
@@ -50,10 +50,10 @@ static void error_stderr(enum error_message_code id, const char* func, const cha
     if (isatty(STDERR_FILENO)) {
         const char* start = "\x1b[31m";
         const char* end = "\x1b[0m";
-        fprintf(stderr, "[%sERROR%s]: %s: %s(%s): (%s:%d)\n", start, end, error_messages[id], func, args, file, line); /* NOLINT: fprintf(stderr) */
+        fprintf(stderr, "[%sERROR%s] %s: %s(%s): (%s:%d)\n", start, end, error_messages[id], func, args, file, line); /* NOLINT: fprintf(stderr) */
     }
 #else
-    fprintf(stderr, "[ERROR]: %s: %s(%s) (%s:%d)\n", error_messages[id], func, args, file, line); /* NOLINT: fprintf(stderr) */
+    fprintf(stderr, "[ERROR] %s: %s(%s) (%s:%d)\n", error_messages[id], func, args, file, line); /* NOLINT: fprintf(stderr) */
 #endif
 }
 #else
@@ -62,10 +62,10 @@ static void error_stderr(enum error_message_code id) {
     if (isatty(STDERR_FILENO)) {
         const char* start = "\x1b[31m";
         const char* end = "\x1b[0m";
-        fprintf(stderr, "[%sERROR%s]: %s\n", start, end, error_messages[id]); /* NOLINT: fprintf(stderr) */
+        fprintf(stderr, "[%sERROR%s] %s\n", start, end, error_messages[id]); /* NOLINT: fprintf(stderr) */
     }
 #else
-    fprintf(stderr, "[ERROR]: %s\n", error_messages[id]); /* NOLINT: fprintf(stderr) */
+    fprintf(stderr, "[ERROR] %s\n", error_messages[id]); /* NOLINT: fprintf(stderr) */
 #endif
 }
 #endif

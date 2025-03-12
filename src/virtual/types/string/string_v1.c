@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 12, 2025 at 5:50:27 PM GMT+3
+ *   March 12, 2025 at 9:23:09 PM GMT+3
  *
  */
 /*
@@ -39,7 +39,7 @@
 #define DEFAULT_SIZE 0x100
 #define STRING_REFERENCE_SIZE sizeof(string_reference_type)
 
-static const enum type id = TYPE_STRING;
+static const enum type type_id = TYPE_STRING;
 
 /* internal */
 static const_pointer_ptr get_string_internal(const_vm_ptr vm, u64 data, u64* data_size, u64* data_offset);
@@ -99,7 +99,7 @@ static struct type_methods_definitions string_type = {
 static void INIT init(void) {
     safe_type_methods_definitions safe_ptr;
     safe_ptr.const_ptr = &string_type;
-    CALL(pointer)->register_known_type(id, safe_ptr.ptr);
+    CALL(pointer)->register_known_type(type_id, safe_ptr.ptr);
 }
 
 static void type_desctructor(const_pointer_ptr const_ptr) {
@@ -121,12 +121,13 @@ static const_pointer_ptr get_string_pointer_internal(const_vm_ptr vm, u64 data, 
     const_pointer_ptr const_ptr;
     const_string_reference_ptr ref = CALL(pointer)->data(data_ptr);
     while ((const_ptr = CALL(virtual)->read(vm, ref->address)) != 0) {
-        u64 type_id = CALL(pointer)->get_type(const_ptr);
-        if (type_id != TYPE_STRING_POINTER) {
-            break;
+        u64 ref_type_id = CALL(pointer)->get_type(const_ptr);
+        if (ref_type_id == TYPE_STRING_POINTER) {
+            offset += ref->offset;
+            ref = CALL(pointer)->data(const_ptr);
+            continue;
         }
-        offset += ref->offset;
-        ref = CALL(pointer)->data(const_ptr);
+        break;
     }
     const_ptr = CALL(virtual)->read_type(vm, ref->address, TYPE_STRING);
     if (const_ptr == 0) {
@@ -188,14 +189,14 @@ static u64 string_free(const_vm_ptr vm, u64 ptr) {
         ERROR_POINTER_NOT_INITIALIZED(data_ptr == 0);
         return FALSE;
     }
-    u64 type_id = CALL(pointer)->get_type(data_ptr);
-    if (type_id == TYPE_STRING) {
+    u64 data_type_id = CALL(pointer)->get_type(data_ptr);
+    if (data_type_id == TYPE_STRING) {
         type_desctructor(data_ptr);
         return TRUE;
     }
-    if (type_id == TYPE_STRING_POINTER) {
+    if (data_type_id == TYPE_STRING_POINTER) {
         const_string_reference_ptr ref = CALL(pointer)->data(data_ptr);
-        const_pointer_ptr p_ptr = CALL(virtual)->read_type(vm, ref->address, TYPE_STRING_POINTER);
+        const_pointer_ptr p_ptr = CALL(virtual)->read(vm, ref->address);
         if (p_ptr == 0) {
             ERROR_POINTER_NOT_INITIALIZED(p_ptr == 0);
             return FALSE;
@@ -221,7 +222,7 @@ static u64 string_copy(const_vm_ptr vm, u64 src) {
     }
     const char* ch = CALL(pointer)->data(const_ptr);
     ch += offset;
-    return CALL(virtual)->memcpy(vm, size - offset, ch, id);
+    return CALL(virtual)->memcpy(vm, size - offset, ch, type_id);
 }
 
 static u64 string_strcpy(const_vm_ptr vm, u64 dest, u64 src) {
@@ -233,7 +234,7 @@ static u64 string_strcpy(const_vm_ptr vm, u64 dest, u64 src) {
         ERROR_ARGUMENT_VALUE_NOT_INITIALIZED(src == dest);
         return FALSE;
     }
-    const_pointer_ptr dest_ptr = CALL(virtual)->read_type(vm, dest, id);
+    const_pointer_ptr dest_ptr = CALL(virtual)->read_type(vm, dest, type_id);
     if (dest_ptr == 0) {
         ERROR_POINTER_NOT_INITIALIZED(dest_ptr == 0);
         return FALSE;
@@ -266,7 +267,7 @@ static u64 string_strcat(const_vm_ptr vm, u64 dest, u64 src) {
         ERROR_ARGUMENT_VALUE_NOT_INITIALIZED(src == dest);
         return FALSE;
     }
-    const_pointer_ptr dest_ptr = CALL(virtual)->read_type(vm, dest, id);
+    const_pointer_ptr dest_ptr = CALL(virtual)->read_type(vm, dest, type_id);
     if (dest_ptr == 0) {
         ERROR_POINTER_NOT_INITIALIZED(dest_ptr == 0);
         return FALSE;
@@ -303,7 +304,7 @@ static u64 string_strrchr(const_vm_ptr vm, u64 src, u64 match) {
         return FALSE;
     }
     char* ch = CALL(pointer)->data(const_ptr);
-    const_pointer_ptr match_ptr = CALL(virtual)->read_type(vm, match, id);
+    const_pointer_ptr match_ptr = CALL(virtual)->read_type(vm, match, type_id);
     if (match_ptr == 0) {
         ERROR_POINTER_NOT_INITIALIZED(match_ptr == 0);
         return FALSE;
@@ -337,7 +338,7 @@ static u64 string_strchr(const_vm_ptr vm, u64 src, u64 match) {
         return FALSE;
     }
     char* ch = CALL(pointer)->data(const_ptr);
-    const_pointer_ptr match_ptr = CALL(virtual)->read_type(vm, match, id);
+    const_pointer_ptr match_ptr = CALL(virtual)->read_type(vm, match, type_id);
     if (match_ptr == 0) {
         ERROR_POINTER_NOT_INITIALIZED(match_ptr == 0);
         return FALSE;
@@ -371,7 +372,7 @@ static u64 string_match(const_vm_ptr vm, u64 src, u64 match) {
         return FALSE;
     }
     char* ch = CALL(pointer)->data(const_ptr);
-    const_pointer_ptr match_ptr = CALL(virtual)->read_type(vm, match, id);
+    const_pointer_ptr match_ptr = CALL(virtual)->read_type(vm, match, type_id);
     if (match_ptr == 0) {
         ERROR_POINTER_NOT_INITIALIZED(match_ptr == 0);
         return FALSE;
@@ -446,11 +447,11 @@ static const_pointer_ptr read_string_data_internal(const_vm_ptr vm, u64 src, u64
         ERROR_POINTER_NOT_INITIALIZED(src_ptr == 0);
         return NULL_PTR;
     }
-    u64 type_id = CALL(pointer)->get_type(src_ptr);
-    if (type_id == TYPE_STRING) {
+    u64 src_type_id = CALL(pointer)->get_type(src_ptr);
+    if (src_type_id == TYPE_STRING) {
         return get_string_internal(vm, src, size, offset);
     }
-    if (type_id == TYPE_STRING_POINTER) {
+    if (src_type_id == TYPE_STRING_POINTER) {
         return get_string_pointer_internal(vm, src, size, offset);
     }
     return NULL_PTR;
@@ -469,7 +470,7 @@ static u64 string_offset(const_vm_ptr vm, u64 src, u64 match) {
         return FALSE;
     }
     char* ch = CALL(pointer)->data(const_ptr);
-    const_pointer_ptr match_ptr = CALL(virtual)->read_type(vm, match, id);
+    const_pointer_ptr match_ptr = CALL(virtual)->read_type(vm, match, type_id);
     if (match_ptr == 0) {
         ERROR_POINTER_NOT_INITIALIZED(match_ptr == 0);
         return FALSE;
@@ -535,7 +536,7 @@ static u64 string_load(const_vm_ptr vm, const char* ch) {
         return FALSE;
     }
     u64 size = virtual_api->strlen(ch) + 1;
-    return CALL(pointer)->alloc_guard(ch, size, size - 1, id);
+    return CALL(pointer)->alloc_guard(ch, size, size - 1, type_id);
 }
 
 static u64 string_put_char(const_vm_ptr vm, u64 src, char value) {
@@ -763,7 +764,7 @@ static u64 string_strncpy(const_vm_ptr vm, u64 src, u64 nbytes) {
     }
     ch += offset;
     size = nbytes + 1;
-    return CALL(pointer)->alloc_guard(ch, size, size - 1, id);
+    return CALL(pointer)->alloc_guard(ch, size, size - 1, type_id);
 }
 
 static u64 string_left_strncpy(const_vm_ptr vm, u64 src, u64 nbytes) {
@@ -785,7 +786,7 @@ static u64 string_left_strncpy(const_vm_ptr vm, u64 src, u64 nbytes) {
     }
     ch += (offset - nbytes);
     size = nbytes + 1;
-    return CALL(pointer)->alloc_guard(ch, size, size - 1, id);
+    return CALL(pointer)->alloc_guard(ch, size, size - 1, type_id);
 }
 
 static u64 string_right(const_vm_ptr vm, u64 src, u64 nbytes) {
@@ -823,9 +824,9 @@ static u64 string_move_left(const_vm_ptr vm, u64 src, u64 nbytes) {
         ERROR_POINTER_NOT_INITIALIZED(src_ptr == 0);
         return FALSE;
     }
-    u64 type_id = CALL(pointer)->get_type(src_ptr);
-    if (type_id != TYPE_STRING_POINTER) {
-        ERROR_INVALID_CONDITION(type_id != TYPE_STRING_POINTER);
+    u64 src_type_id = CALL(pointer)->get_type(src_ptr);
+    if (src_type_id != TYPE_STRING_POINTER) {
+        ERROR_INVALID_CONDITION(src_type_id != TYPE_STRING_POINTER);
         return FALSE;
     }
     const_pointer_ptr const_ptr = get_string_pointer_internal(vm, src, &size, &offset);
@@ -855,9 +856,9 @@ static u64 string_move_right(const_vm_ptr vm, u64 src, u64 nbytes) {
         ERROR_POINTER_NOT_INITIALIZED(src_ptr == 0);
         return FALSE;
     }
-    u64 type_id = CALL(pointer)->get_type(src_ptr);
-    if (type_id != TYPE_STRING_POINTER) {
-        ERROR_INVALID_CONDITION(type_id != TYPE_STRING_POINTER);
+    u64 src_type_id = CALL(pointer)->get_type(src_ptr);
+    if (src_type_id != TYPE_STRING_POINTER) {
+        ERROR_INVALID_CONDITION(src_type_id != TYPE_STRING_POINTER);
         return FALSE;
     }
     const_pointer_ptr const_ptr = get_string_pointer_internal(vm, src, &size, &offset);

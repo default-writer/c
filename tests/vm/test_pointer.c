@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 12, 2025 at 5:46:08 PM GMT+3
+ *   March 12, 2025 at 7:24:39 PM GMT+3
  *
  */
 /*
@@ -89,10 +89,6 @@ static const system_api_type* temp_system_api;
 
 /* implementation */
 static const_pointer_ptr mock_virtual_read_zero(const_vm_ptr vm, u64 address) {
-    return NULL_PTR;
-}
-
-static const_pointer_ptr mock_virtual_read_type_zero(const_vm_ptr vm, u64 address, u64 type) {
     return NULL_PTR;
 }
 
@@ -2879,7 +2875,6 @@ RX_TEST_CASE(tests_v1, test_print_string_pointer_virtual_read_type, .fixture = t
     /*api */
     memcpy(&mock_virtual_methods_definitions, virtual, sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
     /* setup mocks */
-    mock_virtual_methods_definitions.read_type = mock_virtual_read_type_zero;
     /* setup api endpoint */
     static const virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
     /* backup api calls */
