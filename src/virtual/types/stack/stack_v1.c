@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 9, 2025 at 7:48:04 PM GMT+3
+ *   March 12, 2025 at 4:20:46 PM GMT+3
  *
  */
 /*
@@ -26,7 +26,9 @@
 
 #include "stack_v1.h"
 
-#include "std/api.h"
+#define USING_ERROR_API
+
+#include "system/error/error_v1.h"
 
 #include "system/list/list_v1.h"
 
@@ -44,14 +46,14 @@ static void stack_release_internal(stack_ptr* curent);
 
 /* api */
 static u64 stack_alloc(const_vm_ptr vm);
-static void stack_free(const_vm_ptr vm, u64 ptr);
-static void stack_push(const_vm_ptr vm, u64 ptr, u64 data_ptr);
+static u64 stack_free(const_vm_ptr vm, u64 ptr);
+static u64 stack_push(const_vm_ptr vm, u64 ptr, u64 data_ptr);
 static u64 stack_peek(const_vm_ptr vm, u64 ptr);
 static u64 stack_peekn(const_vm_ptr vm, u64 ptr, u64 nelements);
 static u64 stack_pop(const_vm_ptr vm, u64 ptr);
 static u64 stack_popn(const_vm_ptr vm, u64 ptr, u64 nelements);
 static u64 stack_size(const_vm_ptr vm, u64 ptr);
-static void stack_release(const_vm_ptr vm, u64 ptr);
+static u64 stack_release(const_vm_ptr vm, u64 ptr);
 
 /* definition */
 typedef struct stack_handler* stack_handler_ptr;
@@ -76,7 +78,7 @@ static void INIT init(void) {
 }
 
 static void type_desctructor(const_pointer_ptr const_ptr) {
-    stack_handler_ptr handler = CALL(pointer)->read(const_ptr);
+    stack_handler_ptr handler = CALL(pointer)->data(const_ptr);
     handler->size = 0;
     stack_release_internal(&(handler->list));
     CALL(system_list)->destroy(&(handler->list));
@@ -85,7 +87,7 @@ static void type_desctructor(const_pointer_ptr const_ptr) {
 
 static const_pointer_ptr stack_alloc_internal(void) {
     const_pointer_ptr const_ptr = CALL(pointer)->alloc(STACK_HANDLER_SIZE, id);
-    stack_handler_ptr handler = CALL(pointer)->read(const_ptr);
+    stack_handler_ptr handler = CALL(pointer)->data(const_ptr);
     handler->size = 0;
     CALL(system_list)->init(&handler->list);
     return const_ptr;
@@ -100,89 +102,99 @@ static void stack_release_internal(stack_ptr* current) {
 
 static u64 stack_alloc(const_vm_ptr vm) {
     if (vm == 0 || *vm == 0) {
-        return 0;
+        ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
+        return FALSE;
     }
     const_pointer_ptr const_ptr = stack_alloc_internal();
     return CALL(virtual)->alloc(vm, const_ptr);
 }
 
-static void stack_release(const_vm_ptr vm, u64 ptr) {
+static u64 stack_release(const_vm_ptr vm, u64 ptr) {
     if (vm == 0 || *vm == 0) {
-        return;
+        ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
+        return FALSE;
     }
     const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
     if (data_ptr == 0) {
-        return;
+        return FALSE;
     }
-    stack_handler_ptr handler = CALL(pointer)->read(data_ptr);
+    stack_handler_ptr handler = CALL(pointer)->data(data_ptr);
     handler->size = 0;
     stack_release_internal(&handler->list);
+    return TRUE;
 }
 
-static void stack_free(const_vm_ptr vm, u64 ptr) {
+static u64 stack_free(const_vm_ptr vm, u64 ptr) {
     if (vm == 0 || *vm == 0) {
-        return;
+        ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
+        return FALSE;
     }
     const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
     if (data_ptr == 0) {
-        return;
+        return FALSE;
     }
     type_desctructor(data_ptr);
+    return TRUE;
 }
 
-static void stack_push(const_vm_ptr vm, u64 ptr_list, u64 ptr) {
+static u64 stack_push(const_vm_ptr vm, u64 ptr_list, u64 ptr) {
     if (vm == 0 || *vm == 0) {
-        return;
+        ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
+        return FALSE;
     }
     if (ptr_list == ptr) {
-        return;
+        return FALSE;
     }
     if (ptr_list == 0) {
-        return;
+        return FALSE;
     }
     if (ptr == 0) {
-        return;
+        return FALSE;
     }
     const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr_list, id);
     if (data_ptr == 0) {
-        return;
+        return FALSE;
     }
-    stack_handler_ptr handler = CALL(pointer)->read(data_ptr);
+    stack_handler_ptr handler = CALL(pointer)->data(data_ptr);
     CALL(system_list)->push(&handler->list, (void*)ptr);
     handler->size++;
+    return TRUE;
 }
 
 static u64 stack_peek(const_vm_ptr vm, u64 ptr) {
     if (vm == 0 || *vm == 0) {
-        return 0;
+        ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
+        return FALSE;
     }
     const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
     if (data_ptr == 0) {
-        return 0;
+        return FALSE;
     }
-    stack_handler_ptr handler = CALL(pointer)->read(data_ptr);
+    stack_handler_ptr handler = CALL(pointer)->data(data_ptr);
     u64 stack_peek_ptr = (u64)CALL(system_list)->peek(&handler->list);
     return stack_peek_ptr;
 }
 
 static u64 stack_peekn(const_vm_ptr vm, u64 ptr, u64 nelements) {
     if (vm == 0 || *vm == 0) {
-        return 0;
+        ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
+        return FALSE;
     }
     const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
     if (data_ptr == 0) {
-        return 0;
+        return FALSE;
     }
-    stack_handler_ptr src_handler = CALL(pointer)->read(data_ptr);
+    stack_handler_ptr src_handler = CALL(pointer)->data(data_ptr);
     u64 size = src_handler->size;
     if (size == 0) {
-        return 0;
+        ERROR_ARGUMENT_VALUE_NOT_INITIALIZED(size == 0);
+        return FALSE;
     }
     if (size < nelements) {
-        return 0;
+        return FALSE;
     }
     const_pointer_ptr dst_ptr = stack_alloc_internal();
-    stack_handler_ptr dst_handler = CALL(pointer)->read(dst_ptr);
+    stack_handler_ptr dst_handler = CALL(pointer)->data(dst_ptr);
     u64 i = nelements;
     while (i-- > 0) {
         stack_ptr current = src_handler->list;
@@ -196,15 +208,16 @@ static u64 stack_peekn(const_vm_ptr vm, u64 ptr, u64 nelements) {
 
 static u64 stack_pop(const_vm_ptr vm, u64 ptr) {
     if (vm == 0 || *vm == 0) {
-        return 0;
+        ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
+        return FALSE;
     }
     const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
     if (data_ptr == 0) {
-        return 0;
+        return FALSE;
     }
-    stack_handler_ptr handler = CALL(pointer)->read(data_ptr);
+    stack_handler_ptr handler = CALL(pointer)->data(data_ptr);
     if (handler->size == 0) {
-        return 0;
+        return FALSE;
     }
     u64 stack_pop_ptr = (u64)CALL(system_list)->pop(&handler->list);
     handler->size--;
@@ -213,22 +226,24 @@ static u64 stack_pop(const_vm_ptr vm, u64 ptr) {
 
 static u64 stack_popn(const_vm_ptr vm, u64 ptr, u64 nelements) {
     if (vm == 0 || *vm == 0) {
-        return 0;
+        ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
+        return FALSE;
     }
     const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
     if (data_ptr == 0) {
-        return 0;
+        return FALSE;
     }
-    stack_handler_ptr src_handler = CALL(pointer)->read(data_ptr);
+    stack_handler_ptr src_handler = CALL(pointer)->data(data_ptr);
     u64 size = src_handler->size;
     if (size == 0) {
-        return 0;
+        ERROR_ARGUMENT_VALUE_NOT_INITIALIZED(size == 0);
+        return FALSE;
     }
     if (size < nelements) {
-        return 0;
+        return FALSE;
     }
     const_pointer_ptr dst_ptr = stack_alloc_internal();
-    stack_handler_ptr dst_handler = CALL(pointer)->read(dst_ptr);
+    stack_handler_ptr dst_handler = CALL(pointer)->data(dst_ptr);
     u64 i = nelements;
     while (i-- > 0) {
         u64 stack_pop_ptr = (u64)CALL(system_list)->pop(&src_handler->list);
@@ -240,13 +255,14 @@ static u64 stack_popn(const_vm_ptr vm, u64 ptr, u64 nelements) {
 
 static u64 stack_size(const_vm_ptr vm, u64 ptr) {
     if (vm == 0 || *vm == 0) {
-        return 0;
+        ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
+        return FALSE;
     }
     const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
     if (data_ptr == 0) {
-        return 0;
+        return FALSE;
     }
-    const_stack_handler_ptr handler = CALL(pointer)->read(data_ptr);
+    const_stack_handler_ptr handler = CALL(pointer)->data(data_ptr);
     u64 size = handler->size;
     return size;
 }

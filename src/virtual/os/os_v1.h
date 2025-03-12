@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 9, 2025 at 8:04:56 PM GMT+3
+ *   March 12, 2025 at 9:02:27 AM GMT+3
  *
  */
 /*
@@ -40,7 +40,7 @@
 typedef struct PRIVATE_API(virtual_os_methods) {
     u64 (*getenv)(const_vm_ptr vm, u64 name);
     u64 (*getcwd)(const_vm_ptr vm);
-    void (*putc)(const_vm_ptr vm, u64 ptr);
+    u64 (*putc)(const_vm_ptr vm, u64 ptr);
 } virtual_os_methods;
 
 /* definition */

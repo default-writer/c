@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 9, 2025 at 9:46:46 PM GMT+3
+ *   March 12, 2025 at 9:16:54 AM GMT+3
  *
  */
 /*
@@ -42,23 +42,17 @@ typedef signed char s8;
 typedef struct stack_element* stack_ptr;
 typedef const struct stack_element* const_stack_element_ptr;
 typedef struct stack_element {
-    /* points to next node */
     stack_ptr next;
-    /* data */
     void* data;
 } stack_element_type;
 typedef struct pointer* pointer_ptr;
-typedef struct public_pointer* public_pointer_ptr;
 typedef const struct pointer* const_pointer_ptr;
 typedef struct virtual_pointer* virtual_pointer_ptr;
 typedef const struct virtual_pointer* const_virtual_pointer_ptr;
 typedef void (*desctructor)(const_pointer_ptr const_ptr);
 typedef union {
     const_pointer_ptr const_ptr;
-    union {
-        pointer_ptr ptr;
-        public_pointer_ptr pointer;
-    } public;
+    pointer_ptr ptr;
 } safe_pointer_ptr;
 typedef struct vm* vm_ptr;
 typedef const vm_ptr* const_vm_ptr;
@@ -73,7 +67,7 @@ typedef union {
     type_methods_definitions_ptr ptr;
 } safe_type_methods_definitions;
 typedef struct type_methods_definitions {
-    u64 id;
+    u64 type_id;
     desctructor desctructor;
 } type_methods_definitions_type;
 

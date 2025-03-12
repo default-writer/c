@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 9, 2025 at 7:29:51 PM GMT+3
+ *   March 12, 2025 at 9:11:03 AM GMT+3
  *
  */
 /*
@@ -42,7 +42,7 @@
 
 typedef struct PRIVATE_API(virtual_stack_methods) {
     u64 (*alloc)(const_vm_ptr vm);
-    void (*free)(const_vm_ptr vm, u64 ptr);
+    u64 (*free)(const_vm_ptr vm, u64 ptr);
     u64 (*peek)(const_vm_ptr vm, u64 list_ptr);
     /*! returns a list of picked items
         @param list_ptr a list to get items from
@@ -52,9 +52,9 @@ typedef struct PRIVATE_API(virtual_stack_methods) {
     u64 (*peekn)(const_vm_ptr vm, u64 list_ptr, u64 nelements);
     u64 (*pop)(const_vm_ptr vm, u64 list_ptr);
     u64 (*popn)(const_vm_ptr vm, u64 list_ptr, u64 nelements);
-    void (*push)(const_vm_ptr vm, u64 list_ptr, u64 ptr);
+    u64 (*push)(const_vm_ptr vm, u64 list_ptr, u64 ptr);
     u64 (*size)(const_vm_ptr vm, u64 ptr);
-    void (*release)(const_vm_ptr vm, u64 ptr);
+    u64 (*release)(const_vm_ptr vm, u64 ptr);
 } virtual_stack_methods;
 
 /* definition */

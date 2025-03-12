@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 9, 2025 at 11:33:16 AM GMT+3
+ *   March 12, 2025 at 9:10:15 AM GMT+3
  *
  */
 /*
@@ -39,7 +39,7 @@
 
 typedef struct PRIVATE_API(virtual_user_methods) {
     u64 (*alloc)(const_vm_ptr vm);
-    void (*free)(const_vm_ptr vm, u64 ptr);
+    u64 (*free)(const_vm_ptr vm, u64 ptr);
 } virtual_user_methods;
 
 /* definition */

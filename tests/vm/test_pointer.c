@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 10, 2025 at 8:27:12 AM GMT+3
+ *   March 12, 2025 at 5:46:08 PM GMT+3
  *
  */
 /*
@@ -29,6 +29,8 @@
 #define USING_TESTS
 
 #include "test_pointer.h"
+
+#include "system/api/api_v1.h"
 
 #include "system/memory/memory_v1.h"
 
@@ -66,18 +68,47 @@ typedef struct test_data {
 
 /*api*/
 static const virtual_methods* virtual_methors;
+static u64 mock_available_memory = 0;
+static u64 mock_allocated_memory = 0;
 
 /* mocks */
-static pointer_ptr mock_virtual_read_zero(const_vm_ptr vm, u64 address);
-static pointer_ptr mock_virtual_read_type_zero(const_vm_ptr vm, u64 address, u64 type);
+static const_pointer_ptr mock_virtual_read_zero(const_vm_ptr vm, u64 address);
+static const_pointer_ptr mock_virtual_read_type_zero(const_vm_ptr vm, u64 address, u64 type);
+static void* mock_alloc(size_t __nmemb, size_t __size);
+static void* mock_realloc(void* __ptr, size_t __size);
+static void mock_free(void* __ptr);
+
+static const system_api_type mock_system_api_methods_definitions = {
+    .alloc = mock_alloc,
+    .realloc = mock_realloc,
+    .free = mock_free
+};
+
+static const system_api_type* mock_system_api = &mock_system_api_methods_definitions;
+static const system_api_type* temp_system_api;
 
 /* implementation */
-static pointer_ptr mock_virtual_read_zero(const_vm_ptr vm, u64 address) {
-    return 0;
+static const_pointer_ptr mock_virtual_read_zero(const_vm_ptr vm, u64 address) {
+    return NULL_PTR;
 }
 
-static pointer_ptr mock_virtual_read_type_zero(const_vm_ptr vm, u64 address, u64 type) {
-    return 0;
+static const_pointer_ptr mock_virtual_read_type_zero(const_vm_ptr vm, u64 address, u64 type) {
+    return NULL_PTR;
+}
+
+static void* mock_alloc(size_t __nmemb, size_t __size) {
+    if (mock_allocated_memory + __nmemb * __size <= mock_available_memory) {
+        mock_allocated_memory += __nmemb * __size;
+        return calloc(__nmemb, __size);
+    }
+    return NULL_PTR;
+}
+
+static void* mock_realloc(void* __ptr, size_t __size) {
+    return NULL_PTR;
+}
+static void mock_free(void* __ptr) {
+    free(__ptr);
 }
 
 RX_SET_UP(test_set_up) {
@@ -105,6 +136,11 @@ RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tea
 
 /* Define the fixture. */
 RX_FIXTURE(test_fixture_pointer, TEST_DATA, .set_up = test_set_up_pointer_init, .tear_down = test_tear_down_pointer_destroy);
+
+/* test init */
+RX_TEST_CASE(tests_v1, test_alloc_memcpy_0, .fixture = test_fixture) {
+    CALL(pointer)->memcpy(0, 0, 0);
+}
 
 /* test init */
 RX_TEST_CASE(tests_v1, test_print_0, .fixture = test_fixture) {
@@ -277,14 +313,48 @@ RX_TEST_CASE(tests_v1, test_load_copy_virtual_read_ptr_0, .fixture = test_fixtur
     u64 char_ptr = CALL(string)->load(vm, "/");
     /* prepare to mock api calls */
     memcpy(&virtual, &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+
     /* virtual_string->free fails in virtual->read call */
     u64 copy_ptr = CALL(string)->copy(vm, char_ptr);
+
     /* restore api calls */
     memcpy(&virtual, &virtual_methors, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
     RX_ASSERT(char_ptr != 0);
     RX_ASSERT(copy_ptr == 0);
     RX_ASSERT(strcmp(CALL(string)->unsafe(vm, char_ptr), "/") == 0);
     CALL(string)->free(vm, char_ptr);
+}
+
+/* test init */
+RX_TEST_CASE(tests_v1, test_load_copy_ppointer_virtual_read_ptr_0, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr vm = rx->ctx;
+    static virtual_methods mock_virtual_methods_definitions;
+    /*api */
+    memcpy(&mock_virtual_methods_definitions, virtual, sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
+    /* setup mocks */
+    mock_virtual_methods_definitions.read = mock_virtual_read_zero;
+    /* setup api endpoint */
+    static const virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
+    /* backup api calls */
+    memcpy(&virtual_methors, &virtual, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    /* init */
+
+    const_pointer_ptr offset_ptr = CALL(pointer)->alloc(2, TYPE_STRING_POINTER);
+
+    /* prepare to mock api calls */
+    memcpy(&virtual, &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+
+    u64 address = CALL(virtual)->alloc(vm, offset_ptr);
+
+    u64 move_ptr = CALL(string)->move_left(vm, address, 1);
+
+    RX_ASSERT(move_ptr == 0);
+
+    CALL(pointer)->release(offset_ptr);
+
+    /* restore api calls */
+    memcpy(&virtual, &virtual_methors, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
 }
 
 /* test init */
@@ -1065,7 +1135,7 @@ RX_TEST_CASE(tests_v1, test_list_peekn_0_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 list_ptr = CALL(stack)->alloc(vm);
-    ASSERT_DEBUG(list_ptr != 0);
+    RX_ASSERT(list_ptr != 0);
     u64 error_ptr = CALL(stack)->peekn(vm, 0, 0);
     RX_ASSERT(error_ptr == 0);
 }
@@ -1110,7 +1180,7 @@ RX_TEST_CASE(tests_v1, test_list_popn_0_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 list_ptr = CALL(stack)->alloc(vm);
-    ASSERT_DEBUG(list_ptr != 0);
+    RX_ASSERT(list_ptr != 0);
     u64 error_ptr = CALL(stack)->popn(vm, 0, 0);
     RX_ASSERT(error_ptr == 0);
 }
@@ -1471,6 +1541,94 @@ RX_TEST_CASE(tests_v1, test_strcpy, .fixture = test_fixture) {
 #endif
 }
 
+/* test case */
+RX_TEST_CASE(tests_v1, test_alloc_guard_ret_0, .fixture = test_fixture) {
+    mock_allocated_memory = 0;
+    mock_available_memory = 41; // sizeof(struct pointer) + 1
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    /* backup api calls */
+    memcpy(&temp_system_api, &system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+    /* prepare to mock api calls */
+    memcpy(&system_api, &mock_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+
+    const char* ch = "hello, world!";
+    u64 string_ptr = CALL(pointer)->alloc_guard(ch, 2, 0, TYPE_STRING);
+
+    RX_ASSERT(string_ptr == 0);
+
+    /* restore api calls */
+    memcpy(&system_api, &temp_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+}
+
+/* test case */
+RX_TEST_CASE(tests_v1, test_alloc_data_0, .fixture = test_fixture) {
+    mock_allocated_memory = 0;
+    mock_available_memory = 41; // sizeof(struct pointer)
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    /* backup api calls */
+    memcpy(&temp_system_api, &system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+    /* prepare to mock api calls */
+    memcpy(&system_api, &mock_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+
+    const_pointer_ptr const_ptr = CALL(pointer)->alloc(2, TYPE_STRING);
+    RX_ASSERT(const_ptr == 0);
+
+    /* restore api calls */
+    memcpy(&system_api, &temp_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+}
+
+/* test case */
+RX_TEST_CASE(tests_v1, test_alloc_0, .fixture = test_fixture) {
+    mock_allocated_memory = 0;
+    mock_available_memory = 39; // sizeof(struct pointer) - 1
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    /* backup api calls */
+    memcpy(&temp_system_api, &system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+    /* prepare to mock api calls */
+    memcpy(&system_api, &mock_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+
+    const_pointer_ptr const_ptr = CALL(pointer)->alloc(2, TYPE_STRING);
+    RX_ASSERT(const_ptr == 0);
+
+    /* restore api calls */
+    memcpy(&system_api, &temp_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+}
+
+/* test case */
+RX_TEST_CASE(tests_v1, test_realloc_0, .fixture = test_fixture) {
+    mock_allocated_memory = 0;
+    mock_available_memory = 41; // sizeof(struct pointer)
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    /* backup api calls */
+    memcpy(&temp_system_api, &system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+    /* prepare to mock api calls */
+    memcpy(&system_api, &mock_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+
+    const_pointer_ptr const_ptr = CALL(pointer)->alloc(1, TYPE_STRING);
+    RX_ASSERT(const_ptr != 0);
+
+    u64 string_ptr = CALL(pointer)->realloc(const_ptr, 42);
+    RX_ASSERT(string_ptr == 0);
+
+    CALL(pointer)->release(const_ptr);
+
+    /* restore api calls */
+    memcpy(&system_api, &temp_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+}
+
+/* test init */
+RX_TEST_CASE(tests_v1, test_strcat_load_put_char, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr vm = rx->ctx;
+    const char* ch = "hello, world!";
+    u64 string_ptr = CALL(pointer)->alloc_guard(ch, 2, 0, TYPE_STRING);
+    CALL(string)->put_char(vm, string_ptr, 'a');
+    const char* actual = CALL(string)->unsafe(vm, string_ptr);
+    RX_ASSERT(actual[0] == 'a');
+    RX_ASSERT(actual[1] == 'e');
+    CALL(pointer)->free(string_ptr);
+}
+
 /* test init */
 RX_TEST_CASE(tests_v1, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
@@ -1789,7 +1947,7 @@ RX_TEST_CASE(tests_v1, test_os_getenv, .fixture = test_fixture) {
     const_vm_ptr vm = rx->ctx;
     u64 ui_mode_ptr = CALL(string)->load(vm, "ASDASD_UI_MODE");
     u64 file_path_ptr = CALL(os)->getenv(vm, ui_mode_ptr);
-    ASSERT_DEBUG(file_path_ptr == 0);
+    RX_ASSERT(file_path_ptr == 0);
 }
 
 /* ---------------------------------------------------------------------- */
@@ -1804,7 +1962,7 @@ RX_TEST_CASE(tests_v1, test_os_getenv, .fixture = test_fixture) {
 RX_TEST_CASE(tests_v1, test_vm_0_data_alloc, .fixture = test_fixture) {
     const_vm_ptr vm = 0;
     u64 value = CALL(data)->alloc(vm, 0);
-    ASSERT_DEBUG(value == 0);
+    RX_ASSERT(value == 0);
 }
 
 /* test init */
@@ -1818,14 +1976,14 @@ RX_TEST_CASE(tests_v1, test_vm_0_data_free, .fixture = test_fixture) {
 RX_TEST_CASE(tests_v1, test_vm_0_data_size, .fixture = test_fixture) {
     const_vm_ptr vm = 0;
     u64 value = CALL(data)->size(vm, 0);
-    ASSERT_DEBUG(value == 0);
+    RX_ASSERT(value == 0);
 }
 
 /* test init */
 RX_TEST_CASE(tests_v1, test_vm_0_data_unsafe, .fixture = test_fixture) {
     const_vm_ptr vm = 0;
     void* value = CALL(data)->unsafe(vm, 0);
-    ASSERT_DEBUG(value == 0);
+    RX_ASSERT(value == 0);
 }
 
 /************/
@@ -1836,7 +1994,7 @@ RX_TEST_CASE(tests_v1, test_vm_0_data_unsafe, .fixture = test_fixture) {
 RX_TEST_CASE(tests_v1, test_vm_0_file_alloc, .fixture = test_fixture) {
     const_vm_ptr vm = 0;
     u64 value = CALL(file)->alloc(vm, 0, 0);
-    ASSERT_DEBUG(value == 0);
+    RX_ASSERT(value == 0);
 }
 
 /* test init */
@@ -1850,7 +2008,7 @@ RX_TEST_CASE(tests_v1, test_vm_0_file_free, .fixture = test_fixture) {
 RX_TEST_CASE(tests_v1, test_vm_0_file_data, .fixture = test_fixture) {
     const_vm_ptr vm = 0;
     u64 value = CALL(file)->data(vm, 0);
-    ASSERT_DEBUG(value == 0);
+    RX_ASSERT(value == 0);
 }
 
 /**************/
@@ -1861,7 +2019,7 @@ RX_TEST_CASE(tests_v1, test_vm_0_file_data, .fixture = test_fixture) {
 RX_TEST_CASE(tests_v1, test_vm_0_object_alloc, .fixture = test_fixture) {
     const_vm_ptr vm = 0;
     u64 value = CALL(object)->alloc(vm, 0);
-    ASSERT_DEBUG(value == 0);
+    RX_ASSERT(value == 0);
 }
 
 /* test init */
@@ -1875,21 +2033,21 @@ RX_TEST_CASE(tests_v1, test_vm_0_object_free, .fixture = test_fixture) {
 RX_TEST_CASE(tests_v1, test_vm_0_object_unsafe, .fixture = test_fixture) {
     const_vm_ptr vm = 0;
     void* value = CALL(object)->unsafe(vm, 0);
-    ASSERT_DEBUG(value == 0);
+    RX_ASSERT(value == 0);
 }
 
 /* test init */
 RX_TEST_CASE(tests_v1, test_vm_0_object_load, .fixture = test_fixture) {
     const_vm_ptr vm = 0;
     u64 value = CALL(object)->load(vm, 0, 0);
-    ASSERT_DEBUG(value == 0);
+    RX_ASSERT(value == 0);
 }
 
 /* test init */
 RX_TEST_CASE(tests_v1, test_vm_0_object_size, .fixture = test_fixture) {
     const_vm_ptr vm = 0;
     u64 value = CALL(object)->size(vm, 0);
-    ASSERT_DEBUG(value == 0);
+    RX_ASSERT(value == 0);
 }
 
 /*************/
@@ -1899,7 +2057,7 @@ RX_TEST_CASE(tests_v1, test_vm_0_object_size, .fixture = test_fixture) {
 RX_TEST_CASE(tests_v1, test_vm_0_stack_alloc, .fixture = test_fixture) {
     const_vm_ptr vm = 0;
     u64 value = CALL(stack)->alloc(vm);
-    ASSERT_DEBUG(value == 0);
+    RX_ASSERT(value == 0);
 }
 
 RX_TEST_CASE(tests_v1, test_vm_0_stack_free, .fixture = test_fixture) {
@@ -1911,25 +2069,25 @@ RX_TEST_CASE(tests_v1, test_vm_0_stack_free, .fixture = test_fixture) {
 RX_TEST_CASE(tests_v1, test_vm_0_stack_peek, .fixture = test_fixture) {
     const_vm_ptr vm = 0;
     u64 value = CALL(stack)->peek(vm, 0);
-    ASSERT_DEBUG(value == 0);
+    RX_ASSERT(value == 0);
 }
 
 RX_TEST_CASE(tests_v1, test_vm_0_stack_peekn, .fixture = test_fixture) {
     const_vm_ptr vm = 0;
     u64 value = CALL(stack)->peekn(vm, 0, 0);
-    ASSERT_DEBUG(value == 0);
+    RX_ASSERT(value == 0);
 }
 
 RX_TEST_CASE(tests_v1, test_vm_0_stack_pop, .fixture = test_fixture) {
     const_vm_ptr vm = 0;
     u64 value = CALL(stack)->pop(vm, 0);
-    ASSERT_DEBUG(value == 0);
+    RX_ASSERT(value == 0);
 }
 
 RX_TEST_CASE(tests_v1, test_vm_0_stack_popn, .fixture = test_fixture) {
     const_vm_ptr vm = 0;
     u64 value = CALL(stack)->popn(vm, 0, 0);
-    ASSERT_DEBUG(value == 0);
+    RX_ASSERT(value == 0);
 }
 
 RX_TEST_CASE(tests_v1, test_vm_0_stack_push, .fixture = test_fixture) {
@@ -1941,7 +2099,7 @@ RX_TEST_CASE(tests_v1, test_vm_0_stack_push, .fixture = test_fixture) {
 RX_TEST_CASE(tests_v1, test_vm_0_stack_size, .fixture = test_fixture) {
     const_vm_ptr vm = 0;
     u64 value = CALL(stack)->size(vm, 0);
-    ASSERT_DEBUG(value == 0);
+    RX_ASSERT(value == 0);
 }
 
 RX_TEST_CASE(tests_v1, test_vm_0_stack_release, .fixture = test_fixture) {
@@ -2134,7 +2292,7 @@ RX_TEST_CASE(tests_v1, test_vm_0_string_pointer, .fixture = test_fixture) {
 RX_TEST_CASE(tests_v1, test_vm_0_user_alloc, .fixture = test_fixture) {
     const_vm_ptr vm = 0;
     u64 value = CALL(user)->alloc(vm);
-    ASSERT_DEBUG(value == 0);
+    RX_ASSERT(value == 0);
 }
 
 /* test init */
@@ -2152,14 +2310,14 @@ RX_TEST_CASE(tests_v1, test_vm_0_user_free, .fixture = test_fixture) {
 RX_TEST_CASE(tests_v1, test_vm_0_os_getenv, .fixture = test_fixture) {
     const_vm_ptr vm = 0;
     u64 value = CALL(os)->getenv(vm, 0);
-    ASSERT_DEBUG(value == 0);
+    RX_ASSERT(value == 0);
 }
 
 /* test init */
 RX_TEST_CASE(tests_v1, test_vm_0_os_getcwd, .fixture = test_fixture) {
     const_vm_ptr vm = 0;
     u64 value = CALL(os)->getcwd(vm);
-    ASSERT_DEBUG(value == 0);
+    RX_ASSERT(value == 0);
 }
 
 /* test init */
@@ -2178,9 +2336,36 @@ RX_TEST_CASE(tests_v1, test_vm_0_pointer_alloc, .fixture = test_fixture_pointer)
     RX_ASSERT(0 != 1);
 }
 
+RX_TEST_CASE(tests_v1, test_vm_pointer_alloc_0_0, .fixture = test_fixture) {
+    const_pointer_ptr data_ptr = CALL(pointer)->alloc(0, 0);
+    RX_ASSERT(data_ptr == 0);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_pointer_alloc_2_0, .fixture = test_fixture) {
+    const_pointer_ptr data_ptr = CALL(pointer)->alloc(2, 0);
+    RX_ASSERT(data_ptr == 0);
+}
+
 RX_TEST_CASE(tests_v1, test_vm_0_pointer_copy, .fixture = test_fixture_pointer) {
-    CALL(pointer)->copy(0, 0, 0);
-    RX_ASSERT(0 != 1);
+    const_pointer_ptr result = CALL(pointer)->copy(0, 0, 0);
+    RX_ASSERT(result == 0);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_pointer_copy_0_0_0, .fixture = test_fixture) {
+    const_pointer_ptr result = CALL(pointer)->copy(0, 0, 0);
+    RX_ASSERT(result == 0);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_pointer_copy_ch_0_0, .fixture = test_fixture) {
+    const char* ch = "hello, world!";
+    const_pointer_ptr result = CALL(pointer)->copy(ch, 0, 0);
+    RX_ASSERT(result == 0);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_pointer_copy_ch_2_0, .fixture = test_fixture) {
+    const char* ch = "hello, world!";
+    const_pointer_ptr result = CALL(pointer)->copy(ch, 2, 0);
+    RX_ASSERT(result == 0);
 }
 
 RX_TEST_CASE(tests_v1, test_vm_0_pointer_copy_guard, .fixture = test_fixture_pointer) {
@@ -2188,9 +2373,107 @@ RX_TEST_CASE(tests_v1, test_vm_0_pointer_copy_guard, .fixture = test_fixture_poi
     RX_ASSERT(0 != 1);
 }
 
-RX_TEST_CASE(tests_v1, test_vm_0_pointer_alloc_guard, .fixture = test_fixture_pointer) {
+RX_TEST_CASE(tests_v1, test_vm_0_pointer_copy_guard_0_0_0, .fixture = test_fixture) {
+    CALL(pointer)->copy_guard(0, 0, 0, 0);
+    RX_ASSERT(0 != 1);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_pointer_copy_guard_ch_0_0_0, .fixture = test_fixture) {
+    const char* ch = "hello, world!";
+    CALL(pointer)->copy_guard(ch, 0, 0, 0);
+    RX_ASSERT(0 != 1);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_pointer_copy_guard_ch_1_0_0, .fixture = test_fixture) {
+    const char* ch = "hello, world!";
+    const_pointer_ptr result = CALL(pointer)->copy_guard(ch, 1, 0, 0);
+    RX_ASSERT(result == 0);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_pointer_copy_guard_ch_1_1_0, .fixture = test_fixture) {
+    const char* ch = "hello, world!";
+    const_pointer_ptr result = CALL(pointer)->copy_guard(ch, 1, 1, 0);
+    RX_ASSERT(result == 0);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_pointer_copy_guard_ch_1_2_0, .fixture = test_fixture) {
+    const char* ch = "hello, world!";
+    const_pointer_ptr result = CALL(pointer)->copy_guard(ch, 1, 2, 0);
+    RX_ASSERT(result == 0);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_pointer_alloc_guard, .fixture = test_fixture) {
     CALL(pointer)->alloc_guard(0, 0, 0, 0);
     RX_ASSERT(0 != 1);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_0_pointer_alloc_guard_0_0_0_0, .fixture = test_fixture_pointer) {
+    CALL(pointer)->alloc_guard(0, 0, 0, 0);
+    RX_ASSERT(0 != 1);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_pointer_alloc_guard_ch_0_0_0, .fixture = test_fixture) {
+    const char* ch = "hello, world!";
+    CALL(pointer)->alloc_guard(ch, 0, 0, 0);
+    RX_ASSERT(0 != 1);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_pointer_alloc_guard_ch_1_0_0, .fixture = test_fixture) {
+    const char* ch = "hello, world!";
+    u64 result = CALL(pointer)->alloc_guard(ch, 1, 0, 0);
+    RX_ASSERT(result == 0);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_pointer_alloc_guard_ch_1_1_0, .fixture = test_fixture) {
+    const char* ch = "hello, world!";
+    u64 result = CALL(pointer)->alloc_guard(ch, 1, 1, 0);
+    RX_ASSERT(result == 0);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_pointer_alloc_guard_ch_1_2_0, .fixture = test_fixture) {
+    const char* ch = "hello, world!";
+    u64 result = CALL(pointer)->alloc_guard(ch, 1, 2, 0);
+    RX_ASSERT(result == 0);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_pointer_get_address, .fixture = test_fixture) {
+    u64 result = CALL(pointer)->get_address(0);
+    RX_ASSERT(result == 0);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_0_pointer_get_address_0, .fixture = test_fixture_pointer) {
+    u64 result = CALL(pointer)->get_address(0);
+    RX_ASSERT(result == 0);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_pointer_alloc_memcpy_data_0_0, .fixture = test_fixture) {
+    const_pointer_ptr data_ptr = CALL(pointer)->alloc(2, TYPE_STRING_POINTER);
+    u64 result = CALL(pointer)->memcpy(data_ptr, 0, 0);
+    RX_ASSERT(result == 0);
+    CALL(pointer)->release(data_ptr);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_pointer_alloc_memcpy_data_2, .fixture = test_fixture) {
+    const char* ch = "hello, world!";
+    const_pointer_ptr data_ptr = CALL(pointer)->alloc(2, TYPE_STRING_POINTER);
+    u64 result = CALL(pointer)->memcpy(data_ptr, ch, 2);
+    RX_ASSERT(result != 0);
+    CALL(pointer)->release(data_ptr);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_pointer_alloc_memcpy_data_0, .fixture = test_fixture) {
+    const char* ch = "hello, world!";
+    const_pointer_ptr data_ptr = CALL(pointer)->alloc(2, TYPE_STRING_POINTER);
+    u64 result = CALL(pointer)->memcpy(data_ptr, ch, 0);
+    RX_ASSERT(result == 0);
+    CALL(pointer)->release(data_ptr);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_pointer_alloc_get_address, .fixture = test_fixture) {
+    const_pointer_ptr data_ptr = CALL(pointer)->alloc(2, TYPE_STRING_POINTER);
+    u64 result = CALL(pointer)->get_address(data_ptr);
+    RX_ASSERT(result == 0);
+    CALL(pointer)->release(data_ptr);
 }
 
 RX_TEST_CASE(tests_v1, test_vm_0_pointer_memcpy, .fixture = test_fixture_pointer) {
@@ -2201,6 +2484,44 @@ RX_TEST_CASE(tests_v1, test_vm_0_pointer_memcpy, .fixture = test_fixture_pointer
 RX_TEST_CASE(tests_v1, test_vm_0_pointer_realloc, .fixture = test_fixture_pointer) {
     CALL(pointer)->realloc(0, 0);
     RX_ASSERT(0 != 1);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_pointer_alloc_2_realloc_0, .fixture = test_fixture) {
+    const_pointer_ptr data_ptr = CALL(pointer)->alloc(2, TYPE_STRING_POINTER);
+    u64 result = CALL(pointer)->realloc(data_ptr, 0);
+    RX_ASSERT(result == 0);
+    CALL(pointer)->release(data_ptr);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_pointer_alloc_2_realloc_2, .fixture = test_fixture) {
+    const_pointer_ptr data_ptr = CALL(pointer)->alloc(2, TYPE_STRING_POINTER);
+    u64 result = CALL(pointer)->realloc(data_ptr, 2);
+    RX_ASSERT(result == 0);
+    CALL(pointer)->release(data_ptr);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_pointer_alloc_2_realloc_3, .fixture = test_fixture) {
+    const_pointer_ptr data_ptr = CALL(pointer)->alloc(2, TYPE_STRING_POINTER);
+    u64 result = CALL(pointer)->realloc(data_ptr, 3);
+    RX_ASSERT(result != 0);
+    CALL(pointer)->release(data_ptr);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_pointer_set, .fixture = test_fixture_pointer) {
+    u64 result = CALL(pointer)->set(0, 0, 0);
+    RX_ASSERT(result == 0);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_0_pointer_set_0_0, .fixture = test_fixture) {
+    u64 result = CALL(pointer)->set(0, 0, 0);
+    RX_ASSERT(result == 0);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_0_pointer_alloc_memcpy_data_0_0, .fixture = test_fixture) {
+    const_pointer_ptr data_ptr = CALL(pointer)->alloc(2, TYPE_STRING_POINTER);
+    u64 result = CALL(pointer)->memcpy(data_ptr, 0, 0);
+    RX_ASSERT(result == 0);
+    CALL(pointer)->release(data_ptr);
 }
 
 RX_TEST_CASE(tests_v1, test_vm_0_pointer_free, .fixture = test_fixture_pointer) {
@@ -2219,12 +2540,12 @@ RX_TEST_CASE(tests_v1, test_vm_0_pointer_size, .fixture = test_fixture_pointer) 
 }
 
 RX_TEST_CASE(tests_v1, test_vm_0_pointer_read, .fixture = test_fixture_pointer) {
-    CALL(pointer)->read(0);
+    CALL(pointer)->data(0);
     RX_ASSERT(0 != 1);
 }
 
 RX_TEST_CASE(tests_v1, test_vm_0_pointer_read_guard, .fixture = test_fixture_pointer) {
-    CALL(pointer)->read_guard(0, 0);
+    CALL(pointer)->data_guard(0, 0);
     RX_ASSERT(0 != 1);
 }
 
@@ -2234,7 +2555,77 @@ RX_TEST_CASE(tests_v1, test_vm_0_pointer_guard, .fixture = test_fixture_pointer)
 }
 
 RX_TEST_CASE(tests_v1, test_vm_0_pointer_read_type, .fixture = test_fixture_pointer) {
-    CALL(pointer)->read_type(0, 0);
+    CALL(pointer)->get_type(0);
+    RX_ASSERT(0 != 1);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_pointer_alloc, .fixture = test_fixture) {
+    CALL(pointer)->alloc(0, 0);
+    RX_ASSERT(0 != 1);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_pointer_copy, .fixture = test_fixture) {
+    CALL(pointer)->copy(0, 0, 0);
+    RX_ASSERT(0 != 1);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_pointer_copy_id_0, .fixture = test_fixture) {
+    CALL(pointer)->copy(0, 1, 0);
+    RX_ASSERT(0 != 1);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_pointer_copy_guard, .fixture = test_fixture) {
+    CALL(pointer)->copy_guard(0, 0, 0, 0);
+    RX_ASSERT(0 != 1);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_0_pointer_alloc_guard, .fixture = test_fixture) {
+    CALL(pointer)->alloc_guard(0, 0, 0, 0);
+    RX_ASSERT(0 != 1);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_pointer_memcpy, .fixture = test_fixture) {
+    CALL(pointer)->memcpy(0, 0, 0);
+    RX_ASSERT(0 != 1);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_pointer_realloc, .fixture = test_fixture) {
+    CALL(pointer)->realloc(0, 0);
+    RX_ASSERT(0 != 1);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_pointer_free, .fixture = test_fixture) {
+    CALL(pointer)->free(0);
+    RX_ASSERT(0 != 1);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_pointer_release, .fixture = test_fixture) {
+    CALL(pointer)->release(0);
+    RX_ASSERT(0 != 1);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_pointer_size, .fixture = test_fixture) {
+    CALL(pointer)->size(0);
+    RX_ASSERT(0 != 1);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_pointer_read, .fixture = test_fixture) {
+    CALL(pointer)->data(0);
+    RX_ASSERT(0 != 1);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_pointer_read_guard, .fixture = test_fixture) {
+    CALL(pointer)->data_guard(0, 0);
+    RX_ASSERT(0 != 1);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_pointer_guard, .fixture = test_fixture) {
+    CALL(pointer)->guard(0, 0);
+    RX_ASSERT(0 != 1);
+}
+
+RX_TEST_CASE(tests_v1, test_vm_pointer_read_type, .fixture = test_fixture) {
+    CALL(pointer)->get_type(0);
     RX_ASSERT(0 != 1);
 }
 
@@ -2327,7 +2718,7 @@ RX_TEST_CASE(tests_v1, test_os_getenv_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 file_path_ptr = CALL(os)->getenv(vm, 0);
-    ASSERT_DEBUG(file_path_ptr == 0);
+    RX_ASSERT(file_path_ptr == 0);
 }
 
 /* test init */
@@ -2336,7 +2727,7 @@ RX_TEST_CASE(tests_v1, test_os_getenv_list, .fixture = test_fixture) {
     const_vm_ptr vm = rx->ctx;
     u64 list_ptr = CALL(stack)->alloc(vm);
     u64 file_path_ptr = CALL(os)->getenv(vm, list_ptr);
-    ASSERT_DEBUG(file_path_ptr == 0);
+    RX_ASSERT(file_path_ptr == 0);
 }
 
 /* test init */
@@ -2937,7 +3328,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_1_0, .fixture = test_fi
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr = CALL(string)->load(vm, "");
-    ASSERT_DEBUG(quantum_str_ptr == 0);
+    RX_ASSERT(quantum_str_ptr == 0);
     u64 error_ptr = CALL(string)->lessthan(vm, 1, 0);
     RX_ASSERT(error_ptr == 0);
 }
@@ -2947,9 +3338,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_1_1, .fixture = test_fi
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->lessthan(vm, 1, 1);
     RX_ASSERT(error_ptr == 0);
 }
@@ -2981,9 +3372,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_1_2, .fixture = test_fi
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->lessthan(vm, 1, 2);
     RX_ASSERT(error_ptr == 0);
 }
@@ -2993,9 +3384,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_1_3, .fixture = test_fi
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->lessthan(vm, 1, 2);
     RX_ASSERT(error_ptr == 0);
 }
@@ -3005,9 +3396,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_2_1, .fixture = test_fi
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->lessthan(vm, 2, 1);
     RX_ASSERT(error_ptr == 0);
 }
@@ -3017,9 +3408,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_a_string_free, .fixture
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     CALL(string)->free(vm, quantum_str_ptr2);
     u64 error_ptr = CALL(string)->lessthan(vm, quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -3030,9 +3421,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_lessthan_string_free_b, .fixture
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     CALL(string)->free(vm, quantum_str_ptr1);
     u64 error_ptr = CALL(string)->lessthan(vm, quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -3079,7 +3470,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_1_0, .fixture = test
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr = CALL(string)->load(vm, "");
-    ASSERT_DEBUG(quantum_str_ptr == 0);
+    RX_ASSERT(quantum_str_ptr == 0);
     u64 error_ptr = CALL(string)->greaterthan(vm, 1, 0);
     RX_ASSERT(error_ptr == 0);
 }
@@ -3089,9 +3480,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_1_1, .fixture = test
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->greaterthan(vm, 1, 1);
     RX_ASSERT(error_ptr == 0);
 }
@@ -3123,9 +3514,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_1_2, .fixture = test
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->greaterthan(vm, 1, 2);
     RX_ASSERT(error_ptr == 0);
 }
@@ -3135,9 +3526,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_1_3, .fixture = test
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->greaterthan(vm, 1, 3);
     RX_ASSERT(error_ptr == 0);
 }
@@ -3147,9 +3538,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_2_1, .fixture = test
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->greaterthan(vm, 2, 1);
     RX_ASSERT(error_ptr == 0);
 }
@@ -3159,9 +3550,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_a_string_free, .fixt
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     CALL(string)->free(vm, quantum_str_ptr2);
     u64 error_ptr = CALL(string)->greaterthan(vm, quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -3172,9 +3563,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_string_free_b, .fixt
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     CALL(string)->free(vm, quantum_str_ptr1);
     u64 error_ptr = CALL(string)->greaterthan(vm, quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -3185,7 +3576,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_greaterthan_string_list, .fixtur
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 list_ptr2 = CALL(stack)->alloc(vm);
     u64 error_ptr = CALL(string)->greaterthan(vm, quantum_str_ptr1, list_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -3222,7 +3613,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_equals_1_0, .fixture = test_fixt
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr = CALL(string)->load(vm, "");
-    ASSERT_DEBUG(quantum_str_ptr == 0);
+    RX_ASSERT(quantum_str_ptr == 0);
     u64 error_ptr = CALL(string)->equals(vm, 1, 0);
     RX_ASSERT(error_ptr == 0);
 }
@@ -3232,9 +3623,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_equals_1_1, .fixture = test_fixt
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->equals(vm, 1, 1);
     RX_ASSERT(error_ptr == 0);
 }
@@ -3267,11 +3658,25 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_equals_1_2, .fixture = test_fixt
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->equals(vm, 1, 2);
     RX_ASSERT(error_ptr == 0);
+}
+
+/* test init */
+RX_TEST_CASE(pointer_tests, test_pointer_string_pointer_equals, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr vm = rx->ctx;
+    u64 pattern_ptr = CALL(string)->load(vm, "b");
+    u64 string_str = CALL(string)->load(vm, "abba");
+    u64 quantum_str_ptr1 = CALL(string)->offset(vm, string_str, pattern_ptr);
+    RX_ASSERT(quantum_str_ptr1 != 0);
+    u64 quantum_str_ptr2 = CALL(string)->offset(vm, string_str, pattern_ptr);
+    RX_ASSERT(quantum_str_ptr2 != 0);
+    u64 value = CALL(string)->equals(vm, quantum_str_ptr1, quantum_str_ptr2);
+    RX_ASSERT(value == 1);
 }
 
 /* test init */
@@ -3279,9 +3684,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_equals_1_3, .fixture = test_fixt
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->equals(vm, 1, 3);
     RX_ASSERT(error_ptr == 0);
 }
@@ -3291,9 +3696,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_equals_2_1, .fixture = test_fixt
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->equals(vm, 2, 1);
     RX_ASSERT(error_ptr == 0);
 }
@@ -3361,7 +3766,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_compare_1_0, .fixture = test_fix
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr = CALL(string)->load(vm, "");
-    ASSERT_DEBUG(quantum_str_ptr == 0);
+    RX_ASSERT(quantum_str_ptr == 0);
     u64 error_ptr = CALL(string)->compare(vm, 1, 0);
     RX_ASSERT(error_ptr == 0);
 }
@@ -3371,9 +3776,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_compare_1_1, .fixture = test_fix
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->compare(vm, 1, 1);
     RX_ASSERT(error_ptr == 0);
 }
@@ -3406,9 +3811,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_compare_1_2, .fixture = test_fix
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->compare(vm, 1, 2);
     RX_ASSERT(error_ptr == 0);
 }
@@ -3418,9 +3823,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_compare_1_3, .fixture = test_fix
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->compare(vm, 1, 3);
     RX_ASSERT(error_ptr == 0);
 }
@@ -3430,9 +3835,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_compare_2_1, .fixture = test_fix
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->compare(vm, 2, 1);
     RX_ASSERT(error_ptr == 0);
 }
@@ -3442,9 +3847,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_compare_a_string_free, .fixture 
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     CALL(string)->free(vm, quantum_str_ptr2);
     u64 error_ptr = CALL(string)->compare(vm, quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -3502,7 +3907,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strcmp_1_0, .fixture = test_fixt
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr = CALL(string)->load(vm, "");
-    ASSERT_DEBUG(quantum_str_ptr == 0);
+    RX_ASSERT(quantum_str_ptr == 0);
     u64 error_ptr = CALL(string)->strcmp(vm, 1, 0);
     RX_ASSERT(error_ptr == 0);
 }
@@ -3512,9 +3917,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strcmp_1_1, .fixture = test_fixt
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->strcmp(vm, 1, 1);
     RX_ASSERT(error_ptr == 0);
 }
@@ -3547,9 +3952,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strcmp_1_2, .fixture = test_fixt
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->strcmp(vm, 1, 2);
     RX_ASSERT(error_ptr == 0);
 }
@@ -3558,9 +3963,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strcmp_1_3, .fixture = test_fixt
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->strcmp(vm, 1, 3);
     RX_ASSERT(error_ptr == 0);
 }
@@ -3570,9 +3975,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strcmp_2_1, .fixture = test_fixt
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->strcmp(vm, 2, 1);
     RX_ASSERT(error_ptr == 0);
 }
@@ -3582,9 +3987,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strcmp_a_string_free, .fixture =
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     CALL(string)->free(vm, quantum_str_ptr2);
     u64 error_ptr = CALL(string)->strcmp(vm, quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -3595,9 +4000,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strcmp_string_free_b, .fixture =
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     CALL(string)->free(vm, quantum_str_ptr1);
     u64 error_ptr = CALL(string)->strcmp(vm, quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -3644,7 +4049,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_right_1_0, .fixture = test_
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr = CALL(string)->load(vm, "");
-    ASSERT_DEBUG(quantum_str_ptr == 0);
+    RX_ASSERT(quantum_str_ptr == 0);
     u64 error_ptr = CALL(string)->move_right(vm, 1, 0);
     RX_ASSERT(error_ptr == 0);
 }
@@ -3654,9 +4059,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_right_1_1, .fixture = test_
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->move_right(vm, 1, 1);
     RX_ASSERT(error_ptr == 0);
 }
@@ -3666,7 +4071,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_right_a_b, .fixture = test_
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "abba");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 error_ptr = CALL(string)->move_right(vm, quantum_str_ptr1, 1);
     RX_ASSERT(error_ptr == 0);
 }
@@ -3722,9 +4127,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_right_1_2, .fixture = test_
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->move_right(vm, 1, 2);
     RX_ASSERT(error_ptr == 0);
 }
@@ -3734,9 +4139,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_right_1_3, .fixture = test_
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->move_right(vm, 1, 3);
     RX_ASSERT(error_ptr == 0);
 }
@@ -3746,9 +4151,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_right_2_1, .fixture = test_
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->move_right(vm, 2, 1);
     RX_ASSERT(error_ptr == 0);
 }
@@ -3816,7 +4221,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_right_1_0, .fixture = test_fixtu
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr = CALL(string)->load(vm, "");
-    ASSERT_DEBUG(quantum_str_ptr == 0);
+    RX_ASSERT(quantum_str_ptr == 0);
     u64 error_ptr = CALL(string)->right(vm, 1, 0);
     RX_ASSERT(error_ptr == 0);
 }
@@ -3826,9 +4231,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_right_1_1, .fixture = test_fixtu
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 data_ptr = CALL(string)->right(vm, quantum_str_ptr1, 1);
     RX_ASSERT(data_ptr != 0);
     RX_ASSERT(strcmp(CALL(string)->unsafe(vm, data_ptr), "") == 0);
@@ -3894,9 +4299,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_right_1_2, .fixture = test_fixtu
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->right(vm, 1, 2);
     RX_ASSERT(error_ptr == 0);
 }
@@ -3906,9 +4311,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_right_1_3, .fixture = test_fixtu
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->right(vm, 1, 3);
     RX_ASSERT(error_ptr == 0);
 }
@@ -3918,7 +4323,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_right_2_1, .fixture = test_fixtu
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "");
     u64 error_ptr = CALL(string)->right(vm, quantum_str_ptr2, 1);
     RX_ASSERT(error_ptr == 0);
@@ -3929,9 +4334,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_right_a_string_free, .fixture = 
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     CALL(string)->free(vm, quantum_str_ptr2);
     u64 error_ptr = CALL(string)->right(vm, quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -3942,9 +4347,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_right_string_free_b, .fixture = 
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     CALL(string)->free(vm, quantum_str_ptr1);
     u64 error_ptr = CALL(string)->right(vm, quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -3955,7 +4360,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_right_string_list, .fixture = te
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 list_ptr2 = CALL(stack)->alloc(vm);
     u64 error_ptr = CALL(string)->right(vm, quantum_str_ptr1, list_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -3992,7 +4397,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_1_0, .fixture = test_f
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr = CALL(string)->load(vm, "");
-    ASSERT_DEBUG(quantum_str_ptr == 0);
+    RX_ASSERT(quantum_str_ptr == 0);
     u64 error_ptr = CALL(string)->move_left(vm, 1, 0);
     RX_ASSERT(error_ptr == 0);
 }
@@ -4002,9 +4407,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_1_1, .fixture = test_f
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->move_left(vm, 1, 1);
     RX_ASSERT(error_ptr == 0);
 }
@@ -4071,9 +4476,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_1_2, .fixture = test_f
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->move_left(vm, 1, 2);
     RX_ASSERT(error_ptr == 0);
 }
@@ -4082,9 +4487,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_1_3, .fixture = test_f
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->move_left(vm, 1, 3);
     RX_ASSERT(error_ptr == 0);
 }
@@ -4094,9 +4499,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_2_1, .fixture = test_f
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->move_left(vm, 2, 1);
     RX_ASSERT(error_ptr == 0);
 }
@@ -4106,9 +4511,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_a_string_free, .fixtur
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     CALL(string)->free(vm, quantum_str_ptr2);
     u64 error_ptr = CALL(string)->move_left(vm, quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -4119,9 +4524,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_move_left_string_free_b, .fixtur
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     CALL(string)->free(vm, quantum_str_ptr1);
     u64 error_ptr = CALL(string)->move_left(vm, quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -4168,7 +4573,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_1_0, .fixture = tes
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr = CALL(string)->load(vm, "");
-    ASSERT_DEBUG(quantum_str_ptr == 0);
+    RX_ASSERT(quantum_str_ptr == 0);
     u64 error_ptr = CALL(string)->left_strncpy(vm, 1, 0);
     RX_ASSERT(error_ptr == 0);
 }
@@ -4178,9 +4583,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_1_1, .fixture = tes
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->left_strncpy(vm, 1, 1);
     RX_ASSERT(error_ptr == 0);
 }
@@ -4252,9 +4657,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_1_2, .fixture = tes
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->left_strncpy(vm, 1, 2);
     RX_ASSERT(error_ptr == 0);
 }
@@ -4263,9 +4668,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_1_3, .fixture = tes
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->left_strncpy(vm, 1, 3);
     RX_ASSERT(error_ptr == 0);
 }
@@ -4275,9 +4680,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_2_1, .fixture = tes
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->left_strncpy(vm, 2, 1);
     RX_ASSERT(error_ptr == 0);
 }
@@ -4287,9 +4692,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_a_string_free, .fix
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     CALL(string)->free(vm, quantum_str_ptr2);
     u64 error_ptr = CALL(string)->left_strncpy(vm, quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -4300,9 +4705,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_string_free_b, .fix
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     CALL(string)->free(vm, quantum_str_ptr1);
     u64 error_ptr = CALL(string)->left_strncpy(vm, quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -4313,7 +4718,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_string_list, .fixtu
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 list_ptr2 = CALL(stack)->alloc(vm);
     u64 error_ptr = CALL(string)->left_strncpy(vm, quantum_str_ptr1, list_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -4325,7 +4730,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_strncpy_list_string, .fixtu
     const_vm_ptr vm = rx->ctx;
     u64 list_ptr1 = CALL(stack)->alloc(vm);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->left_strncpy(vm, list_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
 }
@@ -4351,7 +4756,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_1_0, .fixture = test_fixtur
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr = CALL(string)->load(vm, "");
-    ASSERT_DEBUG(quantum_str_ptr == 0);
+    RX_ASSERT(quantum_str_ptr == 0);
     u64 error_ptr = CALL(string)->left(vm, 1, 0);
     RX_ASSERT(error_ptr == 0);
 }
@@ -4361,9 +4766,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_1_1, .fixture = test_fixtur
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->left(vm, 1, 1);
     RX_ASSERT(error_ptr == 0);
 }
@@ -4435,9 +4840,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_1_2, .fixture = test_fixtur
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->left(vm, 1, 2);
     RX_ASSERT(error_ptr == 0);
 }
@@ -4446,9 +4851,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_1_3, .fixture = test_fixtur
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->left(vm, 1, 3);
     RX_ASSERT(error_ptr == 0);
 }
@@ -4458,9 +4863,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_2_1, .fixture = test_fixtur
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->left(vm, 2, 1);
     RX_ASSERT(error_ptr == 0);
 }
@@ -4533,7 +4938,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_1_0, .fixture = test_fix
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr = CALL(string)->load(vm, "");
-    ASSERT_DEBUG(quantum_str_ptr == 0);
+    RX_ASSERT(quantum_str_ptr == 0);
     u64 error_ptr = CALL(string)->strncpy(vm, 1, 0);
     RX_ASSERT(error_ptr == 0);
 }
@@ -4543,9 +4948,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_1_1, .fixture = test_fix
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->strncpy(vm, 1, 1);
     RX_ASSERT(error_ptr == 3);
 }
@@ -4629,9 +5034,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_1_2, .fixture = test_fix
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->strncpy(vm, 1, 2);
     RX_ASSERT(error_ptr == 0);
 }
@@ -4641,9 +5046,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_1_3, .fixture = test_fix
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->strncpy(vm, 1, 3);
     RX_ASSERT(error_ptr == 0);
 }
@@ -4653,9 +5058,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_2_1, .fixture = test_fix
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 data_ptr = CALL(string)->strncpy(vm, 2, 1);
     RX_ASSERT(data_ptr != 0);
 }
@@ -4665,9 +5070,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_a_string_free, .fixture 
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     CALL(string)->free(vm, quantum_str_ptr2);
     u64 error_ptr = CALL(string)->strncpy(vm, quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -4678,9 +5083,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_string_free_b, .fixture 
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "b");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     CALL(string)->free(vm, quantum_str_ptr1);
     u64 error_ptr = CALL(string)->strncpy(vm, quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -4691,7 +5096,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_string_list, .fixture = 
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
     u64 quantum_str_ptr1 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr1 != 0);
+    RX_ASSERT(quantum_str_ptr1 != 0);
     u64 list_ptr2 = CALL(stack)->alloc(vm);
     u64 error_ptr = CALL(string)->strncpy(vm, quantum_str_ptr1, list_ptr2);
     RX_ASSERT(error_ptr == 0);
@@ -4703,7 +5108,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_strncpy_list_string, .fixture = 
     const_vm_ptr vm = rx->ctx;
     u64 list_ptr1 = CALL(stack)->alloc(vm);
     u64 quantum_str_ptr2 = CALL(string)->load(vm, "a");
-    ASSERT_DEBUG(quantum_str_ptr2 != 0);
+    RX_ASSERT(quantum_str_ptr2 != 0);
     u64 error_ptr = CALL(string)->strncpy(vm, list_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
 }

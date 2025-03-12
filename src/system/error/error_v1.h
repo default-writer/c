@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 12, 2025 at 9:09:47 AM GMT+3
+ *   March 12, 2025 at 5:59:04 PM GMT+3
  *
  */
 /*
@@ -24,24 +24,35 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _STRING_POINTER_V1_H_
-#define _STRING_POINTER_V1_H_
+#ifndef _ERROR_API_H_
+#define _ERROR_API_H_
+
+#define USING_ERROR_API
 
 #define USING_API
 
 #include "std/api.h"
 
-#include "vm/export.h"
+#include "sys/export.h"
 
-/*! @file string_pointer_v1.h
- *  @brief C API / string pointer
- */
+enum error_message_code {
+    ID_ERROR_NO_ERROR,
+    ID_ERROR_VM_NOT_INITIALIZED,
+    ID_ERROR_POINTER_NOT_INITIALIZED,
+    ID_ERROR_ADDRESS_NOT_INITIALIZED,
+    ID_ERROR_ARGUMENT_VALUE_NOT_INITIALIZED,
+    ID_ERROR_INVALID_CONDITION
+};
 
-typedef struct PRIVATE_API(virtual_string_pointer_methods) {
-    u64 (*free)(const_vm_ptr vm, u64 ptr);
-} virtual_string_pointer_methods;
+typedef struct error_api {
+#ifdef USE_MEMORY_DEBUG_INFO
+    void (*stderr)(enum error_message_code id, const char* func, const char* args, const char* file, int line);
+#else
+    void (*stderr)(enum error_message_code id);
+#endif
+} error_api_type;
 
-/* definition */
-CVM_EXPORT extern const virtual_string_pointer_methods* CALL(string_pointer);
+/* api */
+CSYS_EXPORT extern const error_api_type* error_api;
 
-#endif /* _STRING_POINTER_V1_H_ */
+#endif /* _ERROR_API_H_ */

@@ -16,16 +16,13 @@ option(CONFIG_MEMORY_DEBUG_INFO "Enables memory vm debug information")
 option(CONFIG_MEMORY_CLEANUP "Enables memory cleanup")
 option(CONFIG_MEMORY_ALLOC "Enables memory allocator")
 option(CONFIG_MEMCPY "Enables use of memcpy")
+option(CONFIG_TTY "Enable tty output?")
 
-set(CONFIG_MEMORY_DEBUG_INFO ON CACHE BOOL "Enable debug information?")
+set(CONFIG_MEMORY_DEBUG_INFO OFF CACHE BOOL "Enable debug information?")
 set(CONFIG_MEMORY_CLEANUP OFF CACHE BOOL "Enable memory cleanup?")
 set(CONFIG_MEMORY_ALLOC OFF CACHE BOOL "Enable memory allocator?")
 set(CONFIG_MEMCPY OFF CACHE BOOL "Enable use of memcpy?")
-
-set(CONFIG_MEMORY_DEBUG_INFO ON)
-set(CONFIG_MEMORY_CLEANUP OFF)
-set(CONFIG_MEMORY_ALLOC OFF)
-set(CONFIG_MEMCPY OFF)
+set(CONFIG_TTY OFF CACHE BOOL "Enable tty output?")
 
 execute_process(COMMAND git rev-parse HEAD OUTPUT_VARIABLE GIT_COMMIT_HASH)
 execute_process(COMMAND git log -n 1 --pretty=format:%at OUTPUT_VARIABLE UNIX_TIMESTAMP)
@@ -110,6 +107,14 @@ set(STRICT
     -Wmissing-prototypes
     -Wold-style-definition
 )
+
+if(CONFIG_TTY)
+    if(VERBOSE)
+        message(STATUS "configure with TTY ASCII ESC output information")
+    endif()
+    add_compile_definitions(CONFIG_TTY)
+    add_definitions(-DCONFIG_TTY)
+endif()
 
 if(CONFIG_MEMORY_DEBUG_INFO)
     if(VERBOSE)
@@ -246,9 +251,10 @@ endif()
 
 set(LIB_SYS_SOURCE
     src/system/api/api_v1.c
+    src/system/error/error_v1.c
     src/system/info/info_v1.c
-    src/system/memory/memory_v1.c
     src/system/list/list_v1.c
+    src/system/memory/memory_v1.c
     src/system/options/options_v1.c
 )
 

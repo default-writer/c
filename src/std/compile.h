@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 9, 2025 at 10:11:25 PM GMT+3
+ *   March 12, 2025 at 6:12:36 PM GMT+3
  *
  */
 /*
@@ -28,6 +28,12 @@
 #define _STD_COMPILE_H_
 
 #define USING_COMPILE
+
+#ifdef CONFIG_TTY
+#if CONFIG_TTY == 1
+#define USE_TTY
+#endif
+#endif
 
 #ifdef CONFIG_MEMORY_DEBUG_INFO
 #if CONFIG_MEMORY_DEBUG_INFO == 1

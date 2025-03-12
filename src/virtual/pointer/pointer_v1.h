@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 10, 2025 at 10:18:23 PM GMT+3
+ *   March 12, 2025 at 9:10:33 AM GMT+3
  *
  */
 /*
@@ -37,30 +37,27 @@
  *  @brief C API / pointer
  */
 
-typedef struct public_pointer {
-    virtual_pointer_ptr vptr;
-    u64 address;
-} public_pointer_type;
-
 typedef struct PRIVATE_API(virtual_pointer_methods) {
     const_vm_ptr (*init)(u64 size);
     void (*destroy)(void);
     void (*gc)(void);
-    const_pointer_ptr (*alloc)(u64 size, u64 id);
-    const_pointer_ptr (*copy)(const void* src, u64 size, u64 id);
-    const_pointer_ptr (*copy_guard)(const void* src, u64 size, u64 offset, u64 id);
-    u64 (*alloc_guard)(const void* src, u64 size, u64 offset, u64 id);
-    void (*memcpy)(const_pointer_ptr const_ptr, const void* src, u64 size);
-    void (*realloc)(const_pointer_ptr ptr, u64 size);
-    void (*register_known_type)(u64 id, type_methods_definitions_ptr data_type);
+    const_pointer_ptr (*alloc)(u64 size, u64 type_id);
+    const_pointer_ptr (*copy)(const void* src, u64 size, u64 type_id);
+    const_pointer_ptr (*copy_guard)(const void* src, u64 size, u64 offset, u64 type_id);
+    u64 (*alloc_guard)(const void* src, u64 size, u64 offset, u64 type_id);
+    u64 (*memcpy)(const_pointer_ptr const_ptr, const void* src, u64 size);
+    u64 (*realloc)(const_pointer_ptr ptr, u64 size);
+    void (*register_known_type)(u64 type_id, type_methods_definitions_ptr data_type);
     void (*register_user_type)(type_methods_definitions_type* data_type);
-    void (*free)(u64 ptr);
-    void (*release)(const_pointer_ptr const_ptr);
+    u64 (*free)(u64 ptr);
+    u64 (*release)(const_pointer_ptr const_ptr);
     u64 (*size)(const_pointer_ptr const_ptr);
-    void* (*read)(const_pointer_ptr const_ptr);
-    void* (*read_guard)(const_pointer_ptr const_ptr, u64 offset);
-    void (*guard)(const_pointer_ptr const_ptr, u64 offset);
-    u64 (*read_type)(const_pointer_ptr const_ptr, u64 id);
+    void* (*data)(const_pointer_ptr const_ptr);
+    void* (*data_guard)(const_pointer_ptr const_ptr, u64 offset);
+    u64 (*guard)(const_pointer_ptr const_ptr, u64 offset);
+    u64 (*get_type)(const_pointer_ptr const_ptr);
+    u64 (*set)(const_pointer_ptr const_ptr, const_virtual_pointer_ptr vptr, u64 address);
+    u64 (*get_address)(const_pointer_ptr const_ptr);
 #ifdef USE_MEMORY_DEBUG_INFO
     void (*dump)(pointer_ptr ptr);
     void (*dump_ref)(pointer_ptr* ptr);

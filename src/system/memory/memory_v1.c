@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 10, 2025 at 1:06:05 AM GMT+3
+ *   March 12, 2025 at 5:45:00 PM GMT+3
  *
  */
 /*
@@ -24,9 +24,13 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "system/api/api_v1.h"
-
 #include "memory_v1.h"
+
+#define USING_ERROR_API
+
+#include "system/error/error_v1.h"
+
+#include "system/api/api_v1.h"
 
 #ifdef USE_MEMORY_DEBUG_INFO
 #include <stdio.h>
@@ -57,11 +61,12 @@ static void memory_set(void* dest, u8 c, u64 count);
 
 static void* memory_alloc(u64 size) {
     if (size == 0) {
-        return 0;
+        ERROR_ARGUMENT_VALUE_NOT_INITIALIZED(size == 0);
+        return NULL_PTR;
     }
     void* ptr = system_api->alloc(1, size);
     if (ptr == 0) {
-        return 0;
+        return NULL_PTR;
     }
 #ifdef USE_MEMORY_DEBUG_INFO
     total_alloc += size;
@@ -93,13 +98,16 @@ static void memory_free(void* ptr, u64 size) {
 
 static void* memory_realloc(void* old_ptr, u64 size, u64 new_size) {
     if (old_ptr == 0) {
-        return 0;
+        return NULL_PTR;
     }
     if (new_size <= size) {
-        return 0;
+        return NULL_PTR;
     }
     void* ptr = old_ptr;
     ptr = system_api->realloc(ptr, new_size);
+    if (ptr == 0) {
+        return NULL_PTR;
+    }
 #ifdef USE_MEMORY_DEBUG_INFO
     total_alloc += new_size;
     total_free += size;
@@ -132,12 +140,14 @@ static void memory_set(void* dest, u8 c, u64 count) {
         dest_ptr1[block_idx] = c;
 }
 #endif
+
+#ifdef USE_MEMORY_DEBUG_INFO
 CSYS_EXPORT void init_statistics(void) {
     total_alloc = 0;
     total_free = 0;
     printf("   .: %16s ! %16lld . %16lld : %16lld : %16lld\n", "", (u64)0, total_alloc - total_free, total_free, total_alloc);
 }
-#ifdef USE_MEMORY_DEBUG_INFO
+
 CSYS_EXPORT void result_statistics(void) {
     printf("   .: %16s ! %16lld . %16lld : %16lld : %16lld\n", "", (u64)0, total_alloc - total_free, total_free, total_alloc);
 }
