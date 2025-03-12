@@ -79,6 +79,7 @@ int main(void) {
 ./bin/init.sh --init --setup
 ./bin/coverageall.sh --all --clean
 ./bin/target.sh --target=main-tests-vm1 --release
+./bin/cmake.sh --target=main-tests-vm1 --verbose --ty
 ./bin/lib.sh --c-sys
 ./bin/lib.sh --c-vm
 ```
