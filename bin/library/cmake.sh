@@ -345,6 +345,10 @@ function get-options() {
                 verbose="--verbose"
                 ;;
 
+            "--tty") # [optional] runs using TTY ASCII ESC output
+                tty="--tty"
+                ;;
+
             "--help") # [optional] shows command description
                 help="--help"
                 ;;
@@ -365,6 +369,7 @@ function cmake-options() {
     local gc_options
     local verbose_options
     local build_type_options
+    local tty_options
 
     if [ "${sanitize}" == "--sanitize" ] && [ "${valgrind}" == "" ]; then
         sanitize_options=-DCODE_SANITIZER:BOOL=TRUE
@@ -387,7 +392,11 @@ function cmake-options() {
         verbose_options=-DCONFIG_MEMORY_DEBUG_INFO:BOOL=TRUE
     fi
 
-    echo " ${sanitize_options} ${mocs_options} ${gc_options} ${verbose_options} ${build_type_options}"
+    if [ "${tty}" == "--tty" ]; then
+        tty_options=-DCONFIG_TTY:BOOL=TRUE
+    fi
+
+    echo " ${sanitize_options} ${mocs_options} ${gc_options} ${verbose_options} ${build_type_options} ${tty_options}"
 }
 
 function cmake-coverage-options() {

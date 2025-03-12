@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 25, 2025 at 10:21:42 AM GMT+3
+ *   March 12, 2025 at 5:24:37 PM GMT+3
  *
  */
 /*
@@ -28,6 +28,8 @@
 #define _TEST_MEMORY_H_
 
 #define USING_MEMORY
+
+#define USING_API
 
 #include "std/api.h"
 

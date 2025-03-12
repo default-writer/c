@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 10, 2025 at 12:55:34 AM GMT+3
+ *   March 12, 2025 at 5:18:35 PM GMT+3
  *
  */
 /*
@@ -24,8 +24,8 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _system_api_H_
-#define _system_api_H_
+#ifndef _SYSTEM_API_H_
+#define _SYSTEM_API_H_
 
 #define USING_API
 #define USING_MEMORY
@@ -36,7 +36,7 @@
 
 #include <stdlib.h>
 
-#if defined(USE_MEMORY_DEBUG_INFO)
+#ifdef USE_MEMORY_DEBUG_INFO
 CSYS_EXPORT extern void init_statistics(void);
 CSYS_EXPORT extern void result_statistics(void);
 #endif
@@ -50,4 +50,4 @@ typedef struct system_api {
 /* api */
 CSYS_EXPORT extern const system_api_type* system_api;
 
-#endif /* _system_api_H_ */
+#endif /* _SYSTEM_API_H_ */

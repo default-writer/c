@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 8, 2025 at 10:21:56 AM GMT+3
+ *   March 12, 2025 at 5:45:48 PM GMT+3
  *
  */
 /*
@@ -29,6 +29,7 @@
 #include "test_memory.h"
 
 #include "system/api/api_v1.h"
+
 #include "system/memory/memory_v1.h"
 
 #include "test.h"
@@ -42,7 +43,7 @@ typedef struct test_data {
 
 /*api*/
 static void* mock_alloc(size_t __nmemb, size_t __size) {
-    return 0;
+    return NULL_PTR;
 }
 
 static void mock_free(void* __ptr) {

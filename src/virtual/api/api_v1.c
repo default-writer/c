@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 6, 2025 at 12:08:41 AM GMT+3
+ *   March 11, 2025 at 9:16:47 PM GMT+3
  *
  */
 /*
@@ -41,6 +41,7 @@ const virtual_api_type PRIVATE_API(virtual_api_methods_definitions) = {
     .getcwd = &getcwd,
     .getenv = &getenv,
     .memcpy = &memcpy,
+    .memset = &memset,
     .puts = &puts,
     .strcmp = &strcmp,
     .strncat = &strncat,

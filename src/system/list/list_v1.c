@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 8, 2025 at 10:21:09 AM GMT+3
+ *   March 12, 2025 at 5:38:06 PM GMT+3
  *
  */
 /*
@@ -85,16 +85,16 @@ static void list_push(stack_ptr* current, void* payload) {
 /* pop existing element at the top of the stack/queue/list */
 static void* list_pop(stack_ptr* current) {
     if (current == 0 || *current == 0) {
-        return 0;
+        return NULL_PTR;
     }
     /* gets the current memory pointer */
     stack_ptr ptr = *current;
     /* gets next pointer */
     stack_ptr next = list_next(ptr);
-    /* if we call method on empty stack, do not return head element, return null element by convention */
+    /* if we call method on empty stack, do not return head element, return NULL_PTR element by convention */
     if (next == 0) {
-        /* returns default element as null element */
-        return 0;
+        /* returns default element as NULL_PTR element */
+        return NULL_PTR;
     }
     /* rewinds head pointer to next pointer value */
     *current = next;
@@ -109,16 +109,16 @@ static void* list_pop(stack_ptr* current) {
 /* peeks existing element at the top of the stack/queue/list */
 static void* list_peek(stack_ptr* current) {
     if (current == 0 || *current == 0) {
-        return 0;
+        return NULL_PTR;
     }
     /* gets the current memory pointer */
     stack_ptr ptr = *current;
     /* gets next pointer */
     const_stack_element_ptr next = list_next(ptr);
-    /* if we call method on empty stack, do not return head element, return null element by convention */
+    /* if we call method on empty stack, do not return head element, return NULL_PTR element by convention */
     if (next == 0) {
-        /* returns default element as null element */
-        return 0;
+        /* returns default element as NULL_PTR element */
+        return NULL_PTR;
     }
     /* returns actual data */
     return list_data(ptr);
@@ -126,7 +126,7 @@ static void* list_peek(stack_ptr* current) {
 
 /* initializes the new context's head element */
 static void list_init(stack_ptr* current) {
-    /* checks if pointer is null */
+    /* checks if pointer is NULL_PTR */
     if (current == 0 || *current != 0) {
         return;
     }

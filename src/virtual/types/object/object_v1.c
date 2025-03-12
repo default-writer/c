@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 9, 2025 at 6:57:37 PM GMT+3
+ *   March 12, 2025 at 5:49:19 PM GMT+3
  *
  */
 /*
@@ -26,7 +26,9 @@
 
 #include "object_v1.h"
 
-#include "std/api.h"
+#define USING_ERROR_API
+
+#include "system/error/error_v1.h"
 
 #include "virtual/pointer/pointer_v1.h"
 #include "virtual/virtual/virtual_v1.h"
@@ -37,7 +39,7 @@ static const enum type id = TYPE_OBJECT;
 
 /* internal */
 static u64 object_alloc(const_vm_ptr vm, u64 size);
-static void object_free(const_vm_ptr vm, u64 ptr);
+static u64 object_free(const_vm_ptr vm, u64 ptr);
 static void* object_unsafe(const_vm_ptr vm, u64 ptr);
 static u64 object_load(const_vm_ptr vm, const void* data, u64 size);
 static u64 object_size(const_vm_ptr vm, u64 ptr);
@@ -62,46 +64,53 @@ static void type_desctructor(const_pointer_ptr const_ptr) {
 
 static u64 object_alloc(const_vm_ptr vm, u64 size) {
     if (vm == 0 || *vm == 0) {
-        return 0;
+        ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
+        return FALSE;
     }
     if (size == 0) {
-        return 0;
+        ERROR_ARGUMENT_VALUE_NOT_INITIALIZED(size == 0);
+        return FALSE;
     }
     return CALL(virtual)->pointer(vm, size, id);
 }
 
-static void object_free(const_vm_ptr vm, u64 ptr) {
+static u64 object_free(const_vm_ptr vm, u64 ptr) {
     if (vm == 0 || *vm == 0) {
-        return;
+        ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
+        return FALSE;
     }
     const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
     if (data_ptr == 0) {
-        return;
+        return FALSE;
     }
     type_desctructor(data_ptr);
+    return TRUE;
 }
 
 static void* object_unsafe(const_vm_ptr vm, u64 ptr) {
     if (vm == 0 || *vm == 0) {
-        return 0;
+        ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
+        return NULL_PTR;
     }
     const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
     if (data_ptr == 0) {
-        return 0;
+        return NULL_PTR;
     }
-    void* object_data = CALL(pointer)->read(data_ptr);
+    void* object_data = CALL(pointer)->data(data_ptr);
     return object_data;
 }
 
 static u64 object_load(const_vm_ptr vm, const void* src_data, u64 size) {
     if (vm == 0 || *vm == 0) {
-        return 0;
+        ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
+        return FALSE;
     }
     if (src_data == 0) {
-        return 0;
+        return FALSE;
     }
     if (size == 0) {
-        return 0;
+        ERROR_ARGUMENT_VALUE_NOT_INITIALIZED(size == 0);
+        return FALSE;
     }
     const_pointer_ptr data_ptr = CALL(pointer)->copy(src_data, size, id);
     return CALL(virtual)->alloc(vm, data_ptr);
@@ -109,11 +118,12 @@ static u64 object_load(const_vm_ptr vm, const void* src_data, u64 size) {
 
 static u64 object_size(const_vm_ptr vm, u64 ptr) {
     if (vm == 0 || *vm == 0) {
-        return 0;
+        ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
+        return FALSE;
     }
     const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
     if (data_ptr == 0) {
-        return 0;
+        return FALSE;
     }
     return CALL(pointer)->size(data_ptr);
 }

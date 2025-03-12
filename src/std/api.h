@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 9, 2025 at 10:11:39 PM GMT+3
+ *   March 12, 2025 at 12:35:20 PM GMT+3
  *
  */
 /*
@@ -40,17 +40,5 @@
 #include "std/macros.h"
 
 #include "std/version.h"
-
-#define VM_EXPAND(X) X
-#define VM_CONCAT_(A, B) A##B
-#define VM_CONCAT(A, B) VM_CONCAT_(A, B)
-#define VM_STRINGIFY_(X) #X
-#define VM_STRINGIFY(X) VM_STRINGIFY_(X)
-
-#define PRIVATE_API(x) VM_CONCAT(API(x), VM_CONCAT(_, GIT_COMMIT_HASH_VALUE))
-#define API_VERSION VM_EXPAND(VM_CONCAT(, VM_STRINGIFY(VM_CONCAT(MAJOR_VERSION, VM_CONCAT(., VM_CONCAT(MINOR_VERSION, VM_CONCAT(., PATCH_VERSION)))))))
-#define API(x) VM_CONCAT(x, VM_CONCAT(_, VM_CONCAT(v, VM_CONCAT(MAJOR_VERSION, VM_CONCAT(_, VM_CONCAT(MINOR_VERSION, VM_CONCAT(_, PATCH_VERSION)))))))
-
-#define CALL(x) PRIVATE_API(x)()
 
 #endif /* _STD_API_H_ */

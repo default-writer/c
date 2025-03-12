@@ -42,6 +42,10 @@ while (($#)); do
             verbose="--verbose"
             ;;
 
+        "--tty") # [optional] runs using TTY ASCII ESC output
+            tty="--tty"
+            ;;
+
         "--help") # [optional] shows command description
             help
             ;;

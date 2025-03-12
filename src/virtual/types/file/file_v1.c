@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 10, 2025 at 1:48:58 AM GMT+3
+ *   March 12, 2025 at 4:29:02 PM GMT+3
  *
  */
 /*
@@ -26,7 +26,11 @@
 
 #include "file_v1.h"
 
-#include "std/api.h"
+#define USING_ERROR_API
+
+#include "system/error/error_v1.h"
+
+#define USING_API
 
 #include "virtual/api/api_v1.h"
 #include "virtual/pointer/pointer_v1.h"
@@ -42,6 +46,7 @@
 static const enum type id = TYPE_FILE;
 
 /* definition */
+typedef struct file_handler* file_handler_ptr;
 typedef struct file_handler {
     FILE* file;
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -51,7 +56,7 @@ typedef struct file_handler {
 
 /* internal */
 static u64 file_alloc(const_vm_ptr vm, u64 file_path_ptr, u64 mode_ptr);
-static void file_free(const_vm_ptr vm, u64 ptr);
+static u64 file_free(const_vm_ptr vm, u64 ptr);
 static u64 file_data(const_vm_ptr vm, u64 ptr);
 
 /* destructor */
@@ -69,7 +74,7 @@ static void INIT init(void) {
 }
 
 static void type_desctructor(const_pointer_ptr const_ptr) {
-    struct file_handler* handler = CALL(pointer)->read(const_ptr);
+    file_handler_ptr handler = CALL(pointer)->data(const_ptr);
     if (handler->file != 0) {
         virtual_api->fclose(handler->file);
         handler->file = 0;
@@ -80,9 +85,9 @@ static void type_desctructor(const_pointer_ptr const_ptr) {
 static int is_valid_file_path(const char* file_path) {
     size_t size = virtual_api->strlen(file_path);
     if (size > 0 && size <= PATH_MAX - 1) {
-        return 1;
+        return TRUE;
     }
-    return 0;
+    return FALSE;
 }
 
 static int is_valid_mode(const char* mode) {
@@ -90,71 +95,86 @@ static int is_valid_mode(const char* mode) {
     size_t num_modes = sizeof(valid_modes) / sizeof(valid_modes[0]);
     for (size_t i = 0; i < num_modes; ++i) {
         if (virtual_api->strcmp(mode, valid_modes[i]) == 0) {
-            return 1;
+            return TRUE;
         }
     }
-    return 0;
+    return FALSE;
 }
 
 static u64 file_alloc(const_vm_ptr vm, u64 file_path, u64 mode) {
     if (vm == 0 || *vm == 0) {
-        return 0;
+        ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
+        return FALSE;
     }
     if (file_path == 0) {
-        return 0;
+        ERROR_ARGUMENT_VALUE_NOT_INITIALIZED(file_path == 0);
+        return FALSE;
     }
     if (mode == 0) {
-        return 0;
+        ERROR_ARGUMENT_VALUE_NOT_INITIALIZED(mode == 0);
+        return FALSE;
     }
     const_pointer_ptr file_path_ptr = CALL(virtual)->read_type(vm, file_path, TYPE_STRING);
     if (file_path_ptr == 0) {
-        return 0;
+        ERROR_POINTER_NOT_INITIALIZED(file_path_ptr == 0);
+        return FALSE;
     }
     const_pointer_ptr mode_ptr = CALL(virtual)->read_type(vm, mode, TYPE_STRING);
     if (mode_ptr == 0) {
-        return 0;
+        ERROR_POINTER_NOT_INITIALIZED(mode_ptr == 0);
+        return FALSE;
     }
-    const char* file_path_data = CALL(pointer)->read(file_path_ptr);
-    if (!is_valid_file_path(file_path_data)) {
-        return 0;
+    const char* file_path_data = CALL(pointer)->data(file_path_ptr);
+    if (is_valid_file_path(file_path_data) == 0) {
+        ERROR_INVALID_CONDITION(is_valid_file_path(file_path_data) == 0);
+        return FALSE;
     }
-    const char* mode_data = CALL(pointer)->read(mode_ptr);
-    if (!is_valid_mode(mode_data)) {
-        return 0;
+    const char* mode_data = CALL(pointer)->data(mode_ptr);
+    if (is_valid_mode(mode_data) == 0) {
+        ERROR_INVALID_CONDITION(is_valid_mode(mode_data) == 0);
+        return FALSE;
     }
     FILE* f = virtual_api->fopen(file_path_data, mode_data); /* NOLINT */
     if (f == 0) {
-        return 0;
+        ERROR_POINTER_NOT_INITIALIZED(f == 0);
+        return FALSE;
     }
     const_pointer_ptr f_ptr = CALL(pointer)->alloc(FILE_HANDLER_SIZE, id);
-    struct file_handler* handler = CALL(pointer)->read(f_ptr);
+    file_handler_ptr handler = CALL(pointer)->data(f_ptr);
     handler->file = f;
 #ifdef USE_MEMORY_DEBUG_INFO
-    handler->path = CALL(pointer)->read(file_path_ptr);
+    handler->path = CALL(pointer)->data(file_path_ptr);
 #endif
     return CALL(virtual)->alloc(vm, f_ptr);
 }
 
-static void file_free(const_vm_ptr vm, u64 ptr) {
+static u64 file_free(const_vm_ptr vm, u64 ptr) {
     if (vm == 0 || *vm == 0) {
-        return;
+        ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
+        return FALSE;
     }
     const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
     if (data_ptr == 0) {
-        return;
+        ERROR_POINTER_NOT_INITIALIZED(data_ptr == 0);
+        return FALSE;
     }
+
     type_desctructor(data_ptr);
+    return TRUE;
 }
 
 static u64 file_data(const_vm_ptr vm, u64 ptr) {
     if (vm == 0 || *vm == 0) {
-        return 0;
+        ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
+        return FALSE;
     }
     const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
     if (data_ptr == 0) {
-        return 0;
+        ERROR_POINTER_NOT_INITIALIZED(data_ptr == 0);
+        return FALSE;
     }
-    struct file_handler* handler = CALL(pointer)->read(data_ptr);
+
+    file_handler_ptr handler = CALL(pointer)->data(data_ptr);
     FILE* f = handler->file;
     virtual_api->fseek(f, 0, SEEK_END); /* NOLINT */
     u64 size = (u64)virtual_api->ftell(f);

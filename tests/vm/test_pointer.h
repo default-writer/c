@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   February 25, 2025 at 10:21:35 AM GMT+3
+ *   March 12, 2025 at 5:24:45 PM GMT+3
  *
  */
 /*
@@ -28,6 +28,8 @@
 #define _TEST_POINTER_H_
 
 #define USING_POINTER
+
+#define USING_API
 
 #include "std/api.h"
 

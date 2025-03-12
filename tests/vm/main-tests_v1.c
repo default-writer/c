@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 10, 2025 at 12:58:46 AM GMT+3
+ *   March 12, 2025 at 5:30:47 PM GMT+3
  *
  */
 /*
@@ -28,10 +28,9 @@
 
 #include "main-tests_v1.h"
 
-// #define RX_ENABLE_EXTERNAL_LINKING
-// #define RX_DISABLE_TEST_DISCOVERY
-
 #include "system/info/info_v1.h"
+
+#define USING_API
 
 #include "system/api/api_v1.h"
 
@@ -62,16 +61,22 @@ static void INIT init() {
 #endif
 }
 
-int main(int argc, char** argv) {
 #ifdef USE_MEMORY_DEBUG_INFO
+int main(int argc, char** argv) {
     init_statistics();
-#endif
     TEST_RUN(memory_micro_result, _memory_micro_test_suite);
     TEST_RUN(list_micro_result, _list_micro_test_suite);
     TEST_RUN(vm_v1_result, _vm_v1_test_suite);
     TEST_RUN(pointer_v1_result, _pointer_test_suite);
-#ifdef USE_MEMORY_DEBUG_INFO
     result_statistics();
-#endif
     return memory_micro_result | list_micro_result | vm_v1_result | pointer_v1_result;
 }
+#else
+int main(int argc, char** argv) {
+    TEST_RUN(memory_micro_result, _memory_micro_test_suite);
+    TEST_RUN(list_micro_result, _list_micro_test_suite);
+    TEST_RUN(vm_v1_result, _vm_v1_test_suite);
+    TEST_RUN(pointer_v1_result, _pointer_test_suite);
+    return memory_micro_result | list_micro_result | vm_v1_result | pointer_v1_result;
+}
+#endif

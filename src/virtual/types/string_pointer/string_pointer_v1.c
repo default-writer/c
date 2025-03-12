@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 9, 2025 at 12:00:27 PM GMT+3
+ *   March 12, 2025 at 12:40:21 PM GMT+3
  *
  */
 /*
@@ -26,8 +26,6 @@
 
 #include "string_pointer_v1.h"
 
-#include "std/api.h"
-
 #include "virtual/pointer/pointer_v1.h"
 #include "virtual/virtual/virtual_v1.h"
 
@@ -36,7 +34,7 @@
 static const enum type id = TYPE_STRING_POINTER;
 
 /* definition */
-static void string_free(const_vm_ptr vm, u64 ptr);
+static u64 string_free(const_vm_ptr vm, u64 ptr);
 
 /* destructor */
 static void type_desctructor(const_pointer_ptr const_ptr);
@@ -57,17 +55,18 @@ static void type_desctructor(const_pointer_ptr const_ptr) {
 }
 
 /* api */
-static void string_free(const_vm_ptr vm, u64 ptr) {
+static u64 string_free(const_vm_ptr vm, u64 ptr) {
     if (vm == 0 || *vm == 0) {
-        return;
+        return FALSE;
     }
     const_pointer_ptr data_ptr = CALL(virtual)->read(vm, ptr);
     if (data_ptr == 0) {
-        return;
+        return FALSE;
     }
-    if (CALL(pointer)->read_type(data_ptr, TYPE_STRING_POINTER)) {
+    if (CALL(pointer)->get_type(data_ptr) == TYPE_STRING_POINTER) {
         type_desctructor(data_ptr);
     }
+    return TRUE;
 }
 
 CVM_EXPORT void string_pointer_init(void) {

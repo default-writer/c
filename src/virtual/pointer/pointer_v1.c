@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 10, 2025 at 7:55:41 AM GMT+3
+ *   March 12, 2025 at 5:46:59 PM GMT+3
  *
  */
 /*
@@ -28,9 +28,12 @@
 
 #include "pointer_v1.h"
 
-#include "std/api.h"
+#define USING_ERROR_API
+
+#include "system/error/error_v1.h"
 
 #include "system/api/api_v1.h"
+
 #include "system/memory/memory_v1.h"
 
 #include "virtual/api/api_v1.h"
@@ -44,10 +47,11 @@
 
 /* private */
 typedef struct pointer {
-    public_pointer_type pointer;
-    u64 size;
-    u64 id;
+    const_virtual_pointer_ptr vptr;
     void* data;
+    u64 address;
+    u64 size;
+    u64 type;
 } pointer_type;
 
 /* private */
@@ -55,7 +59,7 @@ typedef struct known_types* known_types_ptr;
 typedef const struct known_types* const_known_types_ptr;
 
 typedef struct known_types {
-    u64 id;
+    u64 type_id;
     known_types_ptr next;
     type_methods_definitions_ptr methods;
 } known_types_type;
@@ -108,21 +112,23 @@ static const_vm_ptr pointer_init(u64 size);
 static void pointer_destroy(void);
 static void pointer_gc(void);
 
-static pointer_ptr pointer_alloc(u64 size, u64 id);
-static const_pointer_ptr pointer_copy(const void* data, u64 size, u64 id);
-static const_pointer_ptr pointer_copy_guard(const void* data, u64 size, u64 offset, u64 id);
-static u64 pointer_alloc_guard(const void* data, u64 size, u64 offset, u64 id);
-static void pointer_memcpy(const_pointer_ptr const_ptr, const void* data, u64 size);
-static void pointer_realloc(pointer_ptr ptr, u64 size);
-static void pointer_free(u64 ptr);
-static void pointer_release(const_pointer_ptr const_ptr);
+static const_pointer_ptr pointer_alloc(u64 size, u64 type_id);
+static const_pointer_ptr pointer_copy(const void* data, u64 size, u64 type_id);
+static const_pointer_ptr pointer_copy_guard(const void* data, u64 size, u64 offset, u64 type_id);
+static u64 pointer_alloc_guard(const void* data, u64 size, u64 offset, u64 type_id);
+static u64 pointer_memcpy(const_pointer_ptr const_ptr, const void* data, u64 size);
+static u64 pointer_realloc(const_pointer_ptr ptr, u64 size);
+static u64 pointer_free(u64 ptr);
+static u64 pointer_release(const_pointer_ptr const_ptr);
 static u64 pointer_size(const_pointer_ptr const_ptr);
-static void* pointer_read(const_pointer_ptr const_ptr);
-static void* pointer_read_guard(const_pointer_ptr const_ptr, u64 offset);
-static void pointer_guard(const_pointer_ptr const_ptr, u64 offset);
-static u64 pointer_read_type(const_pointer_ptr const_ptr, u64 virtual_id);
+static void* pointer_data(const_pointer_ptr const_ptr);
+static void* pointer_data_guard(const_pointer_ptr const_ptr, u64 offset);
+static u64 pointer_guard(const_pointer_ptr const_ptr, u64 offset);
+static u64 pointer_get_type(const_pointer_ptr const_ptr);
+static u64 pointer_get_address(const_pointer_ptr const_ptr);
+static u64 pointer_set(const_pointer_ptr const_ptr, const_virtual_pointer_ptr vptr, u64 address);
 
-static void known_types_init(u64 id, type_methods_definitions_ptr data_type);
+static void known_types_init(u64 type_id, type_methods_definitions_ptr data_type);
 static void user_types_init(type_methods_definitions_ptr data_type);
 static u64 check_existing_type(known_types_ptr current, const_type_methods_definitions_ptr data_type);
 
@@ -138,14 +144,14 @@ static u64 check_existing_type(known_types_ptr current, const_type_methods_defin
     while (current->next != 0) {
         known_types_ptr prev = current->next;
         if (current->methods == data_type) {
-            return 0;
+            return FALSE;
         }
         current = prev;
     }
-    return 1;
+    return TRUE;
 }
 
-static void known_types_init(u64 id, type_methods_definitions_ptr data_type) {
+static void known_types_init(u64 type_id, type_methods_definitions_ptr data_type) {
     if (vm == 0) {
         return;
     }
@@ -153,10 +159,10 @@ static void known_types_init(u64 id, type_methods_definitions_ptr data_type) {
         return;
     }
     known_types_ptr obj = system_api->alloc(1, KNOWN_TYPES_SIZE);
-    obj->id = id;
+    obj->type_id = type_id;
     obj->next = known_types;
     obj->methods = data_type;
-    data_type->id = id;
+    data_type->type_id = type_id;
     known_types = obj;
 }
 
@@ -167,9 +173,9 @@ static void user_types_init(type_methods_definitions_ptr data_type) {
     if (check_existing_type(known_types, data_type) == 0) {
         return;
     }
-    u64 id = known_types_counter;
+    u64 type_id = known_types_counter;
     known_types_counter++;
-    known_types_init(id, data_type);
+    known_types_init(type_id, data_type);
 }
 
 static void INIT vm_init(void) {
@@ -184,170 +190,295 @@ static void DESTROY vm_destroy(void) {
     }
 }
 
-static pointer_ptr pointer_alloc(u64 size, u64 id) {
+static const_pointer_ptr pointer_alloc(u64 size, u64 type) {
     if (vm == 0) {
-        return 0;
+        ERROR_VM_NOT_INITIALIZED(vm);
+        return NULL_PTR;
+    }
+    if (size == 0) {
+        ERROR_ARGUMENT_VALUE_NOT_INITIALIZED(size == 0);
+        return NULL_PTR;
+    }
+    if (type == 0) {
+        ERROR_ARGUMENT_VALUE_NOT_INITIALIZED(type == 0);
+        return NULL_PTR;
     }
     pointer_ptr ptr = CALL(system_memory)->alloc(POINTER_SIZE);
-    if (size != 0) {
-        ptr->data = CALL(system_memory)->alloc(size);
-        ptr->size = size;
+    if (ptr == 0) {
+        return NULL_PTR;
     }
-    ptr->id = id;
+    void* data = CALL(system_memory)->alloc(size);
+    if (data == 0) {
+        CALL(system_memory)->free(ptr, POINTER_SIZE);
+        return NULL_PTR;
+    }
+    *ptr = (struct pointer) {
+        .data = data,
+        .size = size,
+        .type = type
+    };
     return ptr;
 }
 
-static const_pointer_ptr pointer_copy(const void* data, u64 size, u64 id) {
+static const_pointer_ptr pointer_copy(const void* data, u64 size, u64 type_id) {
     if (vm == 0) {
-        return 0;
+        ERROR_VM_NOT_INITIALIZED(vm);
+        return NULL_PTR;
     }
-    const_pointer_ptr data_ptr = pointer_alloc(size, id);
+    if (data == 0) {
+        ERROR_POINTER_NOT_INITIALIZED(data);
+        return NULL_PTR;
+    }
+    if (size == 0) {
+        ERROR_ARGUMENT_VALUE_NOT_INITIALIZED(size == 0);
+        return NULL_PTR;
+    }
+    if (type_id == 0) {
+        ERROR_ARGUMENT_VALUE_NOT_INITIALIZED(type_id == 0);
+        return NULL_PTR;
+    }
+    const_pointer_ptr data_ptr = pointer_alloc(size, type_id);
+    if (data_ptr == 0) {
+        ERROR_POINTER_NOT_INITIALIZED(data_ptr == 0);
+        return NULL_PTR;
+    }
+
     pointer_memcpy(data_ptr, data, size);
     return data_ptr;
 }
 
-static const_pointer_ptr pointer_copy_guard(const void* data, u64 size, u64 offset, u64 id) {
+static const_pointer_ptr pointer_copy_guard(const void* data, u64 size, u64 offset, u64 type_id) {
     if (vm == 0) {
-        return 0;
+        ERROR_VM_NOT_INITIALIZED(vm);
+        return NULL_PTR;
     }
-    const_pointer_ptr data_ptr = 0;
-    if (size > offset) {
-        data_ptr = pointer_copy(data, size, id);
-        pointer_guard(data_ptr, offset);
+    if (data == 0) {
+        ERROR_POINTER_NOT_INITIALIZED(data);
+        return NULL_PTR;
     }
+    if (size == 0) {
+        ERROR_ARGUMENT_VALUE_NOT_INITIALIZED(size == 0);
+        return NULL_PTR;
+    }
+    if (size <= offset) {
+        ERROR_ARGUMENT_VALUE_NOT_INITIALIZED(size <= offset);
+        return NULL_PTR;
+    }
+    if (type_id == 0) {
+        ERROR_ARGUMENT_VALUE_NOT_INITIALIZED(type_id == 0);
+        return NULL_PTR;
+    }
+    const_pointer_ptr data_ptr = pointer_copy(data, size, type_id);
+    pointer_guard(data_ptr, offset);
     return data_ptr;
 }
 
-static u64 pointer_alloc_guard(const void* data, u64 size, u64 offset, u64 id) {
+static u64 pointer_alloc_guard(const void* data, u64 size, u64 offset, u64 type_id) {
     if (vm == 0) {
-        return 0;
+        ERROR_VM_NOT_INITIALIZED(vm);
+        return FALSE;
     }
-    const_pointer_ptr data_ptr = 0;
-    if (size > offset) {
-        data_ptr = pointer_copy(data, size, id);
-        pointer_guard(data_ptr, offset);
+    if (data == 0) {
+        ERROR_POINTER_NOT_INITIALIZED(data == 0);
+        return FALSE;
     }
+    if (size == 0) {
+        ERROR_ARGUMENT_VALUE_NOT_INITIALIZED(size == 0);
+        return FALSE;
+    }
+    if (size <= offset) {
+        ERROR_ARGUMENT_VALUE_NOT_INITIALIZED(size <= offset);
+        return FALSE;
+    }
+    if (type_id == 0) {
+        ERROR_ARGUMENT_VALUE_NOT_INITIALIZED(type_id == 0);
+        return FALSE;
+    }
+    const_pointer_ptr data_ptr = pointer_copy(data, size, type_id);
+    if (data_ptr == 0) {
+        ERROR_POINTER_NOT_INITIALIZED(data_ptr == 0);
+        return FALSE;
+    }
+    pointer_guard(data_ptr, offset);
     return CALL(virtual)->alloc(&vm, data_ptr);
 }
 
-static void pointer_memcpy(const_pointer_ptr const_ptr, const void* data, u64 size) {
+static u64 pointer_memcpy(const_pointer_ptr const_ptr, const void* data, u64 size) {
     if (vm == 0) {
-        return;
+        ERROR_VM_NOT_INITIALIZED(vm);
+        return FALSE;
     }
-    virtual_api->memcpy(pointer_read(const_ptr), data, size);
+    if (const_ptr == 0) {
+        ERROR_POINTER_NOT_INITIALIZED(data);
+        return FALSE;
+    }
+    if (data == 0) {
+        return FALSE;
+    }
+    if (size == 0) {
+        ERROR_ARGUMENT_VALUE_NOT_INITIALIZED(size == 0);
+        return FALSE;
+    }
+    void* const_data = const_ptr->data;
+    virtual_api->memcpy(const_data, data, size);
+    return TRUE;
 }
 
-static void pointer_realloc(pointer_ptr ptr, u64 size) {
+static u64 pointer_realloc(const_pointer_ptr const_ptr, u64 size) {
     if (vm == 0) {
-        return;
+        ERROR_VM_NOT_INITIALIZED(vm);
+        return FALSE;
     }
-    if (ptr != 0 && ptr->data != 0) {
-        ptr->data = CALL(system_memory)->realloc(ptr->data, ptr->size, size);
-        ptr->size = size;
+    if (const_ptr == 0) {
+        return FALSE;
     }
+    if (size == 0) {
+        ERROR_ARGUMENT_VALUE_NOT_INITIALIZED(size == 0);
+        return FALSE;
+    }
+    if (const_ptr->size >= size) {
+        return FALSE;
+    }
+    safe_pointer_ptr safe_ptr;
+    safe_ptr.const_ptr = const_ptr;
+    pointer_ptr ptr = safe_ptr.ptr;
+    if (ptr->data != 0) {
+        void* data = CALL(system_memory)->realloc(ptr->data, ptr->size, size);
+        if (data == 0) {
+            ERROR_POINTER_NOT_INITIALIZED(data == 0);
+            return FALSE;
+        }
+        ptr->data = data;
+    }
+    ptr->size = size;
+    return ptr->size;
 }
 
-void pointer_register_known_type(u64 id, type_methods_definitions_ptr data_type) {
-    known_types_init(id, data_type);
+void pointer_register_known_type(u64 type_id, type_methods_definitions_ptr data_type) {
+    known_types_init(type_id, data_type);
 }
 
 void pointer_register_user_type(type_methods_definitions_ptr data_type) {
     user_types_init(data_type);
 }
 
-static void pointer_free(u64 ptr) {
+static u64 pointer_free(u64 ptr) {
     if (vm == 0) {
-        return;
+        ERROR_VM_NOT_INITIALIZED(vm);
+        return FALSE;
     }
     if (ptr == 0) {
-        return;
+        return FALSE;
     }
     const_pointer_ptr data_ptr = CALL(virtual)->read(&vm, ptr);
     if (data_ptr == 0) {
-        return;
+        return FALSE;
     }
-    u64 type_id = data_ptr->id;
+    u64 type_id = data_ptr->type;
     if (type_id > 0 && type_id <= known_types_counter - 1) {
         const_type_methods_definitions_ptr methods = default_types[type_id].methods;
         methods->desctructor(data_ptr);
     }
+    return TRUE;
 }
 
-static void pointer_release(const_pointer_ptr const_ptr) {
+static u64 pointer_release(const_pointer_ptr const_ptr) {
     if (vm == 0) {
-        return;
+        ERROR_VM_NOT_INITIALIZED(vm);
+        return FALSE;
     }
     if (const_ptr == 0) {
-        return;
+        return FALSE;
     }
     safe_pointer_ptr safe_ptr;
     safe_ptr.const_ptr = const_ptr;
     void* data_ptr = const_ptr->data;
-    if (data_ptr != 0 && const_ptr->size != 0) {
+    if (const_ptr->size != 0) {
         CALL(system_memory)->free(data_ptr, const_ptr->size);
-        safe_ptr.public.ptr->data = 0;
+        safe_ptr.ptr->data = 0;
     }
-    CALL(virtual)->free(&vm, const_ptr->pointer.address);
-    safe_ptr.public.ptr->pointer.address = 0;
-    CALL(system_memory)->free(safe_ptr.public.ptr, POINTER_SIZE);
+    CALL(virtual)->free(&vm, const_ptr->address);
+    safe_ptr.ptr->address = 0;
+    CALL(system_memory)->free(safe_ptr.ptr, POINTER_SIZE);
+    return TRUE;
 }
 
 static u64 pointer_size(const_pointer_ptr const_ptr) {
     if (vm == 0) {
-        return 0;
+        ERROR_VM_NOT_INITIALIZED(vm);
+        return FALSE;
     }
-    u64 size = 0;
-    if (const_ptr) {
-        size = const_ptr->size;
+    if (const_ptr == 0) {
+        return FALSE;
     }
-    return size;
+    return const_ptr->size;
 }
 
-static void* pointer_read(const_pointer_ptr const_ptr) {
+static void* pointer_data(const_pointer_ptr const_ptr) {
     if (vm == 0) {
-        return 0;
+        ERROR_VM_NOT_INITIALIZED(vm);
+        return NULL_PTR;
     }
-    void* data_ptr = 0;
-    if (const_ptr) {
-        data_ptr = const_ptr->data;
+    if (const_ptr == 0) {
+        ERROR_POINTER_NOT_INITIALIZED(const_ptr == 0);
+        return NULL_PTR;
     }
-    return data_ptr;
+    return const_ptr->data;
 }
 
-static void* pointer_read_guard(const_pointer_ptr const_ptr, u64 offset) {
+static void* pointer_data_guard(const_pointer_ptr const_ptr, u64 offset) {
     if (vm == 0) {
-        return 0;
+        ERROR_VM_NOT_INITIALIZED(vm);
+        return NULL_PTR;
     }
-    void* data_ptr = 0;
-    if (const_ptr && offset < const_ptr->size) {
-        data_ptr = pointer_read(const_ptr);
-        if (data_ptr) {
-            u8* data = data_ptr;
-            data[offset] = 0;
-        }
+    if (const_ptr == 0) {
+        ERROR_POINTER_NOT_INITIALIZED(const_ptr == 0);
+        return NULL_PTR;
     }
-    return data_ptr;
-}
-
-static void pointer_guard(const_pointer_ptr const_ptr, u64 offset) {
-    if (vm == 0) {
-        return;
+    if (offset >= const_ptr->size) {
+        return NULL_PTR;
     }
-    u8* data = pointer_read(const_ptr);
-    if (data) {
+    void* data_ptr = const_ptr->data;
+    if (data_ptr != 0) {
+        u8* data = data_ptr;
         data[offset] = 0;
     }
+    return data_ptr;
 }
 
-static u64 pointer_read_type(const_pointer_ptr const_ptr, u64 virtual_id) {
+static u64 pointer_guard(const_pointer_ptr const_ptr, u64 offset) {
     if (vm == 0) {
-        return 0;
+        ERROR_VM_NOT_INITIALIZED(vm);
+        return FALSE;
     }
-    u64 id = 0;
-    if (const_ptr && const_ptr->id == virtual_id) {
-        id = virtual_id;
+    u8* data = pointer_data(const_ptr);
+    if (data == 0) {
+        return FALSE;
     }
-    return id;
+    data[offset] = 0;
+    return TRUE;
+}
+
+static u64 pointer_get_type(const_pointer_ptr const_ptr) {
+    if (vm == 0) {
+        ERROR_VM_NOT_INITIALIZED(vm);
+        return FALSE;
+    }
+    if (const_ptr == 0) {
+        return FALSE;
+    }
+    return const_ptr->type;
+}
+
+static u64 pointer_get_address(const_pointer_ptr const_ptr) {
+    if (vm == 0) {
+        ERROR_VM_NOT_INITIALIZED(vm);
+        return FALSE;
+    }
+    if (const_ptr == 0) {
+        return FALSE;
+    }
+    return const_ptr->address;
 }
 
 /* implementation */
@@ -364,13 +495,28 @@ static const_vm_ptr pointer_init(u64 size) {
     known_types_ptr current = known_types;
     while (current->next != 0) {
         known_types_ptr prev = current->next;
-        u64 index = current->id;
+        u64 index = current->type_id;
         if (index > 0 && index < known_types_counter) {
             default_types[index] = *current;
         }
         current = prev;
     }
     return &vm;
+}
+
+static u64 pointer_set(const_pointer_ptr const_ptr, const_virtual_pointer_ptr vptr, u64 address) {
+    if (vm == 0) {
+        ERROR_VM_NOT_INITIALIZED(vm);
+        return FALSE;
+    }
+    if (const_ptr == 0) {
+        return FALSE;
+    }
+    safe_pointer_ptr safe_ptr;
+    safe_ptr.const_ptr = const_ptr;
+    safe_ptr.ptr->address = address;
+    safe_ptr.ptr->vptr = vptr;
+    return address;
 }
 
 static void pointer_destroy(void) {
@@ -428,10 +574,12 @@ const virtual_pointer_methods PRIVATE_API(virtual_pointer_methods_definitions) =
     .free = pointer_free,
     .release = pointer_release,
     .size = pointer_size,
-    .read = pointer_read,
-    .read_guard = pointer_read_guard,
+    .data = pointer_data,
+    .data_guard = pointer_data_guard,
     .guard = pointer_guard,
-    .read_type = pointer_read_type,
+    .get_type = pointer_get_type,
+    .set = pointer_set,
+    .get_address = pointer_get_address,
 #ifdef USE_MEMORY_DEBUG_INFO
     .dump = pointer_dump,
     .dump_ref = pointer_dump_ref,

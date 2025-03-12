@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 9, 2025 at 7:28:21 PM GMT+3
+ *   March 12, 2025 at 5:48:20 PM GMT+3
  *
  */
 /*
@@ -26,8 +26,6 @@
 
 #include "data_v1.h"
 
-#include "std/api.h"
-
 #include "virtual/types/data/data_v1.h"
 
 #include "virtual/pointer/pointer_v1.h"
@@ -39,7 +37,7 @@ static const enum type id = TYPE_DATA;
 
 /* internal */
 static u64 data_alloc(const_vm_ptr vm, u64 size);
-static void data_free(const_vm_ptr vm, u64 ptr);
+static u64 data_free(const_vm_ptr vm, u64 ptr);
 static void* data_unsafe(const_vm_ptr vm, u64 ptr);
 static u64 data_size(const_vm_ptr vm, u64 ptr);
 
@@ -63,41 +61,42 @@ static void type_desctructor(const_pointer_ptr const_ptr) {
 
 static u64 data_alloc(const_vm_ptr vm, u64 size) {
     if (vm == 0 || *vm == 0) {
-        return 0;
+        return FALSE;
     }
     return CALL(virtual)->pointer(vm, size, id);
 }
 
-static void data_free(const_vm_ptr vm, u64 ptr) {
+static u64 data_free(const_vm_ptr vm, u64 ptr) {
     if (vm == 0 || *vm == 0) {
-        return;
+        return FALSE;
     }
     const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
     if (data_ptr == 0) {
-        return;
+        return FALSE;
     }
     type_desctructor(data_ptr);
+    return TRUE;
 }
 
 static void* data_unsafe(const_vm_ptr vm, u64 ptr) {
     if (vm == 0 || *vm == 0) {
-        return 0;
+        return NULL_PTR;
     }
     const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
     if (data_ptr == 0) {
-        return 0;
+        return NULL_PTR;
     }
-    void* vm_data = CALL(pointer)->read(data_ptr);
+    void* vm_data = CALL(pointer)->data(data_ptr);
     return vm_data;
 }
 
 static u64 data_size(const_vm_ptr vm, u64 ptr) {
     if (vm == 0 || *vm == 0) {
-        return 0;
+        return FALSE;
     }
     const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
     if (data_ptr == 0) {
-        return 0;
+        return FALSE;
     }
     return CALL(pointer)->size(data_ptr);
 }

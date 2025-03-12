@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 9, 2025 at 8:01:57 PM GMT+3
+ *   March 12, 2025 at 9:09:05 AM GMT+3
  *
  */
 /*
@@ -38,16 +38,16 @@
  */
 
 typedef struct API(virtual_string_methods) {
-    void (*free)(const_vm_ptr vm, u64 ptr);
+    u64 (*free)(const_vm_ptr vm, u64 ptr);
     u64 (*copy)(const_vm_ptr vm, u64 ptr);
-    void (*strcpy)(const_vm_ptr vm, u64 dest, u64 src);
-    void (*strcat)(const_vm_ptr vm, u64 dest, u64 src);
+    u64 (*strcpy)(const_vm_ptr vm, u64 dest, u64 src);
+    u64 (*strcat)(const_vm_ptr vm, u64 dest, u64 src);
     u64 (*strrchr)(const_vm_ptr vm, u64 src_ptr, u64 match_prt);
     u64 (*strchr)(const_vm_ptr vm, u64 src_ptr, u64 match_prt);
     u64 (*match)(const_vm_ptr vm, u64 src_ptr, u64 match_prt);
     u64 (*offset)(const_vm_ptr vm, u64 src_ptr, u64 match_prt);
     u64 (*load)(const_vm_ptr vm, const char* data);
-    void (*put_char)(const_vm_ptr vm, u64 ptr, char value);
+    u64 (*put_char)(const_vm_ptr vm, u64 ptr, char value);
     char* (*unsafe)(const_vm_ptr vm, u64 ptr);
     u64 (*size)(const_vm_ptr vm, u64 ptr);
     u64 (*lessthan)(const_vm_ptr vm, u64 src, u64 dest);

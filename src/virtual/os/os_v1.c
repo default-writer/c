@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 9, 2025 at 9:01:55 PM GMT+3
+ *   March 12, 2025 at 4:15:54 PM GMT+3
  *
  */
 /*
@@ -28,7 +28,9 @@
 
 #include "os_v1.h"
 
-#include "std/api.h"
+#define USING_ERROR_API
+
+#include "system/error/error_v1.h"
 
 #include "system/memory/memory_v1.h"
 
@@ -42,22 +44,25 @@
 /* definition */
 static u64 os_getenv(const_vm_ptr vm, u64 name);
 static u64 os_getcwd(const_vm_ptr vm);
-static void os_putc(const_vm_ptr vm, u64 ptr);
+static u64 os_putc(const_vm_ptr vm, u64 ptr);
 
 /* implementation */
 static u64 os_getenv(const_vm_ptr vm, u64 address) {
     if (vm == 0) {
-        return 0;
+        ERROR_VM_NOT_INITIALIZED(vm);
+        return FALSE;
     }
     if (address == 0) {
-        return 0;
+        ERROR_ADDRESS_NOT_INITIALIZED(address == 0);
+        return FALSE;
     }
     const_pointer_ptr const_ptr = CALL(virtual)->read_type(vm, address, TYPE_STRING);
     if (const_ptr == 0) {
-        return 0;
+        ERROR_POINTER_NOT_INITIALIZED(const_ptr == 0);
+        return FALSE;
     }
     const_pointer_ptr data_ptr = const_ptr;
-    const char* name_data = CALL(pointer)->read(data_ptr);
+    const char* name_data = CALL(pointer)->data(data_ptr);
     const char* ch = virtual_api->getenv(name_data);
     return CALL(string)->load(vm, ch);
 }
@@ -73,12 +78,14 @@ static u64 os_getcwd(const_vm_ptr vm) {
     return data_ptr;
 }
 
-static void os_putc(const_vm_ptr vm, u64 ptr) {
+static u64 os_putc(const_vm_ptr vm, u64 ptr) {
     const char* unsafe_data = CALL(string)->unsafe(vm, ptr);
     if (unsafe_data == 0) {
-        return;
+        ERROR_POINTER_NOT_INITIALIZED(unsafe_data == 0);
+        return FALSE;
     }
     virtual_api->puts(unsafe_data);
+    return TRUE;
 }
 
 /* public */
