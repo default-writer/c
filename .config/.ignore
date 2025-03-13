@@ -1,2 +1,3 @@
-*.rexo/*
-*.deps*
+/usr/include
+.rexo
+.deps
