@@ -217,9 +217,15 @@ for config in ${targets[@]}; do
                 timeout --foreground 180 "${build}/${target}" 2>&1 >"${output}/log-${target}.txt" || (echo ERROR: "${target}" && exit 1)
             fi
             lcov --capture --directory "${rel_build}/" --output-file "${build}/${target}-all.info" &>/dev/null
-            lcov --remove "${build}/${target}-all.info" -o "${build}/${target}.info" ${ignore}
+
+            for file in ${ignore}; do
+                filter=$(cat "${build}/${target}-all.info" | grep -s "${file}" | sed 's|^SF:||g')
+                lcov --remove "${build}/${target}-all.info" -o "${build}/${target}-all.info.tmp" ${filter}
+                mv "${build}/${target}-all.info.tmp" "${build}/${target}-all.info"
+            done
+            mv "${build}/${target}-all.info" "${build}/${target}.info"
+
             strip_path < "${build}/${target}.info" > "${build}/${target}.info.tmp" && mv "${build}/${target}.info.tmp" "${build}/${target}.info"
-            rm "${build}/${target}-all.info"
             ;;
         *)
             ;;

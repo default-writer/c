@@ -65,11 +65,19 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
         -fgnu89-inline
     )
 
-    set(SANITIZE
-        -fsanitize=address,undefined,leak,pointer-compare,pointer-subtract,float-cast-overflow,float-divide-by-zero
-        -fsanitize-undefined-trap-on-error
-        -fno-sanitize-recover=all
-    )
+    if(CMAKE_BUILD_TYPE STREQUAL "Release")
+        set(SANITIZE
+            -fsanitize=address,leak,pointer-compare,pointer-subtract,float-cast-overflow,float-divide-by-zero
+            -fsanitize-undefined-trap-on-error
+            -fno-sanitize-recover=all
+        )
+    else()
+        set(SANITIZE
+            -fsanitize=address,undefined,leak,pointer-compare,pointer-subtract,float-cast-overflow,float-divide-by-zero
+            -fsanitize-undefined-trap-on-error
+            -fno-sanitize-recover=all
+        )
+    endif()
 
     set(NO_SANITIZE
         -fno-sanitize=all
@@ -99,6 +107,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
         -Wno-unused-parameter
         -Wno-unused-variable
         -Wno-unused-function
+        -Wno-clobbered
     )
 endif()
 
