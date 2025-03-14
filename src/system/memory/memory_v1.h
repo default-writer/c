@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 12, 2025 at 5:31:06 PM GMT+3
+ *   March 14, 2025 at 7:27:53 AM GMT+3
  *
  */
 /*
@@ -24,12 +24,12 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _system_memory_H_
-#define _system_memory_H_
+#define USING_SYSTEM_MEMORY
 
-#define USING_MEMORY
-#define USING_API
+#ifndef _SYSTEM_MEMORY_H_
+#define _SYSTEM_MEMORY_H_
 
+#define USING_STD_API
 #include "std/api.h"
 
 #include "sys/export.h"
@@ -51,4 +51,4 @@ typedef struct PRIVATE_API(memory_methods) {
 /* definition */
 CSYS_EXPORT extern const memory_methods* CALL(system_memory);
 
-#endif /* _system_memory_H_ */
+#endif /* _SYSTEM_MEMORY_H_ */

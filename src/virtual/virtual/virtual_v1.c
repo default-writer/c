@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 12, 2025 at 9:58:46 PM GMT+3
+ *   March 14, 2025 at 7:05:46 AM GMT+3
  *
  */
 /*
@@ -24,15 +24,12 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#define USING_MACROS
-
 #include "virtual_v1.h"
 
-#define USING_ERROR_API
-
+#define USING_SYSTEM_ERROR_API
 #include "system/error/error_v1.h"
 
-#define VM_SIZE sizeof(vm_type)
+#define VM_TYPE_SIZE sizeof(vm_type)
 
 #include "system/memory/memory_v1.h"
 
@@ -40,18 +37,14 @@
 
 #include "virtual/pointer/pointer_v1.h"
 
-#ifdef USE_MEMORY_DEBUG_INFO
-#include <stdio.h>
-#endif
-
 /* macros */
 #define DEFAULT_SIZE 0x8 /* 8 */
+#define VIRTUAL_POINTER_TYPE_SIZE sizeof(virtual_pointer_type)
 #define PTR_SIZE sizeof(void*) /* size of a pointer */
-#define VM_DATA_SIZE sizeof(virtual_pointer_type)
-#define ALLOC_SIZE(size) (size * PTR_SIZE)
+#define PTR_ARRAY_SIZE(size) (size * PTR_SIZE)
 
 #ifndef USE_GC
-#define VM_POINTER_SIZE sizeof(vm_pointer_type)
+#define VM_POINTER_TYPE_SIZE sizeof(vm_pointer_type)
 
 /* pointer definition */
 typedef struct vm_pointer* vm_pointer_ptr;
@@ -129,8 +122,8 @@ static u64 get_address_internal(pointer_ptr* ptr, const_virtual_pointer_ptr vptr
 }
 
 static virtual_pointer_ptr virtual_init_internal(u64 size) {
-    virtual_pointer_ptr vptr = CALL(system_memory)->alloc(VM_DATA_SIZE);
-    pointer_ptr* ptr = CALL(system_memory)->alloc(ALLOC_SIZE(size));
+    virtual_pointer_ptr vptr = CALL(system_memory)->alloc(VIRTUAL_POINTER_TYPE_SIZE);
+    pointer_ptr* ptr = CALL(system_memory)->alloc(PTR_ARRAY_SIZE(size));
     vptr->bp = ptr;
     vptr->sp = ptr;
     vptr->size = size;
@@ -185,7 +178,7 @@ static void virtual_init(const_vm_ptr vm, u64 size) {
     cache = CALL(system_memory)->alloc(PTR_SIZE);
     CALL(system_list)->init(cache);
 #endif
-    vm_ptr ref = CALL(system_memory)->alloc(VM_SIZE);
+    vm_ptr ref = CALL(system_memory)->alloc(VM_TYPE_SIZE);
     virtual_pointer_ptr vptr = virtual_init_internal(size == 0 ? DEFAULT_SIZE : size);
     ref->head = vptr;
     ref->tail = vptr;
@@ -201,7 +194,7 @@ static void virtual_destroy(const_vm_ptr vm) {
 #ifndef USE_GC
     vm_pointer_ptr item;
     while ((item = CALL(system_list)->pop(cache)) != 0) {
-        CALL(system_memory)->free(item, VM_POINTER_SIZE);
+        CALL(system_memory)->free(item, VM_POINTER_TYPE_SIZE);
     }
     CALL(system_list)->destroy(cache);
     CALL(system_memory)->free(cache, PTR_SIZE);
@@ -215,13 +208,13 @@ static void virtual_destroy(const_vm_ptr vm) {
     virtual_pointer_ptr vptr = ptr->head;
     while (vptr != 0) {
         virtual_pointer_ptr next = vptr->next;
-        CALL(system_memory)->free(vptr->bp, ALLOC_SIZE(vptr->size));
-        CALL(system_memory)->free(vptr, VM_DATA_SIZE);
+        CALL(system_memory)->free(vptr->bp, PTR_ARRAY_SIZE(vptr->size));
+        CALL(system_memory)->free(vptr, VIRTUAL_POINTER_TYPE_SIZE);
         vptr = next;
     }
     ptr->head = 0;
     ptr->tail = 0;
-    CALL(system_memory)->free(ptr, VM_SIZE);
+    CALL(system_memory)->free(ptr, VM_TYPE_SIZE);
     *safe_ptr.ptr = 0;
 }
 
@@ -270,7 +263,7 @@ static void virtual_free(const_vm_ptr vm, u64 address) {
         u64 offset = address - vptr->offset - 1;
         pointer_ptr* offset_ptr = vptr->bp + offset;
 #ifndef USE_GC
-        vm_pointer_ptr item = CALL(system_memory)->alloc(VM_POINTER_SIZE);
+        vm_pointer_ptr item = CALL(system_memory)->alloc(VM_POINTER_TYPE_SIZE);
         item->ptr = offset_ptr;
         item->vptr = vptr;
         CALL(system_list)->push(cache, item);
@@ -351,7 +344,7 @@ static u64 virtual_alloc(const_vm_ptr vm, const_pointer_ptr const_ptr) {
     if (item != 0) {
         ptr = item->ptr;
         vptr = item->vptr;
-        CALL(system_memory)->free(item, VM_POINTER_SIZE);
+        CALL(system_memory)->free(item, VM_POINTER_TYPE_SIZE);
     }
     if (ptr == 0) {
 #endif

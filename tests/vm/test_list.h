@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 12, 2025 at 5:24:31 PM GMT+3
+ *   March 14, 2025 at 7:15:28 AM GMT+3
  *
  */
 /*
@@ -24,13 +24,12 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#define USING_TESTS_LIST
+
 #ifndef _TEST_LIST_H_
 #define _TEST_LIST_H_
 
-#define USING_LIST
-
-#define USING_API
-
+#define USING_STD_API
 #include "std/api.h"
 
 typedef struct PRIVATE_API(test_suite) list_micro_test_suite;

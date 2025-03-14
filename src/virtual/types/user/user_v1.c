@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 12, 2025 at 4:22:10 PM GMT+3
+ *   March 14, 2025 at 7:04:11 AM GMT+3
  *
  */
 /*
@@ -26,16 +26,15 @@
 
 #include "user_v1.h"
 
-#define USING_ERROR_API
-
+#define USING_SYSTEM_ERROR_API
 #include "system/error/error_v1.h"
 
 #include "virtual/pointer/pointer_v1.h"
 #include "virtual/virtual/virtual_v1.h"
 
-#define DEFAULT_SIZE 0x100
+#define DEFAULT_SIZE 0x8 /* 8 */
 
-static u64 id = TYPE_USER;
+static u64 type_id = TYPE_USER;
 
 /* internal */
 static u64 virtual_user_alloc(const_vm_ptr vm);
@@ -53,7 +52,7 @@ static void INIT init(void) {
     safe_type_methods_definitions safe_ptr;
     safe_ptr.const_ptr = &user_type;
     CALL(pointer)->register_user_type(safe_ptr.ptr);
-    id = safe_ptr.const_ptr->type_id;
+    type_id = safe_ptr.const_ptr->type_id;
 }
 
 static void type_desctructor(const_pointer_ptr const_ptr) {
@@ -65,7 +64,7 @@ static u64 virtual_user_alloc(const_vm_ptr vm) {
         ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
         return FALSE;
     }
-    return CALL(virtual)->pointer(vm, 8, id);
+    return CALL(virtual)->pointer(vm, DEFAULT_SIZE, type_id);
 }
 
 static u64 virtual_user_free(const_vm_ptr vm, u64 ptr) {
@@ -73,7 +72,7 @@ static u64 virtual_user_free(const_vm_ptr vm, u64 ptr) {
         ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
         return FALSE;
     }
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, id);
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, type_id);
     if (data_ptr == 0) {
         return FALSE;
     }

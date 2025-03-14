@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 12, 2025 at 9:10:15 AM GMT+3
+ *   March 14, 2025 at 7:10:07 AM GMT+3
  *
  */
 /*
@@ -24,11 +24,10 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _USER_V1_H_
-#define _USER_V1_H_
+#ifndef _VIRTUAL_USER_V1_H_
+#define _VIRTUAL_USER_V1_H_
 
-#define USING_API
-
+#define USING_STD_API
 #include "std/api.h"
 
 #include "vm/export.h"
@@ -45,4 +44,4 @@ typedef struct PRIVATE_API(virtual_user_methods) {
 /* definition */
 CVM_EXPORT extern const virtual_user_methods* CALL(user);
 
-#endif /* _USER_V1_H_ */
+#endif /* _VIRTUAL_USER_V1_H_ */

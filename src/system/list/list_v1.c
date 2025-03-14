@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 12, 2025 at 5:38:06 PM GMT+3
+ *   March 14, 2025 at 6:28:01 AM GMT+3
  *
  */
 /*
@@ -28,11 +28,7 @@
 
 #include "system/memory/memory_v1.h"
 
-#define STACK_ELEMENT_SIZE sizeof(stack_element_type)
-
-#ifdef USE_MEMORY_DEBUG_INFO
-#include <stdio.h>
-#endif
+#define STACK_ELEMENT_TYPE_SIZE sizeof(stack_element_type)
 
 /* private */
 
@@ -64,7 +60,7 @@ static void* list_data(stack_ptr ptr) {
 /* deletes the data pointer */
 static void list_delete(stack_ptr ptr) {
     /* releases the pointer */
-    CALL(system_memory)->free(ptr, STACK_ELEMENT_SIZE);
+    CALL(system_memory)->free(ptr, STACK_ELEMENT_TYPE_SIZE);
 }
 
 /* pushes the memory pointer */
@@ -73,7 +69,7 @@ static void list_push(stack_ptr* current, void* payload) {
         return;
     }
     /* creates empty data chunk */
-    stack_ptr item = CALL(system_memory)->alloc(STACK_ELEMENT_SIZE);
+    stack_ptr item = CALL(system_memory)->alloc(STACK_ELEMENT_TYPE_SIZE);
     /* writes data into allocated memory buffer */
     item->data = payload;
     /* assigns item's next pointer to current pointer */
@@ -131,7 +127,7 @@ static void list_init(stack_ptr* current) {
         return;
     }
     /* sets the current item */
-    *current = CALL(system_memory)->alloc(STACK_ELEMENT_SIZE);
+    *current = CALL(system_memory)->alloc(STACK_ELEMENT_TYPE_SIZE);
 }
 
 /* destroys the memory stack */

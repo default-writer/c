@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 12, 2025 at 5:59:04 PM GMT+3
+ *   March 14, 2025 at 7:19:18 AM GMT+3
  *
  */
 /*
@@ -24,13 +24,12 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _ERROR_API_H_
-#define _ERROR_API_H_
+#define USING_SYSTEM_ERROR
 
-#define USING_ERROR_API
+#ifndef _SYSTEM_ERROR_H_
+#define _SYSTEM_ERROR_H_
 
-#define USING_API
-
+#define USING_STD_API
 #include "std/api.h"
 
 #include "sys/export.h"
@@ -55,4 +54,4 @@ typedef struct error_api {
 /* api */
 CSYS_EXPORT extern const error_api_type* error_api;
 
-#endif /* _ERROR_API_H_ */
+#endif /* _SYSTEM_ERROR_H_ */

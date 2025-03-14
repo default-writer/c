@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 12, 2025 at 7:32:31 PM GMT+3
+ *   March 14, 2025 at 6:00:44 AM GMT+3
  *
  */
 /*
@@ -25,9 +25,6 @@
 */
 
 #include "error_v1.h"
-
-#include <stdio.h>
-#include <unistd.h>
 
 static const char* error_messages[] = {
     [ID_ERROR_NO_ERROR] = "no error",

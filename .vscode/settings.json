@@ -335,6 +335,8 @@
         "--log=info",
         "--pch-storage=memory",
         "--clang-tidy",
+        "--clang-tidy-checks=-*,clangdunused-includes",
+        "--header-insertion=never",
         "--fallback-style=WebKit",
         "--header-insertion=never"
     ],

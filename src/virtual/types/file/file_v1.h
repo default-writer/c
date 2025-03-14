@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 12, 2025 at 9:11:39 AM GMT+3
+ *   March 14, 2025 at 7:09:51 AM GMT+3
  *
  */
 /*
@@ -24,11 +24,10 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _FILE_V1_H_
-#define _FILE_V1_H_
+#ifndef _VIRTUAL_FILE_V1_H_
+#define _VIRTUAL_FILE_V1_H_
 
-#define USING_API
-
+#define USING_STD_API
 #include "std/api.h"
 
 #include "vm/export.h"
@@ -56,4 +55,4 @@ typedef struct PRIVATE_API(virtual_file_methods) {
 /* definition */
 CVM_EXPORT extern const virtual_file_methods* CALL(file);
 
-#endif /* _FILE_V1_H_ */
+#endif /* _VIRTUAL_FILE_V1_H_ */

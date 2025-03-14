@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 12, 2025 at 9:18:03 AM GMT+3
+ *   March 14, 2025 at 6:26:32 AM GMT+3
  *
  */
 /*
@@ -39,8 +39,6 @@
 #include "virtual/virtual/virtual_v1.h"
 
 #include "test.h"
-
-#define DEFAULT_SIZE 0x100
 
 /* Data structure to use at the core of our fixture. */
 typedef struct test_data {

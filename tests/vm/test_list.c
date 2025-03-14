@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 6, 2025 at 12:24:45 AM GMT+3
+ *   March 14, 2025 at 7:16:50 AM GMT+3
  *
  */
 /*
@@ -23,8 +23,6 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-
-#define USING_TESTS
 
 #include "test_list.h"
 

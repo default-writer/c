@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 12, 2025 at 7:24:39 PM GMT+3
+ *   March 14, 2025 at 6:26:29 AM GMT+3
  *
  */
 /*
@@ -23,8 +23,6 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-
-#include <string.h>
 
 #define USING_TESTS
 
@@ -46,8 +44,6 @@
 #include "virtual/virtual/virtual_v1.h"
 
 #include "test.h"
-
-#define DEFAULT_SIZE 0x100
 
 /* definition */
 CVM_EXPORT extern const virtual_os_methods* os;

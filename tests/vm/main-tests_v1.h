@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 12, 2025 at 6:32:14 PM GMT+3
+ *   March 14, 2025 at 7:17:08 AM GMT+3
  *
  */
 /*
@@ -24,19 +24,21 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#define USING_MAIN_TESTS
+
 #ifndef _MAIN_TESTS_V1_H_
 #define _MAIN_TESTS_V1_H_
 
-#define USING_TESTS
-
-#define USING_LIST
-#define USING_MEMORY
-#define USING_POINTER
-#define USING_VM
-
+#define USING_TESTS_LIST
 #include "test_list.h"
+
+#define USING_TESTS_MEMORY
 #include "test_memory.h"
+
+#define USING_TESTS_POINTER
 #include "test_pointer.h"
+
+#define USING_TESTS_VM
 #include "test_vm_v1.h"
 
 #endif /* _MAIN_TESTS_V1_H_ */

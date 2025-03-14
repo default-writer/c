@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 12, 2025 at 6:32:53 PM GMT+3
+ *   March 14, 2025 at 7:11:10 AM GMT+3
  *
  */
 /*
@@ -27,9 +27,7 @@
 #ifndef _TESTS_TEST_H_
 #define _TESTS_TEST_H_
 
-#define USING_TESTS
-#define USING_API
-
+#define USING_STD_API
 #include "std/api.h"
 
 #if !defined(RX_MAJOR_VERSION)

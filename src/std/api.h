@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 12, 2025 at 12:35:20 PM GMT+3
+ *   March 14, 2025 at 7:08:32 AM GMT+3
  *
  */
 /*
@@ -24,20 +24,23 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#define USING_STD_API
+
 #ifndef _STD_API_H_
 #define _STD_API_H_
 
-#define USING_API
+#define USING_DATA
+
+#define USING_HEADERS
+#include "std/headers.h"
 
 #define USING_COMPILE
-#define USING_DATA
-#define USING_HEADERS
-#define USING_MACROS
-
 #include "std/compile.h"
-#include "std/data.h"
-#include "std/headers.h"
+
+#define USING_MACROS
 #include "std/macros.h"
+
+#include "std/data.h"
 
 #include "std/version.h"
 

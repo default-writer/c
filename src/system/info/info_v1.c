@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 6, 2025 at 12:25:57 AM GMT+3
+ *   March 14, 2025 at 6:36:37 AM GMT+3
  *
  */
 /*
@@ -25,8 +25,6 @@
 */
 
 #include "info_v1.h"
-
-#include "std/api.h"
 
 /* public */
 const system_info_methods PRIVATE_API(system_info_methods_definitions) = {

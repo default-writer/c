@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 12, 2025 at 9:18:46 PM GMT+3
+ *   March 14, 2025 at 7:09:46 AM GMT+3
  *
  */
 /*
@@ -26,22 +26,15 @@
 
 #include "file_v1.h"
 
-#define USING_ERROR_API
-
+#define USING_SYSTEM_ERROR_API
 #include "system/error/error_v1.h"
-
-#define USING_API
 
 #include "virtual/api/api_v1.h"
 #include "virtual/pointer/pointer_v1.h"
 #include "virtual/types/data/data_v1.h"
 #include "virtual/virtual/virtual_v1.h"
 
-#include <stdio.h>
-#include <string.h>
-
-#define DEFAULT_SIZE 0x100
-#define FILE_HANDLER_SIZE sizeof(file_handler_type)
+#define FILE_HANDLER_TYPE_SIZE sizeof(file_handler_type)
 
 static const enum type type_id = TYPE_FILE;
 
@@ -139,7 +132,7 @@ static u64 file_alloc(const_vm_ptr vm, u64 file_path, u64 mode) {
         ERROR_POINTER_NOT_INITIALIZED(f == 0);
         return FALSE;
     }
-    const_pointer_ptr f_ptr = CALL(pointer)->alloc(FILE_HANDLER_SIZE, type_id);
+    const_pointer_ptr f_ptr = CALL(pointer)->alloc(FILE_HANDLER_TYPE_SIZE, type_id);
     file_handler_ptr handler = CALL(pointer)->data(f_ptr);
     handler->file = f;
 #ifdef USE_MEMORY_DEBUG_INFO
