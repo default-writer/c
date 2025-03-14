@@ -319,13 +319,16 @@ add_executable(main-tests-vm1
 )
 
 # test
-target_link_libraries(c-vm PRIVATE c-sys)
+target_link_libraries(c-vm PUBLIC
+    c-sys
+)
 
 # main
-target_link_libraries(main-tests-vm1 PRIVATE
+target_link_libraries(main-tests-vm1 PUBLIC
     c-sys
     c-vm
 )
+target_link_directories(main-tests-vm1 PUBLIC ${CMAKE_SOURCE_DIR}/lib)
 
 configure_file(data/all_english_words.txt ${CMAKE_BINARY_DIR}/data/all_english_words.txt COPYONLY)
 configure_file(data/file.txt ${CMAKE_BINARY_DIR}/data/file.txt COPYONLY)

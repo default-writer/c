@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 14, 2025 at 7:27:53 AM GMT+3
+ *   March 14, 2025 at 11:26:14 AM GMT+3
  *
  */
 /*
@@ -32,7 +32,7 @@
 #define USING_STD_API
 #include "std/api.h"
 
-#include "sys/export.h"
+#include "system/export.h"
 
 #ifdef USE_MEMORY_DEBUG_INFO
 CSYS_EXPORT extern void init_statistics(void);
