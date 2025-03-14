@@ -89,17 +89,17 @@
         {
             "name": "clang",
             "displayName": "clang",
-            "description": "Using compilers: C = /usr/bin/clang-17, CXX = /usr/bin/clang++-17",
+            "description": "Using compilers: C = clang, CXX = clang++",
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/cmake",
             "architecture": {
                 "value": "x64",
                 "strategy": "external"
-            },            
+            },
             "cacheVariables": {
                 "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
-                "CMAKE_C_COMPILER": "/usr/bin/clang-17",
-                "CMAKE_CXX_COMPILER": "/usr/bin/clang++-17",
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++",
                 "CMAKE_BUILD_TYPE": "Debug",
                 "CONFIG_MEMORY_DEBUG_INFO": {
                     "type": "BOOL",

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 14, 2025 at 7:10:10 AM GMT+3
+ *   March 14, 2025 at 11:34:06 AM GMT+3
  *
  */
 /*
@@ -30,7 +30,7 @@
 #define USING_STD_API
 #include "std/api.h"
 
-#include "vm/export.h"
+#include "virtual/export.h"
 
 typedef struct PRIVATE_API(virtual_methods) {
     void (*init)(const_vm_ptr vm, u64 size);
