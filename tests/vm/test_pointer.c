@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 14, 2025 at 6:26:29 AM GMT+3
+ *   March 14, 2025 at 9:45:03 AM GMT+3
  *
  */
 /*
@@ -24,8 +24,6 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#define USING_TESTS
-
 #include "test_pointer.h"
 
 #include "system/api/api_v1.h"
@@ -43,6 +41,7 @@
 #include "virtual/types/user/user_v1.h"
 #include "virtual/virtual/virtual_v1.h"
 
+#define USING_TESTS
 #include "test.h"
 
 /* definition */

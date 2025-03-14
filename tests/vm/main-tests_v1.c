@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 14, 2025 at 7:07:23 AM GMT+3
+ *   March 14, 2025 at 9:45:52 AM GMT+3
  *
  */
 /*
@@ -24,8 +24,6 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "test.h"
-
 #define USING_MAIN_TESTS
 #include "main-tests_v1.h"
 
@@ -33,6 +31,9 @@
 #include "system/api/api_v1.h"
 
 #include "system/info/info_v1.h"
+
+#define USING_TESTS
+#include "test.h"
 
 typedef struct test_data {
     void* ptr;

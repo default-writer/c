@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 14, 2025 at 7:16:50 AM GMT+3
+ *   March 14, 2025 at 9:45:33 AM GMT+3
  *
  */
 /*
@@ -28,6 +28,7 @@
 
 #include "system/list/list_v1.h"
 
+#define USING_TESTS
 #include "test.h"
 
 /* allocates memory pointer for list object */
