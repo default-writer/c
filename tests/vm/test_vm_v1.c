@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 14, 2025 at 6:26:32 AM GMT+3
+ *   March 14, 2025 at 9:45:16 AM GMT+3
  *
  */
 /*
@@ -24,8 +24,6 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#define USING_TESTS
-
 #include "test_vm_v1.h"
 
 #include "std/macros.h"
@@ -38,6 +36,7 @@
 #include "virtual/types/user/user_v1.h"
 #include "virtual/virtual/virtual_v1.h"
 
+#define USING_TESTS
 #include "test.h"
 
 /* Data structure to use at the core of our fixture. */
@@ -464,7 +463,7 @@ RX_TEST_CASE(tests, test_pointer_alloc_gc_destroy_free_unsafe, .fixture = test_p
     safe_pointer_ptr safe_ptr;
     safe_ptr.const_ptr = byte_data;
     pointer_ptr ptr = safe_ptr.ptr;
-    virtual_pointer_ptr vptr = *((virtual_pointer_ptr*)ptr);
+    virtual_pointer_ptr vptr = *(virtual_pointer_ptr*)ptr;
     RX_ASSERT(vptr != 0);
 
     CALL(pointer)->gc();
@@ -484,7 +483,7 @@ RX_TEST_CASE(tests, test_pointer_alloc_release_0gc_destroy_read_type, .fixture =
     safe_pointer_ptr safe_ptr;
     safe_ptr.const_ptr = byte_data;
     pointer_ptr ptr = safe_ptr.ptr;
-    virtual_pointer_ptr vptr = *((virtual_pointer_ptr*)ptr);
+    virtual_pointer_ptr vptr = *(virtual_pointer_ptr*)ptr;
     RX_ASSERT(vptr != 0);
 
     CALL(pointer)->release(0);
@@ -505,7 +504,7 @@ RX_TEST_CASE(tests, test_pointer_alloc_gc_destroy_read_type_release_0, .fixture 
     safe_pointer_ptr safe_ptr;
     safe_ptr.const_ptr = byte_data;
     pointer_ptr ptr = safe_ptr.ptr;
-    virtual_pointer_ptr vptr = *((virtual_pointer_ptr*)ptr);
+    virtual_pointer_ptr vptr = *(virtual_pointer_ptr*)ptr;
     RX_ASSERT(vptr != 0);
 
     CALL(pointer)->gc();
@@ -525,7 +524,7 @@ RX_TEST_CASE(tests, test_pointer_alloc_destroy_read_type_release_0, .fixture = t
     safe_pointer_ptr safe_ptr;
     safe_ptr.const_ptr = byte_data;
     pointer_ptr ptr = safe_ptr.ptr;
-    virtual_pointer_ptr vptr = *((virtual_pointer_ptr*)ptr);
+    virtual_pointer_ptr vptr = *(virtual_pointer_ptr*)ptr;
     RX_ASSERT(vptr != 0);
 
     CALL(pointer)->free(ptr_id);
@@ -546,7 +545,7 @@ RX_TEST_CASE(tests, test_pointer_alloc_alloc_ref_write_gc_destroy_read_type_rele
     safe_pointer_ptr safe_ptr;
     safe_ptr.const_ptr = byte_data;
     pointer_ptr ptr = safe_ptr.ptr;
-    virtual_pointer_ptr vptr = *((virtual_pointer_ptr*)ptr);
+    virtual_pointer_ptr vptr = *(virtual_pointer_ptr*)ptr;
     RX_ASSERT(vptr != 0);
 
     CALL(pointer)->free(ptr_id);
