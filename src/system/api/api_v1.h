@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 12, 2025 at 5:18:35 PM GMT+3
+ *   March 14, 2025 at 7:29:59 AM GMT+3
  *
  */
 /*
@@ -24,17 +24,15 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#define USING_SYSTEM_API
+
 #ifndef _SYSTEM_API_H_
 #define _SYSTEM_API_H_
 
-#define USING_API
-#define USING_MEMORY
-
+#define USING_STD_API
 #include "std/api.h"
 
 #include "sys/export.h"
-
-#include <stdlib.h>
 
 #ifdef USE_MEMORY_DEBUG_INFO
 CSYS_EXPORT extern void init_statistics(void);

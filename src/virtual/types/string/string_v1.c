@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 12, 2025 at 9:23:09 PM GMT+3
+ *   March 14, 2025 at 7:04:13 AM GMT+3
  *
  */
 /*
@@ -26,8 +26,7 @@
 
 #include "string_v1.h"
 
-#define USING_ERROR_API
-
+#define USING_SYSTEM_ERROR_API
 #include "system/error/error_v1.h"
 
 #include "std/data.h"
@@ -36,8 +35,7 @@
 #include "virtual/pointer/pointer_v1.h"
 #include "virtual/virtual/virtual_v1.h"
 
-#define DEFAULT_SIZE 0x100
-#define STRING_REFERENCE_SIZE sizeof(string_reference_type)
+#define STRING_REFERENCE_TYPE_SIZE sizeof(string_reference_type)
 
 static const enum type type_id = TYPE_STRING;
 
@@ -318,7 +316,7 @@ static u64 string_strrchr(const_vm_ptr vm, u64 src, u64 match) {
     }
     ch += offset;
     offset = (u64)(str1 - ch);
-    const_pointer_ptr data_ptr = CALL(pointer)->alloc(STRING_REFERENCE_SIZE, TYPE_STRING_POINTER);
+    const_pointer_ptr data_ptr = CALL(pointer)->alloc(STRING_REFERENCE_TYPE_SIZE, TYPE_STRING_POINTER);
     string_reference_ptr ref = CALL(pointer)->data(data_ptr);
     ref->address = src;
     ref->offset = offset;
@@ -352,7 +350,7 @@ static u64 string_strchr(const_vm_ptr vm, u64 src, u64 match) {
     }
     ch += offset;
     offset = (u64)(str1 - ch);
-    const_pointer_ptr data_ptr = CALL(pointer)->alloc(STRING_REFERENCE_SIZE, TYPE_STRING_POINTER);
+    const_pointer_ptr data_ptr = CALL(pointer)->alloc(STRING_REFERENCE_TYPE_SIZE, TYPE_STRING_POINTER);
     string_reference_ptr ref = CALL(pointer)->data(data_ptr);
     ref->address = src;
     ref->offset = offset;
@@ -420,7 +418,7 @@ static char* find_match_internal(char* str1, const char* str2, u64* size, u64 ma
 }
 
 static u64 create_string_reference_internal(const_vm_ptr vm, u64 src, u64 offset) {
-    const_pointer_ptr data_ptr = CALL(pointer)->alloc(STRING_REFERENCE_SIZE, TYPE_STRING_POINTER);
+    const_pointer_ptr data_ptr = CALL(pointer)->alloc(STRING_REFERENCE_TYPE_SIZE, TYPE_STRING_POINTER);
     string_reference_ptr ref = CALL(pointer)->data(data_ptr);
     ref->address = src;
     ref->offset = offset;
@@ -515,7 +513,7 @@ static u64 string_offset(const_vm_ptr vm, u64 src, u64 match) {
         str2 = ptr2;
     }
     offset = (u64)(str1 - ch);
-    const_pointer_ptr data_ptr = CALL(pointer)->alloc(STRING_REFERENCE_SIZE, TYPE_STRING_POINTER);
+    const_pointer_ptr data_ptr = CALL(pointer)->alloc(STRING_REFERENCE_TYPE_SIZE, TYPE_STRING_POINTER);
     string_reference_ptr ref = CALL(pointer)->data(data_ptr);
     ref->address = src;
     ref->offset = offset;
@@ -738,7 +736,7 @@ static u64 string_left(const_vm_ptr vm, u64 src, u64 shift) {
         ERROR_INVALID_CONDITION(offset < shift);
         return FALSE;
     }
-    const_pointer_ptr data_ptr = CALL(pointer)->alloc(STRING_REFERENCE_SIZE, TYPE_STRING_POINTER);
+    const_pointer_ptr data_ptr = CALL(pointer)->alloc(STRING_REFERENCE_TYPE_SIZE, TYPE_STRING_POINTER);
     string_reference_ptr ref = CALL(pointer)->data(data_ptr);
     ref->address = src;
     ref->offset = 0 - shift;
@@ -805,7 +803,7 @@ static u64 string_right(const_vm_ptr vm, u64 src, u64 nbytes) {
         ERROR_INVALID_CONDITION(offset + nbytes >= size);
         return FALSE;
     }
-    const_pointer_ptr data_ptr = CALL(pointer)->alloc(STRING_REFERENCE_SIZE, TYPE_STRING_POINTER);
+    const_pointer_ptr data_ptr = CALL(pointer)->alloc(STRING_REFERENCE_TYPE_SIZE, TYPE_STRING_POINTER);
     string_reference_ptr ref = CALL(pointer)->data(data_ptr);
     ref->address = src;
     ref->offset = nbytes;

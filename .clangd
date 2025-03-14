@@ -10,3 +10,7 @@ CompileFlags:
     - "-Wno-undefined-inline"
     - "-Isrc"
   Compiler: clang
+
+Diagnostics:
+  Suppress:
+    - clangdunused-includes

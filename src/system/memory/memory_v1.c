@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 12, 2025 at 5:45:00 PM GMT+3
+ *   March 14, 2025 at 7:04:11 AM GMT+3
  *
  */
 /*
@@ -26,15 +26,10 @@
 
 #include "memory_v1.h"
 
-#define USING_ERROR_API
-
+#define USING_SYSTEM_ERROR_API
 #include "system/error/error_v1.h"
 
 #include "system/api/api_v1.h"
-
-#ifdef USE_MEMORY_DEBUG_INFO
-#include <stdio.h>
-#endif
 
 #ifdef USE_MEMORY_DEBUG_INFO
 static u64 total_alloc = 0;

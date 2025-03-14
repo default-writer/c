@@ -1,10 +1,12 @@
 ---
-Checks:          'clang-diagnostic-*,clang-analyzer-*'
+Checks:          '-*,clangdunused-includes,clang-diagnostic-*,clang-analyzer-*,clangdunused-includes-*'
 WarningsAsErrors: ''
 HeaderFilterRegex: ''
 FormatStyle:     '{BasedOnStyle: WebKit, IndentWidth: 4, BreakBeforeBraces: Attach}'
 User:            user
 CheckOptions:
+  - key:             clangdunused-includes
+    value:           'false'
   - key:             llvm-else-after-return.WarnOnConditionVariables
     value:           'false'
   - key:             modernize-loop-convert.MinConfidence

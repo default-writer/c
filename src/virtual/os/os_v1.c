@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 12, 2025 at 9:17:52 PM GMT+3
+ *   March 14, 2025 at 7:04:11 AM GMT+3
  *
  */
 /*
@@ -24,12 +24,9 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#define USING_LIST_V1
-
 #include "os_v1.h"
 
-#define USING_ERROR_API
-
+#define USING_SYSTEM_ERROR_API
 #include "system/error/error_v1.h"
 
 #include "system/memory/memory_v1.h"
@@ -38,8 +35,6 @@
 #include "virtual/pointer/pointer_v1.h"
 #include "virtual/types/string/string_v1.h"
 #include "virtual/virtual/virtual_v1.h"
-
-#define DEFAULT_SIZE 0x100
 
 /* definition */
 static u64 os_getenv(const_vm_ptr vm, u64 name);

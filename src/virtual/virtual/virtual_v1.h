@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 11, 2025 at 11:41:11 PM GMT+3
+ *   March 14, 2025 at 7:10:10 AM GMT+3
  *
  */
 /*
@@ -27,8 +27,7 @@
 #ifndef _VIRTUAL_V1_H_
 #define _VIRTUAL_V1_H_
 
-#define USING_API
-
+#define USING_STD_API
 #include "std/api.h"
 
 #include "vm/export.h"

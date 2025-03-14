@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 12, 2025 at 11:55:55 AM GMT+3
+ *   March 14, 2025 at 7:31:31 AM GMT+3
  *
  */
 /*
@@ -24,14 +24,10 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _VM_API_H_
-#define _VM_API_H_
+#ifndef _VIRTUAL_API_V1_H_
+#define _VIRTUAL_API_V1_H_
 
-#include <stdio.h>
-
-#define USING_API
-#define USING_MEMORY
-
+#define USING_STD_API
 #include "std/api.h"
 
 #include "sys/export.h"
@@ -60,4 +56,4 @@ typedef struct virtual_api {
 /* api */
 CSYS_EXPORT extern const virtual_api_type* virtual_api;
 
-#endif /* _VM_API_H_ */
+#endif /* _VIRTUAL_API_V1_H_ */

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 6, 2025 at 12:34:35 AM GMT+3
+ *   March 14, 2025 at 6:36:30 AM GMT+3
  *
  */
 /*
@@ -25,8 +25,6 @@
 */
 
 #include "options_v1.h"
-
-#include "std/api.h"
 
 /* macros */
 #define DEFAULT_SIZE 0x8 /* 8 */

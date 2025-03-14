@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 12, 2025 at 6:34:49 PM GMT+3
+ *   March 14, 2025 at 7:07:23 AM GMT+3
  *
  */
 /*
@@ -26,20 +26,13 @@
 
 #include "test.h"
 
-#define USING_TESTS
-
+#define USING_MAIN_TESTS
 #include "main-tests_v1.h"
 
-#include <stdio.h>
-#include <time.h>
-
-#define USING_API
-
+#define USING_SYSTEM_API
 #include "system/api/api_v1.h"
 
 #include "system/info/info_v1.h"
-
-#define DEFAULT_SIZE 0x100
 
 typedef struct test_data {
     void* ptr;

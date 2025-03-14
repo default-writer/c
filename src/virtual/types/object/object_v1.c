@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 12, 2025 at 9:19:14 PM GMT+3
+ *   March 14, 2025 at 7:04:11 AM GMT+3
  *
  */
 /*
@@ -26,14 +26,11 @@
 
 #include "object_v1.h"
 
-#define USING_ERROR_API
-
+#define USING_SYSTEM_ERROR_API
 #include "system/error/error_v1.h"
 
 #include "virtual/pointer/pointer_v1.h"
 #include "virtual/virtual/virtual_v1.h"
-
-#define DEFAULT_SIZE 0x100
 
 static const enum type type_id = TYPE_OBJECT;
 
