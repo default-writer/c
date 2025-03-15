@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 14, 2025 at 9:45:10 AM GMT+3
+ *   March 15, 2025 at 4:01:09 PM GMT+3
  *
  */
 /*
@@ -206,13 +206,10 @@ RX_TEST_CASE(memory_micro_tests, test_alloc_free, .fixture = test_fixture) {
     RX_ASSERT(*ctx != 0);
 }
 
-static int run(void) {
+static void run(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- rexo unit test code\n");
 #endif
-    /* Execute the main function that runs the test cases found. */
-    int result = rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
-    return result;
 }
 
 const memory_micro_test_suite PRIVATE_API(memory_micro_test_suite_definitions) = {

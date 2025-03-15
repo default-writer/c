@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 14, 2025 at 9:45:16 AM GMT+3
+ *   March 15, 2025 at 4:01:47 PM GMT+3
  *
  */
 /*
@@ -558,7 +558,7 @@ RX_TEST_CASE(tests, test_pointer_alloc_alloc_ref_write_gc_destroy_read_type_rele
     CALL(pointer)->release(0);
 }
 
-static int run(void) {
+static void run(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- acceptance test code\n");
 #endif
@@ -566,9 +566,6 @@ static int run(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- rexo unit test code\n");
 #endif
-    /* Execute the main function that runs the test cases found. */
-    int result = rx_run(0, NULL) == RX_SUCCESS ? 0 : 1;
-    return result;
 }
 
 const vm_v1_test_suite PRIVATE_API(vm_v1_test_suite_definitions) = {

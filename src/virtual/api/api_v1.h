@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 14, 2025 at 11:26:15 AM GMT+3
+ *   March 15, 2025 at 3:57:46 PM GMT+3
  *
  */
 /*
@@ -30,7 +30,7 @@
 #define USING_STD_API
 #include "std/api.h"
 
-#include "system/export.h"
+#include "virtual/export.h"
 
 #ifdef USE_MEMORY_DEBUG_INFO
 extern void global_statistics(void);
@@ -54,6 +54,6 @@ typedef struct virtual_api {
 } virtual_api_type;
 
 /* api */
-CSYS_EXPORT extern const virtual_api_type* virtual_api;
+CVM_EXPORT extern const virtual_api_type* virtual_api;
 
 #endif /* _VIRTUAL_API_V1_H_ */
