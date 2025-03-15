@@ -200,10 +200,10 @@ if [[ "${coverage}" == "" ]]; then
 
         "all")
             "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v1 ${skip} ${opts[@]}
-            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v2 --gc ${skip} ${opts[@]}
-            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v3 --sanitize ${skip} ${opts[@]}
-            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v4 --gc --sanitize ${skip} ${opts[@]}
-            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v5 --valgrind ${skip} ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v2 --sanitize ${skip} ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v3 --valgrind ${skip} ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v4 --gc ${skip} ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v5 --gc --sanitize ${skip} ${opts[@]}
             "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v6 --gc --valgrind ${skip} ${opts[@]}
             ;;
 
@@ -212,19 +212,19 @@ if [[ "${coverage}" == "" ]]; then
             ;;
 
         "2")
-            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v2 --gc ${skip} ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v2 --sanitize ${skip} ${opts[@]}
             ;;
 
         "3")
-            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v3 --sanitize ${skip} ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v3 --valgrind ${skip} ${opts[@]}
             ;;
 
         "4")
-            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v4 --gc --sanitize ${skip} ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v4 --gc ${skip} ${opts[@]}
             ;;
 
         "5")
-            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v5 --valgrind ${skip} ${opts[@]}
+            "${pwd}/bin/utils/coverage.sh" --target=${source} --dir=build/coverage-v5 --gc --sanitize ${skip} ${opts[@]}
             ;;
 
         "6")

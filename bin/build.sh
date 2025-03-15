@@ -170,17 +170,17 @@ registered=$(echo "${sanitize} ${gc} ${valgrind} ${callgrind}" | xargs)
 if [[ "${registered[@]}" == "" || ("${gc}" == "" && "${sanitize}" == "" && "${valgrind}" == "") ]]; then
     "${pwd}/bin/utils/build.sh" --target=${source} --dir=build/build-v1 ${opts[@]}
 fi
-if [[ "${registered[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "" && "${valgrind}" == "") ]]; then
-    "${pwd}/bin/utils/build.sh" --target=${source} --dir=build/build-v2 --gc ${opts[@]}
-fi
 if [[ "${registered[@]}" == "" || ("${gc}" == "" && "${sanitize}" == "--sanitize" && "${valgrind}" == "") ]]; then
-    "${pwd}/bin/utils/build.sh" --target=${source} --dir=build/build-v3 --sanitize ${opts[@]}
-fi
-if [[ "${registered[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "--sanitize" && "${valgrind}" == "") ]]; then
-    "${pwd}/bin/utils/build.sh" --target=${source} --dir=build/build-v4 --gc --sanitize ${opts[@]}
+    "${pwd}/bin/utils/build.sh" --target=${source} --dir=build/build-v2 --sanitize ${opts[@]}
 fi
 if [[ "${registered[@]}" == "" || ("${gc}" == "" && "${sanitize}" == "" && "${valgrind}" == "--valgrind") ]]; then
-    "${pwd}/bin/utils/build.sh" --target=${source} --dir=build/build-v5 --valgrind ${opts[@]}
+    "${pwd}/bin/utils/build.sh" --target=${source} --dir=build/build-v3 --valgrind ${opts[@]}
+fi
+if [[ "${registered[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "" && "${valgrind}" == "") ]]; then
+    "${pwd}/bin/utils/build.sh" --target=${source} --dir=build/build-v4 --gc ${opts[@]}
+fi
+if [[ "${registered[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "--sanitize" && "${valgrind}" == "") ]]; then
+    "${pwd}/bin/utils/build.sh" --target=${source} --dir=build/build-v5 --gc --sanitize ${opts[@]}
 fi
 if [[ "${registered[@]}" == "" || ("${gc}" == "--gc" && "${sanitize}" == "" && "${valgrind}" == "--valgrind") ]]; then
     "${pwd}/bin/utils/build.sh" --target=${source} --dir=build/build-v6 --gc --valgrind ${opts[@]}
