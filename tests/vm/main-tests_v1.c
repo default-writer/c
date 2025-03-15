@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 14, 2025 at 9:45:52 AM GMT+3
+ *   March 15, 2025 at 4:04:55 PM GMT+3
  *
  */
 /*
@@ -59,21 +59,21 @@ static void INIT init() {
 }
 
 #ifdef USE_MEMORY_DEBUG_INFO
-int main(int argc, char** argv) {
+int main(int argc, const char** argv) {
     init_statistics();
-    TEST_RUN(memory_micro_result, _memory_micro_test_suite);
-    TEST_RUN(list_micro_result, _list_micro_test_suite);
-    TEST_RUN(vm_v1_result, _vm_v1_test_suite);
-    TEST_RUN(pointer_v1_result, _pointer_test_suite);
+    TEST_RUN(_memory_micro_test_suite);
+    TEST_RUN(_list_micro_test_suite);
+    TEST_RUN(_vm_v1_test_suite);
+    TEST_RUN(_pointer_test_suite);
     result_statistics();
-    return memory_micro_result | list_micro_result | vm_v1_result | pointer_v1_result;
+    return rx_main(0, NULL, argc, argv) == RX_SUCCESS ? 0 : 1;
 }
 #else
-int main(int argc, char** argv) {
-    TEST_RUN(memory_micro_result, _memory_micro_test_suite);
-    TEST_RUN(list_micro_result, _list_micro_test_suite);
-    TEST_RUN(vm_v1_result, _vm_v1_test_suite);
-    TEST_RUN(pointer_v1_result, _pointer_test_suite);
-    return memory_micro_result | list_micro_result | vm_v1_result | pointer_v1_result;
+int main(int argc, const char** argv) {
+    TEST_RUN(_memory_micro_test_suite);
+    TEST_RUN(_list_micro_test_suite);
+    TEST_RUN(_vm_v1_test_suite);
+    TEST_RUN(_pointer_test_suite);
+    return rx_main(0, NULL, argc, argv) == RX_SUCCESS ? 0 : 1;
 }
 #endif
