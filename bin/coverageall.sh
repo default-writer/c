@@ -81,10 +81,6 @@ fi
 
 build="${pwd}/build"
 
-if [ ! -d "${build}" ]; then
-    "${pwd}/bin/build.sh" --all ${opts[@]}
-fi
-
 if [[ "${clean}" == "--clean" ]]; then
     if [[ -d "${build}" ]]; then
         find "${build}" -type f -name "lcov.info" -delete
