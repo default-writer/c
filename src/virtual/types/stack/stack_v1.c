@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 14, 2025 at 7:04:13 AM GMT+3
+ *   March 17, 2025 at 10:26:12 PM GMT+3
  *
  */
 /*
@@ -44,14 +44,14 @@ static void stack_release_internal(stack_ptr* curent);
 
 /* api */
 static u64 stack_alloc(const_vm_ptr vm);
-static u64 stack_free(const_vm_ptr vm, u64 ptr);
-static u64 stack_push(const_vm_ptr vm, u64 ptr, u64 data_ptr);
-static u64 stack_peek(const_vm_ptr vm, u64 ptr);
-static u64 stack_peekn(const_vm_ptr vm, u64 ptr, u64 nelements);
-static u64 stack_pop(const_vm_ptr vm, u64 ptr);
-static u64 stack_popn(const_vm_ptr vm, u64 ptr, u64 nelements);
-static u64 stack_size(const_vm_ptr vm, u64 ptr);
-static u64 stack_release(const_vm_ptr vm, u64 ptr);
+static u64 stack_free(const_vm_ptr vm, u64 src);
+static u64 stack_push(const_vm_ptr vm, u64 src, u64 data_ptr);
+static u64 stack_peek(const_vm_ptr vm, u64 src);
+static u64 stack_peekn(const_vm_ptr vm, u64 src, u64 nelements);
+static u64 stack_pop(const_vm_ptr vm, u64 src);
+static u64 stack_popn(const_vm_ptr vm, u64 src, u64 nelements);
+static u64 stack_size(const_vm_ptr vm, u64 src);
+static u64 stack_release(const_vm_ptr vm, u64 src);
 
 /* definition */
 typedef struct stack_handler* stack_handler_ptr;
@@ -77,6 +77,10 @@ static void INIT init(void) {
 
 static void type_desctructor(const_pointer_ptr const_ptr) {
     stack_handler_ptr handler = CALL(pointer)->data(const_ptr);
+    // if (handler == 0) {
+    //     ERROR_NO_MEMORY(handler == 0);
+    //     return;
+    // }
     handler->size = 0;
     stack_release_internal(&(handler->list));
     CALL(system_list)->destroy(&(handler->list));
@@ -85,7 +89,15 @@ static void type_desctructor(const_pointer_ptr const_ptr) {
 
 static const_pointer_ptr stack_alloc_internal(void) {
     const_pointer_ptr const_ptr = CALL(pointer)->alloc(STACK_HANDLER_TYPE_SIZE, type_id);
+    // if (const_ptr == 0) {
+    //     ERROR_POINTER_NOT_INITIALIZED(const_ptr == 0);
+    //     return FALSE;
+    // }
     stack_handler_ptr handler = CALL(pointer)->data(const_ptr);
+    // if (handler == 0) {
+    //     ERROR_NO_MEMORY(handler == 0);
+    //     return FALSE;
+    // }
     handler->size = 0;
     CALL(system_list)->init(&handler->list);
     return const_ptr;
@@ -104,30 +116,39 @@ static u64 stack_alloc(const_vm_ptr vm) {
         return FALSE;
     }
     const_pointer_ptr const_ptr = stack_alloc_internal();
-    return CALL(virtual)->alloc(vm, const_ptr);
+    u64 ptr = CALL(virtual)->alloc(vm, const_ptr);
+    // if (ptr == 0) {
+    //     ERROR_NO_MEMORY(ptr == 0);
+    //     return FALSE;
+    // }
+    return ptr;
 }
 
-static u64 stack_release(const_vm_ptr vm, u64 ptr) {
+static u64 stack_release(const_vm_ptr vm, u64 src) {
     if (vm == 0 || *vm == 0) {
         ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
         return FALSE;
     }
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, type_id);
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, src, type_id);
     if (data_ptr == 0) {
         return FALSE;
     }
     stack_handler_ptr handler = CALL(pointer)->data(data_ptr);
+    // if (handler == 0) {
+    //     ERROR_NO_MEMORY(handler == 0);
+    //     return FALSE;
+    // }
     handler->size = 0;
     stack_release_internal(&handler->list);
     return TRUE;
 }
 
-static u64 stack_free(const_vm_ptr vm, u64 ptr) {
+static u64 stack_free(const_vm_ptr vm, u64 src) {
     if (vm == 0 || *vm == 0) {
         ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
         return FALSE;
     }
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, type_id);
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, src, type_id);
     if (data_ptr == 0) {
         return FALSE;
     }
@@ -135,54 +156,66 @@ static u64 stack_free(const_vm_ptr vm, u64 ptr) {
     return TRUE;
 }
 
-static u64 stack_push(const_vm_ptr vm, u64 ptr_list, u64 ptr) {
+static u64 stack_push(const_vm_ptr vm, u64 src, u64 data_list) {
     if (vm == 0 || *vm == 0) {
         ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
         return FALSE;
     }
-    if (ptr_list == ptr) {
+    if (src == data_list) {
         return FALSE;
     }
-    if (ptr_list == 0) {
+    if (src == 0) {
         return FALSE;
     }
-    if (ptr == 0) {
+    if (data_list == 0) {
         return FALSE;
     }
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr_list, type_id);
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, src, type_id);
     if (data_ptr == 0) {
         return FALSE;
     }
     stack_handler_ptr handler = CALL(pointer)->data(data_ptr);
-    CALL(system_list)->push(&handler->list, (void*)ptr);
+    // if (handler == 0) {
+    //     ERROR_NO_MEMORY(handler == 0);
+    //     return FALSE;
+    // }
+    CALL(system_list)->push(&handler->list, (void*)data_list);
     handler->size++;
     return TRUE;
 }
 
-static u64 stack_peek(const_vm_ptr vm, u64 ptr) {
+static u64 stack_peek(const_vm_ptr vm, u64 src) {
     if (vm == 0 || *vm == 0) {
         ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
         return FALSE;
     }
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, type_id);
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, src, type_id);
     if (data_ptr == 0) {
         return FALSE;
     }
     stack_handler_ptr handler = CALL(pointer)->data(data_ptr);
+    // if (handler == 0) {
+    //     ERROR_NO_MEMORY(handler == 0);
+    //     return FALSE;
+    // }
     u64 stack_peek_ptr = (u64)CALL(system_list)->peek(&handler->list);
     return stack_peek_ptr;
 }
 
-static u64 stack_peekn(const_vm_ptr vm, u64 ptr, u64 nelements) {
+static u64 stack_peekn(const_vm_ptr vm, u64 src, u64 nelements) {
     if (vm == 0 || *vm == 0) {
         ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
         return FALSE;
     }
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, type_id);
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, src, type_id);
     if (data_ptr == 0) {
         return FALSE;
     }
     stack_handler_ptr src_handler = CALL(pointer)->data(data_ptr);
+    // if (src_handler == 0) {
+    //     ERROR_NO_MEMORY(src_handler == 0);
+    //     return FALSE;
+    // }
     u64 size = src_handler->size;
     if (size == 0) {
         ERROR_ARGUMENT_VALUE_NOT_INITIALIZED(size == 0);
@@ -193,6 +226,10 @@ static u64 stack_peekn(const_vm_ptr vm, u64 ptr, u64 nelements) {
     }
     const_pointer_ptr dst_ptr = stack_alloc_internal();
     stack_handler_ptr dst_handler = CALL(pointer)->data(dst_ptr);
+    // if (dst_handler == 0) {
+    //     ERROR_NO_MEMORY(dst_handler == 0);
+    //     return FALSE;
+    // }
     u64 i = nelements;
     while (i-- > 0) {
         stack_ptr current = src_handler->list;
@@ -201,19 +238,28 @@ static u64 stack_peekn(const_vm_ptr vm, u64 ptr, u64 nelements) {
         dst_handler->size++;
         current = current->next;
     }
-    return CALL(virtual)->alloc(vm, dst_ptr);
+    u64 ptr = CALL(virtual)->alloc(vm, dst_ptr);
+    // if (ptr == 0) {
+    //     ERROR_NO_MEMORY(ptr == 0);
+    //     return FALSE;
+    // }
+    return ptr;
 }
 
-static u64 stack_pop(const_vm_ptr vm, u64 ptr) {
+static u64 stack_pop(const_vm_ptr vm, u64 src) {
     if (vm == 0 || *vm == 0) {
         ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
         return FALSE;
     }
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, type_id);
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, src, type_id);
     if (data_ptr == 0) {
         return FALSE;
     }
     stack_handler_ptr handler = CALL(pointer)->data(data_ptr);
+    // if (handler == 0) {
+    //     ERROR_NO_MEMORY(handler == 0);
+    //     return FALSE;
+    // }
     if (handler->size == 0) {
         return FALSE;
     }
@@ -222,16 +268,20 @@ static u64 stack_pop(const_vm_ptr vm, u64 ptr) {
     return stack_pop_ptr;
 }
 
-static u64 stack_popn(const_vm_ptr vm, u64 ptr, u64 nelements) {
+static u64 stack_popn(const_vm_ptr vm, u64 src, u64 nelements) {
     if (vm == 0 || *vm == 0) {
         ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
         return FALSE;
     }
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, type_id);
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, src, type_id);
     if (data_ptr == 0) {
         return FALSE;
     }
     stack_handler_ptr src_handler = CALL(pointer)->data(data_ptr);
+    // if (src_handler == 0) {
+    //     ERROR_NO_MEMORY(src_handler == 0);
+    //     return FALSE;
+    // }
     u64 size = src_handler->size;
     if (size == 0) {
         ERROR_ARGUMENT_VALUE_NOT_INITIALIZED(size == 0);
@@ -242,25 +292,38 @@ static u64 stack_popn(const_vm_ptr vm, u64 ptr, u64 nelements) {
     }
     const_pointer_ptr dst_ptr = stack_alloc_internal();
     stack_handler_ptr dst_handler = CALL(pointer)->data(dst_ptr);
+    // if (src_handler == 0) {
+    //     ERROR_NO_MEMORY(src_handler == 0);
+    //     return FALSE;
+    // }
     u64 i = nelements;
     while (i-- > 0) {
         u64 stack_pop_ptr = (u64)CALL(system_list)->pop(&src_handler->list);
         CALL(system_list)->push(&dst_handler->list, (void*)stack_pop_ptr);
         dst_handler->size++;
     }
-    return CALL(virtual)->alloc(vm, dst_ptr);
+    u64 ptr = CALL(virtual)->alloc(vm, dst_ptr);
+    // if (ptr == 0) {
+    //     ERROR_NO_MEMORY(ptr == 0);
+    //     return FALSE;
+    // }
+    return ptr;
 }
 
-static u64 stack_size(const_vm_ptr vm, u64 ptr) {
+static u64 stack_size(const_vm_ptr vm, u64 src) {
     if (vm == 0 || *vm == 0) {
         ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
         return FALSE;
     }
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, type_id);
+    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, src, type_id);
     if (data_ptr == 0) {
         return FALSE;
     }
     const_stack_handler_ptr handler = CALL(pointer)->data(data_ptr);
+    // if (handler == 0) {
+    //     ERROR_NO_MEMORY(handler == 0);
+    //     return FALSE;
+    // }
     u64 size = handler->size;
     return size;
 }

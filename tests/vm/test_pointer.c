@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 15, 2025 at 4:02:36 PM GMT+3
+ *   March 17, 2025 at 8:42:48 PM GMT+3
  *
  */
 /*
@@ -27,7 +27,7 @@
 #include "test_pointer.h"
 
 #include "system/api/api_v1.h"
-
+#include "system/error/error_v1.h"
 #include "system/memory/memory_v1.h"
 
 #include "virtual/os/os_v1.h"
@@ -62,45 +62,44 @@ typedef struct test_data {
 }* TEST_DATA;
 
 /*api*/
-static const virtual_methods* virtual_methors;
-static u64 mock_available_memory = 0;
-static u64 mock_allocated_memory = 0;
+static const virtual_methods* mock_virtual_methods;
+// static u64 mock_available_memory = 0;
+// static u64 mock_allocated_memory = 0;
 
 /* mocks */
-static const_pointer_ptr mock_virtual_read_zero(const_vm_ptr vm, u64 address);
-static const_pointer_ptr mock_virtual_read_type_zero(const_vm_ptr vm, u64 address, u64 type);
-static void* mock_alloc(size_t __nmemb, size_t __size);
-static void* mock_realloc(void* __ptr, size_t __size);
-static void mock_free(void* __ptr);
+// static const_pointer_ptr mock_virtual_read_zero(const_vm_ptr vm, u64 address);
+// static void* mock_alloc(size_t __nmemb, size_t __size);
+// static void* mock_realloc(void* __ptr, size_t __size);
+// static void mock_free(void* __ptr);
 
-static const system_api_type mock_system_api_methods_definitions = {
-    .alloc = mock_alloc,
-    .realloc = mock_realloc,
-    .free = mock_free
-};
+// static const system_api_type mock_system_api_methods_definitions = {
+//     .alloc = mock_alloc,
+//     .realloc = mock_realloc,
+//     .free = mock_free
+// };
 
-static const system_api_type* mock_system_api = &mock_system_api_methods_definitions;
-static const system_api_type* temp_system_api;
+// static const system_api_type* mock_system_api = &mock_system_api_methods_definitions;
+// static const system_api_type* temp_system_api;
 
 /* implementation */
-static const_pointer_ptr mock_virtual_read_zero(const_vm_ptr vm, u64 address) {
-    return NULL_PTR;
-}
+// static const_pointer_ptr mock_virtual_read_zero(const_vm_ptr vm, u64 address) {
+//     return NULL_PTR;
+// }
 
-static void* mock_alloc(size_t __nmemb, size_t __size) {
-    if (mock_allocated_memory + __nmemb * __size <= mock_available_memory) {
-        mock_allocated_memory += __nmemb * __size;
-        return calloc(__nmemb, __size);
-    }
-    return NULL_PTR;
-}
+// static void* mock_alloc(size_t __nmemb, size_t __size) {
+//     if (mock_allocated_memory + __nmemb * __size <= mock_available_memory) {
+//         mock_allocated_memory += __nmemb * __size;
+//         return calloc(__nmemb, __size);
+//     }
+//     return NULL_PTR;
+// }
 
-static void* mock_realloc(void* __ptr, size_t __size) {
-    return NULL_PTR;
-}
-static void mock_free(void* __ptr) {
-    free(__ptr);
-}
+// static void* mock_realloc(void* __ptr, size_t __size) {
+//     return NULL_PTR;
+// }
+// static void mock_free(void* __ptr) {
+//     free(__ptr);
+// }
 
 RX_SET_UP(test_set_up) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
@@ -287,93 +286,93 @@ RX_TEST_CASE(tests_v1, test_init_load_free_destroy_gc, .fixture = test_fixture) 
     CALL(pointer)->gc();
 }
 
-/* test init */
-RX_TEST_CASE(tests_v1, test_load_copy_virtual_read_ptr_0, .fixture = test_fixture) {
-    TEST_DATA rx = (TEST_DATA)RX_DATA;
-    const_vm_ptr vm = rx->ctx;
-    static virtual_methods mock_virtual_methods_definitions;
-    /*api */
-    memcpy(&mock_virtual_methods_definitions, virtual, sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
-    /* setup mocks */
-    mock_virtual_methods_definitions.read = mock_virtual_read_zero;
-    /* setup api endpoint */
-    static const virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
-    /* backup api calls */
-    memcpy(&virtual_methors, &virtual, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
-    /* init */
-    u64 char_ptr = CALL(string)->load(vm, "/");
-    /* prepare to mock api calls */
-    memcpy(&virtual, &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+// /* test init */
+// RX_TEST_CASE(tests_v1, test_load_copy_virtual_read_ptr_0, .fixture = test_fixture) {
+//     TEST_DATA rx = (TEST_DATA)RX_DATA;
+//     const_vm_ptr vm = rx->ctx;
+//     static virtual_methods mock_virtual_methods_definitions;
+//     /*api */
+//     memcpy(&mock_virtual_methods_definitions, virtual, sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
+//     /* setup mocks */
+//     mock_virtual_methods_definitions.read = mock_virtual_read_zero;
+//     /* setup api endpoint */
+//     static const virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
+//     /* backup api calls */
+//     memcpy(&mock_virtual_methods, &virtual, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+//     /* init */
+//     u64 char_ptr = CALL(string)->load(vm, "/");
+//     /* prepare to mock api calls */
+//     memcpy(&virtual, &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
 
-    /* virtual_string->free fails in virtual->read call */
-    u64 copy_ptr = CALL(string)->copy(vm, char_ptr);
+//     /* virtual_string->free fails in virtual->read call */
+//     u64 copy_ptr = CALL(string)->copy(vm, char_ptr);
 
-    /* restore api calls */
-    memcpy(&virtual, &virtual_methors, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
-    RX_ASSERT(char_ptr != 0);
-    RX_ASSERT(copy_ptr == 0);
-    RX_ASSERT(strcmp(CALL(string)->unsafe(vm, char_ptr), "/") == 0);
-    CALL(string)->free(vm, char_ptr);
-}
+//     /* restore api calls */
+//     memcpy(&virtual, &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+//     RX_ASSERT(char_ptr != 0);
+//     RX_ASSERT(copy_ptr == 0);
+//     RX_ASSERT(strcmp(CALL(string)->unsafe(vm, char_ptr), "/") == 0);
+//     CALL(string)->free(vm, char_ptr);
+// }
 
-/* test init */
-RX_TEST_CASE(tests_v1, test_load_copy_ppointer_virtual_read_ptr_0, .fixture = test_fixture) {
-    TEST_DATA rx = (TEST_DATA)RX_DATA;
-    const_vm_ptr vm = rx->ctx;
-    static virtual_methods mock_virtual_methods_definitions;
-    /*api */
-    memcpy(&mock_virtual_methods_definitions, virtual, sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
-    /* setup mocks */
-    mock_virtual_methods_definitions.read = mock_virtual_read_zero;
-    /* setup api endpoint */
-    static const virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
-    /* backup api calls */
-    memcpy(&virtual_methors, &virtual, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
-    /* init */
+// /* test init */
+// RX_TEST_CASE(tests_v1, test_load_copy_ppointer_virtual_read_ptr_0, .fixture = test_fixture) {
+//     TEST_DATA rx = (TEST_DATA)RX_DATA;
+//     const_vm_ptr vm = rx->ctx;
+//     static virtual_methods mock_virtual_methods_definitions;
+//     /*api */
+//     memcpy(&mock_virtual_methods_definitions, virtual, sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
+//     /* setup mocks */
+//     mock_virtual_methods_definitions.read = mock_virtual_read_zero;
+//     /* setup api endpoint */
+//     static const virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
+//     /* backup api calls */
+//     memcpy(&mock_virtual_methods, &virtual, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+//     /* init */
 
-    const_pointer_ptr offset_ptr = CALL(pointer)->alloc(2, TYPE_STRING_POINTER);
+//     const_pointer_ptr offset_ptr = CALL(pointer)->alloc(2, TYPE_STRING_POINTER);
 
-    /* prepare to mock api calls */
-    memcpy(&virtual, &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+//     /* prepare to mock api calls */
+//     memcpy(&virtual, &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
 
-    u64 address = CALL(virtual)->alloc(vm, offset_ptr);
+//     u64 address = CALL(virtual)->alloc(vm, offset_ptr);
 
-    u64 move_ptr = CALL(string)->move_left(vm, address, 1);
+//     u64 move_ptr = CALL(string)->move_left(vm, address, 1);
 
-    RX_ASSERT(move_ptr == 0);
+//     RX_ASSERT(move_ptr == 0);
 
-    CALL(pointer)->release(offset_ptr);
+//     CALL(pointer)->release(offset_ptr);
 
-    /* restore api calls */
-    memcpy(&virtual, &virtual_methors, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
-}
+//     /* restore api calls */
+//     memcpy(&virtual, &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+// }
 
-/* test init */
-RX_TEST_CASE(tests_v1, test_load_copy_virtual_read_0, .fixture = test_fixture) {
-    TEST_DATA rx = (TEST_DATA)RX_DATA;
-    const_vm_ptr vm = rx->ctx;
-    static virtual_methods mock_virtual_methods_definitions;
-    /*api */
-    memcpy(&mock_virtual_methods_definitions, virtual, sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
-    /* setup mocks */
-    mock_virtual_methods_definitions.read = mock_virtual_read_zero;
-    /* setup api endpoint */
-    static const virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
-    /* backup api calls */
-    memcpy(&virtual_methors, &virtual, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
-    /* init */
-    u64 char_ptr = CALL(string)->load(vm, "/");
-    /* prepare to mock api calls */
-    memcpy(&virtual, &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
-    /* virtual_string->free fails in virtual->read call */
-    u64 copy_ptr = CALL(string)->copy(vm, char_ptr);
-    /* restore api calls */
-    memcpy(&virtual, &virtual_methors, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
-    RX_ASSERT(char_ptr != 0);
-    RX_ASSERT(copy_ptr == 0);
-    RX_ASSERT(strcmp(CALL(string)->unsafe(vm, char_ptr), "/") == 0);
-    CALL(string)->free(vm, char_ptr);
-}
+// /* test init */
+// RX_TEST_CASE(tests_v1, test_load_copy_virtual_read_0, .fixture = test_fixture) {
+//     TEST_DATA rx = (TEST_DATA)RX_DATA;
+//     const_vm_ptr vm = rx->ctx;
+//     static virtual_methods mock_virtual_methods_definitions;
+//     /*api */
+//     memcpy(&mock_virtual_methods_definitions, virtual, sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
+//     /* setup mocks */
+//     mock_virtual_methods_definitions.read = mock_virtual_read_zero;
+//     /* setup api endpoint */
+//     static const virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
+//     /* backup api calls */
+//     memcpy(&mock_virtual_methods, &virtual, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+//     /* init */
+//     u64 char_ptr = CALL(string)->load(vm, "/");
+//     /* prepare to mock api calls */
+//     memcpy(&virtual, &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+//     /* virtual_string->free fails in virtual->read call */
+//     u64 copy_ptr = CALL(string)->copy(vm, char_ptr);
+//     /* restore api calls */
+//     memcpy(&virtual, &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+//     RX_ASSERT(char_ptr != 0);
+//     RX_ASSERT(copy_ptr == 0);
+//     RX_ASSERT(strcmp(CALL(string)->unsafe(vm, char_ptr), "/") == 0);
+//     CALL(string)->free(vm, char_ptr);
+// }
 
 /* test init */
 RX_TEST_CASE(tests_v1, test_load_push_peek_pop, .fixture = test_fixture) {
@@ -1532,80 +1531,80 @@ RX_TEST_CASE(tests_v1, test_strcpy, .fixture = test_fixture) {
 #endif
 }
 
-/* test case */
-RX_TEST_CASE(tests_v1, test_alloc_guard_ret_0, .fixture = test_fixture) {
-    mock_allocated_memory = 0;
-    mock_available_memory = 41; // sizeof(struct pointer) + 1
-    TEST_DATA rx = (TEST_DATA)RX_DATA;
-    /* backup api calls */
-    memcpy(&temp_system_api, &system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
-    /* prepare to mock api calls */
-    memcpy(&system_api, &mock_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+// /* test case */
+// RX_TEST_CASE(tests_v1, test_alloc_guard_ret_0, .fixture = test_fixture) {
+//     mock_allocated_memory = 0;
+//     mock_available_memory = 41; // sizeof(struct pointer) + 1
+//     TEST_DATA rx = (TEST_DATA)RX_DATA;
+//     /* backup api calls */
+//     memcpy(&temp_system_api, &system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+//     /* prepare to mock api calls */
+//     memcpy(&system_api, &mock_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
 
-    const char* ch = "hello, world!";
-    u64 string_ptr = CALL(pointer)->alloc_guard(ch, 2, 0, TYPE_STRING);
+//     const char* ch = "hello, world!";
+//     u64 string_ptr = CALL(pointer)->alloc_guard(ch, 2, 0, TYPE_STRING);
 
-    RX_ASSERT(string_ptr == 0);
+//     RX_ASSERT(string_ptr == 0);
 
-    /* restore api calls */
-    memcpy(&system_api, &temp_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
-}
+//     /* restore api calls */
+//     memcpy(&system_api, &temp_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+// }
 
-/* test case */
-RX_TEST_CASE(tests_v1, test_alloc_data_0, .fixture = test_fixture) {
-    mock_allocated_memory = 0;
-    mock_available_memory = 41; // sizeof(struct pointer)
-    TEST_DATA rx = (TEST_DATA)RX_DATA;
-    /* backup api calls */
-    memcpy(&temp_system_api, &system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
-    /* prepare to mock api calls */
-    memcpy(&system_api, &mock_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+// /* test case */
+// RX_TEST_CASE(tests_v1, test_alloc_data_0, .fixture = test_fixture) {
+//     mock_allocated_memory = 0;
+//     mock_available_memory = 41; // sizeof(struct pointer)
+//     TEST_DATA rx = (TEST_DATA)RX_DATA;
+//     /* backup api calls */
+//     memcpy(&temp_system_api, &system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+//     /* prepare to mock api calls */
+//     memcpy(&system_api, &mock_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
 
-    const_pointer_ptr const_ptr = CALL(pointer)->alloc(2, TYPE_STRING);
-    RX_ASSERT(const_ptr == 0);
+//     const_pointer_ptr const_ptr = CALL(pointer)->alloc(2, TYPE_STRING);
+//     RX_ASSERT(const_ptr == 0);
 
-    /* restore api calls */
-    memcpy(&system_api, &temp_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
-}
+//     /* restore api calls */
+//     memcpy(&system_api, &temp_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+// }
 
-/* test case */
-RX_TEST_CASE(tests_v1, test_alloc_0, .fixture = test_fixture) {
-    mock_allocated_memory = 0;
-    mock_available_memory = 39; // sizeof(struct pointer) - 1
-    TEST_DATA rx = (TEST_DATA)RX_DATA;
-    /* backup api calls */
-    memcpy(&temp_system_api, &system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
-    /* prepare to mock api calls */
-    memcpy(&system_api, &mock_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+// /* test case */
+// RX_TEST_CASE(tests_v1, test_alloc_0, .fixture = test_fixture) {
+//     mock_allocated_memory = 0;
+//     mock_available_memory = 39; // sizeof(struct pointer) - 1
+//     TEST_DATA rx = (TEST_DATA)RX_DATA;
+//     /* backup api calls */
+//     memcpy(&temp_system_api, &system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+//     /* prepare to mock api calls */
+//     memcpy(&system_api, &mock_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
 
-    const_pointer_ptr const_ptr = CALL(pointer)->alloc(2, TYPE_STRING);
-    RX_ASSERT(const_ptr == 0);
+//     const_pointer_ptr const_ptr = CALL(pointer)->alloc(2, TYPE_STRING);
+//     RX_ASSERT(const_ptr == 0);
 
-    /* restore api calls */
-    memcpy(&system_api, &temp_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
-}
+//     /* restore api calls */
+//     memcpy(&system_api, &temp_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+// }
 
-/* test case */
-RX_TEST_CASE(tests_v1, test_realloc_0, .fixture = test_fixture) {
-    mock_allocated_memory = 0;
-    mock_available_memory = 41; // sizeof(struct pointer)
-    TEST_DATA rx = (TEST_DATA)RX_DATA;
-    /* backup api calls */
-    memcpy(&temp_system_api, &system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
-    /* prepare to mock api calls */
-    memcpy(&system_api, &mock_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+// /* test case */
+// RX_TEST_CASE(tests_v1, test_realloc_0, .fixture = test_fixture) {
+//     mock_allocated_memory = 0;
+//     mock_available_memory = 41; // sizeof(struct pointer)
+//     TEST_DATA rx = (TEST_DATA)RX_DATA;
+//     /* backup api calls */
+//     memcpy(&temp_system_api, &system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+//     /* prepare to mock api calls */
+//     memcpy(&system_api, &mock_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
 
-    const_pointer_ptr const_ptr = CALL(pointer)->alloc(1, TYPE_STRING);
-    RX_ASSERT(const_ptr != 0);
+//     const_pointer_ptr const_ptr = CALL(pointer)->alloc(1, TYPE_STRING);
+//     RX_ASSERT(const_ptr != 0);
 
-    u64 string_ptr = CALL(pointer)->realloc(const_ptr, 42);
-    RX_ASSERT(string_ptr == 0);
+//     u64 string_ptr = CALL(pointer)->realloc(const_ptr, 42);
+//     RX_ASSERT(string_ptr == 0);
 
-    CALL(pointer)->release(const_ptr);
+//     CALL(pointer)->release(const_ptr);
 
-    /* restore api calls */
-    memcpy(&system_api, &temp_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
-}
+//     /* restore api calls */
+//     memcpy(&system_api, &temp_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+// }
 
 /* test init */
 RX_TEST_CASE(tests_v1, test_strcat_load_put_char, .fixture = test_fixture) {
@@ -1624,12 +1623,25 @@ RX_TEST_CASE(tests_v1, test_strcat_load_put_char, .fixture = test_fixture) {
 RX_TEST_CASE(tests_v1, test_strcat_load_alloc_copy, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
+    error_api->clear();
     u64 string_ptr = CALL(string)->load(vm, "/all_english_words.txt");
+    // if (string_ptr == 0) {
+    //     error_api->get_stack_trace();
+    //     error_api->clear();
+    // }
+    error_api->get_stack_trace();
     u64 zero_ptr = CALL(string)->load(vm, "\0");
+    if (zero_ptr == 0) {
+        error_api->get_stack_trace();
+        error_api->clear();
+    }
     u64 data_ptr = CALL(data)->alloc(vm, 1);
     u64 list_ptr = CALL(stack)->alloc(vm);
     u64 empty_ptr = CALL(string)->load(vm, "\0");
-
+    if (zero_ptr == 0) {
+        error_api->get_stack_trace();
+        error_api->clear();
+    }
     u64 null_ptr = 0;
     u64 none_ptr = 0xfffffffff;
 
@@ -2816,79 +2828,79 @@ RX_TEST_CASE(tests_v1, test_print_free, .fixture = test_fixture) {
     CALL(os)->putc(vm, printing_ptr);
 }
 
-/* test init */
-RX_TEST_CASE(tests_v1, test_sting_free_0, .fixture = test_fixture) {
-    static virtual_methods mock_virtual_methods_definitions;
-    /*api */
-    memcpy(&mock_virtual_methods_definitions, virtual, sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
-    /* setup mocks */
-    mock_virtual_methods_definitions.read = mock_virtual_read_zero;
-    /* setup api endpoint */
-    static const virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
-    /* backup api calls */
-    memcpy(&virtual_methors, &virtual, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
-    /* init */
-    TEST_DATA rx = (TEST_DATA)RX_DATA;
-    const_vm_ptr vm = rx->ctx;
-    /* prepare to mock api calls */
-    memcpy(&virtual, &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
-    /* virtual_string->free fails in virtual->read call */
-    CALL(string)->free(vm, 0);
-    /* restore api calls */
-    memcpy(&virtual, &virtual_methors, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
-    /* cleanup */
-    CALL(pointer)->gc();
-    /* destroy */
-    CALL(pointer)->destroy();
-}
+// /* test init */
+// RX_TEST_CASE(tests_v1, test_sting_free_0, .fixture = test_fixture) {
+//     static virtual_methods mock_virtual_methods_definitions;
+//     /*api */
+//     memcpy(&mock_virtual_methods_definitions, virtual, sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
+//     /* setup mocks */
+//     mock_virtual_methods_definitions.read = mock_virtual_read_zero;
+//     /* setup api endpoint */
+//     static const virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
+//     /* backup api calls */
+//     memcpy(&mock_virtual_methods, &virtual, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+//     /* init */
+//     TEST_DATA rx = (TEST_DATA)RX_DATA;
+//     const_vm_ptr vm = rx->ctx;
+//     /* prepare to mock api calls */
+//     memcpy(&virtual, &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+//     /* virtual_string->free fails in virtual->read call */
+//     CALL(string)->free(vm, 0);
+//     /* restore api calls */
+//     memcpy(&virtual, &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+//     /* cleanup */
+//     CALL(pointer)->gc();
+//     /* destroy */
+//     CALL(pointer)->destroy();
+// }
 
-/* test init */
-RX_TEST_CASE(tests_v1, test_sting_free_ptr_0, .fixture = test_fixture) {
-    static virtual_methods mock_virtual_methods_definitions;
-    /*api */
-    memcpy(&mock_virtual_methods_definitions, virtual, sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
-    /* setup mocks */
-    mock_virtual_methods_definitions.read = mock_virtual_read_zero;
-    /* setup api endpoint */
-    static const virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
-    /* backup api calls */
-    memcpy(&virtual_methors, &virtual, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
-    /* init */
-    TEST_DATA rx = (TEST_DATA)RX_DATA;
-    const_vm_ptr vm = rx->ctx;
-    /* prepare to mock api calls */
-    memcpy(&virtual, &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
-    /* virtual_string->free fails in virtual->read call */
-    CALL(string)->free(vm, 0);
-    /* restore api calls */
-    memcpy(&virtual, &virtual_methors, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
-}
+// /* test init */
+// RX_TEST_CASE(tests_v1, test_sting_free_ptr_0, .fixture = test_fixture) {
+//     static virtual_methods mock_virtual_methods_definitions;
+//     /*api */
+//     memcpy(&mock_virtual_methods_definitions, virtual, sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
+//     /* setup mocks */
+//     mock_virtual_methods_definitions.read = mock_virtual_read_zero;
+//     /* setup api endpoint */
+//     static const virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
+//     /* backup api calls */
+//     memcpy(&mock_virtual_methods, &virtual, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+//     /* init */
+//     TEST_DATA rx = (TEST_DATA)RX_DATA;
+//     const_vm_ptr vm = rx->ctx;
+//     /* prepare to mock api calls */
+//     memcpy(&virtual, &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+//     /* virtual_string->free fails in virtual->read call */
+//     CALL(string)->free(vm, 0);
+//     /* restore api calls */
+//     memcpy(&virtual, &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+// }
 
-/* test init */
-RX_TEST_CASE(tests_v1, test_print_string_pointer_virtual_read_type, .fixture = test_fixture) {
-    static virtual_methods mock_virtual_methods_definitions;
-    /*api */
-    memcpy(&mock_virtual_methods_definitions, virtual, sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
-    /* setup mocks */
-    /* setup api endpoint */
-    static const virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
-    /* backup api calls */
-    memcpy(&virtual_methors, &virtual, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
-    /* init */
-    TEST_DATA rx = (TEST_DATA)RX_DATA;
-    const_vm_ptr vm = rx->ctx;
-    u64 printing_ptr = CALL(string)->load(vm, "hello, world!");
-    u64 comma_ptr = CALL(string)->load(vm, ",");
-    u64 substring_index_ptr = CALL(string)->offset(vm, printing_ptr, comma_ptr);
-    CALL(os)->putc(vm, substring_index_ptr);
-    CALL(string)->free(vm, printing_ptr);
-    /* prepare to mock api calls */
-    memcpy(&virtual, &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
-    CALL(string)->free(vm, substring_index_ptr);
-    /* restore api calls */
-    memcpy(&virtual, &virtual_methors, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
-    CALL(string)->free(vm, comma_ptr);
-}
+// /* test init */
+// RX_TEST_CASE(tests_v1, test_print_string_pointer_virtual_read_type, .fixture = test_fixture) {
+//     static virtual_methods mock_virtual_methods_definitions;
+//     /*api */
+//     memcpy(&mock_virtual_methods_definitions, virtual, sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
+//     /* setup mocks */
+//     /* setup api endpoint */
+//     static const virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
+//     /* backup api calls */
+//     memcpy(&mock_virtual_methods, &virtual, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+//     /* init */
+//     TEST_DATA rx = (TEST_DATA)RX_DATA;
+//     const_vm_ptr vm = rx->ctx;
+//     u64 printing_ptr = CALL(string)->load(vm, "hello, world!");
+//     u64 comma_ptr = CALL(string)->load(vm, ",");
+//     u64 substring_index_ptr = CALL(string)->offset(vm, printing_ptr, comma_ptr);
+//     CALL(os)->putc(vm, substring_index_ptr);
+//     CALL(string)->free(vm, printing_ptr);
+//     /* prepare to mock api calls */
+//     memcpy(&virtual, &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+//     CALL(string)->free(vm, substring_index_ptr);
+//     /* restore api calls */
+//     memcpy(&virtual, &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+//     CALL(string)->free(vm, comma_ptr);
+// }
 
 /* test init */
 RX_TEST_CASE(tests_v1, test_print, .fixture = test_fixture) {

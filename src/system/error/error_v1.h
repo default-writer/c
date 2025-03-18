@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 14, 2025 at 11:26:15 AM GMT+3
+ *   March 17, 2025 at 3:32:27 AM GMT+3
  *
  */
 /*
@@ -36,6 +36,9 @@
 
 enum error_message_code {
     ID_ERROR_NO_ERROR,
+    ID_ERROR_NO_MEMORY,
+    ID_ERROR_NULLPTR,
+    ID_ERROR_INVALID_ADDRESS,
     ID_ERROR_VM_NOT_INITIALIZED,
     ID_ERROR_POINTER_NOT_INITIALIZED,
     ID_ERROR_ADDRESS_NOT_INITIALIZED,
@@ -44,10 +47,13 @@ enum error_message_code {
 };
 
 typedef struct error_api {
+    void (*clear)(void);
+    u64 (*get_error_code)(void);
+    void (*get_stack_trace)(void);
 #ifdef USE_MEMORY_DEBUG_INFO
-    void (*stderr)(enum error_message_code id, const char* func, const char* args, const char* file, int line);
+    void (*set_error_code)(u64 error_code, const char* error_func, const char* error_args, const char* error_file, int error_line);
 #else
-    void (*stderr)(enum error_message_code id);
+    void (*set_error_code)(u64 code);
 #endif
 } error_api_type;
 

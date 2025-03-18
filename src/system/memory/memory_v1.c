@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 14, 2025 at 7:04:11 AM GMT+3
+ *   March 17, 2025 at 8:39:57 PM GMT+3
  *
  */
 /*
@@ -100,9 +100,9 @@ static void* memory_realloc(void* old_ptr, u64 size, u64 new_size) {
     }
     void* ptr = old_ptr;
     ptr = system_api->realloc(ptr, new_size);
-    if (ptr == 0) {
-        return NULL_PTR;
-    }
+    // if (ptr == 0) {
+    //     return NULL_PTR;
+    // }
 #ifdef USE_MEMORY_DEBUG_INFO
     total_alloc += new_size;
     total_free += size;

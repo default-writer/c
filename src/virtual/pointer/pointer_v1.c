@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 14, 2025 at 7:04:11 AM GMT+3
+ *   March 18, 2025 at 4:42:23 AM GMT+3
  *
  */
 /*
@@ -175,6 +175,14 @@ static void user_types_init(type_methods_definitions_ptr data_type) {
     known_types_init(type_id, data_type);
 }
 
+void pointer_register_known_type(u64 type_id, type_methods_definitions_ptr data_type) {
+    known_types_init(type_id, data_type);
+}
+
+void pointer_register_user_type(type_methods_definitions_ptr data_type) {
+    user_types_init(data_type);
+}
+
 static void INIT vm_init(void) {
     /* NOLINT: no constructor logic */
 }
@@ -188,8 +196,11 @@ static void DESTROY vm_destroy(void) {
 }
 
 static const_pointer_ptr pointer_alloc(u64 size, u64 type) {
+    // if (error_api->get_error_code() != 0) {
+    //     return FALSE;
+    // }
     if (vm == 0) {
-        ERROR_VM_NOT_INITIALIZED(vm);
+        ERROR_VM_NOT_INITIALIZED(vm == 0);
         return NULL_PTR;
     }
     if (size == 0) {
@@ -205,10 +216,10 @@ static const_pointer_ptr pointer_alloc(u64 size, u64 type) {
         return NULL_PTR;
     }
     void* data = CALL(system_memory)->alloc(size);
-    if (data == 0) {
-        CALL(system_memory)->free(ptr, POINTER_TYPE_SIZE);
-        return NULL_PTR;
-    }
+    // if (data == 0) {
+    //     CALL(system_memory)->free(ptr, POINTER_TYPE_SIZE);
+    //     return NULL_PTR;
+    // }
     *ptr = (struct pointer) {
         .data = data,
         .size = size,
@@ -218,8 +229,11 @@ static const_pointer_ptr pointer_alloc(u64 size, u64 type) {
 }
 
 static const_pointer_ptr pointer_copy(const void* data, u64 size, u64 type_id) {
+    // if (error_api->get_error_code() != 0) {
+    //     return FALSE;
+    // }
     if (vm == 0) {
-        ERROR_VM_NOT_INITIALIZED(vm);
+        ERROR_VM_NOT_INITIALIZED(vm == 0);
         return NULL_PTR;
     }
     if (data == 0) {
@@ -235,18 +249,21 @@ static const_pointer_ptr pointer_copy(const void* data, u64 size, u64 type_id) {
         return NULL_PTR;
     }
     const_pointer_ptr data_ptr = pointer_alloc(size, type_id);
-    if (data_ptr == 0) {
-        ERROR_POINTER_NOT_INITIALIZED(data_ptr == 0);
-        return NULL_PTR;
-    }
+    // if (data_ptr == 0) {
+    //     ERROR_POINTER_NOT_INITIALIZED(data_ptr == 0);
+    //     return NULL_PTR;
+    // }
 
     pointer_memcpy(data_ptr, data, size);
     return data_ptr;
 }
 
 static const_pointer_ptr pointer_copy_guard(const void* data, u64 size, u64 offset, u64 type_id) {
+    // if (error_api->get_error_code() != 0) {
+    //     return FALSE;
+    // }
     if (vm == 0) {
-        ERROR_VM_NOT_INITIALIZED(vm);
+        ERROR_VM_NOT_INITIALIZED(vm == 0);
         return NULL_PTR;
     }
     if (data == 0) {
@@ -271,8 +288,11 @@ static const_pointer_ptr pointer_copy_guard(const void* data, u64 size, u64 offs
 }
 
 static u64 pointer_alloc_guard(const void* data, u64 size, u64 offset, u64 type_id) {
+    // if (error_api->get_error_code() != 0) {
+    //     return FALSE;
+    // }
     if (vm == 0) {
-        ERROR_VM_NOT_INITIALIZED(vm);
+        ERROR_VM_NOT_INITIALIZED(vm == 0);
         return FALSE;
     }
     if (data == 0) {
@@ -297,12 +317,20 @@ static u64 pointer_alloc_guard(const void* data, u64 size, u64 offset, u64 type_
         return FALSE;
     }
     pointer_guard(data_ptr, offset);
-    return CALL(virtual)->alloc(&vm, data_ptr);
+    u64 ptr = CALL(virtual)->alloc(&vm, data_ptr);
+    if (ptr == 0) {
+        ERROR_NO_MEMORY(ptr == 0);
+        return FALSE;
+    }
+    return ptr;
 }
 
 static u64 pointer_memcpy(const_pointer_ptr const_ptr, const void* data, u64 size) {
+    // if (error_api->get_error_code() != 0) {
+    //     return FALSE;
+    // }
     if (vm == 0) {
-        ERROR_VM_NOT_INITIALIZED(vm);
+        ERROR_VM_NOT_INITIALIZED(vm == 0);
         return FALSE;
     }
     if (const_ptr == 0) {
@@ -322,8 +350,11 @@ static u64 pointer_memcpy(const_pointer_ptr const_ptr, const void* data, u64 siz
 }
 
 static u64 pointer_realloc(const_pointer_ptr const_ptr, u64 size) {
+    // if (error_api->get_error_code() != 0) {
+    //     return FALSE;
+    // }
     if (vm == 0) {
-        ERROR_VM_NOT_INITIALIZED(vm);
+        ERROR_VM_NOT_INITIALIZED(vm == 0);
         return FALSE;
     }
     if (const_ptr == 0) {
@@ -351,17 +382,12 @@ static u64 pointer_realloc(const_pointer_ptr const_ptr, u64 size) {
     return ptr->size;
 }
 
-void pointer_register_known_type(u64 type_id, type_methods_definitions_ptr data_type) {
-    known_types_init(type_id, data_type);
-}
-
-void pointer_register_user_type(type_methods_definitions_ptr data_type) {
-    user_types_init(data_type);
-}
-
 static u64 pointer_free(u64 ptr) {
+    // if (error_api->get_error_code() != 0) {
+    //     return FALSE;
+    // }
     if (vm == 0) {
-        ERROR_VM_NOT_INITIALIZED(vm);
+        ERROR_VM_NOT_INITIALIZED(vm == 0);
         return FALSE;
     }
     if (ptr == 0) {
@@ -380,8 +406,11 @@ static u64 pointer_free(u64 ptr) {
 }
 
 static u64 pointer_release(const_pointer_ptr const_ptr) {
+    // if (error_api->get_error_code() != 0) {
+    //     return FALSE;
+    // }
     if (vm == 0) {
-        ERROR_VM_NOT_INITIALIZED(vm);
+        ERROR_VM_NOT_INITIALIZED(vm == 0);
         return FALSE;
     }
     if (const_ptr == 0) {
@@ -401,8 +430,11 @@ static u64 pointer_release(const_pointer_ptr const_ptr) {
 }
 
 static u64 pointer_size(const_pointer_ptr const_ptr) {
+    // if (error_api->get_error_code() != 0) {
+    //     return FALSE;
+    // }
     if (vm == 0) {
-        ERROR_VM_NOT_INITIALIZED(vm);
+        ERROR_VM_NOT_INITIALIZED(vm == 0);
         return FALSE;
     }
     if (const_ptr == 0) {
@@ -412,8 +444,11 @@ static u64 pointer_size(const_pointer_ptr const_ptr) {
 }
 
 static void* pointer_data(const_pointer_ptr const_ptr) {
+    // if (error_api->get_error_code() != 0) {
+    //     return FALSE;
+    // }
     if (vm == 0) {
-        ERROR_VM_NOT_INITIALIZED(vm);
+        ERROR_VM_NOT_INITIALIZED(vm == 0);
         return NULL_PTR;
     }
     if (const_ptr == 0) {
@@ -424,8 +459,11 @@ static void* pointer_data(const_pointer_ptr const_ptr) {
 }
 
 static void* pointer_data_guard(const_pointer_ptr const_ptr, u64 offset) {
+    // if (error_api->get_error_code() != 0) {
+    //     return FALSE;
+    // }
     if (vm == 0) {
-        ERROR_VM_NOT_INITIALIZED(vm);
+        ERROR_VM_NOT_INITIALIZED(vm == 0);
         return NULL_PTR;
     }
     if (const_ptr == 0) {
@@ -444,8 +482,11 @@ static void* pointer_data_guard(const_pointer_ptr const_ptr, u64 offset) {
 }
 
 static u64 pointer_guard(const_pointer_ptr const_ptr, u64 offset) {
+    // if (error_api->get_error_code() != 0) {
+    //     return FALSE;
+    // }
     if (vm == 0) {
-        ERROR_VM_NOT_INITIALIZED(vm);
+        ERROR_VM_NOT_INITIALIZED(vm == 0);
         return FALSE;
     }
     u8* data = pointer_data(const_ptr);
@@ -457,8 +498,11 @@ static u64 pointer_guard(const_pointer_ptr const_ptr, u64 offset) {
 }
 
 static u64 pointer_get_type(const_pointer_ptr const_ptr) {
+    // if (error_api->get_error_code() != 0) {
+    //     return FALSE;
+    // }
     if (vm == 0) {
-        ERROR_VM_NOT_INITIALIZED(vm);
+        ERROR_VM_NOT_INITIALIZED(vm == 0);
         return FALSE;
     }
     if (const_ptr == 0) {
@@ -468,14 +512,35 @@ static u64 pointer_get_type(const_pointer_ptr const_ptr) {
 }
 
 static u64 pointer_get_address(const_pointer_ptr const_ptr) {
+    // if (error_api->get_error_code() != 0) {
+    //     return FALSE;
+    // }
     if (vm == 0) {
-        ERROR_VM_NOT_INITIALIZED(vm);
+        ERROR_VM_NOT_INITIALIZED(vm == 0);
         return FALSE;
     }
     if (const_ptr == 0) {
         return FALSE;
     }
     return const_ptr->address;
+}
+
+static u64 pointer_set(const_pointer_ptr const_ptr, const_virtual_pointer_ptr vptr, u64 address) {
+    // if (error_api->get_error_code() != 0) {
+    //     return FALSE;
+    // }
+    if (vm == 0) {
+        ERROR_VM_NOT_INITIALIZED(vm == 0);
+        return FALSE;
+    }
+    if (const_ptr == 0) {
+        return FALSE;
+    }
+    safe_pointer_ptr safe_ptr;
+    safe_ptr.const_ptr = const_ptr;
+    safe_ptr.ptr->address = address;
+    safe_ptr.ptr->vptr = vptr;
+    return address;
 }
 
 /* implementation */
@@ -499,21 +564,6 @@ static const_vm_ptr pointer_init(u64 size) {
         current = prev;
     }
     return &vm;
-}
-
-static u64 pointer_set(const_pointer_ptr const_ptr, const_virtual_pointer_ptr vptr, u64 address) {
-    if (vm == 0) {
-        ERROR_VM_NOT_INITIALIZED(vm);
-        return FALSE;
-    }
-    if (const_ptr == 0) {
-        return FALSE;
-    }
-    safe_pointer_ptr safe_ptr;
-    safe_ptr.const_ptr = const_ptr;
-    safe_ptr.ptr->address = address;
-    safe_ptr.ptr->vptr = vptr;
-    return address;
 }
 
 static void pointer_destroy(void) {

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 12, 2025 at 6:19:13 PM GMT+3
+ *   March 17, 2025 at 3:06:24 AM GMT+3
  *
  */
 /*
@@ -46,22 +46,42 @@
 #define CALL(x) PRIVATE_API(x)()
 
 #ifdef USE_MEMORY_DEBUG_INFO
-#define ERROR(message_id, func, args) error_api->stderr(ID_##message_id, func, args, __FILE__, __LINE__)
+#define ERROR(message_id, func, args) error_api->set_error_code(ID_##message_id, func, args, __FILE__, __LINE__)
 #define ERROR_NO_ERROR(...) ERROR(ERROR_NO_ERROR, __func__, VM_STRINGIFY(__VA_ARGS__))
+#define ERROR_NO_MEMORY(...) ERROR(ERROR_NO_MEMORY, __func__, VM_STRINGIFY(__VA_ARGS__))
+#define ERROR_NULLPTR(...) ERROR(ERROR_NULLPTR, __func__, VM_STRINGIFY(__VA_ARGS__))
+#define ERROR_INVALID_ADDRESS(...) ERROR(ERROR_INVALID_ADDRESS, __func__, VM_STRINGIFY(__VA_ARGS__))
 #define ERROR_VM_NOT_INITIALIZED(...) ERROR(ERROR_VM_NOT_INITIALIZED, __func__, VM_STRINGIFY(__VA_ARGS__))
 #define ERROR_POINTER_NOT_INITIALIZED(...) ERROR(ERROR_POINTER_NOT_INITIALIZED, __func__, VM_STRINGIFY(__VA_ARGS__))
 #define ERROR_ADDRESS_NOT_INITIALIZED(...) ERROR(ERROR_ADDRESS_NOT_INITIALIZED, __func__, VM_STRINGIFY(__VA_ARGS__))
 #define ERROR_ARGUMENT_VALUE_NOT_INITIALIZED(...) ERROR(ERROR_ARGUMENT_VALUE_NOT_INITIALIZED, __func__, VM_STRINGIFY(__VA_ARGS__))
 #define ERROR_INVALID_CONDITION(...) ERROR(ERROR_INVALID_CONDITION, __func__, VM_STRINGIFY(__VA_ARGS__))
 #else
-#define ERROR(message_id) error_api->stderr(ID_##message_id)
+#define ERROR(message_id) error_api->set_error_code(ID_##message_id)
 #define ERROR_NO_ERROR(...) ERROR(ERROR_NO_ERROR)
+#define ERROR_NO_MEMORY(...) ERROR(ERROR_NO_MEMORY)
+#define ERROR_NULLPTR(...) ERROR(ERROR_NULLPTR)
+#define ERROR_INVALID_ADDRESS(...) ERROR(ERROR_INVALID_ADDRESS)
 #define ERROR_VM_NOT_INITIALIZED(...) ERROR(ERROR_VM_NOT_INITIALIZED)
 #define ERROR_POINTER_NOT_INITIALIZED(...) ERROR(ERROR_POINTER_NOT_INITIALIZED)
 #define ERROR_ADDRESS_NOT_INITIALIZED(...) ERROR(ERROR_ADDRESS_NOT_INITIALIZED)
 #define ERROR_ARGUMENT_VALUE_NOT_INITIALIZED(...) ERROR(ERROR_ARGUMENT_VALUE_NOT_INITIALIZED)
 #define ERROR_INVALID_CONDITION(...) ERROR(ERROR_INVALID_CONDITION)
 #endif
+
+#define GET_CONST_CHAR_PTR(name, x) \
+    const char* name = (x);         \
+    if (name == 0) {                \
+        ERROR_NO_MEMORY(x);         \
+        return 0;                   \
+    }
+
+#define GET_CHAR_PTR(name, x) \
+    char* name = (x);         \
+    if (name == 0) {          \
+        ERROR_NO_MEMORY(x);   \
+        return 0;             \
+    }
 
 #ifdef __GNUC__
 #define FALL_THROUGH __attribute__((fallthrough))

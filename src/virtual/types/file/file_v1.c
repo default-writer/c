@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 14, 2025 at 7:09:46 AM GMT+3
+ *   March 17, 2025 at 10:20:12 PM GMT+3
  *
  */
 /*
@@ -68,6 +68,10 @@ static void INIT init(void) {
 
 static void type_desctructor(const_pointer_ptr const_ptr) {
     file_handler_ptr handler = CALL(pointer)->data(const_ptr);
+    // if (handler == 0) {
+    //     ERROR_NO_MEMORY(handler == 0);
+    //     return;
+    // }
     if (handler->file != 0) {
         virtual_api->fclose(handler->file);
         handler->file = 0;
@@ -118,11 +122,19 @@ static u64 file_alloc(const_vm_ptr vm, u64 file_path, u64 mode) {
         return FALSE;
     }
     const char* file_path_data = CALL(pointer)->data(file_path_ptr);
+    // if (file_path_data == 0) {
+    //     ERROR_NO_MEMORY(file_path_data == 0);
+    //     return FALSE;
+    // }
     if (is_valid_file_path(file_path_data) == 0) {
         ERROR_INVALID_CONDITION(is_valid_file_path(file_path_data) == 0);
         return FALSE;
     }
     const char* mode_data = CALL(pointer)->data(mode_ptr);
+    // if (mode_data == 0) {
+    //     ERROR_NO_MEMORY(mode_data == 0);
+    //     return FALSE;
+    // }
     if (is_valid_mode(mode_data) == 0) {
         ERROR_INVALID_CONDITION(is_valid_mode(mode_data) == 0);
         return FALSE;
@@ -133,12 +145,38 @@ static u64 file_alloc(const_vm_ptr vm, u64 file_path, u64 mode) {
         return FALSE;
     }
     const_pointer_ptr f_ptr = CALL(pointer)->alloc(FILE_HANDLER_TYPE_SIZE, type_id);
+    if (f_ptr == 0) {
+        ERROR_POINTER_NOT_INITIALIZED(f_ptr == 0);
+        return FALSE;
+    }
     file_handler_ptr handler = CALL(pointer)->data(f_ptr);
+    // if (handler == 0) {
+    //     ERROR_NO_MEMORY(handler == 0);
+    //     return FALSE;
+    // }
     handler->file = f;
 #ifdef USE_MEMORY_DEBUG_INFO
-    handler->path = CALL(pointer)->data(file_path_ptr);
+    char* path = CALL(pointer)->data(file_path_ptr);
+    // if (path == 0) {
+    //     ERROR_NO_MEMORY(path == 0);
+    //     return FALSE;
+    // }
+    handler->path = path;
 #endif
-    return CALL(virtual)->alloc(vm, f_ptr);
+    u64 ptr = CALL(virtual)->alloc(vm, f_ptr);
+    if (ptr == 0) {
+#ifdef USE_MEMORY_DEBUG_INFO
+        handler->path = 0;
+#endif
+        if (handler->file != 0) {
+            virtual_api->fclose(handler->file);
+            handler->file = 0;
+        }
+        CALL(pointer)->release(f_ptr);
+        ERROR_NO_MEMORY(ptr == 0);
+        return FALSE;
+    }
+    return ptr;
 }
 
 static u64 file_free(const_vm_ptr vm, u64 ptr) {
@@ -151,7 +189,6 @@ static u64 file_free(const_vm_ptr vm, u64 ptr) {
         ERROR_POINTER_NOT_INITIALIZED(data_ptr == 0);
         return FALSE;
     }
-
     type_desctructor(data_ptr);
     return TRUE;
 }
@@ -168,12 +205,20 @@ static u64 file_data(const_vm_ptr vm, u64 ptr) {
     }
 
     file_handler_ptr handler = CALL(pointer)->data(data_ptr);
+    if (handler == 0) {
+        ERROR_NO_MEMORY(handler == 0);
+        return FALSE;
+    }
     FILE* f = handler->file;
     virtual_api->fseek(f, 0, SEEK_END); /* NOLINT */
     u64 size = (u64)virtual_api->ftell(f);
     virtual_api->fseek(f, 0, SEEK_SET);
     u64 data_size = size + 1;
     u64 data_handle = CALL(data)->alloc(vm, data_size);
+    if (data_handle == 0) {
+        ERROR_NO_MEMORY(data_handle == 0);
+        return FALSE;
+    }
     void* file_data = CALL(data)->unsafe(vm, data_handle);
     u64 read = virtual_api->fread(file_data, 1, size, handler->file);
     return read ? data_handle : 0;

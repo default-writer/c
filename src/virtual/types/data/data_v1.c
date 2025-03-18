@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 14, 2025 at 6:25:53 AM GMT+3
+ *   March 17, 2025 at 8:39:52 PM GMT+3
  *
  */
 /*
@@ -30,6 +30,8 @@
 
 #include "virtual/pointer/pointer_v1.h"
 #include "virtual/virtual/virtual_v1.h"
+
+#include "system/error/error_v1.h"
 
 static const enum type type_id = TYPE_DATA;
 
@@ -85,6 +87,10 @@ static void* data_unsafe(const_vm_ptr vm, u64 ptr) {
         return NULL_PTR;
     }
     void* vm_data = CALL(pointer)->data(data_ptr);
+    // if (vm_data == 0) {
+    //     ERROR_NO_MEMORY(vm_data == 0);
+    //     return 0;
+    // }
     return vm_data;
 }
 
