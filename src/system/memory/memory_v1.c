@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 14, 2025 at 7:04:11 AM GMT+3
+ *   March 19, 2025 at 5:47:06 AM GMT+3
  *
  */
 /*
@@ -61,6 +61,9 @@ static void* memory_alloc(u64 size) {
     }
     void* ptr = system_api->alloc(1, size);
     if (ptr == 0) {
+        if (system_api->error_handler != 0) {
+            system_api->error_handler();
+        }
         return NULL_PTR;
     }
 #ifdef USE_MEMORY_DEBUG_INFO

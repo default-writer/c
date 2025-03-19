@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 15, 2025 at 4:02:36 PM GMT+3
+ *   March 19, 2025 at 9:04:59 AM GMT+3
  *
  */
 /*
@@ -73,14 +73,16 @@ static void* mock_alloc(size_t __nmemb, size_t __size);
 static void* mock_realloc(void* __ptr, size_t __size);
 static void mock_free(void* __ptr);
 
-static const system_api_type mock_system_api_methods_definitions = {
+static system_api_type mock_system_api_methods_definitions = {
     .alloc = mock_alloc,
     .realloc = mock_realloc,
     .free = mock_free
 };
 
-static const system_api_type* mock_system_api = &mock_system_api_methods_definitions;
-static const system_api_type* temp_system_api;
+typedef union {
+    const system_api_type* const_ptr;
+    system_api_type* ptr;
+} safe_system_api_ptr;
 
 /* implementation */
 static const_pointer_ptr mock_virtual_read_zero(const_vm_ptr vm, u64 address) {
@@ -1536,11 +1538,19 @@ RX_TEST_CASE(tests_v1, test_strcpy, .fixture = test_fixture) {
 RX_TEST_CASE(tests_v1, test_alloc_guard_ret_0, .fixture = test_fixture) {
     mock_allocated_memory = 0;
     mock_available_memory = 41; // sizeof(struct pointer) + 1
+
+    static system_api_type* mock_system_api = &mock_system_api_methods_definitions;
+    static const system_api_type* temp_system_api;
+
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     /* backup api calls */
     memcpy(&temp_system_api, &system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
     /* prepare to mock api calls */
     memcpy(&system_api, &mock_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+
+    safe_system_api_ptr safe_ptr;
+    safe_ptr.const_ptr = mock_system_api;
+    safe_ptr.ptr->error_handler = CALL(pointer)->gc;
 
     const char* ch = "hello, world!";
     u64 string_ptr = CALL(pointer)->alloc_guard(ch, 2, 0, TYPE_STRING);
@@ -1556,6 +1566,10 @@ RX_TEST_CASE(tests_v1, test_alloc_data_0, .fixture = test_fixture) {
     mock_allocated_memory = 0;
     mock_available_memory = 41; // sizeof(struct pointer)
     TEST_DATA rx = (TEST_DATA)RX_DATA;
+
+    static system_api_type* mock_system_api = &mock_system_api_methods_definitions;
+    static const system_api_type* temp_system_api;
+
     /* backup api calls */
     memcpy(&temp_system_api, &system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
     /* prepare to mock api calls */
@@ -1572,6 +1586,10 @@ RX_TEST_CASE(tests_v1, test_alloc_data_0, .fixture = test_fixture) {
 RX_TEST_CASE(tests_v1, test_alloc_0, .fixture = test_fixture) {
     mock_allocated_memory = 0;
     mock_available_memory = 39; // sizeof(struct pointer) - 1
+
+    static system_api_type* mock_system_api = &mock_system_api_methods_definitions;
+    static const system_api_type* temp_system_api;
+
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     /* backup api calls */
     memcpy(&temp_system_api, &system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
@@ -1590,6 +1608,10 @@ RX_TEST_CASE(tests_v1, test_realloc_0, .fixture = test_fixture) {
     mock_allocated_memory = 0;
     mock_available_memory = 41; // sizeof(struct pointer)
     TEST_DATA rx = (TEST_DATA)RX_DATA;
+
+    static system_api_type* mock_system_api = &mock_system_api_methods_definitions;
+    static const system_api_type* temp_system_api;
+
     /* backup api calls */
     memcpy(&temp_system_api, &system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
     /* prepare to mock api calls */

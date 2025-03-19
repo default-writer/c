@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 14, 2025 at 11:26:14 AM GMT+3
+ *   March 19, 2025 at 5:34:00 AM GMT+3
  *
  */
 /*
@@ -43,6 +43,7 @@ typedef struct system_api {
     void* (*alloc)(size_t __nmemb, size_t __size);
     void* (*realloc)(void* __ptr, size_t __size);
     void (*free)(void* __ptr);
+    void (*error_handler)(void);
 } system_api_type;
 
 /* api */
