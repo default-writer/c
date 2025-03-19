@@ -52,7 +52,6 @@
     "ms-vscode.cpptools-themes",
     "ms-vscode-remote.remote-containers",
     "ms-vscode-remote.remote-ssh",
-    "fougas.msys2",
-    "marp-team.marp-vscode"
+    "fougas.msys2"
   ]
 }

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 18, 2025 at 5:45:22 PM GMT+3
+ *   March 14, 2025 at 7:04:11 AM GMT+3
  *
  */
 /*
@@ -201,7 +201,14 @@ static const_pointer_ptr pointer_alloc(u64 size, u64 type) {
         return NULL_PTR;
     }
     pointer_ptr ptr = CALL(system_memory)->alloc(POINTER_TYPE_SIZE);
+    if (ptr == 0) {
+        return NULL_PTR;
+    }
     void* data = CALL(system_memory)->alloc(size);
+    if (data == 0) {
+        CALL(system_memory)->free(ptr, POINTER_TYPE_SIZE);
+        return NULL_PTR;
+    }
     *ptr = (struct pointer) {
         .data = data,
         .size = size,
@@ -228,6 +235,11 @@ static const_pointer_ptr pointer_copy(const void* data, u64 size, u64 type_id) {
         return NULL_PTR;
     }
     const_pointer_ptr data_ptr = pointer_alloc(size, type_id);
+    if (data_ptr == 0) {
+        ERROR_POINTER_NOT_INITIALIZED(data_ptr == 0);
+        return NULL_PTR;
+    }
+
     pointer_memcpy(data_ptr, data, size);
     return data_ptr;
 }
@@ -280,6 +292,10 @@ static u64 pointer_alloc_guard(const void* data, u64 size, u64 offset, u64 type_
         return FALSE;
     }
     const_pointer_ptr data_ptr = pointer_copy(data, size, type_id);
+    if (data_ptr == 0) {
+        ERROR_POINTER_NOT_INITIALIZED(data_ptr == 0);
+        return FALSE;
+    }
     pointer_guard(data_ptr, offset);
     return CALL(virtual)->alloc(&vm, data_ptr);
 }
@@ -325,6 +341,10 @@ static u64 pointer_realloc(const_pointer_ptr const_ptr, u64 size) {
     pointer_ptr ptr = safe_ptr.ptr;
     if (ptr->data != 0) {
         void* data = CALL(system_memory)->realloc(ptr->data, ptr->size, size);
+        if (data == 0) {
+            ERROR_POINTER_NOT_INITIALIZED(data == 0);
+            return FALSE;
+        }
         ptr->data = data;
     }
     ptr->size = size;

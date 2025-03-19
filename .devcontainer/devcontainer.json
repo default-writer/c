@@ -167,8 +167,7 @@
         "ms-vscode-remote.remote-containers",
         "gitpod.gitpod-desktop",
         "gitpod.gitpod-flex",
-        "ms-python.python",
-        "marp-team.marp-vscode"
+        "ms-python.python"
       ]
     }
   }
