@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 14, 2025 at 6:00:44 AM GMT+3
+ *   March 27, 2025 at 3:17:05 PM GMT+3
  *
  */
 /*
@@ -27,10 +27,24 @@
 #include "api_v1.h"
 
 /* api */
-const system_api_type PRIVATE_API(system_api_methods_definitions) = {
+const api_type PRIVATE_API(api_methods_definitions) = {
     .alloc = &calloc,
     .free = &free,
-    .realloc = &realloc
+    .realloc = &realloc,
+    .fclose = &fclose,
+    .fopen = &fopen,
+    .fread = &fread,
+    .fseek = &fseek,
+    .ftell = &ftell,
+    .getcwd = &getcwd,
+    .getenv = &getenv,
+    .memcpy = &memcpy,
+    .memset = &memset,
+    .puts = &puts,
+    .strcmp = &strcmp,
+    .strncat = &strncat,
+    .strncpy = &strncpy,
+    .strlen = &strlen
 };
 
-const system_api_type* system_api = &PRIVATE_API(system_api_methods_definitions);
+const api_type* api = &PRIVATE_API(api_methods_definitions);

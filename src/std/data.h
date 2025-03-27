@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 12, 2025 at 9:16:54 AM GMT+3
+ *   March 27, 2025 at 4:37:43 PM GMT+3
  *
  */
 /*
@@ -49,17 +49,29 @@ typedef struct pointer* pointer_ptr;
 typedef const struct pointer* const_pointer_ptr;
 typedef struct virtual_pointer* virtual_pointer_ptr;
 typedef const struct virtual_pointer* const_virtual_pointer_ptr;
-typedef void (*desctructor)(const_pointer_ptr const_ptr);
+typedef struct address* address_ptr;
+typedef struct address {
+    u64 address;
+    const_pointer_ptr ptr;
+} address_type;
 typedef union {
     const_pointer_ptr const_ptr;
     pointer_ptr ptr;
 } safe_pointer_ptr;
 typedef struct vm* vm_ptr;
 typedef const vm_ptr* const_vm_ptr;
+typedef void* (*type_constructor)(u64 size);
+typedef void (*type_destructor)(u64 address);
+typedef void (*type_free)(const_pointer_ptr const_ptr, u64 address);
 typedef union {
     const_vm_ptr const_ptr;
     vm_ptr* ptr;
 } safe_vm_ptr;
+typedef const void* const_void_ptr;
+typedef union {
+    const_void_ptr const_ptr;
+    void* ptr;
+} safe_void_ptr;
 typedef struct type_methods_definitions* type_methods_definitions_ptr;
 typedef const struct type_methods_definitions* const_type_methods_definitions_ptr;
 typedef union {
@@ -68,8 +80,17 @@ typedef union {
 } safe_type_methods_definitions;
 typedef struct type_methods_definitions {
     u64 type_id;
-    desctructor desctructor;
+    type_constructor constructor;
+    type_destructor destructor;
+    type_free free;
 } type_methods_definitions_type;
+typedef struct pointer_public* pointer_public_ptr;
+typedef const struct pointer_public* const_pointer_public_ptr;
+typedef struct pointer_public {
+    u64 address;
+    u64 size;
+    u64 type;
+} pointer_public_type;
 
 enum type {
     /* value used for ephemeral type - null */

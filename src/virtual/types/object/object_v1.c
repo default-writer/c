@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 14, 2025 at 7:04:11 AM GMT+3
+ *   March 27, 2025 at 4:36:58 PM GMT+3
  *
  */
 /*
@@ -32,31 +32,33 @@
 #include "virtual/pointer/pointer_v1.h"
 #include "virtual/virtual/virtual_v1.h"
 
+#include "internal/internal_v1.h"
+
 static const enum type type_id = TYPE_OBJECT;
 
-/* internal */
+/* public */
 static u64 object_alloc(const_vm_ptr vm, u64 size);
-static u64 object_free(const_vm_ptr vm, u64 ptr);
-static void* object_unsafe(const_vm_ptr vm, u64 ptr);
+static u64 object_free(const_vm_ptr vm, u64 address);
+static void* object_unsafe(const_vm_ptr vm, u64 address);
 static u64 object_load(const_vm_ptr vm, const void* data, u64 size);
-static u64 object_size(const_vm_ptr vm, u64 ptr);
+static u64 object_size(const_vm_ptr vm, u64 address);
 
-/* destructor */
-static void type_desctructor(const_pointer_ptr const_ptr);
+/* type */
+static void object_type_destructor(u64 address);
 
 /* implementation */
 static struct type_methods_definitions object_type = {
-    .desctructor = type_desctructor
+    .destructor = object_type_destructor
 };
 
 static void INIT init(void) {
     safe_type_methods_definitions safe_ptr;
     safe_ptr.const_ptr = &object_type;
-    CALL(pointer)->register_known_type(type_id, safe_ptr.ptr);
+    CALL(vm)->register_known_type(type_id, safe_ptr.ptr);
 }
 
-static void type_desctructor(const_pointer_ptr const_ptr) {
-    CALL(pointer)->release(const_ptr);
+static void object_type_destructor(u64 address) {
+    CALL(pointer)->free(address, type_id);
 }
 
 static u64 object_alloc(const_vm_ptr vm, u64 size) {
@@ -65,36 +67,36 @@ static u64 object_alloc(const_vm_ptr vm, u64 size) {
         return FALSE;
     }
     if (size == 0) {
-        ERROR_ARGUMENT_VALUE_NOT_INITIALIZED(size == 0);
+        ERROR_INVALID_ARGUMENT(size == 0);
         return FALSE;
     }
-    return CALL(virtual)->pointer(vm, size, type_id);
+    u64 address = CALL(virtual)->alloc(vm, size, type_id);
+    return address;
 }
 
-static u64 object_free(const_vm_ptr vm, u64 ptr) {
+static u64 object_free(const_vm_ptr vm, u64 address) {
     if (vm == 0 || *vm == 0) {
         ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
         return FALSE;
     }
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, type_id);
-    if (data_ptr == 0) {
-        return FALSE;
-    }
-    type_desctructor(data_ptr);
+    object_type_destructor(address);
     return TRUE;
 }
 
-static void* object_unsafe(const_vm_ptr vm, u64 ptr) {
+static void* object_unsafe(const_vm_ptr vm, u64 address) {
     if (vm == 0 || *vm == 0) {
         ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
         return NULL_PTR;
     }
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, type_id);
+    const_void_ptr const_data_ptr = CALL(pointer)->read(address, type_id);
+    safe_void_ptr void_ptr;
+    void_ptr.const_ptr = const_data_ptr;
+    void* data_ptr = void_ptr.ptr;
     if (data_ptr == 0) {
+        ERROR_INVALID_POINTER(data_ptr == 0);
         return NULL_PTR;
     }
-    void* object_data = CALL(pointer)->data(data_ptr);
-    return object_data;
+    return data_ptr;
 }
 
 static u64 object_load(const_vm_ptr vm, const void* src_data, u64 size) {
@@ -106,23 +108,29 @@ static u64 object_load(const_vm_ptr vm, const void* src_data, u64 size) {
         return FALSE;
     }
     if (size == 0) {
-        ERROR_ARGUMENT_VALUE_NOT_INITIALIZED(size == 0);
+        ERROR_INVALID_ARGUMENT(size == 0);
         return FALSE;
     }
-    const_pointer_ptr data_ptr = CALL(pointer)->copy(src_data, size, type_id);
-    return CALL(virtual)->alloc(vm, data_ptr);
+    u64 address = CALL(pointer)->copy(src_data, size, 0, type_id);
+    return address;
 }
 
-static u64 object_size(const_vm_ptr vm, u64 ptr) {
+static u64 object_size(const_vm_ptr vm, u64 address) {
     if (vm == 0 || *vm == 0) {
         ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
         return FALSE;
     }
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, type_id);
-    if (data_ptr == 0) {
+    const_pointer_ptr const_ptr = CALL(virtual)->read(vm, address, type_id);
+    if (const_ptr == 0) {
+        ERROR_INVALID_POINTER(const_ptr == 0);
         return FALSE;
     }
-    return CALL(pointer)->size(data_ptr);
+    safe_pointer_ptr safe_ptr;
+    safe_ptr.const_ptr = const_ptr;
+    pointer_ptr ptr = safe_ptr.ptr;
+    const_pointer_public_ptr public_ptr = &ptr->public;
+    u64 size = public_ptr->size;
+    return size;
 }
 
 CVM_EXPORT void object_init(void) {

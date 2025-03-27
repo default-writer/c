@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 14, 2025 at 11:34:07 AM GMT+3
+ *   March 27, 2025 at 3:11:23 PM GMT+3
  *
  */
 /*
@@ -37,33 +37,23 @@
  */
 
 typedef struct PRIVATE_API(virtual_pointer_methods) {
+    u64 (*alloc)(const void* data, u64 size, u64 type_id);
+    u64 (*copy)(const void* src, u64 size, u64 offset, u64 type_id);
+    const void* (*read)(u64 address, u64 type_id);
+    u64 (*free)(u64 address, u64 type_id);
+} virtual_pointer_methods;
+
+typedef struct PRIVATE_API(virtual_vm_methods) {
     const_vm_ptr (*init)(u64 size);
     void (*destroy)(void);
     void (*gc)(void);
-    const_pointer_ptr (*alloc)(u64 size, u64 type_id);
-    const_pointer_ptr (*copy)(const void* src, u64 size, u64 type_id);
-    const_pointer_ptr (*copy_guard)(const void* src, u64 size, u64 offset, u64 type_id);
-    u64 (*alloc_guard)(const void* src, u64 size, u64 offset, u64 type_id);
-    u64 (*memcpy)(const_pointer_ptr const_ptr, const void* src, u64 size);
-    u64 (*realloc)(const_pointer_ptr ptr, u64 size);
     void (*register_known_type)(u64 type_id, type_methods_definitions_ptr data_type);
-    void (*register_user_type)(type_methods_definitions_type* data_type);
-    u64 (*free)(u64 ptr);
-    u64 (*release)(const_pointer_ptr const_ptr);
-    u64 (*size)(const_pointer_ptr const_ptr);
-    void* (*data)(const_pointer_ptr const_ptr);
-    void* (*data_guard)(const_pointer_ptr const_ptr, u64 offset);
-    u64 (*guard)(const_pointer_ptr const_ptr, u64 offset);
-    u64 (*get_type)(const_pointer_ptr const_ptr);
-    u64 (*set)(const_pointer_ptr const_ptr, const_virtual_pointer_ptr vptr, u64 address);
-    u64 (*get_address)(const_pointer_ptr const_ptr);
-#ifdef USE_MEMORY_DEBUG_INFO
-    void (*dump)(pointer_ptr ptr);
-    void (*dump_ref)(pointer_ptr* ptr);
-#endif
-} virtual_pointer_methods;
+    void (*register_user_type)(type_methods_definitions_type* data_type_builder);
+    u64 (*release)(u64 ptr);
+} virtual_vm_methods;
 
 /* definition */
 CVM_EXPORT extern const virtual_pointer_methods* CALL(pointer);
+CVM_EXPORT extern const virtual_vm_methods* CALL(vm);
 
 #endif /* _VIRTUAL_POINTER_V1_H_ */

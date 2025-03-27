@@ -62,12 +62,12 @@ static u64 read_data(const_vm_ptr vm, u64 list_ptr, const char* prompt) {
 
 ```c
 int main(void) {
-    const_vm_ptr vm = CALL(pointer)->init(8); // initializes virtual memory manager with chunk size of 8
+    const_vm_ptr vm = CALL(vm)->init(8); // initializes virtual memory manager with chunk size of 8
 
     // some work with standard classes: os, string, data, etc.
 
-    CALL(pointer)->gc();      // releases all resources added to GC
-    CALL(pointer)->destroy(); // releases virtual memory manager
+    CALL(vm)->gc();      // releases all resources added to GC
+    CALL(vm)->destroy(); // releases virtual memory manager
     return 0;
 }
 ```
@@ -79,7 +79,7 @@ int main(void) {
 ./bin/init.sh --init --setup
 ./bin/coverageall.sh --all --clean
 ./bin/target.sh --target=main-tests-vm1 --release
-./bin/cmake.sh --target=main-tests-vm1 --verbose --ty
+./bin/cmake.sh --target=main-tests-vm1 --verbose --tty
 ./bin/lib.sh --c-sys
 ./bin/lib.sh --c-vm
 ```

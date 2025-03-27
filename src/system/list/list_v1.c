@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 14, 2025 at 6:28:01 AM GMT+3
+ *   March 22, 2025 at 7:32:05 AM GMT+3
  *
  */
 /*
@@ -26,6 +26,7 @@
 
 #include "list_v1.h"
 
+#include "system/api/api_v1.h"
 #include "system/memory/memory_v1.h"
 
 #define STACK_ELEMENT_TYPE_SIZE sizeof(stack_element_type)
@@ -60,7 +61,7 @@ static void* list_data(stack_ptr ptr) {
 /* deletes the data pointer */
 static void list_delete(stack_ptr ptr) {
     /* releases the pointer */
-    CALL(system_memory)->free(ptr, STACK_ELEMENT_TYPE_SIZE);
+    api->free(ptr);
 }
 
 /* pushes the memory pointer */
@@ -69,7 +70,7 @@ static void list_push(stack_ptr* current, void* payload) {
         return;
     }
     /* creates empty data chunk */
-    stack_ptr item = CALL(system_memory)->alloc(STACK_ELEMENT_TYPE_SIZE);
+    stack_ptr item = api->alloc(1, STACK_ELEMENT_TYPE_SIZE);
     /* writes data into allocated memory buffer */
     item->data = payload;
     /* assigns item's next pointer to current pointer */
@@ -127,7 +128,7 @@ static void list_init(stack_ptr* current) {
         return;
     }
     /* sets the current item */
-    *current = CALL(system_memory)->alloc(STACK_ELEMENT_TYPE_SIZE);
+    *current = api->alloc(1, STACK_ELEMENT_TYPE_SIZE);
 }
 
 /* destroys the memory stack */
@@ -159,20 +160,21 @@ static void list_print_head(stack_ptr* current) {
     /* get current context's head */
     stack_ptr ptr = *current;
     /* visualize item */
-    printf("   *: %016llx > %016llx\n", (u64)ptr, (u64)list_data(ptr));
+    printf("  l.: %016llx > %016llx\n", (u64)ptr, (u64)list_data(ptr));
 }
 
 /* prints all stack trace to output */
 static void list_print(stack_ptr* current) {
     /* sets the counter */
-    int i = 0;
+    u64 address = 0;
     /* assigns current's head pointer to the temporary */
     stack_ptr tmp = *current;
     if (tmp != 0) {
         /* until we found root element (element with no previous element reference) */
         do {
             /* debug output of memory dump */
-            printf("%4d: %016llx * %016llx\n", ++i, (u64)tmp, (u64)list_data(tmp));
+            printf("  l.: %016llx ! %016llx > %016llx : %016llx\n", address, (u64)tmp, (u64)list_data(tmp), (u64)tmp->next);
+            address++;
             /* remember temporary's prior pointer value to temporary */
             tmp = list_next(tmp);
         } while (tmp != 0 /*root*/);
