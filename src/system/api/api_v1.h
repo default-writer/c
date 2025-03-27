@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 27, 2025 at 3:17:05 PM GMT+3
+ *   March 27, 2025 at 4:52:40 PM GMT+3
  *
  */
 /*
@@ -50,7 +50,7 @@ typedef struct api {
     long (*ftell)(FILE* __stream);
     char* (*getcwd)(char* __buf, size_t __size);
     char* (*getenv)(const char* __name);
-    void* (*memcpy)(void* __dest, const void* __src, size_t __n);
+    void* (*memcpy)(void* __dest, const_void_ptr __src, size_t __n);
     void* (*memset)(void* __s, int __c, size_t __n);
     int (*puts)(const char* __s);
     int (*strcmp)(const char* __s1, const char* __s2);

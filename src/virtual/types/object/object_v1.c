@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 27, 2025 at 4:36:58 PM GMT+3
+ *   March 27, 2025 at 4:52:40 PM GMT+3
  *
  */
 /*
@@ -40,7 +40,7 @@ static const enum type type_id = TYPE_OBJECT;
 static u64 object_alloc(const_vm_ptr vm, u64 size);
 static u64 object_free(const_vm_ptr vm, u64 address);
 static void* object_unsafe(const_vm_ptr vm, u64 address);
-static u64 object_load(const_vm_ptr vm, const void* data, u64 size);
+static u64 object_load(const_vm_ptr vm, const_void_ptr data, u64 size);
 static u64 object_size(const_vm_ptr vm, u64 address);
 
 /* type */
@@ -99,7 +99,7 @@ static void* object_unsafe(const_vm_ptr vm, u64 address) {
     return data_ptr;
 }
 
-static u64 object_load(const_vm_ptr vm, const void* src_data, u64 size) {
+static u64 object_load(const_vm_ptr vm, const_void_ptr src_data, u64 size) {
     if (vm == 0 || *vm == 0) {
         ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
         return FALSE;

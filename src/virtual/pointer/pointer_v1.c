@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 27, 2025 at 4:22:13 PM GMT+3
+ *   March 27, 2025 at 4:59:11 PM GMT+3
  *
  */
 /*
@@ -125,7 +125,7 @@ static u64 pointer_copy(const_void_ptr data, u64 size, u64 offset, u64 type_id);
 static u64 pointer_alloc(const_void_ptr data, u64 size, u64 type_id);
 static u64 pointer_release(u64 ptr);
 static u64 pointer_free(u64 address, u64 type_id);
-static const void* pointer_read(u64 address, u64 type_id);
+static const_void_ptr pointer_read(u64 address, u64 type_id);
 static u64 virtual_enumerator_next(const_vm_ptr vm);
 #ifdef USE_MEMORY_DEBUG_INFO
 static void virtual_dump(const_vm_ptr vm);
@@ -379,7 +379,7 @@ static u64 pointer_release(u64 address) {
         ERROR_INVALID_ADDRESS(address == 0);
         return FALSE;
     }
-    u64 type_id = CALL(virtual)->read_type(&vm_list, address);
+    u64 type_id = CALL(virtual)->type(&vm_list, address);
     if (type_id == 0) {
         ERROR_INVALID_TYPEID(type_id == 0);
         return FALSE;
@@ -391,7 +391,7 @@ static u64 pointer_release(u64 address) {
     return TRUE;
 }
 
-static const void* pointer_read(u64 address, u64 type_id) {
+static const_void_ptr pointer_read(u64 address, u64 type_id) {
     if (vm_list == 0) {
         ERROR_VM_NOT_INITIALIZED(vm);
         return FALSE;
@@ -409,7 +409,7 @@ static const void* pointer_read(u64 address, u64 type_id) {
         ERROR_INVALID_POINTER(const_ptr == 0);
         return NULL_PTR;
     }
-    const void* data = const_ptr->data;
+    const_void_ptr data = const_ptr->data;
     return data;
 }
 

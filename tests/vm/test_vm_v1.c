@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 27, 2025 at 3:13:46 PM GMT+3
+ *   March 27, 2025 at 5:00:46 PM GMT+3
  *
  */
 /*
@@ -136,7 +136,7 @@ RX_TEST_CASE(tests, test_vm_read_type, .fixture = test_fixture_pointer) {
     const_pointer_ptr tmp;
     u64 virtual_ptr = CALL(virtual)->alloc(vm, 1, TYPE_DATA);
     u64 address = CALL(system_options)->size + 1;
-    u64 type_id = CALL(virtual)->read_type(vm, address);
+    u64 type_id = CALL(virtual)->type(vm, address);
     RX_ASSERT(virtual_ptr != 0);
     RX_ASSERT(type_id == 0);
     CALL(pointer)->free(address, TYPE_DATA);
@@ -162,7 +162,7 @@ RX_TEST_CASE(tests, test_vm_free_0, .fixture = test_fixture) {
 RX_TEST_CASE(tests, test_vm_read_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = &rx->ctx;
-    u64 type_id = CALL(virtual)->read_type(vm, 1);
+    u64 type_id = CALL(virtual)->type(vm, 1);
     RX_ASSERT(type_id == TYPE_NULL);
 }
 

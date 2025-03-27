@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 27, 2025 at 3:17:06 PM GMT+3
+ *   March 27, 2025 at 4:57:39 PM GMT+3
  *
  */
 /*
@@ -47,8 +47,8 @@ static struct memory_info_data* base = &memory_info;
 #endif
 
 static void* memory_alloc(u64 size);
-static void memory_free(void* ptr, u64 size);
 static void* memory_realloc(void* old_ptr, u64 size, u64 new_size);
+static void memory_free(void* ptr, u64 size);
 #ifdef USE_MEMORY_CLEANUP
 static void memory_set(void* dest, u8 c, u64 count);
 #endif
@@ -65,6 +65,23 @@ static void* memory_alloc(u64 size) {
 #ifdef USE_MEMORY_DEBUG_INFO
     total_alloc += size;
     printf("  m+: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_free, total_alloc);
+#endif
+    return ptr;
+}
+
+static void* memory_realloc(void* old_ptr, u64 size, u64 new_size) {
+    if (old_ptr == 0) {
+        return NULL_PTR;
+    }
+    if (new_size <= size) {
+        return NULL_PTR;
+    }
+    void* ptr = old_ptr;
+    ptr = api->realloc(ptr, new_size);
+#ifdef USE_MEMORY_DEBUG_INFO
+    total_alloc += new_size;
+    total_free += size;
+    printf("  m*: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_free, total_alloc);
 #endif
     return ptr;
 }
@@ -87,23 +104,6 @@ static void memory_free(void* ptr, u64 size) {
     printf("  m-: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_free, total_alloc);
 #endif
     api->free(ptr);
-}
-
-static void* memory_realloc(void* old_ptr, u64 size, u64 new_size) {
-    if (old_ptr == 0) {
-        return NULL_PTR;
-    }
-    if (new_size <= size) {
-        return NULL_PTR;
-    }
-    void* ptr = old_ptr;
-    ptr = api->realloc(ptr, new_size);
-#ifdef USE_MEMORY_DEBUG_INFO
-    total_alloc += new_size;
-    total_free += size;
-    printf("  m*: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_free, total_alloc);
-#endif
-    return ptr;
 }
 
 #ifdef USE_MEMORY_CLEANUP
