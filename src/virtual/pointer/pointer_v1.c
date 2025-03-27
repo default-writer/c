@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 27, 2025 at 7:56:30 PM GMT+3
+ *   March 27, 2025 at 8:03:36 PM GMT+3
  *
  */
 /*
@@ -320,8 +320,8 @@ static u64 pointer_copy(const_void_ptr data, u64 size, u64 offset, u64 type_id) 
         pointer_ptr ptr = safe_ptr.ptr;
         void* data_ptr = ptr;
         if (data_ptr != 0) {
-            u8* data = data_ptr;
-            data[offset] = 0;
+            u8* bytes = data_ptr;
+            bytes[offset] = 0;
         }
     }
     return address;
