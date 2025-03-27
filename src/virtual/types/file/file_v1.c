@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 27, 2025 at 4:39:26 PM GMT+3
+ *   March 27, 2025 at 9:06:43 PM GMT+3
  *
  */
 /*
@@ -75,11 +75,6 @@ static void file_type_destructor(u64 address) {
     if (data_ptr == 0) {
         ERROR_INVALID_POINTER(data_ptr == 0);
         return;
-    }
-    file_handler_ptr handler = data_ptr;
-    if (handler->file != 0) {
-        api->fclose(handler->file);
-        handler->file = 0;
     }
     CALL(pointer)->free(address, type_id);
 }
@@ -180,6 +175,10 @@ static u64 file_data(const_vm_ptr vm, u64 address) {
     u64 data_handle = CALL(data)->alloc(vm, data_size);
     void* file_data = CALL(data)->unsafe(vm, data_handle);
     u64 read = api->fread(file_data, 1, size, handler->file);
+    if (handler->file != 0) {
+        api->fclose(handler->file);
+        handler->file = 0;
+    }
     return read ? data_handle : 0;
 }
 

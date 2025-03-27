@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 27, 2025 at 4:52:41 PM GMT+3
+ *   March 27, 2025 at 8:55:26 PM GMT+3
  *
  */
 /*
@@ -31,9 +31,12 @@
 #include "std/api.h"
 
 typedef struct pointer {
+#ifdef USE_MEMORY_DEBUG_INFO
+    void* guard;
+#endif
     virtual_pointer_ptr vptr;
-    pointer_public_type public;
     const_void_ptr data;
+    pointer_public_type public;
 } pointer_type;
 
 #endif /* _INTERNAL_V1_H_ */
