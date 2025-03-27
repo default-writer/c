@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 27, 2025 at 10:25:46 AM GMT+3
+ *   March 26, 2025 at 5:46:54 AM GMT+3
  *
  */
 /*
@@ -24,36 +24,26 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#define USING_SYSTEM_ERROR
-
-#ifndef _SYSTEM_ERROR_H_
-#define _SYSTEM_ERROR_H_
+#ifndef _INTERNAL_PRIVATE_V1_H_
+#define _INTERNAL_PRIVATE_V1_H_
 
 #define USING_STD_API
 #include "std/api.h"
 
-#include "system/export.h"
+typedef struct virtual_pointer {
+    pointer_ptr* sp;
+    pointer_ptr* bp;
+    virtual_pointer_ptr next;
+    u64 offset;
+} virtual_pointer_type;
 
-enum error_message_code {
-    ID_ERROR_NO_ERROR,
-    ID_ERROR_VM_NOT_INITIALIZED,
-    ID_ERROR_INVALID_POINTER,
-    ID_ERROR_INVALID_ADDRESS,
-    ID_ERROR_INVALID_ARGUMENT,
-    ID_ERROR_INVALID_TYPEID,
-    ID_ERROR_INVALID_CONDITION,
-    ID_ERROR_INVALID_TYPE
-};
+typedef struct vm_state {
+    virtual_pointer_ptr vptr;
+    pointer_ptr* ref;
+} vm_state_type;
 
-typedef struct error_api {
-#ifdef USE_MEMORY_DEBUG_INFO
-    void (*stderr)(enum error_message_code id, const char* func, const char* args, const char* file, int line);
-#else
-    void (*stderr)(enum error_message_code id);
-#endif
-} error_api_type;
+typedef struct vm {
+    virtual_pointer_ptr next;
+} vm_type;
 
-/* api */
-CSYS_EXPORT extern const error_api_type* error_api;
-
-#endif /* _SYSTEM_ERROR_H_ */
+#endif /* _INTERNAL_PRIVATE_V1_H_ */

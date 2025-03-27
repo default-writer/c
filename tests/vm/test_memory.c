@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 15, 2025 at 4:01:09 PM GMT+3
+ *   March 22, 2025 at 8:45:34 AM GMT+3
  *
  */
 /*
@@ -27,11 +27,13 @@
 #include "test_memory.h"
 
 #include "system/api/api_v1.h"
-
 #include "system/memory/memory_v1.h"
 
 #define USING_TESTS
 #include "test.h"
+
+/* definition */
+CSYS_EXPORT extern const memory_methods* memory;
 
 /* Data structure to use at the core of our fixture. */
 typedef struct test_data {
@@ -39,6 +41,16 @@ typedef struct test_data {
 }* TEST_DATA;
 
 /*api*/
+static const memory_methods* memory_methods_ptr;
+static const api_type* temp_api;
+
+/* mocks */
+static void* mock_alloc(size_t __nmemb, size_t __size);
+static void mock_free(void* __ptr);
+static void* mock_memory_alloc(u64 address);
+static void mock_memory_free(void* ptr, u64 size);
+
+/* implementation */
 static void* mock_alloc(size_t __nmemb, size_t __size) {
     return NULL_PTR;
 }
@@ -47,19 +59,36 @@ static void mock_free(void* __ptr) {
     memset(__ptr, 0xef, sizeof(u64)); /* NOLINT: sizeof(u64) */
 }
 
-static const system_api_type mock_system_api_methods_definitions = {
+static const api_type mock_api_methods_definitions = {
     .alloc = mock_alloc,
     .free = mock_free
 };
 
-static const system_api_type* mock_system_api = &mock_system_api_methods_definitions;
-static const system_api_type* temp_system_api;
+static u64 last_alloc_size = 0;
+static void* last_alloc_ptr = 0;
+static u8 memory_buffer[8] = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
+
+static void* mock_memory_alloc(u64 size) {
+    last_alloc_size = size;
+    last_alloc_ptr = memory_buffer;
+    void* ptr = last_alloc_ptr;
+    memset(ptr, 0, sizeof(u64)); /* NOLINT: sizeof(u64) */
+    return ptr;
+}
+
+static void mock_memory_free(void* ptr, u64 size) {
+    if (last_alloc_ptr == ptr && last_alloc_size == size) {
+        memset(ptr, 0xfe, sizeof(u64)); /* NOLINT: sizeof(u64) */
+    }
+}
+
+static const api_type* mock_api = &mock_api_methods_definitions;
 
 /* Initialize the data structure. Its allocation is handled by Rexo. */
 RX_SET_UP(test_set_up) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
-    *ctx = CALL(system_memory)->alloc(sizeof(stack_element_type));
+    *ctx = api->alloc(1, sizeof(stack_element_type));
     return RX_SUCCESS;
 }
 
@@ -67,7 +96,7 @@ RX_TEAR_DOWN(test_tear_down) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* destroy list */
-    CALL(system_memory)->free(*ctx, sizeof(stack_element_type));
+    api->free(*ctx);
     /* initializes to 0 */
     *ctx = 0;
 }
@@ -96,13 +125,13 @@ RX_TEST_CASE(memory_micro_tests, test_alloc_0, .fixture = test_fixture) {
 }
 
 /* test case */
-RX_TEST_CASE(memory_micro_tests, test_alloc_ret_0, .fixture = test_fixture) {
+RX_TEST_CASE(memory_micro_tests, test_api_alloc_ret_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* backup api calls */
-    memcpy(&temp_system_api, &system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+    memcpy(&temp_api, &api, sizeof(api_type*)); /* NOLINT: sizeof(api_type*) */
     /* prepare to mock api calls */
-    memcpy(&system_api, &mock_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+    memcpy(&api, &mock_api, sizeof(api_type*)); /* NOLINT: sizeof(api_type*) */
     /* pushed to the list */
     const void* data_ptr = CALL(system_memory)->alloc(16);
     /* ensures there is no result on 0 */
@@ -110,54 +139,54 @@ RX_TEST_CASE(memory_micro_tests, test_alloc_ret_0, .fixture = test_fixture) {
     /* ensures pop does not zeroes the head pointer */
     RX_ASSERT(*ctx != 0);
     /* restore api calls */
-    memcpy(&system_api, &temp_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+    memcpy(&api, &temp_api, sizeof(api_type*)); /* NOLINT: sizeof(api_type*) */
 }
 
 /* test case */
-RX_TEST_CASE(memory_micro_tests, test_free_0, .fixture = test_fixture) {
+RX_TEST_CASE(memory_micro_tests, test_api_free_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* backup api calls */
-    memcpy(&temp_system_api, &system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+    memcpy(&temp_api, &api, sizeof(api_type*)); /* NOLINT: sizeof(api_type*) */
     /* prepare to mock api calls */
-    memcpy(&system_api, &mock_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+    memcpy(&api, &mock_api, sizeof(api_type*)); /* NOLINT: sizeof(api_type*) */
     /* pushed to the list */
     CALL(system_memory)->free((void*)0, 0);
     /* ensures pop does not zeroes the head pointer */
     RX_ASSERT(*ctx != 0);
     /* restore api calls */
-    memcpy(&system_api, &temp_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+    memcpy(&api, &temp_api, sizeof(api_type*)); /* NOLINT: sizeof(api_type*) */
 }
 
 /* test case */
-RX_TEST_CASE(memory_micro_tests, test_free_size_0, .fixture = test_fixture) {
+RX_TEST_CASE(memory_micro_tests, test_api_free_size_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* backup api calls */
-    memcpy(&temp_system_api, &system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+    memcpy(&temp_api, &api, sizeof(api_type*)); /* NOLINT: sizeof(api_type*) */
     /* prepare to mock api calls */
-    memcpy(&system_api, &mock_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+    memcpy(&api, &mock_api, sizeof(api_type*)); /* NOLINT: sizeof(api_type*) */
     /* pushed to the list */
     CALL(system_memory)->free((void*)0xdeadbeef, 0);
     /* ensures pop does not zeroes the head pointer */
     RX_ASSERT(*ctx != 0);
     /* restore api calls */
-    memcpy(&system_api, &temp_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+    memcpy(&api, &temp_api, sizeof(api_type*)); /* NOLINT: sizeof(api_type*) */
 }
 
 /* test case */
-RX_TEST_CASE(memory_micro_tests, test_free_size_8, .fixture = test_fixture) {
+RX_TEST_CASE(memory_micro_tests, test_api_alloc_free_8, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     uint64_t expected_pattern = 0xefefefefefefefef;
     /* backup api calls */
-    memcpy(&temp_system_api, &system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+    memcpy(&temp_api, &api, sizeof(api_type*)); /* NOLINT: sizeof(api_type*) */
     /* prepare to mock api calls */
-    memcpy(&system_api, &mock_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+    memcpy(&api, &mock_api, sizeof(api_type*)); /* NOLINT: sizeof(api_type*) */
     void* ptr = calloc(1, 16);
     u64 value = (u64)0xdeadbeef;
-    memcpy(ptr, &value, 8); /* NOLINT: sizeof(system_api_type*) */
-    CALL(system_memory)->free(ptr, 8); /* NOLINT: mock api */
+    memcpy(ptr, &value, 8); /* NOLINT: sizeof(api_type*) */
+    api->free(ptr); /* NOLINT: mock api */
     /* compare to make sure mock memory free function is called */
     RX_ASSERT(memcmp(ptr, &expected_pattern, sizeof(expected_pattern)) == 0);
     /* ensures pop does not zeroes the head pointer */
@@ -165,7 +194,37 @@ RX_TEST_CASE(memory_micro_tests, test_free_size_8, .fixture = test_fixture) {
     /* free ptr */
     free(ptr);
     /* restore api calls */
-    memcpy(&system_api, &temp_system_api, sizeof(system_api_type*)); /* NOLINT: sizeof(system_api_type*) */
+    memcpy(&api, &temp_api, sizeof(api_type*)); /* NOLINT: sizeof(api_type*) */
+}
+
+/* test case */
+RX_TEST_CASE(memory_micro_tests, test_alloc_free_debug, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    stack_ptr* ctx = &rx->ctx;
+    uint64_t expected_pattern = 0xfefefefefefefefe;
+    static memory_methods mock_memory_methods_definitions;
+    /*api */
+    memcpy(&mock_memory_methods_definitions, memory, sizeof(memory_methods)); /* NOLINT: sizeof(memory_methods*) */
+    /* setup mocks */
+    mock_memory_methods_definitions.alloc = mock_memory_alloc;
+    mock_memory_methods_definitions.free = mock_memory_free;
+    /* setup api endpoint */
+    static const memory_methods* mock_memory_methods = &mock_memory_methods_definitions;
+    /* backup api calls */
+    memcpy(&memory_methods_ptr, &memory, sizeof(memory_methods*)); /* NOLINT: sizeof(memory_methods*) */
+    /* prepare to mock api calls */
+    memcpy(&memory, &mock_memory_methods, sizeof(memory_methods*)); /* NOLINT: sizeof(memory_methods*) */
+    u64 pointer_size = sizeof(void*);
+    void* ptr = CALL(system_memory)->alloc(pointer_size);
+    u64 value = (u64)0xdeadbeef;
+    memcpy(ptr, &value, 8); /* NOLINT: sizeof(void*) */
+    /* compare to make sure mock memory free function is called */
+    CALL(system_memory)->free(ptr, pointer_size); /* NOLINT: mock api */
+    RX_ASSERT(memcmp(ptr, &expected_pattern, sizeof(expected_pattern)) == 0);
+    /* ensures pop does not zeroes the head pointer */
+    RX_ASSERT(*ctx != 0);
+    /* restore api calls */
+    memcpy(&memory, &memory_methods_ptr, sizeof(memory_methods*)); /* NOLINT: sizeof(memory_methods*) */
 }
 
 /* test case */
@@ -200,9 +259,9 @@ RX_TEST_CASE(memory_micro_tests, test_realloc_0_ptr, .fixture = test_fixture) {
 RX_TEST_CASE(memory_micro_tests, test_alloc_free, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
-    stack_ptr new = CALL(system_memory)->alloc(sizeof(stack_element_type));
+    stack_ptr element = CALL(system_memory)->alloc(sizeof(stack_element_type));
     /* pushed to the list */
-    CALL(system_memory)->free(new, sizeof(stack_element_type));
+    CALL(system_memory)->free(element, sizeof(stack_element_type));
     RX_ASSERT(*ctx != 0);
 }
 

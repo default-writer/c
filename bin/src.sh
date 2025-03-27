@@ -94,6 +94,8 @@ if [[ "${install}" == "" ]]; then
     exit
 fi
 
+sleep 5
+
 config_memory_debug_info="FALSE"
 if [[ "${verbose}" == "--verbose" ]]; then
     config_memory_debug_info="TRUE"

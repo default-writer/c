@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 14, 2025 at 7:04:11 AM GMT+3
+ *   March 27, 2025 at 4:38:10 PM GMT+3
  *
  */
 /*
@@ -36,47 +36,44 @@
 
 static u64 type_id = TYPE_USER;
 
-/* internal */
-static u64 virtual_user_alloc(const_vm_ptr vm);
-static u64 virtual_user_free(const_vm_ptr vm, u64 ptr);
+/* public */
+static u64 user_alloc(const_vm_ptr vm);
+static u64 user_free(const_vm_ptr vm, u64 ptr);
 
-/* destructor */
-static void type_desctructor(const_pointer_ptr const_ptr);
+/* type */
+static void user_type_destructor(u64 address);
 
 /* implementation */
 static struct type_methods_definitions user_type = {
-    .desctructor = type_desctructor
+    .destructor = user_type_destructor
 };
 
 static void INIT init(void) {
     safe_type_methods_definitions safe_ptr;
     safe_ptr.const_ptr = &user_type;
-    CALL(pointer)->register_user_type(safe_ptr.ptr);
+    CALL(vm)->register_user_type(safe_ptr.ptr);
     type_id = safe_ptr.const_ptr->type_id;
 }
 
-static void type_desctructor(const_pointer_ptr const_ptr) {
-    CALL(pointer)->release(const_ptr);
+static void user_type_destructor(u64 address) {
+    CALL(pointer)->free(address, type_id);
 }
 
-static u64 virtual_user_alloc(const_vm_ptr vm) {
+static u64 user_alloc(const_vm_ptr vm) {
     if (vm == 0 || *vm == 0) {
         ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
         return FALSE;
     }
-    return CALL(virtual)->pointer(vm, DEFAULT_SIZE, type_id);
+    u64 address = CALL(virtual)->alloc(vm, DEFAULT_SIZE, type_id);
+    return address;
 }
 
-static u64 virtual_user_free(const_vm_ptr vm, u64 ptr) {
+static u64 user_free(const_vm_ptr vm, u64 ptr) {
     if (vm == 0 || *vm == 0) {
         ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
         return FALSE;
     }
-    const_pointer_ptr data_ptr = CALL(virtual)->read_type(vm, ptr, type_id);
-    if (data_ptr == 0) {
-        return FALSE;
-    }
-    type_desctructor(data_ptr);
+    user_type_destructor(ptr);
     return TRUE;
 }
 
@@ -86,8 +83,8 @@ CVM_EXPORT void user_init(void) {
 
 /* public */
 const virtual_user_methods PRIVATE_API(virtual_user_methods_definitions) = {
-    .alloc = virtual_user_alloc,
-    .free = virtual_user_free
+    .alloc = user_alloc,
+    .free = user_free
 };
 
 const virtual_user_methods* user = &PRIVATE_API(virtual_user_methods_definitions);

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 14, 2025 at 11:26:14 AM GMT+3
+ *   March 27, 2025 at 3:17:05 PM GMT+3
  *
  */
 /*
@@ -24,10 +24,10 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#define USING_SYSTEM_API
+#define USING_api
 
-#ifndef _SYSTEM_API_H_
-#define _SYSTEM_API_H_
+#ifndef _api_H_
+#define _api_H_
 
 #define USING_STD_API
 #include "std/api.h"
@@ -39,13 +39,27 @@ CSYS_EXPORT extern void init_statistics(void);
 CSYS_EXPORT extern void result_statistics(void);
 #endif
 
-typedef struct system_api {
+typedef struct api {
     void* (*alloc)(size_t __nmemb, size_t __size);
     void* (*realloc)(void* __ptr, size_t __size);
     void (*free)(void* __ptr);
-} system_api_type;
+    int (*fclose)(FILE* __stream);
+    FILE* (*fopen)(const char* __filename, const char* __modes);
+    size_t (*fread)(void* __ptr, size_t __size, size_t __n, FILE* __stream);
+    int (*fseek)(FILE* __stream, long int __off, int __whence);
+    long (*ftell)(FILE* __stream);
+    char* (*getcwd)(char* __buf, size_t __size);
+    char* (*getenv)(const char* __name);
+    void* (*memcpy)(void* __dest, const void* __src, size_t __n);
+    void* (*memset)(void* __s, int __c, size_t __n);
+    int (*puts)(const char* __s);
+    int (*strcmp)(const char* __s1, const char* __s2);
+    char* (*strncat)(char* __dest, const char* __src, size_t __n);
+    char* (*strncpy)(char* __dest, const char* __src, size_t __n);
+    size_t (*strlen)(const char* __s);
+} api_type;
 
 /* api */
-CSYS_EXPORT extern const system_api_type* system_api;
+CSYS_EXPORT extern const api_type* api;
 
-#endif /* _SYSTEM_API_H_ */
+#endif /* _api_H_ */

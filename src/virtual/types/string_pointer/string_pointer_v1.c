@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 14, 2025 at 6:26:20 AM GMT+3
+ *   March 27, 2025 at 4:37:21 PM GMT+3
  *
  */
 /*
@@ -31,39 +31,37 @@
 
 static const enum type type_id = TYPE_STRING_POINTER;
 
-/* definition */
-static u64 string_free(const_vm_ptr vm, u64 ptr);
+/* public */
+static u64 string_free(const_vm_ptr vm, u64 address);
 
-/* destructor */
-static void type_desctructor(const_pointer_ptr const_ptr);
+/* type */
+static void string_type_destructor(u64 address);
 
 /* implementation */
 static struct type_methods_definitions string_pointer_type = {
-    .desctructor = type_desctructor
+    .destructor = string_type_destructor
 };
 
 static void INIT init(void) {
     safe_type_methods_definitions safe_ptr;
     safe_ptr.const_ptr = &string_pointer_type;
-    CALL(pointer)->register_known_type(type_id, safe_ptr.ptr);
+    CALL(vm)->register_known_type(type_id, safe_ptr.ptr);
 }
 
-static void type_desctructor(const_pointer_ptr const_ptr) {
-    CALL(pointer)->release(const_ptr);
+static void string_type_destructor(u64 address) {
+    CALL(pointer)->free(address, type_id);
 }
 
 /* api */
-static u64 string_free(const_vm_ptr vm, u64 ptr) {
+static u64 string_free(const_vm_ptr vm, u64 address) {
     if (vm == 0 || *vm == 0) {
         return FALSE;
     }
-    const_pointer_ptr data_ptr = CALL(virtual)->read(vm, ptr);
+    const_pointer_ptr data_ptr = CALL(virtual)->read(vm, address, TYPE_STRING_POINTER);
     if (data_ptr == 0) {
         return FALSE;
     }
-    if (CALL(pointer)->get_type(data_ptr) == TYPE_STRING_POINTER) {
-        type_desctructor(data_ptr);
-    }
+    string_type_destructor(address);
     return TRUE;
 }
 

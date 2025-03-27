@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 18, 2025 at 5:46:17 PM GMT+3
+ *   March 27, 2025 at 3:17:06 PM GMT+3
  *
  */
 /*
@@ -38,7 +38,6 @@ static u64 total_free = 0;
 
 struct memory_info_data {
     u64 alloc;
-    u64 used;
     u64 free;
 };
 
@@ -56,17 +55,16 @@ static void memory_set(void* dest, u8 c, u64 count);
 
 static void* memory_alloc(u64 size) {
     if (size == 0) {
-        ERROR_ARGUMENT_VALUE_NOT_INITIALIZED(size == 0);
+        ERROR_INVALID_ARGUMENT(size == 0);
         return NULL_PTR;
     }
-    void* ptr = system_api->alloc(1, size);
+    void* ptr = api->alloc(1, size);
     if (ptr == 0) {
         return NULL_PTR;
     }
 #ifdef USE_MEMORY_DEBUG_INFO
     total_alloc += size;
-    base->used = total_alloc - total_free;
-    printf("   +: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_alloc, total_free);
+    printf("  m+: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_free, total_alloc);
 #endif
     return ptr;
 }
@@ -86,9 +84,9 @@ static void memory_free(void* ptr, u64 size) {
 #endif
 #ifdef USE_MEMORY_DEBUG_INFO
     total_free += size;
-    printf("   -: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_alloc, total_free);
+    printf("  m-: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_free, total_alloc);
 #endif
-    system_api->free(ptr);
+    api->free(ptr);
 }
 
 static void* memory_realloc(void* old_ptr, u64 size, u64 new_size) {
@@ -99,11 +97,11 @@ static void* memory_realloc(void* old_ptr, u64 size, u64 new_size) {
         return NULL_PTR;
     }
     void* ptr = old_ptr;
-    ptr = system_api->realloc(ptr, new_size);
+    ptr = api->realloc(ptr, new_size);
 #ifdef USE_MEMORY_DEBUG_INFO
     total_alloc += new_size;
     total_free += size;
-    printf("  -+: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_alloc, total_free);
+    printf("  m*: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_free, total_alloc);
 #endif
     return ptr;
 }
@@ -137,11 +135,11 @@ static void memory_set(void* dest, u8 c, u64 count) {
 CSYS_EXPORT void init_statistics(void) {
     total_alloc = 0;
     total_free = 0;
-    printf("   .: %16s ! %16lld . %16lld : %16lld : %16lld\n", "", (u64)0, total_alloc - total_free, total_free, total_alloc);
+    printf("  m.: %16s ! %16lld . %16lld : %16lld : %16lld\n", "", (u64)0, total_alloc - total_free, total_free, total_alloc);
 }
 
 CSYS_EXPORT void result_statistics(void) {
-    printf("   .: %16s ! %16lld . %16lld : %16lld : %16lld\n", "", (u64)0, total_alloc - total_free, total_free, total_alloc);
+    printf("  m.: %16s ! %16lld . %16lld : %16lld : %16lld\n", "", (u64)0, total_alloc - total_free, total_free, total_alloc);
 }
 #endif
 
@@ -155,6 +153,8 @@ const memory_methods PRIVATE_API(system_memory_methods_definitions) = {
 #endif
 };
 
+const memory_methods* memory = &PRIVATE_API(system_memory_methods_definitions);
+
 const memory_methods* CALL(system_memory) {
-    return &PRIVATE_API(system_memory_methods_definitions);
+    return memory;
 }

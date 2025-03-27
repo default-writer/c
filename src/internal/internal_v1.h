@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 14, 2025 at 11:14:13 AM GMT+3
+ *   March 27, 2025 at 6:26:21 AM GMT+3
  *
  */
 /*
@@ -24,24 +24,16 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "api_v1.h"
+#ifndef _INTERNAL_V1_H_
+#define _INTERNAL_V1_H_
 
-/* api */
-const virtual_api_type PRIVATE_API(virtual_api_methods_definitions) = {
-    .fclose = &fclose,
-    .fopen = &fopen,
-    .fread = &fread,
-    .fseek = &fseek,
-    .ftell = &ftell,
-    .getcwd = &getcwd,
-    .getenv = &getenv,
-    .memcpy = &memcpy,
-    .memset = &memset,
-    .puts = &puts,
-    .strcmp = &strcmp,
-    .strncat = &strncat,
-    .strncpy = &strncpy,
-    .strlen = &strlen
-};
+#define USING_STD_API
+#include "std/api.h"
 
-const virtual_api_type* virtual_api = &PRIVATE_API(virtual_api_methods_definitions);
+typedef struct pointer {
+    virtual_pointer_ptr vptr;
+    pointer_public_type public;
+    const void* data;
+} pointer_type;
+
+#endif /* _INTERNAL_V1_H_ */

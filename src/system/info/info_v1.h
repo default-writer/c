@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 14, 2025 at 11:26:14 AM GMT+3
+ *   March 22, 2025 at 11:23:30 AM GMT+3
  *
  */
 /*
@@ -38,6 +38,7 @@ typedef struct PRIVATE_API(system_info_methods) {
     const u64 timestamp;
     const char* commit;
     const char* version;
+    u64 POINTER_TYPE_SIZE;
 } system_info_methods;
 
 /* definition */

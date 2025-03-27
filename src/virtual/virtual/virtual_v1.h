@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 14, 2025 at 11:34:06 AM GMT+3
+ *   March 27, 2025 at 3:13:39 PM GMT+3
  *
  */
 /*
@@ -33,24 +33,19 @@
 #include "virtual/export.h"
 
 typedef struct PRIVATE_API(virtual_methods) {
+    u64 (*alloc)(const_vm_ptr vm, u64 size, u64 type_id);
+    void (*free)(const_vm_ptr vm, u64 address);
+    const_pointer_ptr (*read)(const_vm_ptr vm, u64 address, u64 type_id);
+    u64 (*read_type)(const_vm_ptr vm, u64 address);
+} virtual_methods;
+
+typedef struct PRIVATE_API(virtual_system_methods) {
     void (*init)(const_vm_ptr vm, u64 size);
     void (*destroy)(const_vm_ptr vm);
-    u64 (*alloc)(const_vm_ptr vm, const_pointer_ptr const_ptr);
-    u64 (*memcpy)(const_vm_ptr vm, u64 size, const void* data, u64 type_id);
-    u64 (*pointer)(const_vm_ptr vm, u64 size, u64 type_id);
-    void (*free)(const_vm_ptr vm, u64 address);
-    const_pointer_ptr (*read)(const_vm_ptr vm, u64 address);
-    const_pointer_ptr (*read_type)(const_vm_ptr vm, u64 address, u64 type_id);
-    void (*enumerator_init)(const_vm_ptr vm);
-    void (*enumerator_destroy)(void);
-    u64 (*enumerator_next)(const_vm_ptr vm);
-#ifdef USE_MEMORY_DEBUG_INFO
-    void (*dump)(const_vm_ptr vm);
-    void (*dump_ref)(const_vm_ptr vm);
-#endif
-} virtual_methods;
+} virtual_system_methods;
 
 /* definition */
 CVM_EXPORT extern const virtual_methods* CALL(virtual);
+CVM_EXPORT extern const virtual_system_methods* CALL(system);
 
 #endif /* _VIRTUAL_V1_H_ */

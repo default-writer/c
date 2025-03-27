@@ -5,6 +5,31 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "(gdb) main-tests-vm1",
+      "type": "cppdbg",
+      "preLaunchTask": "CMake: build",
+      "request": "launch",
+      "program": "${workspaceFolder}/cmake/main-tests-vm1",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}/cmake",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        },
+        {
+          "description": "Set Disassembly Flavor to Intel",
+          "text": "-gdb-set disassembly-flavor intel",
+          "ignoreFailures": true
+        }
+      ]
+    },
+    {
       "type": "cppdbg",
       "request": "launch",
       "name": "debug-v6",

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 14, 2025 at 6:00:44 AM GMT+3
+ *   March 27, 2025 at 12:14:30 PM GMT+3
  *
  */
 /*
@@ -29,10 +29,11 @@
 static const char* error_messages[] = {
     [ID_ERROR_NO_ERROR] = "no error",
     [ID_ERROR_VM_NOT_INITIALIZED] = "vm not initialized",
-    [ID_ERROR_POINTER_NOT_INITIALIZED] = "pointer not initialized",
-    [ID_ERROR_ADDRESS_NOT_INITIALIZED] = "address not initialized",
-    [ID_ERROR_ARGUMENT_VALUE_NOT_INITIALIZED] = "argument value not initialized",
-    [ID_ERROR_INVALID_CONDITION] = "invalid condition"
+    [ID_ERROR_INVALID_POINTER] = "pointer not initialized",
+    [ID_ERROR_INVALID_ADDRESS] = "address not initialized",
+    [ID_ERROR_INVALID_ARGUMENT] = "argument not initialized",
+    [ID_ERROR_INVALID_CONDITION] = "invalid condition",
+    [ID_ERROR_INVALID_TYPE] = "invalid type",
 };
 
 #ifdef USE_MEMORY_DEBUG_INFO
