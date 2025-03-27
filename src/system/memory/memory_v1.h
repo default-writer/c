@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 14, 2025 at 11:26:14 AM GMT+3
+ *   March 27, 2025 at 4:57:16 PM GMT+3
  *
  */
 /*
@@ -41,8 +41,8 @@ CSYS_EXPORT extern void result_statistics(void);
 
 typedef struct PRIVATE_API(memory_methods) {
     void* (*alloc)(u64 size);
-    void (*free)(void* ptr, u64 size);
     void* (*realloc)(void* old_ptr, u64 size, u64 new_size);
+    void (*free)(void* ptr, u64 size);
 #ifdef USE_MEMORY_CLEANUP
     void (*set)(void* dest, u8 c, u64 count);
 #endif

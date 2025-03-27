@@ -2465,14 +2465,14 @@ RX_TEST_CASE(tests_v1, test_vm_virtual_free, .fixture = test_fixture) {
 /* test init */
 RX_TEST_CASE(tests_v1, test_vm_virtual_read, .fixture = test_fixture) {
     const_vm_ptr vm = 0;
-    CALL(virtual)->read_type(vm, 0);
+    CALL(virtual)->type(vm, 0);
     RX_ASSERT(0 != 1);
 }
 /* test init */
 RX_TEST_CASE(tests_v1, test_vm_virtual_read_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = rx->ctx;
-    CALL(virtual)->read_type(vm, 0);
+    CALL(virtual)->type(vm, 0);
     RX_ASSERT(0 != 1);
 }
 

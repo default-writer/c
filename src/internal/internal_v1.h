@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 27, 2025 at 6:26:21 AM GMT+3
+ *   March 27, 2025 at 4:52:41 PM GMT+3
  *
  */
 /*
@@ -33,7 +33,7 @@
 typedef struct pointer {
     virtual_pointer_ptr vptr;
     pointer_public_type public;
-    const void* data;
+    const_void_ptr data;
 } pointer_type;
 
 #endif /* _INTERNAL_V1_H_ */

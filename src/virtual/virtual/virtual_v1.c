@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 27, 2025 at 3:10:32 PM GMT+3
+ *   March 27, 2025 at 4:59:58 PM GMT+3
  *
  */
 /*
@@ -69,10 +69,11 @@ typedef struct virtual_pointer_enumerator {
 /* api */
 static void virtual_init(const_vm_ptr vm, u64 size);
 static void virtual_destroy(const_vm_ptr vm);
+
 static u64 virtual_alloc(const_vm_ptr vm, u64 size, u64 type_id);
-static void virtual_free(const_vm_ptr vm, u64 address);
 static const_pointer_ptr virtual_read(const_vm_ptr vm, u64 address, u64 type_id);
 static u64 virtual_read_type(const_vm_ptr vm, u64 address);
+static void virtual_free(const_vm_ptr vm, u64 address);
 
 /* internal */
 static u64 virtual_alloc_internal(virtual_pointer_ptr* tail, u64 size, u64 type_id);
@@ -198,34 +199,6 @@ static void virtual_destroy(const_vm_ptr vm) {
     *safe_ptr.ptr = 0;
 }
 
-static void virtual_free(const_vm_ptr vm, u64 address) {
-    if (vm == 0 || *vm == 0) {
-        return;
-    }
-    if (address == 0) {
-        return;
-    }
-    const_virtual_pointer_ptr const_vptr = (*vm)->next;
-    const_pointer_ptr ptr = virtual_read_internal(const_vptr, address);
-    if (ptr == 0) {
-        return;
-    }
-    virtual_pointer_ptr vptr = ptr->vptr;
-    if (address > vptr->offset && address <= vptr->offset + DEFAULT_SIZE) {
-        u64 offset = address - vptr->offset - 1;
-#ifndef USE_GC
-        vm_pointer_ptr item = api->alloc(1, VM_POINTER_TYPE_SIZE);
-        item->vptr = vptr;
-        item->offset = offset;
-        CALL(system_list)->push(cache, item);
-#endif
-#ifdef USE_MEMORY_DEBUG_INFO
-        printf("  v-: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)vptr);
-#endif
-        vptr->bp[offset] = 0;
-    }
-}
-
 static const_pointer_ptr virtual_read(const_vm_ptr vm, u64 address, u64 type_id) {
     if (vm == 0 || *vm == 0) {
         ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
@@ -296,6 +269,34 @@ static u64 virtual_read_type(const_vm_ptr vm, u64 address) {
     return type;
 }
 
+static void virtual_free(const_vm_ptr vm, u64 address) {
+    if (vm == 0 || *vm == 0) {
+        return;
+    }
+    if (address == 0) {
+        return;
+    }
+    const_virtual_pointer_ptr const_vptr = (*vm)->next;
+    const_pointer_ptr ptr = virtual_read_internal(const_vptr, address);
+    if (ptr == 0) {
+        return;
+    }
+    virtual_pointer_ptr vptr = ptr->vptr;
+    if (address > vptr->offset && address <= vptr->offset + DEFAULT_SIZE) {
+        u64 offset = address - vptr->offset - 1;
+#ifndef USE_GC
+        vm_pointer_ptr item = api->alloc(1, VM_POINTER_TYPE_SIZE);
+        item->vptr = vptr;
+        item->offset = offset;
+        CALL(system_list)->push(cache, item);
+#endif
+#ifdef USE_MEMORY_DEBUG_INFO
+        printf("  v-: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)vptr);
+#endif
+        vptr->bp[offset] = 0;
+    }
+}
+
 static u64 virtual_alloc(const_vm_ptr vm, u64 size, u64 type_id) {
     if (vm == 0 || *vm == 0) {
         ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
@@ -316,9 +317,9 @@ static u64 virtual_alloc(const_vm_ptr vm, u64 size, u64 type_id) {
 /* public */
 const virtual_methods PRIVATE_API(virtual_methods_definitions) = {
     .alloc = virtual_alloc,
-    .free = virtual_free,
     .read = virtual_read,
-    .read_type = virtual_read_type
+    .type = virtual_read_type,
+    .free = virtual_free
 };
 
 const virtual_system_methods PRIVATE_API(virtual_type_methods_definitions) = {

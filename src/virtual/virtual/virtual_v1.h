@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 27, 2025 at 3:13:39 PM GMT+3
+ *   March 27, 2025 at 4:59:46 PM GMT+3
  *
  */
 /*
@@ -34,9 +34,9 @@
 
 typedef struct PRIVATE_API(virtual_methods) {
     u64 (*alloc)(const_vm_ptr vm, u64 size, u64 type_id);
-    void (*free)(const_vm_ptr vm, u64 address);
     const_pointer_ptr (*read)(const_vm_ptr vm, u64 address, u64 type_id);
-    u64 (*read_type)(const_vm_ptr vm, u64 address);
+    u64 (*type)(const_vm_ptr vm, u64 address);
+    void (*free)(const_vm_ptr vm, u64 address);
 } virtual_methods;
 
 typedef struct PRIVATE_API(virtual_system_methods) {
