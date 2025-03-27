@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 27, 2025 at 4:59:11 PM GMT+3
+ *   March 27, 2025 at 7:56:30 PM GMT+3
  *
  */
 /*
@@ -144,7 +144,7 @@ static pointer_ptr virtual_enumerator_pointer_next_internal(void);
 
 /* internal */
 static u64 pointer_alloc_internal(const_void_ptr data, const_pointer_ptr* tmp, u64 size, u64 type_id);
-static void* pointer_data_safe_internal(const_pointer_ptr const_ptr, u64 offset);
+
 static void known_types_init_internal(u64 type_id, type_methods_definitions_ptr data_type);
 static void user_types_init_internal(type_methods_definitions_ptr data_type);
 static u64 check_existing_type_internal(known_types_ptr current, const_type_methods_definitions_ptr data_type);
@@ -235,23 +235,6 @@ static u64 pointer_alloc_internal(const_void_ptr data, const_pointer_ptr* tmp, u
     return address;
 }
 
-static void* pointer_data_safe_internal(const_pointer_ptr const_ptr, u64 offset) {
-    u64 data_size = const_ptr->public.size;
-    if (offset >= data_size) {
-        ERROR_INVALID_CONDITION(offset >= data_size);
-        return NULL_PTR;
-    }
-    safe_void_ptr safe_ptr;
-    safe_ptr.const_ptr = const_ptr->data;
-    pointer_ptr ptr = safe_ptr.ptr;
-    void* data_ptr = ptr;
-    if (data_ptr != 0) {
-        u8* data = data_ptr;
-        data[offset] = 0;
-    }
-    return data_ptr;
-}
-
 static void known_types_init_internal(u64 type_id, type_methods_definitions_ptr data_type) {
     if (vm_list == 0) {
         return;
@@ -330,8 +313,16 @@ static u64 pointer_copy(const_void_ptr data, u64 size, u64 offset, u64 type_id) 
     const_pointer_ptr tmp;
     u64 address = pointer_alloc_internal(new_data, &tmp, size, type_id);
     api->memcpy(new_data, data, size);
-    if (offset > 0) {
-        pointer_data_safe_internal(tmp, offset);
+    u64 data_size = size;
+    if (offset > 0 && offset < data_size) {
+        safe_void_ptr safe_ptr;
+        safe_ptr.const_ptr = tmp->data;
+        pointer_ptr ptr = safe_ptr.ptr;
+        void* data_ptr = ptr;
+        if (data_ptr != 0) {
+            u8* data = data_ptr;
+            data[offset] = 0;
+        }
     }
     return address;
 }

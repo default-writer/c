@@ -168,7 +168,8 @@
         "gitpod.gitpod-desktop",
         "gitpod.gitpod-flex",
         "ms-python.python",
-        "marp-team.marp-vscode"
+        "marp-team.marp-vscode",
+        "Google.geminicodeassist"
       ]
     }
   }
