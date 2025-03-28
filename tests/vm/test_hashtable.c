@@ -1,0 +1,149 @@
+/*-*-coding:utf-8 -*-
+ * Auto updated?
+ *   Yes
+ * Created:
+ *   11 December 2023 at 9:06:14 GMT+3
+ * Modified:
+ *   March 28, 2025 at 11:42:33 AM GMT+3
+ *
+ */
+/*
+    Copyright (C) 2022-2047 Artur Mustafin (artur.mustafin@gmail.com)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+#include "test_hashtable.h"
+
+#include "virtual/hashtable/hashtable_v1.h"
+
+#define USING_TESTS
+#include "test.h"
+
+/* definition */
+
+/* Data structure to use at the core of our fixture. */
+typedef struct test_data {
+    hashtable_ptr ctx;
+}* TEST_DATA;
+
+/*api*/
+
+RX_SET_UP(test_set_up) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    hashtable_ptr vm = CALL(hashtable)->init();
+    rx->ctx = vm;
+    return RX_SUCCESS;
+}
+
+RX_TEAR_DOWN(test_tear_down) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    hashtable_ptr ht = rx->ctx;
+    CALL(hashtable)->destroy(ht);
+}
+
+RX_SET_UP(test_set_up_pointer_init) {
+    return RX_SUCCESS;
+}
+
+RX_TEAR_DOWN(test_tear_down_pointer_destroy) {
+    /* nothing to cleanup */
+}
+
+/* Define the fixture. */
+RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tear_down);
+
+/* Define the fixture. */
+RX_FIXTURE(test_fixture_pointer, TEST_DATA, .set_up = test_set_up_pointer_init, .tear_down = test_tear_down_pointer_destroy);
+
+/* test init */
+RX_TEST_CASE(tests_hashtable_v1, test_hashtable_init, .fixture = test_fixture) {
+    // TEST_DATA rx = (TEST_DATA)RX_DATA;
+    // hashtable_ptr ht = rx->ctx;
+}
+
+/* test init */
+RX_TEST_CASE(tests_hashtable_v1, test_hashtable, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    hashtable_ptr ht = rx->ctx;
+
+    const char* str1 = "hello";
+    const char* str2 = ", ";
+    const char* str3 = "world";
+    const char* str4 = "!";
+
+    CALL(hashtable)->insert(ht, 10, str1);
+    CALL(hashtable)->insert(ht, 20, str2);
+    CALL(hashtable)->insert(ht, 30, str3);
+    CALL(hashtable)->insert(ht, 40, str4);
+
+    RX_ASSERT(strcmp((const char*)CALL(hashtable)->get(ht, 10), str1) == 0);
+    RX_ASSERT(strcmp((const char*)CALL(hashtable)->get(ht, 20), str2) == 0);
+    RX_ASSERT(strcmp((const char*)CALL(hashtable)->get(ht, 30), str3) == 0);
+    RX_ASSERT(strcmp((const char*)CALL(hashtable)->get(ht, 40), str4) == 0);
+
+    RX_ASSERT(CALL(hashtable)->get(ht, 60) == NULL);
+
+    CALL(hashtable)->remove(ht, 20);
+    CALL(hashtable)->insert(ht, 60 + HASHTABLE_INITIAL_CAPACITY, str2);
+    CALL(hashtable)->insert(ht, 60, str3);
+    CALL(hashtable)->remove(ht, 60 + HASHTABLE_INITIAL_CAPACITY);
+    CALL(hashtable)->remove(ht, 61 + HASHTABLE_INITIAL_CAPACITY);
+
+    RX_ASSERT(CALL(hashtable)->get(ht, 20) == NULL);
+    RX_ASSERT(CALL(hashtable)->get(ht, 60) != NULL);
+
+    // Check the size of the hashtable
+    RX_ASSERT(ht->size == 4);
+}
+
+/* test init */
+RX_TEST_CASE(tests_hashtable_v1, test_hashtable_resize, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    hashtable_ptr ht = rx->ctx;
+    for (size_t i = 0; i < HASHTABLE_INITIAL_CAPACITY * 2; ++i) {
+        CALL(hashtable)->insert(ht, i, (void*)i);
+    }
+    for (size_t i = 0; i < HASHTABLE_INITIAL_CAPACITY * 2; ++i) {
+        RX_ASSERT((u64)CALL(hashtable)->get(ht, i) == i);
+    }
+}
+
+/* test init */
+RX_TEST_CASE(tests_hashtable_v1, test_hashtable_null, .fixture = test_fixture_pointer) {
+    RX_ASSERT(CALL(hashtable)->insert(NULL, 10, "test") == NULL);
+    RX_ASSERT(CALL(hashtable)->get(NULL, 10) == NULL);
+    RX_ASSERT(CALL(hashtable)->remove(NULL, 10) == FALSE);
+    CALL(hashtable)->destroy(NULL);
+}
+
+/* test init */
+RX_TEST_CASE(tests_hashtable_v1, test_hashtable_collisions, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    hashtable_ptr ht = rx->ctx;
+    CALL(hashtable)->insert(ht, 10, (void*)10);
+    CALL(hashtable)->insert(ht, 26, (void*)26);
+    RX_ASSERT((u64)CALL(hashtable)->get(ht, 10) == 10);
+    RX_ASSERT((u64)CALL(hashtable)->get(ht, 26) == 26);
+}
+
+static void run(void) {
+#ifdef USE_MEMORY_DEBUG_INFO
+    printf("---- rexo unit test code %s\n", __FILE__);
+#endif
+}
+
+const tests_hashtable_test_suite PRIVATE_API(tests_hashtable_test_suite_definitions) = {
+    .run = run
+};

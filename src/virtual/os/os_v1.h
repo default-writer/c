@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 27, 2025 at 3:31:41 PM GMT+3
+ *   March 28, 2025 at 7:49:54 AM GMT+3
  *
  */
 /*
@@ -30,19 +30,19 @@
 #define USING_STD_API
 #include "std/api.h"
 
-#include "system/export.h"
+#include "virtual/export.h"
 
 /*! @file os_v1.h
  *  @brief C API / os
  */
 
-typedef struct PRIVATE_API(system_os_methods) {
+typedef struct PRIVATE_API(virtual_os_methods) {
     u64 (*getenv)(const_vm_ptr vm, u64 name);
     u64 (*getcwd)(const_vm_ptr vm);
     u64 (*putc)(const_vm_ptr vm, u64 ptr);
-} system_os_methods;
+} virtual_os_methods;
 
 /* definition */
-CSYS_EXPORT extern const system_os_methods* CALL(os);
+CVM_EXPORT extern const virtual_os_methods* CALL(os);
 
 #endif /* _VIRTUAL_OS_V1_H_ */

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 15, 2025 at 4:00:49 PM GMT+3
+ *   March 28, 2025 at 10:32:01 AM GMT+3
  *
  */
 /*
@@ -186,7 +186,7 @@ RX_TEAR_DOWN(test_tear_down) {
 RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tear_down);
 
 /* test init */
-RX_TEST_CASE(list_micro_tests, test_empty_list_count_equals_0, .fixture = test_fixture) {
+RX_TEST_CASE(tests_list_v1, test_empty_list_count_equals_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* ensures counter is initialized to 0 */
@@ -194,7 +194,7 @@ RX_TEST_CASE(list_micro_tests, test_empty_list_count_equals_0, .fixture = test_f
 }
 
 /* test case */
-RX_TEST_CASE(list_micro_tests, test_pop_0, .fixture = test_fixture) {
+RX_TEST_CASE(tests_list_v1, test_pop_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* pushed to the list */
@@ -206,7 +206,7 @@ RX_TEST_CASE(list_micro_tests, test_pop_0, .fixture = test_fixture) {
 }
 
 /* test case */
-RX_TEST_CASE(list_micro_tests, test_pop_null_ptr, .fixture = test_fixture) {
+RX_TEST_CASE(tests_list_v1, test_pop_null_ptr, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* pushed to the list */
@@ -220,7 +220,7 @@ RX_TEST_CASE(list_micro_tests, test_pop_null_ptr, .fixture = test_fixture) {
 }
 
 /* test case */
-RX_TEST_CASE(list_micro_tests, test_peek_0, .fixture = test_fixture) {
+RX_TEST_CASE(tests_list_v1, test_peek_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* pushed to the list */
@@ -232,7 +232,7 @@ RX_TEST_CASE(list_micro_tests, test_peek_0, .fixture = test_fixture) {
 }
 
 /* test case */
-RX_TEST_CASE(list_micro_tests, test_peek_null_ptr, .fixture = test_fixture) {
+RX_TEST_CASE(tests_list_v1, test_peek_null_ptr, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* pushed to the list */
@@ -246,7 +246,7 @@ RX_TEST_CASE(list_micro_tests, test_peek_null_ptr, .fixture = test_fixture) {
 }
 
 /* test case */
-RX_TEST_CASE(list_micro_tests, test_push_0, .fixture = test_fixture) {
+RX_TEST_CASE(tests_list_v1, test_push_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* pushed to the list */
@@ -260,7 +260,7 @@ RX_TEST_CASE(list_micro_tests, test_push_0, .fixture = test_fixture) {
 }
 
 /* test case */
-RX_TEST_CASE(list_micro_tests, test_push_null_ptr, .fixture = test_fixture) {
+RX_TEST_CASE(tests_list_v1, test_push_null_ptr, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* pushed to the list */
@@ -277,7 +277,7 @@ RX_TEST_CASE(list_micro_tests, test_push_null_ptr, .fixture = test_fixture) {
 }
 
 /* test case */
-RX_TEST_CASE(list_micro_tests, test_init_0, .fixture = test_fixture) {
+RX_TEST_CASE(tests_list_v1, test_init_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* pushed to the list */
@@ -287,7 +287,7 @@ RX_TEST_CASE(list_micro_tests, test_init_0, .fixture = test_fixture) {
 }
 
 /* test case */
-RX_TEST_CASE(list_micro_tests, test_init_null_ptr, .fixture = test_fixture) {
+RX_TEST_CASE(tests_list_v1, test_init_null_ptr, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* pushed to the list */
@@ -303,7 +303,7 @@ RX_TEST_CASE(list_micro_tests, test_init_null_ptr, .fixture = test_fixture) {
 }
 
 /* test case */
-RX_TEST_CASE(list_micro_tests, test_init_init, .fixture = test_fixture) {
+RX_TEST_CASE(tests_list_v1, test_init_init, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* pushed to the list */
@@ -320,7 +320,7 @@ RX_TEST_CASE(list_micro_tests, test_init_init, .fixture = test_fixture) {
 }
 
 /* test case */
-RX_TEST_CASE(list_micro_tests, test_destroy_0, .fixture = test_fixture) {
+RX_TEST_CASE(tests_list_v1, test_destroy_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* pushed to the list */
@@ -330,7 +330,7 @@ RX_TEST_CASE(list_micro_tests, test_destroy_0, .fixture = test_fixture) {
 }
 
 /* test case */
-RX_TEST_CASE(list_micro_tests, test_destroy_null_ptr, .fixture = test_fixture) {
+RX_TEST_CASE(tests_list_v1, test_destroy_null_ptr, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* pushed to the list */
@@ -345,7 +345,7 @@ RX_TEST_CASE(list_micro_tests, test_destroy_null_ptr, .fixture = test_fixture) {
 }
 
 /* test peek */
-RX_TEST_CASE(list_micro_tests, test_standard_list_peek_does_not_changes_stack, .fixture = test_fixture) {
+RX_TEST_CASE(tests_list_v1, test_standard_list_peek_does_not_changes_stack, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* prepares the payload */
@@ -363,7 +363,7 @@ RX_TEST_CASE(list_micro_tests, test_standard_list_peek_does_not_changes_stack, .
 }
 
 /* test pop from 0 pointer */
-RX_TEST_CASE(list_micro_tests, test_empty_list_pop_equals_0, .fixture = test_fixture) {
+RX_TEST_CASE(tests_list_v1, test_empty_list_pop_equals_0, .fixture = test_fixture) {
     stack_ptr ctx = 0;
     /* pops from the list */
     const stack_ptr head = CALL(system_list)->pop(&ctx);
@@ -372,7 +372,7 @@ RX_TEST_CASE(list_micro_tests, test_empty_list_pop_equals_0, .fixture = test_fix
 }
 
 /* test pop from 0 pointer */
-RX_TEST_CASE(list_micro_tests, test_empty_list_peek_equals_0, .fixture = test_fixture) {
+RX_TEST_CASE(tests_list_v1, test_empty_list_peek_equals_0, .fixture = test_fixture) {
     stack_ptr ctx = 0;
     /* peeks from the list */
     const stack_ptr head = CALL(system_list)->peek(&ctx);
@@ -381,7 +381,7 @@ RX_TEST_CASE(list_micro_tests, test_empty_list_peek_equals_0, .fixture = test_fi
 }
 
 /* test alloc */
-RX_TEST_CASE(list_micro_tests, test_alloc_count_eq_1, .fixture = test_fixture) {
+RX_TEST_CASE(tests_list_v1, test_alloc_count_eq_1, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* prepares the payload */
@@ -392,7 +392,7 @@ RX_TEST_CASE(list_micro_tests, test_alloc_count_eq_1, .fixture = test_fixture) {
     RX_ASSERT(*ctx != 0);
 }
 
-RX_TEST_CASE(list_micro_tests, test_alloc_payload, .fixture = test_fixture) {
+RX_TEST_CASE(tests_list_v1, test_alloc_payload, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* prepares the payload */
@@ -405,7 +405,7 @@ RX_TEST_CASE(list_micro_tests, test_alloc_payload, .fixture = test_fixture) {
     RX_ASSERT(head == payload);
 }
 
-RX_TEST_CASE(list_micro_tests, test_alloc_pop_count_0, .fixture = test_fixture) {
+RX_TEST_CASE(tests_list_v1, test_alloc_pop_count_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* prepares the payload */
@@ -418,7 +418,7 @@ RX_TEST_CASE(list_micro_tests, test_alloc_pop_count_0, .fixture = test_fixture) 
     RX_ASSERT(head != 0);
 }
 
-RX_TEST_CASE(list_micro_tests, test_alloc_pop_payload, .fixture = test_fixture) {
+RX_TEST_CASE(tests_list_v1, test_alloc_pop_payload, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* prepares the payload */
@@ -432,7 +432,7 @@ RX_TEST_CASE(list_micro_tests, test_alloc_pop_payload, .fixture = test_fixture) 
 }
 
 /* test peek */
-RX_TEST_CASE(list_micro_tests, test_list_peek_is_zero, .fixture = test_fixture) {
+RX_TEST_CASE(tests_list_v1, test_list_peek_is_zero, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* peeks from the list */
@@ -442,7 +442,7 @@ RX_TEST_CASE(list_micro_tests, test_list_peek_is_zero, .fixture = test_fixture) 
 }
 
 /* test pop */
-RX_TEST_CASE(list_micro_tests, test_list_pop_is_zero, .fixture = test_fixture) {
+RX_TEST_CASE(tests_list_v1, test_list_pop_is_zero, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* pops from the list */
@@ -458,10 +458,10 @@ static void run(void) {
     run_list1(tests);
     run_list2(tests);
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("---- rexo unit test code\n");
+    printf("---- rexo unit test code %s\n", __FILE__);
 #endif
 }
 
-const list_micro_test_suite PRIVATE_API(list_micro_test_suite_definitions) = {
+const tests_list_test_suite PRIVATE_API(tests_list_test_suite_definitions) = {
     .run = run
 };

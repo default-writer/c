@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 27, 2025 at 4:37:43 PM GMT+3
+ *   March 28, 2025 at 9:43:53 AM GMT+3
  *
  */
 /*
@@ -91,6 +91,20 @@ typedef struct pointer_public {
     u64 size;
     u64 type;
 } pointer_public_type;
+typedef struct hashentry* hashentry_ptr;
+typedef const struct hashentry* const_hashentry_ptr;
+typedef struct hashentry {
+    u64 key;
+    const_void_ptr value;
+    hashentry_ptr next;
+} hashentry_type;
+typedef struct hashtable* hashtable_ptr;
+typedef const struct hashtable* const_hashtable_ptr;
+typedef struct hashtable {
+    hashentry_ptr* table;
+    u64 capacity;
+    u64 size;
+} hashtable_type;
 
 enum type {
     /* value used for ephemeral type - null */

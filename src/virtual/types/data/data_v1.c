@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 27, 2025 at 4:36:40 PM GMT+3
+ *   March 28, 2025 at 12:49:50 PM GMT+3
  *
  */
 /*
@@ -65,6 +65,7 @@ static void data_type_destructor(u64 address) {
 
 static u64 data_alloc(const_vm_ptr vm, u64 size) {
     if (vm == 0 || *vm == 0) {
+        ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
         return FALSE;
     }
     if (size == 0) {
@@ -78,6 +79,7 @@ static u64 data_alloc(const_vm_ptr vm, u64 size) {
 
 static u64 data_free(const_vm_ptr vm, u64 address) {
     if (vm == 0 || *vm == 0) {
+        ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
         return FALSE;
     }
     data_type_destructor(address);
@@ -102,6 +104,7 @@ static void* data_unsafe(const_vm_ptr vm, u64 address) {
 
 static u64 data_size(const_vm_ptr vm, u64 address) {
     if (vm == 0 || *vm == 0) {
+        ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
         return FALSE;
     }
     const_pointer_ptr const_ptr = CALL(virtual)->read(vm, address, type_id);

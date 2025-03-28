@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 14, 2025 at 7:17:08 AM GMT+3
+ *   March 28, 2025 at 10:29:01 AM GMT+3
  *
  */
 /*
@@ -39,6 +39,9 @@
 #include "test_pointer.h"
 
 #define USING_TESTS_VM
-#include "test_vm_v1.h"
+#include "test_vm.h"
+
+#define USING_TESTS_HASHTABLE
+#include "test_hashtable.h"
 
 #endif /* _MAIN_TESTS_V1_H_ */

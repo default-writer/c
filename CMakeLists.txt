@@ -265,10 +265,10 @@ set(LIB_SYS_SOURCE
     src/system/list/list_v1.c
     src/system/memory/memory_v1.c
     src/system/options/options_v1.c
-    src/system/os/os_v1.c
 )
 
 set(LIB_VM_SOURCE
+    src/virtual/os/os_v1.c
     src/virtual/pointer/pointer_v1.c
     src/virtual/types/data/data_v1.c
     src/virtual/types/file/file_v1.c
@@ -277,13 +277,17 @@ set(LIB_VM_SOURCE
     src/virtual/types/string/string_v1.c
     src/virtual/types/string_pointer/string_pointer_v1.c
     src/virtual/types/user/user_v1.c
-    src/virtual/virtual/virtual_v1.c)
+    src/virtual/virtual/virtual_v1.c
+    src/virtual/hashtable/hashtable_v1.c
+)
 
 set(TESTS_SOURCE
     tests/vm/test_list.c
     tests/vm/test_memory.c
     tests/vm/test_pointer.c
-    tests/vm/test_vm_v1.c)
+    tests/vm/test_vm.c
+    tests/vm/test_hashtable.c
+)
 
 set(MAIN_TESTS_VM1_SOURCE tests/vm/main-tests_v1.c)
 
