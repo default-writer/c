@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 27, 2025 at 4:57:39 PM GMT+3
+ *   March 28, 2025 at 1:54:43 PM GMT+3
  *
  */
 /*
@@ -78,6 +78,7 @@ static void* memory_realloc(void* old_ptr, u64 size, u64 new_size) {
     }
     void* ptr = old_ptr;
     ptr = api->realloc(ptr, new_size);
+    api->memset((u8*)ptr + size, 0x00, new_size - size);
 #ifdef USE_MEMORY_DEBUG_INFO
     total_alloc += new_size;
     total_free += size;
