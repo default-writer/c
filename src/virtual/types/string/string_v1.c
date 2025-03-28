@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 28, 2025 at 12:48:46 PM GMT+3
+ *   March 28, 2025 at 2:32:18 PM GMT+3
  *
  */
 /*
@@ -237,11 +237,7 @@ static u64 string_strcpy(const_vm_ptr vm, u64 dest, u64 src) {
     u64 dest_size = public_ptr->size;
     if (dest_size < src_size) {
         if (ptr->data != 0) {
-            const_void_ptr src_const_data_ptr = ptr->data;
-            safe_void_ptr src_void_ptr;
-            src_void_ptr.const_ptr = src_const_data_ptr;
-            void* src_data_ptr = src_void_ptr.ptr;
-            ptr->data = CALL(system_memory)->realloc(src_data_ptr, dest_size, src_size);
+            ptr->data = CALL(system_memory)->realloc(ptr->data, dest_size, src_size);
         }
         ptr->public.size = src_size;
     }
@@ -287,11 +283,7 @@ static u64 string_strcat(const_vm_ptr vm, u64 dest, u64 src) {
     u64 src_size = size;
     if (dest_size < src_size) {
         if (ptr->data != 0) {
-            const_void_ptr src_const_data_ptr = ptr->data;
-            safe_void_ptr src_void_ptr;
-            src_void_ptr.const_ptr = src_const_data_ptr;
-            void* src_data_ptr = src_void_ptr.ptr;
-            ptr->data = CALL(system_memory)->realloc(src_data_ptr, dest_size, src_size);
+            ptr->data = CALL(system_memory)->realloc(ptr->data, dest_size, src_size);
         }
         ptr->public.size = src_size;
     }
@@ -377,6 +369,11 @@ static u64 string_match(const_vm_ptr vm, u64 src, u64 match) {
         ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
         return FALSE;
     }
+    const_pointer_ptr match_ptr = CALL(virtual)->read(vm, match, type_id);
+    if (match_ptr == 0) {
+        ERROR_INVALID_POINTER(match_ptr == 0);
+        return FALSE;
+    }
     u64 size = 0;
     u64 offset = 0;
     const_pointer_ptr const_ptr = read_string_data_internal(vm, src, &size, &offset);
@@ -389,11 +386,6 @@ static u64 string_match(const_vm_ptr vm, u64 src, u64 match) {
     src_void_ptr.const_ptr = src_const_data_ptr;
     void* src_data_ptr = src_void_ptr.ptr;
     char* ch = src_data_ptr;
-    const_pointer_ptr match_ptr = CALL(virtual)->read(vm, match, type_id);
-    if (match_ptr == 0) {
-        ERROR_INVALID_POINTER(match_ptr == 0);
-        return FALSE;
-    }
     ch += offset;
     safe_pointer_ptr safe_ptr;
     safe_ptr.const_ptr = match_ptr;
@@ -488,6 +480,11 @@ static u64 string_offset(const_vm_ptr vm, u64 src, u64 match) {
         ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
         return FALSE;
     }
+    const_pointer_ptr match_ptr = CALL(virtual)->read(vm, match, type_id);
+    if (match_ptr == 0) {
+        ERROR_INVALID_POINTER(match_ptr == 0);
+        return FALSE;
+    }
     u64 size = 0;
     u64 offset = 0;
     const_pointer_ptr const_ptr = read_string_data_internal(vm, src, &size, &offset);
@@ -500,11 +497,6 @@ static u64 string_offset(const_vm_ptr vm, u64 src, u64 match) {
     src_void_ptr.const_ptr = src_const_data_ptr;
     void* src_data_ptr = src_void_ptr.ptr;
     char* ch = src_data_ptr;
-    const_pointer_ptr match_ptr = CALL(virtual)->read(vm, match, type_id);
-    if (match_ptr == 0) {
-        ERROR_INVALID_POINTER(match_ptr == 0);
-        return FALSE;
-    }
     ch += offset;
     safe_pointer_ptr safe_ptr;
     safe_ptr.const_ptr = match_ptr;
@@ -874,13 +866,13 @@ static u64 string_move_left(const_vm_ptr vm, u64 address, u64 nbytes) {
         ERROR_INVALID_ARGUMENT(nbytes == 0);
         return FALSE;
     }
-    u64 size = 0;
-    u64 offset = 0;
     const_pointer_ptr src_ptr = CALL(virtual)->read(vm, address, TYPE_STRING_POINTER);
     if (src_ptr == 0) {
         ERROR_INVALID_POINTER(src_ptr == 0);
         return FALSE;
     }
+    u64 size = 0;
+    u64 offset = 0;
     const_pointer_ptr const_ptr = get_string_pointer_internal(vm, src_ptr, &size, &offset);
     if (const_ptr == 0) {
         ERROR_INVALID_POINTER(const_ptr == 0);

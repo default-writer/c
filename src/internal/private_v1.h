@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 26, 2025 at 5:46:54 AM GMT+3
+ *   March 28, 2025 at 3:10:23 PM GMT+3
  *
  */
 /*
@@ -36,11 +36,6 @@ typedef struct virtual_pointer {
     virtual_pointer_ptr next;
     u64 offset;
 } virtual_pointer_type;
-
-typedef struct vm_state {
-    virtual_pointer_ptr vptr;
-    pointer_ptr* ref;
-} vm_state_type;
 
 typedef struct vm {
     virtual_pointer_ptr next;

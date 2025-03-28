@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 28, 2025 at 12:47:25 PM GMT+3
+ *   March 28, 2025 at 2:26:28 PM GMT+3
  *
  */
 /*
@@ -4999,7 +4999,7 @@ static void parse_text(const_vm_ptr vm, u64 text_string_ptr) {
                 }
                 printf("%s[%lld]\n", CALL(string)->unsafe(vm, str_ncpy), distance);
                 CALL(string_pointer)->free(vm, match_start_ptr);
-                CALL(string_pointer)->free(vm, str_ncpy);
+                CALL(string)->free(vm, str_ncpy);
             }
             CALL(string_pointer)->free(vm, string_pointer_ptr);
             current_ptr = match_ptr;

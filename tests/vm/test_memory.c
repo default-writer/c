@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 28, 2025 at 10:49:23 AM GMT+3
+ *   March 28, 2025 at 2:06:17 PM GMT+3
  *
  */
 /*
@@ -48,7 +48,7 @@ static const api_type* temp_api;
 static void* mock_alloc(size_t __nmemb, size_t __size);
 static void mock_free(void* __ptr);
 static void* mock_memory_alloc(u64 address);
-static void mock_memory_free(void* ptr, u64 size);
+static void mock_memory_free(const_void_ptr const_ptr, u64 size);
 
 /* implementation */
 static void* mock_alloc(size_t __nmemb, size_t __size) {
@@ -76,8 +76,12 @@ static void* mock_memory_alloc(u64 size) {
     return ptr;
 }
 
-static void mock_memory_free(void* ptr, u64 size) {
-    if (last_alloc_ptr == ptr && last_alloc_size == size) {
+static void mock_memory_free(const_void_ptr const_ptr, u64 size) {
+    if (last_alloc_ptr == const_ptr && last_alloc_size == size) {
+        const_void_ptr const_data_ptr = const_ptr;
+        safe_void_ptr void_ptr;
+        void_ptr.const_ptr = const_data_ptr;
+        void* ptr = void_ptr.ptr;
         memset(ptr, 0xfe, sizeof(u64)); /* NOLINT: sizeof(u64) */
     }
 }

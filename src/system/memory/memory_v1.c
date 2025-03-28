@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 28, 2025 at 1:54:43 PM GMT+3
+ *   March 28, 2025 at 2:04:30 PM GMT+3
  *
  */
 /*
@@ -47,8 +47,8 @@ static struct memory_info_data* base = &memory_info;
 #endif
 
 static void* memory_alloc(u64 size);
-static void* memory_realloc(void* old_ptr, u64 size, u64 new_size);
-static void memory_free(void* ptr, u64 size);
+static void* memory_realloc(const_void_ptr const_ptr, u64 size, u64 new_size);
+static void memory_free(const_void_ptr const_ptr, u64 size);
 #ifdef USE_MEMORY_CLEANUP
 static void memory_set(void* dest, u8 c, u64 count);
 #endif
@@ -69,14 +69,17 @@ static void* memory_alloc(u64 size) {
     return ptr;
 }
 
-static void* memory_realloc(void* old_ptr, u64 size, u64 new_size) {
-    if (old_ptr == 0) {
+static void* memory_realloc(const_void_ptr const_ptr, u64 size, u64 new_size) {
+    if (const_ptr == 0) {
         return NULL_PTR;
     }
     if (new_size <= size) {
         return NULL_PTR;
     }
-    void* ptr = old_ptr;
+    const_void_ptr const_data_ptr = const_ptr;
+    safe_void_ptr void_ptr;
+    void_ptr.const_ptr = const_data_ptr;
+    void* ptr = void_ptr.ptr;
     ptr = api->realloc(ptr, new_size);
     api->memset((u8*)ptr + size, 0x00, new_size - size);
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -87,13 +90,17 @@ static void* memory_realloc(void* old_ptr, u64 size, u64 new_size) {
     return ptr;
 }
 
-static void memory_free(void* ptr, u64 size) {
-    if (ptr == 0) {
+static void memory_free(const_void_ptr const_ptr, u64 size) {
+    if (const_ptr == 0) {
         return;
     }
     if (size == 0) {
         return;
     }
+    const_void_ptr const_data_ptr = const_ptr;
+    safe_void_ptr void_ptr;
+    void_ptr.const_ptr = const_data_ptr;
+    void* ptr = void_ptr.ptr;
 #if !defined(USE_MEMORY_CLEANUP) && !defined(USE_MEMORY_DEBUG_INFO)
     (void)size; /* mark as unused when not in debug/cleanup mode */
 #endif
