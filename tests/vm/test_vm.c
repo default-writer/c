@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 27, 2025 at 5:00:46 PM GMT+3
+ *   March 28, 2025 at 10:49:26 AM GMT+3
  *
  */
 /*
@@ -24,7 +24,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "test_vm_v1.h"
+#include "test_vm.h"
 
 #include "std/macros.h"
 #include "system/options/options_v1.h"
@@ -76,7 +76,7 @@ RX_FIXTURE(test_fixture_pointer, TEST_DATA, .set_up = test_set_up_pointer_init, 
 RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tear_down);
 
 /* test init */
-RX_TEST_CASE(tests, test_vm_read_virtual_0, .fixture = test_fixture) {
+RX_TEST_CASE(tests_vm_v1, test_vm_read_virtual_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = &rx->ctx;
     const_pointer_ptr ptr = CALL(virtual)->read(vm, 0, TYPE_DATA);
@@ -84,21 +84,21 @@ RX_TEST_CASE(tests, test_vm_read_virtual_0, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_vm_destroy_0, .fixture = test_fixture) {
+RX_TEST_CASE(tests_vm_v1, test_vm_destroy_0, .fixture = test_fixture) {
     vm_ptr* ptr = 0;
     CALL(system)->destroy(ptr);
     RX_ASSERT(ptr == 0);
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_vm_destroy_null, .fixture = test_fixture) {
+RX_TEST_CASE(tests_vm_v1, test_vm_destroy_null, .fixture = test_fixture) {
     vm_ptr ref = 0;
     vm_ptr* ptr = &ref;
     CALL(system)->destroy(ptr);
     RX_ASSERT(ref == 0);
 }
 /* test init */
-RX_TEST_CASE(tests, test_vm_copy_safe_0, .fixture = test_fixture) {
+RX_TEST_CASE(tests_vm_v1, test_vm_copy_safe_0, .fixture = test_fixture) {
     const char* data = "hello";
     u64 size = strlen(data) + 1;
     u64 virtual_ptr = CALL(pointer)->copy(data, size, size - 1, TYPE_USER);
@@ -106,7 +106,7 @@ RX_TEST_CASE(tests, test_vm_copy_safe_0, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_vm_copy_safe, .fixture = test_fixture_pointer) {
+RX_TEST_CASE(tests_vm_v1, test_vm_copy_safe, .fixture = test_fixture_pointer) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = &rx->ctx;
     const char* data = "hello";
@@ -117,7 +117,7 @@ RX_TEST_CASE(tests, test_vm_copy_safe, .fixture = test_fixture_pointer) {
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_vm_read__address, .fixture = test_fixture_pointer) {
+RX_TEST_CASE(tests_vm_v1, test_vm_read__address, .fixture = test_fixture_pointer) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = &rx->ctx;
     const_pointer_ptr tmp;
@@ -130,7 +130,7 @@ RX_TEST_CASE(tests, test_vm_read__address, .fixture = test_fixture_pointer) {
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_vm_read_type, .fixture = test_fixture_pointer) {
+RX_TEST_CASE(tests_vm_v1, test_vm_read_type, .fixture = test_fixture_pointer) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = &rx->ctx;
     const_pointer_ptr tmp;
@@ -143,7 +143,7 @@ RX_TEST_CASE(tests, test_vm_read_type, .fixture = test_fixture_pointer) {
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_virtual_free_0, .fixture = test_fixture) {
+RX_TEST_CASE(tests_vm_v1, test_virtual_free_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = &rx->ctx;
     CALL(virtual)->free(vm, 0);
@@ -151,7 +151,7 @@ RX_TEST_CASE(tests, test_virtual_free_0, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_vm_free_0, .fixture = test_fixture) {
+RX_TEST_CASE(tests_vm_v1, test_vm_free_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = &rx->ctx;
     CALL(virtual)->free(vm, 1);
@@ -159,7 +159,7 @@ RX_TEST_CASE(tests, test_vm_free_0, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_vm_read_0, .fixture = test_fixture) {
+RX_TEST_CASE(tests_vm_v1, test_vm_read_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = &rx->ctx;
     u64 type_id = CALL(virtual)->type(vm, 1);
@@ -167,19 +167,19 @@ RX_TEST_CASE(tests, test_vm_read_0, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_vm_read_type_0, .fixture = test_fixture) {
+RX_TEST_CASE(tests_vm_v1, test_vm_read_type_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = &rx->ctx;
     const_pointer_ptr ptr = CALL(virtual)->read(vm, 0, 0);
     RX_ASSERT(ptr == 0);
 }
 /* test init */
-RX_TEST_CASE(tests, test_vm_init_0, .fixture = test_fixture) {
+RX_TEST_CASE(tests_vm_v1, test_vm_init_0, .fixture = test_fixture) {
     RX_ASSERT(0 != 1);
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_vm_read_virtual_1, .fixture = test_fixture) {
+RX_TEST_CASE(tests_vm_v1, test_vm_read_virtual_1, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = &rx->ctx;
     const_pointer_ptr ptr = CALL(virtual)->read(vm, 1, TYPE_DATA);
@@ -187,7 +187,7 @@ RX_TEST_CASE(tests, test_vm_read_virtual_1, .fixture = test_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_vm_write_0, .fixture = test_fixture) {
+RX_TEST_CASE(tests_vm_v1, test_vm_write_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr vm = &rx->ctx;
     u64 ptr = CALL(virtual)->alloc(vm, 0, 0);
@@ -218,7 +218,7 @@ RX_TEAR_DOWN(test_pointer_tear_down) {
 RX_FIXTURE(test_pointer_fixture, TEST_POINTER_DATA, .set_up = test_pointer_set_up, .tear_down = test_pointer_tear_down);
 
 /* test init */
-RX_TEST_CASE(tests, test_list, .fixture = test_pointer_fixture) {
+RX_TEST_CASE(tests_vm_v1, test_list, .fixture = test_pointer_fixture) {
     const_vm_ptr vm = CALL(vm)->init(8);
     u64 list_ptr = CALL(stack)->alloc(vm);
     CALL(stack)->free(vm, list_ptr);
@@ -227,7 +227,7 @@ RX_TEST_CASE(tests, test_list, .fixture = test_pointer_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_list_user, .fixture = test_pointer_fixture) {
+RX_TEST_CASE(tests_vm_v1, test_list_user, .fixture = test_pointer_fixture) {
     const_vm_ptr vm = CALL(vm)->init(8);
     u64 list_ptr = CALL(stack)->alloc(vm);
     u64 user_ptr = CALL(user)->alloc(vm);
@@ -239,7 +239,7 @@ RX_TEST_CASE(tests, test_list_user, .fixture = test_pointer_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_list_data, .fixture = test_pointer_fixture) {
+RX_TEST_CASE(tests_vm_v1, test_list_data, .fixture = test_pointer_fixture) {
     const_vm_ptr vm = CALL(vm)->init(8);
     u64 list_ptr = CALL(stack)->alloc(vm);
     u64 data_ptr = CALL(data)->alloc(vm, 1024);
@@ -251,7 +251,7 @@ RX_TEST_CASE(tests, test_list_data, .fixture = test_pointer_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_list_free_user_free, .fixture = test_pointer_fixture) {
+RX_TEST_CASE(tests_vm_v1, test_list_free_user_free, .fixture = test_pointer_fixture) {
     const_vm_ptr vm = CALL(vm)->init(8);
     u64 list_ptr = CALL(stack)->alloc(vm);
     u64 user_ptr = CALL(user)->alloc(vm);
@@ -262,7 +262,7 @@ RX_TEST_CASE(tests, test_list_free_user_free, .fixture = test_pointer_fixture) {
     CALL(vm)->destroy();
 }
 /* test init */
-RX_TEST_CASE(tests, test_user_free_0, .fixture = test_pointer_fixture) {
+RX_TEST_CASE(tests_vm_v1, test_user_free_0, .fixture = test_pointer_fixture) {
     const_vm_ptr vm = CALL(vm)->init(8);
     CALL(user)->free(vm, 0);
     CALL(vm)->gc();
@@ -270,7 +270,7 @@ RX_TEST_CASE(tests, test_user_free_0, .fixture = test_pointer_fixture) {
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_pointer_alloc_virtual_alloc_release, .fixture = test_pointer_fixture) {
+RX_TEST_CASE(tests_vm_v1, test_pointer_alloc_virtual_alloc_release, .fixture = test_pointer_fixture) {
     const_vm_ptr vm = CALL(vm)->init(8);
     u64 ptr_id = CALL(virtual)->alloc(vm, 8, TYPE_USER + 1);
     const_pointer_ptr data_ptr = CALL(virtual)->read(vm, ptr_id, TYPE_USER + 1);
@@ -283,7 +283,7 @@ RX_TEST_CASE(tests, test_pointer_alloc_virtual_alloc_release, .fixture = test_po
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_pointer_alloc_gc_destroy_free_unsafe, .fixture = test_pointer_fixture) {
+RX_TEST_CASE(tests_vm_v1, test_pointer_alloc_gc_destroy_free_unsafe, .fixture = test_pointer_fixture) {
     const_vm_ptr vm = CALL(vm)->init(8);
     u64 ptr_id = CALL(virtual)->alloc(vm, 8, TYPE_DATA);
     CALL(vm)->gc();
@@ -294,7 +294,7 @@ RX_TEST_CASE(tests, test_pointer_alloc_gc_destroy_free_unsafe, .fixture = test_p
     RX_ASSERT(u == 0);
 }
 /* test init */
-RX_TEST_CASE(tests, test_pointer_alloc_release_0gc_destroy_read_type, .fixture = test_pointer_fixture) {
+RX_TEST_CASE(tests_vm_v1, test_pointer_alloc_release_0gc_destroy_read_type, .fixture = test_pointer_fixture) {
     const_vm_ptr vm = CALL(vm)->init(8);
     u64 ptr_id = CALL(virtual)->alloc(vm, 8, TYPE_DATA);
     CALL(pointer)->free(ptr_id, TYPE_DATA);
@@ -305,7 +305,7 @@ RX_TEST_CASE(tests, test_pointer_alloc_release_0gc_destroy_read_type, .fixture =
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_pointer_alloc_gc_destroy_read_type_release_0, .fixture = test_pointer_fixture) {
+RX_TEST_CASE(tests_vm_v1, test_pointer_alloc_gc_destroy_read_type_release_0, .fixture = test_pointer_fixture) {
     const_vm_ptr vm = CALL(vm)->init(8);
     u64 ptr_id = CALL(virtual)->alloc(vm, 8, TYPE_DATA);
     CALL(vm)->gc();
@@ -316,7 +316,7 @@ RX_TEST_CASE(tests, test_pointer_alloc_gc_destroy_read_type_release_0, .fixture 
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_pointer_alloc_destroy_read_type_release_0, .fixture = test_pointer_fixture) {
+RX_TEST_CASE(tests_vm_v1, test_pointer_alloc_destroy_read_type_release_0, .fixture = test_pointer_fixture) {
     const_vm_ptr vm = CALL(vm)->init(8);
     u64 ptr_id = CALL(virtual)->alloc(vm, 8, TYPE_DATA);
     CALL(vm)->release(ptr_id);
@@ -327,7 +327,7 @@ RX_TEST_CASE(tests, test_pointer_alloc_destroy_read_type_release_0, .fixture = t
 }
 
 /* test init */
-RX_TEST_CASE(tests, test_pointer_alloc_alloc_ref_write_gc_destroy_read_type_release_0, .fixture = test_pointer_fixture) {
+RX_TEST_CASE(tests_vm_v1, test_pointer_alloc_alloc_ref_write_gc_destroy_read_type_release_0, .fixture = test_pointer_fixture) {
     const_vm_ptr vm = CALL(vm)->init(8);
     u64 ptr_id = CALL(virtual)->alloc(vm, 8, TYPE_DATA);
     CALL(vm)->release(ptr_id);
@@ -344,10 +344,10 @@ static void run(void) {
 #endif
     /* safe */
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("---- rexo unit test code\n");
+    printf("---- rexo unit test code %s\n", __FILE__);
 #endif
 }
 
-const vm_v1_test_suite PRIVATE_API(vm_v1_test_suite_definitions) = {
+const tests_vm_test_suite PRIVATE_API(tests_vm_test_suite_definitions) = {
     .run = run
 };

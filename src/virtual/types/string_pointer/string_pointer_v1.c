@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 27, 2025 at 4:37:21 PM GMT+3
+ *   March 28, 2025 at 12:50:07 PM GMT+3
  *
  */
 /*
@@ -25,6 +25,9 @@
 */
 
 #include "string_pointer_v1.h"
+
+#define USING_SYSTEM_ERROR_API
+#include "system/error/error_v1.h"
 
 #include "virtual/pointer/pointer_v1.h"
 #include "virtual/virtual/virtual_v1.h"
@@ -55,6 +58,7 @@ static void string_type_destructor(u64 address) {
 /* api */
 static u64 string_free(const_vm_ptr vm, u64 address) {
     if (vm == 0 || *vm == 0) {
+        ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
         return FALSE;
     }
     const_pointer_ptr data_ptr = CALL(virtual)->read(vm, address, TYPE_STRING_POINTER);

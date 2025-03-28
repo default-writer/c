@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 28, 2025 at 10:21:31 AM GMT+3
+ *   March 28, 2025 at 10:20:28 AM GMT+3
  *
  */
 /*
@@ -24,25 +24,25 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#define USING_TESTS_POINTER
+#define USING_TESTS_VM
 
-#ifndef _TEST_POINTER_H_
-#define _TEST_POINTER_H_
+#ifndef _TEST_VM_V1_H_
+#define _TEST_VM_V1_H_
 
 #define USING_STD_API
 #include "std/api.h"
 
-typedef struct PRIVATE_API(test_suite) tests_pointer_suite;
+typedef struct PRIVATE_API(test_suite) tests_vm_test_suite;
 
 /* definition */
-extern const tests_pointer_suite PRIVATE_API(tests_pointer_suite_definitions);
+extern const tests_vm_test_suite PRIVATE_API(tests_vm_test_suite_definitions);
 
 /* definition */
 #ifdef INLINE
-const tests_pointer_suite* tests_pointer_suite = &PRIVATE_API(tests_pointer_suite_definitions);
+const tests_vm_test_suite* tests_vm_test_suite = &PRIVATE_API(tests_vm_test_suite_definitions);
 #else
 /* definition */
-static const tests_pointer_suite* _tests_pointer_suite = &PRIVATE_API(tests_pointer_suite_definitions);
+static const tests_vm_test_suite* _tests_vm_test_suite = &PRIVATE_API(tests_vm_test_suite_definitions);
 #endif
 
-#endif /* _TEST_POINTER_H_ */
+#endif /* _TEST_VM_V1_H_ */

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 14, 2025 at 7:13:41 AM GMT+3
+ *   March 28, 2025 at 10:18:10 AM GMT+3
  *
  */
 /*
@@ -32,17 +32,17 @@
 #define USING_STD_API
 #include "std/api.h"
 
-typedef struct PRIVATE_API(test_suite) memory_micro_test_suite;
+typedef struct PRIVATE_API(test_suite) tests_memory_test_suite;
 
 /* definition */
-extern const memory_micro_test_suite PRIVATE_API(memory_micro_test_suite_definitions);
+extern const tests_memory_test_suite PRIVATE_API(tests_memory_test_suite_definitions);
 
 /* definition */
 #ifdef INLINE
-const memory_micro_test_suite* memory_micro_test_suite = &PRIVATE_API(memory_micro_test_suite_definitions);
+const tests_memory_test_suite* tests_memory_test_suite = &PRIVATE_API(tests_memory_test_suite_definitions);
 #else
 /* definition */
-static const memory_micro_test_suite* _memory_micro_test_suite = &PRIVATE_API(memory_micro_test_suite_definitions);
+static const tests_memory_test_suite* _tests_memory_test_suite = &PRIVATE_API(tests_memory_test_suite_definitions);
 #endif
 
 #endif /* _TEST_MEMORY_H_ */

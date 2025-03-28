@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 27, 2025 at 4:36:30 PM GMT+3
+ *   March 28, 2025 at 12:48:46 PM GMT+3
  *
  */
 /*
@@ -183,18 +183,6 @@ static u64 string_free(const_vm_ptr vm, u64 address) {
     }
     const_pointer_ptr string_data_ptr = CALL(virtual)->read(vm, address, TYPE_STRING);
     if (string_data_ptr != 0) {
-        string_type_destructor(address);
-        return TRUE;
-    }
-    const_pointer_ptr string_pointer_data_ptr = CALL(virtual)->read(vm, address, TYPE_STRING_POINTER);
-    if (string_pointer_data_ptr != 0) {
-        const_string_reference_ptr ref = string_pointer_data_ptr->data;
-        const_pointer_ptr p_ptr = CALL(virtual)->read(vm, ref->address, TYPE_STRING_POINTER);
-        if (p_ptr == 0) {
-            ERROR_INVALID_POINTER(p_ptr == 0);
-            return FALSE;
-        }
-        string_type_destructor(ref->address);
         string_type_destructor(address);
         return TRUE;
     }

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 27, 2025 at 8:03:36 PM GMT+3
+ *   March 28, 2025 at 1:39:48 PM GMT+3
  *
  */
 /*
@@ -126,42 +126,38 @@ static u64 pointer_alloc(const_void_ptr data, u64 size, u64 type_id);
 static u64 pointer_release(u64 ptr);
 static u64 pointer_free(u64 address, u64 type_id);
 static const_void_ptr pointer_read(u64 address, u64 type_id);
-static u64 virtual_enumerator_next(const_vm_ptr vm);
+
 #ifdef USE_MEMORY_DEBUG_INFO
 static void virtual_dump(const_vm_ptr vm);
 static void virtual_dump_ref(const_vm_ptr vm);
 #endif
 
 /* internal */
-static void virtual_enumerator_init(const_vm_ptr vm);
-static void virtual_enumerator_destroy(void);
-static void virtual_enumerator_init_internal(const_vm_ptr vm);
-static void virtual_enumerator_destroy_internal(void);
-static pointer_ptr* virtual_enumerator_next_internal(void);
-#ifdef USE_MEMORY_DEBUG_INFO
-static pointer_ptr virtual_enumerator_pointer_next_internal(void);
-#endif
+static void pointer_ref_enumerator_init_internal(const_vm_ptr vm);
+static void pointer_ref_enumerator_destroy_internal(void);
+static pointer_ptr* pointer_ref_enumerator_next_internal(void);
+static pointer_ptr pointer_enumerator_next_internal(void);
+static u64 pointer_next_internal(const_vm_ptr vm);
 
 /* internal */
 static u64 pointer_alloc_internal(const_void_ptr data, const_pointer_ptr* tmp, u64 size, u64 type_id);
-
 static void known_types_init_internal(u64 type_id, type_methods_definitions_ptr data_type);
 static void user_types_init_internal(type_methods_definitions_ptr data_type);
 static u64 check_existing_type_internal(known_types_ptr current, const_type_methods_definitions_ptr data_type);
 
 /* vm */
-static INIT void vm_init(void);
-static DESTROY void vm_destroy(void);
+static INIT void init(void);
+static DESTROY void destroy(void);
 
 /* internal */
 static u64 known_types_counter = TYPE_USER;
 
 /* implementation */
-static void INIT vm_init(void) {
+static void INIT init(void) {
     /* NOLINT: no constructor logic */
 }
 
-static void DESTROY vm_destroy(void) {
+static void DESTROY destroy(void) {
     while (known_types->next != 0) {
         known_types_ptr prev = known_types->next;
         api->free(known_types);
@@ -193,6 +189,7 @@ static const_vm_ptr pointer_init(u64 size) {
 
 static void pointer_destroy(void) {
     if (vm_list == 0) {
+        ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
         return;
     }
     api->free(default_types);
@@ -204,16 +201,20 @@ static void pointer_destroy(void) {
 }
 
 static void pointer_gc(void) {
+    if (vm_list == 0) {
+        ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
+        return;
+    }
 #ifdef USE_MEMORY_DEBUG_INFO
     virtual_dump_ref(&vm_list);
     virtual_dump(&vm_list);
 #endif
-    virtual_enumerator_init(&vm_list);
+    pointer_ref_enumerator_init_internal(&vm_list);
     u64 ptr = 0;
-    while ((ptr = virtual_enumerator_next(&vm_list)) != 0) {
+    while ((ptr = pointer_next_internal(&vm_list)) != 0) {
         pointer_release(ptr);
     }
-    virtual_enumerator_destroy();
+    pointer_ref_enumerator_destroy_internal();
 }
 
 static void pointer_register_known_type(u64 type_id, type_methods_definitions_ptr data_type) {
@@ -418,24 +419,13 @@ static void pointer_dump_ref(pointer_ptr* ptr) {
 #endif
 
 /* code */
-static void virtual_enumerator_init(const_vm_ptr vm) {
-    if (vm == 0 || *vm == 0) {
-        return;
-    }
-    virtual_enumerator_init_internal(vm);
-}
-
-static void virtual_enumerator_destroy(void) {
-    virtual_enumerator_destroy_internal();
-}
-
-static void virtual_enumerator_init_internal(const_vm_ptr vm) {
+static void pointer_ref_enumerator_init_internal(const_vm_ptr vm) {
     virtual_pointer_ptr vptr = (*vm)->next;
     state->vptr = vptr;
     state->ref = vptr->bp;
 }
 
-static void virtual_enumerator_destroy_internal(void) {
+static void pointer_ref_enumerator_destroy_internal(void) {
     state->vptr = 0;
     state->ref = 0;
 }
@@ -443,32 +433,24 @@ static void virtual_enumerator_destroy_internal(void) {
 /* implementation */
 #ifdef USE_MEMORY_DEBUG_INFO
 static void virtual_dump(const_vm_ptr vm) {
-    if (vm == 0 || *vm == 0) {
-        return;
-    }
-    virtual_enumerator_init_internal(vm);
+    pointer_ref_enumerator_init_internal(vm);
     pointer_ptr ptr = 0;
-    while ((ptr = virtual_enumerator_pointer_next_internal()) != 0) {
+    while ((ptr = pointer_enumerator_next_internal()) != 0) {
         pointer_dump(ptr);
     }
-    virtual_enumerator_destroy_internal();
+    pointer_ref_enumerator_destroy_internal();
 }
 
 static void virtual_dump_ref(const_vm_ptr vm) {
-    if (vm == 0 || *vm == 0) {
-        return;
-    }
-    virtual_enumerator_init_internal(vm);
+    pointer_ref_enumerator_init_internal(vm);
     pointer_ptr* ref = 0;
-    while ((ref = virtual_enumerator_next_internal()) != 0) {
+    while ((ref = pointer_ref_enumerator_next_internal()) != 0) {
         pointer_dump_ref(ref);
     }
-    virtual_enumerator_destroy_internal();
+    pointer_ref_enumerator_destroy_internal();
 }
-#endif
 
-#ifdef USE_MEMORY_DEBUG_INFO
-static pointer_ptr virtual_enumerator_pointer_next_internal(void) {
+static pointer_ptr pointer_enumerator_next_internal(void) {
     pointer_ptr data = 0;
     virtual_pointer_ptr vptr = state->vptr;
     while (data == 0) {
@@ -486,14 +468,10 @@ static pointer_ptr virtual_enumerator_pointer_next_internal(void) {
 }
 #endif
 
-static u64 virtual_enumerator_next(const_vm_ptr vm) {
-    if (vm == 0 || *vm == 0) {
-        ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
-        return FALSE;
-    }
+static u64 pointer_next_internal(const_vm_ptr vm) {
     u64 address = 0;
     pointer_ptr* ref;
-    while ((ref = virtual_enumerator_next_internal()) != 0) {
+    while ((ref = pointer_ref_enumerator_next_internal()) != 0) {
         if (*ref != 0) {
             const_pointer_ptr const_ptr = *ref;
             if (const_ptr != 0) {
@@ -509,7 +487,7 @@ static u64 virtual_enumerator_next(const_vm_ptr vm) {
     return address;
 }
 
-static pointer_ptr* virtual_enumerator_next_internal(void) {
+static pointer_ptr* pointer_ref_enumerator_next_internal(void) {
     pointer_ptr* ref = 0;
     virtual_pointer_ptr vptr = state->vptr;
     while (ref == 0) {

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 27, 2025 at 4:59:58 PM GMT+3
+ *   March 28, 2025 at 1:44:35 PM GMT+3
  *
  */
 /*
@@ -72,8 +72,8 @@ static void virtual_destroy(const_vm_ptr vm);
 
 static u64 virtual_alloc(const_vm_ptr vm, u64 size, u64 type_id);
 static const_pointer_ptr virtual_read(const_vm_ptr vm, u64 address, u64 type_id);
-static u64 virtual_read_type(const_vm_ptr vm, u64 address);
-static void virtual_free(const_vm_ptr vm, u64 address);
+static u64 virtual_type(const_vm_ptr vm, u64 address);
+static u64 virtual_free(const_vm_ptr vm, u64 address);
 
 /* internal */
 static u64 virtual_alloc_internal(virtual_pointer_ptr* tail, u64 size, u64 type_id);
@@ -108,11 +108,7 @@ static u64 virtual_alloc_internal(virtual_pointer_ptr* tail, u64 size, u64 type_
     }
 #endif
     u64 address = (u64)(tmp - vptr->bp) + vptr->offset + 1;
-    // void* data = CALL(system_memory)->alloc(size);
     src = api->alloc(1, POINTER_TYPE_SIZE);
-    //*src = (pointer_type) {
-    //    .data = data
-    //};
     safe_pointer_ptr safe_ptr;
     safe_ptr.const_ptr = src;
     pointer_ptr ptr = safe_ptr.ptr;
@@ -170,6 +166,7 @@ static void virtual_init(const_vm_ptr vm, u64 size) {
 
 static void virtual_destroy(const_vm_ptr vm) {
     if (vm == 0 || *vm == 0) {
+        ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
         return;
     }
 #ifndef USE_GC
@@ -238,7 +235,7 @@ static const_pointer_ptr virtual_read(const_vm_ptr vm, u64 address, u64 type_id)
     return ptr;
 }
 
-static u64 virtual_read_type(const_vm_ptr vm, u64 address) {
+static u64 virtual_type(const_vm_ptr vm, u64 address) {
     if (vm == 0 || *vm == 0) {
         ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
         return FALSE;
@@ -269,17 +266,18 @@ static u64 virtual_read_type(const_vm_ptr vm, u64 address) {
     return type;
 }
 
-static void virtual_free(const_vm_ptr vm, u64 address) {
+static u64 virtual_free(const_vm_ptr vm, u64 address) {
     if (vm == 0 || *vm == 0) {
-        return;
+        ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
+        return FALSE;
     }
     if (address == 0) {
-        return;
+        return FALSE;
     }
     const_virtual_pointer_ptr const_vptr = (*vm)->next;
     const_pointer_ptr ptr = virtual_read_internal(const_vptr, address);
     if (ptr == 0) {
-        return;
+        return FALSE;
     }
     virtual_pointer_ptr vptr = ptr->vptr;
     if (address > vptr->offset && address <= vptr->offset + DEFAULT_SIZE) {
@@ -295,6 +293,7 @@ static void virtual_free(const_vm_ptr vm, u64 address) {
 #endif
         vptr->bp[offset] = 0;
     }
+    return TRUE;
 }
 
 static u64 virtual_alloc(const_vm_ptr vm, u64 size, u64 type_id) {
@@ -318,7 +317,7 @@ static u64 virtual_alloc(const_vm_ptr vm, u64 size, u64 type_id) {
 const virtual_methods PRIVATE_API(virtual_methods_definitions) = {
     .alloc = virtual_alloc,
     .read = virtual_read,
-    .type = virtual_read_type,
+    .type = virtual_type,
     .free = virtual_free
 };
 

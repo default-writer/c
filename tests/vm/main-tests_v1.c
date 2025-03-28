@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 20, 2025 at 7:09:41 PM GMT+3
+ *   March 28, 2025 at 10:27:51 AM GMT+3
  *
  */
 /*
@@ -56,19 +56,21 @@ static void INIT init() {
 #ifdef USE_MEMORY_DEBUG_INFO
 int main(int argc, const char** argv) {
     init_statistics();
-    TEST_RUN(_memory_micro_test_suite);
-    TEST_RUN(_list_micro_test_suite);
-    TEST_RUN(_vm_v1_test_suite);
-    TEST_RUN(_pointer_test_suite);
+    TEST_RUN(_tests_memory_test_suite);
+    TEST_RUN(_tests_list_test_suite);
+    TEST_RUN(_tests_vm_test_suite);
+    TEST_RUN(_tests_pointer_suite);
+    TEST_RUN(_tests_hashtable_test_suite);
     result_statistics();
     return rx_main(0, NULL, argc, argv) == RX_SUCCESS ? 0 : 1;
 }
 #else
 int main(int argc, const char** argv) {
-    TEST_RUN(_memory_micro_test_suite);
-    TEST_RUN(_list_micro_test_suite);
-    TEST_RUN(_vm_v1_test_suite);
-    TEST_RUN(_pointer_test_suite);
+    TEST_RUN(_tests_memory_test_suite);
+    TEST_RUN(_tests_list_test_suite);
+    TEST_RUN(_tests_vm_test_suite);
+    TEST_RUN(_tests_pointer_suite);
+    TEST_RUN(_tests_hashtable_test_suite);
     return rx_main(0, NULL, argc, argv) == RX_SUCCESS ? 0 : 1;
 }
 #endif

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 14, 2025 at 7:12:18 AM GMT+3
+ *   March 28, 2025 at 10:58:10 AM GMT+3
  *
  */
 /*
@@ -24,25 +24,26 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#define USING_TESTS_VM
-
-#ifndef _TEST_VM_V1_H_
-#define _TEST_VM_V1_H_
+#ifndef _VIRTUAL_HASHTABLE_V1_H_
+#define _VIRTUAL_HASHTABLE_V1_H_
 
 #define USING_STD_API
 #include "std/api.h"
 
-typedef struct PRIVATE_API(test_suite) vm_v1_test_suite;
+#include "virtual/export.h"
+
+#define HASHTABLE_INITIAL_CAPACITY 16
+#define HASHTABLE_LOAD_FACTOR 0.75
+
+typedef struct PRIVATE_API(virtual_hashtable_methods) {
+    hashtable_ptr (*init)(void);
+    hashentry_ptr (*insert)(hashtable_ptr ht, u64 key, const_void_ptr value);
+    const_void_ptr (*get)(hashtable_ptr ht, u64 key);
+    u64 (*remove)(hashtable_ptr ht, u64 key);
+    void (*destroy)(hashtable_ptr ht);
+} virtual_hashtable_methods;
 
 /* definition */
-extern const vm_v1_test_suite PRIVATE_API(vm_v1_test_suite_definitions);
+CVM_EXPORT extern const virtual_hashtable_methods* CALL(hashtable);
 
-/* definition */
-#ifdef INLINE
-const vm_v1_test_suite* vm_v1_test_suite = &PRIVATE_API(vm_v1_test_suite_definitions);
-#else
-/* definition */
-static const vm_v1_test_suite* _vm_v1_test_suite = &PRIVATE_API(vm_v1_test_suite_definitions);
-#endif
-
-#endif /* _TEST_VM_V1_H_ */
+#endif /* _VIRTUAL_HASHTABLE_V1_H_ */

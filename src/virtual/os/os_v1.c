@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 27, 2025 at 3:32:33 PM GMT+3
+ *   March 28, 2025 at 7:49:54 AM GMT+3
  *
  */
 /*
@@ -81,14 +81,14 @@ static u64 os_putc(const_vm_ptr vm, u64 ptr) {
 }
 
 /* public */
-const system_os_methods PRIVATE_API(system_os_methods_definitions) = {
+const virtual_os_methods PRIVATE_API(virtual_os_methods_definitions) = {
     .getenv = os_getenv,
     .getcwd = os_getcwd,
     .putc = os_putc
 };
 
-const system_os_methods* os = &PRIVATE_API(system_os_methods_definitions);
+const virtual_os_methods* os = &PRIVATE_API(virtual_os_methods_definitions);
 
-const system_os_methods* CALL(os) {
+const virtual_os_methods* CALL(os) {
     return os;
 }

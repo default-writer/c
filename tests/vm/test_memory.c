@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 22, 2025 at 8:45:34 AM GMT+3
+ *   March 28, 2025 at 10:49:23 AM GMT+3
  *
  */
 /*
@@ -105,7 +105,7 @@ RX_TEAR_DOWN(test_tear_down) {
 RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tear_down);
 
 /* test init */
-RX_TEST_CASE(memory_micro_tests, test_empty_memory_count_equals_0, .fixture = test_fixture) {
+RX_TEST_CASE(tests_memory_v1, test_empty_memory_count_equals_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* ensures counter is initialized to 0 */
@@ -113,7 +113,7 @@ RX_TEST_CASE(memory_micro_tests, test_empty_memory_count_equals_0, .fixture = te
 }
 
 /* test case */
-RX_TEST_CASE(memory_micro_tests, test_alloc_0, .fixture = test_fixture) {
+RX_TEST_CASE(tests_memory_v1, test_alloc_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* pushed to the list */
@@ -125,7 +125,7 @@ RX_TEST_CASE(memory_micro_tests, test_alloc_0, .fixture = test_fixture) {
 }
 
 /* test case */
-RX_TEST_CASE(memory_micro_tests, test_api_alloc_ret_0, .fixture = test_fixture) {
+RX_TEST_CASE(tests_memory_v1, test_api_alloc_ret_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* backup api calls */
@@ -143,7 +143,7 @@ RX_TEST_CASE(memory_micro_tests, test_api_alloc_ret_0, .fixture = test_fixture) 
 }
 
 /* test case */
-RX_TEST_CASE(memory_micro_tests, test_api_free_0, .fixture = test_fixture) {
+RX_TEST_CASE(tests_memory_v1, test_api_free_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* backup api calls */
@@ -159,7 +159,7 @@ RX_TEST_CASE(memory_micro_tests, test_api_free_0, .fixture = test_fixture) {
 }
 
 /* test case */
-RX_TEST_CASE(memory_micro_tests, test_api_free_size_0, .fixture = test_fixture) {
+RX_TEST_CASE(tests_memory_v1, test_api_free_size_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* backup api calls */
@@ -175,7 +175,7 @@ RX_TEST_CASE(memory_micro_tests, test_api_free_size_0, .fixture = test_fixture) 
 }
 
 /* test case */
-RX_TEST_CASE(memory_micro_tests, test_api_alloc_free_8, .fixture = test_fixture) {
+RX_TEST_CASE(tests_memory_v1, test_api_alloc_free_8, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     uint64_t expected_pattern = 0xefefefefefefefef;
@@ -198,7 +198,7 @@ RX_TEST_CASE(memory_micro_tests, test_api_alloc_free_8, .fixture = test_fixture)
 }
 
 /* test case */
-RX_TEST_CASE(memory_micro_tests, test_alloc_free_debug, .fixture = test_fixture) {
+RX_TEST_CASE(tests_memory_v1, test_alloc_free_debug, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     uint64_t expected_pattern = 0xfefefefefefefefe;
@@ -228,7 +228,7 @@ RX_TEST_CASE(memory_micro_tests, test_alloc_free_debug, .fixture = test_fixture)
 }
 
 /* test case */
-RX_TEST_CASE(memory_micro_tests, test_realloc_0_0, .fixture = test_fixture) {
+RX_TEST_CASE(tests_memory_v1, test_realloc_0_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* pushed to the list */
@@ -242,7 +242,7 @@ RX_TEST_CASE(memory_micro_tests, test_realloc_0_0, .fixture = test_fixture) {
 }
 
 /* test case */
-RX_TEST_CASE(memory_micro_tests, test_realloc_0_ptr, .fixture = test_fixture) {
+RX_TEST_CASE(tests_memory_v1, test_realloc_0_ptr, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* pushed to the list */
@@ -256,7 +256,7 @@ RX_TEST_CASE(memory_micro_tests, test_realloc_0_ptr, .fixture = test_fixture) {
 }
 
 /* test case */
-RX_TEST_CASE(memory_micro_tests, test_alloc_free, .fixture = test_fixture) {
+RX_TEST_CASE(tests_memory_v1, test_alloc_free, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     stack_ptr element = CALL(system_memory)->alloc(sizeof(stack_element_type));
@@ -267,10 +267,10 @@ RX_TEST_CASE(memory_micro_tests, test_alloc_free, .fixture = test_fixture) {
 
 static void run(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("---- rexo unit test code\n");
+    printf("---- rexo unit test code %s\n", __FILE__);
 #endif
 }
 
-const memory_micro_test_suite PRIVATE_API(memory_micro_test_suite_definitions) = {
+const tests_memory_test_suite PRIVATE_API(tests_memory_test_suite_definitions) = {
     .run = run
 };
