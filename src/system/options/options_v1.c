@@ -30,10 +30,11 @@
 #define DEFAULT_SIZE 0x8 /* 8 */
 
 /* public */
-const options_methods PRIVATE_API(system_options_methods_definitions) = {
+const system_options_methods PRIVATE_API(system_options_methods_definitions) = {
     .size = DEFAULT_SIZE
 };
 
-const options_methods* CALL(system_options) {
-    return &PRIVATE_API(system_options_methods_definitions);
+const system_options_methods* PRIVATE_API(options) = &PRIVATE_API(system_options_methods_definitions);
+const system_options_methods* CALL(options) {
+    return PRIVATE_API(options);
 }

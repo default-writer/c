@@ -44,4 +44,7 @@
 #define USING_TESTS_HASHTABLE
 #include "test_hashtable.h"
 
+#define USING_TESTS_API
+#include "test_api.h"
+
 #endif /* _MAIN_TESTS_V1_H_ */

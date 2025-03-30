@@ -37,8 +37,8 @@
  */
 
 typedef struct PRIVATE_API(virtual_user_methods) {
-    u64 (*alloc)(const_vm_ptr vm);
-    u64 (*free)(const_vm_ptr vm, u64 ptr);
+    u64 (*alloc)(const_vm_ptr cvm);
+    u64 (*free)(const_vm_ptr cvm, u64 ptr);
 } virtual_user_methods;
 
 /* definition */

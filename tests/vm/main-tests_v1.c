@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 28, 2025 at 10:27:51 AM GMT+3
+ *   March 28, 2025 at 4:58:15 PM GMT+3
  *
  */
 /*
@@ -27,8 +27,8 @@
 #define USING_MAIN_TESTS
 #include "main-tests_v1.h"
 
-#define USING_api
-#include "system/api/api_v1.h"
+#define USING_API
+#include "system/os/os_v1.h"
 
 #include "system/info/info_v1.h"
 
@@ -43,8 +43,8 @@ const char* commit = GIT_COMMIT_HASH;
 
 static void INIT init() {
 #ifdef GIT_COMMIT_HASH
-    printf("version: v%s\n", CALL(system_info)->version);
-    time_t unix_timestamp = (time_t)CALL(system_info)->timestamp;
+    printf("version: v%s\n", CALL(info)->version);
+    time_t unix_timestamp = (time_t)CALL(info)->timestamp;
     struct tm timeinfo;
     localtime_r(&unix_timestamp, &timeinfo);
     char buffer[160];
@@ -61,6 +61,7 @@ int main(int argc, const char** argv) {
     TEST_RUN(_tests_vm_test_suite);
     TEST_RUN(_tests_pointer_suite);
     TEST_RUN(_tests_hashtable_test_suite);
+    TEST_RUN(_tests_api_test_suite);
     result_statistics();
     return rx_main(0, NULL, argc, argv) == RX_SUCCESS ? 0 : 1;
 }
@@ -71,6 +72,7 @@ int main(int argc, const char** argv) {
     TEST_RUN(_tests_vm_test_suite);
     TEST_RUN(_tests_pointer_suite);
     TEST_RUN(_tests_hashtable_test_suite);
+    TEST_RUN(_tests_api_test_suite);
     return rx_main(0, NULL, argc, argv) == RX_SUCCESS ? 0 : 1;
 }
 #endif

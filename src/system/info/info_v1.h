@@ -42,6 +42,6 @@ typedef struct PRIVATE_API(system_info_methods) {
 } system_info_methods;
 
 /* definition */
-CSYS_EXPORT extern const system_info_methods* CALL(system_info);
+CSYS_EXPORT extern const system_info_methods* CALL(info);
 
 #endif /* _SYSTEM_INFO_H_ */

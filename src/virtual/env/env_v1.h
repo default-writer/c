@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 28, 2025 at 4:54:24 PM GMT+3
+ *   March 28, 2025 at 7:49:54 AM GMT+3
  *
  */
 /*
@@ -24,29 +24,25 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "api_v1.h"
+#ifndef _VIRTUAL_ENV_V1_H_
+#define _VIRTUAL_ENV_V1_H_
 
-/* api */
-const system_error_methods* PUBLIC_API(error) {
-    return CALL(error);
-}
+#define USING_STD_API
+#include "std/api.h"
 
-const system_info_methods* PUBLIC_API(info) {
-    return CALL(info);
-}
+#include "virtual/export.h"
 
-const system_list_methods* PUBLIC_API(list) {
-    return CALL(list);
-}
+/*! @file env_v1.h
+ *  @brief C API / env
+ */
 
-const system_memory_methods* PUBLIC_API(memory) {
-    return CALL(memory);
-}
+typedef struct PRIVATE_API(virtual_env_methods) {
+    u64 (*getenv)(const_vm_ptr cvm, u64 name);
+    u64 (*getcwd)(const_vm_ptr cvm);
+    u64 (*putc)(const_vm_ptr cvm, u64 ptr);
+} virtual_env_methods;
 
-const system_options_methods* PUBLIC_API(options) {
-    return CALL(options);
-}
+/* definition */
+CVM_EXPORT extern const virtual_env_methods* CALL(env);
 
-const system_os_methods* PUBLIC_API(os) {
-    return CALL(os);
-}
+#endif /* _VIRTUAL_ENV_V1_H_ */

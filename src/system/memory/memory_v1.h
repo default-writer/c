@@ -39,16 +39,16 @@ CSYS_EXPORT extern void init_statistics(void);
 CSYS_EXPORT extern void result_statistics(void);
 #endif
 
-typedef struct PRIVATE_API(memory_methods) {
+typedef struct PRIVATE_API(system_memory_methods) {
     void* (*alloc)(u64 size);
     void* (*realloc)(const_void_ptr const_ptr, u64 size, u64 new_size);
     void (*free)(const_void_ptr const_ptr, u64 size);
 #ifdef USE_MEMORY_CLEANUP
     void (*set)(void* dest, u8 c, u64 count);
 #endif
-} memory_methods;
+} system_memory_methods;
 
 /* definition */
-CSYS_EXPORT extern const memory_methods* CALL(system_memory);
+CSYS_EXPORT extern const system_memory_methods* CALL(memory);
 
 #endif /* _SYSTEM_MEMORY_H_ */

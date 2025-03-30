@@ -45,15 +45,19 @@ typedef struct PRIVATE_API(virtual_pointer_methods) {
 
 typedef struct PRIVATE_API(virtual_vm_methods) {
     const_vm_ptr (*init)(u64 size);
-    void (*destroy)(void);
     void (*gc)(void);
+    u64 (*release)(u64 ptr);
+    void (*destroy)(void);
+} virtual_vm_methods;
+
+typedef struct PRIVATE_API(virtual_type_methods) {
     void (*register_known_type)(u64 type_id, type_methods_definitions_ptr data_type);
     void (*register_user_type)(type_methods_definitions_type* data_type_builder);
-    u64 (*release)(u64 ptr);
-} virtual_vm_methods;
+} virtual_type_methods;
 
 /* definition */
 CVM_EXPORT extern const virtual_pointer_methods* CALL(pointer);
 CVM_EXPORT extern const virtual_vm_methods* CALL(vm);
+CVM_EXPORT extern const virtual_type_methods* CALL(type);
 
 #endif /* _VIRTUAL_POINTER_V1_H_ */

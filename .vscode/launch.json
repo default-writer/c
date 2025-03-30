@@ -5,9 +5,32 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "(gdb) main-tests-vm1",
+      "name": "python/c++",
+      "type": "pythoncpp",
+      "request": "launch",
+      "pythonLaunchName": "python",
+      "cppAttachName": "c++",
+    },
+    {
+      "name": "c++",
       "type": "cppdbg",
-      "preLaunchTask": "CMake: build",
+      "request": "attach",
+      "program": "${workspaceFolder}/cmake/main-tests-vm1",
+      "processId": ""
+    },
+    {
+      "preLaunchTask": "shell: cmake",
+      "name": "python",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/examples/python/main.py",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+    },
+    {
+      "preLaunchTask": "cmake: build",
+      "name": "gdb",
+      "type": "cppdbg",
       "request": "launch",
       "program": "${workspaceFolder}/cmake/main-tests-vm1",
       "args": [],
@@ -30,9 +53,10 @@
       ]
     },
     {
+      "preLaunchTask": "shell: coverage",
+      "name": "coverage",
       "type": "cppdbg",
       "request": "launch",
-      "name": "debug-v6",
       "program": "${workspaceFolder}/build/coverage-v6/main-tests-vm1",
       "args": [],
       "stopAtEntry": false,
@@ -47,7 +71,6 @@
           "ignoreFailures": true
         }
       ],
-      "preLaunchTask": "build-v6"
     },
     {
       "type": "bashdb",

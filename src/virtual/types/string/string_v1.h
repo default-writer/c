@@ -37,29 +37,29 @@
  */
 
 typedef struct API(virtual_string_methods) {
-    u64 (*free)(const_vm_ptr vm, u64 ptr);
-    u64 (*copy)(const_vm_ptr vm, u64 ptr);
-    u64 (*strcpy)(const_vm_ptr vm, u64 dest, u64 src);
-    u64 (*strcat)(const_vm_ptr vm, u64 dest, u64 src);
-    u64 (*strrchr)(const_vm_ptr vm, u64 src_ptr, u64 match_prt);
-    u64 (*strchr)(const_vm_ptr vm, u64 src_ptr, u64 match_prt);
-    u64 (*match)(const_vm_ptr vm, u64 src_ptr, u64 match_prt);
-    u64 (*offset)(const_vm_ptr vm, u64 src_ptr, u64 match_prt);
-    u64 (*load)(const_vm_ptr vm, const char* data);
-    u64 (*put_char)(const_vm_ptr vm, u64 ptr, char value);
-    char* (*unsafe)(const_vm_ptr vm, u64 ptr);
-    u64 (*size)(const_vm_ptr vm, u64 ptr);
-    u64 (*lessthan)(const_vm_ptr vm, u64 src, u64 dest);
-    u64 (*greaterthan)(const_vm_ptr vm, u64 src, u64 dest);
-    u64 (*equals)(const_vm_ptr vm, u64 src, u64 dest);
-    u64 (*compare)(const_vm_ptr vm, u64 src, u64 dest);
-    u64 (*left)(const_vm_ptr vm, u64 src, u64 offset);
-    u64 (*strncpy)(const_vm_ptr vm, u64 src, u64 nbytes);
-    u64 (*left_strncpy)(const_vm_ptr vm, u64 src, u64 offset);
-    u64 (*right)(const_vm_ptr vm, u64 src, u64 offset);
-    u64 (*move_left)(const_vm_ptr vm, u64 src, u64 nbytes);
-    u64 (*move_right)(const_vm_ptr vm, u64 src, u64 nbytes);
-    u64 (*strcmp)(const_vm_ptr vm, u64 src, u64 dest);
+    u64 (*free)(const_vm_ptr cvm, u64 ptr);
+    u64 (*copy)(const_vm_ptr cvm, u64 ptr);
+    u64 (*strcpy)(const_vm_ptr cvm, u64 dest, u64 src);
+    u64 (*strcat)(const_vm_ptr cvm, u64 dest, u64 src);
+    u64 (*strrchr)(const_vm_ptr cvm, u64 src_ptr, u64 match_prt);
+    u64 (*strchr)(const_vm_ptr cvm, u64 src_ptr, u64 match_prt);
+    u64 (*match)(const_vm_ptr cvm, u64 src_ptr, u64 match_prt);
+    u64 (*offset)(const_vm_ptr cvm, u64 src_ptr, u64 match_prt);
+    u64 (*load)(const_vm_ptr cvm, const char* data);
+    u64 (*put_char)(const_vm_ptr cvm, u64 ptr, char value);
+    char* (*unsafe)(const_vm_ptr cvm, u64 ptr);
+    u64 (*size)(const_vm_ptr cvm, u64 ptr);
+    u64 (*lessthan)(const_vm_ptr cvm, u64 src, u64 dest);
+    u64 (*greaterthan)(const_vm_ptr cvm, u64 src, u64 dest);
+    u64 (*equals)(const_vm_ptr cvm, u64 src, u64 dest);
+    u64 (*compare)(const_vm_ptr cvm, u64 src, u64 dest);
+    u64 (*left)(const_vm_ptr cvm, u64 src, u64 offset);
+    u64 (*strncpy)(const_vm_ptr cvm, u64 src, u64 nbytes);
+    u64 (*left_strncpy)(const_vm_ptr cvm, u64 src, u64 offset);
+    u64 (*right)(const_vm_ptr cvm, u64 src, u64 offset);
+    u64 (*move_left)(const_vm_ptr cvm, u64 src, u64 nbytes);
+    u64 (*move_right)(const_vm_ptr cvm, u64 src, u64 nbytes);
+    u64 (*strcmp)(const_vm_ptr cvm, u64 src, u64 dest);
 } virtual_string_methods;
 
 /* definition */

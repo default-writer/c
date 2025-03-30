@@ -33,15 +33,15 @@
 #include "virtual/export.h"
 
 typedef struct PRIVATE_API(virtual_methods) {
-    u64 (*alloc)(const_vm_ptr vm, u64 size, u64 type_id);
-    const_pointer_ptr (*read)(const_vm_ptr vm, u64 address, u64 type_id);
-    u64 (*type)(const_vm_ptr vm, u64 address);
-    u64 (*free)(const_vm_ptr vm, u64 address);
+    u64 (*alloc)(const_vm_ptr cvm, u64 size, u64 type_id);
+    const_pointer_ptr (*read)(const_vm_ptr cvm, u64 address, u64 type_id);
+    u64 (*type)(const_vm_ptr cvm, u64 address);
+    u64 (*free)(const_vm_ptr cvm, u64 address);
 } virtual_methods;
 
 typedef struct PRIVATE_API(virtual_system_methods) {
-    void (*init)(const_vm_ptr vm, u64 size);
-    void (*destroy)(const_vm_ptr vm);
+    void (*init)(const_vm_ptr cvm, u64 size);
+    void (*destroy)(const_vm_ptr cvm);
 } virtual_system_methods;
 
 /* definition */

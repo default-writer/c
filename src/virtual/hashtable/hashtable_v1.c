@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 28, 2025 at 11:35:14 AM GMT+3
+ *   March 28, 2025 at 4:58:16 PM GMT+3
  *
  */
 /*
@@ -26,7 +26,7 @@
 
 #include "hashtable_v1.h"
 
-#include "system/api/api_v1.h"
+#include "system/os/os_v1.h"
 
 #define HASHTABLE_TYPE_SIZE sizeof(hashtable_type)
 #define HASHENTRY_TYPE_SIZE sizeof(hashentry_type)
@@ -50,18 +50,18 @@ u64 hashtable_function_internal(u64 key) {
 }
 
 u64 hashtable_resize_internal(hashtable_ptr ht) {
-    ht->table = (hashentry_ptr*)api->realloc(ht->table, HASHENTRY_PTR_ARRAY_SIZE(ht->capacity * 2));
-    api->memset(ht->table + ht->size, 0x00, 8 * (u64)((double)ht->capacity * (2 - HASHTABLE_LOAD_FACTOR)));
+    ht->table = (hashentry_ptr*)CALL(os)->realloc(ht->table, HASHENTRY_PTR_ARRAY_SIZE(ht->capacity * 2));
+    CALL(os)->memset(ht->table + ht->size, 0x00, 8 * (u64)((double)ht->capacity * (2 - HASHTABLE_LOAD_FACTOR)));
     ht->capacity = ht->capacity * 2;
     return TRUE;
 }
 
 /* implementation */
 hashtable_ptr hashtable_init() {
-    hashtable_ptr ht = (hashtable_ptr)api->alloc(1, HASHTABLE_TYPE_SIZE);
+    hashtable_ptr ht = (hashtable_ptr)CALL(os)->alloc(1, HASHTABLE_TYPE_SIZE);
     ht->capacity = HASHTABLE_INITIAL_CAPACITY;
     ht->size = 0;
-    ht->table = (hashentry_ptr*)api->alloc(ht->capacity, HASHENTRY_PTR_SIZE);
+    ht->table = (hashentry_ptr*)CALL(os)->alloc(ht->capacity, HASHENTRY_PTR_SIZE);
     return ht;
 }
 
@@ -73,7 +73,7 @@ hashentry_ptr hashtable_insert(hashtable_ptr ht, u64 key, const_void_ptr value) 
         hashtable_resize_internal(ht);
     }
     u64 index = hashtable_function_internal(key);
-    hashentry_ptr entry = api->alloc(1, HASHENTRY_TYPE_SIZE);
+    hashentry_ptr entry = CALL(os)->alloc(1, HASHENTRY_TYPE_SIZE);
     *entry = (hashentry_type) {
         .key = key,
         .value = value,
@@ -113,7 +113,7 @@ u64 hashtable_remove(hashtable_ptr ht, u64 key) {
             } else {
                 ht->table[index] = entry->next;
             }
-            api->free(entry);
+            CALL(os)->free(entry);
             ht->size--;
             return TRUE;
         }
@@ -130,12 +130,12 @@ void hashtable_destroy(hashtable_ptr ht) {
         hashentry_ptr entry = ht->table[i];
         while (entry != NULL) {
             hashentry_ptr next = entry->next;
-            api->free(entry);
+            CALL(os)->free(entry);
             entry = next;
         }
     }
-    api->free(ht->table);
-    api->free(ht);
+    CALL(os)->free(ht->table);
+    CALL(os)->free(ht);
 }
 
 /* public */
@@ -147,7 +147,7 @@ const virtual_hashtable_methods PRIVATE_API(virtual_hashtable_methods_definition
     .destroy = hashtable_destroy
 };
 
-const virtual_hashtable_methods* hashtable = &PRIVATE_API(virtual_hashtable_methods_definitions);
+const virtual_hashtable_methods* PRIVATE_API(hashtable) = &PRIVATE_API(virtual_hashtable_methods_definitions);
 const virtual_hashtable_methods* CALL(hashtable) {
-    return hashtable;
+    return PRIVATE_API(hashtable);
 }

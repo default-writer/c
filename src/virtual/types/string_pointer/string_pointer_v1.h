@@ -37,7 +37,7 @@
  */
 
 typedef struct PRIVATE_API(virtual_string_pointer_methods) {
-    u64 (*free)(const_vm_ptr vm, u64 ptr);
+    u64 (*free)(const_vm_ptr cvm, u64 ptr);
 } virtual_string_pointer_methods;
 
 /* definition */
