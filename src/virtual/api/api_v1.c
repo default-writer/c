@@ -27,26 +27,50 @@
 #include "api_v1.h"
 
 /* api */
-const system_error_methods* PUBLIC_API(error) {
-    return CALL(error);
+const virtual_vm_methods* PUBLIC_API(vm) {
+    return CALL(vm);
 }
 
-const system_info_methods* PUBLIC_API(info) {
-    return CALL(info);
+const virtual_methods* PUBLIC_API(virtual) {
+    return CALL(virtual);
 }
 
-const system_list_methods* PUBLIC_API(list) {
-    return CALL(list);
+const virtual_pointer_methods* PUBLIC_API(pointer) {
+    return CALL(pointer);
 }
 
-const system_memory_methods* PUBLIC_API(memory) {
-    return CALL(memory);
+const virtual_env_methods* PUBLIC_API(env) {
+    return CALL(env);
 }
 
-const system_options_methods* PUBLIC_API(options) {
-    return CALL(options);
+const virtual_hashtable_methods* PUBLIC_API(hashtable) {
+    return CALL(hashtable);
 }
 
-const system_os_methods* PUBLIC_API(os) {
-    return CALL(os);
+const virtual_data_methods* PUBLIC_API(data) {
+    return CALL(data);
+}
+
+const virtual_file_methods* PUBLIC_API(file) {
+    return CALL(file);
+}
+
+const virtual_object_methods* PUBLIC_API(object) {
+    return CALL(object);
+}
+
+const virtual_stack_methods* PUBLIC_API(stack) {
+    return CALL(stack);
+}
+
+const virtual_string_methods* PUBLIC_API(string) {
+    return CALL(string);
+}
+
+const virtual_string_pointer_methods* PUBLIC_API(string_pointer) {
+    return CALL(string_pointer);
+}
+
+const virtual_user_methods* PUBLIC_API(user) {
+    return CALL(user);
 }

@@ -2,7 +2,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build-v6",
+            "label": "shell: coverage",
             "type": "shell",
             "command": "${workspaceFolder}/bin/coverage.sh",
             "problemMatcher": [],
@@ -17,8 +17,23 @@
             }
         },
         {
+            "label": "shell: cmake",
+            "type": "shell",
+            "command": "${workspaceFolder}/bin/cmake.sh",
+            "problemMatcher": [],
+            "args": [
+                "--target=main-tests-vm1",
+                "--gc",
+                "--verbose",
+                "--clean"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "cmake: build",
             "type": "cmake",
-            "label": "CMake: build",
             "command": "build",
             "targets": [
                 "all"

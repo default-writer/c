@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 22, 2025 at 7:32:05 AM GMT+3
+ *   March 28, 2025 at 4:58:17 PM GMT+3
  *
  */
 /*
@@ -26,8 +26,8 @@
 
 #include "list_v1.h"
 
-#include "system/api/api_v1.h"
 #include "system/memory/memory_v1.h"
+#include "system/os/os_v1.h"
 
 #define STACK_ELEMENT_TYPE_SIZE sizeof(stack_element_type)
 
@@ -61,7 +61,7 @@ static void* list_data(stack_ptr ptr) {
 /* deletes the data pointer */
 static void list_delete(stack_ptr ptr) {
     /* releases the pointer */
-    api->free(ptr);
+    CALL(os)->free(ptr);
 }
 
 /* pushes the memory pointer */
@@ -70,7 +70,7 @@ static void list_push(stack_ptr* current, void* payload) {
         return;
     }
     /* creates empty data chunk */
-    stack_ptr item = api->alloc(1, STACK_ELEMENT_TYPE_SIZE);
+    stack_ptr item = CALL(os)->alloc(1, STACK_ELEMENT_TYPE_SIZE);
     /* writes data into allocated memory buffer */
     item->data = payload;
     /* assigns item's next pointer to current pointer */
@@ -128,7 +128,7 @@ static void list_init(stack_ptr* current) {
         return;
     }
     /* sets the current item */
-    *current = api->alloc(1, STACK_ELEMENT_TYPE_SIZE);
+    *current = CALL(os)->alloc(1, STACK_ELEMENT_TYPE_SIZE);
 }
 
 /* destroys the memory stack */
@@ -200,6 +200,7 @@ const system_list_methods PRIVATE_API(system_list_methods_definitions) = {
 #endif
 };
 
-const system_list_methods* CALL(system_list) {
-    return &PRIVATE_API(system_list_methods_definitions);
+const system_list_methods* PRIVATE_API(list) = &PRIVATE_API(system_list_methods_definitions);
+const system_list_methods* CALL(list) {
+    return PRIVATE_API(list);
 }

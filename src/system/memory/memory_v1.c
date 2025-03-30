@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 28, 2025 at 2:04:30 PM GMT+3
+ *   March 28, 2025 at 4:58:17 PM GMT+3
  *
  */
 /*
@@ -29,7 +29,7 @@
 #define USING_SYSTEM_ERROR_API
 #include "system/error/error_v1.h"
 
-#include "system/api/api_v1.h"
+#include "system/os/os_v1.h"
 
 #ifdef USE_MEMORY_DEBUG_INFO
 static u64 total_alloc = 0;
@@ -55,11 +55,12 @@ static void memory_set(void* dest, u8 c, u64 count);
 
 static void* memory_alloc(u64 size) {
     if (size == 0) {
-        ERROR_INVALID_ARGUMENT(size == 0);
+        ERROR_INVALID_ARGUMENT("size == %lld", size);
         return NULL_PTR;
     }
-    void* ptr = api->alloc(1, size);
+    void* ptr = CALL(os)->alloc(1, size);
     if (ptr == 0) {
+        ERROR_INVALID_VALUE("ptr == %p, size == %lld", ptr, size);
         return NULL_PTR;
     }
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -71,17 +72,27 @@ static void* memory_alloc(u64 size) {
 
 static void* memory_realloc(const_void_ptr const_ptr, u64 size, u64 new_size) {
     if (const_ptr == 0) {
+        ERROR_INVALID_ARGUMENT("const_ptr == %p", const_ptr);
         return NULL_PTR;
     }
-    if (new_size <= size) {
+    if (size == 0) {
+        ERROR_INVALID_ARGUMENT("size == %lld", size);
+        return NULL_PTR;
+    }
+    if (new_size == 0) {
+        ERROR_INVALID_ARGUMENT("new_size == %lld", new_size);
+        return NULL_PTR;
+    }
+    if (size >= new_size) {
+        ERROR_INVALID_VALUE("size == %lld, new_size == %lld", size, new_size);
         return NULL_PTR;
     }
     const_void_ptr const_data_ptr = const_ptr;
     safe_void_ptr void_ptr;
     void_ptr.const_ptr = const_data_ptr;
     void* ptr = void_ptr.ptr;
-    ptr = api->realloc(ptr, new_size);
-    api->memset((u8*)ptr + size, 0x00, new_size - size);
+    ptr = CALL(os)->realloc(ptr, new_size);
+    CALL(os)->memset((u8*)ptr + size, 0x00, new_size - size);
 #ifdef USE_MEMORY_DEBUG_INFO
     total_alloc += new_size;
     total_free += size;
@@ -92,9 +103,11 @@ static void* memory_realloc(const_void_ptr const_ptr, u64 size, u64 new_size) {
 
 static void memory_free(const_void_ptr const_ptr, u64 size) {
     if (const_ptr == 0) {
+        ERROR_INVALID_ARGUMENT("const_ptr == %p", const_ptr);
         return;
     }
     if (size == 0) {
+        ERROR_INVALID_ARGUMENT("size == %lld", size);
         return;
     }
     const_void_ptr const_data_ptr = const_ptr;
@@ -111,7 +124,7 @@ static void memory_free(const_void_ptr const_ptr, u64 size) {
     total_free += size;
     printf("  m-: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_free, total_alloc);
 #endif
-    api->free(ptr);
+    CALL(os)->free(ptr);
 }
 
 #ifdef USE_MEMORY_CLEANUP
@@ -152,7 +165,7 @@ CSYS_EXPORT void result_statistics(void) {
 #endif
 
 /* public */
-const memory_methods PRIVATE_API(system_memory_methods_definitions) = {
+const system_memory_methods PRIVATE_API(system_memory_methods_definitions) = {
     .alloc = memory_alloc,
     .free = memory_free,
     .realloc = memory_realloc,
@@ -161,8 +174,7 @@ const memory_methods PRIVATE_API(system_memory_methods_definitions) = {
 #endif
 };
 
-const memory_methods* memory = &PRIVATE_API(system_memory_methods_definitions);
-
-const memory_methods* CALL(system_memory) {
-    return memory;
+const system_memory_methods* PRIVATE_API(memory) = &PRIVATE_API(system_memory_methods_definitions);
+const system_memory_methods* CALL(memory) {
+    return PRIVATE_API(memory);
 }

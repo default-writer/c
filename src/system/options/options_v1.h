@@ -34,11 +34,11 @@
 
 #include "system/export.h"
 
-typedef struct PRIVATE_API(options_methods) {
+typedef struct PRIVATE_API(system_options_methods) {
     const u64 size;
-} options_methods;
+} system_options_methods;
 
 /* definition */
-CSYS_EXPORT extern const options_methods* CALL(system_options);
+CSYS_EXPORT extern const system_options_methods* CALL(options);
 
 #endif /* _SYSTEM_OPTIONS_H_ */

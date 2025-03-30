@@ -33,8 +33,7 @@ const system_info_methods PRIVATE_API(system_info_methods_definitions) = {
     .version = API_VERSION
 };
 
-const system_info_methods* info = &PRIVATE_API(system_info_methods_definitions);
-
-const system_info_methods* CALL(system_info) {
-    return info;
+const system_info_methods* PRIVATE_API(info) = &PRIVATE_API(system_info_methods_definitions);
+const system_info_methods* CALL(info) {
+    return PRIVATE_API(info);
 }

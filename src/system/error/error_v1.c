@@ -29,33 +29,36 @@
 static const char* error_messages[] = {
     [ID_ERROR_NO_ERROR] = "no error",
     [ID_ERROR_VM_NOT_INITIALIZED] = "vm not initialized",
-    [ID_ERROR_INVALID_POINTER] = "pointer not initialized",
-    [ID_ERROR_INVALID_ADDRESS] = "address not initialized",
-    [ID_ERROR_INVALID_ARGUMENT] = "argument not initialized",
-    [ID_ERROR_INVALID_CONDITION] = "invalid condition",
-    [ID_ERROR_INVALID_TYPE] = "invalid type",
+    [ID_ERROR_INVALID_POINTER] = "invalid pointer",
+    [ID_ERROR_INVALID_ARGUMENT] = "invalid argument",
+    [ID_ERROR_INVALID_TYPE_ID] = "invalid type id",
+    [ID_ERROR_INVALID_VALUE] = "invalid value",
 };
 
 #ifdef USE_MEMORY_DEBUG_INFO
-static void error_stderr(enum error_message_code id, const char* func, const char* args, const char* file, int line);
+static void error_stderr(enum error_message_code id, const char* func, const char* file, int line, const char* format, ...);
 #else
-static void error_stderr(enum error_message_code id);
+static void error_stderr(enum error_message_code id, const char* format, ...);
 #endif
 
 #ifdef USE_MEMORY_DEBUG_INFO
-static void error_stderr(enum error_message_code id, const char* func, const char* args, const char* file, int line) {
+static void error_stderr(enum error_message_code id, const char* func, const char* file, int line, const char* format, ...) {
 #ifdef USE_TTY
     if (isatty(STDERR_FILENO)) {
         const char* start = "\x1b[31m";
         const char* end = "\x1b[0m";
-        fprintf(stderr, "[%sERROR%s] %s: %s(%s): (%s:%d)\n", start, end, error_messages[id], func, args, file, line); /* NOLINT: fprintf(stderr) */
+        fprintf(stderr, "[%sERROR%s] %s: %s: (%s:%d)\n", start, end, error_messages[id], func, file, line); /* NOLINT: fprintf(stderr) */
     }
 #else
-    fprintf(stderr, "[ERROR] %s: %s(%s) (%s:%d)\n", error_messages[id], func, args, file, line); /* NOLINT: fprintf(stderr) */
+    fprintf(stderr, "[ERROR] %s: %s (%s:%d)\n", error_messages[id], func, file, line); /* NOLINT: fprintf(stderr) */
 #endif
+    va_list arg;
+    va_start(arg, format);
+    vfprintf(stderr, format, arg);
+    va_end(arg);
 }
 #else
-static void error_stderr(enum error_message_code id) {
+static void error_stderr(enum error_message_code id, const char* format, ...) {
 #ifdef USE_TTY
     if (isatty(STDERR_FILENO)) {
         const char* start = "\x1b[31m";
@@ -65,12 +68,19 @@ static void error_stderr(enum error_message_code id) {
 #else
     fprintf(stderr, "[ERROR] %s\n", error_messages[id]); /* NOLINT: fprintf(stderr) */
 #endif
+    va_list arg;
+    va_start(arg, format);
+    vfprintf(stderr, format, arg);
+    va_end(arg);
 }
 #endif
 
-/* api */
-const error_api_type PRIVATE_API(error_api_methods_definitions) = {
+/* public */
+const system_error_methods PRIVATE_API(system_error_methods_definitions) = {
     .stderr = &error_stderr,
 };
 
-const error_api_type* error_api = &PRIVATE_API(error_api_methods_definitions);
+const system_error_methods* PRIVATE_API(error) = &PRIVATE_API(system_error_methods_definitions);
+const system_error_methods* CALL(error) {
+    return PRIVATE_API(error);
+}

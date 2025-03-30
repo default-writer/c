@@ -260,15 +260,17 @@ endif()
 
 set(LIB_SYS_SOURCE
     src/system/api/api_v1.c
+    src/system/os/os_v1.c
     src/system/error/error_v1.c
     src/system/info/info_v1.c
     src/system/list/list_v1.c
     src/system/memory/memory_v1.c
     src/system/options/options_v1.c
+    src/system/os/os_v1.c
 )
 
 set(LIB_VM_SOURCE
-    src/virtual/os/os_v1.c
+    src/virtual/api/api_v1.c
     src/virtual/pointer/pointer_v1.c
     src/virtual/types/data/data_v1.c
     src/virtual/types/file/file_v1.c
@@ -279,6 +281,7 @@ set(LIB_VM_SOURCE
     src/virtual/types/user/user_v1.c
     src/virtual/virtual/virtual_v1.c
     src/virtual/hashtable/hashtable_v1.c
+    src/virtual/env/env_v1.c
 )
 
 set(TESTS_SOURCE
@@ -287,6 +290,7 @@ set(TESTS_SOURCE
     tests/vm/test_pointer.c
     tests/vm/test_vm.c
     tests/vm/test_hashtable.c
+    tests/vm/test_api.c
 )
 
 set(MAIN_TESTS_VM1_SOURCE tests/vm/main-tests_v1.c)

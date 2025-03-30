@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 28, 2025 at 4:54:24 PM GMT+3
+ *   March 28, 2025 at 10:19:11 AM GMT+3
  *
  */
 /*
@@ -24,29 +24,25 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "api_v1.h"
+#define USING_TESTS_API
 
-/* api */
-const system_error_methods* PUBLIC_API(error) {
-    return CALL(error);
-}
+#ifndef _TEST_API_H_
+#define _TEST_API_H_
 
-const system_info_methods* PUBLIC_API(info) {
-    return CALL(info);
-}
+#define USING_STD_API
+#include "std/api.h"
 
-const system_list_methods* PUBLIC_API(list) {
-    return CALL(list);
-}
+typedef struct PRIVATE_API(test_suite) tests_api_test_suite;
 
-const system_memory_methods* PUBLIC_API(memory) {
-    return CALL(memory);
-}
+/* definition */
+extern const tests_api_test_suite PRIVATE_API(tests_api_test_suite_definitions);
 
-const system_options_methods* PUBLIC_API(options) {
-    return CALL(options);
-}
+/* definition */
+#ifdef INLINE
+const tests_api_test_suite* tests_api_test_suite = &PRIVATE_API(tests_api_test_suite_definitions);
+#else
+/* definition */
+static const tests_api_test_suite* _tests_api_test_suite = &PRIVATE_API(tests_api_test_suite_definitions);
+#endif
 
-const system_os_methods* PUBLIC_API(os) {
-    return CALL(os);
-}
+#endif /* _TEST_API_H_ */

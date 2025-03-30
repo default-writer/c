@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 28, 2025 at 7:49:54 AM GMT+3
+ *   March 28, 2025 at 4:57:02 PM GMT+3
  *
  */
 /*
@@ -24,25 +24,30 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _VIRTUAL_OS_V1_H_
-#define _VIRTUAL_OS_V1_H_
+#include "os_v1.h"
 
-#define USING_STD_API
-#include "std/api.h"
+/* public */
+const system_os_methods PRIVATE_API(system_os_methods_definitions) = {
+    .alloc = &calloc,
+    .free = &free,
+    .realloc = &realloc,
+    .fclose = &fclose,
+    .fopen = &fopen,
+    .fread = &fread,
+    .fseek = &fseek,
+    .ftell = &ftell,
+    .getcwd = &getcwd,
+    .getenv = &getenv,
+    .memcpy = &memcpy,
+    .memset = &memset,
+    .puts = &puts,
+    .strcmp = &strcmp,
+    .strncat = &strncat,
+    .strncpy = &strncpy,
+    .strlen = &strlen
+};
 
-#include "virtual/export.h"
-
-/*! @file os_v1.h
- *  @brief C API / os
- */
-
-typedef struct PRIVATE_API(virtual_os_methods) {
-    u64 (*getenv)(const_vm_ptr vm, u64 name);
-    u64 (*getcwd)(const_vm_ptr vm);
-    u64 (*putc)(const_vm_ptr vm, u64 ptr);
-} virtual_os_methods;
-
-/* definition */
-CVM_EXPORT extern const virtual_os_methods* CALL(os);
-
-#endif /* _VIRTUAL_OS_V1_H_ */
+const system_os_methods* PRIVATE_API(os) = &PRIVATE_API(system_os_methods_definitions);
+const system_os_methods* CALL(os) {
+    return PRIVATE_API(os);
+}

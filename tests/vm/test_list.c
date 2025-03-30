@@ -35,7 +35,7 @@
 static stack_ptr new_list(void) {
     stack_ptr ctx = 0;
     /* initializes the list */
-    CALL(system_list)->init(&ctx);
+    CALL(list)->init(&ctx);
     /* returns list object */
     return ctx;
 }
@@ -43,7 +43,7 @@ static stack_ptr new_list(void) {
 /* releases memory pointer for list object */
 static void delete_list(stack_ptr* ctx) {
     /* destroys the list */
-    CALL(system_list)->destroy(ctx);
+    CALL(list)->destroy(ctx);
     /* cleans up */
     *ctx = 0;
 }
@@ -72,88 +72,88 @@ static void run_list2(void (*tests)(stack_ptr* const)) {
 static void tests(stack_ptr* current) {
     u8* payload = (void*)0xdeadbeef;
     void* is_null[] = {
-        CALL(system_list)->peek(current),
-        CALL(system_list)->pop(current)
+        CALL(list)->peek(current),
+        CALL(list)->pop(current)
     };
     RX_ASSERT(0 == is_null[0]);
     RX_ASSERT(0 == is_null[1]);
-    CALL(system_list)->push(current, payload);
+    CALL(list)->push(current, payload);
 #ifdef USE_MEMORY_DEBUG_INFO
-    CALL(system_list)->print_head(current);
+    CALL(list)->print_head(current);
 #endif
-    CALL(system_list)->push(current, ++payload);
+    CALL(list)->push(current, ++payload);
 #ifdef USE_MEMORY_DEBUG_INFO
-    CALL(system_list)->print_head(current);
+    CALL(list)->print_head(current);
 #endif
-    CALL(system_list)->push(current, ++payload);
+    CALL(list)->push(current, ++payload);
 #ifdef USE_MEMORY_DEBUG_INFO
-    CALL(system_list)->print_head(current);
+    CALL(list)->print_head(current);
 #endif
-    CALL(system_list)->push(current, ++payload);
+    CALL(list)->push(current, ++payload);
 #ifdef USE_MEMORY_DEBUG_INFO
-    CALL(system_list)->print_head(current);
+    CALL(list)->print_head(current);
 #endif
-    CALL(system_list)->push(current, ++payload);
+    CALL(list)->push(current, ++payload);
 #ifdef USE_MEMORY_DEBUG_INFO
-    CALL(system_list)->print_head(current);
+    CALL(list)->print_head(current);
 #endif
 #ifdef USE_MEMORY_DEBUG_INFO
-    CALL(system_list)->print(current);
+    CALL(list)->print(current);
 #endif
-    const void* q_peek0 = CALL(system_list)->peek(current);
+    const void* q_peek0 = CALL(list)->peek(current);
     CLEAN(q_peek0)
-    void* q_pop0 = CALL(system_list)->pop(current);
+    void* q_pop0 = CALL(list)->pop(current);
 #ifdef USE_MEMORY_DEBUG_INFO
-    CALL(system_list)->print(current);
+    CALL(list)->print(current);
 #endif
-    const void* q_pop1 = CALL(system_list)->pop(current);
+    const void* q_pop1 = CALL(list)->pop(current);
     CLEAN(q_pop1)
 #ifdef USE_MEMORY_DEBUG_INFO
-    CALL(system_list)->print(current);
+    CALL(list)->print(current);
 #endif
-    const void* q_pop2 = CALL(system_list)->pop(current);
+    const void* q_pop2 = CALL(list)->pop(current);
     CLEAN(q_pop2)
 #ifdef USE_MEMORY_DEBUG_INFO
-    CALL(system_list)->print(current);
+    CALL(list)->print(current);
 #endif
-    const void* q_peek1 = CALL(system_list)->peek(current);
-    void* q_pop3 = CALL(system_list)->pop(current);
-    const void* q_peek2 = CALL(system_list)->peek(current);
-    CALL(system_list)->push(current, q_pop3);
-    const void* q_peek3 = CALL(system_list)->peek(current);
+    const void* q_peek1 = CALL(list)->peek(current);
+    void* q_pop3 = CALL(list)->pop(current);
+    const void* q_peek2 = CALL(list)->peek(current);
+    CALL(list)->push(current, q_pop3);
+    const void* q_peek3 = CALL(list)->peek(current);
     RX_ASSERT(q_peek1 != q_peek2);
     RX_ASSERT(q_peek2 != q_peek3);
     RX_ASSERT(q_peek1 == q_peek3);
-    const void* q_pop4 = CALL(system_list)->pop(current);
+    const void* q_pop4 = CALL(list)->pop(current);
     CLEAN(q_pop4)
 #ifdef USE_MEMORY_DEBUG_INFO
-    CALL(system_list)->print(current);
+    CALL(list)->print(current);
 #endif
-    const void* q_pop5 = CALL(system_list)->pop(current);
+    const void* q_pop5 = CALL(list)->pop(current);
     CLEAN(q_pop5)
 #ifdef USE_MEMORY_DEBUG_INFO
-    CALL(system_list)->print(current);
+    CALL(list)->print(current);
 #endif
-    const void* q_peek4 = CALL(system_list)->peek(current);
-    CALL(system_list)->push(current, q_pop0);
+    const void* q_peek4 = CALL(list)->peek(current);
+    CALL(list)->push(current, q_pop0);
     CLEAN(q_peek4)
 #ifdef USE_MEMORY_DEBUG_INFO
-    CALL(system_list)->print(current);
+    CALL(list)->print(current);
 #endif
-    const void* q_pop6 = CALL(system_list)->pop(current);
+    const void* q_pop6 = CALL(list)->pop(current);
     CLEAN(q_pop6)
 #ifdef USE_MEMORY_DEBUG_INFO
-    CALL(system_list)->print(current);
+    CALL(list)->print(current);
 #endif
-    const void* q_pop7 = CALL(system_list)->pop(current);
+    const void* q_pop7 = CALL(list)->pop(current);
     CLEAN(q_pop7)
 #ifdef USE_MEMORY_DEBUG_INFO
-    CALL(system_list)->print(current);
+    CALL(list)->print(current);
 #endif
-    const void* q_peek5 = CALL(system_list)->peek(current);
+    const void* q_peek5 = CALL(list)->peek(current);
     CLEAN(q_peek5)
 #ifdef USE_MEMORY_DEBUG_INFO
-    CALL(system_list)->print(current);
+    CALL(list)->print(current);
 #endif
 }
 
@@ -169,7 +169,7 @@ RX_SET_UP(test_set_up) {
     /* initializes to 0 */
     *ctx = 0;
     /* initialize list */
-    CALL(system_list)->init(ctx);
+    CALL(list)->init(ctx);
     return RX_SUCCESS;
 }
 
@@ -177,7 +177,7 @@ RX_TEAR_DOWN(test_tear_down) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* destroy list */
-    CALL(system_list)->destroy(ctx);
+    CALL(list)->destroy(ctx);
     /* initializes to 0 */
     *ctx = 0;
 }
@@ -198,7 +198,7 @@ RX_TEST_CASE(tests_list_v1, test_pop_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* pushed to the list */
-    const void* data_ptr = CALL(system_list)->pop(0);
+    const void* data_ptr = CALL(list)->pop(0);
     /* ensures there is no result on 0 */
     RX_ASSERT(data_ptr == 0);
     /* ensures pop does not zeroes the head pointer */
@@ -212,7 +212,7 @@ RX_TEST_CASE(tests_list_v1, test_pop_null_ptr, .fixture = test_fixture) {
     /* pushed to the list */
     stack_ptr ptr = 0;
     stack_ptr* null_ptr = &ptr;
-    const void* data_ptr = CALL(system_list)->pop(null_ptr);
+    const void* data_ptr = CALL(list)->pop(null_ptr);
     /* ensures there is no result on 0 */
     RX_ASSERT(data_ptr == 0);
     /* ensures pop does not zeroes the head pointer */
@@ -224,7 +224,7 @@ RX_TEST_CASE(tests_list_v1, test_peek_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* pushed to the list */
-    const void* data_ptr = CALL(system_list)->peek(0);
+    const void* data_ptr = CALL(list)->peek(0);
     /* ensures there is no result on 0 */
     RX_ASSERT(data_ptr == 0);
     /* ensures pop does not zeroes the head pointer */
@@ -238,7 +238,7 @@ RX_TEST_CASE(tests_list_v1, test_peek_null_ptr, .fixture = test_fixture) {
     /* pushed to the list */
     stack_ptr ptr = 0;
     stack_ptr* null_ptr = &ptr;
-    const void* data_ptr = CALL(system_list)->peek(null_ptr);
+    const void* data_ptr = CALL(list)->peek(null_ptr);
     /* ensures there is no result on 0 */
     RX_ASSERT(data_ptr == 0);
     /* ensures pop does not zeroes the head pointer */
@@ -251,9 +251,9 @@ RX_TEST_CASE(tests_list_v1, test_push_0, .fixture = test_fixture) {
     stack_ptr* ctx = &rx->ctx;
     /* pushed to the list */
     void* payload = (void*)0x12345678;
-    CALL(system_list)->push(0, payload);
+    CALL(list)->push(0, payload);
     /* ensures there is no result on 0 */
-    const void* data_ptr = CALL(system_list)->peek(0);
+    const void* data_ptr = CALL(list)->peek(0);
     RX_ASSERT(data_ptr == 0);
     /* ensures pop does not zeroes the head pointer */
     RX_ASSERT(*ctx != 0);
@@ -267,9 +267,9 @@ RX_TEST_CASE(tests_list_v1, test_push_null_ptr, .fixture = test_fixture) {
     stack_ptr ptr = 0;
     stack_ptr* null_ptr = &ptr;
     void* payload = (void*)0x12345678;
-    CALL(system_list)->push(null_ptr, payload);
+    CALL(list)->push(null_ptr, payload);
     /* ensures there is no result on 0 */
-    const void* data_ptr = CALL(system_list)->peek(0);
+    const void* data_ptr = CALL(list)->peek(0);
     /* ensures there is no result on 0 */
     RX_ASSERT(data_ptr == 0);
     /* ensures pop does not zeroes the head pointer */
@@ -281,7 +281,7 @@ RX_TEST_CASE(tests_list_v1, test_init_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* pushed to the list */
-    CALL(system_list)->init(0);
+    CALL(list)->init(0);
     /* ensures pop does not zeroes the head pointer */
     RX_ASSERT(*ctx != 0);
 }
@@ -293,9 +293,9 @@ RX_TEST_CASE(tests_list_v1, test_init_null_ptr, .fixture = test_fixture) {
     /* pushed to the list */
     stack_ptr ptr = 0;
     stack_ptr* null_ptr = &ptr;
-    CALL(system_list)->init(null_ptr);
-    const void* data_ptr = CALL(system_list)->peek(null_ptr);
-    CALL(system_list)->destroy(null_ptr);
+    CALL(list)->init(null_ptr);
+    const void* data_ptr = CALL(list)->peek(null_ptr);
+    CALL(list)->destroy(null_ptr);
     /* ensures there is no result on 0 */
     RX_ASSERT(data_ptr == 0);
     /* ensures pop does not zeroes the head pointer */
@@ -309,10 +309,10 @@ RX_TEST_CASE(tests_list_v1, test_init_init, .fixture = test_fixture) {
     /* pushed to the list */
     stack_ptr ptr = 0;
     stack_ptr* null_ptr = &ptr;
-    CALL(system_list)->init(null_ptr);
-    CALL(system_list)->init(null_ptr);
-    const void* data_ptr = CALL(system_list)->peek(null_ptr);
-    CALL(system_list)->destroy(null_ptr);
+    CALL(list)->init(null_ptr);
+    CALL(list)->init(null_ptr);
+    const void* data_ptr = CALL(list)->peek(null_ptr);
+    CALL(list)->destroy(null_ptr);
     /* ensures there is no result on 0 */
     RX_ASSERT(data_ptr == 0);
     /* ensures pop does not zeroes the head pointer */
@@ -324,7 +324,7 @@ RX_TEST_CASE(tests_list_v1, test_destroy_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* pushed to the list */
-    CALL(system_list)->destroy(0);
+    CALL(list)->destroy(0);
     /* ensures pop does not zeroes the head pointer */
     RX_ASSERT(*ctx != 0);
 }
@@ -336,8 +336,8 @@ RX_TEST_CASE(tests_list_v1, test_destroy_null_ptr, .fixture = test_fixture) {
     /* pushed to the list */
     stack_ptr ptr = 0;
     stack_ptr* null_ptr = &ptr;
-    const void* data_ptr = CALL(system_list)->peek(null_ptr);
-    CALL(system_list)->destroy(null_ptr);
+    const void* data_ptr = CALL(list)->peek(null_ptr);
+    CALL(list)->destroy(null_ptr);
     /* ensures there is no result on 0 */
     RX_ASSERT(data_ptr == 0);
     /* ensures pop does not zeroes the head pointer */
@@ -351,11 +351,11 @@ RX_TEST_CASE(tests_list_v1, test_standard_list_peek_does_not_changes_stack, .fix
     /* prepares the payload */
     u8* payload = (void*)0xdeadbeef;
     /* pushed to the list */
-    CALL(system_list)->push(ctx, payload);
+    CALL(list)->push(ctx, payload);
     /* gets the head pointer to the list */
     const stack_ptr ptr = *ctx;
     /* peeks from the list */
-    const void* head = CALL(system_list)->peek(ctx);
+    const void* head = CALL(list)->peek(ctx);
     /* ensures payload is on top of the stack */
     RX_ASSERT(head == payload);
     /* ensures peek does not changes the head pointer */
@@ -366,7 +366,7 @@ RX_TEST_CASE(tests_list_v1, test_standard_list_peek_does_not_changes_stack, .fix
 RX_TEST_CASE(tests_list_v1, test_empty_list_pop_equals_0, .fixture = test_fixture) {
     stack_ptr ctx = 0;
     /* pops from the list */
-    const stack_ptr head = CALL(system_list)->pop(&ctx);
+    const stack_ptr head = CALL(list)->pop(&ctx);
     /* ensures head is not initialized */
     RX_ASSERT(head == 0);
 }
@@ -375,7 +375,7 @@ RX_TEST_CASE(tests_list_v1, test_empty_list_pop_equals_0, .fixture = test_fixtur
 RX_TEST_CASE(tests_list_v1, test_empty_list_peek_equals_0, .fixture = test_fixture) {
     stack_ptr ctx = 0;
     /* peeks from the list */
-    const stack_ptr head = CALL(system_list)->peek(&ctx);
+    const stack_ptr head = CALL(list)->peek(&ctx);
     /* ensures head is not initialized */
     RX_ASSERT(head == 0);
 }
@@ -387,7 +387,7 @@ RX_TEST_CASE(tests_list_v1, test_alloc_count_eq_1, .fixture = test_fixture) {
     /* prepares the payload */
     u8* payload = (void*)0xdeadbeef;
     /* pushes to the list */
-    CALL(system_list)->push(ctx, payload);
+    CALL(list)->push(ctx, payload);
     /* ensures data is added to the list */
     RX_ASSERT(*ctx != 0);
 }
@@ -398,9 +398,9 @@ RX_TEST_CASE(tests_list_v1, test_alloc_payload, .fixture = test_fixture) {
     /* prepares the payload */
     u8* payload = (void*)0xdeadbeef;
     /* pushes to the list */
-    CALL(system_list)->push(ctx, payload);
+    CALL(list)->push(ctx, payload);
     /* peeks from the list */
-    const void* head = CALL(system_list)->peek(ctx);
+    const void* head = CALL(list)->peek(ctx);
     /* ensures data is added to the list */
     RX_ASSERT(head == payload);
 }
@@ -411,9 +411,9 @@ RX_TEST_CASE(tests_list_v1, test_alloc_pop_count_0, .fixture = test_fixture) {
     /* prepares the payload */
     u8* payload = (void*)0xdeadbeef;
     /* pushes to the list */
-    CALL(system_list)->push(ctx, payload);
+    CALL(list)->push(ctx, payload);
     /* pops from the list */
-    const void* head = CALL(system_list)->pop(ctx);
+    const void* head = CALL(list)->pop(ctx);
     /* ensures data is added to the list */
     RX_ASSERT(head != 0);
 }
@@ -424,9 +424,9 @@ RX_TEST_CASE(tests_list_v1, test_alloc_pop_payload, .fixture = test_fixture) {
     /* prepares the payload */
     u8* payload = (void*)0xdeadbeef;
     /* pushes to the list */
-    CALL(system_list)->push(ctx, payload);
+    CALL(list)->push(ctx, payload);
     /* pops from the list */
-    const void* head = CALL(system_list)->pop(ctx);
+    const void* head = CALL(list)->pop(ctx);
     /* ensures data is added to the list */
     RX_ASSERT(head == payload);
 }
@@ -436,7 +436,7 @@ RX_TEST_CASE(tests_list_v1, test_list_peek_is_zero, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* peeks from the list */
-    const void* head = CALL(system_list)->peek(ctx);
+    const void* head = CALL(list)->peek(ctx);
     /* ensures head is not initialized */
     RX_ASSERT(head == 0);
 }
@@ -446,7 +446,7 @@ RX_TEST_CASE(tests_list_v1, test_list_pop_is_zero, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     stack_ptr* ctx = &rx->ctx;
     /* pops from the list */
-    const void* head = CALL(system_list)->pop(ctx);
+    const void* head = CALL(list)->pop(ctx);
     /* ensures head is not initialized */
     RX_ASSERT(head == 0);
 }

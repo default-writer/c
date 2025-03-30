@@ -37,8 +37,8 @@
 static u64 type_id = TYPE_USER;
 
 /* public */
-static u64 user_alloc(const_vm_ptr vm);
-static u64 user_free(const_vm_ptr vm, u64 ptr);
+static u64 user_alloc(const_vm_ptr cvm);
+static u64 user_free(const_vm_ptr cvm, u64 ptr);
 
 /* type */
 static void user_type_destructor(u64 address);
@@ -51,7 +51,7 @@ static struct type_methods_definitions user_type = {
 static void INIT init(void) {
     safe_type_methods_definitions safe_ptr;
     safe_ptr.const_ptr = &user_type;
-    CALL(vm)->register_user_type(safe_ptr.ptr);
+    CALL(type)->register_user_type(safe_ptr.ptr);
     type_id = safe_ptr.const_ptr->type_id;
 }
 
@@ -59,36 +59,39 @@ static void user_type_destructor(u64 address) {
     CALL(pointer)->free(address, type_id);
 }
 
-static u64 user_alloc(const_vm_ptr vm) {
-    if (vm == 0 || *vm == 0) {
-        ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
+static u64 user_alloc(const_vm_ptr cvm) {
+    if (cvm == 0 || *cvm == 0) {
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
         return FALSE;
     }
-    u64 address = CALL(virtual)->alloc(vm, DEFAULT_SIZE, type_id);
+    u64 address = CALL(virtual)->alloc(cvm, DEFAULT_SIZE, type_id);
     return address;
 }
 
-static u64 user_free(const_vm_ptr vm, u64 ptr) {
-    if (vm == 0 || *vm == 0) {
-        ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
+static u64 user_free(const_vm_ptr cvm, u64 address) {
+    if (cvm == 0 || *cvm == 0) {
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
         return FALSE;
     }
-    user_type_destructor(ptr);
+    if (address == 0) {
+        ERROR_INVALID_ARGUMENT("address == %lld", address);
+        return FALSE;
+    }
+    user_type_destructor(address);
     return TRUE;
 }
 
+/* public */
 CVM_EXPORT void user_init(void) {
     init();
 }
 
-/* public */
 const virtual_user_methods PRIVATE_API(virtual_user_methods_definitions) = {
     .alloc = user_alloc,
     .free = user_free
 };
 
-const virtual_user_methods* user = &PRIVATE_API(virtual_user_methods_definitions);
-
+const virtual_user_methods* PRIVATE_API(user) = &PRIVATE_API(virtual_user_methods_definitions);
 const virtual_user_methods* CALL(user) {
-    return user;
+    return PRIVATE_API(user);
 }

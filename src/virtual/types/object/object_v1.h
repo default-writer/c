@@ -37,11 +37,11 @@
  */
 
 typedef struct API(object_methods) {
-    u64 (*alloc)(const_vm_ptr vm, u64 size);
-    u64 (*free)(const_vm_ptr vm, u64 ptr);
-    void* (*unsafe)(const_vm_ptr vm, u64 ptr);
-    u64 (*load)(const_vm_ptr vm, const_void_ptr data, u64 size);
-    u64 (*size)(const_vm_ptr vm, u64 ptr);
+    u64 (*alloc)(const_vm_ptr cvm, u64 size);
+    u64 (*free)(const_vm_ptr cvm, u64 ptr);
+    void* (*unsafe)(const_vm_ptr cvm, u64 ptr);
+    u64 (*load)(const_vm_ptr cvm, const_void_ptr data, u64 size);
+    u64 (*size)(const_vm_ptr cvm, u64 ptr);
 } virtual_object_methods;
 
 /* definition */

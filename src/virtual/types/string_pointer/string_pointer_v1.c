@@ -30,12 +30,11 @@
 #include "system/error/error_v1.h"
 
 #include "virtual/pointer/pointer_v1.h"
-#include "virtual/virtual/virtual_v1.h"
 
 static const enum type type_id = TYPE_STRING_POINTER;
 
 /* public */
-static u64 string_free(const_vm_ptr vm, u64 address);
+static u64 string_free(const_vm_ptr cvm, u64 address);
 
 /* type */
 static void string_type_destructor(u64 address);
@@ -48,38 +47,41 @@ static struct type_methods_definitions string_pointer_type = {
 static void INIT init(void) {
     safe_type_methods_definitions safe_ptr;
     safe_ptr.const_ptr = &string_pointer_type;
-    CALL(vm)->register_known_type(type_id, safe_ptr.ptr);
+    CALL(type)->register_known_type(type_id, safe_ptr.ptr);
 }
 
 static void string_type_destructor(u64 address) {
+    const_pointer_ptr const_ptr = CALL(pointer)->read(address, TYPE_STRING_POINTER);
+    if (const_ptr == 0) {
+        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", const_ptr, address, type_id);
+        return;
+    }
     CALL(pointer)->free(address, type_id);
 }
 
-/* api */
-static u64 string_free(const_vm_ptr vm, u64 address) {
-    if (vm == 0 || *vm == 0) {
-        ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
+static u64 string_free(const_vm_ptr cvm, u64 address) {
+    if (cvm == 0 || *cvm == 0) {
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
         return FALSE;
     }
-    const_pointer_ptr data_ptr = CALL(virtual)->read(vm, address, TYPE_STRING_POINTER);
-    if (data_ptr == 0) {
+    if (address == 0) {
+        ERROR_INVALID_ARGUMENT("address == %lld", address);
         return FALSE;
     }
     string_type_destructor(address);
     return TRUE;
 }
 
+/* public */
 CVM_EXPORT void string_pointer_init(void) {
     init();
 }
 
-/* public */
 const virtual_string_pointer_methods PRIVATE_API(virtual_string_pointer_methods_definitions) = {
     .free = string_free
 };
 
-const virtual_string_pointer_methods* string_pointer = &PRIVATE_API(virtual_string_pointer_methods_definitions);
-
+const virtual_string_pointer_methods* PRIVATE_API(string_pointer) = &PRIVATE_API(virtual_string_pointer_methods_definitions);
 const virtual_string_pointer_methods* CALL(string_pointer) {
-    return string_pointer;
+    return PRIVATE_API(string_pointer);
 }

@@ -37,14 +37,14 @@
 typedef struct PRIVATE_API(system_list_methods) {
     /* initialize context */
     void (*init)(stack_ptr* current);
-    /* destroy context */
-    void (*destroy)(stack_ptr* current);
     /* push item on current context (stack) */
     void (*push)(stack_ptr* current, void* item);
     /* pop item on current context (stack) */
     void* (*pop)(stack_ptr* current);
     /* peek item on current context (stack) */
     void* (*peek)(stack_ptr* current);
+    /* destroy context */
+    void (*destroy)(stack_ptr* current);
 #ifdef USE_MEMORY_DEBUG_INFO
     /* print head */
     void (*print_head)(stack_ptr* current);
@@ -54,6 +54,6 @@ typedef struct PRIVATE_API(system_list_methods) {
 } system_list_methods;
 
 /* definition */
-CSYS_EXPORT extern const system_list_methods* CALL(system_list);
+CSYS_EXPORT extern const system_list_methods* CALL(list);
 
 #endif /* _SYSTEM_LIST_H_ */

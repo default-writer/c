@@ -38,22 +38,20 @@ enum error_message_code {
     ID_ERROR_NO_ERROR,
     ID_ERROR_VM_NOT_INITIALIZED,
     ID_ERROR_INVALID_POINTER,
-    ID_ERROR_INVALID_ADDRESS,
     ID_ERROR_INVALID_ARGUMENT,
-    ID_ERROR_INVALID_TYPEID,
-    ID_ERROR_INVALID_CONDITION,
-    ID_ERROR_INVALID_TYPE
+    ID_ERROR_INVALID_TYPE_ID,
+    ID_ERROR_INVALID_VALUE
 };
 
-typedef struct error_api {
+typedef struct PRIVATE_API(system_error_methods) {
 #ifdef USE_MEMORY_DEBUG_INFO
-    void (*stderr)(enum error_message_code id, const char* func, const char* args, const char* file, int line);
+    void (*stderr)(enum error_message_code id, const char* func, const char* file, int line, const char* format, ...);
 #else
-    void (*stderr)(enum error_message_code id);
+    void (*stderr)(enum error_message_code id, const char* format, ...);
 #endif
-} error_api_type;
+} system_error_methods;
 
-/* api */
-CSYS_EXPORT extern const error_api_type* error_api;
+/* public */
+CSYS_EXPORT extern const system_error_methods* CALL(error);
 
 #endif /* _SYSTEM_ERROR_H_ */

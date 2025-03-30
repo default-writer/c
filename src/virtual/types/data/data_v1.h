@@ -37,10 +37,10 @@
  */
 
 typedef struct PRIVATE_API(virtual_data_methods) {
-    u64 (*alloc)(const_vm_ptr vm, u64 size);
-    u64 (*free)(const_vm_ptr vm, u64 ptr);
-    void* (*unsafe)(const_vm_ptr vm, u64 ptr);
-    u64 (*size)(const_vm_ptr vm, u64 ptr);
+    u64 (*alloc)(const_vm_ptr cvm, u64 size);
+    u64 (*free)(const_vm_ptr cvm, u64 ptr);
+    void* (*unsafe)(const_vm_ptr cvm, u64 ptr);
+    u64 (*size)(const_vm_ptr cvm, u64 ptr);
 } virtual_data_methods;
 
 /* definition */

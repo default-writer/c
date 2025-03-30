@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 28, 2025 at 3:10:36 PM GMT+3
+ *   March 28, 2025 at 4:58:16 PM GMT+3
  *
  */
 /*
@@ -33,9 +33,9 @@
 
 #define VM_TYPE_SIZE sizeof(vm_type)
 
-#include "system/api/api_v1.h"
 #include "system/list/list_v1.h"
 #include "system/memory/memory_v1.h"
+#include "system/os/os_v1.h"
 
 #ifdef USE_MEMORY_DEBUG_INFO
 #include "virtual/pointer/pointer_v1.h"
@@ -115,7 +115,7 @@ struct list_handler {
     stack_ptr list;
 };
 
-/* api */
+/* public */
 static const_vm_ptr pointer_init(u64 size);
 static void pointer_destroy(void);
 static void pointer_gc(void);
@@ -130,8 +130,8 @@ static u64 pointer_free(u64 address, u64 type_id);
 static const_void_ptr pointer_read(u64 address, u64 type_id);
 
 #ifdef USE_MEMORY_DEBUG_INFO
-static void virtual_dump(const_vm_ptr vm);
-static void virtual_dump_ref(const_vm_ptr vm);
+static void virtual_dump(const_vm_ptr cvm);
+static void virtual_dump_ref(const_vm_ptr cvm);
 #endif
 
 /* internal */
@@ -162,21 +162,22 @@ static void INIT init(void) {
 static void DESTROY destroy(void) {
     while (known_types->next != 0) {
         known_types_ptr prev = known_types->next;
-        api->free(known_types);
+        CALL(os)->free(known_types);
         known_types = prev;
     }
 }
 
 static const_vm_ptr pointer_init(u64 size) {
+    const_vm_ptr cvm = &vm_list;
 #ifdef USE_MEMORY_DEBUG_INFO
     init_statistics();
 #endif
     if (vm_list != 0) {
-        return &vm_list;
+        return cvm;
     }
-    CALL(system)->init(&vm_list, size);
+    CALL(system)->init(cvm, size);
     register_known_types();
-    default_types = api->alloc(known_types_counter, KNOWN_TYPES_TYPE_SIZE);
+    default_types = CALL(os)->alloc(known_types_counter, KNOWN_TYPES_TYPE_SIZE);
     known_types_ptr current = known_types;
     while (current->next != 0) {
         known_types_ptr prev = current->next;
@@ -186,16 +187,17 @@ static const_vm_ptr pointer_init(u64 size) {
         }
         current = prev;
     }
-    return &vm_list;
+    return cvm;
 }
 
 static void pointer_destroy(void) {
+    const_vm_ptr cvm = &vm_list;
     if (vm_list == 0) {
-        ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
         return;
     }
-    api->free(default_types);
-    CALL(system)->destroy(&vm_list);
+    CALL(os)->free(default_types);
+    CALL(system)->destroy(cvm);
     vm_list = 0;
 #ifdef USE_MEMORY_DEBUG_INFO
     result_statistics();
@@ -203,18 +205,19 @@ static void pointer_destroy(void) {
 }
 
 static void pointer_gc(void) {
+    const_vm_ptr cvm = &vm_list;
     if (vm_list == 0) {
-        ERROR_VM_NOT_INITIALIZED(vm == 0 || *vm == 0);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
         return;
     }
 #ifdef USE_MEMORY_DEBUG_INFO
-    virtual_dump_ref(&vm_list);
-    virtual_dump(&vm_list);
+    virtual_dump_ref(cvm);
+    virtual_dump(cvm);
 #endif
     struct vm_state state;
-    pointer_ref_enumerator_init_internal(&state, &vm_list);
+    pointer_ref_enumerator_init_internal(&state, cvm);
     u64 ptr = 0;
-    while ((ptr = pointer_next_internal(&state, &vm_list)) != 0) {
+    while ((ptr = pointer_next_internal(&state, cvm)) != 0) {
         pointer_release(ptr);
     }
     pointer_ref_enumerator_destroy_internal(&state);
@@ -230,8 +233,9 @@ static void pointer_register_user_type(type_methods_definitions_ptr data_type) {
 
 /* internal */
 static u64 pointer_alloc_internal(const_void_ptr data, const_pointer_ptr* tmp, u64 size, u64 type_id) {
-    u64 address = CALL(virtual)->alloc(&vm_list, size, type_id);
-    *tmp = CALL(virtual)->read(&vm_list, address, type_id);
+    const_vm_ptr cvm = &vm_list;
+    u64 address = CALL(virtual)->alloc(cvm, size, type_id);
+    *tmp = CALL(virtual)->read(cvm, address, type_id);
     safe_pointer_ptr safe_ptr;
     safe_ptr.const_ptr = *tmp;
     pointer_ptr ptr = safe_ptr.ptr;
@@ -246,7 +250,7 @@ static void known_types_init_internal(u64 type_id, type_methods_definitions_ptr 
     if (check_existing_type_internal(known_types, data_type) == 0) {
         return;
     }
-    known_types_ptr obj = api->alloc(1, KNOWN_TYPES_TYPE_SIZE);
+    known_types_ptr obj = CALL(os)->alloc(1, KNOWN_TYPES_TYPE_SIZE);
     obj->type_id = type_id;
     obj->next = known_types;
     obj->methods = data_type;
@@ -279,16 +283,21 @@ static u64 check_existing_type_internal(known_types_ptr current, const_type_meth
 
 /* public */
 static u64 pointer_alloc(const_void_ptr data, u64 size, u64 type_id) {
+    const_vm_ptr cvm = &vm_list;
     if (vm_list == 0) {
-        ERROR_VM_NOT_INITIALIZED(vm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        return FALSE;
+    }
+    if (data == 0) {
+        ERROR_INVALID_ARGUMENT("data == %p", data);
         return FALSE;
     }
     if (size == 0) {
-        ERROR_INVALID_ARGUMENT(size == 0);
+        ERROR_INVALID_ARGUMENT("size == %lld", size);
         return FALSE;
     }
     if (type_id == 0) {
-        ERROR_INVALID_TYPEID(type_id == 0);
+        ERROR_INVALID_ARGUMENT("type_id == %lld", type_id);
         return FALSE;
     }
     const_pointer_ptr tmp;
@@ -297,26 +306,27 @@ static u64 pointer_alloc(const_void_ptr data, u64 size, u64 type_id) {
 }
 
 static u64 pointer_copy(const_void_ptr data, u64 size, u64 offset, u64 type_id) {
+    const_vm_ptr cvm = &vm_list;
     if (vm_list == 0) {
-        ERROR_VM_NOT_INITIALIZED(vm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
         return FALSE;
     }
     if (data == 0) {
-        ERROR_INVALID_POINTER(data == 0);
+        ERROR_INVALID_ARGUMENT("data == %p", data);
         return FALSE;
     }
     if (size == 0) {
-        ERROR_INVALID_ARGUMENT(size == 0);
+        ERROR_INVALID_ARGUMENT("size == %lld", size);
         return FALSE;
     }
     if (type_id == 0) {
-        ERROR_INVALID_TYPEID(type_id == 0);
+        ERROR_INVALID_ARGUMENT("type_id == %lld", type_id);
         return FALSE;
     }
-    void* new_data = CALL(system_memory)->alloc(size);
+    void* new_data = CALL(memory)->alloc(size);
     const_pointer_ptr tmp;
     u64 address = pointer_alloc_internal(new_data, &tmp, size, type_id);
-    api->memcpy(new_data, data, size);
+    CALL(os)->memcpy(new_data, data, size);
     u64 data_size = size;
     if (offset > 0 && offset < data_size) {
         safe_void_ptr safe_ptr;
@@ -332,20 +342,22 @@ static u64 pointer_copy(const_void_ptr data, u64 size, u64 offset, u64 type_id) 
 }
 
 static u64 pointer_free(u64 address, u64 type_id) {
+    const_vm_ptr cvm = &vm_list;
     if (vm_list == 0) {
-        ERROR_VM_NOT_INITIALIZED(vm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
         return FALSE;
     }
     if (address == 0) {
-        ERROR_INVALID_ADDRESS(address == 0);
+        ERROR_INVALID_ARGUMENT("address == %lld", address);
         return FALSE;
     }
     if (type_id == 0) {
-        ERROR_INVALID_TYPEID(type_id == 0);
+        ERROR_INVALID_ARGUMENT("type_id == %lld", type_id);
         return FALSE;
     }
-    const_pointer_ptr const_ptr = CALL(virtual)->read(&vm_list, address, type_id);
+    const_pointer_ptr const_ptr = CALL(virtual)->read(cvm, address, type_id);
     if (const_ptr == 0) {
+        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", const_ptr, address, type_id);
         return FALSE;
     }
     safe_pointer_ptr safe_ptr;
@@ -353,26 +365,27 @@ static u64 pointer_free(u64 address, u64 type_id) {
     pointer_ptr ptr = safe_ptr.ptr;
     u64 data_size = const_ptr->public.size;
     if (data_size != 0) {
-        CALL(system_memory)->free(ptr->data, data_size);
+        CALL(memory)->free(ptr->data, data_size);
     }
-    CALL(virtual)->free(&vm_list, address);
+    CALL(virtual)->free(cvm, address);
     memset(ptr, 0, POINTER_TYPE_SIZE); /* NOLINT: sizeof(pointer_type) */
-    api->free(ptr);
+    CALL(os)->free(ptr);
     return TRUE;
 }
 
 static u64 pointer_release(u64 address) {
+    const_vm_ptr cvm = &vm_list;
     if (vm_list == 0) {
-        ERROR_VM_NOT_INITIALIZED(vm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
         return FALSE;
     }
     if (address == 0) {
-        ERROR_INVALID_ADDRESS(address == 0);
+        ERROR_INVALID_ARGUMENT("address == %lld", address);
         return FALSE;
     }
-    u64 type_id = CALL(virtual)->type(&vm_list, address);
+    u64 type_id = CALL(virtual)->type(cvm, address);
     if (type_id == 0) {
-        ERROR_INVALID_TYPEID(type_id == 0);
+        ERROR_INVALID_TYPE_ID("type_id == %lld", type_id);
         return FALSE;
     }
     if (type_id > 0 && type_id <= known_types_counter - 1) {
@@ -383,21 +396,22 @@ static u64 pointer_release(u64 address) {
 }
 
 static const_void_ptr pointer_read(u64 address, u64 type_id) {
+    const_vm_ptr cvm = &vm_list;
     if (vm_list == 0) {
-        ERROR_VM_NOT_INITIALIZED(vm);
-        return FALSE;
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        return NULL_PTR;
     }
     if (address == 0) {
-        ERROR_INVALID_ADDRESS(address == 0);
+        ERROR_INVALID_ARGUMENT("address == %lld", address);
         return NULL_PTR;
     }
     if (type_id == 0) {
-        ERROR_INVALID_TYPEID(type_id == 0);
+        ERROR_INVALID_ARGUMENT("type_id == %lld", type_id);
         return NULL_PTR;
     }
-    const_pointer_ptr const_ptr = CALL(virtual)->read(&vm_list, address, type_id);
+    const_pointer_ptr const_ptr = CALL(virtual)->read(cvm, address, type_id);
     if (const_ptr == 0) {
-        ERROR_INVALID_POINTER(const_ptr == 0);
+        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", const_ptr, address, type_id);
         return NULL_PTR;
     }
     const_void_ptr data = const_ptr->data;
@@ -431,9 +445,9 @@ static void pointer_ref_enumerator_destroy_internal(struct vm_state* state) {
 
 /* implementation */
 #ifdef USE_MEMORY_DEBUG_INFO
-static void virtual_dump(const_vm_ptr vm) {
+static void virtual_dump(const_vm_ptr cvm) {
     struct vm_state state;
-    pointer_ref_enumerator_init_internal(&state, vm);
+    pointer_ref_enumerator_init_internal(&state, cvm);
     pointer_ptr ptr = 0;
     while ((ptr = pointer_enumerator_next_internal(&state)) != 0) {
         pointer_dump(ptr);
@@ -441,9 +455,9 @@ static void virtual_dump(const_vm_ptr vm) {
     pointer_ref_enumerator_destroy_internal(&state);
 }
 
-static void virtual_dump_ref(const_vm_ptr vm) {
+static void virtual_dump_ref(const_vm_ptr cvm) {
     struct vm_state state;
-    pointer_ref_enumerator_init_internal(&state, vm);
+    pointer_ref_enumerator_init_internal(&state, cvm);
     pointer_ptr* ref = 0;
     while ((ref = pointer_ref_enumerator_next_internal(&state)) != 0) {
         pointer_dump_ref(ref);
@@ -513,21 +527,29 @@ const virtual_pointer_methods PRIVATE_API(virtual_pointer_methods_definitions) =
     .free = pointer_free
 };
 
+const virtual_pointer_methods* PRIVATE_API(pointer) = &PRIVATE_API(virtual_pointer_methods_definitions);
+const virtual_pointer_methods* CALL(pointer) {
+    return PRIVATE_API(pointer);
+}
+
 const virtual_vm_methods PRIVATE_API(virtual_vm_methods_definitions) = {
     .init = pointer_init,
     .destroy = pointer_destroy,
     .gc = pointer_gc,
-    .register_known_type = pointer_register_known_type,
-    .register_user_type = pointer_register_user_type,
     .release = pointer_release
 };
 
-const virtual_pointer_methods* pointer = &PRIVATE_API(virtual_pointer_methods_definitions);
-const virtual_pointer_methods* CALL(pointer) {
-    return pointer;
+const virtual_vm_methods* PRIVATE_API(vm) = &PRIVATE_API(virtual_vm_methods_definitions);
+const virtual_vm_methods* CALL(vm) {
+    return PRIVATE_API(vm);
 }
 
-const virtual_vm_methods* vm = &PRIVATE_API(virtual_vm_methods_definitions);
-const virtual_vm_methods* CALL(vm) {
-    return vm;
+const virtual_type_methods PRIVATE_API(virtual_type_methods_definitions) = {
+    .register_known_type = pointer_register_known_type,
+    .register_user_type = pointer_register_user_type
+};
+
+const virtual_type_methods* PRIVATE_API(type) = &PRIVATE_API(virtual_type_methods_definitions);
+const virtual_type_methods* CALL(type) {
+    return PRIVATE_API(type);
 }
