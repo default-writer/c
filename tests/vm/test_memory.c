@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 31, 2025 at 11:01:46 AM GMT+3
+ *   March 31, 2025 at 4:34:15 PM GMT+3
  *
  */
 /*
@@ -122,6 +122,29 @@ RX_TEST_CASE(tests_memory_v1, test_alloc_0, .fixture = test_fixture) {
     RX_ASSERT(data_ptr == 0);
     /* ensures pop does not zeroes the head pointer */
     RX_ASSERT(*ctx != 0);
+}
+
+/* test case */
+RX_TEST_CASE(tests_memory_v1, test_error_api_stdout, .fixture = test_fixture) {
+    CALL(error)->clear();
+    FILE* f = CALL(error)->stdout();
+    RX_ASSERT(f == stdout);
+}
+
+/* test case */
+RX_TEST_CASE(tests_memory_v1, test_error_api_stderr, .fixture = test_fixture) {
+    CALL(error)->clear();
+    FILE* f = CALL(error)->stderr();
+    RX_ASSERT(f == stderr);
+}
+
+/* test case */
+RX_TEST_CASE(tests_memory_v1, test_api_clear_get_has_0, .fixture = test_fixture) {
+    CALL(error)->clear();
+    const char* ex = CALL(error)->get();
+    u64 size = (u64)strlen(ex);
+    RX_ASSERT(size == 0);
+    RX_ASSERT(CALL(error)->has() == 0);
 }
 
 /* test case */

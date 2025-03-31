@@ -23,6 +23,7 @@ def load_libc_vm():
 c_sys = load_libc_sys()
 c_vm = load_libc_vm()
 
+
 class VM:
     class vm_methods(ctypes.Structure):
         _fields_ = [
@@ -48,6 +49,7 @@ class VM:
 
     def destroy(self):
         self.vm_methods.destroy()
+
 
 class OS:
     class os_methods(ctypes.Structure):
@@ -127,6 +129,7 @@ class OS:
     def strlen(self, s):
         return self.os_methods.strlen(s)
 
+
 class MEMORY:
     class memory_methods(ctypes.Structure):
         _fields_ = [
@@ -148,6 +151,7 @@ class MEMORY:
 
     def free(self, ptr, size):
         return self.memory_methods.free(ptr, size)
+
 
 class POINTER:
     class pointer_methods(ctypes.Structure):
@@ -174,6 +178,7 @@ class POINTER:
 
     def free(self, address, type_id):
         return self.pointer_methods.free(address, type_id)
+
 
 class STRING:
     class string_methods(ctypes.Structure):
@@ -277,6 +282,7 @@ class STRING:
     def strcmp(self, vm, src, dest):
         return self.string_methods.strcmp(vm, src, dest)
 
+
 class TYPE:
     _type_map = {}
 
@@ -324,21 +330,29 @@ class TYPE:
                 return type_name
         return None
 
-TYPE.init()
 
 class ERROR:
     class error_methods(ctypes.Structure):
         _fields_ = [
+            ("stdout", ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_void_p))),
+            ("stderr", ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_void_p))),
             ("output", ctypes.CFUNCTYPE(None, ctypes.POINTER(ctypes.c_void_p), ctypes.c_uint64, ctypes.c_char_p, ctypes.c_uint64)),
             ("throw", ctypes.CFUNCTYPE(None, ctypes.c_uint64, ctypes.c_char_p, ctypes.c_uint64)),
             ("clear", ctypes.CFUNCTYPE(None)),
             ("has", ctypes.CFUNCTYPE(ctypes.c_uint64)),
+            ("get", ctypes.CFUNCTYPE(ctypes.c_char_p)),
         ]
 
     def __init__(self):
         error_methods_ptr = c_sys.error
         error_methods_ptr.restype = ctypes.POINTER(ERROR.error_methods)
         self.error_methods = error_methods_ptr().contents
+
+    def stdout(self):
+        return self.error_methods.stdout()
+
+    def stderr(self):
+        return self.error_methods.stderr()
 
     def output(self, output_file, code, message, size):
         self.error_methods.output(output_file, code, message, size)
@@ -351,6 +365,13 @@ class ERROR:
 
     def has(self):
         return self.error_methods.has()
+
+    def get(self):
+        return self.error_methods.get()
+
+
+TYPE.init()
+
 
 def main():
     try:
@@ -379,7 +400,8 @@ def main():
                 # Example usage of ERROR class
                 error.throw(1, b"VM not initialized", len(b"VM not initialized"))
                 if error.has():
-                    error.output(ctypes.c_void_p(1), 1, b"VM not initialized", len(b"VM not initialized"))
+                    error.output(error.stdout(), 1, b"VM not initialized", len(b"VM not initialized"))
+                    print(f"Error message: {error.get().decode()}")
                     error.clear()
 
                 # os.free(dot) -- double free or corruption, do not use directly, you should understand what are you doing

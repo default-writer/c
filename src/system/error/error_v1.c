@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 31, 2025 at 11:01:22 AM GMT+3
+ *   March 31, 2025 at 4:42:51 PM GMT+3
  *
  */
 /*
@@ -28,6 +28,9 @@
 
 #include "system/os/os_v1.h"
 
+#define ERROR_BUFFER_SIZE 4096
+
+/* private */
 static const char* error_messages[] = {
     [ID_ERROR_NO_ERROR] = "no error",
     [ID_ERROR_VM_NOT_INITIALIZED] = "vm not initialized",
@@ -44,7 +47,11 @@ static void error_output(FILE* output, u64 id, const char* message, u64 size);
 static void error_throw(u64 id, const char* message, u64 size);
 static void error_clear(void);
 static u64 error_has(void);
+static FILE* error_stdout(void);
+static FILE* error_stderr(void);
+static const char* error_get(void);
 
+/* implementation */
 static void error_output(FILE* output, u64 id, const char* message, u64 size) {
 #ifdef USE_TTY
     if (isatty(STDERR_FILENO)) {
@@ -59,27 +66,34 @@ static void error_output(FILE* output, u64 id, const char* message, u64 size) {
 
 static void error_throw(u64 id, const char* message, u64 size) {
     ex->type = id;
-    if (size < 4096) {
+    if (size < ERROR_BUFFER_SIZE) {
         CALL(os)->memcpy(ex->message, message, size); /* NOLINT: memcpy(ex->message */
-        CALL(os)->memset(((u8*)ex->message) + size, 0x00, 4096 - size);
+        CALL(os)->memset(((u8*)ex->message) + size, 0x00, ERROR_BUFFER_SIZE - size);
     } else {
-        CALL(os)->memcpy(ex->message, message, 4095); /* NOLINT: memcpy(ex->message */
-        ex->message[4095] = 0;
+        CALL(os)->memcpy((u8*)ex->message, message, ERROR_BUFFER_SIZE - 1); /* NOLINT: memcpy(ex->message */
+        ex->message[ERROR_BUFFER_SIZE - 1] = 0;
     }
 }
 
 static void error_clear(void) {
+    CALL(os)->memset((u8*)ex->message, 0, 4096); /* NOLINT: memset(ex->message, 0, 4096) */
     ex->type = ID_ERROR_NO_ERROR;
-    CALL(os)->memset(ex->message, 0, 4096); /* NOLINT: memset(ex->message, 0, 4096) */
-#ifdef USE_MEMORY_DEBUG_INFO
-    ex->func = NULL;
-    ex->file = NULL;
-    ex->line = 0;
-#endif
 }
 
 static u64 error_has(void) {
     return ex->type == ID_ERROR_NO_ERROR ? FALSE : TRUE;
+}
+
+static FILE* error_stdout(void) {
+    return stdout;
+}
+
+static FILE* error_stderr(void) {
+    return stderr;
+}
+
+static const char* error_get(void) {
+    return ex->message;
 }
 
 /* public */
@@ -87,7 +101,10 @@ const system_error_methods PRIVATE_API(system_error_methods_definitions) = {
     .output = error_output,
     .throw = error_throw,
     .clear = error_clear,
-    .has = error_has
+    .has = error_has,
+    .stdout = error_stdout,
+    .stderr = error_stderr,
+    .get = error_get
 };
 
 const system_error_methods* PRIVATE_API(error) = &PRIVATE_API(system_error_methods_definitions);
