@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 28, 2025 at 4:58:16 PM GMT+3
+ *   March 30, 2025 at 11:18:00 PM GMT+3
  *
  */
 /*
@@ -58,10 +58,10 @@ u64 hashtable_resize_internal(hashtable_ptr ht) {
 
 /* implementation */
 hashtable_ptr hashtable_init() {
-    hashtable_ptr ht = (hashtable_ptr)CALL(os)->alloc(1, HASHTABLE_TYPE_SIZE);
+    hashtable_ptr ht = (hashtable_ptr)CALL(os)->calloc(1, HASHTABLE_TYPE_SIZE);
     ht->capacity = HASHTABLE_INITIAL_CAPACITY;
     ht->size = 0;
-    ht->table = (hashentry_ptr*)CALL(os)->alloc(ht->capacity, HASHENTRY_PTR_SIZE);
+    ht->table = (hashentry_ptr*)CALL(os)->calloc(ht->capacity, HASHENTRY_PTR_SIZE);
     return ht;
 }
 
@@ -73,7 +73,7 @@ hashentry_ptr hashtable_insert(hashtable_ptr ht, u64 key, const_void_ptr value) 
         hashtable_resize_internal(ht);
     }
     u64 index = hashtable_function_internal(key);
-    hashentry_ptr entry = CALL(os)->alloc(1, HASHENTRY_TYPE_SIZE);
+    hashentry_ptr entry = CALL(os)->calloc(1, HASHENTRY_TYPE_SIZE);
     *entry = (hashentry_type) {
         .key = key,
         .value = value,

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 28, 2025 at 4:58:17 PM GMT+3
+ *   March 30, 2025 at 11:18:00 PM GMT+3
  *
  */
 /*
@@ -70,7 +70,7 @@ static void list_push(stack_ptr* current, void* payload) {
         return;
     }
     /* creates empty data chunk */
-    stack_ptr item = CALL(os)->alloc(1, STACK_ELEMENT_TYPE_SIZE);
+    stack_ptr item = CALL(os)->calloc(1, STACK_ELEMENT_TYPE_SIZE);
     /* writes data into allocated memory buffer */
     item->data = payload;
     /* assigns item's next pointer to current pointer */
@@ -128,7 +128,7 @@ static void list_init(stack_ptr* current) {
         return;
     }
     /* sets the current item */
-    *current = CALL(os)->alloc(1, STACK_ELEMENT_TYPE_SIZE);
+    *current = CALL(os)->calloc(1, STACK_ELEMENT_TYPE_SIZE);
 }
 
 /* destroys the memory stack */

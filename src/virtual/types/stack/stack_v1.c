@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 27, 2025 at 4:37:11 PM GMT+3
+ *   March 31, 2025 at 12:35:34 AM GMT+3
  *
  */
 /*
@@ -78,7 +78,7 @@ static void INIT init(void) {
 static void stack_type_destructor(u64 address) {
     const_void_ptr const_ptr = CALL(pointer)->read(address, type_id);
     if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", const_ptr, address, type_id);
+        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const void*)const_ptr, address, (u64)type_id);
         return;
     }
     safe_void_ptr void_ptr;
@@ -111,7 +111,7 @@ static void stack_release_internal(stack_ptr* current) {
 /* public */
 static u64 stack_alloc(const_vm_ptr cvm) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     u64 ptr = stack_alloc_internal();
@@ -120,7 +120,7 @@ static u64 stack_alloc(const_vm_ptr cvm) {
 
 static u64 stack_release(const_vm_ptr cvm, u64 address) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (address == 0) {
@@ -129,7 +129,7 @@ static u64 stack_release(const_vm_ptr cvm, u64 address) {
     }
     const_void_ptr const_ptr = CALL(pointer)->read(address, type_id);
     if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", const_ptr, address, type_id);
+        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const void*)const_ptr, address, (u64)type_id);
         return FALSE;
     }
     safe_void_ptr void_ptr;
@@ -143,7 +143,7 @@ static u64 stack_release(const_vm_ptr cvm, u64 address) {
 
 static u64 stack_free(const_vm_ptr cvm, u64 address) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (address == 0) {
@@ -156,7 +156,7 @@ static u64 stack_free(const_vm_ptr cvm, u64 address) {
 
 static u64 stack_push(const_vm_ptr cvm, u64 ptr_list, u64 address) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (ptr_list == 0) {
@@ -173,7 +173,7 @@ static u64 stack_push(const_vm_ptr cvm, u64 ptr_list, u64 address) {
     }
     const_void_ptr const_ptr = CALL(pointer)->read(ptr_list, type_id);
     if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, ptr_list == %lld, type_id == %lld", const_ptr, ptr_list, type_id);
+        ERROR_INVALID_POINTER("const_ptr == %p, ptr_list == %lld, type_id == %lld", (const void*)const_ptr, ptr_list, (u64)type_id);
         return FALSE;
     }
     safe_void_ptr void_ptr;
@@ -187,7 +187,7 @@ static u64 stack_push(const_vm_ptr cvm, u64 ptr_list, u64 address) {
 
 static u64 stack_peek(const_vm_ptr cvm, u64 address) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (address == 0) {
@@ -196,7 +196,7 @@ static u64 stack_peek(const_vm_ptr cvm, u64 address) {
     }
     const_void_ptr const_ptr = CALL(pointer)->read(address, type_id);
     if (const_ptr == 0) {
-        ERROR_INVALID_VALUE("const_ptr == %p, address == %lld, type_id == %lld", const_ptr, address, type_id);
+        ERROR_INVALID_VALUE("const_ptr == %p, address == %lld, type_id == %lld", const_ptr, address, (u64)type_id);
         return FALSE;
     }
     safe_void_ptr void_ptr;
@@ -210,7 +210,7 @@ static u64 stack_peek(const_vm_ptr cvm, u64 address) {
 
 static u64 stack_peekn(const_vm_ptr cvm, u64 address, u64 nelements) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (address == 0) {
@@ -223,7 +223,7 @@ static u64 stack_peekn(const_vm_ptr cvm, u64 address, u64 nelements) {
     }
     const_void_ptr const_ptr = CALL(pointer)->read(address, type_id);
     if (const_ptr == 0) {
-        ERROR_INVALID_VALUE("const_ptr == %p, address == %lld, type_id == %lld", const_ptr, address, type_id);
+        ERROR_INVALID_VALUE("const_ptr == %p, address == %lld, type_id == %lld", const_ptr, address, (u64)type_id);
         return FALSE;
     }
     safe_void_ptr void_ptr;
@@ -258,7 +258,7 @@ static u64 stack_peekn(const_vm_ptr cvm, u64 address, u64 nelements) {
 
 static u64 stack_pop(const_vm_ptr cvm, u64 address) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (address == 0) {
@@ -267,7 +267,7 @@ static u64 stack_pop(const_vm_ptr cvm, u64 address) {
     }
     const_void_ptr const_ptr = CALL(pointer)->read(address, type_id);
     if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", const_ptr, address, type_id);
+        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const void*)const_ptr, address, (u64)type_id);
         return FALSE;
     }
     safe_void_ptr void_ptr;
@@ -284,7 +284,7 @@ static u64 stack_pop(const_vm_ptr cvm, u64 address) {
 
 static u64 stack_popn(const_vm_ptr cvm, u64 address, u64 nelements) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (address == 0) {
@@ -297,7 +297,7 @@ static u64 stack_popn(const_vm_ptr cvm, u64 address, u64 nelements) {
     }
     const_void_ptr const_ptr = CALL(pointer)->read(address, type_id);
     if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr = %p, address == %lld, type_id == %lld", const_ptr, address, type_id);
+        ERROR_INVALID_POINTER("const_ptr = %p, address == %lld, type_id == %lld", (const void*)const_ptr, address, (u64)type_id);
         return FALSE;
     }
     safe_void_ptr src_void_ptr;
@@ -330,7 +330,7 @@ static u64 stack_popn(const_vm_ptr cvm, u64 address, u64 nelements) {
 
 static u64 stack_size(const_vm_ptr cvm, u64 address) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (address == 0) {
@@ -339,7 +339,7 @@ static u64 stack_size(const_vm_ptr cvm, u64 address) {
     }
     const_void_ptr const_ptr = CALL(pointer)->read(address, type_id);
     if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", const_ptr, address, type_id);
+        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const void*)const_ptr, address, (u64)type_id);
         return FALSE;
     }
     const_stack_handler_ptr handler = const_ptr;

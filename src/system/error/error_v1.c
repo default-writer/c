@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 27, 2025 at 12:14:30 PM GMT+3
+ *   March 31, 2025 at 11:01:22 AM GMT+3
  *
  */
 /*
@@ -26,6 +26,8 @@
 
 #include "error_v1.h"
 
+#include "system/os/os_v1.h"
+
 static const char* error_messages[] = {
     [ID_ERROR_NO_ERROR] = "no error",
     [ID_ERROR_VM_NOT_INITIALIZED] = "vm not initialized",
@@ -35,49 +37,57 @@ static const char* error_messages[] = {
     [ID_ERROR_INVALID_VALUE] = "invalid value",
 };
 
-#ifdef USE_MEMORY_DEBUG_INFO
-static void error_stderr(enum error_message_code id, const char* func, const char* file, int line, const char* format, ...);
-#else
-static void error_stderr(enum error_message_code id, const char* format, ...);
-#endif
+static exception_type exception;
+static exception_ptr ex = &exception;
 
+static void error_output(FILE* output, u64 id, const char* message, u64 size);
+static void error_throw(u64 id, const char* message, u64 size);
+static void error_clear(void);
+static u64 error_has(void);
+
+static void error_output(FILE* output, u64 id, const char* message, u64 size) {
+#ifdef USE_TTY
+    if (isatty(STDERR_FILENO)) {
+        const char* start = "\x1b[31m";
+        const char* end = "\x1b[0m";
+        fprintf(output, "%s[debug]%s %s: %s\n", start, end, error_messages[id], message); /* NOLINT: fprintf(output) */
+    }
+#else
+    fprintf(output, "[debug] %s: %s\n", error_messages[id], message); /* NOLINT: fprintf(output) */
+#endif
+}
+
+static void error_throw(u64 id, const char* message, u64 size) {
+    ex->type = id;
+    if (size < 4096) {
+        CALL(os)->memcpy(ex->message, message, size); /* NOLINT: memcpy(ex->message */
+        CALL(os)->memset(((u8*)ex->message) + size, 0x00, 4096 - size);
+    } else {
+        CALL(os)->memcpy(ex->message, message, 4095); /* NOLINT: memcpy(ex->message */
+        ex->message[4095] = 0;
+    }
+}
+
+static void error_clear(void) {
+    ex->type = ID_ERROR_NO_ERROR;
+    CALL(os)->memset(ex->message, 0, 4096); /* NOLINT: memset(ex->message, 0, 4096) */
 #ifdef USE_MEMORY_DEBUG_INFO
-static void error_stderr(enum error_message_code id, const char* func, const char* file, int line, const char* format, ...) {
-#ifdef USE_TTY
-    if (isatty(STDERR_FILENO)) {
-        const char* start = "\x1b[31m";
-        const char* end = "\x1b[0m";
-        fprintf(stderr, "[%sERROR%s] %s: %s: (%s:%d)\n", start, end, error_messages[id], func, file, line); /* NOLINT: fprintf(stderr) */
-    }
-#else
-    fprintf(stderr, "[ERROR] %s: %s (%s:%d)\n", error_messages[id], func, file, line); /* NOLINT: fprintf(stderr) */
+    ex->func = NULL;
+    ex->file = NULL;
+    ex->line = 0;
 #endif
-    va_list arg;
-    va_start(arg, format);
-    vfprintf(stderr, format, arg);
-    va_end(arg);
 }
-#else
-static void error_stderr(enum error_message_code id, const char* format, ...) {
-#ifdef USE_TTY
-    if (isatty(STDERR_FILENO)) {
-        const char* start = "\x1b[31m";
-        const char* end = "\x1b[0m";
-        fprintf(stderr, "[%sERROR%s] %s\n", start, end, error_messages[id]); /* NOLINT: fprintf(stderr) */
-    }
-#else
-    fprintf(stderr, "[ERROR] %s\n", error_messages[id]); /* NOLINT: fprintf(stderr) */
-#endif
-    va_list arg;
-    va_start(arg, format);
-    vfprintf(stderr, format, arg);
-    va_end(arg);
+
+static u64 error_has(void) {
+    return ex->type == ID_ERROR_NO_ERROR ? FALSE : TRUE;
 }
-#endif
 
 /* public */
 const system_error_methods PRIVATE_API(system_error_methods_definitions) = {
-    .stderr = &error_stderr,
+    .output = error_output,
+    .throw = error_throw,
+    .clear = error_clear,
+    .has = error_has
 };
 
 const system_error_methods* PRIVATE_API(error) = &PRIVATE_API(system_error_methods_definitions);

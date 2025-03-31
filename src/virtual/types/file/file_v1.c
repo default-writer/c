@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 28, 2025 at 4:58:15 PM GMT+3
+ *   March 31, 2025 at 12:37:32 AM GMT+3
  *
  */
 /*
@@ -92,7 +92,7 @@ static int is_valid_mode(const char* mode) {
 
 static u64 file_alloc(const_vm_ptr cvm, u64 path, u64 mode) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (path == 0) {
@@ -105,7 +105,7 @@ static u64 file_alloc(const_vm_ptr cvm, u64 path, u64 mode) {
     }
     const char* file_path_data = CALL(pointer)->read(path, TYPE_STRING);
     if (file_path_data == 0) {
-        ERROR_INVALID_POINTER("file_path_data == %p, address == %lld, type_id == %lld", file_path_data, path, TYPE_STRING);
+        ERROR_INVALID_POINTER("file_path_data == %p, address == %lld, type_id == %lld", (const void*)file_path_data, path, (u64)TYPE_STRING);
         return FALSE;
     }
     if (is_valid_file_path(file_path_data) == 0) {
@@ -114,7 +114,7 @@ static u64 file_alloc(const_vm_ptr cvm, u64 path, u64 mode) {
     }
     const char* mode_data = CALL(pointer)->read(mode, TYPE_STRING);
     if (mode_data == 0) {
-        ERROR_INVALID_POINTER("mode_data == %p, address == %lld, type_id == %lld", mode_data, mode, TYPE_STRING);
+        ERROR_INVALID_POINTER("mode_data == %p, address == %lld, type_id == %lld", (const void*)mode_data, mode, (u64)TYPE_STRING);
         return FALSE;
     }
     if (is_valid_mode(mode_data) == 0) {
@@ -123,7 +123,7 @@ static u64 file_alloc(const_vm_ptr cvm, u64 path, u64 mode) {
     }
     FILE* f = CALL(os)->fopen(file_path_data, mode_data); /* NOLINT */
     if (f == 0) {
-        ERROR_INVALID_VALUE("f == %p, file_path_data == %s, mode_data == %s", f, file_path_data, mode_data);
+        ERROR_INVALID_VALUE("f == %p, file_path_data == %s, mode_data == %s", (void*)f, file_path_data, mode_data);
         return FALSE;
     }
     void* data = CALL(memory)->alloc(FILE_HANDLER_TYPE_SIZE);
@@ -138,7 +138,7 @@ static u64 file_alloc(const_vm_ptr cvm, u64 path, u64 mode) {
 
 static u64 file_free(const_vm_ptr cvm, u64 address) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (address == 0) {
@@ -151,7 +151,7 @@ static u64 file_free(const_vm_ptr cvm, u64 address) {
 
 static u64 file_data(const_vm_ptr cvm, u64 address) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (address == 0) {
@@ -160,7 +160,7 @@ static u64 file_data(const_vm_ptr cvm, u64 address) {
     }
     const_void_ptr const_ptr = CALL(pointer)->read(address, type_id);
     if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", const_ptr, address, type_id);
+        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const void*)const_ptr, address, (u64)type_id);
         return FALSE;
     }
     safe_void_ptr void_ptr;

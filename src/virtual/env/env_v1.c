@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 28, 2025 at 7:49:54 AM GMT+3
+ *   March 31, 2025 at 12:35:34 AM GMT+3
  *
  */
 /*
@@ -43,7 +43,7 @@ static u64 env_putc(const_vm_ptr cvm, u64 address);
 /* implementation */
 static u64 env_getenv(const_vm_ptr cvm, u64 address) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (address == 0) {
@@ -52,7 +52,7 @@ static u64 env_getenv(const_vm_ptr cvm, u64 address) {
     }
     const char* name = CALL(pointer)->read(address, TYPE_STRING);
     if (name == 0) {
-        ERROR_INVALID_POINTER("name == %p, address == %lld, type_id == %lld", name, address, TYPE_STRING);
+        ERROR_INVALID_POINTER("name == %p, address == %lld, type_id == %lld", (const void*)name, address, (u64)TYPE_STRING);
         return FALSE;
     }
     const char* ch = CALL(os)->getenv(name);
@@ -61,11 +61,11 @@ static u64 env_getenv(const_vm_ptr cvm, u64 address) {
 
 static u64 env_getcwd(const_vm_ptr cvm) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     u64 data_ptr = 0;
-    char* src = CALL(os)->alloc(1, PATH_MAX);
+    char* src = CALL(os)->calloc(1, PATH_MAX);
     src[PATH_MAX - 1] = 0;
     if (CALL(os)->getcwd(src, PATH_MAX - 1) != 0) {
         data_ptr = CALL(string)->load(cvm, src);
@@ -76,7 +76,7 @@ static u64 env_getcwd(const_vm_ptr cvm) {
 
 static u64 env_putc(const_vm_ptr cvm, u64 address) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (address == 0) {

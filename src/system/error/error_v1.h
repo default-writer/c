@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 27, 2025 at 10:25:46 AM GMT+3
+ *   March 31, 2025 at 11:00:35 AM GMT+3
  *
  */
 /*
@@ -34,6 +34,8 @@
 
 #include "system/export.h"
 
+#include <stdio.h>
+
 enum error_message_code {
     ID_ERROR_NO_ERROR,
     ID_ERROR_VM_NOT_INITIALIZED,
@@ -44,11 +46,10 @@ enum error_message_code {
 };
 
 typedef struct PRIVATE_API(system_error_methods) {
-#ifdef USE_MEMORY_DEBUG_INFO
-    void (*stderr)(enum error_message_code id, const char* func, const char* file, int line, const char* format, ...);
-#else
-    void (*stderr)(enum error_message_code id, const char* format, ...);
-#endif
+    void (*output)(FILE* output, u64, const char* message, u64 size);
+    void (*throw)(u64, const char* message, u64 size);
+    void (*clear)(void);
+    u64 (*has)(void);
 } system_error_methods;
 
 /* public */

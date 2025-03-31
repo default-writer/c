@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 28, 2025 at 4:58:17 PM GMT+3
+ *   March 31, 2025 at 7:59:20 AM GMT+3
  *
  */
 /*
@@ -58,9 +58,9 @@ static void* memory_alloc(u64 size) {
         ERROR_INVALID_ARGUMENT("size == %lld", size);
         return NULL_PTR;
     }
-    void* ptr = CALL(os)->alloc(1, size);
+    void* ptr = CALL(os)->calloc(1, size);
     if (ptr == 0) {
-        ERROR_INVALID_VALUE("ptr == %p, size == %lld", ptr, size);
+        ERROR_INVALID_VALUE("ptr == %p, size == %lld", (const void*)ptr, size);
         return NULL_PTR;
     }
 #ifdef USE_MEMORY_DEBUG_INFO

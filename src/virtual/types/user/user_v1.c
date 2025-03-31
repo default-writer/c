@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 27, 2025 at 4:38:10 PM GMT+3
+ *   March 31, 2025 at 12:35:34 AM GMT+3
  *
  */
 /*
@@ -61,7 +61,7 @@ static void user_type_destructor(u64 address) {
 
 static u64 user_alloc(const_vm_ptr cvm) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     u64 address = CALL(virtual)->alloc(cvm, DEFAULT_SIZE, type_id);
@@ -70,7 +70,7 @@ static u64 user_alloc(const_vm_ptr cvm) {
 
 static u64 user_free(const_vm_ptr cvm, u64 address) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (address == 0) {

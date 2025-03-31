@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 28, 2025 at 9:43:53 AM GMT+3
+ *   March 31, 2025 at 6:57:16 AM GMT+3
  *
  */
 /*
@@ -105,6 +105,17 @@ typedef struct hashtable {
     u64 capacity;
     u64 size;
 } hashtable_type;
+typedef struct exception* exception_ptr;
+typedef const struct exception* const_exception_ptr;
+typedef struct exception {
+    u64 type;
+    char message[4096];
+#ifdef USE_MEMORY_DEBUG_INFO
+    const char* func;
+    const char* file;
+    int line;
+#endif
+} exception_type;
 
 enum type {
     /* value used for ephemeral type - null */

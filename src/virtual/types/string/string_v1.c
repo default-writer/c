@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 28, 2025 at 4:58:18 PM GMT+3
+ *   March 31, 2025 at 12:35:34 AM GMT+3
  *
  */
 /*
@@ -112,7 +112,7 @@ static void INIT init(void) {
 static void string_type_destructor(u64 address) {
     const_pointer_ptr const_ptr = CALL(pointer)->read(address, TYPE_STRING);
     if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", const_ptr, address, TYPE_STRING);
+        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const void*)const_ptr, address, (u64)TYPE_STRING);
         return;
     }
     CALL(pointer)->free(address, type_id);
@@ -129,7 +129,7 @@ static const_pointer_ptr get_string_pointer_internal(const_vm_ptr cvm, const_poi
     }
     const_pointer_ptr const_ptr = CALL(virtual)->read(cvm, ref->address, TYPE_STRING);
     if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", const_ptr, ref->address, type_id);
+        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const void*)const_ptr, ref->address, (u64)type_id);
         return NULL_PTR;
     }
     offset += ref->offset;
@@ -254,7 +254,7 @@ static const_pointer_ptr read_string_data_internal(const_vm_ptr cvm, u64 address
 /* public */
 static u64 string_free(const_vm_ptr cvm, u64 address) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (address == 0) {
@@ -267,7 +267,7 @@ static u64 string_free(const_vm_ptr cvm, u64 address) {
 
 static u64 string_copy(const_vm_ptr cvm, u64 src) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (src == 0) {
@@ -278,7 +278,7 @@ static u64 string_copy(const_vm_ptr cvm, u64 src) {
     u64 offset = 0;
     const_pointer_ptr const_ptr = read_string_data_internal(cvm, src, &size, &offset);
     if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, size == %lld, offset == %lld", const_ptr, size, offset);
+        ERROR_INVALID_POINTER("const_ptr == %p, size == %lld, offset == %lld", (const void*)const_ptr, size, offset);
         return FALSE;
     }
     const char* ch = const_ptr->data;
@@ -289,7 +289,7 @@ static u64 string_copy(const_vm_ptr cvm, u64 src) {
 
 static u64 string_strcpy(const_vm_ptr cvm, u64 dest, u64 src) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (dest == 0) {
@@ -306,14 +306,14 @@ static u64 string_strcpy(const_vm_ptr cvm, u64 dest, u64 src) {
     }
     const_pointer_ptr dest_ptr = CALL(virtual)->read(cvm, dest, type_id);
     if (dest_ptr == 0) {
-        ERROR_INVALID_POINTER("dest_ptr == %p, dest == %lld, type_id == %lld", dest_ptr, dest, type_id);
+        ERROR_INVALID_POINTER("dest_ptr == %p, dest == %lld, type_id == %lld", (const void*)dest_ptr, dest, (u64)type_id);
         return FALSE;
     }
     u64 src_size = 0;
     u64 src_offset = 0;
     const_pointer_ptr const_ptr = read_string_data_internal(cvm, src, &src_size, &src_offset);
     if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, src_size == %lld, src_offset == %lld", const_ptr, src_size, src_offset);
+        ERROR_INVALID_POINTER("const_ptr == %p, src_size == %lld, src_offset == %lld", (const void*)const_ptr, src_size, src_offset);
         return FALSE;
     }
     const char* ch = const_ptr->data;
@@ -341,7 +341,7 @@ static u64 string_strcpy(const_vm_ptr cvm, u64 dest, u64 src) {
 
 static u64 string_strcat(const_vm_ptr cvm, u64 dest, u64 src) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (dest == 0) {
@@ -358,14 +358,14 @@ static u64 string_strcat(const_vm_ptr cvm, u64 dest, u64 src) {
     }
     const_pointer_ptr dest_ptr = CALL(virtual)->read(cvm, dest, type_id);
     if (dest_ptr == 0) {
-        ERROR_INVALID_POINTER("dest_ptr == %p, dest == %lld, type_id == %lld", dest_ptr, dest, type_id);
+        ERROR_INVALID_POINTER("dest_ptr == %p, dest == %lld, type_id == %lld", (const void*)dest_ptr, dest, (u64)type_id);
         return FALSE;
     }
     u64 size = 0;
     u64 offset = 0;
     const_pointer_ptr const_ptr = read_string_data_internal(cvm, src, &size, &offset);
     if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, size == %lld, offset == %lld", const_ptr, size, offset);
+        ERROR_INVALID_POINTER("const_ptr == %p, size == %lld, offset == %lld", (const void*)const_ptr, size, offset);
         return FALSE;
     }
     const char* ch = const_ptr->data;
@@ -394,7 +394,7 @@ static u64 string_strcat(const_vm_ptr cvm, u64 dest, u64 src) {
 
 static u64 string_strrchr(const_vm_ptr cvm, u64 src, u64 match) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (src == 0) {
@@ -409,7 +409,7 @@ static u64 string_strrchr(const_vm_ptr cvm, u64 src, u64 match) {
     u64 offset = 0;
     const_pointer_ptr const_ptr = read_string_data_internal(cvm, src, &size, &offset);
     if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, size == %lld, offset == %lld", const_ptr, size, offset);
+        ERROR_INVALID_POINTER("const_ptr == %p, size == %lld, offset == %lld", (const void*)const_ptr, size, offset);
         return FALSE;
     }
     const_void_ptr src_const_data_ptr = const_ptr->data;
@@ -436,7 +436,7 @@ static u64 string_strrchr(const_vm_ptr cvm, u64 src, u64 match) {
 
 static u64 string_strchr(const_vm_ptr cvm, u64 src, u64 match) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (src == 0) {
@@ -451,7 +451,7 @@ static u64 string_strchr(const_vm_ptr cvm, u64 src, u64 match) {
     u64 offset = 0;
     const_pointer_ptr const_ptr = read_string_data_internal(cvm, src, &size, &offset);
     if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, size == %lld, offset == %lld", const_ptr, size, offset);
+        ERROR_INVALID_POINTER("const_ptr == %p, size == %lld, offset == %lld", (const void*)const_ptr, size, offset);
         return FALSE;
     }
     const_void_ptr src_const_data_ptr = const_ptr->data;
@@ -478,7 +478,7 @@ static u64 string_strchr(const_vm_ptr cvm, u64 src, u64 match) {
 
 static u64 string_match(const_vm_ptr cvm, u64 src, u64 match) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (src == 0) {
@@ -491,14 +491,14 @@ static u64 string_match(const_vm_ptr cvm, u64 src, u64 match) {
     }
     const_pointer_ptr match_ptr = CALL(virtual)->read(cvm, match, type_id);
     if (match_ptr == 0) {
-        ERROR_INVALID_POINTER("match_ptr == %p, type_id == %lld", match_ptr, type_id);
+        ERROR_INVALID_POINTER("match_ptr == %p, type_id == %lld", (const void*)match_ptr, (u64)type_id);
         return FALSE;
     }
     u64 size = 0;
     u64 offset = 0;
     const_pointer_ptr const_ptr = read_string_data_internal(cvm, src, &size, &offset);
     if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, size == %lld, offset == %lld", const_ptr, size, offset);
+        ERROR_INVALID_POINTER("const_ptr == %p, size == %lld, offset == %lld", (const void*)const_ptr, size, offset);
         return FALSE;
     }
     const_void_ptr src_const_data_ptr = const_ptr->data;
@@ -517,7 +517,7 @@ static u64 string_match(const_vm_ptr cvm, u64 src, u64 match) {
     size -= offset;
     const char* found_match = find_match_internal(str1, str2, &size, match_size);
     if (found_match == 0) {
-        ERROR_INVALID_VALUE("found_match == %lld, size == %lld, match_size == %lld", found_match, size, match_size);
+        ERROR_INVALID_VALUE("found_match == %p, size == %lld, match_size == %lld", found_match, size, match_size);
         return FALSE;
     }
     offset = (u64)(found_match - ch);
@@ -526,7 +526,7 @@ static u64 string_match(const_vm_ptr cvm, u64 src, u64 match) {
 
 static u64 string_offset(const_vm_ptr cvm, u64 src, u64 match) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (src == 0) {
@@ -539,14 +539,14 @@ static u64 string_offset(const_vm_ptr cvm, u64 src, u64 match) {
     }
     const_pointer_ptr match_ptr = CALL(virtual)->read(cvm, match, type_id);
     if (match_ptr == 0) {
-        ERROR_INVALID_POINTER("match_ptr == %p, type_id == %lld", match_ptr, type_id);
+        ERROR_INVALID_POINTER("match_ptr == %p, type_id == %lld", (const void*)match_ptr, (u64)type_id);
         return FALSE;
     }
     u64 size = 0;
     u64 offset = 0;
     const_pointer_ptr const_ptr = read_string_data_internal(cvm, src, &size, &offset);
     if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, size == %lld, offset == %lld", const_ptr, size, offset);
+        ERROR_INVALID_POINTER("const_ptr == %p, size == %lld, offset == %lld", (const void*)const_ptr, size, offset);
         return FALSE;
     }
     const_void_ptr src_const_data_ptr = const_ptr->data;
@@ -608,7 +608,7 @@ static u64 string_offset(const_vm_ptr cvm, u64 src, u64 match) {
 
 static u64 string_load(const_vm_ptr cvm, const char* ch) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (ch == 0) {
@@ -616,7 +616,7 @@ static u64 string_load(const_vm_ptr cvm, const char* ch) {
         return FALSE;
     }
     if (*ch == 0) {
-        ERROR_INVALID_ARGUMENT("*ch == %lld", *ch);
+        ERROR_INVALID_ARGUMENT("*ch == %lld", (u64)*ch);
         return FALSE;
     }
     u64 size = CALL(os)->strlen(ch) + 1;
@@ -626,7 +626,7 @@ static u64 string_load(const_vm_ptr cvm, const char* ch) {
 
 static u64 string_put_char(const_vm_ptr cvm, u64 src, char value) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (src == 0) {
@@ -637,7 +637,7 @@ static u64 string_put_char(const_vm_ptr cvm, u64 src, char value) {
     u64 offset = 0;
     const_pointer_ptr const_ptr = read_string_data_internal(cvm, src, &size, &offset);
     if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, size == %lld, offset == %lld", const_ptr, size, offset);
+        ERROR_INVALID_POINTER("const_ptr == %p, size == %lld, offset == %lld", (const void*)const_ptr, size, offset);
         return FALSE;
     }
     const_void_ptr src_const_data_ptr = const_ptr->data;
@@ -652,7 +652,7 @@ static u64 string_put_char(const_vm_ptr cvm, u64 src, char value) {
 
 static char* string_unsafe(const_vm_ptr cvm, u64 src) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return NULL_PTR;
     }
     if (src == 0) {
@@ -663,7 +663,7 @@ static char* string_unsafe(const_vm_ptr cvm, u64 src) {
     u64 offset = 0;
     const_pointer_ptr const_ptr = read_string_data_internal(cvm, src, &size, &offset);
     if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, size == %lld, offset == %lld", const_ptr, size, offset);
+        ERROR_INVALID_POINTER("const_ptr == %p, size == %lld, offset == %lld", (const void*)const_ptr, size, offset);
         return NULL_PTR;
     }
     const_void_ptr src_const_data_ptr = const_ptr->data;
@@ -677,7 +677,7 @@ static char* string_unsafe(const_vm_ptr cvm, u64 src) {
 
 static u64 string_size(const_vm_ptr cvm, u64 src) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (src == 0) {
@@ -688,7 +688,7 @@ static u64 string_size(const_vm_ptr cvm, u64 src) {
     u64 offset = 0;
     const_pointer_ptr const_ptr = read_string_data_internal(cvm, src, &size, &offset);
     if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, size == %lld, offset == %lld", const_ptr, size, offset);
+        ERROR_INVALID_POINTER("const_ptr == %p, size == %lld, offset == %lld", (const void*)const_ptr, size, offset);
         return FALSE;
     }
     return size - 1;
@@ -696,7 +696,7 @@ static u64 string_size(const_vm_ptr cvm, u64 src) {
 
 static u64 string_lessthan(const_vm_ptr cvm, u64 src, u64 dst) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (src == 0) {
@@ -715,7 +715,7 @@ static u64 string_lessthan(const_vm_ptr cvm, u64 src, u64 dst) {
     u64 src_offset = 0;
     const_pointer_ptr src_ptr = read_string_data_internal(cvm, src, &src_size, &src_offset);
     if (src_ptr == 0) {
-        ERROR_INVALID_POINTER("src_ptr == %p, src_size == %lld, src_offset == %lld", src_ptr, src_size, src_offset);
+        ERROR_INVALID_POINTER("src_ptr == %p, src_size == %lld, src_offset == %lld", (const void*)src_ptr, src_size, src_offset);
         return FALSE;
     }
     const char* src_data = src_ptr->data;
@@ -723,7 +723,7 @@ static u64 string_lessthan(const_vm_ptr cvm, u64 src, u64 dst) {
     u64 dst_offset = 0;
     const_pointer_ptr dst_ptr = read_string_data_internal(cvm, dst, &dst_size, &dst_offset);
     if (dst_ptr == 0) {
-        ERROR_INVALID_POINTER("dst_ptr == %p, dst_size == %lld, dst_offset == %lld", dst_ptr, dst_size, dst_offset);
+        ERROR_INVALID_POINTER("dst_ptr == %p, dst_size == %lld, dst_offset == %lld", (const void*)dst_ptr, dst_size, dst_offset);
         return FALSE;
     }
     const char* dst_data = dst_ptr->data;
@@ -738,7 +738,7 @@ static u64 string_lessthan(const_vm_ptr cvm, u64 src, u64 dst) {
 
 static u64 string_greaterthan(const_vm_ptr cvm, u64 src, u64 dst) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (src == 0) {
@@ -757,7 +757,7 @@ static u64 string_greaterthan(const_vm_ptr cvm, u64 src, u64 dst) {
     u64 src_offset = 0;
     const_pointer_ptr src_ptr = read_string_data_internal(cvm, src, &src_size, &src_offset);
     if (src_ptr == 0) {
-        ERROR_INVALID_POINTER("src_ptr == %p, size == %lld, offset == %lld", src_ptr, src_size, src_offset);
+        ERROR_INVALID_POINTER("src_ptr == %p, size == %lld, offset == %lld", (const void*)src_ptr, src_size, src_offset);
         return FALSE;
     }
     const char* src_data = src_ptr->data;
@@ -765,7 +765,7 @@ static u64 string_greaterthan(const_vm_ptr cvm, u64 src, u64 dst) {
     u64 dst_offset = 0;
     const_pointer_ptr dst_ptr = read_string_data_internal(cvm, dst, &dst_size, &dst_offset);
     if (dst_ptr == 0) {
-        ERROR_INVALID_POINTER("dst_ptr == %p, size == %lld, offset == %lld", dst_ptr, dst_size, dst_offset);
+        ERROR_INVALID_POINTER("dst_ptr == %p, size == %lld, offset == %lld", (const void*)dst_ptr, dst_size, dst_offset);
         return FALSE;
     }
     const char* dst_data = dst_ptr->data;
@@ -780,7 +780,7 @@ static u64 string_greaterthan(const_vm_ptr cvm, u64 src, u64 dst) {
 
 static u64 string_equals(const_vm_ptr cvm, u64 src, u64 dst) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (src == 0) {
@@ -799,7 +799,7 @@ static u64 string_equals(const_vm_ptr cvm, u64 src, u64 dst) {
     u64 src_offset = 0;
     const_pointer_ptr src_ptr = read_string_data_internal(cvm, src, &src_size, &src_offset);
     if (src_ptr == 0) {
-        ERROR_INVALID_POINTER("src_ptr == %p, size == %lld, offset == %lld", src_ptr, src_size, src_offset);
+        ERROR_INVALID_POINTER("src_ptr == %p, size == %lld, offset == %lld", (const void*)src_ptr, src_size, src_offset);
         return FALSE;
     }
     const char* src_data = src_ptr->data;
@@ -807,7 +807,7 @@ static u64 string_equals(const_vm_ptr cvm, u64 src, u64 dst) {
     u64 dst_offset = 0;
     const_pointer_ptr dst_ptr = read_string_data_internal(cvm, dst, &dst_size, &dst_offset);
     if (dst_ptr == 0) {
-        ERROR_INVALID_POINTER("dst_ptr == %p, size == %lld, offset == %lld", dst_ptr, dst_size, dst_offset);
+        ERROR_INVALID_POINTER("dst_ptr == %p, size == %lld, offset == %lld", (const void*)dst_ptr, dst_size, dst_offset);
         return FALSE;
     }
     const char* dst_data = dst_ptr->data;
@@ -822,7 +822,7 @@ static u64 string_equals(const_vm_ptr cvm, u64 src, u64 dst) {
 
 static u64 string_compare(const_vm_ptr cvm, u64 src, u64 dst) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (src == 0) {
@@ -841,7 +841,7 @@ static u64 string_compare(const_vm_ptr cvm, u64 src, u64 dst) {
     u64 src_offset = 0;
     const_pointer_ptr src_ptr = read_string_data_internal(cvm, src, &src_size, &src_offset);
     if (src_ptr == 0) {
-        ERROR_INVALID_POINTER("src_ptr == %p, size == %lld, offset == %lld", src_ptr, src_size, src_offset);
+        ERROR_INVALID_POINTER("src_ptr == %p, size == %lld, offset == %lld", (const void*)src_ptr, src_size, src_offset);
         return FALSE;
     }
     const char* src_data = src_ptr->data;
@@ -849,7 +849,7 @@ static u64 string_compare(const_vm_ptr cvm, u64 src, u64 dst) {
     u64 dst_offset = 0;
     const_pointer_ptr dst_ptr = read_string_data_internal(cvm, dst, &dst_size, &dst_offset);
     if (dst_ptr == 0) {
-        ERROR_INVALID_POINTER("dst_ptr == %p, size == %lld, offset == %lld", dst_ptr, dst_size, dst_offset);
+        ERROR_INVALID_POINTER("dst_ptr == %p, size == %lld, offset == %lld", (const void*)dst_ptr, dst_size, dst_offset);
         return FALSE;
     }
     const char* dst_data = dst_ptr->data;
@@ -861,7 +861,7 @@ static u64 string_compare(const_vm_ptr cvm, u64 src, u64 dst) {
 
 static u64 string_left(const_vm_ptr cvm, u64 src, u64 shift) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (src == 0) {
@@ -876,7 +876,7 @@ static u64 string_left(const_vm_ptr cvm, u64 src, u64 shift) {
     u64 offset = 0;
     const_pointer_ptr const_ptr = read_string_data_internal(cvm, src, &size, &offset);
     if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, size == %lld, offset == %lld", const_ptr, size, offset);
+        ERROR_INVALID_POINTER("const_ptr == %p, size == %lld, offset == %lld", (const void*)const_ptr, size, offset);
         return FALSE;
     }
     if (offset < shift) {
@@ -889,7 +889,7 @@ static u64 string_left(const_vm_ptr cvm, u64 src, u64 shift) {
 
 static u64 string_strncpy(const_vm_ptr cvm, u64 src, u64 nbytes) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (src == 0) {
@@ -904,7 +904,7 @@ static u64 string_strncpy(const_vm_ptr cvm, u64 src, u64 nbytes) {
     u64 offset = 0;
     const_pointer_ptr const_ptr = read_string_data_internal(cvm, src, &size, &offset);
     if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, size == %lld, offset == %lld", const_ptr, size, offset);
+        ERROR_INVALID_POINTER("const_ptr == %p, size == %lld, offset == %lld", (const void*)const_ptr, size, offset);
         return FALSE;
     }
     const char* ch = const_ptr->data;
@@ -920,7 +920,7 @@ static u64 string_strncpy(const_vm_ptr cvm, u64 src, u64 nbytes) {
 
 static u64 string_left_strncpy(const_vm_ptr cvm, u64 src, u64 nbytes) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (src == 0) {
@@ -935,7 +935,7 @@ static u64 string_left_strncpy(const_vm_ptr cvm, u64 src, u64 nbytes) {
     u64 offset = 0;
     const_pointer_ptr const_ptr = read_string_data_internal(cvm, src, &size, &offset);
     if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, size == %lld, offset == %lld", const_ptr, size, offset);
+        ERROR_INVALID_POINTER("const_ptr == %p, size == %lld, offset == %lld", (const void*)const_ptr, size, offset);
         return FALSE;
     }
     const char* ch = const_ptr->data;
@@ -951,7 +951,7 @@ static u64 string_left_strncpy(const_vm_ptr cvm, u64 src, u64 nbytes) {
 
 static u64 string_right(const_vm_ptr cvm, u64 src, u64 nbytes) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (src == 0) {
@@ -966,7 +966,7 @@ static u64 string_right(const_vm_ptr cvm, u64 src, u64 nbytes) {
     u64 offset = 0;
     const_pointer_ptr const_ptr = read_string_data_internal(cvm, src, &size, &offset);
     if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, size == %lld, offset == %lld", const_ptr, size, offset);
+        ERROR_INVALID_POINTER("const_ptr == %p, size == %lld, offset == %lld", (const void*)const_ptr, size, offset);
         return FALSE;
     }
     if (offset + nbytes >= size) {
@@ -980,7 +980,7 @@ static u64 string_right(const_vm_ptr cvm, u64 src, u64 nbytes) {
 
 static u64 string_move_left(const_vm_ptr cvm, u64 address, u64 nbytes) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (address == 0) {
@@ -993,14 +993,14 @@ static u64 string_move_left(const_vm_ptr cvm, u64 address, u64 nbytes) {
     }
     const_pointer_ptr src_ptr = CALL(virtual)->read(cvm, address, TYPE_STRING_POINTER);
     if (src_ptr == 0) {
-        ERROR_INVALID_POINTER("src_ptr == %p, address == %lld, type_id == %lld", src_ptr, address, TYPE_STRING_POINTER);
+        ERROR_INVALID_POINTER("src_ptr == %p, address == %lld, type_id == %lld", (const void*)src_ptr, address, (u64)TYPE_STRING_POINTER);
         return FALSE;
     }
     u64 size = 0;
     u64 offset = 0;
     const_pointer_ptr const_ptr = get_string_pointer_internal(cvm, src_ptr, &size, &offset);
     if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, size == %lld, offset == %lld", const_ptr, size, offset);
+        ERROR_INVALID_POINTER("const_ptr == %p, size == %lld, offset == %lld", (const void*)const_ptr, size, offset);
         return FALSE;
     }
     if (offset < nbytes) {
@@ -1018,7 +1018,7 @@ static u64 string_move_left(const_vm_ptr cvm, u64 address, u64 nbytes) {
 
 static u64 string_move_right(const_vm_ptr cvm, u64 address, u64 nbytes) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (address == 0) {
@@ -1033,12 +1033,12 @@ static u64 string_move_right(const_vm_ptr cvm, u64 address, u64 nbytes) {
     u64 offset = 0;
     const_pointer_ptr src_ptr = CALL(virtual)->read(cvm, address, TYPE_STRING_POINTER);
     if (src_ptr == 0) {
-        ERROR_INVALID_POINTER("src_ptr == %p, address == %lld, type_id == %lld", src_ptr, address, TYPE_STRING_POINTER);
+        ERROR_INVALID_POINTER("src_ptr == %p, address == %lld, type_id == %lld", (const void*)src_ptr, address, (u64)TYPE_STRING_POINTER);
         return FALSE;
     }
     const_pointer_ptr const_ptr = get_string_pointer_internal(cvm, src_ptr, &size, &offset);
     if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, size == %lld, offset == %lld", const_ptr, size, offset);
+        ERROR_INVALID_POINTER("const_ptr == %p, size == %lld, offset == %lld", (const void*)const_ptr, size, offset);
         return FALSE;
     }
     if (offset + nbytes >= size) {
@@ -1056,7 +1056,7 @@ static u64 string_move_right(const_vm_ptr cvm, u64 address, u64 nbytes) {
 
 static u64 string_strcmp(const_vm_ptr cvm, u64 src, u64 dst) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (src == 0) {
@@ -1075,7 +1075,7 @@ static u64 string_strcmp(const_vm_ptr cvm, u64 src, u64 dst) {
     u64 src_offset = 0;
     const_pointer_ptr src_ptr = read_string_data_internal(cvm, src, &src_size, &src_offset);
     if (src_ptr == 0) {
-        ERROR_INVALID_POINTER("src_ptr == %p, address == %lld, size == %lld, offset == %lld", src_ptr, src, src_size, src_offset);
+        ERROR_INVALID_POINTER("src_ptr == %p, address == %lld, size == %lld, offset == %lld", (const void*)src_ptr, src, src_size, src_offset);
         return FALSE;
     }
     const char* src_data = src_ptr->data;
@@ -1083,7 +1083,7 @@ static u64 string_strcmp(const_vm_ptr cvm, u64 src, u64 dst) {
     u64 dst_offset = 0;
     const_pointer_ptr dst_ptr = read_string_data_internal(cvm, dst, &dst_size, &dst_offset);
     if (dst_ptr == 0) {
-        ERROR_INVALID_POINTER("dst_ptr == %p, address == %lld, size == %lld, offset == %lld", dst_ptr, dst, dst_size, dst_offset);
+        ERROR_INVALID_POINTER("dst_ptr == %p, address == %lld, size == %lld, offset == %lld", (const void*)dst_ptr, dst, dst_size, dst_offset);
         return FALSE;
     }
     const char* dst_data = dst_ptr->data;
