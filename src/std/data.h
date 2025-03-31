@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 31, 2025 at 6:57:16 AM GMT+3
+ *   March 31, 2025 at 4:24:11 PM GMT+3
  *
  */
 /*
@@ -110,11 +110,6 @@ typedef const struct exception* const_exception_ptr;
 typedef struct exception {
     u64 type;
     char message[4096];
-#ifdef USE_MEMORY_DEBUG_INFO
-    const char* func;
-    const char* file;
-    int line;
-#endif
 } exception_type;
 
 enum type {
