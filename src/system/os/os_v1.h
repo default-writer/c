@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 28, 2025 at 4:57:40 PM GMT+3
+ *   March 30, 2025 at 11:18:06 PM GMT+3
  *
  */
 /*
@@ -39,8 +39,10 @@ CSYS_EXPORT extern void init_statistics(void);
 CSYS_EXPORT extern void result_statistics(void);
 #endif
 
+#include <stdio.h>
+
 typedef struct PRIVATE_API(system_os_methods) {
-    void* (*alloc)(size_t __nmemb, size_t __size);
+    void* (*calloc)(size_t __nmemb, size_t __size);
     void* (*realloc)(void* __ptr, size_t __size);
     void (*free)(void* __ptr);
     int (*fclose)(FILE* __stream);

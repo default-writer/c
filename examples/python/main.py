@@ -52,7 +52,7 @@ class VM:
 class OS:
     class os_methods(ctypes.Structure):
         _fields_ = [
-            ("alloc", ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_void_p), ctypes.c_size_t, ctypes.c_size_t)),
+            ("calloc", ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_void_p), ctypes.c_size_t, ctypes.c_size_t)),
             ("realloc", ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_void_p), ctypes.POINTER(ctypes.c_void_p), ctypes.c_size_t)),
             ("free", ctypes.CFUNCTYPE(None, ctypes.POINTER(ctypes.c_void_p))),
             ("fclose", ctypes.CFUNCTYPE(ctypes.c_int, ctypes.POINTER(ctypes.c_void_p))),
@@ -76,8 +76,8 @@ class OS:
         os_methods_ptr.restype = ctypes.POINTER(OS.os_methods)
         self.os_methods = os_methods_ptr().contents
 
-    def alloc(self, nmemb, size):
-        return self.os_methods.alloc(nmemb, size)
+    def calloc(self, nmemb, size):
+        return self.os_methods.calloc(nmemb, size)
 
     def realloc(self, ptr, size):
         return self.os_methods.realloc(ptr, size)
@@ -326,6 +326,32 @@ class TYPE:
 
 TYPE.init()
 
+class ERROR:
+    class error_methods(ctypes.Structure):
+        _fields_ = [
+            ("output", ctypes.CFUNCTYPE(None, ctypes.POINTER(ctypes.c_void_p), ctypes.c_uint64, ctypes.c_char_p, ctypes.c_uint64)),
+            ("throw", ctypes.CFUNCTYPE(None, ctypes.c_uint64, ctypes.c_char_p, ctypes.c_uint64)),
+            ("clear", ctypes.CFUNCTYPE(None)),
+            ("has", ctypes.CFUNCTYPE(ctypes.c_uint64)),
+        ]
+
+    def __init__(self):
+        error_methods_ptr = c_sys.error
+        error_methods_ptr.restype = ctypes.POINTER(ERROR.error_methods)
+        self.error_methods = error_methods_ptr().contents
+
+    def output(self, output_file, code, message, size):
+        self.error_methods.output(output_file, code, message, size)
+
+    def throw(self, code, message, size):
+        self.error_methods.throw(code, message, size)
+
+    def clear(self):
+        self.error_methods.clear()
+
+    def has(self):
+        return self.error_methods.has()
+
 def main():
     try:
         vm = VM()
@@ -337,6 +363,7 @@ def main():
                 memory = MEMORY()
                 pointer = POINTER()
                 string = STRING()
+                error = ERROR()
 
                 dot = memory.alloc(1)
                 str_ptr = pointer.alloc(dot, 1, TYPE.STRING)
@@ -348,6 +375,12 @@ def main():
                 string.load(vm_ptr, b"hello, world!")
                 os.puts(string.unsafe(vm_ptr, str_ptr))
                 os.puts(b"hello, world!")
+                
+                # Example usage of ERROR class
+                error.throw(1, b"VM not initialized", len(b"VM not initialized"))
+                if error.has():
+                    error.output(ctypes.c_void_p(1), 1, b"VM not initialized", len(b"VM not initialized"))
+                    error.clear()
 
                 # os.free(dot) -- double free or corruption, do not use directly, you should understand what are you doing
             except Exception as e:

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 14, 2025 at 6:00:40 AM GMT+3
+ *   March 30, 2025 at 10:34:58 PM GMT+3
  *
  */
 /*
@@ -32,10 +32,6 @@
 #include <assert.h>
 #include <limits.h>
 #include <stdarg.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
 #include <unistd.h>
 
 #endif /* _STD_HEADERS_H_ */

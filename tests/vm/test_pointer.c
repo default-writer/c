@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 28, 2025 at 4:58:17 PM GMT+3
+ *   March 30, 2025 at 8:10:43 PM GMT+3
  *
  */
 /*
@@ -782,6 +782,26 @@ RX_TEST_CASE(tests_pointer_v1, test_string_pointer_free, .fixture = test_fixture
     u64 e_ptr = CALL(string)->load(cvm, "e");
     u64 string_pointer_ptr = CALL(string)->offset(cvm, string_ptr, e_ptr);
     CALL(stack)->push(cvm, list_ptr, string_pointer_ptr);
+    CALL(stack)->push(cvm, list_ptr, string_ptr);
+#ifndef USE_GC
+    CALL(string)->free(cvm, e_ptr);
+    CALL(stack)->free(cvm, list_ptr);
+#endif
+}
+
+/* test init */
+RX_TEST_CASE(tests_pointer_v1, test_stack_pointer_alloc_free, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr cvm = rx->ctx;
+    u64 list_ptr = CALL(stack)->alloc(cvm);
+    u64 string_ptr = CALL(string)->load(cvm, "hello");
+    u64 e_ptr = CALL(string)->load(cvm, "e");
+    u64 string_pointer_ptr = CALL(string)->offset(cvm, string_ptr, e_ptr);
+    char* dot = (char*)CALL(memory)->alloc(1);
+    CALL(os)->memcpy(dot, ".", 1);
+    u64 string_from_memory_alloc_ptr = CALL(pointer)->alloc(dot, 1, TYPE_STRING);
+    CALL(stack)->push(cvm, list_ptr, string_pointer_ptr);
+    CALL(stack)->push(cvm, list_ptr, string_from_memory_alloc_ptr);
     CALL(stack)->push(cvm, list_ptr, string_ptr);
 #ifndef USE_GC
     CALL(string)->free(cvm, e_ptr);

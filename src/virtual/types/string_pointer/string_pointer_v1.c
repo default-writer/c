@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 28, 2025 at 12:50:07 PM GMT+3
+ *   March 31, 2025 at 9:32:58 AM GMT+3
  *
  */
 /*
@@ -53,7 +53,7 @@ static void INIT init(void) {
 static void string_type_destructor(u64 address) {
     const_pointer_ptr const_ptr = CALL(pointer)->read(address, TYPE_STRING_POINTER);
     if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", const_ptr, address, type_id);
+        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const void*)const_ptr, address, (u64)type_id);
         return;
     }
     CALL(pointer)->free(address, type_id);
@@ -61,7 +61,7 @@ static void string_type_destructor(u64 address) {
 
 static u64 string_free(const_vm_ptr cvm, u64 address) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
     }
     if (address == 0) {

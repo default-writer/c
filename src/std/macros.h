@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 28, 2025 at 4:41:16 PM GMT+3
+ *   March 31, 2025 at 11:00:16 AM GMT+3
  *
  */
 /*
@@ -48,21 +48,41 @@
 #define PUBLIC_API(x) x()
 
 #ifdef USE_MEMORY_DEBUG_INFO
-#define ERROR(message_id, format, ...) CALL(error)->stderr(ID_##message_id, __func__, __FILE__, __LINE__, format, __VA_ARGS__)
+#define ERROR(message_id, format, ...)                                                                                                                                                \
+    {                                                                                                                                                                                 \
+        int _##message_id##_snp_format_size = snprintf(NULL, 0, format " %s (%s:%d)", __VA_ARGS__, __func__, __FILE__, __LINE__); /* NOLINT: snprintf(NULL) */                        \
+        char _##message_id##_snp_format_buffer[_##message_id##_snp_format_size + 1];                                                                                                  \
+        snprintf(_##message_id##_snp_format_buffer, sizeof _##message_id##_snp_format_buffer, format "%s (%s:%d)", __VA_ARGS__, __func__, __FILE__, __LINE__); /* NOLINT: snprintf */ \
+        CALL(error)->output(stderr, ID_##message_id, _##message_id##_snp_format_buffer, (u64)_##message_id##_snp_format_size);                                                        \
+        if (CALL(error)->has()) {                                                                                                                                                     \
+            CALL(error)->clear();                                                                                                                                                     \
+        }                                                                                                                                                                             \
+        CALL(error)->throw(ID_##message_id, _##message_id##_snp_format_buffer, (u64)_##message_id##_snp_format_size);                                                                 \
+    }
 #define ERROR_NO_ERROR(format, ...) ERROR(ERROR_NO_ERROR, format, __VA_ARGS__)
-#define ERROR_VM_NOT_INITIALIZED(format, ...) ERROR(ERROR_VM_NOT_INITIALIZED, format "\n", ##__VA_ARGS__)
-#define ERROR_INVALID_POINTER(format, ...) ERROR(ERROR_INVALID_POINTER, format "\n", __VA_ARGS__)
-#define ERROR_INVALID_ARGUMENT(format, ...) ERROR(ERROR_INVALID_ARGUMENT, format "\n", __VA_ARGS__)
-#define ERROR_INVALID_TYPE_ID(format, ...) ERROR(ERROR_INVALID_TYPE_ID, format "\n", __VA_ARGS__)
-#define ERROR_INVALID_VALUE(format, ...) ERROR(ERROR_INVALID_VALUE, format "\n", __VA_ARGS__)
+#define ERROR_VM_NOT_INITIALIZED(format, ...) ERROR(ERROR_VM_NOT_INITIALIZED, format, ##__VA_ARGS__)
+#define ERROR_INVALID_POINTER(format, ...) ERROR(ERROR_INVALID_POINTER, format, __VA_ARGS__)
+#define ERROR_INVALID_ARGUMENT(format, ...) ERROR(ERROR_INVALID_ARGUMENT, format, __VA_ARGS__)
+#define ERROR_INVALID_TYPE_ID(format, ...) ERROR(ERROR_INVALID_TYPE_ID, format, __VA_ARGS__)
+#define ERROR_INVALID_VALUE(format, ...) ERROR(ERROR_INVALID_VALUE, format, __VA_ARGS__)
 #else
-#define ERROR(message_id, format, ...) CALL(error)->stderr(ID_##message_id, format "\n", __VA_ARGS__)
-#define ERROR_NO_ERROR(format, ...) ERROR(ERROR_NO_ERROR, format "\n", __VA_ARGS__)
-#define ERROR_VM_NOT_INITIALIZED(format, ...) ERROR(ERROR_VM_NOT_INITIALIZED, format "\n", __VA_ARGS__)
-#define ERROR_INVALID_POINTER(format, ...) ERROR(ERROR_INVALID_POINTER, format "\n", __VA_ARGS__)
-#define ERROR_INVALID_ARGUMENT(format, ...) ERROR(ERROR_INVALID_ARGUMENT, format "\n", __VA_ARGS__)
-#define ERROR_INVALID_TYPE_ID(format, ...) ERROR(ERROR_INVALID_TYPE_ID, format "\n", __VA_ARGS__)
-#define ERROR_INVALID_VALUE(format, ...) ERROR(ERROR_INVALID_VALUE, format "\n", __VA_ARGS__)
+#define ERROR(message_id, format, ...)                                                                                                     \
+    {                                                                                                                                      \
+        int _##message_id##_snp_format_size = snprintf(NULL, 0, format, __VA_ARGS__); /* NOLINT: snprintf(NULL) */                         \
+        char _##message_id##_snp_format_buffer[_##message_id##_snp_format_size + 1];                                                       \
+        snprintf(_##message_id##_snp_format_buffer, sizeof _##message_id##_snp_format_buffer, format, __VA_ARGS__); /* NOLINT: snprintf */ \
+        CALL(error)->output(stderr, ID_##message_id, _##message_id##_snp_format_buffer, (u64)_##message_id##_snp_format_size);             \
+        if (CALL(error)->has()) {                                                                                                          \
+            CALL(error)->clear();                                                                                                          \
+        }                                                                                                                                  \
+        CALL(error)->throw(ID_##message_id, _##message_id##_snp_format_buffer, (u64)_##message_id##_snp_format_size);                      \
+    }
+#define ERROR_NO_ERROR(format, ...) ERROR(ERROR_NO_ERROR, format, __VA_ARGS__)
+#define ERROR_VM_NOT_INITIALIZED(format, ...) ERROR(ERROR_VM_NOT_INITIALIZED, format, __VA_ARGS__)
+#define ERROR_INVALID_POINTER(format, ...) ERROR(ERROR_INVALID_POINTER, format, __VA_ARGS__)
+#define ERROR_INVALID_ARGUMENT(format, ...) ERROR(ERROR_INVALID_ARGUMENT, format, __VA_ARGS__)
+#define ERROR_INVALID_TYPE_ID(format, ...) ERROR(ERROR_INVALID_TYPE_ID, format, __VA_ARGS__)
+#define ERROR_INVALID_VALUE(format, ...) ERROR(ERROR_INVALID_VALUE, format, __VA_ARGS__)
 #endif
 
 #ifdef __GNUC__

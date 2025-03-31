@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 28, 2025 at 4:57:02 PM GMT+3
+ *   March 30, 2025 at 11:17:35 PM GMT+3
  *
  */
 /*
@@ -26,9 +26,12 @@
 
 #include "os_v1.h"
 
+#include <stdlib.h>
+#include <string.h>
+
 /* public */
 const system_os_methods PRIVATE_API(system_os_methods_definitions) = {
-    .alloc = &calloc,
+    .calloc = &calloc,
     .free = &free,
     .realloc = &realloc,
     .fclose = &fclose,
