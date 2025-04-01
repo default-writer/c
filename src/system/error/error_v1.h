@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 31, 2025 at 6:42:43 PM GMT+3
+ *   April 1, 2025 at 5:43:59 PM GMT+3
  *
  */
 /*
@@ -48,8 +48,8 @@ enum error_message_code {
 typedef struct PRIVATE_API(system_error_methods) {
     FILE* (*stdout)(void);
     FILE* (*stderr)(void);
-    void (*output)(FILE* output, u64, const char* message, u64 size);
-    void (*throw)(u64, const char* message, u64 size);
+    void (*output)(FILE* output, u64 error_type, const char* message, u64 size);
+    void (*throw)(u64 error_type, const char* message, u64 size);
     void (*clear)(void);
     u64 (*type)(void);
     const char* (*get)(void);

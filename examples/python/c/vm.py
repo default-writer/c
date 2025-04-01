@@ -25,11 +25,11 @@ class CVirtualMachine:
         return self.vm_methods.gc()
     
 
-    def release(self, ptr):
+    def release(self, ptr: ctypes.c_uint64) -> ctypes.c_uint64:
         return self.vm_methods.release(ptr)
     
 
-    def destroy(self, ptr):
+    def destroy(self, ptr: ctypes.c_uint64):
         return self.vm_methods.release(ptr)
     
 

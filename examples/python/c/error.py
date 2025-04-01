@@ -32,22 +32,22 @@ class CError:
 
 
     @classmethod    
-    def stdout(cls):
+    def stdout(cls) -> ctypes.c_void_p:
         return cls.error_methods.stdout()
 
 
     @classmethod
-    def stderr(cls):
+    def stderr(cls) -> ctypes.c_void_p:
         return cls.error_methods.stderr()
 
 
     @classmethod
-    def output(cls, output_file, code, message, size):
+    def output(cls, output_file: ctypes.c_void_p, code: CErrorType, message: ctypes.c_char_p, size: ctypes.c_uint64):
         cls.error_methods.output(output_file, code, message, size)
 
 
     @classmethod
-    def throw(cls, code, message, size):
+    def throw(cls, code: CErrorType, message: ctypes.c_char_p, size: ctypes.c_uint64):
         cls.error_methods.throw(code, message, size)
 
 
@@ -57,12 +57,12 @@ class CError:
 
 
     @classmethod
-    def type(cls):
+    def type(cls) -> CErrorType:
         return cls.error_methods.type()
 
 
     @classmethod
-    def get(cls):
+    def get(cls) -> ctypes.c_char_p:
         return cls.error_methods.get()
 
 

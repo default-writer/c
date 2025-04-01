@@ -16,15 +16,15 @@ class CMemory:
         cls.memory_methods = cls.memory_methods_ptr().contents
 
     @classmethod
-    def alloc(self, size):
+    def alloc(self, size: ctypes.c_uint64) -> ctypes.c_void_p:
         return self.memory_methods.alloc(size)
         
 
     @classmethod
-    def realloc(self, ptr, size, new_size):
+    def realloc(self, ptr: ctypes.c_void_p, size: ctypes.c_uint64, new_size: ctypes.c_uint64) -> ctypes.c_void_p:
         return self.memory_methods.copy(ptr, size, new_size)
 
  
     @classmethod
-    def free(self, ptr, size):
+    def free(self, ptr: ctypes.c_void_p, size: ctypes.c_uint64):
         return self.memory_methods.free(ptr, size)

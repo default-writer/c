@@ -45,7 +45,7 @@ class CData:
 
 
     @exception_handler
-    def unsafe(self, ptr: ctypes.c_uint64) -> ctypes.POINTER:
+    def unsafe(self, ptr: ctypes.c_uint64) -> ctypes.c_void_p:
         return self.data_methods.unsafe(self.vm, ptr)
 
 

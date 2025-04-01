@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 31, 2025 at 6:44:03 PM GMT+3
+ *   April 1, 2025 at 5:44:09 PM GMT+3
  *
  */
 /*
@@ -43,8 +43,8 @@ static const char* error_messages[] = {
 static exception_type exception;
 static exception_ptr ex = &exception;
 
-static void error_output(FILE* output, u64 id, const char* message, u64 size);
-static void error_throw(u64 id, const char* message, u64 size);
+static void error_output(FILE* output, u64 error_type, const char* message, u64 size);
+static void error_throw(u64 error_type, const char* message, u64 size);
 static void error_clear(void);
 static u64 error_type(void);
 static FILE* error_stdout(void);
@@ -52,20 +52,20 @@ static FILE* error_stderr(void);
 static const char* error_get(void);
 
 /* implementation */
-static void error_output(FILE* output, u64 id, const char* message, u64 size) {
+static void error_output(FILE* output, u64 error_type, const char* message, u64 size) {
 #ifdef USE_TTY
     if (isatty(STDERR_FILENO)) {
         const char* start = "\x1b[31m";
         const char* end = "\x1b[0m";
-        fprintf(output, "%s[debug]%s %s: %s\n", start, end, error_messages[id], message); /* NOLINT: fprintf(output) */
+        fprintf(output, "%s[debug]%s %s: %s\n", start, end, error_messages[error_type], message); /* NOLINT: fprintf(output) */
     }
 #else
-    fprintf(output, "[debug] %s: %s\n", error_messages[id], message); /* NOLINT: fprintf(output) */
+    fprintf(output, "[debug] %s: %s\n", error_messages[error_type], message); /* NOLINT: fprintf(output) */
 #endif
 }
 
-static void error_throw(u64 id, const char* message, u64 size) {
-    ex->type = id;
+static void error_throw(u64 error_type, const char* message, u64 size) {
+    ex->type = error_type;
     if (size < ERROR_BUFFER_SIZE) {
         CALL(os)->memcpy(ex->message, message, size); /* NOLINT: memcpy(ex->message */
         CALL(os)->memset(((u8*)ex->message) + size, 0x00, ERROR_BUFFER_SIZE - size);
