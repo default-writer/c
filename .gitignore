@@ -92,3 +92,4 @@ src/std/version.h
 .vs/
 main-tests-vm1/
 .scannerwork/.sonar_lock
+__pycache__/

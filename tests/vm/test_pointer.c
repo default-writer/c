@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 30, 2025 at 8:10:43 PM GMT+3
+ *   April 1, 2025 at 4:50:11 AM GMT+3
  *
  */
 /*
@@ -114,7 +114,7 @@ RX_FIXTURE(test_fixture_pointer, TEST_DATA, .set_up = test_set_up_pointer_init, 
 RX_TEST_CASE(tests_pointer_v1, test_print_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
-    CALL(env)->putc(cvm, 0);
+    CALL(env)->puts(cvm, 0);
 }
 
 /* test init */
@@ -156,7 +156,7 @@ RX_TEST_CASE(tests_pointer_v1, test_print_load_empty, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
     u64 empty_ptr = CALL(string)->load(cvm, "");
-    CALL(env)->putc(cvm, empty_ptr);
+    CALL(env)->puts(cvm, empty_ptr);
     RX_ASSERT(empty_ptr == 0);
 #ifndef USE_GC
     CALL(string)->free(cvm, empty_ptr);
@@ -1715,13 +1715,13 @@ RX_TEST_CASE(tests_pointer_v1, test_strcat_load_alloc_copy, .fixture = test_fixt
     u64 data_ptr3 = CALL(string)->copy(cvm, string_ptr);
     u64 data_ptr4 = CALL(string)->copy(cvm, none_ptr);
 
-    CALL(env)->putc(cvm, string_ptr);
-    CALL(env)->putc(cvm, zero_ptr);
-    CALL(env)->putc(cvm, data_ptr);
-    CALL(env)->putc(cvm, list_ptr);
-    CALL(env)->putc(cvm, empty_ptr);
-    CALL(env)->putc(cvm, null_ptr);
-    CALL(env)->putc(cvm, none_ptr);
+    CALL(env)->puts(cvm, string_ptr);
+    CALL(env)->puts(cvm, zero_ptr);
+    CALL(env)->puts(cvm, data_ptr);
+    CALL(env)->puts(cvm, list_ptr);
+    CALL(env)->puts(cvm, empty_ptr);
+    CALL(env)->puts(cvm, null_ptr);
+    CALL(env)->puts(cvm, none_ptr);
 
     CALL(string)->put_char(cvm, string_ptr, 'a');
     CALL(string)->put_char(cvm, zero_ptr, 'a');
@@ -2425,7 +2425,7 @@ RX_TEST_CASE(tests_pointer_v1, test_vm_env_getcwd, .fixture = test_fixture) {
 /* test init */
 RX_TEST_CASE(tests_pointer_v1, test_vm_env_putc, .fixture = test_fixture) {
     const_vm_ptr cvm = 0;
-    CALL(env)->putc(cvm, 0);
+    CALL(env)->puts(cvm, 0);
     RX_ASSERT(0 != 1);
 }
 
@@ -2808,7 +2808,7 @@ RX_TEST_CASE(tests_pointer_v1, test_print_free, .fixture = test_fixture) {
     const_vm_ptr cvm = rx->ctx;
     u64 printing_ptr = CALL(string)->load(cvm, "hello, world!");
     CALL(string)->free(cvm, printing_ptr);
-    CALL(env)->putc(cvm, printing_ptr);
+    CALL(env)->puts(cvm, printing_ptr);
 }
 
 /* test init */
@@ -2875,7 +2875,7 @@ RX_TEST_CASE(tests_pointer_v1, test_print_string_pointer_virtual_read_type, .fix
     u64 printing_ptr = CALL(string)->load(cvm, "hello, world!");
     u64 comma_ptr = CALL(string)->load(cvm, ",");
     u64 substring_index_ptr = CALL(string)->offset(cvm, printing_ptr, comma_ptr);
-    CALL(env)->putc(cvm, substring_index_ptr);
+    CALL(env)->puts(cvm, substring_index_ptr);
     CALL(string)->free(cvm, printing_ptr);
     /* prepare to mock api calls */
     memcpy(&_virtual, &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
@@ -2905,7 +2905,7 @@ RX_TEST_CASE(tests_pointer_v1, test_free_string_pointer_virtual_read_type, .fixt
     u64 substring_index_ptr = CALL(string)->offset(cvm, printing_ptr, comma_ptr);
     u64 substring_space_ptr = CALL(string)->offset(cvm, substring_index_ptr, space_ptr);
     u64 substring_exclamation_ptr = CALL(string)->offset(cvm, substring_space_ptr, exclamation_ptr);
-    CALL(env)->putc(cvm, substring_index_ptr);
+    CALL(env)->puts(cvm, substring_index_ptr);
     /* prepare to mock api calls */
     memcpy(&_virtual, &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
     CALL(string_pointer)->free(cvm, substring_exclamation_ptr);
@@ -2922,7 +2922,7 @@ RX_TEST_CASE(tests_pointer_v1, test_print, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
     u64 printing_ptr = CALL(string)->load(cvm, "hello, world!");
-    CALL(env)->putc(cvm, printing_ptr);
+    CALL(env)->puts(cvm, printing_ptr);
 #ifndef USE_GC
     CALL(string)->free(cvm, printing_ptr);
 #endif
@@ -2935,7 +2935,7 @@ RX_TEST_CASE(tests_pointer_v1, test_print_string_pointer, .fixture = test_fixtur
     u64 printing_ptr = CALL(string)->load(cvm, "hello, world!");
     u64 comma_ptr = CALL(string)->load(cvm, ",");
     u64 substring_index_ptr = CALL(string)->offset(cvm, printing_ptr, comma_ptr);
-    CALL(env)->putc(cvm, substring_index_ptr);
+    CALL(env)->puts(cvm, substring_index_ptr);
 #ifndef USE_GC
     CALL(string)->free(cvm, printing_ptr);
     CALL(string)->free(cvm, substring_index_ptr);
@@ -3017,7 +3017,7 @@ RX_TEST_CASE(tests_pointer_v1, teststring_pointer_unsafe, .fixture = test_fixtur
     RX_ASSERT(strcmp(expected_value, actual_value) == 0);
 
     CALL(string)->free(cvm, substring_index_ptr);
-    CALL(env)->putc(cvm, substring_index_ptr);
+    CALL(env)->puts(cvm, substring_index_ptr);
 #ifndef USE_GC
     CALL(string)->free(cvm, printing_ptr);
     CALL(string)->free(cvm, comma_ptr);
@@ -3078,7 +3078,7 @@ RX_TEST_CASE(tests_pointer_v1, test_print_string_pointer_free, .fixture = test_f
     u64 comma_ptr = CALL(string)->load(cvm, ",");
     u64 substring_index_ptr = CALL(string)->offset(cvm, printing_ptr, comma_ptr);
     CALL(string)->free(cvm, substring_index_ptr);
-    CALL(env)->putc(cvm, substring_index_ptr);
+    CALL(env)->puts(cvm, substring_index_ptr);
 #ifndef USE_GC
     CALL(string)->free(cvm, printing_ptr);
     CALL(string)->free(cvm, comma_ptr);
@@ -3147,7 +3147,7 @@ RX_TEST_CASE(tests_pointer_v1, test_load_open_match_last_unsafe_free, .fixture =
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
     u64 file_path_ptr = CALL(env)->getcwd(cvm);
-    u64 file_name_ptr = CALL(string)->load(cvm, "/all_english_words.txt//");
+    u64 file_name_ptr = CALL(string)->load(cvm, "/all_english_words.txt/");
     CALL(string)->strcat(cvm, file_path_ptr, file_name_ptr);
     u64 pattern_ptr = CALL(string)->load(cvm, "//");
     u64 last_match_ptr = CALL(string)->offset(cvm, file_path_ptr, pattern_ptr);
@@ -3162,7 +3162,7 @@ RX_TEST_CASE(tests_pointer_v1, test_load_open_match_last_unsafe_free, .fixture =
     CALL(string)->free(cvm, mode_ptr);
     u64 data_ptr = CALL(file)->data(cvm, f_ptr);
     CALL(file)->free(cvm, f_ptr);
-    CALL(env)->putc(cvm, data_ptr);
+    CALL(env)->puts(cvm, data_ptr);
 #ifndef USE_GC
     CALL(data)->free(cvm, data_ptr);
 #endif
@@ -3221,7 +3221,7 @@ RX_TEST_CASE(tests_pointer_v1, test_load_open_file_unsafe_hashtable, .fixture = 
             *tmp++ = '\0';
             u64 string_ptr = CALL(string)->load(cvm, (char*)file_data);
             CALL(stack)->push(cvm, list_ptr, string_ptr);
-            CALL(env)->putc(cvm, string_ptr);
+            CALL(env)->puts(cvm, string_ptr);
             file_data = tmp;
         }
         CALL(stack)->free(cvm, list_ptr);
@@ -5183,13 +5183,13 @@ static void parse_text(const_vm_ptr cvm, u64 text_string_ptr) {
             quit = 1;
             continue;
         }
-        CALL(env)->putc(cvm, string_ptr);
+        CALL(env)->puts(cvm, string_ptr);
         u64 pattern_ptr = CALL(stack)->pop(cvm, list_data_ptr);
         if (CALL(string)->size(cvm, pattern_ptr) == 0) {
             quit = 1;
             continue;
         }
-        CALL(env)->putc(cvm, pattern_ptr);
+        CALL(env)->puts(cvm, pattern_ptr);
         u64 size = CALL(string)->size(cvm, pattern_ptr);
         u64 string_pointer_ptr = 0;
         u64 current_ptr = string_ptr;

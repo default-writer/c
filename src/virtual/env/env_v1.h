@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 28, 2025 at 7:49:54 AM GMT+3
+ *   March 31, 2025 at 10:33:01 PM GMT+3
  *
  */
 /*
@@ -39,7 +39,7 @@
 typedef struct PRIVATE_API(virtual_env_methods) {
     u64 (*getenv)(const_vm_ptr cvm, u64 name);
     u64 (*getcwd)(const_vm_ptr cvm);
-    u64 (*putc)(const_vm_ptr cvm, u64 ptr);
+    u64 (*puts)(const_vm_ptr cvm, u64 ptr);
 } virtual_env_methods;
 
 /* definition */

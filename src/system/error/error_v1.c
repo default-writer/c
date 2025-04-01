@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 31, 2025 at 4:42:51 PM GMT+3
+ *   March 31, 2025 at 6:44:03 PM GMT+3
  *
  */
 /*
@@ -46,7 +46,7 @@ static exception_ptr ex = &exception;
 static void error_output(FILE* output, u64 id, const char* message, u64 size);
 static void error_throw(u64 id, const char* message, u64 size);
 static void error_clear(void);
-static u64 error_has(void);
+static u64 error_type(void);
 static FILE* error_stdout(void);
 static FILE* error_stderr(void);
 static const char* error_get(void);
@@ -80,8 +80,8 @@ static void error_clear(void) {
     ex->type = ID_ERROR_NO_ERROR;
 }
 
-static u64 error_has(void) {
-    return ex->type == ID_ERROR_NO_ERROR ? FALSE : TRUE;
+static u64 error_type(void) {
+    return ex->type;
 }
 
 static FILE* error_stdout(void) {
@@ -98,12 +98,12 @@ static const char* error_get(void) {
 
 /* public */
 const system_error_methods PRIVATE_API(system_error_methods_definitions) = {
+    .stdout = error_stdout,
+    .stderr = error_stderr,
     .output = error_output,
     .throw = error_throw,
     .clear = error_clear,
-    .has = error_has,
-    .stdout = error_stdout,
-    .stderr = error_stderr,
+    .type = error_type,
     .get = error_get
 };
 

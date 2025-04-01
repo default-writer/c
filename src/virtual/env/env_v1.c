@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 31, 2025 at 12:35:34 AM GMT+3
+ *   March 31, 2025 at 10:33:18 PM GMT+3
  *
  */
 /*
@@ -38,7 +38,7 @@
 /* definition */
 static u64 env_getenv(const_vm_ptr cvm, u64 name);
 static u64 env_getcwd(const_vm_ptr cvm);
-static u64 env_putc(const_vm_ptr cvm, u64 address);
+static u64 env_puts(const_vm_ptr cvm, u64 address);
 
 /* implementation */
 static u64 env_getenv(const_vm_ptr cvm, u64 address) {
@@ -74,7 +74,7 @@ static u64 env_getcwd(const_vm_ptr cvm) {
     return data_ptr;
 }
 
-static u64 env_putc(const_vm_ptr cvm, u64 address) {
+static u64 env_puts(const_vm_ptr cvm, u64 address) {
     if (cvm == 0 || *cvm == 0) {
         ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
         return FALSE;
@@ -85,7 +85,7 @@ static u64 env_putc(const_vm_ptr cvm, u64 address) {
     }
     const char* data = CALL(string)->unsafe(cvm, address);
     if (data == 0) {
-        ERROR_INVALID_ARGUMENT("data == %p", data);
+        ERROR_INVALID_ARGUMENT("data == %p, address == %lld, type_id == %lld", data, address, (u64)TYPE_STRING);
         return FALSE;
     }
     CALL(os)->puts(data);
@@ -96,7 +96,7 @@ static u64 env_putc(const_vm_ptr cvm, u64 address) {
 const virtual_env_methods PRIVATE_API(virtual_env_methods_definitions) = {
     .getenv = env_getenv,
     .getcwd = env_getcwd,
-    .putc = env_putc
+    .puts = env_puts
 };
 
 const virtual_env_methods* PRIVATE_API(env) = &PRIVATE_API(virtual_env_methods_definitions);

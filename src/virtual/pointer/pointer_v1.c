@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 31, 2025 at 12:35:35 AM GMT+3
+ *   April 1, 2025 at 4:16:38 PM GMT+3
  *
  */
 /*
@@ -198,6 +198,7 @@ static void pointer_destroy(void) {
     }
     CALL(os)->free(default_types);
     CALL(system)->destroy(cvm);
+    CALL(error)->clear();
     vm_list = 0;
 #ifdef USE_MEMORY_DEBUG_INFO
     result_statistics();
@@ -534,9 +535,9 @@ const virtual_pointer_methods* CALL(pointer) {
 
 const virtual_vm_methods PRIVATE_API(virtual_vm_methods_definitions) = {
     .init = pointer_init,
-    .destroy = pointer_destroy,
     .gc = pointer_gc,
-    .release = pointer_release
+    .release = pointer_release,
+    .destroy = pointer_destroy
 };
 
 const virtual_vm_methods* PRIVATE_API(vm) = &PRIVATE_API(virtual_vm_methods_definitions);

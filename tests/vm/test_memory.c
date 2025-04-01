@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 31, 2025 at 4:34:15 PM GMT+3
+ *   April 1, 2025 at 4:51:07 AM GMT+3
  *
  */
 /*
@@ -29,6 +29,11 @@
 #include "system/error/error_v1.h"
 #include "system/memory/memory_v1.h"
 #include "system/os/os_v1.h"
+#include "virtual/env/env_v1.h"
+#include "virtual/pointer/pointer_v1.h"
+#include "virtual/types/data/data_v1.h"
+#include "virtual/types/file/file_v1.h"
+#include "virtual/types/string/string_v1.h"
 
 #define USING_TESTS
 #include "test.h"
@@ -42,6 +47,11 @@ typedef struct test_data {
     stack_ptr ctx;
 }* TEST_DATA;
 
+/* Data structure to use at the core of our fixture. */
+typedef struct test_vm_data {
+    const_vm_ptr ctx;
+}* TEST_VM_DATA;
+
 /*api*/
 static const system_memory_methods* memory_methods_ptr;
 static const system_os_methods* memory_os_ptr;
@@ -51,6 +61,7 @@ static const system_os_methods* temp_api;
 static void* mock_memory_alloc(u64 address);
 static void mock_memory_free(const_void_ptr const_ptr, u64 size);
 static void* mock_os_calloc(size_t __nmemb, size_t __size);
+static int mock_os_fseek(FILE* __stream, long int __off, int __whence);
 static void mock_os_free(void* __ptr);
 
 /* implementation */
@@ -80,6 +91,10 @@ static void* mock_os_calloc(size_t __nmemb, size_t __size) {
     return NULL_PTR;
 }
 
+static int mock_os_fseek(FILE* __stream, long int __off, int __whence) {
+    return -1;
+}
+
 static void mock_os_free(void* __ptr) {
     memset(__ptr, 0xef, sizeof(u64)); /* NOLINT: sizeof(u64) */
 }
@@ -101,8 +116,23 @@ RX_TEAR_DOWN(test_tear_down) {
     *ctx = 0;
 }
 
+RX_SET_UP(test_vm_set_up) {
+    TEST_VM_DATA rx = (TEST_VM_DATA)RX_DATA;
+    const_vm_ptr cvm = CALL(vm)->init(8);
+    rx->ctx = cvm;
+    return RX_SUCCESS;
+}
+
+RX_TEAR_DOWN(test_vm_tear_down) {
+    CALL(vm)->gc();
+    CALL(vm)->destroy();
+}
+
 /* Define the fixture. */
 RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tear_down);
+
+/* Define the fixture. */
+RX_FIXTURE(test_vm_fixture, TEST_VM_DATA, .set_up = test_vm_set_up, .tear_down = test_vm_tear_down);
 
 /* test init */
 RX_TEST_CASE(tests_memory_v1, test_empty_memory_count_equals_0, .fixture = test_fixture) {
@@ -144,7 +174,7 @@ RX_TEST_CASE(tests_memory_v1, test_api_clear_get_has_0, .fixture = test_fixture)
     const char* ex = CALL(error)->get();
     u64 size = (u64)strlen(ex);
     RX_ASSERT(size == 0);
-    RX_ASSERT(CALL(error)->has() == 0);
+    RX_ASSERT(CALL(error)->type() == 0);
 }
 
 /* test case */
@@ -158,7 +188,7 @@ RX_TEST_CASE(tests_memory_v1, test_api_error_0, .fixture = test_fixture) {
     very_long_message[14] = 0;
     u64 very_long_message_size = CALL(os)->strlen(ch);
     CALL(error)->throw(ID_ERROR_NO_ERROR, very_long_message, very_long_message_size);
-    RX_ASSERT(CALL(error)->has() == 0);
+    RX_ASSERT(CALL(error)->type() == 0);
     /* ensures pop does not zeroes the head pointer */
     RX_ASSERT(*ctx != 0);
     CALL(os)->free(very_long_message); /* NOLINT: sizeof(u64) */
@@ -172,10 +202,48 @@ RX_TEST_CASE(tests_memory_v1, test_api_error_throw_error_4096, .fixture = test_f
     CALL(os)->memset(very_long_message, 0xfe, 8192); /* NOLINT: sizeof(u64); */
     u64 very_long_message_size = 4096;
     CALL(error)->throw(ID_ERROR_INVALID_ARGUMENT, very_long_message, very_long_message_size);
-    RX_ASSERT(CALL(error)->has() != 0);
+    RX_ASSERT(CALL(error)->type() != 0);
     /* ensures pop does not zeroes the head pointer */
     RX_ASSERT(*ctx != 0);
     CALL(os)->free(very_long_message); /* NOLINT: sizeof(u64) */
+}
+
+/* test case */
+RX_TEST_CASE(tests_memory_v1, test_api_file_data_error_0, .fixture = test_vm_fixture) {
+    TEST_VM_DATA rx = (TEST_VM_DATA)RX_DATA;
+    const_vm_ptr cvm = rx->ctx;
+    static system_os_methods mock_os_methods_definitions;
+    /*api */
+    memcpy(&mock_os_methods_definitions, PRIVATE_API(os), sizeof(system_os_methods)); /* NOLINT: sizeof(system_os_methods*) */
+    /* setup mocks */
+    mock_os_methods_definitions.fseek = mock_os_fseek;
+    /* setup api endpoint */
+    static const system_os_methods* mock_os_methods = &mock_os_methods_definitions;
+    /* backup api calls */
+    memcpy(&memory_os_ptr, &PRIVATE_API(os), sizeof(system_os_methods*)); /* NOLINT: sizeof(system_os_methods*) */
+    /* prepare to mock api calls */
+    memcpy(&PRIVATE_API(os), &mock_os_methods, sizeof(system_os_methods*)); /* NOLINT: sizeof(system_os_methods*) */
+    /* pushed to the list */
+    u64 file_path_ptr = CALL(env)->getcwd(cvm);
+    u64 file_name_ptr = CALL(string)->load(cvm, "/data/all_english_words.txt");
+    CALL(string)->strcat(cvm, file_path_ptr, file_name_ptr);
+    CALL(string)->free(cvm, file_name_ptr);
+    u64 mode_ptr = CALL(string)->load(cvm, "rb");
+    u64 f_ptr = CALL(file)->alloc(cvm, file_path_ptr, mode_ptr);
+    CALL(string)->free(cvm, file_path_ptr);
+    CALL(string)->free(cvm, mode_ptr);
+    u64 data_ptr = CALL(file)->data(cvm, f_ptr);
+    CALL(file)->free(cvm, f_ptr);
+    CALL(env)->puts(cvm, data_ptr);
+#ifndef USE_GC
+    CALL(data)->free(cvm, data_ptr);
+#endif
+    /* ensures there is no result on 0 */
+    RX_ASSERT(data_ptr == 0);
+    /* ensures pop does not zeroes the head pointer */
+    RX_ASSERT(cvm != 0);
+    /* restore api calls */
+    memcpy(&PRIVATE_API(os), &memory_os_ptr, sizeof(system_os_methods*)); /* NOLINT: sizeof(system_os_methods*) */
 }
 
 /* test case */
