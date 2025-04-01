@@ -495,5 +495,8 @@
     "projectKey": "default-writer_c"
   },
   "cmake.deleteBuildDirOnCleanConfigure": true,
-  "git.fetchOnPull": true  
+  "git.fetchOnPull": true,
+  "[python]": {
+      "editor.defaultFormatter": "trunk.io"
+  }
 }

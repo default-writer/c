@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 31, 2025 at 12:37:32 AM GMT+3
+ *   April 1, 2025 at 12:11:07 AM GMT+3
  *
  */
 /*
@@ -136,19 +136,6 @@ static u64 file_alloc(const_vm_ptr cvm, u64 path, u64 mode) {
     return address;
 }
 
-static u64 file_free(const_vm_ptr cvm, u64 address) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
-        return FALSE;
-    }
-    if (address == 0) {
-        ERROR_INVALID_ARGUMENT("address == %lld", address);
-        return FALSE;
-    }
-    file_type_destructor(address);
-    return TRUE;
-}
-
 static u64 file_data(const_vm_ptr cvm, u64 address) {
     if (cvm == 0 || *cvm == 0) {
         ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
@@ -168,18 +155,38 @@ static u64 file_data(const_vm_ptr cvm, u64 address) {
     void* data_ptr = void_ptr.ptr;
     file_handler_ptr handler = data_ptr;
     FILE* f = handler->file;
-    CALL(os)->fseek(f, 0, SEEK_END); /* NOLINT */
-    u64 size = (u64)CALL(os)->ftell(f);
-    CALL(os)->fseek(f, 0, SEEK_SET);
-    u64 data_size = size + 1;
-    u64 data_handle = CALL(data)->alloc(cvm, data_size);
-    void* file_data = CALL(data)->unsafe(cvm, data_handle);
-    u64 read = CALL(os)->fread(file_data, 1, size, handler->file);
-    if (handler->file != 0) {
-        CALL(os)->fclose(handler->file);
-        handler->file = 0;
+    if (CALL(os)->fseek(f, 0, SEEK_END) == 0) { /* NOLINT */
+        long size = CALL(os)->ftell(f);
+        if (size >= 0) {
+            u64 data_size = (u64)size;
+            u64 data_handle = CALL(data)->alloc(cvm, data_size + 1);
+            void* file_data = CALL(data)->unsafe(cvm, data_handle);
+            if (CALL(os)->fseek(f, 0, SEEK_SET) == 0) { /* NOLINT */
+                u64 read = CALL(os)->fread(file_data, 1, data_size, handler->file);
+                if (handler->file != 0) {
+                    CALL(os)->fclose(handler->file);
+                    handler->file = 0;
+                }
+                if (read == data_size) {
+                    return data_handle;
+                }
+            }
+        }
     }
-    return read ? data_handle : 0;
+    return 0;
+}
+
+static u64 file_free(const_vm_ptr cvm, u64 address) {
+    if (cvm == 0 || *cvm == 0) {
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
+        return FALSE;
+    }
+    if (address == 0) {
+        ERROR_INVALID_ARGUMENT("address == %lld", address);
+        return FALSE;
+    }
+    file_type_destructor(address);
+    return TRUE;
 }
 
 /* public */

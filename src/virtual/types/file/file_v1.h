@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 14, 2025 at 11:34:06 AM GMT+3
+ *   March 31, 2025 at 6:34:03 PM GMT+3
  *
  */
 /*
@@ -48,8 +48,8 @@
 
 typedef struct PRIVATE_API(virtual_file_methods) {
     u64 (*alloc)(const_vm_ptr cvm, u64 file_path_ptr, u64 mode_ptr);
-    u64 (*free)(const_vm_ptr cvm, u64 ptr);
     u64 (*data)(const_vm_ptr cvm, u64 ptr);
+    u64 (*free)(const_vm_ptr cvm, u64 ptr);
 } virtual_file_methods;
 
 /* definition */

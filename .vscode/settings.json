@@ -496,6 +496,9 @@
     },
     "cmake.deleteBuildDirOnCleanConfigure": true,
     "git.fetchOnPull": true,
+    "[python]": {
+        "editor.defaultFormatter": "trunk.io"
+    },
     "cmake.debugConfig": {
         "MIMode": "gdb",
         "miDebuggerPath": "/usr/bin/gdb",
