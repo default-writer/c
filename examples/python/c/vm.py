@@ -73,7 +73,7 @@ class CVirtualMachine:
         """
         return self.vm_methods.release(ptr)
 
-    def destroy(self):
+    def __del__(self):
         """
         Destroys the virtual machine.
         """
