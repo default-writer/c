@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 3, 2025 at 11:20:29 AM GMT+3
+ *   April 3, 2025 at 3:47:40 PM GMT+3
  *
  */
 /*
@@ -189,9 +189,7 @@ static void vm_destroy(const_vm_ptr cvm) {
         CALL(os)->free(known_types);
         known_types = prev;
     }
-    (*cvm)->known_types = 0;
     CALL(os)->free((*cvm)->default_types);
-    (*cvm)->default_types = 0;
     CALL(system)->destroy(cvm);
     CALL(error)->clear();
 #ifdef USE_MEMORY_DEBUG_INFO
