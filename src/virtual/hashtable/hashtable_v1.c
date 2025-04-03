@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 30, 2025 at 11:18:00 PM GMT+3
+ *   April 2, 2025 at 4:31:09 PM GMT+3
  *
  */
 /*
@@ -30,8 +30,6 @@
 
 #define HASHTABLE_TYPE_SIZE sizeof(hashtable_type)
 #define HASHENTRY_TYPE_SIZE sizeof(hashentry_type)
-#define HASHENTRY_PTR_SIZE sizeof(hashentry_ptr)
-#define HASHENTRY_PTR_ARRAY_SIZE(size) (size * HASHENTRY_PTR_SIZE)
 
 /* definition */
 static hashtable_ptr hashtable_init(void);
@@ -50,7 +48,7 @@ u64 hashtable_function_internal(u64 key) {
 }
 
 u64 hashtable_resize_internal(hashtable_ptr ht) {
-    ht->table = (hashentry_ptr*)CALL(os)->realloc(ht->table, HASHENTRY_PTR_ARRAY_SIZE(ht->capacity * 2));
+    ht->table = (hashentry_ptr*)CALL(os)->realloc(ht->table, PTR_ARRAY_SIZE(ht->capacity * 2));
     CALL(os)->memset(ht->table + ht->size, 0x00, 8 * (u64)((double)ht->capacity * (2 - HASHTABLE_LOAD_FACTOR)));
     ht->capacity = ht->capacity * 2;
     return TRUE;
@@ -61,7 +59,7 @@ hashtable_ptr hashtable_init() {
     hashtable_ptr ht = (hashtable_ptr)CALL(os)->calloc(1, HASHTABLE_TYPE_SIZE);
     ht->capacity = HASHTABLE_INITIAL_CAPACITY;
     ht->size = 0;
-    ht->table = (hashentry_ptr*)CALL(os)->calloc(ht->capacity, HASHENTRY_PTR_SIZE);
+    ht->table = (hashentry_ptr*)CALL(os)->calloc(ht->capacity, PTR_SIZE);
     return ht;
 }
 

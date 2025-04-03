@@ -323,8 +323,7 @@
         "**/gtk/**": true
     },
     "clangd.fallbackFlags": [
-        "-I${workspaceFolder}/src",
-        "-Isrc"
+        "-I${workspaceFolder}/src"
     ],
     "clangd.arguments": [
         "--compile-commands-dir=${workspaceFolder}/config",
@@ -350,8 +349,7 @@
     "clang-format.language.c.enable": true,
     "clang-tidy.lintOnSave": true,
     "clang-tidy.compilerArgs": [
-        "-I.deps/rexo/include",
-        "-I/usr/include/gtk-4.0"
+        "-Isrc"
     ],
     "editor.tabSize": 4,
     "editor.indentSize": "tabSize",

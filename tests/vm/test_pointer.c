@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 1, 2025 at 4:50:11 AM GMT+3
+ *   April 3, 2025 at 11:18:55 AM GMT+3
  *
  */
 /*
@@ -26,6 +26,7 @@
 
 #include "test_pointer.h"
 
+#include "system/error/error_v1.h"
 #include "system/memory/memory_v1.h"
 #include "system/os/os_v1.h"
 
@@ -40,6 +41,7 @@
 #include "virtual/types/string_pointer/string_pointer_v1.h"
 #include "virtual/types/user/user_v1.h"
 #include "virtual/virtual/virtual_v1.h"
+#include "virtual/vm/vm_v1.h"
 
 #include "internal/internal_v1.h"
 
@@ -92,8 +94,10 @@ RX_SET_UP(test_set_up) {
 }
 
 RX_TEAR_DOWN(test_tear_down) {
-    CALL(vm)->gc();
-    CALL(vm)->destroy();
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr cvm = rx->ctx;
+    CALL(vm)->gc(cvm);
+    CALL(vm)->destroy(cvm);
 }
 
 RX_SET_UP(test_set_up_pointer_init) {
@@ -126,10 +130,10 @@ RX_TEST_CASE(tests_pointer_v1, test_load_0, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests_pointer_v1, test_load_null_ptr, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr cvm = rx->ctx;
     u64 null_ptr = 0;
-#ifndef USE_GC
-    CALL(vm)->release(null_ptr);
-#endif
+    CALL(vm)->release(cvm, null_ptr);
 }
 
 /* test init */
@@ -200,9 +204,9 @@ RX_TEST_CASE(tests_pointer_v1, test_load_copy_free_gc_free_destroy, .fixture = t
 #ifndef USE_GC
     CALL(string)->free(cvm, char_ptr);
 #endif
-    CALL(vm)->gc();
+    CALL(vm)->gc(cvm);
     CALL(string)->free(cvm, char_ptr);
-    CALL(vm)->destroy();
+    CALL(vm)->destroy(cvm);
 }
 
 /* test init */
@@ -225,9 +229,9 @@ RX_TEST_CASE(tests_pointer_v1, test_load_copy_free_gc_destroy_destroy, .fixture 
 #ifndef USE_GC
     CALL(string)->free(cvm, char_ptr);
 #endif
-    CALL(vm)->gc();
-    CALL(vm)->destroy();
-    CALL(vm)->destroy();
+    CALL(vm)->gc(cvm);
+    CALL(vm)->destroy(cvm);
+    CALL(vm)->destroy(cvm);
 }
 
 /* test init */
@@ -249,9 +253,9 @@ RX_TEST_CASE(tests_pointer_v1, test_init_load_free_gc_gc_destroy, .fixture = tes
 #ifndef USE_GC
     CALL(string)->free(cvm, char_ptr);
 #endif
-    CALL(vm)->gc();
-    CALL(vm)->gc();
-    CALL(vm)->destroy();
+    CALL(vm)->gc(cvm);
+    CALL(vm)->gc(cvm);
+    CALL(vm)->destroy(cvm);
 }
 
 /* test init */
@@ -260,31 +264,31 @@ RX_TEST_CASE(tests_pointer_v1, test_init_load_free_destroy_gc, .fixture = test_f
     u64 char_ptr = CALL(string)->load(cvm, "/");
     RX_ASSERT(char_ptr != 0);
     CALL(string)->free(cvm, char_ptr);
-    CALL(vm)->destroy();
-    CALL(vm)->gc();
+    CALL(vm)->destroy(cvm);
+    CALL(vm)->gc(cvm);
 }
 
 /* test init */
 RX_TEST_CASE(tests_pointer_v1, test_load_copy_virtual_read_ptr_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
-    static virtual_methods mock_virtual_methods_definitions;
+    virtual_methods mock_virtual_methods_definitions;
     /*api */
-    memcpy(&mock_virtual_methods_definitions, _virtual, sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&mock_virtual_methods_definitions, PRIVATE_API(virtual), sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
     /* setup mocks */
     mock_virtual_methods_definitions.read = mock_virtual_read_zero;
     /* setup api endpoint */
-    static const virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
+    virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
     /* backup api calls */
-    memcpy(&virtual_methods_ptr, &_virtual, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&virtual_methods_ptr, &PRIVATE_API(virtual), sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
     /* init */
     u64 char_ptr = CALL(string)->load(cvm, "/");
     /* prepare to mock api calls */
-    memcpy(&_virtual, &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&PRIVATE_API(virtual), &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
     /* virtual_string->free fails in virtual->read call */
     u64 copy_ptr = CALL(string)->copy(cvm, char_ptr);
     /* restore api calls */
-    memcpy(&_virtual, &virtual_methods_ptr, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&PRIVATE_API(virtual), &virtual_methods_ptr, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
     RX_ASSERT(char_ptr != 0);
     RX_ASSERT(copy_ptr == 0);
     RX_ASSERT(strcmp(CALL(string)->unsafe(cvm, char_ptr), "/") == 0);
@@ -295,46 +299,46 @@ RX_TEST_CASE(tests_pointer_v1, test_load_copy_virtual_read_ptr_0, .fixture = tes
 RX_TEST_CASE(tests_pointer_v1, test_load_copy_pointer_virtual_read_ptr_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
-    static virtual_methods mock_virtual_methods_definitions;
+    virtual_methods mock_virtual_methods_definitions;
     /*api */
-    memcpy(&mock_virtual_methods_definitions, _virtual, sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&mock_virtual_methods_definitions, PRIVATE_API(virtual), sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
     /* setup mocks */
     mock_virtual_methods_definitions.read = mock_virtual_read_zero;
     /* setup api endpoint */
-    static const virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
+    virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
     /* backup api calls */
-    memcpy(&virtual_methods_ptr, &_virtual, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&virtual_methods_ptr, &PRIVATE_API(virtual), sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
     /* prepare to mock api calls */
-    memcpy(&_virtual, &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&PRIVATE_API(virtual), &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
     u64 address = CALL(virtual)->alloc(cvm, 2, TYPE_STRING_POINTER);
     u64 move_ptr = CALL(string)->move_left(cvm, address, 1);
     RX_ASSERT(move_ptr == 0);
     /* restore api calls */
-    memcpy(&_virtual, &virtual_methods_ptr, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
-    CALL(pointer)->free(address, TYPE_STRING_POINTER);
+    memcpy(&PRIVATE_API(virtual), &virtual_methods_ptr, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    CALL(pointer)->free(cvm, address, TYPE_STRING_POINTER);
 }
 
 /* test init */
 RX_TEST_CASE(tests_pointer_v1, test_load_copy_virtual_read_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
-    static virtual_methods mock_virtual_methods_definitions;
+    virtual_methods mock_virtual_methods_definitions;
     /*api */
-    memcpy(&mock_virtual_methods_definitions, _virtual, sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&mock_virtual_methods_definitions, PRIVATE_API(virtual), sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
     /* setup mocks */
     mock_virtual_methods_definitions.read = mock_virtual_read_zero;
     /* setup api endpoint */
-    static const virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
+    virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
     /* backup api calls */
-    memcpy(&virtual_methods_ptr, &_virtual, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&virtual_methods_ptr, &PRIVATE_API(virtual), sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
     /* init */
     u64 char_ptr = CALL(string)->load(cvm, "/");
     /* prepare to mock api calls */
-    memcpy(&_virtual, &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&PRIVATE_API(virtual), &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
     /* virtual_string->free fails in virtual->read call */
     u64 copy_ptr = CALL(string)->copy(cvm, char_ptr);
     /* restore api calls */
-    memcpy(&_virtual, &virtual_methods_ptr, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&PRIVATE_API(virtual), &virtual_methods_ptr, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
     RX_ASSERT(char_ptr != 0);
     RX_ASSERT(copy_ptr == 0);
     RX_ASSERT(strcmp(CALL(string)->unsafe(cvm, char_ptr), "/") == 0);
@@ -510,7 +514,7 @@ RX_TEST_CASE(tests_pointer_v1, test_object_load_free, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
     const char* test_data = "Hello, world!";
-    const void* ptr = (const void*)test_data;
+    const_void_ptr ptr = (const_void_ptr)test_data;
     u64 object_ptr = CALL(object)->load(cvm, ptr, strlen(ptr));
     CALL(object)->free(cvm, object_ptr);
 #ifndef USE_GC
@@ -551,7 +555,7 @@ RX_TEST_CASE(tests_pointer_v1, test_object_load_string_0, .fixture = test_fixtur
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
     const char* test_data = "Hello, world!";
-    const void* ptr = (const void*)test_data;
+    const_void_ptr ptr = (const_void_ptr)test_data;
     u64 object_ptr = CALL(object)->load(cvm, ptr, 0);
     u64 pattern_ptr = CALL(string)->load(cvm, "\0");
     u64 object_size = CALL(object)->size(cvm, object_ptr);
@@ -570,7 +574,7 @@ RX_TEST_CASE(tests_pointer_v1, test_object_load_string, .fixture = test_fixture)
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
     const char* test_data = "Hello, world!";
-    const void* ptr = (const void*)test_data;
+    const_void_ptr ptr = (const_void_ptr)test_data;
     u64 object_ptr = CALL(object)->load(cvm, ptr, strlen(ptr));
     u64 pattern_ptr = CALL(string)->load(cvm, "\0");
     u64 object_size = CALL(object)->size(cvm, object_ptr);
@@ -627,7 +631,7 @@ RX_TEST_CASE(tests_pointer_v1, test_object_load_string_unsafe_0, .fixture = test
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
     const char* test_data = "Hello, world!";
-    const void* ptr = (const void*)test_data;
+    const_void_ptr ptr = (const_void_ptr)test_data;
     u64 object_ptr = CALL(object)->load(cvm, ptr, strlen(ptr));
     u64 pattern_ptr = CALL(string)->load(cvm, "\0");
     u64 object_size = CALL(object)->size(cvm, object_ptr);
@@ -641,9 +645,9 @@ RX_TEST_CASE(tests_pointer_v1, test_object_load_string_unsafe_0, .fixture = test
     CALL(string)->free(cvm, pattern_ptr);
     CALL(object)->free(cvm, object_ptr);
 #endif
-    CALL(vm)->gc();
+    CALL(vm)->gc(cvm);
     CALL(object)->free(cvm, object_ptr);
-    CALL(vm)->destroy();
+    CALL(vm)->destroy(cvm);
 }
 
 /* test init */
@@ -651,7 +655,7 @@ RX_TEST_CASE(tests_pointer_v1, test_object_load_string_unsafe, .fixture = test_f
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
     const char* test_data = "Hello, world!";
-    const void* ptr = (const void*)test_data;
+    const_void_ptr ptr = (const_void_ptr)test_data;
     u64 object_ptr = CALL(object)->load(cvm, ptr, strlen(ptr));
     u64 pattern_ptr = CALL(string)->load(cvm, "\0");
     u64 object_size = CALL(object)->size(cvm, object_ptr);
@@ -799,7 +803,7 @@ RX_TEST_CASE(tests_pointer_v1, test_stack_pointer_alloc_free, .fixture = test_fi
     u64 string_pointer_ptr = CALL(string)->offset(cvm, string_ptr, e_ptr);
     char* dot = (char*)CALL(memory)->alloc(1);
     CALL(os)->memcpy(dot, ".", 1);
-    u64 string_from_memory_alloc_ptr = CALL(pointer)->alloc(dot, 1, TYPE_STRING);
+    u64 string_from_memory_alloc_ptr = CALL(pointer)->alloc(cvm, dot, 1, TYPE_STRING);
     CALL(stack)->push(cvm, list_ptr, string_pointer_ptr);
     CALL(stack)->push(cvm, list_ptr, string_from_memory_alloc_ptr);
     CALL(stack)->push(cvm, list_ptr, string_ptr);
@@ -1162,7 +1166,7 @@ RX_TEST_CASE(tests_pointer_v1, test_string_pointer_strrchr_ptr_0, .fixture = tes
     u64 string_ptr = CALL(string)->load(cvm, "192.168.0.1");
     char* dot = (char*)CALL(memory)->alloc(1);
     CALL(os)->memcpy(dot, ".", 1);
-    u64 dot_ptr = CALL(pointer)->alloc(dot, 1, TYPE_STRING_POINTER);
+    u64 dot_ptr = CALL(pointer)->alloc(cvm, dot, 1, TYPE_STRING_POINTER);
     u64 string_pointer_ptr1 = CALL(string)->strrchr(cvm, string_ptr, dot_ptr);
     u64 string_pointer_ptr2 = CALL(string)->match(cvm, string_pointer_ptr1, dot_ptr);
     RX_ASSERT(string_pointer_ptr1 == 0);
@@ -1170,7 +1174,7 @@ RX_TEST_CASE(tests_pointer_v1, test_string_pointer_strrchr_ptr_0, .fixture = tes
 #ifndef USE_GC
     CALL(string)->free(cvm, string_ptr);
 #endif
-    CALL(pointer)->free(dot_ptr, TYPE_STRING_POINTER);
+    CALL(pointer)->free(cvm, dot_ptr, TYPE_STRING_POINTER);
 }
 
 /* test init */
@@ -1180,7 +1184,7 @@ RX_TEST_CASE(tests_pointer_v1, test_string_pointer_strchr_ptr_0, .fixture = test
     u64 string_ptr = CALL(string)->load(cvm, "192.168.0.1");
     char* dot = (char*)CALL(memory)->alloc(1);
     CALL(os)->memcpy(dot, ".", 1);
-    u64 dot_ptr = CALL(pointer)->alloc(dot, 1, TYPE_STRING_POINTER);
+    u64 dot_ptr = CALL(pointer)->alloc(cvm, dot, 1, TYPE_STRING_POINTER);
     u64 string_pointer_ptr1 = CALL(string)->strchr(cvm, string_ptr, dot_ptr);
     u64 string_pointer_ptr2 = CALL(string)->match(cvm, string_pointer_ptr1, dot_ptr);
     RX_ASSERT(string_pointer_ptr1 == 0);
@@ -1188,7 +1192,7 @@ RX_TEST_CASE(tests_pointer_v1, test_string_pointer_strchr_ptr_0, .fixture = test
 #ifndef USE_GC
     CALL(string)->free(cvm, string_ptr);
 #endif
-    CALL(pointer)->free(dot_ptr, TYPE_STRING_POINTER);
+    CALL(pointer)->free(cvm, dot_ptr, TYPE_STRING_POINTER);
 }
 
 /* test init */
@@ -1237,10 +1241,10 @@ RX_TEST_CASE(tests_pointer_v1, test_list_peekn_error_1, .fixture = test_fixture)
     const_vm_ptr cvm = rx->ctx;
     char* dot = (char*)CALL(memory)->alloc(1);
     CALL(os)->memcpy(dot, ".", 1);
-    u64 list_ptr = CALL(pointer)->alloc(dot, 1, TYPE_STRING);
+    u64 list_ptr = CALL(pointer)->alloc(cvm, dot, 1, TYPE_STRING);
     u64 error_ptr = CALL(stack)->peekn(cvm, list_ptr, 1);
     RX_ASSERT(error_ptr == 0);
-    CALL(pointer)->free(list_ptr, TYPE_STRING);
+    CALL(pointer)->free(cvm, list_ptr, TYPE_STRING);
 }
 
 /* test init */
@@ -1293,10 +1297,10 @@ RX_TEST_CASE(tests_pointer_v1, test_list_popn_error_1, .fixture = test_fixture) 
     const_vm_ptr cvm = rx->ctx;
     char* dot = (char*)CALL(memory)->alloc(1);
     CALL(os)->memcpy(dot, ".", 1);
-    u64 list_ptr = CALL(pointer)->alloc(dot, 1, TYPE_STRING);
+    u64 list_ptr = CALL(pointer)->alloc(cvm, dot, 1, TYPE_STRING);
     u64 error_ptr = CALL(stack)->popn(cvm, list_ptr, 1);
     RX_ASSERT(error_ptr == 0);
-    CALL(pointer)->free(list_ptr, TYPE_STRING);
+    CALL(pointer)->free(cvm, list_ptr, TYPE_STRING);
 }
 
 /* test init */
@@ -1678,23 +1682,24 @@ RX_TEST_CASE(tests_pointer_v1, test_strcat_load_put_char, .fixture = test_fixtur
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
     const char* ch = "hello, world!";
-    u64 string_ptr = CALL(pointer)->copy(ch, 2, 0, TYPE_STRING);
+    u64 string_ptr = CALL(pointer)->copy(cvm, ch, 2, 0, TYPE_STRING);
     CALL(string)->put_char(cvm, string_ptr, 'a');
     const char* actual = CALL(string)->unsafe(cvm, string_ptr);
     RX_ASSERT(actual[0] == 'a');
     RX_ASSERT(actual[1] == 'e');
-    CALL(vm)->release(string_ptr);
+    CALL(vm)->release(cvm, string_ptr);
 }
+
 RX_TEST_CASE(tests_pointer_v1, test_strcat_load_put_char_offset, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
     const char* ch = "hello, world!";
-    u64 string_ptr = CALL(pointer)->copy(ch, 2, 14, TYPE_STRING);
+    u64 string_ptr = CALL(pointer)->copy(cvm, ch, 2, 14, TYPE_STRING);
     CALL(string)->put_char(cvm, string_ptr, 'a');
     const char* actual = CALL(string)->unsafe(cvm, string_ptr);
     RX_ASSERT(actual[0] == 'a');
     RX_ASSERT(actual[1] == 'e');
-    CALL(vm)->release(string_ptr);
+    CALL(vm)->release(cvm, string_ptr);
 }
 
 /* test init */
@@ -2057,7 +2062,7 @@ RX_TEST_CASE(tests_pointer_v1, test_vm_data_size, .fixture = test_fixture) {
 /* test init */
 RX_TEST_CASE(tests_pointer_v1, test_vm_data_unsafe, .fixture = test_fixture) {
     const_vm_ptr cvm = 0;
-    void* value = CALL(data)->unsafe(cvm, 0);
+    void_ptr value = CALL(data)->unsafe(cvm, 0);
     RX_ASSERT(value == 0);
 }
 
@@ -2126,7 +2131,7 @@ RX_TEST_CASE(tests_pointer_v1, test_vm_object_free, .fixture = test_fixture) {
 /* test init */
 RX_TEST_CASE(tests_pointer_v1, test_vm_object_unsafe, .fixture = test_fixture) {
     const_vm_ptr cvm = 0;
-    void* value = CALL(object)->unsafe(cvm, 0);
+    void_ptr value = CALL(object)->unsafe(cvm, 0);
     RX_ASSERT(value == 0);
 }
 
@@ -2433,175 +2438,209 @@ RX_TEST_CASE(tests_pointer_v1, test_vm_env_putc, .fixture = test_fixture) {
 /* pointer API */
 /***************/
 
-RX_TEST_CASE(tests_pointer_v1, test_vm_read_data, .fixture = test_fixture_pointer) {
-    const void* data_ptr = CALL(pointer)->read(0, 0);
-    RX_ASSERT(data_ptr == 0);
-}
-
-RX_TEST_CASE(tests_pointer_v1, test_vm_alloc_data_read_data, .fixture = test_fixture_pointer) {
-    const void* data_ptr = CALL(pointer)->read(0, 0);
+RX_TEST_CASE(tests_pointer_v1, test_vm_pointer_read_data_0_0, .fixture = test_fixture_pointer) {
+    const_vm_ptr cvm = 0;
+    const_void_ptr data_ptr = CALL(pointer)->read(cvm, 0, 0);
     RX_ASSERT(data_ptr == 0);
 }
 
 /* test init */
 RX_TEST_CASE(tests_pointer_v1, test_vm_pointer_read_data_1_0, .fixture = test_fixture) {
-    const_vm_ptr cvm = 0;
-    const void* data_ptr = CALL(pointer)->read(1, 0);
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr cvm = rx->ctx;
+    const_void_ptr data_ptr = CALL(pointer)->read(cvm, 1, 0);
     RX_ASSERT(data_ptr == 0);
 }
 
 /* test init */
 RX_TEST_CASE(tests_pointer_v1, test_vm_pointer_read_data_error_0_0, .fixture = test_fixture) {
-    const_vm_ptr cvm = 0;
-    const void* data_ptr = CALL(pointer)->read(0, 0);
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr cvm = rx->ctx;
+    const_void_ptr data_ptr = CALL(pointer)->read(cvm, 0, 0);
     RX_ASSERT(data_ptr == 0);
 }
 
 RX_TEST_CASE(tests_pointer_v1, test_vm_alloc, .fixture = test_fixture_pointer) {
-    void* data_ptr = 0;
-    u64 address = CALL(pointer)->alloc(&data_ptr, 0, TYPE_STRING);
+    const_vm_ptr cvm = 0;
+    void_ptr data_ptr = 0;
+    u64 address = CALL(pointer)->alloc(cvm, &data_ptr, 0, TYPE_STRING);
     RX_ASSERT(address == 0);
 }
 
 /* test init */
 RX_TEST_CASE(tests_pointer_v1, test_vm_pointer_alloc_safe_0_0_0, .fixture = test_fixture) {
-    const_vm_ptr cvm = 0;
-    u64 address = CALL(pointer)->alloc(0, 0, 0);
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr cvm = rx->ctx;
+    u64 address = CALL(pointer)->alloc(cvm, 0, 0, 0);
     RX_ASSERT(address == 0);
 }
 
 /* test init */
 RX_TEST_CASE(tests_pointer_v1, test_vm_pointer_alloc_0_0, .fixture = test_fixture) {
-    const_vm_ptr cvm = 0;
-    void* data_ptr = 0;
-    u64 address = CALL(pointer)->alloc(&data_ptr, 0, 0);
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr cvm = rx->ctx;
+    void_ptr data_ptr = 0;
+    u64 address = CALL(pointer)->alloc(cvm, &data_ptr, 0, 0);
     RX_ASSERT(address == 0);
 }
 
 /* test init */
 RX_TEST_CASE(tests_pointer_v1, test_vm_pointer_alloc_1_0, .fixture = test_fixture) {
-    void* data_ptr = 0;
-    u64 address = CALL(pointer)->alloc(&data_ptr, 1, 0);
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr cvm = rx->ctx;
+    void_ptr data_ptr = 0;
+    u64 address = CALL(pointer)->alloc(cvm, &data_ptr, 1, 0);
     RX_ASSERT(address == 0);
 }
 
 /* test init */
 RX_TEST_CASE(tests_pointer_v1, test_vm_pointer_alloc_0_1, .fixture = test_fixture) {
-    void* data_ptr;
-    u64 address = CALL(pointer)->alloc(&data_ptr, 0, 1);
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr cvm = rx->ctx;
+    void_ptr data_ptr;
+    u64 address = CALL(pointer)->alloc(cvm, &data_ptr, 0, 1);
     RX_ASSERT(address == 0);
 }
 
 RX_TEST_CASE(tests_pointer_v1, test_vm_alloc_safe, .fixture = test_fixture_pointer) {
-    void* data_ptr = 0;
-    u64 address = CALL(pointer)->copy(&data_ptr, 0, 0, TYPE_STRING);
+    const_vm_ptr cvm = 0;
+    void_ptr data_ptr = 0;
+    u64 address = CALL(pointer)->copy(cvm, &data_ptr, 0, 0, TYPE_STRING);
     RX_ASSERT(address == 0);
 }
 
 /* test init */
 RX_TEST_CASE(tests_pointer_v1, test_vm_alloc_safe_0_0_0, .fixture = test_fixture) {
-    const_vm_ptr cvm = 0;
-    u64 address = CALL(pointer)->copy(0, 0, 0, 0);
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr cvm = rx->ctx;
+    u64 address = CALL(pointer)->copy(cvm, 0, 0, 0, 0);
     RX_ASSERT(address == 0);
 }
 
 /* test init */
 RX_TEST_CASE(tests_pointer_v1, test_vm_pointer_alloc_safe_0_0, .fixture = test_fixture) {
     const_vm_ptr cvm = 0;
-    void* data_ptr = 0;
-    u64 address = CALL(pointer)->copy(&data_ptr, 0, 0, 0);
+    void_ptr data_ptr = 0;
+    u64 address = CALL(pointer)->copy(cvm, &data_ptr, 0, 0, 0);
     RX_ASSERT(address == 0);
 }
 
 /* test init */
 RX_TEST_CASE(tests_pointer_v1, test_vm_pointer_alloc_safe_1_0, .fixture = test_fixture) {
-    void* data_ptr = 0;
-    u64 address = CALL(pointer)->copy(&data_ptr, 1, 0, 0);
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr cvm = rx->ctx;
+    void_ptr data_ptr = 0;
+    u64 address = CALL(pointer)->copy(cvm, &data_ptr, 1, 0, 0);
     RX_ASSERT(address == 0);
 }
 
 /* test init */
 RX_TEST_CASE(tests_pointer_v1, test_vm_virtual_pointer_0_1, .fixture = test_fixture) {
-    void* data_ptr;
-    u64 address = CALL(pointer)->copy(&data_ptr, 0, 0, 1);
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr cvm = rx->ctx;
+    void_ptr data_ptr;
+    u64 address = CALL(pointer)->copy(cvm, &data_ptr, 0, 0, 1);
     RX_ASSERT(address == 0);
 }
 
 /* test init */
 RX_TEST_CASE(tests_pointer_v1, test_vm_pointer_release_data_1_0, .fixture = test_fixture) {
-    u64 result = CALL(pointer)->free(0, 0);
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr cvm = rx->ctx;
+    u64 result = CALL(pointer)->free(cvm, 0, 0);
     RX_ASSERT(result == FALSE);
 }
 
 /* test init */
 RX_TEST_CASE(tests_pointer_v1, test_vm_pointer_release_data_error_0_0, .fixture = test_fixture) {
-    u64 result = CALL(pointer)->free(1, 0);
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr cvm = rx->ctx;
+    u64 result = CALL(pointer)->free(cvm, 1, 0);
     RX_ASSERT(result == FALSE);
 }
 
 RX_TEST_CASE(tests_pointer_v1, test_vm_pointer_copy_ch_2_1_02, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr cvm = rx->ctx;
     const char* ch = "hello, world!";
-    u64 address1 = CALL(pointer)->copy(ch, strlen(ch), 0, TYPE_OBJECT);
-    u64 address2 = CALL(pointer)->copy(ch, 13, 1, TYPE_OBJECT);
+    u64 address1 = CALL(pointer)->copy(cvm, ch, strlen(ch), 0, TYPE_OBJECT);
+    u64 address2 = CALL(pointer)->copy(cvm, ch, 13, 1, TYPE_OBJECT);
     RX_ASSERT(address1 != 0);
     RX_ASSERT(address2 != 0);
-    const char* data1 = CALL(pointer)->read(address1, TYPE_OBJECT);
-    const char* data2 = CALL(pointer)->read(address2, TYPE_OBJECT);
+    const char* data1 = CALL(pointer)->read(cvm, address1, TYPE_OBJECT);
+    const char* data2 = CALL(pointer)->read(cvm, address2, TYPE_OBJECT);
     RX_ASSERT(data1 != 0);
     RX_ASSERT(data2[1] == 0);
 }
 
 RX_TEST_CASE(tests_pointer_v1, test_vm_pointer_alloc_safe, .fixture = test_fixture) {
-    CALL(pointer)->copy(0, 0, 0, 0);
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr cvm = rx->ctx;
+    CALL(pointer)->copy(cvm, 0, 0, 0, 0);
     RX_ASSERT(0 != 1);
 }
 
 RX_TEST_CASE(tests_pointer_v1, test_vm_pointer_alloc_safe_0_0_0_0, .fixture = test_fixture_pointer) {
-    CALL(pointer)->copy(0, 0, 0, 0);
+    const_vm_ptr cvm = 0;
+    CALL(pointer)->copy(cvm, 0, 0, 0, 0);
     RX_ASSERT(0 != 1);
 }
 
 RX_TEST_CASE(tests_pointer_v1, test_vm_pointer_alloc_safe_ch_0_0_0, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr cvm = rx->ctx;
     const char* ch = "hello, world!";
-    CALL(pointer)->copy(ch, 0, 0, 0);
+    CALL(pointer)->copy(cvm, ch, 0, 0, 0);
     RX_ASSERT(0 != 1);
 }
 
 RX_TEST_CASE(tests_pointer_v1, test_vm_pointer_alloc_safe_ch_1_0_0, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr cvm = rx->ctx;
     const char* ch = "hello, world!";
-    u64 result = CALL(pointer)->copy(ch, 1, 0, 0);
+    u64 result = CALL(pointer)->copy(cvm, ch, 1, 0, 0);
     RX_ASSERT(result == 0);
 }
 
 RX_TEST_CASE(tests_pointer_v1, test_vm_pointer_alloc_safe_ch_1_1_0, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr cvm = rx->ctx;
     const char* ch = "hello, world!";
-    u64 result = CALL(pointer)->copy(ch, 1, 1, 0);
+    u64 result = CALL(pointer)->copy(cvm, ch, 1, 1, 0);
     RX_ASSERT(result == 0);
 }
 
 RX_TEST_CASE(tests_pointer_v1, test_vm_pointer_alloc_safe_ch_1_2_0, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr cvm = rx->ctx;
     const char* ch = "hello, world!";
-    u64 result = CALL(pointer)->copy(ch, 1, 2, 0);
+    u64 result = CALL(pointer)->copy(cvm, ch, 1, 2, 0);
     RX_ASSERT(result == 0);
 }
 
 RX_TEST_CASE(tests_pointer_v1, test_vm_pointer_free, .fixture = test_fixture_pointer) {
-    CALL(vm)->release(0);
+    const_vm_ptr cvm = 0;
+    CALL(vm)->release(cvm, 0);
     RX_ASSERT(0 != 1);
 }
 
 RX_TEST_CASE(tests_pointer_v1, test_vm_pointer_release_type, .fixture = test_fixture_pointer) {
-    CALL(pointer)->free(0, 0);
+    const_vm_ptr cvm = 0;
+    CALL(pointer)->free(cvm, 0, 0);
     RX_ASSERT(0 != 1);
 }
 
 RX_TEST_CASE(tests_pointer_v1, test_vm_pointer_alloc_safe_0, .fixture = test_fixture) {
-    CALL(pointer)->copy(0, 0, 0, 0);
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr cvm = rx->ctx;
+    CALL(pointer)->copy(cvm, 0, 0, 0, 0);
     RX_ASSERT(0 != 1);
 }
 
 RX_TEST_CASE(tests_pointer_v1, test_vm_pointer_release_0, .fixture = test_fixture) {
-    CALL(vm)->release(0);
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr cvm = rx->ctx;
+    CALL(vm)->release(cvm, 0);
     RX_ASSERT(0 != 1);
 }
 
@@ -2624,9 +2663,8 @@ RX_TEST_CASE(tests_pointer_v1, test_vm_pointer_read_safe_alloc_safe_size_offset,
 
 /* test init */
 RX_TEST_CASE(tests_pointer_v1, test_vm_virtual_init, .fixture = test_fixture) {
-    const_vm_ptr cvm = 0;
-    CALL(system)->init(cvm, 0);
-    RX_ASSERT(0 != 1);
+    const_vm_ptr cvm = CALL(system)->init(0);
+    RX_ASSERT(cvm != 0);
 }
 
 /* test init */
@@ -2813,62 +2851,62 @@ RX_TEST_CASE(tests_pointer_v1, test_print_free, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests_pointer_v1, test_sting_free_0, .fixture = test_fixture) {
-    static virtual_methods mock_virtual_methods_definitions;
+    virtual_methods mock_virtual_methods_definitions;
     /*api */
-    memcpy(&mock_virtual_methods_definitions, _virtual, sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&mock_virtual_methods_definitions, PRIVATE_API(virtual), sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
     /* setup mocks */
     mock_virtual_methods_definitions.read = mock_virtual_read_zero;
     /* setup api endpoint */
-    static const virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
+    virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
     /* backup api calls */
-    memcpy(&virtual_methods_ptr, &_virtual, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&virtual_methods_ptr, &PRIVATE_API(virtual), sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
     /* init */
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
     /* prepare to mock api calls */
-    memcpy(&_virtual, &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&PRIVATE_API(virtual), &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
     /* virtual_string->free fails in virtual->read call */
     CALL(string)->free(cvm, 0);
     /* restore api calls */
-    memcpy(&_virtual, &virtual_methods_ptr, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&PRIVATE_API(virtual), &virtual_methods_ptr, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
     /* cleanup */
-    CALL(vm)->gc();
+    CALL(vm)->gc(cvm);
     /* destroy */
-    CALL(vm)->destroy();
+    CALL(vm)->destroy(cvm);
 }
 
 /* test init */
 RX_TEST_CASE(tests_pointer_v1, test_sting_free_ptr_0, .fixture = test_fixture) {
-    static virtual_methods mock_virtual_methods_definitions;
+    virtual_methods mock_virtual_methods_definitions;
     /*api */
-    memcpy(&mock_virtual_methods_definitions, _virtual, sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&mock_virtual_methods_definitions, PRIVATE_API(virtual), sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
     /* setup mocks */
     mock_virtual_methods_definitions.read = mock_virtual_read_zero;
     /* setup api endpoint */
-    static const virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
+    virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
     /* backup api calls */
-    memcpy(&virtual_methods_ptr, &_virtual, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&virtual_methods_ptr, &PRIVATE_API(virtual), sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
     /* init */
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
     /* prepare to mock api calls */
-    memcpy(&_virtual, &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&PRIVATE_API(virtual), &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
     /* virtual_string->free fails in virtual->read call */
     CALL(string)->free(cvm, 0);
     /* restore api calls */
-    memcpy(&_virtual, &virtual_methods_ptr, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&PRIVATE_API(virtual), &virtual_methods_ptr, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
 }
 
 /* test init */
 RX_TEST_CASE(tests_pointer_v1, test_print_string_pointer_virtual_read_type, .fixture = test_fixture) {
-    static virtual_methods mock_virtual_methods_definitions;
+    virtual_methods mock_virtual_methods_definitions;
     /*api */
-    memcpy(&mock_virtual_methods_definitions, _virtual, sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&mock_virtual_methods_definitions, PRIVATE_API(virtual), sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
     /* setup mocks */
     /* setup api endpoint */
-    static const virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
+    virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
     /* backup api calls */
-    memcpy(&virtual_methods_ptr, &_virtual, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&virtual_methods_ptr, &PRIVATE_API(virtual), sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
     /* init */
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
@@ -2878,23 +2916,23 @@ RX_TEST_CASE(tests_pointer_v1, test_print_string_pointer_virtual_read_type, .fix
     CALL(env)->puts(cvm, substring_index_ptr);
     CALL(string)->free(cvm, printing_ptr);
     /* prepare to mock api calls */
-    memcpy(&_virtual, &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&PRIVATE_API(virtual), &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
     CALL(string)->free(cvm, substring_index_ptr);
     /* restore api calls */
-    memcpy(&_virtual, &virtual_methods_ptr, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&PRIVATE_API(virtual), &virtual_methods_ptr, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
     CALL(string)->free(cvm, comma_ptr);
 }
 
 /* test init */
 RX_TEST_CASE(tests_pointer_v1, test_free_string_pointer_virtual_read_type, .fixture = test_fixture) {
-    static virtual_methods mock_virtual_methods_definitions;
+    virtual_methods mock_virtual_methods_definitions;
     /*api */
-    memcpy(&mock_virtual_methods_definitions, _virtual, sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&mock_virtual_methods_definitions, PRIVATE_API(virtual), sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
     /* setup mocks */
     /* setup api endpoint */
-    static const virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
+    virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
     /* backup api calls */
-    memcpy(&virtual_methods_ptr, &_virtual, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&virtual_methods_ptr, &PRIVATE_API(virtual), sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
     /* init */
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
@@ -2907,13 +2945,13 @@ RX_TEST_CASE(tests_pointer_v1, test_free_string_pointer_virtual_read_type, .fixt
     u64 substring_exclamation_ptr = CALL(string)->offset(cvm, substring_space_ptr, exclamation_ptr);
     CALL(env)->puts(cvm, substring_index_ptr);
     /* prepare to mock api calls */
-    memcpy(&_virtual, &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&PRIVATE_API(virtual), &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
     CALL(string_pointer)->free(cvm, substring_exclamation_ptr);
     CALL(string)->free(cvm, substring_space_ptr);
     CALL(string_pointer)->free(cvm, substring_index_ptr);
     CALL(string)->free(cvm, printing_ptr);
     /* restore api calls */
-    memcpy(&_virtual, &virtual_methods_ptr, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&PRIVATE_API(virtual), &virtual_methods_ptr, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
     CALL(string)->free(cvm, comma_ptr);
 }
 
@@ -3199,6 +3237,36 @@ RX_TEST_CASE(tests_pointer_v1, test_user, .fixture = test_fixture) {
 }
 
 /* test init */
+RX_TEST_CASE(tests_pointer_v1, test_user_free, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr cvm = rx->ctx;
+    u64 ptr1 = CALL(user)->alloc(cvm);
+    CALL(user)->free(cvm, ptr1);
+    CALL(user)->free(cvm, ptr1);
+}
+
+/* test init */
+RX_TEST_CASE(tests_pointer_v1, test_user_free_0, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr cvm = rx->ctx;
+    CALL(user)->free(cvm, 0);
+}
+
+/* test init */
+RX_TEST_CASE(tests_pointer_v1, test_type_register_user_type, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr cvm = rx->ctx;
+    type_methods_definitions_type user_definition = {
+        .type_id = TYPE_USER
+    };
+    CALL(type)->register_user_type(cvm, &user_definition);
+    CALL(error)->clear();
+    /* type->register_user_type fails in register_user_types */
+    CALL(type)->register_user_type(cvm, &user_definition);
+    RX_ASSERT(CALL(error)->count() == 1);
+}
+
+/* test init */
 RX_TEST_CASE(tests_pointer_v1, test_load_open_file_unsafe_hashtable, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
@@ -3250,14 +3318,6 @@ RX_TEST_CASE(tests_pointer_v1, test_load_load_match_last, .fixture = test_fixtur
 
 /* internal */
 static void parse_text(const_vm_ptr cvm, u64 text_string_ptr);
-
-/* test init */
-RX_TEST_CASE(pointer_tests, test_pointer_init, .fixture = test_fixture) {
-    TEST_DATA rx = (TEST_DATA)RX_DATA;
-    const_vm_ptr vm_expected = rx->ctx;
-    const_vm_ptr vm_actual = CALL(vm)->init(8);
-    RX_ASSERT(vm_actual == vm_expected);
-}
 
 /* test init */
 RX_TEST_CASE(pointer_tests, test_pointer_string_load, .fixture = test_fixture) {
@@ -4912,9 +4972,9 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_left_a_string_free, .fixture = t
     u64 error_ptr = CALL(string)->left(cvm, quantum_str_ptr1, quantum_str_ptr2);
     RX_ASSERT(error_ptr == 0);
     CALL(string)->free(cvm, quantum_str_ptr2);
-    CALL(vm)->gc();
+    CALL(vm)->gc(cvm);
     CALL(string)->free(cvm, quantum_str_ptr2);
-    CALL(vm)->destroy();
+    CALL(vm)->destroy(cvm);
     CALL(string)->free(cvm, quantum_str_ptr2);
 }
 

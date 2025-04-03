@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 30, 2025 at 11:17:35 PM GMT+3
+ *   April 2, 2025 at 7:28:14 PM GMT+3
  *
  */
 /*
@@ -42,6 +42,7 @@ const system_os_methods PRIVATE_API(system_os_methods_definitions) = {
     .getcwd = &getcwd,
     .getenv = &getenv,
     .memcpy = &memcpy,
+    .memmove = &memmove,
     .memset = &memset,
     .puts = &puts,
     .strcmp = &strcmp,

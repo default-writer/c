@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 28, 2025 at 4:54:24 PM GMT+3
+ *   April 2, 2025 at 7:41:04 AM GMT+3
  *
  */
 /*
@@ -27,50 +27,50 @@
 #include "api_v1.h"
 
 /* api */
-const virtual_vm_methods* PUBLIC_API(vm) {
+PUBLIC const virtual_vm_methods* PUBLIC_API(vm) {
     return CALL(vm);
 }
 
-const virtual_methods* PUBLIC_API(virtual) {
+PUBLIC const virtual_methods* PUBLIC_API(virtual) {
     return CALL(virtual);
 }
 
-const virtual_pointer_methods* PUBLIC_API(pointer) {
+PUBLIC const virtual_pointer_methods* PUBLIC_API(pointer) {
     return CALL(pointer);
 }
 
-const virtual_env_methods* PUBLIC_API(env) {
+PUBLIC const virtual_env_methods* PUBLIC_API(env) {
     return CALL(env);
 }
 
-const virtual_hashtable_methods* PUBLIC_API(hashtable) {
+PUBLIC const virtual_hashtable_methods* PUBLIC_API(hashtable) {
     return CALL(hashtable);
 }
 
-const virtual_data_methods* PUBLIC_API(data) {
+PUBLIC const virtual_data_methods* PUBLIC_API(data) {
     return CALL(data);
 }
 
-const virtual_file_methods* PUBLIC_API(file) {
+PUBLIC const virtual_file_methods* PUBLIC_API(file) {
     return CALL(file);
 }
 
-const virtual_object_methods* PUBLIC_API(object) {
+PUBLIC const virtual_object_methods* PUBLIC_API(object) {
     return CALL(object);
 }
 
-const virtual_stack_methods* PUBLIC_API(stack) {
+PUBLIC const virtual_stack_methods* PUBLIC_API(stack) {
     return CALL(stack);
 }
 
-const virtual_string_methods* PUBLIC_API(string) {
+PUBLIC const virtual_string_methods* PUBLIC_API(string) {
     return CALL(string);
 }
 
-const virtual_string_pointer_methods* PUBLIC_API(string_pointer) {
+PUBLIC const virtual_string_pointer_methods* PUBLIC_API(string_pointer) {
     return CALL(string_pointer);
 }
 
-const virtual_user_methods* PUBLIC_API(user) {
+PUBLIC const virtual_user_methods* PUBLIC_API(user) {
     return CALL(user);
 }

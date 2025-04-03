@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 27, 2025 at 4:52:40 PM GMT+3
+ *   April 3, 2025 at 10:43:07 AM GMT+3
  *
  */
 /*
@@ -37,27 +37,19 @@
  */
 
 typedef struct PRIVATE_API(virtual_pointer_methods) {
-    u64 (*alloc)(const_void_ptr data, u64 size, u64 type_id);
-    u64 (*copy)(const_void_ptr src, u64 size, u64 offset, u64 type_id);
-    const_void_ptr (*read)(u64 address, u64 type_id);
-    u64 (*free)(u64 address, u64 type_id);
+    u64 (*alloc)(const_vm_ptr cvm, const_void_ptr data, u64 size, u64 type_id);
+    u64 (*copy)(const_vm_ptr cvm, const_void_ptr src, u64 size, u64 offset, u64 type_id);
+    const_void_ptr (*read)(const_vm_ptr cvm, u64 address, u64 type_id);
+    u64 (*free)(const_vm_ptr cvm, u64 address, u64 type_id);
 } virtual_pointer_methods;
 
-typedef struct PRIVATE_API(virtual_vm_methods) {
-    const_vm_ptr (*init)(u64 size);
-    void (*gc)(void);
-    u64 (*release)(u64 ptr);
-    void (*destroy)(void);
-} virtual_vm_methods;
-
 typedef struct PRIVATE_API(virtual_type_methods) {
-    void (*register_known_type)(u64 type_id, type_methods_definitions_ptr data_type);
-    void (*register_user_type)(type_methods_definitions_type* data_type_builder);
+    void (*register_known_type)(const_vm_ptr cvm, type_methods_definitions_ptr data_type);
+    void (*register_user_type)(const_vm_ptr cvm, type_methods_definitions_ptr data_type);
 } virtual_type_methods;
 
 /* definition */
 CVM_EXPORT extern const virtual_pointer_methods* CALL(pointer);
-CVM_EXPORT extern const virtual_vm_methods* CALL(vm);
 CVM_EXPORT extern const virtual_type_methods* CALL(type);
 
 #endif /* _VIRTUAL_POINTER_V1_H_ */

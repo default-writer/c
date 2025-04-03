@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 1, 2025 at 5:29:48 PM GMT+3
+ *   April 3, 2025 at 11:26:04 AM GMT+3
  *
  */
 /*
@@ -52,7 +52,8 @@ typedef struct PRIVATE_API(system_os_methods) {
     long (*ftell)(FILE* __stream);
     char* (*getcwd)(char* __buf, size_t __size);
     char* (*getenv)(const char* __name);
-    void* (*memcpy)(void* __dest, const_void_ptr __src, size_t __n);
+    void* (*memcpy)(void* __dest, const void* __src, size_t __n);
+    void* (*memmove)(void* __dest, const void* __src, size_t __n);
     void* (*memset)(void* __s, int __c, size_t __n);
     int (*puts)(const char* __s);
     int (*strcmp)(const char* __s1, const char* __s2);

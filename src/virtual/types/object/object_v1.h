@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 27, 2025 at 4:52:40 PM GMT+3
+ *   April 3, 2025 at 11:18:56 AM GMT+3
  *
  */
 /*
@@ -39,7 +39,7 @@
 typedef struct API(object_methods) {
     u64 (*alloc)(const_vm_ptr cvm, u64 size);
     u64 (*free)(const_vm_ptr cvm, u64 ptr);
-    void* (*unsafe)(const_vm_ptr cvm, u64 ptr);
+    void_ptr (*unsafe)(const_vm_ptr cvm, u64 ptr);
     u64 (*load)(const_vm_ptr cvm, const_void_ptr data, u64 size);
     u64 (*size)(const_vm_ptr cvm, u64 ptr);
 } virtual_object_methods;

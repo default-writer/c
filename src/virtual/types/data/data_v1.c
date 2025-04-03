@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 31, 2025 at 6:26:34 PM GMT+3
+ *   April 3, 2025 at 11:20:29 AM GMT+3
  *
  */
 /*
@@ -37,58 +37,51 @@
 
 #include "internal/internal_v1.h"
 
-static const enum type type_id = TYPE_DATA;
-
 /* public */
 static u64 data_alloc(const_vm_ptr cvm, u64 size);
 static u64 data_size(const_vm_ptr cvm, u64 address);
-static void* data_unsafe(const_vm_ptr cvm, u64 address);
+static void_ptr data_unsafe(const_vm_ptr cvm, u64 address);
 static u64 data_free(const_vm_ptr cvm, u64 address);
 
 /* type */
-static void data_type_destructor(u64 address);
+static void data_type_destructor(const_vm_ptr cvm, u64 address);
 
 /* implementation */
 static struct type_methods_definitions data_type = {
+    .type_id = TYPE_DATA,
     .destructor = data_type_destructor
 };
 
-static void INIT init(void) {
-    safe_type_methods_definitions safe_ptr;
-    safe_ptr.const_ptr = &data_type;
-    CALL(type)->register_known_type(type_id, safe_ptr.ptr);
-}
-
-static void data_type_destructor(u64 address) {
-    CALL(pointer)->free(address, type_id);
+static void data_type_destructor(const_vm_ptr cvm, u64 address) {
+    CALL(pointer)->free(cvm, address, data_type.type_id);
 }
 
 static u64 data_alloc(const_vm_ptr cvm, u64 size) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
         return FALSE;
     }
     if (size == 0) {
         ERROR_INVALID_ARGUMENT("size == %lld", size);
         return FALSE;
     }
-    void* data = CALL(memory)->alloc(size);
-    u64 address = CALL(pointer)->alloc(data, size, type_id);
+    void_ptr data = CALL(memory)->alloc(size);
+    u64 address = CALL(pointer)->alloc(cvm, data, size, data_type.type_id);
     return address;
 }
 
 static u64 data_size(const_vm_ptr cvm, u64 address) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
         return FALSE;
     }
     if (address == 0) {
         ERROR_INVALID_ARGUMENT("address == %lld", address);
         return FALSE;
     }
-    const_pointer_ptr const_ptr = CALL(virtual)->read(cvm, address, type_id);
+    const_pointer_ptr const_ptr = CALL(virtual)->read(cvm, address, data_type.type_id);
     if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const void*)const_ptr, address, (u64)type_id);
+        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, address, (u64)data_type.type_id);
         return FALSE;
     }
     safe_pointer_ptr safe_ptr;
@@ -99,42 +92,44 @@ static u64 data_size(const_vm_ptr cvm, u64 address) {
     return size;
 }
 
-static void* data_unsafe(const_vm_ptr cvm, u64 address) {
+static void_ptr data_unsafe(const_vm_ptr cvm, u64 address) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
         return NULL_PTR;
     }
     if (address == 0) {
         ERROR_INVALID_ARGUMENT("address == %lld", address);
         return FALSE;
     }
-    const_void_ptr const_ptr = CALL(pointer)->read(address, type_id);
+    const_void_ptr const_ptr = CALL(pointer)->read(cvm, address, data_type.type_id);
     if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const void*)const_ptr, address, (u64)type_id);
+        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, address, (u64)data_type.type_id);
         return NULL_PTR;
     }
-    safe_void_ptr void_ptr;
-    void_ptr.const_ptr = const_ptr;
-    void* data_ptr = void_ptr.ptr;
+    safe_void_ptr safe_ptr;
+    safe_ptr.const_ptr = const_ptr;
+    void_ptr data_ptr = safe_ptr.ptr;
     return data_ptr;
 }
 
 static u64 data_free(const_vm_ptr cvm, u64 address) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
         return FALSE;
     }
     if (address == 0) {
         ERROR_INVALID_ARGUMENT("address == %lld", address);
         return FALSE;
     }
-    data_type_destructor(address);
+    data_type_destructor(cvm, address);
     return TRUE;
 }
 
 /* public */
-CVM_EXPORT void data_init(void) {
-    init();
+CVM_EXPORT void data_init(const_vm_ptr cvm) {
+    safe_type_methods_definitions safe_ptr;
+    safe_ptr.const_ptr = &data_type;
+    CALL(type)->register_known_type(cvm, safe_ptr.ptr);
 }
 
 const virtual_data_methods PRIVATE_API(virtual_data_methods_definitions) = {

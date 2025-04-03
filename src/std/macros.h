@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 31, 2025 at 7:43:32 PM GMT+3
+ *   April 3, 2025 at 11:18:55 AM GMT+3
  *
  */
 /*
@@ -31,7 +31,7 @@
 
 #define TRUE 1
 #define FALSE 0
-#define NULL_PTR (void*)0
+#define NULL_PTR (void_ptr)0
 
 #define VM_EXPAND(X) X
 #define VM_CONCAT(A, B) VM_CONCAT_(A, B)
@@ -46,6 +46,9 @@
 
 #define PRIVATE_API(x) _##x
 #define PUBLIC_API(x) x()
+
+#define PTR_SIZE sizeof(void_ptr) /* size of a pointer */
+#define PTR_ARRAY_SIZE(size) (size * PTR_SIZE)
 
 #ifdef USE_MEMORY_DEBUG_INFO
 #define ERROR(message_id, format, ...)                                                                                                                                                  \
@@ -82,12 +85,15 @@
 #ifdef __GNUC__
 #define FALL_THROUGH __attribute__((fallthrough))
 #define ATTRIBUTE
-#define INIT __attribute__((constructor))
-#define DESTROY __attribute__((destructor))
+// #define INIT __attribute__((constructor))
+// #define DESTROY __attribute__((destructor))
+#define PUBLIC __attribute__((visibility("default")))
 #else
-#define INIT
-#define DESTROY
 #define FALL_THROUGH ((void)0)
+#define ATTRIBUTE
+// #define INIT
+// #define DESTROY
+#define PUBLIC
 #endif /* __GNUC__ >= 7 */
 
 #endif /* _STD_MACROS_H_ */

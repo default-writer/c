@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 28, 2025 at 4:48:30 PM GMT+3
+ *   April 2, 2025 at 10:57:19 AM GMT+3
  *
  */
 /*
@@ -34,7 +34,6 @@
 
 #include "virtual/export.h"
 
-#include "system/os/os_v1.h"
 #include "virtual/env/env_v1.h"
 #include "virtual/hashtable/hashtable_v1.h"
 #include "virtual/pointer/pointer_v1.h"
@@ -46,6 +45,7 @@
 #include "virtual/types/string_pointer/string_pointer_v1.h"
 #include "virtual/types/user/user_v1.h"
 #include "virtual/virtual/virtual_v1.h"
+#include "virtual/vm/vm_v1.h"
 
 /* definition */
 CVM_EXPORT extern const virtual_vm_methods* PUBLIC_API(vm);

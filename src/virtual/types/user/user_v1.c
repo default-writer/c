@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 31, 2025 at 12:35:34 AM GMT+3
+ *   April 3, 2025 at 11:20:29 AM GMT+3
  *
  */
 /*
@@ -34,56 +34,48 @@
 
 #define DEFAULT_SIZE 0x8 /* 8 */
 
-static u64 type_id = TYPE_USER;
-
 /* public */
 static u64 user_alloc(const_vm_ptr cvm);
 static u64 user_free(const_vm_ptr cvm, u64 ptr);
 
 /* type */
-static void user_type_destructor(u64 address);
+static void user_type_destructor(const_vm_ptr cvm, u64 address);
 
 /* implementation */
 static struct type_methods_definitions user_type = {
+    .type_id = TYPE_USER,
     .destructor = user_type_destructor
 };
 
-static void INIT init(void) {
-    safe_type_methods_definitions safe_ptr;
-    safe_ptr.const_ptr = &user_type;
-    CALL(type)->register_user_type(safe_ptr.ptr);
-    type_id = safe_ptr.const_ptr->type_id;
-}
-
-static void user_type_destructor(u64 address) {
-    CALL(pointer)->free(address, type_id);
+static void user_type_destructor(const_vm_ptr cvm, u64 address) {
+    CALL(pointer)->free(cvm, address, user_type.type_id);
 }
 
 static u64 user_alloc(const_vm_ptr cvm) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
         return FALSE;
     }
-    u64 address = CALL(virtual)->alloc(cvm, DEFAULT_SIZE, type_id);
+    u64 address = CALL(virtual)->alloc(cvm, DEFAULT_SIZE, user_type.type_id);
     return address;
 }
 
 static u64 user_free(const_vm_ptr cvm, u64 address) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
         return FALSE;
     }
     if (address == 0) {
         ERROR_INVALID_ARGUMENT("address == %lld", address);
         return FALSE;
     }
-    user_type_destructor(address);
+    user_type_destructor(cvm, address);
     return TRUE;
 }
 
 /* public */
-CVM_EXPORT void user_init(void) {
-    init();
+CVM_EXPORT void user_init(const_vm_ptr cvm) {
+    CALL(type)->register_user_type(cvm, &user_type);
 }
 
 const virtual_user_methods PRIVATE_API(virtual_user_methods_definitions) = {

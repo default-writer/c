@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 1, 2025 at 5:43:59 PM GMT+3
+ *   April 2, 2025 at 10:15:48 PM GMT+3
  *
  */
 /*
@@ -53,6 +53,8 @@ typedef struct PRIVATE_API(system_error_methods) {
     void (*clear)(void);
     u64 (*type)(void);
     const char* (*get)(void);
+    u64 (*next)(void);
+    u64 (*count)(void);
 } system_error_methods;
 
 /* public */

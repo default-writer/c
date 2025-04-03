@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 31, 2025 at 4:24:11 PM GMT+3
+ *   April 3, 2025 at 11:25:27 AM GMT+3
  *
  */
 /*
@@ -28,6 +28,10 @@
 #define _STD_DATA_H_
 
 #define USING_DATA
+#define VM_PTR_ARRAY_SIZE 4096
+#define ERROR_BUFFER_SIZE 4096
+#define ERROR_MESSAGE_SIZE 256
+#define ERROR_MESSAGE_COUNT (ERROR_BUFFER_SIZE / ERROR_MESSAGE_SIZE)
 
 typedef unsigned long long u64;
 typedef unsigned long int u32;
@@ -39,78 +43,89 @@ typedef signed long int s32;
 typedef signed short int s16;
 typedef signed char s8;
 
-typedef struct stack_element* stack_ptr;
-typedef const struct stack_element* const_stack_element_ptr;
-typedef struct stack_element {
-    stack_ptr next;
-    void* data;
-} stack_element_type;
-typedef struct pointer* pointer_ptr;
-typedef const struct pointer* const_pointer_ptr;
 typedef struct virtual_pointer* virtual_pointer_ptr;
 typedef const struct virtual_pointer* const_virtual_pointer_ptr;
-typedef struct address* address_ptr;
-typedef struct address {
-    u64 address;
-    const_pointer_ptr ptr;
-} address_type;
-typedef union {
-    const_pointer_ptr const_ptr;
-    pointer_ptr ptr;
-} safe_pointer_ptr;
+
 typedef struct vm* vm_ptr;
 typedef const vm_ptr* const_vm_ptr;
-typedef void* (*type_constructor)(u64 size);
-typedef void (*type_destructor)(u64 address);
-typedef void (*type_free)(const_pointer_ptr const_ptr, u64 address);
-typedef union {
-    const_vm_ptr const_ptr;
-    vm_ptr* ptr;
-} safe_vm_ptr;
-typedef const void* const_void_ptr;
-typedef union {
-    const_void_ptr const_ptr;
-    void* ptr;
-} safe_void_ptr;
+typedef struct pointer* pointer_ptr;
+typedef const struct pointer* const_pointer_ptr;
+
 typedef struct type_methods_definitions* type_methods_definitions_ptr;
 typedef const struct type_methods_definitions* const_type_methods_definitions_ptr;
-typedef union {
-    const_type_methods_definitions_ptr const_ptr;
-    type_methods_definitions_ptr ptr;
-} safe_type_methods_definitions;
+
+typedef struct known_types* known_types_ptr;
+typedef const struct known_types* const_known_types_ptr;
+typedef struct pointer_public* pointer_public_ptr;
+typedef const struct pointer_public* const_pointer_public_ptr;
+
+typedef struct stack_element* stack_ptr;
+typedef const struct stack_element* const_stack_element_ptr;
+typedef struct hashentry* hashentry_ptr;
+typedef const struct hashentry* const_hashentry_ptr;
+typedef struct hashtable* hashtable_ptr;
+typedef const struct hashtable* const_hashtable_ptr;
+typedef struct exception* exception_ptr;
+typedef const struct exception* const_exception_ptr;
+
+typedef void* void_ptr;
+typedef const void* const_void_ptr;
+
+typedef void_ptr (*type_constructor)(u64 size);
+typedef void (*type_destructor)(const_vm_ptr cvm, u64 address);
+
 typedef struct type_methods_definitions {
     u64 type_id;
     type_constructor constructor;
     type_destructor destructor;
-    type_free free;
 } type_methods_definitions_type;
-typedef struct pointer_public* pointer_public_ptr;
-typedef const struct pointer_public* const_pointer_public_ptr;
+typedef struct known_types {
+    known_types_ptr next;
+    type_methods_definitions_ptr methods;
+} known_types_type;
 typedef struct pointer_public {
     u64 address;
     u64 size;
     u64 type;
 } pointer_public_type;
-typedef struct hashentry* hashentry_ptr;
-typedef const struct hashentry* const_hashentry_ptr;
+
+typedef struct stack_element {
+    stack_ptr next;
+    void_ptr data;
+} stack_element_type;
 typedef struct hashentry {
     u64 key;
     const_void_ptr value;
     hashentry_ptr next;
 } hashentry_type;
-typedef struct hashtable* hashtable_ptr;
-typedef const struct hashtable* const_hashtable_ptr;
 typedef struct hashtable {
     hashentry_ptr* table;
     u64 capacity;
     u64 size;
 } hashtable_type;
-typedef struct exception* exception_ptr;
-typedef const struct exception* const_exception_ptr;
 typedef struct exception {
-    u64 type;
-    char message[4096];
+    u64 message_count;
+    u64 type[ERROR_MESSAGE_COUNT];
+    char message[ERROR_BUFFER_SIZE];
 } exception_type;
+
+typedef union {
+    const_vm_ptr const_ptr;
+    vm_ptr* ptr;
+} safe_vm_ptr;
+typedef union {
+    const_pointer_ptr const_ptr;
+    pointer_ptr ptr;
+} safe_pointer_ptr;
+typedef union {
+    const_type_methods_definitions_ptr const_ptr;
+    type_methods_definitions_ptr ptr;
+} safe_type_methods_definitions;
+
+typedef union {
+    const_void_ptr const_ptr;
+    void_ptr ptr;
+} safe_void_ptr;
 
 enum type {
     /* value used for ephemeral type - null */

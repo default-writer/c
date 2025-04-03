@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 28, 2025 at 4:58:15 PM GMT+3
+ *   April 3, 2025 at 11:18:54 AM GMT+3
  *
  */
 /*
@@ -36,12 +36,12 @@
 #include "test.h"
 
 typedef struct test_data {
-    void* ptr;
+    void_ptr ptr;
 }* TEST_DATA;
 
 const char* commit = GIT_COMMIT_HASH;
 
-static void INIT init() {
+static void init() {
 #ifdef GIT_COMMIT_HASH
     printf("version: v%s\n", CALL(info)->version);
     time_t unix_timestamp = (time_t)CALL(info)->timestamp;
@@ -55,6 +55,7 @@ static void INIT init() {
 
 #ifdef USE_MEMORY_DEBUG_INFO
 int main(int argc, const char** argv) {
+    init();
     init_statistics();
     TEST_RUN(_tests_memory_test_suite);
     TEST_RUN(_tests_list_test_suite);
@@ -67,6 +68,7 @@ int main(int argc, const char** argv) {
 }
 #else
 int main(int argc, const char** argv) {
+    init();
     TEST_RUN(_tests_memory_test_suite);
     TEST_RUN(_tests_list_test_suite);
     TEST_RUN(_tests_vm_test_suite);

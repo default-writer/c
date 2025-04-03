@@ -9,7 +9,7 @@
       "type": "pythoncpp",
       "request": "launch",
       "pythonLaunchName": "python",
-      "cppAttachName": "c++",
+      "cppAttachName": "c++"
     },
     {
       "name": "c++",
@@ -25,7 +25,7 @@
       "request": "launch",
       "program": "${workspaceFolder}/examples/python/main.py",
       "cwd": "${workspaceFolder}",
-      "console": "integratedTerminal",
+      "console": "integratedTerminal"
     },
     {
       "preLaunchTask": "cmake: build",
@@ -70,7 +70,7 @@
           "text": "-enable-pretty-printing",
           "ignoreFailures": true
         }
-      ],
+      ]
     },
     {
       "type": "bashdb",
