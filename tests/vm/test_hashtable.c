@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 28, 2025 at 11:42:33 AM GMT+3
+ *   April 3, 2025 at 11:18:55 AM GMT+3
  *
  */
 /*
@@ -68,12 +68,6 @@ RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tea
 RX_FIXTURE(test_fixture_pointer, TEST_DATA, .set_up = test_set_up_pointer_init, .tear_down = test_tear_down_pointer_destroy);
 
 /* test init */
-RX_TEST_CASE(tests_hashtable_v1, test_hashtable_init, .fixture = test_fixture) {
-    // TEST_DATA rx = (TEST_DATA)RX_DATA;
-    // hashtable_ptr ht = rx->ctx;
-}
-
-/* test init */
 RX_TEST_CASE(tests_hashtable_v1, test_hashtable, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     hashtable_ptr ht = rx->ctx;
@@ -104,7 +98,6 @@ RX_TEST_CASE(tests_hashtable_v1, test_hashtable, .fixture = test_fixture) {
     RX_ASSERT(CALL(hashtable)->get(ht, 20) == NULL);
     RX_ASSERT(CALL(hashtable)->get(ht, 60) != NULL);
 
-    // Check the size of the hashtable
     RX_ASSERT(ht->size == 4);
 }
 
@@ -113,7 +106,7 @@ RX_TEST_CASE(tests_hashtable_v1, test_hashtable_resize, .fixture = test_fixture)
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     hashtable_ptr ht = rx->ctx;
     for (size_t i = 0; i < HASHTABLE_INITIAL_CAPACITY * 2; ++i) {
-        CALL(hashtable)->insert(ht, i, (void*)i);
+        CALL(hashtable)->insert(ht, i, (void_ptr)i);
     }
     for (size_t i = 0; i < HASHTABLE_INITIAL_CAPACITY * 2; ++i) {
         RX_ASSERT((u64)CALL(hashtable)->get(ht, i) == i);
@@ -132,8 +125,8 @@ RX_TEST_CASE(tests_hashtable_v1, test_hashtable_null, .fixture = test_fixture_po
 RX_TEST_CASE(tests_hashtable_v1, test_hashtable_collisions, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     hashtable_ptr ht = rx->ctx;
-    CALL(hashtable)->insert(ht, 10, (void*)10);
-    CALL(hashtable)->insert(ht, 26, (void*)26);
+    CALL(hashtable)->insert(ht, 10, (void_ptr)10);
+    CALL(hashtable)->insert(ht, 26, (void_ptr)26);
     RX_ASSERT((u64)CALL(hashtable)->get(ht, 10) == 10);
     RX_ASSERT((u64)CALL(hashtable)->get(ht, 26) == 26);
 }

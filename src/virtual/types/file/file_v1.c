@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 1, 2025 at 12:11:07 AM GMT+3
+ *   April 3, 2025 at 11:20:29 AM GMT+3
  *
  */
 /*
@@ -37,8 +37,6 @@
 
 #define FILE_HANDLER_TYPE_SIZE sizeof(file_handler_type)
 
-static const enum type type_id = TYPE_FILE;
-
 /* definition */
 typedef struct file_handler* file_handler_ptr;
 typedef struct file_handler {
@@ -54,21 +52,16 @@ static u64 file_free(const_vm_ptr cvm, u64 address);
 static u64 file_data(const_vm_ptr cvm, u64 address);
 
 /* type */
-static void file_type_destructor(u64 address);
+static void file_type_destructor(const_vm_ptr cvm, u64 address);
 
 /* implementation */
 static struct type_methods_definitions file_type = {
+    .type_id = TYPE_FILE,
     .destructor = file_type_destructor
 };
 
-static void INIT init(void) {
-    safe_type_methods_definitions safe_ptr;
-    safe_ptr.const_ptr = &file_type;
-    CALL(type)->register_known_type(type_id, safe_ptr.ptr);
-}
-
-static void file_type_destructor(u64 address) {
-    CALL(pointer)->free(address, type_id);
+static void file_type_destructor(const_vm_ptr cvm, u64 address) {
+    CALL(pointer)->free(cvm, address, file_type.type_id);
 }
 
 static int is_valid_file_path(const char* file_path) {
@@ -92,7 +85,7 @@ static int is_valid_mode(const char* mode) {
 
 static u64 file_alloc(const_vm_ptr cvm, u64 path, u64 mode) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
         return FALSE;
     }
     if (path == 0) {
@@ -103,18 +96,18 @@ static u64 file_alloc(const_vm_ptr cvm, u64 path, u64 mode) {
         ERROR_INVALID_ARGUMENT("mode == %lld", mode);
         return FALSE;
     }
-    const char* file_path_data = CALL(pointer)->read(path, TYPE_STRING);
+    const char* file_path_data = CALL(pointer)->read(cvm, path, TYPE_STRING);
     if (file_path_data == 0) {
-        ERROR_INVALID_POINTER("file_path_data == %p, address == %lld, type_id == %lld", (const void*)file_path_data, path, (u64)TYPE_STRING);
+        ERROR_INVALID_POINTER("file_path_data == %p, address == %lld, type_id == %lld", (const_void_ptr)file_path_data, path, (u64)TYPE_STRING);
         return FALSE;
     }
     if (is_valid_file_path(file_path_data) == 0) {
         ERROR_INVALID_VALUE("file_path_data == %s", file_path_data);
         return FALSE;
     }
-    const char* mode_data = CALL(pointer)->read(mode, TYPE_STRING);
+    const char* mode_data = CALL(pointer)->read(cvm, mode, TYPE_STRING);
     if (mode_data == 0) {
-        ERROR_INVALID_POINTER("mode_data == %p, address == %lld, type_id == %lld", (const void*)mode_data, mode, (u64)TYPE_STRING);
+        ERROR_INVALID_POINTER("mode_data == %p, address == %lld, type_id == %lld", (const_void_ptr)mode_data, mode, (u64)TYPE_STRING);
         return FALSE;
     }
     if (is_valid_mode(mode_data) == 0) {
@@ -123,11 +116,11 @@ static u64 file_alloc(const_vm_ptr cvm, u64 path, u64 mode) {
     }
     FILE* f = CALL(os)->fopen(file_path_data, mode_data); /* NOLINT */
     if (f == 0) {
-        ERROR_INVALID_VALUE("f == %p, file_path_data == %s, mode_data == %s", (void*)f, file_path_data, mode_data);
+        ERROR_INVALID_VALUE("f == %p, file_path_data == %s, mode_data == %s", (void_ptr)f, file_path_data, mode_data);
         return FALSE;
     }
-    void* data = CALL(memory)->alloc(FILE_HANDLER_TYPE_SIZE);
-    u64 address = CALL(pointer)->alloc(data, FILE_HANDLER_TYPE_SIZE, type_id);
+    void_ptr data = CALL(memory)->alloc(FILE_HANDLER_TYPE_SIZE);
+    u64 address = CALL(pointer)->alloc(cvm, data, FILE_HANDLER_TYPE_SIZE, file_type.type_id);
     file_handler_ptr handler = data;
     handler->file = f;
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -138,21 +131,21 @@ static u64 file_alloc(const_vm_ptr cvm, u64 path, u64 mode) {
 
 static u64 file_data(const_vm_ptr cvm, u64 address) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
         return FALSE;
     }
     if (address == 0) {
         ERROR_INVALID_ARGUMENT("address == %lld", address);
         return FALSE;
     }
-    const_void_ptr const_ptr = CALL(pointer)->read(address, type_id);
+    const_void_ptr const_ptr = CALL(pointer)->read(cvm, address, file_type.type_id);
     if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const void*)const_ptr, address, (u64)type_id);
+        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, address, (u64)file_type.type_id);
         return FALSE;
     }
-    safe_void_ptr void_ptr;
-    void_ptr.const_ptr = const_ptr;
-    void* data_ptr = void_ptr.ptr;
+    safe_void_ptr safe_ptr;
+    safe_ptr.const_ptr = const_ptr;
+    void_ptr data_ptr = safe_ptr.ptr;
     file_handler_ptr handler = data_ptr;
     FILE* f = handler->file;
     if (CALL(os)->fseek(f, 0, SEEK_END) == 0) { /* NOLINT */
@@ -160,7 +153,7 @@ static u64 file_data(const_vm_ptr cvm, u64 address) {
         if (size >= 0) {
             u64 data_size = (u64)size;
             u64 data_handle = CALL(data)->alloc(cvm, data_size + 1);
-            void* file_data = CALL(data)->unsafe(cvm, data_handle);
+            void_ptr file_data = CALL(data)->unsafe(cvm, data_handle);
             if (CALL(os)->fseek(f, 0, SEEK_SET) == 0) { /* NOLINT */
                 u64 read = CALL(os)->fread(file_data, 1, data_size, handler->file);
                 if (handler->file != 0) {
@@ -178,20 +171,22 @@ static u64 file_data(const_vm_ptr cvm, u64 address) {
 
 static u64 file_free(const_vm_ptr cvm, u64 address) {
     if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const void*)cvm);
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
         return FALSE;
     }
     if (address == 0) {
         ERROR_INVALID_ARGUMENT("address == %lld", address);
         return FALSE;
     }
-    file_type_destructor(address);
+    file_type_destructor(cvm, address);
     return TRUE;
 }
 
 /* public */
-CVM_EXPORT void file_init(void) {
-    init();
+CVM_EXPORT void file_init(const_vm_ptr cvm) {
+    safe_type_methods_definitions safe_ptr;
+    safe_ptr.const_ptr = &file_type;
+    CALL(type)->register_known_type(cvm, safe_ptr.ptr);
 }
 
 /*! definition (initialization) of file_methods structure */

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 30, 2025 at 11:18:00 PM GMT+3
+ *   April 3, 2025 at 11:18:56 AM GMT+3
  *
  */
 /*
@@ -34,11 +34,11 @@
 /* private */
 
 static stack_ptr list_next(stack_ptr ptr);
-static void* list_data(stack_ptr ptr);
+static void_ptr list_data(stack_ptr ptr);
 static void list_delete(stack_ptr ptr);
-static void list_push(stack_ptr* current, void* payload);
-static void* list_pop(stack_ptr* current);
-static void* list_peek(stack_ptr* current);
+static void list_push(stack_ptr* current, void_ptr payload);
+static void_ptr list_pop(stack_ptr* current);
+static void_ptr list_peek(stack_ptr* current);
 static void list_init(stack_ptr* current);
 static void list_destroy(stack_ptr* current);
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -53,7 +53,7 @@ static stack_ptr list_next(stack_ptr ptr) {
 }
 
 /* ptr is not 0 */
-static void* list_data(stack_ptr ptr) {
+static void_ptr list_data(stack_ptr ptr) {
     /* ptr is not 0 */
     return ptr->data;
 }
@@ -65,7 +65,7 @@ static void list_delete(stack_ptr ptr) {
 }
 
 /* pushes the memory pointer */
-static void list_push(stack_ptr* current, void* payload) {
+static void list_push(stack_ptr* current, void_ptr payload) {
     if (current == 0 || *current == 0) {
         return;
     }
@@ -80,7 +80,7 @@ static void list_push(stack_ptr* current, void* payload) {
 }
 
 /* pop existing element at the top of the stack/queue/list */
-static void* list_pop(stack_ptr* current) {
+static void_ptr list_pop(stack_ptr* current) {
     if (current == 0 || *current == 0) {
         return NULL_PTR;
     }
@@ -96,7 +96,7 @@ static void* list_pop(stack_ptr* current) {
     /* rewinds head pointer to next pointer value */
     *current = next;
     /* gets temporary pointer value */
-    void* payload = list_data(ptr);
+    void_ptr payload = list_data(ptr);
     /* releases memory */
     list_delete(ptr);
     /* returns removed element */
@@ -104,7 +104,7 @@ static void* list_pop(stack_ptr* current) {
 }
 
 /* peeks existing element at the top of the stack/queue/list */
-static void* list_peek(stack_ptr* current) {
+static void_ptr list_peek(stack_ptr* current) {
     if (current == 0 || *current == 0) {
         return NULL_PTR;
     }

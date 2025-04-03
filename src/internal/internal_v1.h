@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 27, 2025 at 8:55:26 PM GMT+3
+ *   April 3, 2025 at 11:18:55 AM GMT+3
  *
  */
 /*
@@ -32,7 +32,7 @@
 
 typedef struct pointer {
 #ifdef USE_MEMORY_DEBUG_INFO
-    void* guard;
+    void_ptr guard;
 #endif
     virtual_pointer_ptr vptr;
     const_void_ptr data;

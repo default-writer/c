@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 28, 2025 at 3:10:23 PM GMT+3
+ *   April 3, 2025 at 9:20:22 AM GMT+3
  *
  */
 /*
@@ -38,6 +38,12 @@ typedef struct virtual_pointer {
 } virtual_pointer_type;
 
 typedef struct vm {
+#ifndef USE_GC
+    stack_ptr* cache;
+#endif
+    u64 known_types_counter;
+    known_types_ptr known_types;
+    known_types_ptr default_types;
     virtual_pointer_ptr next;
 } vm_type;
 

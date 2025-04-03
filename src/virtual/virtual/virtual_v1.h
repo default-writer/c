@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 28, 2025 at 1:00:54 PM GMT+3
+ *   April 2, 2025 at 3:31:56 PM GMT+3
  *
  */
 /*
@@ -40,7 +40,7 @@ typedef struct PRIVATE_API(virtual_methods) {
 } virtual_methods;
 
 typedef struct PRIVATE_API(virtual_system_methods) {
-    void (*init)(const_vm_ptr cvm, u64 size);
+    const_vm_ptr (*init)(u64 size);
     void (*destroy)(const_vm_ptr cvm);
 } virtual_system_methods;
 

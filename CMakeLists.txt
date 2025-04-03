@@ -280,6 +280,7 @@ set(LIB_VM_SOURCE
     src/virtual/types/string_pointer/string_pointer_v1.c
     src/virtual/types/user/user_v1.c
     src/virtual/virtual/virtual_v1.c
+    src/virtual/vm/vm_v1.c
     src/virtual/hashtable/hashtable_v1.c
     src/virtual/env/env_v1.c
 )
@@ -295,9 +296,9 @@ set(TESTS_SOURCE
 
 set(MAIN_TESTS_VM1_SOURCE tests/vm/main-tests_v1.c)
 
-include_directories(${CMAKE_SOURCE_DIR}/tests)
-include_directories(${CMAKE_SOURCE_DIR}/src)
 include_directories(${CMAKE_SOURCE_DIR}/.deps/rexo/include)
+include_directories(${CMAKE_SOURCE_DIR}/src)
+include_directories(${CMAKE_SOURCE_DIR}/tests)
 
 add_library(c-sys SHARED ${LIB_SYS_SOURCE})
 generate_export_header(c-sys

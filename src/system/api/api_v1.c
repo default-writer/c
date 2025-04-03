@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 28, 2025 at 4:54:24 PM GMT+3
+ *   April 2, 2025 at 7:42:03 AM GMT+3
  *
  */
 /*
@@ -27,26 +27,26 @@
 #include "api_v1.h"
 
 /* api */
-const system_error_methods* PUBLIC_API(error) {
+PUBLIC const system_error_methods* PUBLIC_API(error) {
     return CALL(error);
 }
 
-const system_info_methods* PUBLIC_API(info) {
+PUBLIC const system_info_methods* PUBLIC_API(info) {
     return CALL(info);
 }
 
-const system_list_methods* PUBLIC_API(list) {
+PUBLIC const system_list_methods* PUBLIC_API(list) {
     return CALL(list);
 }
 
-const system_memory_methods* PUBLIC_API(memory) {
+PUBLIC const system_memory_methods* PUBLIC_API(memory) {
     return CALL(memory);
 }
 
-const system_options_methods* PUBLIC_API(options) {
+PUBLIC const system_options_methods* PUBLIC_API(options) {
     return CALL(options);
 }
 
-const system_os_methods* PUBLIC_API(os) {
+PUBLIC const system_os_methods* PUBLIC_API(os) {
     return CALL(os);
 }

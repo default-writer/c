@@ -54,6 +54,7 @@
     "ms-vscode-remote.remote-ssh",
     "fougas.msys2",
     "marp-team.marp-vscode",
-    "google.geminicodeassist"
+    "google.geminicodeassist",
+    "paragdiwan.gitpatch"
   ]
 }

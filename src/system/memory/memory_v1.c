@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 31, 2025 at 7:59:20 AM GMT+3
+ *   April 3, 2025 at 11:20:29 AM GMT+3
  *
  */
 /*
@@ -46,21 +46,21 @@ static struct memory_info_data memory_info;
 static struct memory_info_data* base = &memory_info;
 #endif
 
-static void* memory_alloc(u64 size);
-static void* memory_realloc(const_void_ptr const_ptr, u64 size, u64 new_size);
+static void_ptr memory_alloc(u64 size);
+static void_ptr memory_realloc(const_void_ptr const_ptr, u64 size, u64 new_size);
 static void memory_free(const_void_ptr const_ptr, u64 size);
 #ifdef USE_MEMORY_CLEANUP
-static void memory_set(void* dest, u8 c, u64 count);
+static void memory_set(void_ptr dest, u8 c, u64 count);
 #endif
 
-static void* memory_alloc(u64 size) {
+static void_ptr memory_alloc(u64 size) {
     if (size == 0) {
         ERROR_INVALID_ARGUMENT("size == %lld", size);
         return NULL_PTR;
     }
-    void* ptr = CALL(os)->calloc(1, size);
+    void_ptr ptr = CALL(os)->calloc(1, size);
     if (ptr == 0) {
-        ERROR_INVALID_VALUE("ptr == %p, size == %lld", (const void*)ptr, size);
+        ERROR_INVALID_VALUE("ptr == %p, size == %lld", (const_void_ptr)ptr, size);
         return NULL_PTR;
     }
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -70,7 +70,7 @@ static void* memory_alloc(u64 size) {
     return ptr;
 }
 
-static void* memory_realloc(const_void_ptr const_ptr, u64 size, u64 new_size) {
+static void_ptr memory_realloc(const_void_ptr const_ptr, u64 size, u64 new_size) {
     if (const_ptr == 0) {
         ERROR_INVALID_ARGUMENT("const_ptr == %p", const_ptr);
         return NULL_PTR;
@@ -88,9 +88,9 @@ static void* memory_realloc(const_void_ptr const_ptr, u64 size, u64 new_size) {
         return NULL_PTR;
     }
     const_void_ptr const_data_ptr = const_ptr;
-    safe_void_ptr void_ptr;
-    void_ptr.const_ptr = const_data_ptr;
-    void* ptr = void_ptr.ptr;
+    safe_void_ptr safe_ptr;
+    safe_ptr.const_ptr = const_data_ptr;
+    void_ptr ptr = safe_ptr.ptr;
     ptr = CALL(os)->realloc(ptr, new_size);
     CALL(os)->memset((u8*)ptr + size, 0x00, new_size - size);
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -111,9 +111,9 @@ static void memory_free(const_void_ptr const_ptr, u64 size) {
         return;
     }
     const_void_ptr const_data_ptr = const_ptr;
-    safe_void_ptr void_ptr;
-    void_ptr.const_ptr = const_data_ptr;
-    void* ptr = void_ptr.ptr;
+    safe_void_ptr safe_ptr;
+    safe_ptr.const_ptr = const_data_ptr;
+    void_ptr ptr = safe_ptr.ptr;
 #if !defined(USE_MEMORY_CLEANUP) && !defined(USE_MEMORY_DEBUG_INFO)
     (void)size; /* mark as unused when not in debug/cleanup mode */
 #endif
@@ -128,7 +128,7 @@ static void memory_free(const_void_ptr const_ptr, u64 size) {
 }
 
 #ifdef USE_MEMORY_CLEANUP
-static void memory_set(void* dest, u8 c, u64 count) {
+static void memory_set(void_ptr dest, u8 c, u64 count) {
     size_t block_idx = 0;
     size_t blocks = count >> 3;
     size_t bytes_left = count - (blocks << 3);

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 1, 2025 at 5:44:09 PM GMT+3
+ *   April 3, 2025 at 10:37:26 AM GMT+3
  *
  */
 /*
@@ -28,8 +28,6 @@
 
 #include "system/os/os_v1.h"
 
-#define ERROR_BUFFER_SIZE 4096
-
 /* private */
 static const char* error_messages[] = {
     [ID_ERROR_NO_ERROR] = "no error",
@@ -50,6 +48,8 @@ static u64 error_type(void);
 static FILE* error_stdout(void);
 static FILE* error_stderr(void);
 static const char* error_get(void);
+static u64 error_next(void);
+static u64 error_count(void);
 
 /* implementation */
 static void error_output(FILE* output, u64 error_type, const char* message, u64 size) {
@@ -65,23 +65,41 @@ static void error_output(FILE* output, u64 error_type, const char* message, u64 
 }
 
 static void error_throw(u64 error_type, const char* message, u64 size) {
-    ex->type = error_type;
-    if (size < ERROR_BUFFER_SIZE) {
-        CALL(os)->memcpy(ex->message, message, size); /* NOLINT: memcpy(ex->message */
-        CALL(os)->memset(((u8*)ex->message) + size, 0x00, ERROR_BUFFER_SIZE - size);
+    if (ex->message_count < ERROR_MESSAGE_COUNT) {
+        ex->message_count++;
     } else {
-        CALL(os)->memcpy((u8*)ex->message, message, ERROR_BUFFER_SIZE - 1); /* NOLINT: memcpy(ex->message */
-        ex->message[ERROR_BUFFER_SIZE - 1] = 0;
+        /* copy all ERROR_MESSAGE_COUNT - 2 messages to the bottom  */
+        CALL(os)->memmove(&ex->type[0], &ex->type[1], (ex->message_count - 1) * sizeof(u64));
+        CALL(os)->memmove(&ex->message[0], &ex->message[ERROR_MESSAGE_SIZE], (ex->message_count - 1) * ERROR_MESSAGE_SIZE);
+    }
+    ex->type[ex->message_count - 1] = error_type;
+    if (size < ERROR_MESSAGE_SIZE) {
+        CALL(os)->memcpy(&ex->message[(ex->message_count - 1) * ERROR_MESSAGE_SIZE], message, size); /* NOLINT: memcpy(ex->message */
+        CALL(os)->memset(&ex->message[(ex->message_count - 1) * ERROR_MESSAGE_SIZE + size], 0x00, ERROR_MESSAGE_SIZE - size);
+    } else {
+        CALL(os)->memcpy(&ex->message[(ex->message_count - 1) * ERROR_MESSAGE_SIZE], message, ERROR_MESSAGE_SIZE - 1); /* NOLINT: memcpy(ex->message */
+        ex->message[(ex->message_count - 1) * ERROR_MESSAGE_SIZE + ERROR_MESSAGE_SIZE - 1] = 0;
     }
 }
 
 static void error_clear(void) {
-    CALL(os)->memset((u8*)ex->message, 0, 4096); /* NOLINT: memset(ex->message, 0, 4096) */
-    ex->type = ID_ERROR_NO_ERROR;
+    ex->message_count = 0;
+    CALL(os)->memset(&ex->type[0], 0x00, ERROR_MESSAGE_COUNT);
+    CALL(os)->memset(&ex->message[0], 0x00, ERROR_BUFFER_SIZE); /* NOLINT: memset(ex->message, 0, ERROR_BUFFER_SIZE) */
 }
 
 static u64 error_type(void) {
-    return ex->type;
+    if (ex->message_count > 0) {
+        return ex->type[ex->message_count - 1];
+    }
+    return ID_ERROR_NO_ERROR;
+}
+
+static const char* error_get(void) {
+    if (ex->message_count > 0) {
+        return &ex->message[(ex->message_count - 1) * ERROR_MESSAGE_SIZE];
+    }
+    return NULL_PTR;
 }
 
 static FILE* error_stdout(void) {
@@ -92,8 +110,16 @@ static FILE* error_stderr(void) {
     return stderr;
 }
 
-static const char* error_get(void) {
-    return ex->message;
+static u64 error_next(void) {
+    if (ex->message_count > 0) {
+        ex->message_count--;
+        return TRUE;
+    }
+    return FALSE;
+}
+
+static u64 error_count(void) {
+    return ex->message_count;
 }
 
 /* public */
@@ -104,7 +130,9 @@ const system_error_methods PRIVATE_API(system_error_methods_definitions) = {
     .throw = error_throw,
     .clear = error_clear,
     .type = error_type,
-    .get = error_get
+    .get = error_get,
+    .next = error_next,
+    .count = error_count
 };
 
 const system_error_methods* PRIVATE_API(error) = &PRIVATE_API(system_error_methods_definitions);
