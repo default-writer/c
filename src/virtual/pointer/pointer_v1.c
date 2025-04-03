@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 3, 2025 at 11:20:29 AM GMT+3
+ *   April 3, 2025 at 3:48:29 PM GMT+3
  *
  */
 /*
@@ -114,8 +114,11 @@ static void known_types_init_internal(const_vm_ptr cvm, type_methods_definitions
     known_types_ptr obj = CALL(os)->calloc(1, KNOWN_TYPES_TYPE_SIZE);
     obj->next = (*cvm)->known_types;
     obj->methods = data_type;
-    (*cvm)->known_types = obj;
-    (*cvm)->known_types_counter++;
+    safe_vm_ptr safe_ptr;
+    safe_ptr.const_ptr = cvm;
+    vm_ptr ptr = *safe_ptr.ptr;
+    ptr->known_types = obj;
+    ptr->known_types_counter++;
 }
 
 static void user_types_init_internal(const_vm_ptr cvm, type_methods_definitions_ptr data_type) {

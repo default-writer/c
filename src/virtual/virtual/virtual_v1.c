@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 3, 2025 at 11:20:29 AM GMT+3
+ *   April 3, 2025 at 3:51:07 PM GMT+3
  *
  */
 /*
@@ -76,7 +76,9 @@ static pointer_ptr virtual_read_internal(const_virtual_pointer_ptr vptr, u64 add
 
 /* code */
 static u64 virtual_alloc_internal(const_vm_ptr cvm, u64 size, u64 type_id) {
-    virtual_pointer_ptr* tail = &(*cvm)->next;
+    safe_virtual_pointer_ptr s;
+    s.const_ptr = &(*cvm)->next;
+    virtual_pointer_ptr* tail = s.ptr;
     pointer_ptr src;
     pointer_ptr* tmp = 0;
     virtual_pointer_ptr vptr;
@@ -179,6 +181,9 @@ static void virtual_destroy(const_vm_ptr cvm) {
         ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
         return;
     }
+    safe_vm_ptr safe_ptr;
+    safe_ptr.const_ptr = cvm;
+    vm_ptr ptr = *safe_ptr.ptr;
 #ifndef USE_GC
     vm_pointer_ptr item;
     while ((item = CALL(list)->pop((*cvm)->cache)) != 0) {
@@ -186,11 +191,8 @@ static void virtual_destroy(const_vm_ptr cvm) {
     }
     CALL(list)->destroy((*cvm)->cache);
     CALL(os)->free((*cvm)->cache);
-    (*cvm)->cache = 0;
+    ptr->cache = 0;
 #endif
-    safe_vm_ptr safe_ptr;
-    safe_ptr.const_ptr = cvm;
-    vm_ptr ptr = *safe_ptr.ptr;
     virtual_pointer_ptr vptr = (*cvm)->next;
     while (vptr != 0) {
         virtual_pointer_ptr next = vptr->next;

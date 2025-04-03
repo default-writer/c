@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 3, 2025 at 11:25:27 AM GMT+3
+ *   April 3, 2025 at 3:30:17 PM GMT+3
  *
  */
 /*
@@ -47,7 +47,7 @@ typedef struct virtual_pointer* virtual_pointer_ptr;
 typedef const struct virtual_pointer* const_virtual_pointer_ptr;
 
 typedef struct vm* vm_ptr;
-typedef const vm_ptr* const_vm_ptr;
+typedef const struct vm** const_vm_ptr;
 typedef struct pointer* pointer_ptr;
 typedef const struct pointer* const_pointer_ptr;
 
@@ -121,6 +121,10 @@ typedef union {
     const_type_methods_definitions_ptr const_ptr;
     type_methods_definitions_ptr ptr;
 } safe_type_methods_definitions;
+typedef union {
+    const virtual_pointer_ptr* const_ptr;
+    virtual_pointer_ptr* ptr;
+} safe_virtual_pointer_ptr;
 
 typedef union {
     const_void_ptr const_ptr;
