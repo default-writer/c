@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 6, 2025 at 3:12:15 PM GMT+3
+ *   April 6, 2025 at 7:30:13 PM GMT+3
  *
  */
 /*
@@ -107,6 +107,9 @@ RX_SET_UP(test_set_up_pointer_init) {
 RX_TEAR_DOWN(test_tear_down_pointer_destroy) {
     /* nothing to cleanup */
 }
+
+/* internal */
+static void parse_text(const_vm_ptr cvm, u64 text_string_ptr);
 
 /* Define the fixture. */
 RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tear_down);
@@ -3495,9 +3498,6 @@ RX_TEST_CASE(tests_pointer_v1, test_load_load_match_last, .fixture = test_fixtur
 #endif
 }
 
-/* internal */
-static void parse_text(const_vm_ptr cvm, u64 text_string_ptr);
-
 /* test init */
 RX_TEST_CASE(pointer_tests, test_pointer_string_load, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
@@ -3539,27 +3539,17 @@ RX_TEST_CASE(pointer_tests, test_pointer_init_string_load_9, .fixture = test_fix
 /* test init */
 RX_TEST_CASE(pointer_tests, test_vm_dump_0, .fixture = test_fixture_pointer) {
     CALL(error)->clear();
-#ifdef USE_MEMORY_DEBUG_INFO
     CALL(vm)->dump(0);
     u64 error_count = CALL(error)->count();
     RX_ASSERT(error_count != 0);
-#else
-    u64 error_count = CALL(error)->count();
-    RX_ASSERT(error_count == 0);
-#endif
 }
 
 /* test init */
 RX_TEST_CASE(pointer_tests, test_vm_dump_ref_0, .fixture = test_fixture_pointer) {
     CALL(error)->clear();
-#ifdef USE_MEMORY_DEBUG_INFO
     CALL(vm)->dump_ref(0);
     u64 error_count = CALL(error)->count();
     RX_ASSERT(error_count != 0);
-#else
-    u64 error_count = CALL(error)->count();
-    RX_ASSERT(error_count == 0);
-#endif
 }
 
 /* test init */
