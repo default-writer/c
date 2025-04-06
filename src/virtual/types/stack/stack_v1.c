@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 6, 2025 at 8:28:16 AM GMT+3
+ *   April 6, 2025 at 9:07:15 PM GMT+3
  *
  */
 /*
@@ -45,7 +45,6 @@ static void stack_release_internal(const_vm_ptr cvm, stack_ptr* curent);
 
 /* public */
 static u64 stack_alloc(const_vm_ptr cvm);
-static u64 stack_free(const_vm_ptr cvm, u64 ptr);
 static u64 stack_push(const_vm_ptr cvm, u64 ptr, u64 data_ptr);
 static u64 stack_peek(const_vm_ptr cvm, u64 ptr);
 static u64 stack_peekn(const_vm_ptr cvm, u64 ptr, u64 nelements);
@@ -53,6 +52,7 @@ static u64 stack_pop(const_vm_ptr cvm, u64 ptr);
 static u64 stack_popn(const_vm_ptr cvm, u64 ptr, u64 nelements);
 static u64 stack_size(const_vm_ptr cvm, u64 ptr);
 static u64 stack_release(const_vm_ptr cvm, u64 ptr);
+static u64 stack_free(const_vm_ptr cvm, u64 ptr);
 
 /* definition */
 typedef struct stack_handler* stack_handler_ptr;
@@ -134,19 +134,6 @@ static u64 stack_release(const_vm_ptr cvm, u64 address) {
     stack_handler_ptr handler = data_ptr;
     handler->size = 0;
     stack_release_internal(cvm, &handler->list);
-    return TRUE;
-}
-
-static u64 stack_free(const_vm_ptr cvm, u64 address) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return FALSE;
-    }
-    if (address == 0) {
-        ERROR_INVALID_ARGUMENT("address == %lld", address);
-        return FALSE;
-    }
-    stack_type_destructor(cvm, address);
     return TRUE;
 }
 
@@ -342,6 +329,19 @@ static u64 stack_size(const_vm_ptr cvm, u64 address) {
     return size;
 }
 
+static u64 stack_free(const_vm_ptr cvm, u64 address) {
+    if (cvm == 0 || *cvm == 0) {
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
+        return FALSE;
+    }
+    if (address == 0) {
+        ERROR_INVALID_ARGUMENT("address == %lld", address);
+        return FALSE;
+    }
+    stack_type_destructor(cvm, address);
+    return TRUE;
+}
+
 /* public */
 CVM_EXPORT void stack_init(const_vm_ptr cvm) {
     safe_type_methods_definitions safe_ptr;
@@ -351,14 +351,14 @@ CVM_EXPORT void stack_init(const_vm_ptr cvm) {
 
 const virtual_stack_methods PRIVATE_API(virtual_stack_methods_definitions) = {
     .alloc = stack_alloc,
-    .free = stack_free,
     .push = stack_push,
     .peek = stack_peek,
     .peekn = stack_peekn,
     .pop = stack_pop,
     .popn = stack_popn,
     .size = stack_size,
-    .release = stack_release
+    .release = stack_release,
+    .free = stack_free
 };
 
 const virtual_stack_methods* PRIVATE_API(stack) = &PRIVATE_API(virtual_stack_methods_definitions);

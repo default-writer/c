@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 6, 2025 at 7:43:12 PM GMT+3
+ *   April 6, 2025 at 9:13:29 PM GMT+3
  *
  */
 /*
@@ -35,6 +35,7 @@
 #include "system/memory/memory_v1.h"
 #include "system/os/os_v1.h"
 
+#include "virtual/types/stack/stack_v1.h"
 #include "virtual/virtual/virtual_v1.h"
 
 /* macros */
@@ -82,10 +83,17 @@ static void unregister_known_types(const_vm_ptr cvm) {
     CALL(memory)->free((*cvm)->known_types, KNOWN_TYPES_TYPE_ARRAY_SIZE((*cvm)->known_types_capacity));
 }
 
-static void vm_dump_internal(pointer_ptr ptr);
-static void vm_dump_ref_internal(pointer_ptr* ptr);
-static void virtual_dump_internal(const_vm_ptr cvm);
-static void virtual_dump_ref_internal(const_vm_ptr cvm);
+/* public */
+static void vm_dump(const_vm_ptr cvm);
+static void vm_dump_stack(const_vm_ptr cvm, u64 stack);
+static void vm_dump_ref(const_vm_ptr cvm);
+static void vm_dump_ref_stack(const_vm_ptr cvm, u64 stack);
+
+/* internal */
+static void vm_dump_internal(const_vm_ptr cvm, pointer_ptr ptr, u64 stack);
+static void vm_dump_ref_internal(const_vm_ptr cvm, pointer_ptr* ptr, u64 stack);
+static void virtual_dump_internal(const_vm_ptr cvm, u64 stack);
+static void virtual_dump_ref_internal(const_vm_ptr cvm, u64 stackk);
 
 /* internal */
 struct file_handler {
@@ -139,8 +147,8 @@ static void vm_gc(const_vm_ptr cvm) {
         return;
     }
 #ifdef USE_MEMORY_DEBUG_INFO
-    virtual_dump_ref_internal(cvm);
-    virtual_dump_internal(cvm);
+    virtual_dump_ref_internal(cvm, 0);
+    virtual_dump_internal(cvm, 0);
 #endif
     struct vm_state state;
     vm_ref_enumerator_init_internal(&state, cvm);
@@ -156,16 +164,32 @@ static void vm_dump(const_vm_ptr cvm) {
         ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
         return;
     }
-    virtual_dump_internal(cvm);
+    virtual_dump_internal(cvm, 0);
 }
+
+static void vm_dump_stack(const_vm_ptr cvm, u64 stack) {
+    if (cvm == 0 || *cvm == 0) {
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
+        return;
+    }
+    virtual_dump_internal(cvm, stack);
+}
+
 static void vm_dump_ref(const_vm_ptr cvm) {
     if (cvm == 0 || *cvm == 0) {
         ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
         return;
     }
-    virtual_dump_ref_internal(cvm);
+    virtual_dump_ref_internal(cvm, 0);
 }
 
+static void vm_dump_ref_stack(const_vm_ptr cvm, u64 stack) {
+    if (cvm == 0 || *cvm == 0) {
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
+        return;
+    }
+    virtual_dump_ref_internal(cvm, stack);
+}
 static u64 vm_release(const_vm_ptr cvm, u64 address) {
     if (cvm == 0 || *cvm == 0) {
         ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
@@ -202,13 +226,19 @@ static void vm_destroy(const_vm_ptr cvm) {
 #endif
 }
 
-static void vm_dump_internal(pointer_ptr ptr) {
+static void vm_dump_internal(const_vm_ptr cvm, pointer_ptr ptr, u64 stack) {
+    if (stack != 0) {
+        CALL(stack)->push(cvm, stack, (u64)ptr->data);
+    }
     printf("  p^: %016llx > %016llx\n", (u64)ptr, (u64)ptr->data);
 }
 
-static void vm_dump_ref_internal(pointer_ptr* ptr) {
+static void vm_dump_ref_internal(const_vm_ptr cvm, pointer_ptr* ptr, u64 stack) {
     if (*ptr == 0) {
         return;
+    }
+    if (stack != 0) {
+        CALL(stack)->push(cvm, stack, (u64)*ptr);
     }
     printf("  p&: %016llx > %016llx\n", (u64)ptr, (u64)*ptr);
 }
@@ -226,22 +256,22 @@ static void vm_ref_enumerator_destroy_internal(struct vm_state* state) {
 }
 
 /* implementation */
-static void virtual_dump_internal(const_vm_ptr cvm) {
+static void virtual_dump_internal(const_vm_ptr cvm, u64 stack) {
     struct vm_state state;
     vm_ref_enumerator_init_internal(&state, cvm);
     pointer_ptr ptr = 0;
     while ((ptr = vm_enumerator_next_internal(&state)) != 0) {
-        vm_dump_internal(ptr);
+        vm_dump_internal(cvm, ptr, stack);
     }
     vm_ref_enumerator_destroy_internal(&state);
 }
 
-static void virtual_dump_ref_internal(const_vm_ptr cvm) {
+static void virtual_dump_ref_internal(const_vm_ptr cvm, u64 stack) {
     struct vm_state state;
     vm_ref_enumerator_init_internal(&state, cvm);
     pointer_ptr* ref = 0;
     while ((ref = vm_ref_enumerator_next_internal(&state)) != 0) {
-        vm_dump_ref_internal(ref);
+        vm_dump_ref_internal(cvm, ref, stack);
     }
     vm_ref_enumerator_destroy_internal(&state);
 }
@@ -306,7 +336,9 @@ const virtual_vm_methods PRIVATE_API(virtual_vm_methods_definitions) = {
     .release = vm_release,
     .destroy = vm_destroy,
     .dump = vm_dump,
-    .dump_ref = vm_dump_ref
+    .dump_ref = vm_dump_ref,
+    .dump_stack = vm_dump_stack,
+    .dump_ref_stack = vm_dump_ref_stack
 };
 
 const virtual_vm_methods* PRIVATE_API(vm) = &PRIVATE_API(virtual_vm_methods_definitions);

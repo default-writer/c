@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 6, 2025 at 7:30:13 PM GMT+3
+ *   April 6, 2025 at 9:17:00 PM GMT+3
  *
  */
 /*
@@ -3545,9 +3545,25 @@ RX_TEST_CASE(pointer_tests, test_vm_dump_0, .fixture = test_fixture_pointer) {
 }
 
 /* test init */
+RX_TEST_CASE(pointer_tests, test_vm_dump_stack_0, .fixture = test_fixture_pointer) {
+    CALL(error)->clear();
+    CALL(vm)->dump_stack(0, 0);
+    u64 error_count = CALL(error)->count();
+    RX_ASSERT(error_count != 0);
+}
+
+/* test init */
 RX_TEST_CASE(pointer_tests, test_vm_dump_ref_0, .fixture = test_fixture_pointer) {
     CALL(error)->clear();
     CALL(vm)->dump_ref(0);
+    u64 error_count = CALL(error)->count();
+    RX_ASSERT(error_count != 0);
+}
+
+/* test init */
+RX_TEST_CASE(pointer_tests, test_vm_dump_ref_stack_0, .fixture = test_fixture_pointer) {
+    CALL(error)->clear();
+    CALL(vm)->dump_ref_stack(0, 0);
     u64 error_count = CALL(error)->count();
     RX_ASSERT(error_count != 0);
 }

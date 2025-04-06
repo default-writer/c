@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 6, 2025 at 8:13:20 PM GMT+3
+ *   April 6, 2025 at 9:13:54 PM GMT+3
  *
  */
 /*
@@ -27,6 +27,8 @@
 #include "test_vm.h"
 
 #include "std/macros.h"
+
+#include "system/list/list_v1.h"
 #include "system/memory/memory_v1.h"
 #include "system/options/options_v1.h"
 #include "system/os/os_v1.h"
@@ -275,6 +277,39 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump, .fixture = test_clean_fixture) {
 }
 
 /* test init */
+RX_TEST_CASE(tests_vm_v1, test_vm_dump_stack, .fixture = test_clean_fixture) {
+    const_vm_ptr cvm = CALL(vm)->init(8);
+    u64 stack = CALL(stack)->alloc(cvm);
+    u64 text_string_ptr[] = {
+        CALL(string)->load(cvm, "a\nb"),
+        CALL(string)->load(cvm, "abc\nabcd\nbcde\nabc\na\nb"),
+        CALL(string)->load(cvm, "ab\nabc\n")
+    };
+    CALL(vm)->dump_stack(cvm, stack);
+    for (u64 i = 0; i < sizeof(text_string_ptr) / sizeof(text_string_ptr[0]); i++) {
+        CALL(env)->puts(cvm, text_string_ptr[i]);
+        parse_text(cvm, text_string_ptr[i]);
+    }
+    const_vm_ptr debug_cvm = CALL(vm)->init(8);
+    u64 text_size = CALL(string)->size(cvm, text_string_ptr[1]);
+    const_void_ptr data = CALL(string)->unsafe(cvm, text_string_ptr[1]);
+    u64 debug_text_string_ptr = CALL(pointer)->copy(debug_cvm, data, text_size + 1, 0, TYPE_STRING);
+    parse_text(debug_cvm, debug_text_string_ptr);
+    CALL(vm)->dump(debug_cvm);
+#ifndef USE_GC
+    for (u64 i = 0; i < sizeof(text_string_ptr) / sizeof(text_string_ptr[0]); i++) {
+        CALL(string)->free(cvm, text_string_ptr[i]);
+    }
+    CALL(string)->free(debug_cvm, debug_text_string_ptr);
+    CALL(vm)->gc(debug_cvm);
+    CALL(vm)->destroy(debug_cvm);
+#endif
+    CALL(stack)->free(cvm, stack);
+    CALL(vm)->gc(cvm);
+    CALL(vm)->destroy(cvm);
+}
+
+/* test init */
 RX_TEST_CASE(tests_vm_v1, test_vm_dump_ref, .fixture = test_clean_fixture) {
     const_vm_ptr cvm = CALL(vm)->init(8);
     u64 text_string_ptr[] = {
@@ -301,6 +336,39 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_ref, .fixture = test_clean_fixture) {
     CALL(vm)->gc(debug_cvm);
     CALL(vm)->destroy(debug_cvm);
 #endif
+    CALL(vm)->gc(cvm);
+    CALL(vm)->destroy(cvm);
+}
+
+/* test init */
+RX_TEST_CASE(tests_vm_v1, test_vm_dump_ref_stack, .fixture = test_clean_fixture) {
+    const_vm_ptr cvm = CALL(vm)->init(8);
+    u64 stack = CALL(stack)->alloc(cvm);
+    u64 text_string_ptr[] = {
+        CALL(string)->load(cvm, "a\nb"),
+        CALL(string)->load(cvm, "abc\nabcd\nbcde\nabc\na\nb"),
+        CALL(string)->load(cvm, "ab\nabc\n")
+    };
+    CALL(vm)->dump_ref_stack(cvm, stack);
+    for (u64 i = 0; i < sizeof(text_string_ptr) / sizeof(text_string_ptr[0]); i++) {
+        CALL(env)->puts(cvm, text_string_ptr[i]);
+        parse_text(cvm, text_string_ptr[i]);
+    }
+    const_vm_ptr debug_cvm = CALL(vm)->init(8);
+    u64 text_size = CALL(string)->size(cvm, text_string_ptr[1]);
+    const_void_ptr data = CALL(string)->unsafe(cvm, text_string_ptr[1]);
+    u64 debug_text_string_ptr = CALL(pointer)->copy(debug_cvm, data, text_size + 1, 0, TYPE_STRING);
+    parse_text(debug_cvm, debug_text_string_ptr);
+    CALL(vm)->dump_ref_stack(debug_cvm, stack);
+#ifndef USE_GC
+    for (u64 i = 0; i < sizeof(text_string_ptr) / sizeof(text_string_ptr[0]); i++) {
+        CALL(string)->free(cvm, text_string_ptr[i]);
+    }
+    CALL(string)->free(debug_cvm, debug_text_string_ptr);
+    CALL(vm)->gc(debug_cvm);
+    CALL(vm)->destroy(debug_cvm);
+#endif
+    CALL(stack)->free(cvm, stack);
     CALL(vm)->gc(cvm);
     CALL(vm)->destroy(cvm);
 }
@@ -474,7 +542,7 @@ static void run(void) {
 static void parse_text(const_vm_ptr cvm, u64 text_string_ptr) {
     u64 gc_ptr = CALL(stack)->alloc(cvm);
     u64 text_size = CALL(string)->size(cvm, text_string_ptr);
-    u64 stack_ptr1 = CALL(stack)->alloc(cvm);
+    u64 stack1 = CALL(stack)->alloc(cvm);
     char* text = CALL(string)->unsafe(cvm, text_string_ptr);
     char* tmp = text;
     while (text != 0 && *tmp != 0 && text_size > 0) {
@@ -484,29 +552,29 @@ static void parse_text(const_vm_ptr cvm, u64 text_string_ptr) {
         }
         if (text_size == 0) {
             u64 string_ptr = 0;
-            while ((string_ptr = CALL(stack)->pop(cvm, stack_ptr1)) != 0) {
+            while ((string_ptr = CALL(stack)->pop(cvm, stack1)) != 0) {
                 CALL(string)->free(cvm, string_ptr);
             }
-            CALL(stack)->free(cvm, stack_ptr1);
+            CALL(stack)->free(cvm, stack1);
             CALL(stack)->free(cvm, gc_ptr);
             return;
         }
         *tmp++ = '\0';
         text_size--;
         u64 string_ptr = CALL(string)->load(cvm, text);
-        CALL(stack)->push(cvm, stack_ptr1, string_ptr);
+        CALL(stack)->push(cvm, stack1, string_ptr);
         text = tmp;
     }
     u64 data_ptr = 0;
-    u64 stack_ptr2 = CALL(stack)->alloc(cvm);
-    while ((data_ptr = CALL(stack)->pop(cvm, stack_ptr1)) != 0) {
-        CALL(stack)->push(cvm, stack_ptr2, data_ptr);
+    u64 stack2 = CALL(stack)->alloc(cvm);
+    while ((data_ptr = CALL(stack)->pop(cvm, stack1)) != 0) {
+        CALL(stack)->push(cvm, stack2, data_ptr);
     }
-    CALL(stack)->free(cvm, stack_ptr1);
-    CALL(stack)->push(cvm, gc_ptr, stack_ptr2);
+    CALL(stack)->free(cvm, stack1);
+    CALL(stack)->push(cvm, gc_ptr, stack2);
     u64 quit = 0;
     while (quit == 0) {
-        u64 string_ptr = CALL(stack)->pop(cvm, stack_ptr2);
+        u64 string_ptr = CALL(stack)->pop(cvm, stack2);
         if (CALL(string)->size(cvm, string_ptr) == 0) {
             quit = 1;
             CALL(string)->free(cvm, string_ptr);
@@ -514,7 +582,7 @@ static void parse_text(const_vm_ptr cvm, u64 text_string_ptr) {
             continue;
         }
         CALL(env)->puts(cvm, string_ptr);
-        u64 pattern_ptr = CALL(stack)->pop(cvm, stack_ptr2);
+        u64 pattern_ptr = CALL(stack)->pop(cvm, stack2);
         CALL(env)->puts(cvm, pattern_ptr);
         u64 string_pointer_ptr = 0;
         u64 current_ptr = string_ptr;
@@ -539,10 +607,10 @@ static void parse_text(const_vm_ptr cvm, u64 text_string_ptr) {
 #endif
     }
 #ifndef USE_GC
-    CALL(stack)->free(cvm, stack_ptr2);
+    CALL(stack)->free(cvm, stack2);
 #endif
-    CALL(stack)->free(cvm, stack_ptr1);
-    CALL(stack)->free(cvm, stack_ptr2);
+    CALL(stack)->free(cvm, stack1);
+    CALL(stack)->free(cvm, stack2);
     CALL(stack)->free(cvm, gc_ptr);
 }
 
