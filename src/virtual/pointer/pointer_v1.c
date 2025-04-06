@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 3, 2025 at 3:48:29 PM GMT+3
+ *   April 6, 2025 at 6:17:30 AM GMT+3
  *
  */
 /*
@@ -51,8 +51,8 @@
 #define POINTER_TYPE_SIZE sizeof(pointer_type)
 
 /* internal */
-#include "internal/internal_v1.h"
-#include "internal/private_v1.h"
+#include "internal/pointer_type_v1.h"
+#include "internal/vm_type_v1.h"
 
 /* private */
 typedef struct vm_state {
@@ -87,16 +87,29 @@ static u64 pointer_free(const_vm_ptr cvm, u64 address, u64 type_id);
 
 /* internal */
 static u64 pointer_alloc_internal(const_vm_ptr cvm, const_void_ptr data, const_pointer_ptr* tmp, u64 size, u64 type_id);
-static void known_types_init_internal(const_vm_ptr cvm, type_methods_definitions_ptr data_type);
-static void user_types_init_internal(const_vm_ptr cvm, type_methods_definitions_ptr data_type);
-static u64 find_type_id_internal(const_vm_ptr cvm, const_type_methods_definitions_ptr data_type);
+static u64 pointer_find_type_id_internal(const_vm_ptr cvm, const_type_methods_definitions_ptr data_type);
 
 static void pointer_register_known_type(const_vm_ptr cvm, type_methods_definitions_ptr data_type) {
-    known_types_init_internal(cvm, data_type);
+    safe_vm_ptr safe_ptr;
+    safe_ptr.const_ptr = cvm;
+    vm_ptr ptr = *safe_ptr.ptr;
+    u64 type_id = data_type->type_id;
+    ptr->known_types[type_id - 1].methods = data_type;
 }
 
 static void pointer_register_user_type(const_vm_ptr cvm, type_methods_definitions_ptr data_type) {
-    user_types_init_internal(cvm, data_type);
+    if (pointer_find_type_id_internal(cvm, data_type) != 0) {
+        ERROR_INVALID_TYPE_ID("type_id == %lld", data_type->type_id);
+        return;
+    }
+    safe_vm_ptr safe_ptr;
+    safe_ptr.const_ptr = cvm;
+    vm_ptr ptr = *safe_ptr.ptr;
+    data_type->type_id = ptr->known_types_capacity + 1;
+    u64 type_id = data_type->type_id;
+    ptr->known_types = CALL(memory)->realloc(ptr->known_types, KNOWN_TYPES_TYPE_ARRAY_SIZE(ptr->known_types_capacity), KNOWN_TYPES_TYPE_ARRAY_SIZE(type_id));
+    ptr->known_types_capacity = type_id;
+    ptr->known_types[type_id - 1].methods = data_type;
 }
 
 /* internal */
@@ -110,35 +123,12 @@ static u64 pointer_alloc_internal(const_vm_ptr cvm, const_void_ptr data, const_p
     return address;
 }
 
-static void known_types_init_internal(const_vm_ptr cvm, type_methods_definitions_ptr data_type) {
-    known_types_ptr obj = CALL(os)->calloc(1, KNOWN_TYPES_TYPE_SIZE);
-    obj->next = (*cvm)->known_types;
-    obj->methods = data_type;
-    safe_vm_ptr safe_ptr;
-    safe_ptr.const_ptr = cvm;
-    vm_ptr ptr = *safe_ptr.ptr;
-    ptr->known_types = obj;
-    ptr->known_types_counter++;
-}
-
-static void user_types_init_internal(const_vm_ptr cvm, type_methods_definitions_ptr data_type) {
-    u64 type_id = 0;
-    if ((type_id = find_type_id_internal(cvm, data_type)) != 0) {
-        ERROR_INVALID_TYPE_ID("type_id == %lld", type_id);
-        return;
-    }
-    known_types_init_internal(cvm, data_type);
-    data_type->type_id = (*cvm)->known_types_counter;
-}
-
-static u64 find_type_id_internal(const_vm_ptr cvm, const_type_methods_definitions_ptr data_type) {
-    known_types_ptr current = (*cvm)->known_types;
-    while (current != 0) {
-        known_types_ptr prev = current->next;
-        if (current->methods == data_type) {
-            return data_type->type_id;
+static u64 pointer_find_type_id_internal(const_vm_ptr cvm, const_type_methods_definitions_ptr data_type) {
+    for (u64 i = 0; i < (*cvm)->known_types_capacity; i++) {
+        known_types_type current = (*cvm)->known_types[i];
+        if (current.methods == data_type) {
+            return current.methods->type_id;
         }
-        current = prev;
     }
     return 0;
 }
@@ -219,8 +209,13 @@ static const_void_ptr pointer_read(const_vm_ptr cvm, u64 address, u64 type_id) {
         ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, address, type_id);
         return NULL_PTR;
     }
-    const_void_ptr data = const_ptr->data;
-    return data;
+#ifdef USE_MEMORY_DEBUG_INFO
+    if (const_ptr->guard != 0) {
+        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr->data, address, type_id);
+        return NULL_PTR;
+    }
+#endif
+    return const_ptr;
 }
 
 static u64 pointer_free(const_vm_ptr cvm, u64 address, u64 type_id) {
@@ -244,12 +239,11 @@ static u64 pointer_free(const_vm_ptr cvm, u64 address, u64 type_id) {
     safe_pointer_ptr safe_ptr;
     safe_ptr.const_ptr = const_ptr;
     pointer_ptr ptr = safe_ptr.ptr;
-    u64 data_size = const_ptr->public.size;
-    if (data_size != 0) {
-        CALL(memory)->free(ptr->data, data_size);
+    u64 size = const_ptr->public.size;
+    if (size != 0) {
+        CALL(memory)->free(ptr->data, size);
     }
     CALL(virtual)->free(cvm, address);
-    CALL(os)->memset(ptr, 0, POINTER_TYPE_SIZE); /* NOLINT: sizeof(pointer_type) */
     CALL(os)->free(ptr);
     return TRUE;
 }

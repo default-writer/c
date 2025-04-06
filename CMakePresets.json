@@ -42,7 +42,7 @@
                 },
                 "CONFIG_GC": {
                     "type": "BOOL",
-                    "value": "ON"
+                    "value": "OFF"
                 }
             }
         },
@@ -82,7 +82,7 @@
                 },
                 "CONFIG_GC": {
                     "type": "BOOL",
-                    "value": "ON"
+                    "value": "OFF"
                 }
             }
         },
@@ -123,7 +123,7 @@
                 },
                 "CONFIG_GC": {
                     "type": "BOOL",
-                    "value": "ON"
+                    "value": "OFF"
                 }
             }
         }

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 3, 2025 at 11:20:29 AM GMT+3
+ *   April 5, 2025 at 5:45:34 AM GMT+3
  *
  */
 /*
@@ -94,9 +94,8 @@ static void_ptr memory_realloc(const_void_ptr const_ptr, u64 size, u64 new_size)
     ptr = CALL(os)->realloc(ptr, new_size);
     CALL(os)->memset((u8*)ptr + size, 0x00, new_size - size);
 #ifdef USE_MEMORY_DEBUG_INFO
-    total_alloc += new_size;
-    total_free += size;
-    printf("  m*: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_free, total_alloc);
+    total_alloc += new_size - size;
+    printf("  m*: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, new_size, total_alloc - total_free, total_free, total_alloc);
 #endif
     return ptr;
 }

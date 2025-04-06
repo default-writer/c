@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 3, 2025 at 11:20:29 AM GMT+3
+ *   April 4, 2025 at 2:18:53 PM GMT+3
  *
  */
 /*
@@ -48,6 +48,11 @@ static struct type_methods_definitions user_type = {
 };
 
 static void user_type_destructor(const_vm_ptr cvm, u64 address) {
+    const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, address, user_type.type_id);
+    if (const_ptr == 0) {
+        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, address, (u64)user_type.type_id);
+        return;
+    }
     CALL(pointer)->free(cvm, address, user_type.type_id);
 }
 

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 3, 2025 at 11:20:29 AM GMT+3
+ *   April 6, 2025 at 7:25:40 AM GMT+3
  *
  */
 /*
@@ -35,6 +35,8 @@
 #include "virtual/pointer/pointer_v1.h"
 #include "virtual/types/string/string_v1.h"
 
+#include "internal/pointer_type_v1.h"
+
 /* definition */
 static u64 env_getenv(const_vm_ptr cvm, u64 name);
 static u64 env_getcwd(const_vm_ptr cvm);
@@ -50,11 +52,12 @@ static u64 env_getenv(const_vm_ptr cvm, u64 address) {
         ERROR_INVALID_ARGUMENT("address == %lld", address);
         return FALSE;
     }
-    const char* name = CALL(pointer)->read(cvm, address, TYPE_STRING);
-    if (name == 0) {
-        ERROR_INVALID_POINTER("name == %p, address == %lld, type_id == %lld", (const_void_ptr)name, address, (u64)TYPE_STRING);
+    const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, address, TYPE_STRING);
+    if (const_ptr == 0) {
+        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, address, (u64)TYPE_STRING);
         return FALSE;
     }
+    const char* name = const_ptr->data;
     const char* ch = CALL(os)->getenv(name);
     return CALL(string)->load(cvm, ch);
 }

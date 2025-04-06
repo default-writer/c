@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 3, 2025 at 3:47:40 PM GMT+3
+ *   April 5, 2025 at 6:52:53 AM GMT+3
  *
  */
 /*
@@ -47,8 +47,9 @@
 #define POINTER_TYPE_SIZE sizeof(pointer_type)
 
 /* internal */
-#include "internal/internal_v1.h"
-#include "internal/private_v1.h"
+#include "internal/pointer_type_v1.h"
+#include "internal/virtual_pointer_type_v1.h"
+#include "internal/vm_type_v1.h"
 
 /* private */
 typedef struct vm_state {
@@ -64,6 +65,9 @@ CVM_EXPORT extern void string_init(const_vm_ptr cvm);
 CVM_EXPORT extern void string_pointer_init(const_vm_ptr cvm);
 CVM_EXPORT extern void user_init(const_vm_ptr cvm);
 
+static void register_known_types(const_vm_ptr cvm);
+static void unregister_known_types(const_vm_ptr cvm);
+
 static void register_known_types(const_vm_ptr cvm) {
     data_init(cvm);
     file_init(cvm);
@@ -74,9 +78,15 @@ static void register_known_types(const_vm_ptr cvm) {
     user_init(cvm);
 }
 
+static void unregister_known_types(const_vm_ptr cvm) {
+    CALL(memory)->free((*cvm)->known_types, KNOWN_TYPES_TYPE_ARRAY_SIZE((*cvm)->known_types_capacity));
+}
+
 #ifdef USE_MEMORY_DEBUG_INFO
-static void vm_dump(pointer_ptr ptr);
-static void vm_dump_ref(pointer_ptr* ptr);
+static void vm_dump_internal(pointer_ptr ptr);
+static void vm_dump_ref_internal(pointer_ptr* ptr);
+static void virtuial_dump_internal(const_vm_ptr cvm);
+static void virtuial_dump_ref_internal(const_vm_ptr cvm);
 #endif
 
 /* internal */
@@ -98,8 +108,8 @@ static u64 vm_release(const_vm_ptr cvm, u64 ptr);
 static void vm_destroy(const_vm_ptr cvm);
 
 #ifdef USE_MEMORY_DEBUG_INFO
-static void virtual_dump(const_vm_ptr cvm);
-static void virtual_dump_ref(const_vm_ptr cvm);
+static void virtual_dump_internal(const_vm_ptr cvm);
+static void virtual_dump_ref_internal(const_vm_ptr cvm);
 #endif
 
 /* internal */
@@ -124,17 +134,9 @@ static const_vm_ptr vm_init(u64 size) {
     safe_vm_ptr safe_ptr;
     safe_ptr.const_ptr = cvm;
     vm_ptr ptr = *safe_ptr.ptr;
+    ptr->known_types_capacity = TYPE_USER - 1;
+    ptr->known_types = CALL(memory)->alloc(KNOWN_TYPES_TYPE_ARRAY_SIZE((*cvm)->known_types_capacity));
     register_known_types(cvm);
-    ptr->default_types = CALL(os)->calloc(known_types_counter, KNOWN_TYPES_TYPE_SIZE);
-    known_types_ptr current = (*cvm)->known_types;
-    while (current != 0) {
-        known_types_ptr prev = current->next;
-        u64 type_id = current->methods->type_id;
-        if (type_id > 0 && type_id <= known_types_counter) {
-            ptr->default_types[type_id - 1] = *current;
-        }
-        current = prev;
-    }
     return cvm;
 }
 
@@ -144,8 +146,8 @@ static void vm_gc(const_vm_ptr cvm) {
         return;
     }
 #ifdef USE_MEMORY_DEBUG_INFO
-    virtual_dump_ref(cvm);
-    virtual_dump(cvm);
+    virtual_dump_ref_internal(cvm);
+    virtual_dump_internal(cvm);
 #endif
     struct vm_state state;
     vm_ref_enumerator_init_internal(&state, cvm);
@@ -155,6 +157,23 @@ static void vm_gc(const_vm_ptr cvm) {
     }
     vm_ref_enumerator_destroy_internal(&state);
 }
+
+#ifdef USE_MEMORY_DEBUG_INFO
+static void vm_dump(const_vm_ptr cvm) {
+    if (cvm == 0 || *cvm == 0) {
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
+        return;
+    }
+    virtual_dump_internal(cvm);
+}
+static void vm_dump_ref(const_vm_ptr cvm) {
+    if (cvm == 0 || *cvm == 0) {
+        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
+        return;
+    }
+    virtual_dump_ref_internal(cvm);
+}
+#endif
 
 static u64 vm_release(const_vm_ptr cvm, u64 address) {
     if (cvm == 0 || *cvm == 0) {
@@ -170,10 +189,12 @@ static u64 vm_release(const_vm_ptr cvm, u64 address) {
         ERROR_INVALID_TYPE_ID("type_id == %lld", type_id);
         return FALSE;
     }
-    if (type_id > 0 && type_id <= known_types_counter) {
-        const_type_methods_definitions_ptr methods = (*cvm)->default_types[type_id - 1].methods;
+#ifdef USE_GC
+    if (type_id > 0 && type_id <= (*cvm)->known_types_capacity) {
+        const_type_methods_definitions_ptr methods = (*cvm)->known_types[type_id - 1].methods;
         methods->destructor(cvm, address);
     }
+#endif
     return TRUE;
 }
 
@@ -182,14 +203,7 @@ static void vm_destroy(const_vm_ptr cvm) {
         ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
         return;
     }
-    known_types_ptr known_types = (*cvm)->known_types;
-    while (known_types != 0) {
-        known_types_ptr prev = known_types->next;
-        known_types->next = 0;
-        CALL(os)->free(known_types);
-        known_types = prev;
-    }
-    CALL(os)->free((*cvm)->default_types);
+    unregister_known_types(cvm);
     CALL(system)->destroy(cvm);
     CALL(error)->clear();
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -198,11 +212,11 @@ static void vm_destroy(const_vm_ptr cvm) {
 }
 
 #ifdef USE_MEMORY_DEBUG_INFO
-static void vm_dump(pointer_ptr ptr) {
+static void vm_dump_internal(pointer_ptr ptr) {
     printf("  p^: %016llx > %016llx\n", (u64)ptr, (u64)ptr->data);
 }
 
-static void vm_dump_ref(pointer_ptr* ptr) {
+static void vm_dump_ref_internal(pointer_ptr* ptr) {
     if (*ptr == 0) {
         return;
     }
@@ -224,22 +238,22 @@ static void vm_ref_enumerator_destroy_internal(struct vm_state* state) {
 
 /* implementation */
 #ifdef USE_MEMORY_DEBUG_INFO
-static void virtual_dump(const_vm_ptr cvm) {
+static void virtual_dump_internal(const_vm_ptr cvm) {
     struct vm_state state;
     vm_ref_enumerator_init_internal(&state, cvm);
     pointer_ptr ptr = 0;
     while ((ptr = vm_enumerator_next_internal(&state)) != 0) {
-        vm_dump(ptr);
+        vm_dump_internal(ptr);
     }
     vm_ref_enumerator_destroy_internal(&state);
 }
 
-static void virtual_dump_ref(const_vm_ptr cvm) {
+static void virtual_dump_ref_internal(const_vm_ptr cvm) {
     struct vm_state state;
     vm_ref_enumerator_init_internal(&state, cvm);
     pointer_ptr* ref = 0;
     while ((ref = vm_ref_enumerator_next_internal(&state)) != 0) {
-        vm_dump_ref(ref);
+        vm_dump_ref_internal(ref);
     }
     vm_ref_enumerator_destroy_internal(&state);
 }
@@ -303,7 +317,11 @@ const virtual_vm_methods PRIVATE_API(virtual_vm_methods_definitions) = {
     .init = vm_init,
     .gc = vm_gc,
     .release = vm_release,
-    .destroy = vm_destroy
+    .destroy = vm_destroy,
+#ifdef USE_MEMORY_DEBUG_INFO
+    .dump = vm_dump,
+    .dump_ref = vm_dump_ref
+#endif
 };
 
 const virtual_vm_methods* PRIVATE_API(vm) = &PRIVATE_API(virtual_vm_methods_definitions);

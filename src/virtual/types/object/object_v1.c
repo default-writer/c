@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 3, 2025 at 11:20:29 AM GMT+3
+ *   April 5, 2025 at 11:54:21 PM GMT+3
  *
  */
 /*
@@ -32,7 +32,7 @@
 #include "virtual/pointer/pointer_v1.h"
 #include "virtual/virtual/virtual_v1.h"
 
-#include "internal/internal_v1.h"
+#include "internal/pointer_type_v1.h"
 
 /* public */
 static u64 object_alloc(const_vm_ptr cvm, u64 size);
@@ -51,6 +51,11 @@ static struct type_methods_definitions object_type = {
 };
 
 static void object_type_destructor(const_vm_ptr cvm, u64 address) {
+    const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, address, object_type.type_id);
+    if (const_ptr == 0) {
+        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, address, (u64)object_type.type_id);
+        return;
+    }
     CALL(pointer)->free(cvm, address, object_type.type_id);
 }
 
@@ -89,13 +94,13 @@ static void_ptr object_unsafe(const_vm_ptr cvm, u64 address) {
         ERROR_INVALID_ARGUMENT("address == %lld", address);
         return NULL_PTR;
     }
-    const_void_ptr const_ptr = CALL(pointer)->read(cvm, address, object_type.type_id);
+    const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, address, object_type.type_id);
     if (const_ptr == 0) {
         ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, address, (u64)object_type.type_id);
         return NULL_PTR;
     }
     safe_void_ptr safe_ptr;
-    safe_ptr.const_ptr = const_ptr;
+    safe_ptr.const_ptr = const_ptr->data;
     void_ptr data_ptr = safe_ptr.ptr;
     return data_ptr;
 }
@@ -126,7 +131,7 @@ static u64 object_size(const_vm_ptr cvm, u64 address) {
         ERROR_INVALID_ARGUMENT("address == %lld", address);
         return FALSE;
     }
-    const_pointer_ptr const_ptr = CALL(virtual)->read(cvm, address, object_type.type_id);
+    const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, address, object_type.type_id);
     if (const_ptr == 0) {
         ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, address, (u64)object_type.type_id);
         return FALSE;
