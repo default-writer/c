@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 6, 2025 at 10:41:09 AM GMT+3
+ *   April 6, 2025 at 3:12:15 PM GMT+3
  *
  */
 /*
@@ -424,6 +424,20 @@ RX_TEST_CASE(tests_pointer_v1, test_data_free, .fixture = test_fixture) {
     u64 char_ptr = CALL(string)->load(cvm, "/");
     CALL(error)->clear();
     CALL(data)->free(cvm, char_ptr);
+    u64 error_count = CALL(error)->count();
+    RX_ASSERT(error_count != 0);
+#ifndef USE_GC
+    CALL(string)->free(cvm, char_ptr);
+#endif
+}
+
+/* test init */
+RX_TEST_CASE(tests_pointer_v1, test_file_free, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr cvm = rx->ctx;
+    u64 char_ptr = CALL(string)->load(cvm, "/");
+    CALL(error)->clear();
+    CALL(file)->free(cvm, char_ptr);
     u64 error_count = CALL(error)->count();
     RX_ASSERT(error_count != 0);
 #ifndef USE_GC
