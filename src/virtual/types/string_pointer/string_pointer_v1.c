@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 3, 2025 at 11:20:29 AM GMT+3
+ *   April 5, 2025 at 11:01:04 PM GMT+3
  *
  */
 /*
@@ -28,23 +28,24 @@
 
 #define USING_SYSTEM_ERROR_API
 #include "system/error/error_v1.h"
+#include "system/list/list_v1.h"
 
 #include "virtual/pointer/pointer_v1.h"
 
 /* public */
-static u64 string_free(const_vm_ptr cvm, u64 address);
+static u64 string_pointer_free(const_vm_ptr cvm, u64 address);
 
 /* type */
-static void string_type_destructor(const_vm_ptr cvm, u64 address);
+static void string_pointer_type_destructor(const_vm_ptr cvm, u64 address);
 
 /* implementation */
 static struct type_methods_definitions string_pointer_type = {
     .type_id = TYPE_STRING_POINTER,
-    .destructor = string_type_destructor
+    .destructor = string_pointer_type_destructor
 };
 
-static void string_type_destructor(const_vm_ptr cvm, u64 address) {
-    const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, address, TYPE_STRING_POINTER);
+static void string_pointer_type_destructor(const_vm_ptr cvm, u64 address) {
+    const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, address, string_pointer_type.type_id);
     if (const_ptr == 0) {
         ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, address, (u64)string_pointer_type.type_id);
         return;
@@ -52,7 +53,7 @@ static void string_type_destructor(const_vm_ptr cvm, u64 address) {
     CALL(pointer)->free(cvm, address, string_pointer_type.type_id);
 }
 
-static u64 string_free(const_vm_ptr cvm, u64 address) {
+static u64 string_pointer_free(const_vm_ptr cvm, u64 address) {
     if (cvm == 0 || *cvm == 0) {
         ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
         return FALSE;
@@ -61,7 +62,7 @@ static u64 string_free(const_vm_ptr cvm, u64 address) {
         ERROR_INVALID_ARGUMENT("address == %lld", address);
         return FALSE;
     }
-    string_type_destructor(cvm, address);
+    string_pointer_type_destructor(cvm, address);
     return TRUE;
 }
 
@@ -73,7 +74,7 @@ CVM_EXPORT void string_pointer_init(const_vm_ptr cvm) {
 }
 
 const virtual_string_pointer_methods PRIVATE_API(virtual_string_pointer_methods_definitions) = {
-    .free = string_free
+    .free = string_pointer_free
 };
 
 const virtual_string_pointer_methods* PRIVATE_API(string_pointer) = &PRIVATE_API(virtual_string_pointer_methods_definitions);

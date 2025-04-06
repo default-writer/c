@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 3, 2025 at 11:20:29 AM GMT+3
+ *   April 6, 2025 at 8:28:16 AM GMT+3
  *
  */
 /*
@@ -34,6 +34,8 @@
 
 #include "virtual/pointer/pointer_v1.h"
 #include "virtual/vm/vm_v1.h"
+
+#include "internal/pointer_type_v1.h"
 
 #define STACK_HANDLER_TYPE_SIZE sizeof(stack_handler_type)
 
@@ -70,13 +72,13 @@ static struct type_methods_definitions stack_type = {
 };
 
 static void stack_type_destructor(const_vm_ptr cvm, u64 address) {
-    const_void_ptr const_ptr = CALL(pointer)->read(cvm, address, stack_type.type_id);
+    const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, address, stack_type.type_id);
     if (const_ptr == 0) {
         ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, address, (u64)stack_type.type_id);
         return;
     }
     safe_void_ptr safe_ptr;
-    safe_ptr.const_ptr = const_ptr;
+    safe_ptr.const_ptr = const_ptr->data;
     void_ptr data_ptr = safe_ptr.ptr;
     stack_handler_ptr handler = data_ptr;
     handler->size = 0;
@@ -121,13 +123,13 @@ static u64 stack_release(const_vm_ptr cvm, u64 address) {
         ERROR_INVALID_ARGUMENT("address == %lld", address);
         return FALSE;
     }
-    const_void_ptr const_ptr = CALL(pointer)->read(cvm, address, stack_type.type_id);
+    const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, address, stack_type.type_id);
     if (const_ptr == 0) {
         ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, address, (u64)stack_type.type_id);
         return FALSE;
     }
     safe_void_ptr safe_ptr;
-    safe_ptr.const_ptr = const_ptr;
+    safe_ptr.const_ptr = const_ptr->data;
     void_ptr data_ptr = safe_ptr.ptr;
     stack_handler_ptr handler = data_ptr;
     handler->size = 0;
@@ -165,13 +167,13 @@ static u64 stack_push(const_vm_ptr cvm, u64 ptr_list, u64 address) {
         ERROR_INVALID_VALUE("ptr_list = %lld, address = %lld", ptr_list, address);
         return FALSE;
     }
-    const_void_ptr const_ptr = CALL(pointer)->read(cvm, ptr_list, stack_type.type_id);
+    const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, ptr_list, stack_type.type_id);
     if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, ptr_list == %lld, type_id == %lld", (const_void_ptr)const_ptr, ptr_list, (u64)stack_type.type_id);
+        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, ptr_list, (u64)stack_type.type_id);
         return FALSE;
     }
     safe_void_ptr safe_ptr;
-    safe_ptr.const_ptr = const_ptr;
+    safe_ptr.const_ptr = const_ptr->data;
     void_ptr data_ptr = safe_ptr.ptr;
     stack_handler_ptr handler = data_ptr;
     CALL(list)->push(&handler->list, (void_ptr)address);
@@ -188,15 +190,14 @@ static u64 stack_peek(const_vm_ptr cvm, u64 address) {
         ERROR_INVALID_ARGUMENT("address = %lld", address);
         return FALSE;
     }
-    const_void_ptr const_ptr = CALL(pointer)->read(cvm, address, stack_type.type_id);
+    const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, address, stack_type.type_id);
     if (const_ptr == 0) {
-        ERROR_INVALID_VALUE("const_ptr == %p, address == %lld, type_id == %lld", const_ptr, address, (u64)stack_type.type_id);
+        ERROR_INVALID_VALUE("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, address, (u64)stack_type.type_id);
         return FALSE;
     }
     safe_void_ptr safe_ptr;
-    safe_ptr.const_ptr = const_ptr;
+    safe_ptr.const_ptr = const_ptr->data;
     void_ptr data_ptr = safe_ptr.ptr;
-
     stack_handler_ptr handler = data_ptr;
     u64 stack_peek_ptr = (u64)CALL(list)->peek(&handler->list);
     return stack_peek_ptr;
@@ -215,13 +216,13 @@ static u64 stack_peekn(const_vm_ptr cvm, u64 address, u64 nelements) {
         ERROR_INVALID_ARGUMENT("nelements = %lld", nelements);
         return FALSE;
     }
-    const_void_ptr const_ptr = CALL(pointer)->read(cvm, address, stack_type.type_id);
+    const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, address, stack_type.type_id);
     if (const_ptr == 0) {
-        ERROR_INVALID_VALUE("const_ptr == %p, address == %lld, type_id == %lld", const_ptr, address, (u64)stack_type.type_id);
+        ERROR_INVALID_VALUE("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, address, (u64)stack_type.type_id);
         return FALSE;
     }
     safe_void_ptr safe_ptr;
-    safe_ptr.const_ptr = const_ptr;
+    safe_ptr.const_ptr = const_ptr->data;
     void_ptr data_ptr = safe_ptr.ptr;
     stack_handler_ptr src_handler = data_ptr;
     u64 size = src_handler->size;
@@ -234,9 +235,9 @@ static u64 stack_peekn(const_vm_ptr cvm, u64 address, u64 nelements) {
         return FALSE;
     }
     u64 dst = stack_alloc_internal(cvm);
-    const_void_ptr const_dst_ptr = CALL(pointer)->read(cvm, dst, stack_type.type_id);
+    const_pointer_ptr dst_const_ptr = CALL(pointer)->read(cvm, dst, stack_type.type_id);
     safe_void_ptr void_dst_ptr;
-    void_dst_ptr.const_ptr = const_dst_ptr;
+    void_dst_ptr.const_ptr = dst_const_ptr->data;
     void_ptr dst_ptr = void_dst_ptr.ptr;
     stack_handler_ptr dst_handler = dst_ptr;
     u64 i = nelements;
@@ -259,13 +260,13 @@ static u64 stack_pop(const_vm_ptr cvm, u64 address) {
         ERROR_INVALID_ARGUMENT("address = %lld", address);
         return FALSE;
     }
-    const_void_ptr const_ptr = CALL(pointer)->read(cvm, address, stack_type.type_id);
+    const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, address, stack_type.type_id);
     if (const_ptr == 0) {
         ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, address, (u64)stack_type.type_id);
         return FALSE;
     }
     safe_void_ptr safe_ptr;
-    safe_ptr.const_ptr = const_ptr;
+    safe_ptr.const_ptr = const_ptr->data;
     void_ptr data_ptr = safe_ptr.ptr;
     stack_handler_ptr handler = data_ptr;
     if (handler->size == 0) {
@@ -289,13 +290,13 @@ static u64 stack_popn(const_vm_ptr cvm, u64 address, u64 nelements) {
         ERROR_INVALID_ARGUMENT("nelements = %lld", nelements);
         return FALSE;
     }
-    const_void_ptr const_ptr = CALL(pointer)->read(cvm, address, stack_type.type_id);
+    const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, address, stack_type.type_id);
     if (const_ptr == 0) {
         ERROR_INVALID_POINTER("const_ptr = %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, address, (u64)stack_type.type_id);
         return FALSE;
     }
     safe_void_ptr src_void_ptr;
-    src_void_ptr.const_ptr = const_ptr;
+    src_void_ptr.const_ptr = const_ptr->data;
     void_ptr src_data_ptr = src_void_ptr.ptr;
     stack_handler_ptr src_handler = src_data_ptr;
     u64 size = src_handler->size;
@@ -308,11 +309,11 @@ static u64 stack_popn(const_vm_ptr cvm, u64 address, u64 nelements) {
         return FALSE;
     }
     u64 dst = stack_alloc_internal(cvm);
-    const_void_ptr dst_const_data_ptr = CALL(pointer)->read(cvm, dst, stack_type.type_id);
+    const_pointer_ptr dst_const_ptr = CALL(pointer)->read(cvm, dst, stack_type.type_id);
     safe_void_ptr dst_void_ptr;
-    dst_void_ptr.const_ptr = dst_const_data_ptr;
+    dst_void_ptr.const_ptr = dst_const_ptr->data;
     void_ptr dst_data_ptr = dst_void_ptr.ptr;
-    stack_handler_ptr dst_handler = dst_data_ptr;
+    const stack_handler_ptr dst_handler = dst_data_ptr;
     u64 i = nelements;
     while (i-- > 0) {
         u64 stack_pop_ptr = (u64)CALL(list)->pop(&src_handler->list);
@@ -331,12 +332,12 @@ static u64 stack_size(const_vm_ptr cvm, u64 address) {
         ERROR_INVALID_ARGUMENT("address = %lld", address);
         return FALSE;
     }
-    const_void_ptr const_ptr = CALL(pointer)->read(cvm, address, stack_type.type_id);
+    const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, address, stack_type.type_id);
     if (const_ptr == 0) {
         ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, address, (u64)stack_type.type_id);
         return FALSE;
     }
-    const_stack_handler_ptr handler = const_ptr;
+    const_stack_handler_ptr handler = const_ptr->data;
     u64 size = handler->size;
     return size;
 }

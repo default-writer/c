@@ -1,6 +1,7 @@
 {
     "terminal.integrated.smoothScrolling": true,
     "terminal.integrated.cursorBlinking": true,
+    "terminal.integrated.mouseWheelZoom": true,
     "terminal.integrated.enableFileLinks": "on",
     "terminal.integrated.defaultProfile.linux": "bash",
     "terminal.integrated.profiles.linux": {
@@ -196,6 +197,7 @@
     "editor.matchBrackets": "near",
     "presentation-mode.active": {
         "commands": [],
+        "terminal.integrated.fontSize": 16,
         "editor.fontSize": 20,
         "editor.matchBrackets": "near",
         "editor.minimap.enabled": false,
@@ -251,7 +253,7 @@
                     "long": "Disable optimizations - include debug information.",
                     "buildType": "Debug",
                     "settings": {
-                        "CONFIG_GC": "1"
+                        "CONFIG_MEMORY_DEBUG_INFO": "1"
                     }
                 },
                 "release": {
@@ -463,6 +465,7 @@
     "search.seedWithNearestWord": true,
     "editor.cursorSmoothCaretAnimation": "on",
     "workbench.list.smoothScrolling": true,
+    "editor.mouseWheelZoom": true,
     "editor.mouseWheelScrollSensitivity": 1,
     "editor.smoothScrolling": true,
     "terminal.integrated.confirmOnKill": "never",

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 3, 2025 at 3:51:07 PM GMT+3
+ *   April 4, 2025 at 7:30:13 PM GMT+3
  *
  */
 /*
@@ -46,8 +46,9 @@
 #endif
 
 /* internal */
-#include "internal/internal_v1.h"
-#include "internal/private_v1.h"
+#include "internal/pointer_type_v1.h"
+#include "internal/virtual_pointer_type_v1.h"
+#include "internal/vm_type_v1.h"
 
 /* private */
 typedef struct vm_pointer* vm_pointer_ptr;

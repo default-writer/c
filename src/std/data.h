@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 3, 2025 at 3:30:17 PM GMT+3
+ *   April 5, 2025 at 4:38:31 AM GMT+3
  *
  */
 /*
@@ -80,7 +80,6 @@ typedef struct type_methods_definitions {
     type_destructor destructor;
 } type_methods_definitions_type;
 typedef struct known_types {
-    known_types_ptr next;
     type_methods_definitions_ptr methods;
 } known_types_type;
 typedef struct pointer_public {
@@ -136,16 +135,16 @@ enum type {
     TYPE_NULL = 0,
     /* value used for pointer type - ref */
     TYPE_DATA = 1,
-    /* value used for string type - string */
-    TYPE_STRING = 2,
-    /* value used for string ref type - string ref */
-    TYPE_STRING_POINTER = 3,
     /* value used for file type - file */
-    TYPE_FILE = 4,
-    /* value used for stack type - stack */
-    TYPE_STACK = 5,
+    TYPE_FILE = 2,
     /* value used for object type - object */
-    TYPE_OBJECT = 6,
+    TYPE_OBJECT = 3,
+    /* value used for stack type - stack */
+    TYPE_STACK = 4,
+    /* value used for string type - string */
+    TYPE_STRING = 5,
+    /* value used for string ref type - string ref */
+    TYPE_STRING_POINTER = 6,
     /* value used for user type - user (id: +0, +1, +2, +3, ...) */
     TYPE_USER = 7,
 };

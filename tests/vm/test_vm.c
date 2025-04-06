@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 3, 2025 at 11:18:57 AM GMT+3
+ *   April 5, 2025 at 8:14:09 PM GMT+3
  *
  */
 /*
@@ -109,6 +109,9 @@ RX_TEST_CASE(tests_vm_v1, test_vm_copy_safe, .fixture = test_fixture_pointer) {
     u64 virtual_ptr = CALL(pointer)->copy(cvm, data, size, size - 1, TYPE_USER);
     RX_ASSERT(virtual_ptr != 0);
     CALL(string)->free(cvm, virtual_ptr);
+#ifndef USE_GC
+    CALL(user)->free(cvm, virtual_ptr);
+#endif
 }
 
 /* test init */
@@ -122,6 +125,7 @@ RX_TEST_CASE(tests_vm_v1, test_vm_read__address, .fixture = test_fixture_pointer
     RX_ASSERT(virtual_ptr != 0);
     RX_ASSERT(ref == 0);
     CALL(pointer)->free(cvm, address, TYPE_DATA);
+    CALL(pointer)->free(cvm, virtual_ptr, TYPE_DATA);
 }
 
 /* test init */
@@ -134,6 +138,9 @@ RX_TEST_CASE(tests_vm_v1, test_vm_read_type, .fixture = test_fixture_pointer) {
     u64 type_id = CALL(virtual)->type(cvm, address);
     RX_ASSERT(virtual_ptr != 0);
     RX_ASSERT(type_id == 0);
+#ifndef USE_GC
+    CALL(data)->free(cvm, virtual_ptr);
+#endif
     CALL(pointer)->free(cvm, address, TYPE_DATA);
 }
 
@@ -282,6 +289,9 @@ RX_TEST_CASE(tests_vm_v1, test_pointer_alloc_gc_destroy_free_unsafe, .fixture = 
     const_vm_ptr cvm = CALL(vm)->init(8);
     u64 ptr_id = CALL(virtual)->alloc(cvm, 8, TYPE_DATA);
     CALL(vm)->gc(cvm);
+#ifndef USE_GC
+    CALL(data)->free(cvm, ptr_id);
+#endif
     CALL(vm)->destroy(cvm);
     CALL(vm)->release(cvm, ptr_id);
     CALL(data)->free(cvm, ptr_id);
@@ -303,6 +313,9 @@ RX_TEST_CASE(tests_vm_v1, test_pointer_alloc_release_0gc_destroy_read_type, .fix
 RX_TEST_CASE(tests_vm_v1, test_pointer_alloc_gc_destroy_read_type_release_0, .fixture = test_pointer_fixture) {
     const_vm_ptr cvm = CALL(vm)->init(8);
     u64 ptr_id = CALL(virtual)->alloc(cvm, 8, TYPE_DATA);
+#ifndef USE_GC
+    CALL(pointer)->free(cvm, ptr_id, TYPE_DATA);
+#endif
     CALL(vm)->gc(cvm);
     CALL(vm)->destroy(cvm);
     const_pointer_ptr data_ptr = CALL(virtual)->read(cvm, ptr_id, TYPE_DATA);
@@ -315,6 +328,9 @@ RX_TEST_CASE(tests_vm_v1, test_pointer_alloc_destroy_read_type_release_0, .fixtu
     const_vm_ptr cvm = CALL(vm)->init(8);
     u64 ptr_id = CALL(virtual)->alloc(cvm, 8, TYPE_DATA);
     CALL(vm)->release(cvm, ptr_id);
+#ifndef USE_GC
+    CALL(pointer)->free(cvm, ptr_id, TYPE_DATA);
+#endif
     CALL(vm)->destroy(cvm);
     const_pointer_ptr data_ptr = CALL(virtual)->read(cvm, ptr_id, TYPE_DATA);
     RX_ASSERT(data_ptr == 0);
@@ -325,6 +341,9 @@ RX_TEST_CASE(tests_vm_v1, test_pointer_alloc_destroy_read_type_release_0, .fixtu
 RX_TEST_CASE(tests_vm_v1, test_pointer_alloc_alloc_ref_write_gc_destroy_read_type_release_0, .fixture = test_pointer_fixture) {
     const_vm_ptr cvm = CALL(vm)->init(8);
     u64 ptr_id = CALL(virtual)->alloc(cvm, 8, TYPE_DATA);
+#ifndef USE_GC
+    CALL(pointer)->free(cvm, ptr_id, TYPE_DATA);
+#endif
     CALL(vm)->release(cvm, ptr_id);
     CALL(vm)->gc(cvm);
     CALL(vm)->destroy(cvm);
