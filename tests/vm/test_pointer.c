@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 6, 2025 at 7:17:01 AM GMT+3
+ *   April 6, 2025 at 10:41:09 AM GMT+3
  *
  */
 /*
@@ -415,6 +415,20 @@ RX_TEST_CASE(tests_pointer_v1, test_data_size_error_1, .fixture = test_fixture) 
     const_vm_ptr cvm = rx->ctx;
     u64 string_size = CALL(data)->size(cvm, 1);
     RX_ASSERT(string_size == 0);
+}
+
+/* test init */
+RX_TEST_CASE(tests_pointer_v1, test_data_free, .fixture = test_fixture) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr cvm = rx->ctx;
+    u64 char_ptr = CALL(string)->load(cvm, "/");
+    CALL(error)->clear();
+    CALL(data)->free(cvm, char_ptr);
+    u64 error_count = CALL(error)->count();
+    RX_ASSERT(error_count != 0);
+#ifndef USE_GC
+    CALL(string)->free(cvm, char_ptr);
+#endif
 }
 
 /* test init */
@@ -3506,6 +3520,32 @@ RX_TEST_CASE(pointer_tests, test_pointer_init_string_load_9, .fixture = test_fix
     for (int i = 0; i < 10; i++) {
         CALL(string)->free(cvm, ids[i]);
     }
+}
+
+/* test init */
+RX_TEST_CASE(pointer_tests, test_vm_dump_0, .fixture = test_fixture_pointer) {
+    CALL(error)->clear();
+#ifdef USE_MEMORY_DEBUG_INFO
+    CALL(vm)->dump(0);
+    u64 error_count = CALL(error)->count();
+    RX_ASSERT(error_count != 0);
+#else
+    u64 error_count = CALL(error)->count();
+    RX_ASSERT(error_count == 0);
+#endif
+}
+
+/* test init */
+RX_TEST_CASE(pointer_tests, test_vm_dump_ref_0, .fixture = test_fixture_pointer) {
+    CALL(error)->clear();
+#ifdef USE_MEMORY_DEBUG_INFO
+    CALL(vm)->dump_ref(0);
+    u64 error_count = CALL(error)->count();
+    RX_ASSERT(error_count != 0);
+#else
+    u64 error_count = CALL(error)->count();
+    RX_ASSERT(error_count == 0);
+#endif
 }
 
 /* test init */

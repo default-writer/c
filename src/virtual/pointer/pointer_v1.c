@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 6, 2025 at 6:17:30 AM GMT+3
+ *   April 6, 2025 at 10:33:05 AM GMT+3
  *
  */
 /*
@@ -209,12 +209,6 @@ static const_void_ptr pointer_read(const_vm_ptr cvm, u64 address, u64 type_id) {
         ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, address, type_id);
         return NULL_PTR;
     }
-#ifdef USE_MEMORY_DEBUG_INFO
-    if (const_ptr->guard != 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr->data, address, type_id);
-        return NULL_PTR;
-    }
-#endif
     return const_ptr;
 }
 
