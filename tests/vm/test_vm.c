@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 7, 2025 at 8:39:25 PM GMT+3
+ *   April 7, 2025 at 9:24:11 PM GMT+3
  *
  */
 /*
@@ -44,7 +44,6 @@
 #include "virtual/vm/vm_v1.h"
 
 #include "internal/pointer_type_v1.h"
-#include "internal/string_reference_type_v1.h"
 
 #define TYPE_USER_STACK (TYPE_USER + 1)
 
@@ -242,7 +241,6 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_page_2, .fixture = test_clean_fixture) {
         CALL(string)->load(cvm, "string8\n"),
         CALL(string)->load(cvm, "string9_page2\n"),
     };
-    CALL(vm)->dump(cvm);
     CALL(vm)->dump_ref(cvm);
     u64 length = (sizeof(string_ptr) / sizeof(string_ptr[0]));
     for (u64 i = 0; i < length; i++) {
@@ -266,13 +264,13 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump, .fixture = test_clean_fixture) {
         CALL(string)->load(cvm, "ab\nabc\n")
     };
     parse_text(cvm, text_string_ptr[1]);
-    CALL(vm)->dump(cvm);
+    CALL(vm)->dump_ref(cvm);
     const_vm_ptr debug_cvm = CALL(vm)->init(8);
     u64 text_size = CALL(string)->size(cvm, text_string_ptr[1]);
     const_void_ptr data = CALL(string)->unsafe(cvm, text_string_ptr[1]);
     u64 debug_text_string_ptr = CALL(pointer)->copy(debug_cvm, data, text_size + 1, 0, TYPE_STRING);
     parse_text(debug_cvm, debug_text_string_ptr);
-    CALL(vm)->dump(debug_cvm);
+    CALL(vm)->dump_ref(debug_cvm);
 #ifndef USE_GC
     for (u64 i = 0; i < sizeof(text_string_ptr) / sizeof(text_string_ptr[0]); i++) {
         CALL(string)->free(cvm, text_string_ptr[i]);
@@ -297,7 +295,7 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_stack, .fixture = test_clean_fixture) {
     parse_text(cvm, text_string_ptr[1]);
     stack_ptr stack = 0;
     CALL(list)->init(&stack);
-    CALL(vm)->dump_stack(cvm, &stack);
+    CALL(vm)->dump_ref_stack(cvm, &stack);
     const_vm_ptr debug_cvm = CALL(vm)->init(8);
     u64 text_size = CALL(string)->size(cvm, text_string_ptr[1]);
     const_void_ptr data = CALL(string)->unsafe(cvm, text_string_ptr[1]);
@@ -305,7 +303,7 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_stack, .fixture = test_clean_fixture) {
     parse_text(debug_cvm, debug_text_string_ptr);
     stack_ptr debug_stack = 0;
     CALL(list)->init(&debug_stack);
-    CALL(vm)->dump_stack(debug_cvm, &debug_stack);
+    CALL(vm)->dump_ref_stack(debug_cvm, &debug_stack);
 #ifndef USE_GC
     for (u64 i = 0; i < sizeof(text_string_ptr) / sizeof(text_string_ptr[0]); i++) {
         CALL(string)->free(cvm, text_string_ptr[i]);
@@ -591,7 +589,7 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_memory_leak_1, .fixture = test_clean_fixt
         parse_text_memory_leak1(debug_cvm, debug_text_string_ptr);
         CALL(string)->free(debug_cvm, debug_text_string_ptr);
 
-        CALL(vm)->dump(debug_cvm);
+        CALL(vm)->dump_ref(debug_cvm);
         stack_ptr debug_cvm_stack = 0;
         CALL(list)->init(&debug_cvm_stack);
         CALL(vm)->dump_ref_stack(debug_cvm, &debug_cvm_stack);
@@ -600,7 +598,7 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_memory_leak_1, .fixture = test_clean_fixt
         parse_text(cvm, text_string_ptr);
         CALL(string)->free(cvm, text_string_ptr);
 
-        CALL(vm)->dump(cvm);
+        CALL(vm)->dump_ref(cvm);
         stack_ptr cvm_stack = 0;
         CALL(list)->init(&cvm_stack);
         CALL(vm)->dump_ref_stack(cvm, &cvm_stack);
@@ -658,7 +656,7 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_memory_leak_2, .fixture = test_clean_fixt
         parse_text_memory_leak2(debug_cvm, debug_text_string_ptr);
         CALL(string)->free(debug_cvm, debug_text_string_ptr);
 
-        CALL(vm)->dump(debug_cvm);
+        CALL(vm)->dump_ref(debug_cvm);
         stack_ptr debug_cvm_stack = 0;
         CALL(list)->init(&debug_cvm_stack);
         CALL(vm)->dump_ref_stack(debug_cvm, &debug_cvm_stack);
@@ -667,7 +665,7 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_memory_leak_2, .fixture = test_clean_fixt
         parse_text(cvm, text_string_ptr);
         CALL(string)->free(cvm, text_string_ptr);
 
-        CALL(vm)->dump(cvm);
+        CALL(vm)->dump_ref(cvm);
         stack_ptr cvm_stack = 0;
         CALL(list)->init(&cvm_stack);
         CALL(vm)->dump_ref_stack(cvm, &cvm_stack);
@@ -700,18 +698,10 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_memory_leak_2, .fixture = test_clean_fixt
 }
 
 /* test init */
-RX_TEST_CASE(tests_vm_v1, test_vm_dump_stack_0, .fixture = test_clean_fixture) {
+RX_TEST_CASE(tests_vm_v1, test_vm_dump_ref_0, .fixture = test_clean_fixture) {
     const_vm_ptr cvm = CALL(vm)->init(8);
     stack_ptr stack = 0;
-    CALL(list)->init(&stack);
-    CALL(vm)->dump_stack(cvm, &stack);
-    void_ptr current = CALL(list)->peek(&stack);
-    RX_ASSERT(current == 0);
-#ifndef USE_GC
-#else
-    CALL(vm)->gc(cvm);
-#endif
-    CALL(list)->destroy(&stack);
+    CALL(vm)->dump_ref(cvm);
     CALL(vm)->destroy(cvm);
 }
 
