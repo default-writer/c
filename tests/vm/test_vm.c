@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 7, 2025 at 7:35:59 PM GMT+3
+ *   April 7, 2025 at 7:40:53 PM GMT+3
  *
  */
 /*
@@ -994,16 +994,10 @@ static void parse_text_memory_leak1(const_vm_ptr cvm, u64 text_string_ptr) {
         CALL(env)->puts(cvm, pattern_ptr);
         u64 size = CALL(string)->size(cvm, pattern_ptr);
         u64 string_pointer_ptr = 0;
-        u64 match_ptr = 0;
         u64 current_ptr = string_ptr;
-        u64 current_string_pointer_ptr = 0;
-        while ((current_string_pointer_ptr = CALL(string)->strchr(cvm, current_ptr, pattern_ptr)) != 0) {
-            string_pointer_ptr = current_string_pointer_ptr;
-            match_ptr = CALL(string)->match(cvm, current_string_pointer_ptr, pattern_ptr);
+        while ((string_pointer_ptr = CALL(string)->strchr(cvm, current_ptr, pattern_ptr)) != 0) {
+            u64 match_ptr = CALL(string)->match(cvm, string_pointer_ptr, pattern_ptr);
             if (match_ptr == 0) {
-                // direct memory leak: skips pointer free for string_pointer_ptr variable
-                // CALL(list)->push(memory_leak_stack, (void_ptr)string_pointer_ptr);
-                // TODO: UNSET MEMORY LEAK HERE
                 // CALL(string)->free(cvm, string_pointer_ptr);
                 // CALL(string_pointer)->free(cvm, string_pointer_ptr);
                 CALL(string)->free(cvm, string_ptr);
@@ -1011,9 +1005,6 @@ static void parse_text_memory_leak1(const_vm_ptr cvm, u64 text_string_ptr) {
                 CALL(string)->free(cvm, pattern_ptr);
                 CALL(string_pointer)->free(cvm, pattern_ptr);
                 break;
-            } else {
-                // indirect memory leak: overwrites pointer address for match_ptr variable
-                // CALL(list)->push(memory_leak_stack, (void_ptr)match_ptr);
             }
             if (CALL(string)->lessthan(cvm, string_pointer_ptr, match_ptr)) {
                 u64 match_start_ptr = CALL(string)->left(cvm, match_ptr, size);
@@ -1032,10 +1023,6 @@ static void parse_text_memory_leak1(const_vm_ptr cvm, u64 text_string_ptr) {
             CALL(string)->free(cvm, string_pointer_ptr);
             CALL(string_pointer)->free(cvm, string_pointer_ptr);
             current_ptr = match_ptr;
-        }
-        if (match_ptr != 0 && current_ptr != match_ptr) {
-            // indirect memory leak: overwrites pointer address for match_ptr variable
-            // CALL(list)->push(memory_leak_stack, (void_ptr)match_ptr);
         }
 #ifndef USE_GC
         CALL(string)->free(cvm, string_ptr);
