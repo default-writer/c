@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 4, 2025 at 7:30:13 PM GMT+3
+ *   April 7, 2025 at 10:20:43 AM GMT+3
  *
  */
 /*
@@ -66,7 +66,7 @@ static const_vm_ptr virtual_init(u64 size);
 static void virtual_destroy(const_vm_ptr cvm);
 
 static u64 virtual_alloc(const_vm_ptr cvm, u64 size, u64 type_id);
-static const_pointer_ptr virtual_read(const_vm_ptr cvm, u64 address, u64 type_id);
+static const_pointer_ptr virtual_read(const_vm_ptr cvm, u64 address);
 static u64 virtual_type(const_vm_ptr cvm, u64 address);
 static u64 virtual_free(const_vm_ptr cvm, u64 address);
 
@@ -206,7 +206,7 @@ static void virtual_destroy(const_vm_ptr cvm) {
     *safe_ptr.ptr = 0;
 }
 
-static const_pointer_ptr virtual_read(const_vm_ptr cvm, u64 address, u64 type_id) {
+static const_pointer_ptr virtual_read(const_vm_ptr cvm, u64 address) {
     if (cvm == 0 || *cvm == 0) {
         ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
         return NULL_PTR;
@@ -215,30 +215,20 @@ static const_pointer_ptr virtual_read(const_vm_ptr cvm, u64 address, u64 type_id
         ERROR_INVALID_ARGUMENT("address == %lld", address);
         return NULL_PTR;
     }
-    if (type_id == 0) {
-        ERROR_INVALID_ARGUMENT("type_id == %lld", type_id);
-        return NULL_PTR;
-    }
     const_virtual_pointer_ptr const_vptr = (*cvm)->next;
     const_pointer_ptr const_ptr = virtual_read_internal(const_vptr, address);
     if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, address, type_id);
+        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld", (const_void_ptr)const_ptr, address);
         return FALSE;
     }
+#ifdef USE_MEMORY_DEBUG_INFO
     safe_pointer_ptr safe_ptr;
     safe_ptr.const_ptr = const_ptr;
     const_pointer_ptr ptr = safe_ptr.ptr;
-    const_pointer_public_ptr public_ptr = &ptr->public;
-    u64 type = public_ptr->type;
-    if (type != type_id) {
-        ERROR_INVALID_TYPE_ID("type == %lld, type_id == %lld", type, type_id);
-        return NULL_PTR;
-    }
-#ifdef USE_MEMORY_DEBUG_INFO
     const_virtual_pointer_ptr vptr = ptr->vptr;
     printf("  v.: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)vptr);
 #endif
-    return ptr;
+    return const_ptr;
 }
 
 static u64 virtual_type(const_vm_ptr cvm, u64 address) {

@@ -260,8 +260,8 @@ endif()
 
 set(LIB_SYS_SOURCE
     src/system/api/api_v1.c
-    src/system/os/os_v1.c
     src/system/error/error_v1.c
+    src/system/hashtable/hashtable_v1.c
     src/system/info/info_v1.c
     src/system/list/list_v1.c
     src/system/memory/memory_v1.c
@@ -281,7 +281,6 @@ set(LIB_VM_SOURCE
     src/virtual/types/user/user_v1.c
     src/virtual/virtual/virtual_v1.c
     src/virtual/vm/vm_v1.c
-    src/virtual/hashtable/hashtable_v1.c
     src/virtual/env/env_v1.c
 )
 

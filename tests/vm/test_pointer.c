@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 6, 2025 at 9:17:00 PM GMT+3
+ *   April 7, 2025 at 10:22:43 AM GMT+3
  *
  */
 /*
@@ -27,11 +27,11 @@
 #include "test_pointer.h"
 
 #include "system/error/error_v1.h"
+#include "system/hashtable/hashtable_v1.h"
 #include "system/memory/memory_v1.h"
 #include "system/os/os_v1.h"
 
 #include "virtual/env/env_v1.h"
-#include "virtual/hashtable/hashtable_v1.h"
 #include "virtual/pointer/pointer_v1.h"
 #include "virtual/types/data/data_v1.h"
 #include "virtual/types/file/file_v1.h"
@@ -51,6 +51,7 @@
 /* definition */
 CSYS_EXPORT extern const system_memory_methods* PRIVATE_API(memory);
 CSYS_EXPORT extern const system_os_methods* PRIVATE_API(os);
+CSYS_EXPORT extern const system_hashtable_methods* PRIVATE_API(hashtable);
 
 /* definition */
 CVM_EXPORT extern const virtual_vm_methods* PRIVATE_API(vm);
@@ -59,7 +60,6 @@ CVM_EXPORT extern const virtual_methods* PRIVATE_API(virtual);
 CVM_EXPORT extern const virtual_system_methods* PRIVATE_API(system);
 CVM_EXPORT extern const virtual_pointer_methods* PRIVATE_API(pointer);
 CVM_EXPORT extern const virtual_env_methods* PRIVATE_API(env);
-CVM_EXPORT extern const virtual_hashtable_methods* PRIVATE_API(hashtable);
 CVM_EXPORT extern const virtual_data_methods* PRIVATE_API(data);
 CVM_EXPORT extern const virtual_file_methods* PRIVATE_API(file);
 CVM_EXPORT extern const virtual_object_methods* PRIVATE_API(object);
@@ -77,12 +77,12 @@ typedef struct test_data {
 static const virtual_methods* virtual_methods_ptr;
 
 /* mocks */
-static const_pointer_ptr mock_virtual_read_zero(const_vm_ptr cvm, u64 address, u64 type_id);
+static const_pointer_ptr mock_virtual_read_zero(const_vm_ptr cvm, u64 address);
 
 static const virtual_env_methods* temp_api;
 
 /* implementation */
-static const_pointer_ptr mock_virtual_read_zero(const_vm_ptr cvm, u64 address, u64 type_id) {
+static const_pointer_ptr mock_virtual_read_zero(const_vm_ptr cvm, u64 address) {
     return NULL_PTR;
 }
 
@@ -1464,69 +1464,6 @@ RX_TEST_CASE(tests_pointer_v1, test_list_popn_2, .fixture = test_fixture) {
 }
 
 /* test init */
-// RX_TEST_CASE(tests_pointer_v1, test_string_pointer_strchr_match_offset, .fixture = test_fixture) {
-//     TEST_DATA rx = (TEST_DATA)RX_DATA;
-//     const_vm_ptr cvm = rx->ctx;
-//     u64 list_ptr = CALL(stack)->alloc(cvm);
-//     u64 list_match_ptr = CALL(stack)->alloc(cvm);
-//     u64 string_ptr = CALL(string)->load(cvm, "a.bc.bb.ba.a");
-//     u64 pattern_ptr = CALL(string)->load(cvm, ".b");
-//     u64 string_pointer_ptr = 0;
-//     u64 match_ptr = string_ptr;
-//     u64 current_ptr = match_ptr;
-// #ifndef USE_GC
-//     // u64 last_match_ptr = 0;
-// #endif
-//     while ((string_pointer_ptr = CALL(string)->strchr(cvm, current_ptr, pattern_ptr)) != 0) {
-//         CALL(stack)->push(cvm, list_ptr, string_pointer_ptr);
-//         match_ptr = CALL(string)->match(cvm, string_pointer_ptr, pattern_ptr);
-//         CALL(stack)->push(cvm, list_match_ptr, match_ptr);
-//         current_ptr = match_ptr;
-// #ifndef USE_GC
-//         // if (current_ptr != 0) {
-//         //     last_match_ptr = current_ptr;
-//         // }
-// #endif
-//     }
-// #ifndef USE_GC
-//     // CALL(string_pointer)->free(cvm, last_match_ptr);
-// #endif
-//     u64 size = CALL(stack)->size(cvm, list_ptr);
-//     RX_ASSERT(size == 4);
-//     u64 string_ptr1 = CALL(stack)->pop(cvm, list_ptr);
-//     u64 string_ptr2 = CALL(stack)->pop(cvm, list_ptr);
-//     u64 string_ptr3 = CALL(stack)->pop(cvm, list_ptr);
-//     u64 string_ptr4 = CALL(stack)->pop(cvm, list_ptr);
-//     RX_ASSERT(strcmp(CALL(string)->unsafe(cvm, string_ptr1), ".a") == 0);
-//     RX_ASSERT(strcmp(CALL(string)->unsafe(cvm, string_ptr2), ".ba.a") == 0);
-//     RX_ASSERT(strcmp(CALL(string)->unsafe(cvm, string_ptr3), ".bb.ba.a") == 0);
-//     RX_ASSERT(strcmp(CALL(string)->unsafe(cvm, string_ptr4), ".bc.bb.ba.a") == 0);
-//     RX_ASSERT(CALL(stack)->size(cvm, list_ptr) == 0);
-//     u64 match_size = CALL(stack)->size(cvm, list_match_ptr);
-//     RX_ASSERT(match_size == 3);
-//     u64 string_match_ptr1 = CALL(stack)->pop(cvm, list_match_ptr);
-//     u64 string_match_ptr2 = CALL(stack)->pop(cvm, list_match_ptr);
-//     u64 string_match_ptr3 = CALL(stack)->pop(cvm, list_match_ptr);
-//     RX_ASSERT(strcmp(CALL(string)->unsafe(cvm, string_match_ptr1), "a.a") == 0);
-//     RX_ASSERT(strcmp(CALL(string)->unsafe(cvm, string_match_ptr2), "b.ba.a") == 0);
-//     RX_ASSERT(strcmp(CALL(string)->unsafe(cvm, string_match_ptr3), "c.bb.ba.a") == 0);
-//     RX_ASSERT(CALL(stack)->size(cvm, list_match_ptr) == 0);
-// #ifndef USE_GC
-//     CALL(string)->free(cvm, string_ptr1);
-//     CALL(string)->free(cvm, string_ptr2);
-//     CALL(string)->free(cvm, string_ptr3);
-//     CALL(string)->free(cvm, string_ptr4);
-//     CALL(string)->free(cvm, string_match_ptr1);
-//     CALL(string)->free(cvm, string_match_ptr2);
-//     CALL(string)->free(cvm, string_match_ptr3);
-//     CALL(string)->free(cvm, string_ptr);
-//     CALL(string)->free(cvm, pattern_ptr);
-//     CALL(stack)->free(cvm, list_match_ptr);
-//     CALL(stack)->free(cvm, list_ptr);
-// #endif
-// }
-
-/* test init */
 RX_TEST_CASE(tests_pointer_v1, test_string_pointer_strrchr_miss, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
@@ -2219,7 +2156,7 @@ RX_TEST_CASE(tests_pointer_v1, test_vm_string_load_file_alloc, .fixture = test_f
     const_vm_ptr cvm = rx->ctx;
     u64 file_path_ptr = CALL(string)->load(cvm, "data");
     u64 mode_ptr = CALL(string)->load(cvm, "rb");
-    const_pointer_ptr const_ptr = CALL(virtual)->read(cvm, file_path_ptr, TYPE_STRING);
+    const_pointer_ptr const_ptr = CALL(virtual)->read(cvm, file_path_ptr);
     safe_void_ptr safe_ptr;
     safe_ptr.const_ptr = const_ptr->data;
     u8* data_ptr = safe_ptr.ptr;
@@ -2793,7 +2730,7 @@ RX_TEST_CASE(tests_pointer_v1, test_vm_pointer_read_safe_alloc_safe_size_offset,
     const_vm_ptr cvm = rx->ctx;
     const char* src = "hello, world!";
     u64 address = CALL(string)->load(cvm, src);
-    const_pointer_ptr const_ptr = CALL(virtual)->read(cvm, address, TYPE_STRING);
+    const_pointer_ptr const_ptr = CALL(virtual)->read(cvm, address);
     safe_void_ptr safe_ptr;
     safe_ptr.const_ptr = const_ptr->data;
     u8* data_ptr = safe_ptr.ptr;
@@ -2860,7 +2797,7 @@ RX_TEST_CASE(tests_pointer_v1, test_vm_virtual_read_0, .fixture = test_fixture) 
 /* test init */
 RX_TEST_CASE(tests_pointer_v1, test_vm_virtual_read_type, .fixture = test_fixture) {
     const_vm_ptr cvm = 0;
-    CALL(virtual)->read(cvm, 0, 0);
+    CALL(virtual)->read(cvm, 0);
     RX_ASSERT(0 != 1);
 }
 
@@ -2868,7 +2805,7 @@ RX_TEST_CASE(tests_pointer_v1, test_vm_virtual_read_type, .fixture = test_fixtur
 RX_TEST_CASE(tests_pointer_v1, test_vm_virtual_read_type_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
-    CALL(virtual)->read(cvm, 0, 0);
+    CALL(virtual)->read(cvm, 0);
     RX_ASSERT(0 != 1);
 }
 
@@ -2876,7 +2813,7 @@ RX_TEST_CASE(tests_pointer_v1, test_vm_virtual_read_type_0, .fixture = test_fixt
 RX_TEST_CASE(tests_pointer_v1, test_vm_virtual_read_type_1_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
-    CALL(virtual)->read(cvm, 1, 0);
+    CALL(virtual)->read(cvm, 1);
     RX_ASSERT(0 != 1);
 }
 
@@ -6156,7 +6093,7 @@ static void parse_text(const_vm_ptr cvm, u64 text_string_ptr) {
         while ((string_pointer_ptr = CALL(string)->strchr(cvm, current_ptr, pattern_ptr)) != 0) {
             u64 match_ptr = CALL(string)->match(cvm, string_pointer_ptr, pattern_ptr);
             if (match_ptr == 0) {
-                CALL(string_pointer)->free(cvm, string_pointer_ptr); // should not be called string free
+                CALL(string_pointer)->free(cvm, string_pointer_ptr);
                 CALL(string)->free(cvm, string_ptr);
                 CALL(string_pointer)->free(cvm, string_ptr);
                 CALL(string)->free(cvm, pattern_ptr);

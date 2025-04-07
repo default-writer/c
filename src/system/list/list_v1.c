@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 3, 2025 at 11:18:56 AM GMT+3
+ *   April 7, 2025 at 4:29:29 AM GMT+3
  *
  */
 /*
@@ -26,6 +26,7 @@
 
 #include "list_v1.h"
 
+#include "system/hashtable/hashtable_v1.h"
 #include "system/memory/memory_v1.h"
 #include "system/os/os_v1.h"
 
@@ -41,10 +42,16 @@ static void_ptr list_pop(stack_ptr* current);
 static void_ptr list_peek(stack_ptr* current);
 static void list_init(stack_ptr* current);
 static void list_destroy(stack_ptr* current);
+static void list_diff(stack_ptr* stack1, stack_ptr* stack2, stack_ptr* compare);
+static void list_diff_left(stack_ptr* stack1, stack_ptr* stack2, stack_ptr* compare);
+static void list_diff_right(stack_ptr* stack1, stack_ptr* stack2, stack_ptr* compare);
 #ifdef USE_MEMORY_DEBUG_INFO
 static void list_print_head(stack_ptr* current);
 static void list_print(stack_ptr* current);
 #endif
+
+/* internal */
+static void list_diff_internal(stack_ptr* stack1, stack_ptr* stack2, stack_ptr* compare1, stack_ptr* compare2);
 
 /* ptr is not 0 */
 static stack_ptr list_next(stack_ptr ptr) {
@@ -131,6 +138,27 @@ static void list_init(stack_ptr* current) {
     *current = CALL(os)->calloc(1, STACK_ELEMENT_TYPE_SIZE);
 }
 
+static void list_diff(stack_ptr* stack1, stack_ptr* stack2, stack_ptr* compare) {
+    if (stack1 == 0 || *stack1 == 0 || stack2 == 0 || *stack2 == 0 || compare == 0 || *compare == 0) {
+        return;
+    }
+    list_diff_internal(stack1, stack2, compare, compare);
+}
+
+static void list_diff_left(stack_ptr* stack1, stack_ptr* stack2, stack_ptr* compare) {
+    if (stack1 == 0 || *stack1 == 0 || stack2 == 0 || *stack2 == 0 || compare == 0 || *compare == 0) {
+        return;
+    }
+    list_diff_internal(stack1, stack2, compare, NULL_PTR);
+}
+
+static void list_diff_right(stack_ptr* stack1, stack_ptr* stack2, stack_ptr* compare) {
+    if (stack1 == 0 || *stack1 == 0 || stack2 == 0 || *stack2 == 0 || compare == 0 || *compare == 0) {
+        return;
+    }
+    list_diff_internal(stack1, stack2, NULL_PTR, compare);
+}
+
 /* destroys the memory stack */
 static void list_destroy(stack_ptr* current) {
     if (current == 0 || *current == 0) {
@@ -184,6 +212,54 @@ static void list_print(stack_ptr* current) {
 
 #endif
 
+/* internal */
+static void list_diff_internal(stack_ptr* stack1, stack_ptr* stack2, stack_ptr* compare1, stack_ptr* compare2) {
+    u64 ptr1 = 0;
+    u64 ptr2 = 0;
+    u64 forward_ptr1 = 0;
+    u64 forward_ptr2 = 0;
+    hashtable_ptr ht1 = CALL(hashtable)->init();
+    stack_ptr stack1_current = *stack1;
+    while (stack1_current != NULL_PTR) {
+        ptr1 = (u64)stack1_current->data;
+        stack1_current = stack1_current->next;
+        if (CALL(hashtable)->get(ht1, ptr1) == NULL_PTR) {
+            CALL(hashtable)->insert(ht1, ptr1, (void_ptr)ptr1);
+        }
+    }
+    stack1_current = *stack1;
+    hashtable_ptr ht2 = CALL(hashtable)->init();
+    stack_ptr stack2_current = *stack2;
+    while (stack2_current != NULL_PTR) {
+        ptr2 = (u64)stack2_current->data;
+        stack2_current = stack2_current->next;
+        if (CALL(hashtable)->get(ht2, ptr2) == NULL_PTR) {
+            CALL(hashtable)->insert(ht2, ptr2, (void_ptr)ptr2);
+        }
+    }
+    stack2_current = *stack2;
+    if (compare1 != 0 && *compare1 != 0) {
+        while (stack1_current->next != NULL_PTR) {
+            ptr1 = (u64)stack1_current->data;
+            stack1_current = stack1_current->next;
+            if (CALL(hashtable)->get(ht2, ptr1) == NULL_PTR) {
+                CALL(list)->push(compare1, (void_ptr)ptr1);
+            }
+        }
+    }
+    if (compare2 != 0 && *compare2 != 0) {
+        while (stack2_current->next != NULL_PTR) {
+            ptr2 = (u64)stack2_current->data;
+            stack2_current = stack2_current->next;
+            if (CALL(hashtable)->get(ht1, ptr2) == NULL_PTR) {
+                CALL(list)->push(compare2, (void_ptr)ptr2);
+            }
+        }
+    }
+    CALL(hashtable)->destroy(ht1);
+    CALL(hashtable)->destroy(ht2);
+}
+
 /* public */
 
 const system_list_methods PRIVATE_API(system_list_methods_definitions) = {
@@ -194,6 +270,9 @@ const system_list_methods PRIVATE_API(system_list_methods_definitions) = {
     .push = list_push,
     .pop = list_pop,
     .peek = list_peek,
+    .diff = list_diff,
+    .diff_left = list_diff_left,
+    .diff_right = list_diff_right,
 #ifdef USE_MEMORY_DEBUG_INFO
     .print_head = list_print_head,
     .print = list_print

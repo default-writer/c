@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 2, 2025 at 10:57:19 AM GMT+3
+ *   April 7, 2025 at 3:40:23 AM GMT+3
  *
  */
 /*
@@ -32,10 +32,8 @@
 #define USING_STD_API
 #include "std/api.h"
 
-#include "virtual/export.h"
-
 #include "virtual/env/env_v1.h"
-#include "virtual/hashtable/hashtable_v1.h"
+#include "virtual/export.h"
 #include "virtual/pointer/pointer_v1.h"
 #include "virtual/types/data/data_v1.h"
 #include "virtual/types/file/file_v1.h"
@@ -52,7 +50,6 @@ CVM_EXPORT extern const virtual_vm_methods* PUBLIC_API(vm);
 CVM_EXPORT extern const virtual_methods* PUBLIC_API(virtual);
 CVM_EXPORT extern const virtual_pointer_methods* PUBLIC_API(pointer);
 CVM_EXPORT extern const virtual_env_methods* PUBLIC_API(env);
-CVM_EXPORT extern const virtual_hashtable_methods* PUBLIC_API(hashtable);
 CVM_EXPORT extern const virtual_data_methods* PUBLIC_API(data);
 CVM_EXPORT extern const virtual_file_methods* PUBLIC_API(file);
 CVM_EXPORT extern const virtual_object_methods* PUBLIC_API(object);

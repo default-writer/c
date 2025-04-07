@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 2, 2025 at 4:31:09 PM GMT+3
+ *   April 7, 2025 at 3:31:54 AM GMT+3
  *
  */
 /*
@@ -137,7 +137,7 @@ void hashtable_destroy(hashtable_ptr ht) {
 }
 
 /* public */
-const virtual_hashtable_methods PRIVATE_API(virtual_hashtable_methods_definitions) = {
+const system_hashtable_methods PRIVATE_API(system_hashtable_methods_definitions) = {
     .init = hashtable_init,
     .insert = hashtable_insert,
     .get = hashtable_get,
@@ -145,7 +145,7 @@ const virtual_hashtable_methods PRIVATE_API(virtual_hashtable_methods_definition
     .destroy = hashtable_destroy
 };
 
-const virtual_hashtable_methods* PRIVATE_API(hashtable) = &PRIVATE_API(virtual_hashtable_methods_definitions);
-const virtual_hashtable_methods* CALL(hashtable) {
+const system_hashtable_methods* PRIVATE_API(hashtable) = &PRIVATE_API(system_hashtable_methods_definitions);
+const system_hashtable_methods* CALL(hashtable) {
     return PRIVATE_API(hashtable);
 }

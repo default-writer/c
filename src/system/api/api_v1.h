@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 28, 2025 at 3:58:24 PM GMT+3
+ *   April 7, 2025 at 3:39:59 AM GMT+3
  *
  */
 /*
@@ -35,6 +35,7 @@
 #include "system/export.h"
 
 #include "system/error/error_v1.h"
+#include "system/hashtable/hashtable_v1.h"
 #include "system/info/info_v1.h"
 #include "system/list/list_v1.h"
 #include "system/memory/memory_v1.h"
@@ -48,5 +49,6 @@ CSYS_EXPORT extern const system_list_methods* PUBLIC_API(list);
 CSYS_EXPORT extern const system_memory_methods* PUBLIC_API(memory);
 CSYS_EXPORT extern const system_options_methods* PUBLIC_API(options);
 CSYS_EXPORT extern const system_os_methods* PUBLIC_API(os);
+CSYS_EXPORT extern const system_hashtable_methods* PUBLIC_API(hashtable);
 
 #endif /* _SYSTEM_API_ */

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 2, 2025 at 7:41:04 AM GMT+3
+ *   April 7, 2025 at 3:39:59 AM GMT+3
  *
  */
 /*
@@ -41,10 +41,6 @@ PUBLIC const virtual_pointer_methods* PUBLIC_API(pointer) {
 
 PUBLIC const virtual_env_methods* PUBLIC_API(env) {
     return CALL(env);
-}
-
-PUBLIC const virtual_hashtable_methods* PUBLIC_API(hashtable) {
-    return CALL(hashtable);
 }
 
 PUBLIC const virtual_data_methods* PUBLIC_API(data) {

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 3, 2025 at 11:18:57 AM GMT+3
+ *   April 7, 2025 at 4:29:47 AM GMT+3
  *
  */
 /*
@@ -43,6 +43,12 @@ typedef struct PRIVATE_API(system_list_methods) {
     void_ptr (*pop)(stack_ptr* current);
     /* peek item on current context (stack) */
     void_ptr (*peek)(stack_ptr* current);
+    /* gets the difference of current context (stack1, stack2) */
+    void (*diff)(stack_ptr* current1, stack_ptr* current2, stack_ptr* result);
+    /* gets the left difference of current context (stack1, stack2) */
+    void (*diff_left)(stack_ptr* stack1, stack_ptr* stack2, stack_ptr* cmp);
+    /* gets the right difference of current context (stack1, stack2) */
+    void (*diff_right)(stack_ptr* stack1, stack_ptr* stack2, stack_ptr* cmp);
     /* destroy context */
     void (*destroy)(stack_ptr* current);
 #ifdef USE_MEMORY_DEBUG_INFO

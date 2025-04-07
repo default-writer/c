@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 6, 2025 at 9:12:47 PM GMT+3
+ *   April 6, 2025 at 11:38:15 PM GMT+3
  *
  */
 /*
@@ -39,8 +39,8 @@ typedef struct PRIVATE_API(virtual_vm_methods) {
     void (*destroy)(const_vm_ptr cvm);
     void (*dump)(const_vm_ptr cvm);
     void (*dump_ref)(const_vm_ptr cvm);
-    void (*dump_stack)(const_vm_ptr cvm, u64 stack);
-    void (*dump_ref_stack)(const_vm_ptr cvm, u64 stack);
+    void (*dump_stack)(const_vm_ptr cvm, stack_ptr* stack);
+    void (*dump_ref_stack)(const_vm_ptr cvm, stack_ptr* stack);
 } virtual_vm_methods;
 
 /* definition */
