@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 7, 2025 at 1:11:12 PM GMT+3
+ *   April 7, 2025 at 6:12:57 PM GMT+3
  *
  */
 /*
@@ -155,8 +155,8 @@ RX_TEST_CASE(tests_vm_v1, test_vm_read__address, .fixture = test_fixture_pointer
     const_pointer_ptr ref = CALL(virtual)->read(cvm, address);
     RX_ASSERT(virtual_ptr != 0);
     RX_ASSERT(ref == 0);
-    CALL(pointer)->free(cvm, address, TYPE_DATA);
-    CALL(pointer)->free(cvm, virtual_ptr, TYPE_DATA);
+    CALL(pointer)->free(cvm, address);
+    CALL(pointer)->free(cvm, virtual_ptr);
 }
 
 /* test init */
@@ -172,7 +172,7 @@ RX_TEST_CASE(tests_vm_v1, test_vm_read_type, .fixture = test_fixture_pointer) {
 #ifndef USE_GC
     CALL(data)->free(cvm, virtual_ptr);
 #endif
-    CALL(pointer)->free(cvm, address, TYPE_DATA);
+    CALL(pointer)->free(cvm, address);
 }
 
 /* test init */
@@ -596,7 +596,7 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_memory_leak_2, .fixture = test_clean_fixt
         CALL(vm)->dump(debug_cvm);
         stack_ptr debug_cvm_stack = 0;
         CALL(list)->init(&debug_cvm_stack);
-        CALL(vm)->dump_stack(debug_cvm, &debug_cvm_stack);
+        CALL(vm)->dump_ref_stack(debug_cvm, &debug_cvm_stack);
 
         u64 text_string_ptr = CALL(string)->load(cvm, test_data[i]);
         parse_text(cvm, text_string_ptr);
@@ -605,7 +605,7 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_memory_leak_2, .fixture = test_clean_fixt
         CALL(vm)->dump(cvm);
         stack_ptr cvm_stack = 0;
         CALL(list)->init(&cvm_stack);
-        CALL(vm)->dump_stack(cvm, &cvm_stack);
+        CALL(vm)->dump_ref_stack(cvm, &cvm_stack);
 
         // get unmatched pointers (it is possible to got memory leaks in both A and B memory dumps)
         // in this particual scenario we can safely assume memory leaks are in (A \ B) set
@@ -624,7 +624,7 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_memory_leak_2, .fixture = test_clean_fixt
         while (current->next != NULL_PTR) {
             const_pointer_ptr const_ptr = (const_pointer_ptr)current->data;
             printf("  v^: %016llx\n", (u64)const_ptr);
-            CALL(pointer)->free(debug_cvm, const_ptr->public.address, TYPE_STRING_POINTER);
+            CALL(pointer)->free(debug_cvm, const_ptr->public.address);
             current = current->next;
         }
         CALL(list)->destroy(&memory_leak_stack);
@@ -753,7 +753,7 @@ RX_TEST_CASE(tests_vm_v1, test_pointer_alloc_virtual_alloc_release, .fixture = t
     u64 ptr_id = CALL(virtual)->alloc(cvm, 8, TYPE_USER + 1);
     const_pointer_ptr data_ptr = CALL(virtual)->read(cvm, ptr_id);
     RX_ASSERT(data_ptr != 0);
-    CALL(pointer)->free(cvm, ptr_id, TYPE_USER + 1);
+    CALL(pointer)->free(cvm, ptr_id);
     RX_ASSERT(data_ptr != 0);
     CALL(vm)->release(cvm, 0);
     CALL(vm)->gc(cvm);
@@ -778,7 +778,7 @@ RX_TEST_CASE(tests_vm_v1, test_pointer_alloc_gc_destroy_free_unsafe, .fixture = 
 RX_TEST_CASE(tests_vm_v1, test_pointer_alloc_release_0gc_destroy_read_type, .fixture = test_pointer_fixture) {
     const_vm_ptr cvm = CALL(vm)->init(8);
     u64 ptr_id = CALL(virtual)->alloc(cvm, 8, TYPE_DATA);
-    CALL(pointer)->free(cvm, ptr_id, TYPE_DATA);
+    CALL(pointer)->free(cvm, ptr_id);
     CALL(vm)->gc(cvm);
     CALL(vm)->destroy(cvm);
     const_pointer_ptr data_ptr = CALL(virtual)->read(cvm, ptr_id);
@@ -790,13 +790,13 @@ RX_TEST_CASE(tests_vm_v1, test_pointer_alloc_gc_destroy_read_type_release_0, .fi
     const_vm_ptr cvm = CALL(vm)->init(8);
     u64 ptr_id = CALL(virtual)->alloc(cvm, 8, TYPE_DATA);
 #ifndef USE_GC
-    CALL(pointer)->free(cvm, ptr_id, TYPE_DATA);
+    CALL(pointer)->free(cvm, ptr_id);
 #endif
     CALL(vm)->gc(cvm);
     CALL(vm)->destroy(cvm);
     const_pointer_ptr data_ptr = CALL(virtual)->read(cvm, ptr_id);
     RX_ASSERT(data_ptr == 0);
-    CALL(pointer)->free(cvm, ptr_id, TYPE_DATA);
+    CALL(pointer)->free(cvm, ptr_id);
 }
 
 /* test init */
@@ -805,12 +805,12 @@ RX_TEST_CASE(tests_vm_v1, test_pointer_alloc_destroy_read_type_release_0, .fixtu
     u64 ptr_id = CALL(virtual)->alloc(cvm, 8, TYPE_DATA);
     CALL(vm)->release(cvm, ptr_id);
 #ifndef USE_GC
-    CALL(pointer)->free(cvm, ptr_id, TYPE_DATA);
+    CALL(pointer)->free(cvm, ptr_id);
 #endif
     CALL(vm)->destroy(cvm);
     const_pointer_ptr data_ptr = CALL(virtual)->read(cvm, ptr_id);
     RX_ASSERT(data_ptr == 0);
-    CALL(pointer)->free(cvm, ptr_id, TYPE_DATA);
+    CALL(pointer)->free(cvm, ptr_id);
 }
 
 /* test init */
@@ -818,14 +818,14 @@ RX_TEST_CASE(tests_vm_v1, test_pointer_alloc_alloc_ref_write_gc_destroy_read_typ
     const_vm_ptr cvm = CALL(vm)->init(8);
     u64 ptr_id = CALL(virtual)->alloc(cvm, 8, TYPE_DATA);
 #ifndef USE_GC
-    CALL(pointer)->free(cvm, ptr_id, TYPE_DATA);
+    CALL(pointer)->free(cvm, ptr_id);
 #endif
     CALL(vm)->release(cvm, ptr_id);
     CALL(vm)->gc(cvm);
     CALL(vm)->destroy(cvm);
     const_pointer_ptr data_ptr = CALL(virtual)->read(cvm, ptr_id);
     RX_ASSERT(data_ptr == 0);
-    CALL(pointer)->free(cvm, ptr_id, TYPE_DATA);
+    CALL(pointer)->free(cvm, ptr_id);
 }
 
 static void run(void) {

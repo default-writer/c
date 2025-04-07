@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 6, 2025 at 9:07:15 PM GMT+3
+ *   April 7, 2025 at 6:13:10 PM GMT+3
  *
  */
 /*
@@ -84,7 +84,7 @@ static void stack_type_destructor(const_vm_ptr cvm, u64 address) {
     handler->size = 0;
     stack_release_internal(cvm, &handler->list);
     CALL(list)->destroy(&handler->list);
-    CALL(pointer)->free(cvm, address, stack_type.type_id);
+    CALL(pointer)->free(cvm, address);
 }
 
 /* internal */

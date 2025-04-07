@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 6, 2025 at 7:58:35 AM GMT+3
+ *   April 7, 2025 at 6:13:39 PM GMT+3
  *
  */
 /*
@@ -68,7 +68,7 @@ static void file_type_destructor(const_vm_ptr cvm, u64 address) {
         ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, address, (u64)file_type.type_id);
         return;
     }
-    CALL(pointer)->free(cvm, address, file_type.type_id);
+    CALL(pointer)->free(cvm, address);
 }
 
 static int is_valid_file_path(const char* file_path) {

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 7, 2025 at 10:22:43 AM GMT+3
+ *   April 7, 2025 at 6:12:35 PM GMT+3
  *
  */
 /*
@@ -329,7 +329,7 @@ RX_TEST_CASE(tests_pointer_v1, test_load_copy_pointer_virtual_read_ptr_0, .fixtu
     RX_ASSERT(move_ptr == 0);
     /* restore api calls */
     memcpy(&PRIVATE_API(virtual), &virtual_methods_ptr, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
-    CALL(pointer)->free(cvm, address, TYPE_STRING_POINTER);
+    CALL(pointer)->free(cvm, address);
 }
 
 /* test init */
@@ -842,10 +842,10 @@ RX_TEST_CASE(tests_pointer_v1, test_stack_pointer_alloc_free, .fixture = test_fi
     CALL(string)->free(cvm, e_ptr);
     CALL(string_pointer)->free(cvm, string_pointer_ptr);
     CALL(string)->free(cvm, string_ptr);
-    CALL(pointer)->free(cvm, string_pointer_ptr, TYPE_STRING_POINTER);
+    CALL(pointer)->free(cvm, string_pointer_ptr);
     CALL(stack)->free(cvm, list_ptr);
 #endif
-    CALL(pointer)->free(cvm, string_from_memory_alloc_ptr, TYPE_STRING);
+    CALL(pointer)->free(cvm, string_from_memory_alloc_ptr);
 }
 
 /* test init */
@@ -1251,7 +1251,7 @@ RX_TEST_CASE(tests_pointer_v1, test_string_pointer_strrchr_ptr_0, .fixture = tes
 #ifndef USE_GC
     CALL(string)->free(cvm, string_ptr);
 #endif
-    CALL(pointer)->free(cvm, dot_ptr, TYPE_STRING_POINTER);
+    CALL(pointer)->free(cvm, dot_ptr);
 }
 
 /* test init */
@@ -1269,7 +1269,7 @@ RX_TEST_CASE(tests_pointer_v1, test_string_pointer_strchr_ptr_0, .fixture = test
 #ifndef USE_GC
     CALL(string)->free(cvm, string_ptr);
 #endif
-    CALL(pointer)->free(cvm, dot_ptr, TYPE_STRING_POINTER);
+    CALL(pointer)->free(cvm, dot_ptr);
 }
 
 /* test init */
@@ -1327,7 +1327,7 @@ RX_TEST_CASE(tests_pointer_v1, test_list_peekn_error_1, .fixture = test_fixture)
     u64 list_ptr = CALL(pointer)->alloc(cvm, dot, 1, TYPE_STRING);
     u64 error_ptr = CALL(stack)->peekn(cvm, list_ptr, 1);
     RX_ASSERT(error_ptr == 0);
-    CALL(pointer)->free(cvm, list_ptr, TYPE_STRING);
+    CALL(pointer)->free(cvm, list_ptr);
 }
 
 /* test init */
@@ -1399,7 +1399,7 @@ RX_TEST_CASE(tests_pointer_v1, test_list_popn_error_1, .fixture = test_fixture) 
     u64 list_ptr = CALL(pointer)->alloc(cvm, dot, 1, TYPE_STRING);
     u64 error_ptr = CALL(stack)->popn(cvm, list_ptr, 1);
     RX_ASSERT(error_ptr == 0);
-    CALL(pointer)->free(cvm, list_ptr, TYPE_STRING);
+    CALL(pointer)->free(cvm, list_ptr);
 }
 
 /* test init */
@@ -2620,7 +2620,7 @@ RX_TEST_CASE(tests_pointer_v1, test_vm_virtual_pointer_0_1, .fixture = test_fixt
 RX_TEST_CASE(tests_pointer_v1, test_vm_pointer_release_data_1_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
-    u64 result = CALL(pointer)->free(cvm, 0, 0);
+    u64 result = CALL(pointer)->free(cvm, 0);
     RX_ASSERT(result == FALSE);
 }
 
@@ -2628,7 +2628,7 @@ RX_TEST_CASE(tests_pointer_v1, test_vm_pointer_release_data_1_0, .fixture = test
 RX_TEST_CASE(tests_pointer_v1, test_vm_pointer_release_data_error_0_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
-    u64 result = CALL(pointer)->free(cvm, 1, 0);
+    u64 result = CALL(pointer)->free(cvm, 1);
     RX_ASSERT(result == FALSE);
 }
 
@@ -2707,7 +2707,7 @@ RX_TEST_CASE(tests_pointer_v1, test_vm_pointer_free, .fixture = test_fixture_poi
 
 RX_TEST_CASE(tests_pointer_v1, test_vm_pointer_release_type, .fixture = test_fixture_pointer) {
     const_vm_ptr cvm = 0;
-    CALL(pointer)->free(cvm, 0, 0);
+    CALL(pointer)->free(cvm, 0);
     RX_ASSERT(0 != 1);
 }
 
@@ -4028,7 +4028,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_string_equals_1_1, .fixture = test_fixt
     u64 error_ptr = CALL(string)->equals(cvm, 1, 1);
     RX_ASSERT(error_ptr == 0);
 #ifndef USE_GC
-    CALL(pointer)->free(cvm, quantum_str_ptr1, TYPE_STRING);
+    CALL(pointer)->free(cvm, quantum_str_ptr1);
     CALL(string)->free(cvm, quantum_str_ptr2);
 #endif
 }

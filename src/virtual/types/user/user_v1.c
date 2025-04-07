@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 4, 2025 at 2:18:53 PM GMT+3
+ *   April 7, 2025 at 6:13:17 PM GMT+3
  *
  */
 /*
@@ -53,7 +53,7 @@ static void user_type_destructor(const_vm_ptr cvm, u64 address) {
         ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, address, (u64)user_type.type_id);
         return;
     }
-    CALL(pointer)->free(cvm, address, user_type.type_id);
+    CALL(pointer)->free(cvm, address);
 }
 
 static u64 user_alloc(const_vm_ptr cvm) {

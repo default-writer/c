@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 7, 2025 at 10:20:01 AM GMT+3
+ *   April 7, 2025 at 6:08:19 PM GMT+3
  *
  */
 /*
@@ -83,7 +83,7 @@ static void pointer_register_user_type(const_vm_ptr cvm, type_methods_definition
 static u64 pointer_copy(const_vm_ptr cvm, const_void_ptr data, u64 size, u64 offset, u64 type_id);
 static u64 pointer_alloc(const_vm_ptr cvm, const_void_ptr data, u64 size, u64 type_id);
 static const_void_ptr pointer_read(const_vm_ptr cvm, u64 address, u64 type_id);
-static u64 pointer_free(const_vm_ptr cvm, u64 address, u64 type_id);
+static u64 pointer_free(const_vm_ptr cvm, u64 address);
 
 /* internal */
 static u64 pointer_alloc_internal(const_vm_ptr cvm, const_void_ptr data, const_pointer_ptr* tmp, u64 size, u64 type_id);
@@ -217,7 +217,7 @@ static const_void_ptr pointer_read(const_vm_ptr cvm, u64 address, u64 type_id) {
     return const_ptr;
 }
 
-static u64 pointer_free(const_vm_ptr cvm, u64 address, u64 type_id) {
+static u64 pointer_free(const_vm_ptr cvm, u64 address) {
     if (cvm == 0 || *cvm == 0) {
         ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
         return FALSE;
@@ -226,13 +226,9 @@ static u64 pointer_free(const_vm_ptr cvm, u64 address, u64 type_id) {
         ERROR_INVALID_ARGUMENT("address == %lld", address);
         return FALSE;
     }
-    if (type_id == 0) {
-        ERROR_INVALID_ARGUMENT("type_id == %lld", type_id);
-        return FALSE;
-    }
     const_pointer_ptr const_ptr = CALL(virtual)->read(cvm, address);
     if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, address, type_id);
+        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld", (const_void_ptr)const_ptr, address);
         return FALSE;
     }
     safe_pointer_ptr safe_ptr;
