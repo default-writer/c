@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 7, 2025 at 6:12:35 PM GMT+3
+ *   April 7, 2025 at 9:22:06 PM GMT+3
  *
  */
 /*
@@ -3474,23 +3474,7 @@ RX_TEST_CASE(pointer_tests, test_pointer_init_string_load_9, .fixture = test_fix
 }
 
 /* test init */
-RX_TEST_CASE(pointer_tests, test_vm_dump_0, .fixture = test_fixture_pointer) {
-    CALL(error)->clear();
-    CALL(vm)->dump(0);
-    u64 error_count = CALL(error)->count();
-    RX_ASSERT(error_count != 0);
-}
-
-/* test init */
-RX_TEST_CASE(pointer_tests, test_vm_dump_stack_0, .fixture = test_fixture_pointer) {
-    CALL(error)->clear();
-    CALL(vm)->dump_stack(0, 0);
-    u64 error_count = CALL(error)->count();
-    RX_ASSERT(error_count != 0);
-}
-
-/* test init */
-RX_TEST_CASE(pointer_tests, test_vm_dump_ref_0, .fixture = test_fixture_pointer) {
+RX_TEST_CASE(pointer_tests, test_vm_ref_dump_0, .fixture = test_fixture_pointer) {
     CALL(error)->clear();
     CALL(vm)->dump_ref(0);
     u64 error_count = CALL(error)->count();
@@ -3501,6 +3485,14 @@ RX_TEST_CASE(pointer_tests, test_vm_dump_ref_0, .fixture = test_fixture_pointer)
 RX_TEST_CASE(pointer_tests, test_vm_dump_ref_stack_0, .fixture = test_fixture_pointer) {
     CALL(error)->clear();
     CALL(vm)->dump_ref_stack(0, 0);
+    u64 error_count = CALL(error)->count();
+    RX_ASSERT(error_count != 0);
+}
+
+/* test init */
+RX_TEST_CASE(pointer_tests, test_vm_dump_ref_0, .fixture = test_fixture_pointer) {
+    CALL(error)->clear();
+    CALL(vm)->dump_ref(0);
     u64 error_count = CALL(error)->count();
     RX_ASSERT(error_count != 0);
 }
@@ -3518,32 +3510,26 @@ RX_TEST_CASE(pointer_tests, test_pointer_strings, .fixture = test_fixture) {
     u64 text_string_ptr6 = CALL(string)->load(cvm, "abc\nabcd\nbcde\nabc\n");
     u64 text_string_ptr7 = CALL(string)->load(cvm, "abc\n\n");
 #ifdef USE_MEMORY_DEBUG_INFO
-    CALL(vm)->dump(cvm);
     CALL(vm)->dump_ref(cvm);
 #endif
     parse_text(cvm, 0);
 #ifdef USE_MEMORY_DEBUG_INFO
-    CALL(vm)->dump(cvm);
     CALL(vm)->dump_ref(cvm);
 #endif
     parse_text(cvm, text_string_ptr0);
 #ifdef USE_MEMORY_DEBUG_INFO
-    CALL(vm)->dump(cvm);
     CALL(vm)->dump_ref(cvm);
 #endif
     parse_text(cvm, text_string_ptr1);
 #ifdef USE_MEMORY_DEBUG_INFO
-    CALL(vm)->dump(cvm);
     CALL(vm)->dump_ref(cvm);
 #endif
     parse_text(cvm, text_string_ptr2);
 #ifdef USE_MEMORY_DEBUG_INFO
-    CALL(vm)->dump(cvm);
     CALL(vm)->dump_ref(cvm);
 #endif
     parse_text(cvm, text_string_ptr3);
 #ifdef USE_MEMORY_DEBUG_INFO
-    CALL(vm)->dump(cvm);
     CALL(vm)->dump_ref(cvm);
 #endif
     parse_text(cvm, text_string_ptr4);
@@ -3551,7 +3537,6 @@ RX_TEST_CASE(pointer_tests, test_pointer_strings, .fixture = test_fixture) {
     u64 debug_text_string_ptr5 = CALL(string)->copy(cvm, text_string_ptr5);
     parse_text(debug_cvm, debug_text_string_ptr5);
 #ifdef USE_MEMORY_DEBUG_INFO
-    CALL(vm)->dump(debug_cvm);
     CALL(vm)->dump_ref(debug_cvm);
 #endif
     CALL(string)->free(cvm, debug_text_string_ptr5);
@@ -3559,13 +3544,11 @@ RX_TEST_CASE(pointer_tests, test_pointer_strings, .fixture = test_fixture) {
     const_vm_ptr debug_cvm_6 = CALL(vm)->init(8);
     parse_text(debug_cvm_6, text_string_ptr6);
 #ifdef USE_MEMORY_DEBUG_INFO
-    CALL(vm)->dump(debug_cvm_6);
     CALL(vm)->dump_ref(debug_cvm_6);
 #endif
     CALL(vm)->destroy(debug_cvm_6);
     parse_text(cvm, text_string_ptr7);
 #ifdef USE_MEMORY_DEBUG_INFO
-    CALL(vm)->dump(cvm);
     CALL(vm)->dump_ref(cvm);
 #endif
     CALL(string)->free(cvm, text_string_ptr0);
@@ -3577,7 +3560,6 @@ RX_TEST_CASE(pointer_tests, test_pointer_strings, .fixture = test_fixture) {
     CALL(string)->free(cvm, text_string_ptr6);
     CALL(string)->free(cvm, text_string_ptr7);
 #ifdef USE_MEMORY_DEBUG_INFO
-    CALL(vm)->dump(cvm);
     CALL(vm)->dump_ref(cvm);
 #endif
 }

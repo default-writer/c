@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 7, 2025 at 5:22:10 AM GMT+3
+ *   April 7, 2025 at 9:20:44 PM GMT+3
  *
  */
 /*
@@ -83,15 +83,11 @@ static void unregister_known_types(const_vm_ptr cvm) {
 }
 
 /* public */
-static void vm_dump(const_vm_ptr cvm);
-static void vm_dump_stack(const_vm_ptr cvm, stack_ptr* stack);
 static void vm_dump_ref(const_vm_ptr cvm);
 static void vm_dump_ref_stack(const_vm_ptr cvm, stack_ptr* stack);
 
 /* internal */
-static void vm_dump_internal(const_vm_ptr cvm, pointer_ptr ptr, stack_ptr* stack);
 static void vm_dump_ref_internal(const_vm_ptr cvm, pointer_ptr* ptr, stack_ptr* stack);
-static void virtual_dump_internal(const_vm_ptr cvm, stack_ptr* stack);
 static void virtual_dump_ref_internal(const_vm_ptr cvm, stack_ptr* stackk);
 
 /* internal */
@@ -116,7 +112,6 @@ static void vm_destroy(const_vm_ptr cvm);
 static void vm_ref_enumerator_init_internal(struct vm_state* ptr, const_vm_ptr cvm);
 static void vm_ref_enumerator_destroy_internal(struct vm_state* state);
 static pointer_ptr* vm_ref_enumerator_next_internal(struct vm_state* state);
-static pointer_ptr vm_enumerator_next_internal(struct vm_state* state);
 static u64 vm_next_internal(struct vm_state* state);
 
 /* internal */
@@ -147,7 +142,6 @@ static void vm_gc(const_vm_ptr cvm) {
     }
 #ifdef USE_MEMORY_DEBUG_INFO
     virtual_dump_ref_internal(cvm, 0);
-    virtual_dump_internal(cvm, 0);
 #endif
     struct vm_state state;
     vm_ref_enumerator_init_internal(&state, cvm);
@@ -156,22 +150,6 @@ static void vm_gc(const_vm_ptr cvm) {
         vm_release(cvm, ptr);
     }
     vm_ref_enumerator_destroy_internal(&state);
-}
-
-static void vm_dump(const_vm_ptr cvm) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return;
-    }
-    virtual_dump_internal(cvm, 0);
-}
-
-static void vm_dump_stack(const_vm_ptr cvm, stack_ptr* stack) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return;
-    }
-    virtual_dump_internal(cvm, stack);
 }
 
 static void vm_dump_ref(const_vm_ptr cvm) {
@@ -225,16 +203,6 @@ static void vm_destroy(const_vm_ptr cvm) {
 #endif
 }
 
-static void vm_dump_internal(const_vm_ptr cvm, pointer_ptr ptr, stack_ptr* stack) {
-    safe_void_ptr safe_ptr;
-    safe_ptr.const_ptr = ptr->data;
-    void_ptr data = safe_ptr.ptr;
-    if (stack != NULL_PTR) {
-        CALL(list)->push(stack, data);
-    }
-    printf("  p^: %016llx > %016llx\n", (u64)ptr, (u64)ptr->data);
-}
-
 static void vm_dump_ref_internal(const_vm_ptr cvm, pointer_ptr* ptr, stack_ptr* stack) {
     if (*ptr == 0) {
         return;
@@ -258,16 +226,6 @@ static void vm_ref_enumerator_destroy_internal(struct vm_state* state) {
 }
 
 /* implementation */
-static void virtual_dump_internal(const_vm_ptr cvm, stack_ptr* stack) {
-    struct vm_state state;
-    vm_ref_enumerator_init_internal(&state, cvm);
-    pointer_ptr ptr = 0;
-    while ((ptr = vm_enumerator_next_internal(&state)) != 0) {
-        vm_dump_internal(cvm, ptr, stack);
-    }
-    vm_ref_enumerator_destroy_internal(&state);
-}
-
 static void virtual_dump_ref_internal(const_vm_ptr cvm, stack_ptr* stack) {
     struct vm_state state;
     vm_ref_enumerator_init_internal(&state, cvm);
@@ -276,23 +234,6 @@ static void virtual_dump_ref_internal(const_vm_ptr cvm, stack_ptr* stack) {
         vm_dump_ref_internal(cvm, ref, stack);
     }
     vm_ref_enumerator_destroy_internal(&state);
-}
-
-static pointer_ptr vm_enumerator_next_internal(struct vm_state* state) {
-    pointer_ptr data = 0;
-    virtual_pointer_ptr vptr = state->vptr;
-    while (data == 0) {
-        if (state->ref == vptr->sp) {
-            if (vptr->next == 0) {
-                break;
-            }
-            vptr = vptr->next;
-            state->vptr = vptr;
-            state->ref = vptr->bp;
-        }
-        data = *state->ref++;
-    }
-    return data;
 }
 
 static u64 vm_next_internal(struct vm_state* state) {
@@ -337,9 +278,7 @@ const virtual_vm_methods PRIVATE_API(virtual_vm_methods_definitions) = {
     .gc = vm_gc,
     .release = vm_release,
     .destroy = vm_destroy,
-    .dump = vm_dump,
     .dump_ref = vm_dump_ref,
-    .dump_stack = vm_dump_stack,
     .dump_ref_stack = vm_dump_ref_stack
 };
 
