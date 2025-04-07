@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 7, 2025 at 8:17:57 PM GMT+3
+ *   April 7, 2025 at 8:39:25 PM GMT+3
  *
  */
 /*
@@ -1117,10 +1117,6 @@ static void parse_text_memory_leak2(const_vm_ptr cvm, u64 text_string_ptr) {
             text_size--;
         }
         if (text_size == 0) {
-            u64 string_ptr = 0;
-            while ((string_ptr = CALL(stack)->pop(cvm, stack_ptr1)) != 0) {
-                CALL(string)->free(cvm, string_ptr);
-            }
             CALL(stack)->free(cvm, stack_ptr1);
             CALL(stack)->free(cvm, gc_ptr);
             return;
@@ -1143,8 +1139,6 @@ static void parse_text_memory_leak2(const_vm_ptr cvm, u64 text_string_ptr) {
         u64 string_ptr = CALL(stack)->pop(cvm, stack_ptr2);
         if (CALL(string)->size(cvm, string_ptr) == 0) {
             quit = 1;
-            CALL(string)->free(cvm, string_ptr);
-            CALL(string_pointer)->free(cvm, string_ptr);
             continue;
         }
         CALL(env)->puts(cvm, string_ptr);
