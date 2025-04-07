@@ -1,11 +1,10 @@
-# работа с python
+# работа с python API
 
-## rTTD (реверсивное тестирование)
+## AID (AI-ассистированная разработка)
 
 - [канал](https://vkvideo.ru/@club230014275)
-- [стрим](https://vkvideo.ru/video-230014275_456239017)
 
-- проверка API для классов
-- проверка exception handling
+- проверка API для классов Python
+- **проверка exception handling**
 - написание unit-тестов на python
 - API дампов памяти в python

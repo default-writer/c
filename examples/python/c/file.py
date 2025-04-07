@@ -2,6 +2,7 @@
 import ctypes
 from .vm import CVirtualMachine
 from .error import CException, CVirtualMachineNotInitializedException
+from .pointer import CType
 
 
 class CFile:

@@ -77,12 +77,12 @@ class CEnvironment:
         return wrapper
 
     @exception_handler
-    def getenv(self, name: ctypes.c_uint64) -> ctypes.c_uint64:
+    def getenv(self, name_ptr: ctypes.c_uint64) -> ctypes.c_uint64:
         """
         Retrieves the value of an environment variable.
 
         Args:
-            name: A pointer (as a ctypes.c_uint64) to a null-terminated string representing the environment variable name.
+            name_ptr: A pointer (as a ctypes.c_uint64) to a null-terminated string representing the environment variable name.
 
         Returns:
             A pointer (as a ctypes.c_uint64) to a null-terminated string representing the environment variable value,
@@ -91,7 +91,7 @@ class CEnvironment:
         Raises:
             Exception: If an error occurs during the C library call.
         """
-        return self.env_methods.getenv(self.vm, name)
+        return self.env_methods.getenv(self.vm, name_ptr)
 
     @exception_handler
     def getcwd(self) -> ctypes.c_uint64:

@@ -267,7 +267,7 @@ class CString:
         return self.string_methods.load(self.vm, data)
 
     @exception_handler
-    def put_char(self, string_ptr: ctypes.c_uint64, char: ctypes.c_char) -> ctypes.c_uint64:
+    def put_char(self, string_ptr: ctypes.c_uint64, char: ctypes.c_char) -> None:
         """
         Puts a character into a string in the C library.
 
@@ -276,7 +276,7 @@ class CString:
             char: A ctypes.c_char representing the character to put.
 
         Returns:
-            A status code (typically 0 for success, non-zero for failure).
+            None
 
         Raises:
             Exception: If an error occurs during the C library call.
@@ -467,6 +467,23 @@ class CString:
             Exception: If an error occurs during the C library call.
         """
         return self.string_methods.move_left(self.vm, src, nbytes)
+
+    @exception_handler
+    def move_right(self, src: ctypes.c_uint64, nbytes: ctypes.c_uint64) -> ctypes.c_uint64:
+        """
+        Moves a part of a string to the right in the C library.
+
+        Args:
+            src: A pointer (as a ctypes.c_uint64) to the string.
+            nbytes: A ctypes.c_uint64 representing the number of bytes to move.
+
+        Returns:
+            A pointer (as a ctypes.c_uint64) to the modified string.
+
+        Raises:
+            Exception: If an error occurs during the C library call.
+        """
+        return self.string_methods.move_right(self.vm, src, nbytes)
 
     @exception_handler
     def strcmp(self, src: ctypes.c_uint64, dest: ctypes.c_uint64) -> ctypes.c_uint64:
