@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 7, 2025 at 6:12:57 PM GMT+3
+ *   April 7, 2025 at 7:35:59 PM GMT+3
  *
  */
 /*
@@ -96,7 +96,7 @@ RX_TEAR_DOWN(test_tear_down_pointer_destroy) {
 
 /* internal */
 static void parse_text(const_vm_ptr cvm, u64 text_string_ptr);
-static void parse_text_memory_leak1(const_vm_ptr cvm, u64 text_string_ptr, stack_ptr* memory_leaks);
+static void parse_text_memory_leak1(const_vm_ptr cvm, u64 text_string_ptr);
 
 /* Define the fixture. */
 RX_FIXTURE(test_fixture_pointer, TEST_DATA, .set_up = test_set_up_pointer_init, .tear_down = test_tear_down_pointer_destroy);
@@ -586,11 +586,8 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_memory_leak_2, .fixture = test_clean_fixt
         // when it happens, you will not able to recover and free allocated memory for the .data pointer
         // you simply lost reference to the memory pointer you have to keep it when processing data
 
-        stack_ptr memory_leak_stack = 0;
-        CALL(list)->init(&memory_leak_stack);
-
         u64 debug_text_string_ptr = CALL(string)->load(debug_cvm, test_data[i]);
-        parse_text_memory_leak1(debug_cvm, debug_text_string_ptr, &memory_leak_stack);
+        parse_text_memory_leak1(debug_cvm, debug_text_string_ptr);
         CALL(string)->free(debug_cvm, debug_text_string_ptr);
 
         CALL(vm)->dump(debug_cvm);
@@ -618,16 +615,10 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_memory_leak_2, .fixture = test_clean_fixt
         while (current->next != NULL_PTR) {
             u64 ptr = (u64)current->data;
             printf("  v<: %016llx\n", ptr);
-            current = current->next;
-        }
-        current = memory_leak_stack;
-        while (current->next != NULL_PTR) {
-            const_pointer_ptr const_ptr = (const_pointer_ptr)current->data;
-            printf("  v^: %016llx\n", (u64)const_ptr);
+            const_pointer_ptr const_ptr = (const_pointer_ptr)ptr;
             CALL(pointer)->free(debug_cvm, const_ptr->public.address);
             current = current->next;
         }
-        CALL(list)->destroy(&memory_leak_stack);
         CALL(list)->destroy(&debug_cvm_stack);
         CALL(list)->destroy(&cvm_stack);
         CALL(list)->destroy(&compare_left);
@@ -944,7 +935,7 @@ static void parse_text(const_vm_ptr cvm, u64 text_string_ptr) {
     CALL(stack)->free(cvm, gc_ptr);
 }
 
-static void parse_text_memory_leak1(const_vm_ptr cvm, u64 text_string_ptr, stack_ptr* memory_leak_stack) {
+static void parse_text_memory_leak1(const_vm_ptr cvm, u64 text_string_ptr) {
     u64 gc_ptr = CALL(stack)->alloc(cvm);
     u64 text_size = CALL(string)->size(cvm, text_string_ptr);
     if (text_string_ptr == 0) {
@@ -1011,17 +1002,6 @@ static void parse_text_memory_leak1(const_vm_ptr cvm, u64 text_string_ptr, stack
             match_ptr = CALL(string)->match(cvm, current_string_pointer_ptr, pattern_ptr);
             if (match_ptr == 0) {
                 // direct memory leak: skips pointer free for string_pointer_ptr variable
-                const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, string_pointer_ptr, TYPE_STRING_POINTER);
-                if (const_ptr != 0) {
-                    safe_void_ptr safe_ptr;
-                    safe_ptr.const_ptr = const_ptr;
-                    void_ptr ptr = safe_ptr.ptr;
-                    const_string_reference_ptr ref = const_ptr->data;
-                    const_pointer_ptr const_string_ptr = CALL(pointer)->read(cvm, ref->address, TYPE_STRING);
-                    if (const_string_ptr != 0) {
-                        CALL(list)->push(memory_leak_stack, (void_ptr)ptr);
-                    }
-                }
                 // CALL(list)->push(memory_leak_stack, (void_ptr)string_pointer_ptr);
                 // TODO: UNSET MEMORY LEAK HERE
                 // CALL(string)->free(cvm, string_pointer_ptr);
