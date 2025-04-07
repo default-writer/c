@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 3, 2025 at 11:19:43 AM GMT+3
+ *   April 7, 2025 at 5:25:58 AM GMT+3
  *
  */
 /*
@@ -71,7 +71,7 @@ static void run_list2(void (*tests)(stack_ptr* const)) {
 /* uses the list */
 static void tests(stack_ptr* current) {
     u8* payload = (void_ptr)0xdeadbeef;
-    void_ptr is_null[] = {
+    const_void_ptr is_null[] = {
         CALL(list)->peek(current),
         CALL(list)->pop(current)
     };
@@ -102,7 +102,7 @@ static void tests(stack_ptr* current) {
 #endif
     const_void_ptr q_peek0 = CALL(list)->peek(current);
     CLEAN(q_peek0)
-    void_ptr q_pop0 = CALL(list)->pop(current);
+    const_void_ptr q_pop0 = CALL(list)->pop(current);
 #ifdef USE_MEMORY_DEBUG_INFO
     CALL(list)->print(current);
 #endif
@@ -135,7 +135,10 @@ static void tests(stack_ptr* current) {
     CALL(list)->print(current);
 #endif
     const_void_ptr q_peek4 = CALL(list)->peek(current);
-    CALL(list)->push(current, q_pop0);
+    safe_void_ptr safe_ptr;
+    safe_ptr.const_ptr = q_pop0;
+    void_ptr ptr0 = safe_ptr.ptr;
+    CALL(list)->push(current, ptr0);
     CLEAN(q_peek4)
 #ifdef USE_MEMORY_DEBUG_INFO
     CALL(list)->print(current);

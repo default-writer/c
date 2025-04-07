@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 14, 2025 at 11:34:07 AM GMT+3
+ *   April 6, 2025 at 9:06:30 PM GMT+3
  *
  */
 /*
@@ -41,7 +41,6 @@
 
 typedef struct PRIVATE_API(virtual_stack_methods) {
     u64 (*alloc)(const_vm_ptr cvm);
-    u64 (*free)(const_vm_ptr cvm, u64 ptr);
     u64 (*peek)(const_vm_ptr cvm, u64 list_ptr);
     /*! returns a list of picked items
         @param list_ptr a list to get items from
@@ -54,6 +53,7 @@ typedef struct PRIVATE_API(virtual_stack_methods) {
     u64 (*push)(const_vm_ptr cvm, u64 list_ptr, u64 ptr);
     u64 (*size)(const_vm_ptr cvm, u64 ptr);
     u64 (*release)(const_vm_ptr cvm, u64 ptr);
+    u64 (*free)(const_vm_ptr cvm, u64 ptr);
 } virtual_stack_methods;
 
 /* definition */

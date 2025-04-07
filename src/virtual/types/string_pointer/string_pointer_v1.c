@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 5, 2025 at 11:01:04 PM GMT+3
+ *   April 7, 2025 at 6:13:33 PM GMT+3
  *
  */
 /*
@@ -50,7 +50,7 @@ static void string_pointer_type_destructor(const_vm_ptr cvm, u64 address) {
         ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, address, (u64)string_pointer_type.type_id);
         return;
     }
-    CALL(pointer)->free(cvm, address, string_pointer_type.type_id);
+    CALL(pointer)->free(cvm, address);
 }
 
 static u64 string_pointer_free(const_vm_ptr cvm, u64 address) {

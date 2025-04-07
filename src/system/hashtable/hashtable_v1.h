@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   March 28, 2025 at 10:58:10 AM GMT+3
+ *   April 7, 2025 at 3:38:49 AM GMT+3
  *
  */
 /*
@@ -24,26 +24,26 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef _VIRTUAL_HASHTABLE_V1_H_
-#define _VIRTUAL_HASHTABLE_V1_H_
+#ifndef _SYSTEM_HASHTABLE_V1_H_
+#define _SYSTEM_HASHTABLE_V1_H_
 
 #define USING_STD_API
 #include "std/api.h"
 
-#include "virtual/export.h"
+#include "system/export.h"
 
 #define HASHTABLE_INITIAL_CAPACITY 16
 #define HASHTABLE_LOAD_FACTOR 0.75
 
-typedef struct PRIVATE_API(virtual_hashtable_methods) {
+typedef struct PRIVATE_API(system_hashtable_methods) {
     hashtable_ptr (*init)(void);
     hashentry_ptr (*insert)(hashtable_ptr ht, u64 key, const_void_ptr value);
     const_void_ptr (*get)(hashtable_ptr ht, u64 key);
     u64 (*remove)(hashtable_ptr ht, u64 key);
     void (*destroy)(hashtable_ptr ht);
-} virtual_hashtable_methods;
+} system_hashtable_methods;
 
 /* definition */
-CVM_EXPORT extern const virtual_hashtable_methods* CALL(hashtable);
+CSYS_EXPORT extern const system_hashtable_methods* CALL(hashtable);
 
-#endif /* _VIRTUAL_HASHTABLE_V1_H_ */
+#endif /* _SYSTEM_HASHTABLE_V1_H_ */

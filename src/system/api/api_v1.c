@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 2, 2025 at 7:42:03 AM GMT+3
+ *   April 7, 2025 at 3:39:43 AM GMT+3
  *
  */
 /*
@@ -49,4 +49,8 @@ PUBLIC const system_options_methods* PUBLIC_API(options) {
 
 PUBLIC const system_os_methods* PUBLIC_API(os) {
     return CALL(os);
+}
+
+PUBLIC const system_hashtable_methods* PUBLIC_API(hashtable) {
+    return CALL(hashtable);
 }
