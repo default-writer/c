@@ -54,7 +54,6 @@ class CError:
             ("get", ctypes.CFUNCTYPE(ctypes.c_char_p)),
         ]
 
-
     @classmethod
     def setup(cls, lib):
         """
@@ -67,8 +66,7 @@ class CError:
         cls.error_methods_ptr.restype = ctypes.POINTER(cls.error_methods)
         cls.error_methods = cls.error_methods_ptr().contents
 
-
-    @classmethod    
+    @classmethod
     def stdout(cls) -> ctypes.c_void_p:
         """
         Gets the standard output stream from the C library.
@@ -77,7 +75,6 @@ class CError:
             A pointer to the standard output stream.
         """
         return cls.error_methods.stdout()
-
 
     @classmethod
     def stderr(cls) -> ctypes.c_void_p:
@@ -88,7 +85,6 @@ class CError:
             A pointer to the standard error stream.
         """
         return cls.error_methods.stderr()
-
 
     @classmethod
     def output(cls, output_file: ctypes.c_void_p, code: CErrorType, message: ctypes.c_char_p, size: ctypes.c_uint64):
@@ -103,7 +99,6 @@ class CError:
         """
         cls.error_methods.output(output_file, code, message, size)
 
-
     @classmethod
     def throw(cls, code: CErrorType, message: ctypes.c_char_p, size: ctypes.c_uint64):
         """
@@ -116,14 +111,12 @@ class CError:
         """
         cls.error_methods.throw(code, message, size)
 
-
     @classmethod
     def clear(cls):
         """
         Clears the current error in the C library.
         """
         cls.error_methods.clear()
-
 
     @classmethod
     def type(cls) -> CErrorType:
@@ -134,7 +127,6 @@ class CError:
             The error type.
         """
         return cls.error_methods.type()
-
 
     @classmethod
     def get(cls) -> ctypes.c_char_p:
@@ -147,7 +139,70 @@ class CError:
         return cls.error_methods.get()
 
 
-class CVirtualMachineNotInitializedException(Exception):
+class CException(Exception):
+    """
+    CException provides a mechanism for checking for errors in the C library and
+    raising corresponding Python exceptions.
+
+    It maintains the last error code and message, and provides methods for checking
+    for errors and raising exceptions.
+    """
+    last_error_code: CErrorType = CErrorType.Default
+    """The last error code encountered."""
+    last_error_message: str = ""
+    """The last error message encountered."""
+
+    @classmethod
+    def check(cls):
+        """
+        Checks for errors in the C library and updates the last error code and message.
+
+        If an error is found, it calls raise_exception to raise a corresponding
+        Python exception.
+        """
+        cls.last_error_code = CError.type()
+        if cls.last_error_code:
+            cls.last_error_message = CError.get().decode()
+            cls.raise_exception()
+
+    @classmethod
+    def raise_exception(cls):
+        """
+        Raises a Python exception corresponding to the last error code.
+
+        It clears the error in the C library after raising the exception.
+
+        Raises:
+            Exception: A Python exception corresponding to the last error code.
+        """
+        raise cls.get_exception()
+
+    @classmethod
+    def get_exception(cls):
+        """
+        Gets the appropriate Python exception based on the last error code.
+
+        Returns:
+            Exception: A Python exception corresponding to the last error code.
+
+        Raises:
+            Exception: If an unknown error code is encountered.
+        """
+        if cls.last_error_code == CErrorType.VirtualMachineNotInitializedError:
+            return CVirtualMachineNotInitializedException(cls.last_error_message)
+        elif cls.last_error_code == CErrorType.InvalidPointerError:
+            return CInvalidPointerException(cls.last_error_message)
+        elif cls.last_error_code == CErrorType.InvalidArgumentError:
+            return CInvalidArgumentException(cls.last_error_message)
+        elif cls.last_error_code == CErrorType.InvalidTypeIdError:
+            return CInvalidTypeIdException(cls.last_error_message)
+        elif cls.last_error_code == CErrorType.InvalidValueError:
+            return CInvalidValueException(cls.last_error_message)
+        else:
+            return Exception(f"Unknown error code: {cls.last_error_code}, message: {cls.last_error_message}")
+
+
+class CVirtualMachineNotInitializedException(CException):
     """
     CVirtualMachineNotInitializedException is raised when an operation is attempted
     that requires a properly initialized virtual machine, but the VM has not been
@@ -163,7 +218,7 @@ class CVirtualMachineNotInitializedException(Exception):
         super().__init__(message)
 
 
-class CInvalidPointerException(Exception):
+class CInvalidPointerException(CException):
     """
     CInvalidPointerException is raised when an operation is attempted with an
     invalid memory pointer.
@@ -178,7 +233,7 @@ class CInvalidPointerException(Exception):
         super().__init__(message)
 
 
-class CInvalidArgumentException(Exception):
+class CInvalidArgumentException(CException):
     """
     CInvalidArgumentException is raised when an operation is attempted with an
     invalid argument.
@@ -193,7 +248,7 @@ class CInvalidArgumentException(Exception):
         super().__init__(message)
 
 
-class CInvalidTypeIdException(Exception):
+class CInvalidTypeIdException(CException):
     """
     CInvalidTypeIdException is raised when an operation is attempted with an
     invalid type identifier.
@@ -208,7 +263,7 @@ class CInvalidTypeIdException(Exception):
         super().__init__(message)
 
 
-class CInvalidValueException(Exception):
+class CInvalidValueException(CException):
     """
     CInvalidValueException is raised when an operation is attempted with an
     invalid value.
@@ -221,67 +276,3 @@ class CInvalidValueException(Exception):
             message: The error message.
         """
         super().__init__(message)
-
-
-class CException:
-    """
-    CException provides a mechanism for checking for errors in the C library and
-    raising corresponding Python exceptions.
-
-    It maintains the last error code and message, and provides methods for checking
-    for errors and raising exceptions.
-    """
-    last_error_code: CErrorType = CErrorType.Default
-    """The last error code encountered."""
-    last_error_message: str = b''
-    """The last error message encountered."""
-
-    @classmethod
-    def check(self):
-        """
-        Checks for errors in the C library and updates the last error code and message.
-
-        If an error is found, it calls raise_exception to raise a corresponding
-        Python exception.
-        """
-        self.last_error_code = CError.type()
-        if self.last_error_code:
-            self.last_error_message = CError.get().decode()
-            self.raise_exception()
-
-    @classmethod
-    def raise_exception(self):
-        """
-        Raises a Python exception corresponding to the last error code.
-
-        It clears the error in the C library after raising the exception.
-
-        Raises:
-            Exception: A Python exception corresponding to the last error code.
-        """
-        exception = self._get_exception()
-        self.last_error_code = CErrorType.Default
-        self.last_error_message = b''
-        CError.clear()
-        raise exception
-
-    @classmethod
-    def _get_exception(self):
-        """
-        Gets the appropriate Python exception based on the last error code.
-
-        Returns:
-            Exception: A Python exception corresponding to the last error code.
-        """
-        if self.last_error_code == CErrorType.VirtualMachineNotInitializedError:
-            return CVirtualMachineNotInitializedException(self.last_error_message)
-        elif self.last_error_code == CErrorType.InvalidPointerError:
-            return CInvalidPointerException(self.last_error_message)
-        elif self.last_error_code == CErrorType.InvalidArgumentError:
-            return CInvalidArgumentException(self.last_error_message)
-        elif self.last_error_code == CErrorType.InvalidTypeIdError:
-            return CInvalidTypeIdException(self.last_error_message)
-        elif self.last_error_code == CErrorType.InvalidValueError:
-            return CInvalidValueException(self.last_error_message)
-        else:
-            return Exception(self.last_error_message)

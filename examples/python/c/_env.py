@@ -1,7 +1,7 @@
 # c/env.py
 import ctypes
-from .vm import CVirtualMachine
-from .error import CException, CVirtualMachineNotInitializedException
+from ._vm import CVirtualMachine
+from ._error import CError, CException, CVirtualMachineNotInitializedException
 
 
 class CEnvironment:
@@ -71,18 +71,21 @@ class CEnvironment:
             The wrapped function.
         """
         def wrapper(self, *args, **kwargs):
+            if not kwargs.get("noclear", False):
+                CError.clear()
             result = func(self, *args, **kwargs)
-            CException.check()
+            if not kwargs.get("nothrow", False):
+                CException.check()
             return result
         return wrapper
 
     @exception_handler
-    def getenv(self, name: ctypes.c_uint64) -> ctypes.c_uint64:
+    def getenv(self, name_ptr: ctypes.c_uint64, nothrow=False, noclear=False) -> ctypes.c_uint64:
         """
         Retrieves the value of an environment variable.
 
         Args:
-            name: A pointer (as a ctypes.c_uint64) to a null-terminated string representing the environment variable name.
+            name_ptr: A pointer (as a ctypes.c_uint64) to a null-terminated string representing the environment variable name.
 
         Returns:
             A pointer (as a ctypes.c_uint64) to a null-terminated string representing the environment variable value,
@@ -91,10 +94,10 @@ class CEnvironment:
         Raises:
             Exception: If an error occurs during the C library call.
         """
-        return self.env_methods.getenv(self.vm, name)
+        return self.env_methods.getenv(self.vm, name_ptr)
 
     @exception_handler
-    def getcwd(self) -> ctypes.c_uint64:
+    def getcwd(self, nothrow=False, noclear=False) -> ctypes.c_uint64:
         """
         Gets the current working directory.
 
@@ -107,7 +110,7 @@ class CEnvironment:
         return self.env_methods.getcwd(self.vm)
 
     @exception_handler
-    def puts(self, ptr: ctypes.c_uint64) -> ctypes.c_uint64:
+    def puts(self, ptr: ctypes.c_uint64, nothrow=False, noclear=False) -> ctypes.c_uint64:
         """
         Prints a null-terminated string to the standard output.
 

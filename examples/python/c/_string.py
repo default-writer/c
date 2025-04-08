@@ -1,7 +1,7 @@
 # c/string.py
 import ctypes
-from .vm import CVirtualMachine
-from .error import CException, CVirtualMachineNotInitializedException
+from ._vm import CVirtualMachine
+from ._error import CError, CException, CVirtualMachineNotInitializedException
 
 
 class CString:
@@ -111,13 +111,16 @@ class CString:
             The wrapped function.
         """
         def wrapper(self, *args, **kwargs):
+            if not kwargs.get("noclear", False):
+                CError.clear()
             result = func(self, *args, **kwargs)
-            CException.check()
+            if not kwargs.get("nothrow", False):
+                CException.check()
             return result
         return wrapper
 
     @exception_handler
-    def free(self, ptr: ctypes.c_uint64) -> ctypes.c_uint64:
+    def free(self, ptr: ctypes.c_uint64, nothrow=False, noclear=False) -> ctypes.c_uint64:
         """
         Frees a string in the C library.
 
@@ -133,7 +136,7 @@ class CString:
         return self.string_methods.free(self.vm, ptr)
 
     @exception_handler
-    def copy(self, ptr: ctypes.c_uint64) -> ctypes.c_uint64:
+    def copy(self, ptr: ctypes.c_uint64, nothrow=False, noclear=False) -> ctypes.c_uint64:
         """
         Copies a string in the C library.
 
@@ -149,7 +152,7 @@ class CString:
         return self.string_methods.copy(self.vm, ptr)
 
     @exception_handler
-    def strcpy(self, dest: ctypes.c_uint64, src: ctypes.c_uint64) -> ctypes.c_uint64:
+    def strcpy(self, dest: ctypes.c_uint64, src: ctypes.c_uint64, nothrow=False, noclear=False) -> ctypes.c_uint64:
         """
         Copies a string to another string in the C library.
 
@@ -166,7 +169,7 @@ class CString:
         return self.string_methods.strcpy(self.vm, dest, src)
 
     @exception_handler
-    def strcat(self, dest: ctypes.c_uint64, src: ctypes.c_uint64) -> ctypes.c_uint64:
+    def strcat(self, dest: ctypes.c_uint64, src: ctypes.c_uint64, nothrow=False, noclear=False) -> ctypes.c_uint64:
         """
         Concatenates two strings in the C library.
 
@@ -183,7 +186,7 @@ class CString:
         return self.string_methods.strcat(self.vm, dest, src)
 
     @exception_handler
-    def strrchr(self, src_ptr: ctypes.c_uint64, match_ptr: ctypes.c_uint64) -> ctypes.c_uint64:
+    def strrchr(self, src_ptr: ctypes.c_uint64, match_ptr: ctypes.c_uint64, nothrow=False, noclear=False) -> ctypes.c_uint64:
         """
         Finds the last occurrence of a character in a string in the C library.
 
@@ -200,7 +203,7 @@ class CString:
         return self.string_methods.strrchr(self.vm, src_ptr, match_ptr)
 
     @exception_handler
-    def strchr(self, src_ptr: ctypes.c_uint64, match_ptr: ctypes.c_uint64) -> ctypes.c_uint64:
+    def strchr(self, src_ptr: ctypes.c_uint64, match_ptr: ctypes.c_uint64, nothrow=False, noclear=False) -> ctypes.c_uint64:
         """
         Finds the first occurrence of a character in a string in the C library.
 
@@ -217,7 +220,7 @@ class CString:
         return self.string_methods.strchr(self.vm, src_ptr, match_ptr)
 
     @exception_handler
-    def match(self, src_ptr: ctypes.c_uint64, match_ptr: ctypes.c_uint64) -> ctypes.c_uint64:
+    def match(self, src_ptr: ctypes.c_uint64, match_ptr: ctypes.c_uint64, nothrow=False, noclear=False) -> ctypes.c_uint64:
         """
         Checks if a string matches another string in the C library.
 
@@ -234,7 +237,7 @@ class CString:
         return self.string_methods.match(self.vm, src_ptr, match_ptr)
 
     @exception_handler
-    def offset(self, src_ptr: ctypes.c_uint64, match_ptr: ctypes.c_uint64) -> ctypes.c_uint64:
+    def offset(self, src_ptr: ctypes.c_uint64, match_ptr: ctypes.c_uint64, nothrow=False, noclear=False) -> ctypes.c_uint64:
         """
         Gets the offset of a substring in a string in the C library.
 
@@ -251,7 +254,7 @@ class CString:
         return self.string_methods.offset(self.vm, src_ptr, match_ptr)
 
     @exception_handler
-    def load(self, data: ctypes.c_char_p) -> ctypes.c_uint64:
+    def load(self, data: ctypes.c_char_p, nothrow=False, noclear=False) -> ctypes.c_uint64:
         """
         Loads a string from a C-style string in the C library.
 
@@ -267,7 +270,7 @@ class CString:
         return self.string_methods.load(self.vm, data)
 
     @exception_handler
-    def put_char(self, string_ptr: ctypes.c_uint64, char: ctypes.c_char) -> ctypes.c_uint64:
+    def put_char(self, string_ptr: ctypes.c_uint64, char: ctypes.c_char, nothrow=False, noclear=False) -> None:
         """
         Puts a character into a string in the C library.
 
@@ -276,7 +279,7 @@ class CString:
             char: A ctypes.c_char representing the character to put.
 
         Returns:
-            A status code (typically 0 for success, non-zero for failure).
+            None
 
         Raises:
             Exception: If an error occurs during the C library call.
@@ -284,7 +287,7 @@ class CString:
         return self.string_methods.put_char(self.vm, string_ptr, char)
 
     @exception_handler
-    def unsafe(self, string_ptr: ctypes.c_uint64) -> ctypes.c_char_p:
+    def unsafe(self, string_ptr: ctypes.c_uint64, nothrow=False, noclear=False) -> ctypes.c_char_p:
         """
         Gets an unsafe pointer to the string data in the C library.
 
@@ -300,7 +303,7 @@ class CString:
         return self.string_methods.unsafe(self.vm, string_ptr)
 
     @exception_handler
-    def size(self, ptr: ctypes.c_uint64) -> ctypes.c_uint64:
+    def size(self, ptr: ctypes.c_uint64, nothrow=False, noclear=False) -> ctypes.c_uint64:
         """
         Gets the size of a string in the C library.
 
@@ -316,7 +319,7 @@ class CString:
         return self.string_methods.size(self.vm, ptr)
 
     @exception_handler
-    def lessthan(self, src: ctypes.c_uint64, dest: ctypes.c_uint64) -> ctypes.c_uint64:
+    def lessthan(self, src: ctypes.c_uint64, dest: ctypes.c_uint64, nothrow=False, noclear=False) -> ctypes.c_uint64:
         """
         Checks if one string is less than another string in the C library.
 
@@ -333,7 +336,7 @@ class CString:
         return self.string_methods.lessthan(self.vm, src, dest)
 
     @exception_handler
-    def greaterthan(self, src: ctypes.c_uint64, dest: ctypes.c_uint64) -> ctypes.c_uint64:
+    def greaterthan(self, src: ctypes.c_uint64, dest: ctypes.c_uint64, nothrow=False, noclear=False) -> ctypes.c_uint64:
         """
         Checks if one string is greater than another string in the C library.
 
@@ -350,7 +353,7 @@ class CString:
         return self.string_methods.greaterthan(self.vm, src, dest)
 
     @exception_handler
-    def equals(self, src: ctypes.c_uint64, dest: ctypes.c_uint64) -> ctypes.c_uint64:
+    def equals(self, src: ctypes.c_uint64, dest: ctypes.c_uint64, nothrow=False, noclear=False) -> ctypes.c_uint64:
         """
         Checks if two strings are equal in the C library.
 
@@ -367,7 +370,7 @@ class CString:
         return self.string_methods.equals(self.vm, src, dest)
 
     @exception_handler
-    def compare(self, src: ctypes.c_uint64, dest: ctypes.c_uint64) -> ctypes.c_uint64:
+    def compare(self, src: ctypes.c_uint64, dest: ctypes.c_uint64, nothrow=False, noclear=False) -> ctypes.c_uint64:
         """
         Compares two strings in the C library.
 
@@ -384,7 +387,7 @@ class CString:
         return self.string_methods.compare(self.vm, src, dest)
 
     @exception_handler
-    def left(self, src: ctypes.c_uint64, offset: ctypes.c_uint64) -> ctypes.c_uint64:
+    def left(self, src: ctypes.c_uint64, offset: ctypes.c_uint64, nothrow=False, noclear=False) -> ctypes.c_uint64:
         """
         Gets the left part of a string in the C library.
 
@@ -401,7 +404,7 @@ class CString:
         return self.string_methods.left(self.vm, src, offset)
 
     @exception_handler
-    def strncpy(self, src: ctypes.c_uint64, nbytes: ctypes.c_uint64) -> ctypes.c_uint64:
+    def strncpy(self, src: ctypes.c_uint64, nbytes: ctypes.c_uint64, nothrow=False, noclear=False) -> ctypes.c_uint64:
         """
         Copies a part of a string in the C library.
 
@@ -418,7 +421,7 @@ class CString:
         return self.string_methods.strncpy(self.vm, src, nbytes)
 
     @exception_handler
-    def left_strncpy(self, src: ctypes.c_uint64, offset: ctypes.c_uint64) -> ctypes.c_uint64:
+    def left_strncpy(self, src: ctypes.c_uint64, offset: ctypes.c_uint64, nothrow=False, noclear=False) -> ctypes.c_uint64:
         """
         Copies a part of a string from the left in the C library.
 
@@ -435,7 +438,7 @@ class CString:
         return self.string_methods.left_strncpy(self.vm, src, offset)
 
     @exception_handler
-    def right(self, src: ctypes.c_uint64, offset: ctypes.c_uint64) -> ctypes.c_uint64:
+    def right(self, src: ctypes.c_uint64, offset: ctypes.c_uint64, nothrow=False, noclear=False) -> ctypes.c_uint64:
         """
         Gets the right part of a string in the C library.
 
@@ -452,7 +455,7 @@ class CString:
         return self.string_methods.right(self.vm, src, offset)
 
     @exception_handler
-    def move_left(self, src: ctypes.c_uint64, nbytes: ctypes.c_uint64) -> ctypes.c_uint64:
+    def move_left(self, src: ctypes.c_uint64, nbytes: ctypes.c_uint64, nothrow=False, noclear=False) -> ctypes.c_uint64:
         """
         Moves a part of a string to the left in the C library.
 
@@ -469,7 +472,24 @@ class CString:
         return self.string_methods.move_left(self.vm, src, nbytes)
 
     @exception_handler
-    def strcmp(self, src: ctypes.c_uint64, dest: ctypes.c_uint64) -> ctypes.c_uint64:
+    def move_right(self, src: ctypes.c_uint64, nbytes: ctypes.c_uint64, nothrow=False, noclear=False) -> ctypes.c_uint64:
+        """
+        Moves a part of a string to the right in the C library.
+
+        Args:
+            src: A pointer (as a ctypes.c_uint64) to the string.
+            nbytes: A ctypes.c_uint64 representing the number of bytes to move.
+
+        Returns:
+            A pointer (as a ctypes.c_uint64) to the modified string.
+
+        Raises:
+            Exception: If an error occurs during the C library call.
+        """
+        return self.string_methods.move_right(self.vm, src, nbytes)
+
+    @exception_handler
+    def strcmp(self, src: ctypes.c_uint64, dest: ctypes.c_uint64, nothrow=False, noclear=False) -> ctypes.c_uint64:
         """
         Compares two strings in the C library.
 

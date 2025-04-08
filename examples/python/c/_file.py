@@ -1,7 +1,8 @@
 # c/file.py
 import ctypes
-from .vm import CVirtualMachine
-from .error import CException, CVirtualMachineNotInitializedException
+from ._vm import CVirtualMachine
+from ._error import CError, CException, CVirtualMachineNotInitializedException
+from ._pointer import CType
 
 
 class CFile:
@@ -70,13 +71,16 @@ class CFile:
             The wrapped function.
         """
         def wrapper(self, *args, **kwargs):
+            if not kwargs.get("noclear", False):
+                CError.clear()
             result = func(self, *args, **kwargs)
-            CException.check()
+            if not kwargs.get("nothrow", False):
+                CException.check()
             return result
         return wrapper
 
     @exception_handler
-    def alloc(self, file_path_ptr: ctypes.c_uint64, mode_ptr: ctypes.c_uint64) -> ctypes.c_uint64:
+    def alloc(self, file_path_ptr: ctypes.c_uint64, mode_ptr: ctypes.c_uint64, nothrow=False, noclear=False) -> ctypes.c_uint64:
         """
         Allocates a file in the C library.
 
@@ -93,7 +97,7 @@ class CFile:
         return self.file_methods.alloc(self.vm, file_path_ptr, mode_ptr)
 
     @exception_handler
-    def data(self, ptr: ctypes.c_uint64) -> ctypes.c_uint64:
+    def data(self, ptr: ctypes.c_uint64, nothrow=False, noclear=False) -> ctypes.c_uint64:
         """
         Gets the data associated with a file.
 
@@ -109,7 +113,7 @@ class CFile:
         return self.file_methods.data(self.vm, ptr)
 
     @exception_handler
-    def free(self, ptr: ctypes.c_uint64) -> ctypes.c_uint64:
+    def free(self, ptr: ctypes.c_uint64, nothrow=False, noclear=False) -> ctypes.c_uint64:
         """
         Frees the resources associated with a file.
 

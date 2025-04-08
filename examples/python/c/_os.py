@@ -27,6 +27,7 @@ class COperatingSystem:
             getcwd: Function pointer for getting the current working directory.
             getenv: Function pointer for getting an environment variable.
             memcpy: Function pointer for copying memory.
+            memmove: Function pointer for moving memory.
             memset: Function pointer for setting memory to a specific value.
             puts: Function pointer for printing a string to standard output.
             strcmp: Function pointer for comparing two strings.
@@ -46,6 +47,7 @@ class COperatingSystem:
             ("getcwd", ctypes.CFUNCTYPE(ctypes.c_char_p, ctypes.c_char_p, ctypes.c_size_t)),
             ("getenv", ctypes.CFUNCTYPE(ctypes.c_char_p, ctypes.c_char_p)),
             ("memcpy", ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_void_p), ctypes.POINTER(ctypes.c_void_p), ctypes.POINTER(ctypes.c_void_p), ctypes.c_size_t)),
+            ("memmove", ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_void_p), ctypes.POINTER(ctypes.c_void_p), ctypes.POINTER(ctypes.c_void_p), ctypes.c_size_t)),
             ("memset", ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_void_p), ctypes.POINTER(ctypes.c_void_p), ctypes.c_int, ctypes.c_size_t)),
             ("puts", ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_char_p)),
             ("strcmp", ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_char_p, ctypes.c_char_p)),
@@ -220,6 +222,21 @@ class COperatingSystem:
             A ctypes.c_void_p representing a pointer to the destination memory area.
         """
         return cls.os_methods.memcpy(dest, src, n)
+
+    @classmethod
+    def memmove(cls, dest: ctypes.c_void_p, src: ctypes.c_void_p, n: ctypes.c_size_t) -> ctypes.c_void_p:
+        """
+        Moves 'n' bytes from memory area 'src' to memory area 'dest'.
+
+        Args:
+            dest: A ctypes.c_void_p representing a pointer to the destination memory area.
+            src: A ctypes.c_void_p representing a pointer to the source memory area.
+            n: The number of bytes to move.
+
+        Returns:
+            A ctypes.c_void_p representing a pointer to the destination memory area.
+        """
+        return cls.os_methods.memmove(dest, src, n)
 
     @classmethod
     def memset(cls, s: ctypes.c_void_p, c: ctypes.c_int, n: ctypes.c_size_t) -> ctypes.c_void_p:

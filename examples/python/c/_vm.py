@@ -23,9 +23,9 @@ class CVirtualMachine:
         """
         _fields_ = [
             ("init", ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_void_p), ctypes.c_uint64)),
-            ("gc", ctypes.CFUNCTYPE(None)),
-            ("release", ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.c_uint64)),
-            ("destroy", ctypes.CFUNCTYPE(None)),
+            ("gc", ctypes.CFUNCTYPE(None, ctypes.POINTER(ctypes.c_void_p))),
+            ("release", ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(ctypes.c_void_p), ctypes.c_uint64)),
+            ("destroy", ctypes.CFUNCTYPE(None, ctypes.POINTER(ctypes.c_void_p))),
         ]
 
     @classmethod
@@ -59,7 +59,7 @@ class CVirtualMachine:
         """
         Performs garbage collection in the virtual machine.
         """
-        return self.vm_methods.gc()
+        return self.vm_methods.gc(self.ptr)
 
     def release(self, ptr: ctypes.c_uint64) -> ctypes.c_uint64:
         """
@@ -71,10 +71,10 @@ class CVirtualMachine:
         Returns:
             A status code (typically 0 for success, non-zero for failure).
         """
-        return self.vm_methods.release(ptr)
+        return self.vm_methods.release(self.ptr, ptr)
 
     def __del__(self):
         """
         Destroys the virtual machine.
         """
-        return self.vm_methods.destroy()
+        return self.vm_methods.destroy(self.ptr)
