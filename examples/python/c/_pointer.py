@@ -1,7 +1,7 @@
 # c/pointer.py
 import ctypes
-from .vm import CVirtualMachine
-from .error import CException, CVirtualMachineNotInitializedException
+from ._vm import CVirtualMachine
+from ._error import CError, CException, CVirtualMachineNotInitializedException
 
 
 class CType(ctypes.c_uint64):
@@ -97,13 +97,16 @@ class CPointer:
             The wrapped function.
         """
         def wrapper(self, *args, **kwargs):
+            if not kwargs.get("noclear", False):
+                CError.clear()
             result = func(self, *args, **kwargs)
-            CException.check()
+            if not kwargs.get("nothrow", False):
+                CException.check()
             return result
         return wrapper
 
     @exception_handler
-    def alloc(self, data: ctypes.c_uint64, size: ctypes.c_uint64, type_id: CType) -> ctypes.c_uint64:
+    def alloc(self, data: ctypes.c_uint64, size: ctypes.c_uint64, type_id: CType, nothrow=False, noclear=False) -> ctypes.c_uint64:
         """
         Allocates a pointer in the C library.
 
@@ -118,7 +121,7 @@ class CPointer:
         return self.pointer_methods.alloc(self.vm, data, size)
 
     @exception_handler
-    def copy(self, src: ctypes.c_uint64, size: ctypes.c_uint64, offset: ctypes.c_uint64, type_id: CType) -> ctypes.c_uint64:
+    def copy(self, src: ctypes.c_uint64, size: ctypes.c_uint64, offset: ctypes.c_uint64, type_id: CType, nothrow=False, noclear=False) -> ctypes.c_uint64:
         """
         Copies a pointer in the C library.
 
@@ -134,7 +137,7 @@ class CPointer:
         return self.pointer_methods.copy(self.vm, src, size, offset, type_id)
 
     @exception_handler
-    def read(self, address: ctypes.c_uint64, type_id: CType) -> ctypes.c_void_p:
+    def read(self, address: ctypes.c_uint64, type_id: CType, nothrow=False, noclear=False) -> ctypes.c_void_p:
         """
         Reads data from a pointer in the C library.
 
@@ -148,7 +151,7 @@ class CPointer:
         return self.pointer_methods.read(self.vm, address, type_id)
 
     @exception_handler
-    def free(self, address: ctypes.c_uint64, type_id: CType) -> ctypes.c_uint64:
+    def free(self, address: ctypes.c_uint64, type_id: CType, nothrow=False, noclear=False) -> ctypes.c_uint64:
         """
         Frees a pointer in the C library.
 

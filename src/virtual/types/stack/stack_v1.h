@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 6, 2025 at 9:06:30 PM GMT+3
+ *   April 8, 2025 at 8:40:22 AM GMT+3
  *
  */
 /*
@@ -41,16 +41,11 @@
 
 typedef struct PRIVATE_API(virtual_stack_methods) {
     u64 (*alloc)(const_vm_ptr cvm);
+    u64 (*push)(const_vm_ptr cvm, u64 list_ptr, u64 ptr);
     u64 (*peek)(const_vm_ptr cvm, u64 list_ptr);
-    /*! returns a list of picked items
-        @param list_ptr a list to get items from
-        @param nelements number of elements to peek from the list
-        @return returns new list which contains n elements from the list in reverse order
-    */
     u64 (*peekn)(const_vm_ptr cvm, u64 list_ptr, u64 nelements);
     u64 (*pop)(const_vm_ptr cvm, u64 list_ptr);
     u64 (*popn)(const_vm_ptr cvm, u64 list_ptr, u64 nelements);
-    u64 (*push)(const_vm_ptr cvm, u64 list_ptr, u64 ptr);
     u64 (*size)(const_vm_ptr cvm, u64 ptr);
     u64 (*release)(const_vm_ptr cvm, u64 ptr);
     u64 (*free)(const_vm_ptr cvm, u64 ptr);

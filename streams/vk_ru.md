@@ -5,6 +5,6 @@
 - [канал](https://vkvideo.ru/@club230014275)
 
 - проверка API для классов Python
-- **проверка exception handling**
-- написание unit-тестов на python
-- API дампов памяти в python
+- exception handling в Python
+- **unit-тесты в Python**
+- API дампов памяти в Python

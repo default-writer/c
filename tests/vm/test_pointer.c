@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 7, 2025 at 9:22:06 PM GMT+3
+ *   April 8, 2025 at 9:59:07 AM GMT+3
  *
  */
 /*
@@ -6112,8 +6112,6 @@ static void parse_text(const_vm_ptr cvm, u64 text_string_ptr) {
 #ifndef USE_GC
     CALL(stack)->free(cvm, stack_ptr2);
 #endif
-    CALL(stack)->free(cvm, stack_ptr1);
-    CALL(stack)->free(cvm, stack_ptr2);
     CALL(stack)->free(cvm, gc_ptr);
 }
 

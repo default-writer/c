@@ -139,83 +139,7 @@ class CError:
         return cls.error_methods.get()
 
 
-class CVirtualMachineNotInitializedException(Exception):
-    """
-    CVirtualMachineNotInitializedException is raised when an operation is attempted
-    that requires a properly initialized virtual machine, but the VM has not been
-    initialized.
-    """
-    def __init__(self, message):
-        """
-        Initializes the exception with a message.
-
-        Args:
-            message: The error message.
-        """
-        super().__init__(message)
-
-
-class CInvalidPointerException(Exception):
-    """
-    CInvalidPointerException is raised when an operation is attempted with an
-    invalid memory pointer.
-    """
-    def __init__(self, message):
-        """
-        Initializes the exception with a message.
-
-        Args:
-            message: The error message.
-        """
-        super().__init__(message)
-
-
-class CInvalidArgumentException(Exception):
-    """
-    CInvalidArgumentException is raised when an operation is attempted with an
-    invalid argument.
-    """
-    def __init__(self, message):
-        """
-        Initializes the exception with a message.
-
-        Args:
-            message: The error message.
-        """
-        super().__init__(message)
-
-
-class CInvalidTypeIdException(Exception):
-    """
-    CInvalidTypeIdException is raised when an operation is attempted with an
-    invalid type identifier.
-    """
-    def __init__(self, message):
-        """
-        Initializes the exception with a message.
-
-        Args:
-            message: The error message.
-        """
-        super().__init__(message)
-
-
-class CInvalidValueException(Exception):
-    """
-    CInvalidValueException is raised when an operation is attempted with an
-    invalid value.
-    """
-    def __init__(self, message):
-        """
-        Initializes the exception with a message.
-
-        Args:
-            message: The error message.
-        """
-        super().__init__(message)
-
-
-class CException:
+class CException(Exception):
     """
     CException provides a mechanism for checking for errors in the C library and
     raising corresponding Python exceptions.
@@ -251,14 +175,10 @@ class CException:
         Raises:
             Exception: A Python exception corresponding to the last error code.
         """
-        exception = cls._get_exception()
-        cls.last_error_code = CErrorType.Default
-        cls.last_error_message = ""
-        CError.clear()
-        raise exception
+        raise cls.get_exception()
 
     @classmethod
-    def _get_exception(cls):
+    def get_exception(cls):
         """
         Gets the appropriate Python exception based on the last error code.
 
@@ -280,3 +200,79 @@ class CException:
             return CInvalidValueException(cls.last_error_message)
         else:
             return Exception(f"Unknown error code: {cls.last_error_code}, message: {cls.last_error_message}")
+
+
+class CVirtualMachineNotInitializedException(CException):
+    """
+    CVirtualMachineNotInitializedException is raised when an operation is attempted
+    that requires a properly initialized virtual machine, but the VM has not been
+    initialized.
+    """
+    def __init__(self, message):
+        """
+        Initializes the exception with a message.
+
+        Args:
+            message: The error message.
+        """
+        super().__init__(message)
+
+
+class CInvalidPointerException(CException):
+    """
+    CInvalidPointerException is raised when an operation is attempted with an
+    invalid memory pointer.
+    """
+    def __init__(self, message):
+        """
+        Initializes the exception with a message.
+
+        Args:
+            message: The error message.
+        """
+        super().__init__(message)
+
+
+class CInvalidArgumentException(CException):
+    """
+    CInvalidArgumentException is raised when an operation is attempted with an
+    invalid argument.
+    """
+    def __init__(self, message):
+        """
+        Initializes the exception with a message.
+
+        Args:
+            message: The error message.
+        """
+        super().__init__(message)
+
+
+class CInvalidTypeIdException(CException):
+    """
+    CInvalidTypeIdException is raised when an operation is attempted with an
+    invalid type identifier.
+    """
+    def __init__(self, message):
+        """
+        Initializes the exception with a message.
+
+        Args:
+            message: The error message.
+        """
+        super().__init__(message)
+
+
+class CInvalidValueException(CException):
+    """
+    CInvalidValueException is raised when an operation is attempted with an
+    invalid value.
+    """
+    def __init__(self, message):
+        """
+        Initializes the exception with a message.
+
+        Args:
+            message: The error message.
+        """
+        super().__init__(message)

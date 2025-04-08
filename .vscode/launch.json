@@ -20,10 +20,19 @@
     },
     {
       "preLaunchTask": "shell: cmake",
-      "name": "python",
+      "name": "python (file)",
       "type": "debugpy",
       "request": "launch",
-      "program": "${workspaceFolder}/examples/python/main.py",
+      "program": "${workspaceFolder}/examples/python/test_file.py",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    },
+    {
+      "preLaunchTask": "shell: cmake",
+      "name": "python (memory)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/examples/python/test_memory.py",
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal"
     },

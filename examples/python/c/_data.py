@@ -1,7 +1,7 @@
 # c/data.py
 import ctypes
-from .vm import CVirtualMachine
-from .error import CException, CVirtualMachineNotInitializedException
+from ._vm import CVirtualMachine
+from ._error import CError, CException, CVirtualMachineNotInitializedException
 
 
 class CData:
@@ -71,13 +71,16 @@ class CData:
             The wrapped function.
         """
         def wrapper(self, *args, **kwargs):
+            if not kwargs.get("noclear", False):
+                CError.clear()
             result = func(self, *args, **kwargs)
-            CException.check()
+            if not kwargs.get("nothrow", False):
+                CException.check()
             return result
         return wrapper
 
     @exception_handler
-    def alloc(self, size: ctypes.c_uint64) -> ctypes.c_uint64:
+    def alloc(self, size: ctypes.c_uint64, nothrow=False, noclear=False) -> ctypes.c_uint64:
         """
         Allocates a memory block of the specified size in the C library.
 
@@ -93,7 +96,7 @@ class CData:
         return self.data_methods.alloc(self.vm, size)
 
     @exception_handler
-    def size(self, ptr: ctypes.c_uint64) -> ctypes.c_uint64:
+    def size(self, ptr: ctypes.c_uint64, nothrow=False, noclear=False) -> ctypes.c_uint64:
         """
         Gets the size of the memory block pointed to by the given pointer.
 
@@ -109,7 +112,7 @@ class CData:
         return self.data_methods.size(self.vm, ptr)
 
     @exception_handler
-    def unsafe(self, ptr: ctypes.c_uint64) -> ctypes.c_void_p:
+    def unsafe(self, ptr: ctypes.c_uint64, nothrow=False, noclear=False) -> ctypes.c_void_p:
         """
         Gets an unsafe pointer to the allocated memory block.
 
@@ -127,7 +130,7 @@ class CData:
         return self.data_methods.unsafe(self.vm, ptr)
 
     @exception_handler
-    def free(self, ptr: ctypes.c_uint64) -> ctypes.c_uint64:
+    def free(self, ptr: ctypes.c_uint64, nothrow=False, noclear=False) -> ctypes.c_uint64:
         """
         Frees the memory block pointed to by the given pointer.
 

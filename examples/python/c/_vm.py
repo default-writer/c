@@ -54,8 +54,6 @@ class CVirtualMachine:
             A ctypes.c_void_p representing a pointer to the initialized virtual machine.
         """
         self.ptr = self.vm_methods.init(size)
-        if not self.ptr:
-            raise Exception("Failed to initialize virtual machine")
 
     def gc(self):
         """
