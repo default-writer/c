@@ -501,6 +501,7 @@
     "[python]": {
         "editor.defaultFormatter": "trunk.io"
     },
+    "chat.agent.enabled": true,
     "cmake.debugConfig": {
         "MIMode": "gdb",
         "miDebuggerPath": "/usr/bin/gdb",
