@@ -499,5 +499,6 @@
   "git.fetchOnPull": true,
   "[python]": {
       "editor.defaultFormatter": "trunk.io"
-  }
+  },
+  "chat.agent.enabled": true
 }
