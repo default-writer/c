@@ -6,5 +6,8 @@
 
 - проверка API для классов Python
 - exception handling в Python
-- **unit-тесты в Python**
+- tasks в VSCode
+- визуализация ASCII в TTY консоли
+- тестирование в Python
+- unit-тесты в Python
 - API дампов памяти в Python

@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 7, 2025 at 9:20:44 PM GMT+3
+ *   April 8, 2025 at 1:21:33 PM GMT+3
  *
  */
 /*
@@ -210,7 +210,15 @@ static void vm_dump_ref_internal(const_vm_ptr cvm, pointer_ptr* ptr, stack_ptr* 
     if (stack != NULL_PTR) {
         CALL(list)->push(stack, (void_ptr)*ptr);
     }
-    printf("  p&: %016llx > %016llx\n", (u64)ptr, (u64)*ptr);
+#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_TTY
+    const char* start = "\x1b[34m";
+    const char* end = "\x1b[0m";
+    fprintf(stderr, "%s[  p& ]%s: %016llx > %016llx\n", start, end, (u64)ptr, (u64)*ptr); /* NOLINT */
+#else
+    fprintf(stderr, "  p& : %016llx > %016llx\n", (u64)ptr, (u64)*ptr); /* NOLINT */
+#endif
+#endif
 }
 
 /* code */

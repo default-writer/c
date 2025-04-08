@@ -19,6 +19,25 @@
       "processId": ""
     },
     {
+      "name": "python (default)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/examples/python/test_default.py",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "python (default, sanitize)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/examples/python/test_default.py",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "env": {
+        "LD_PRELOAD": "/usr/lib/x86_64-linux-gnu/libasan.so.8"
+      }
+    },
+    {
       "preLaunchTask": "shell: cmake",
       "name": "python (file)",
       "type": "debugpy",
@@ -28,8 +47,62 @@
       "console": "integratedTerminal"
     },
     {
+      "preLaunchTask": "shell: cmake (gc)",
+      "name": "python (file, gc)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/examples/python/test_file.py",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    },
+    {
+      "preLaunchTask": "shell: cmake (verbose)",
+      "name": "python (file, verbose)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/examples/python/test_file.py",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    },
+    {
+      "preLaunchTask": "shell: cmake (gc, verbose)",
+      "name": "python (file, gc, verbose)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/examples/python/test_file.py",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    },
+    {
       "preLaunchTask": "shell: cmake",
       "name": "python (memory)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/examples/python/test_memory.py",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    },
+    {
+      "preLaunchTask": "shell: cmake (gc)",
+      "name": "python (memory, gc)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/examples/python/test_memory.py",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    },
+    {
+      "preLaunchTask": "shell: cmake (verbose)",
+      "name": "python (memory, verbose)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/examples/python/test_memory.py",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    },
+    {
+      "preLaunchTask": "shell: cmake (gc, verbose)",
+      "name": "python (memory, gc, verbose)",
       "type": "debugpy",
       "request": "launch",
       "program": "${workspaceFolder}/examples/python/test_memory.py",

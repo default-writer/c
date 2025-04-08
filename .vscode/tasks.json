@@ -17,7 +17,7 @@
             }
         },
         {
-            "label": "shell: cmake",
+            "label": "shell: cmake (gc, verbose)",
             "type": "shell",
             "command": "${workspaceFolder}/bin/cmake.sh",
             "problemMatcher": [],
@@ -25,7 +25,83 @@
                 "--target=main-tests-vm1",
                 "--gc",
                 "--verbose",
-                "--clean"
+                "--clean",
+                "--tty"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "shell: cmake (gc)",
+            "type": "shell",
+            "command": "${workspaceFolder}/bin/cmake.sh",
+            "problemMatcher": [],
+            "args": [
+                "--target=main-tests-vm1",
+                "--gc",
+                "--clean",
+                "--tty"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "shell: cmake (verbose)",
+            "type": "shell",
+            "command": "${workspaceFolder}/bin/cmake.sh",
+            "problemMatcher": [],
+            "args": [
+                "--target=main-tests-vm1",
+                "--verbose",
+                "--clean",
+                "--tty"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "shell: cmake (gc, sanitize)",
+            "type": "shell",
+            "command": "${workspaceFolder}/bin/cmake.sh",
+            "problemMatcher": [],
+            "args": [
+                "--target=main-tests-vm1",
+                "--gc",
+                "--sanitize",
+                "--clean",
+                "--tty"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "shell: cmake (sanitize)",
+            "type": "shell",
+            "command": "${workspaceFolder}/bin/cmake.sh",
+            "problemMatcher": [],
+            "args": [
+                "--target=main-tests-vm1",
+                "--sanitize",
+                "--clean",
+                "--tty"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "shell: cmake",
+            "type": "shell",
+            "command": "${workspaceFolder}/bin/cmake.sh",
+            "problemMatcher": [],
+            "args": [
+                "--target=main-tests-vm1",
+                "--clean",
+                "--tty"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"

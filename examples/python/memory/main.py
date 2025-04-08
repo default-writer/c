@@ -1,4 +1,4 @@
-# examples/memory/main.py
+# examples/python/memory/main.py
 import ctypes
 
 from c import CVirtualMachine, CString, CException, CStack, CEnvironment
