@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 3, 2025 at 10:37:26 AM GMT+3
+ *   April 8, 2025 at 1:34:37 PM GMT+3
  *
  */
 /*
@@ -53,14 +53,16 @@ static u64 error_count(void);
 
 /* implementation */
 static void error_output(FILE* output, u64 error_type, const char* message, u64 size) {
+#ifdef USE_MEMORY_DEBUG_INFO
 #ifdef USE_TTY
     if (isatty(STDERR_FILENO)) {
         const char* start = "\x1b[31m";
         const char* end = "\x1b[0m";
-        fprintf(output, "%s[debug]%s %s: %s\n", start, end, error_messages[error_type], message); /* NOLINT: fprintf(output) */
+        fprintf(output, "%s[debug]%s: %s: %s\n", start, end, error_messages[error_type], message); /* NOLINT: fprintf(output) */
     }
 #else
-    fprintf(output, "[debug] %s: %s\n", error_messages[error_type], message); /* NOLINT: fprintf(output) */
+    fprintf(output, "[debug]: %s: %s\n", error_messages[error_type], message); /* NOLINT: fprintf(output) */
+#endif
 #endif
 }
 

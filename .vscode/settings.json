@@ -454,7 +454,7 @@
     "workbench.quickOpen.closeOnFocusLost": false,
     "twitch.fontSize": "14px",
     "pdf-preview.default.sidebar": true,
-    "workbench.preferredDarkColorTheme": "Yitzchok (rainglow)",
+    "workbench.preferredDarkColorTheme": "Default Dark+",
     "workbench.preferredHighContrastColorTheme": "Yitzchok Contrast (rainglow)",
     "workbench.preferredLightColorTheme": "Yitzchok Light (rainglow)",
     "window.autoDetectColorScheme": true,

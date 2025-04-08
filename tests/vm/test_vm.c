@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 8, 2025 at 9:58:35 AM GMT+3
+ *   April 8, 2025 at 1:22:10 PM GMT+3
  *
  */
 /*
@@ -613,7 +613,15 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_memory_leak_1, .fixture = test_clean_fixt
         current = compare_left;
         while (current->next != NULL_PTR) {
             u64 ptr = (u64)current->data;
-            printf("  v<: %016llx\n", ptr);
+#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_TTY
+            const char* start = "\x1b[34m";
+            const char* end = "\x1b[0m";
+            fprintf(stderr, "%s[  v< ]%s: %016llx\n", start, end, ptr); /* NOLINT */
+#else
+            fprintf(stderr, "  v< : %016llx\n", ptr); /* NOLINT */
+#endif
+#endif
             const_pointer_ptr const_ptr = (const_pointer_ptr)ptr;
             CALL(pointer)->free(debug_cvm, const_ptr->public.address);
             current = current->next;
@@ -680,7 +688,15 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_memory_leak_2, .fixture = test_clean_fixt
         current = compare_left;
         while (current->next != NULL_PTR) {
             u64 ptr = (u64)current->data;
-            printf("  v<: %016llx\n", ptr);
+#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_TTY
+            const char* start = "\x1b[34m";
+            const char* end = "\x1b[0m";
+            fprintf(stderr, "%s[  v< ]%s: %016llx\n", start, end, ptr); /* NOLINT */
+#else
+            fprintf(stderr, "  v< : %016llx\n", ptr); /* NOLINT */
+#endif
+#endif
             const_pointer_ptr const_ptr = (const_pointer_ptr)ptr;
             CALL(pointer)->free(debug_cvm, const_ptr->public.address);
             current = current->next;

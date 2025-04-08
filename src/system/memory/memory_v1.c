@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 5, 2025 at 5:45:34 AM GMT+3
+ *   April 8, 2025 at 1:33:04 PM GMT+3
  *
  */
 /*
@@ -65,7 +65,15 @@ static void_ptr memory_alloc(u64 size) {
     }
 #ifdef USE_MEMORY_DEBUG_INFO
     total_alloc += size;
-    printf("  m+: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_free, total_alloc);
+#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_TTY
+    const char* start = "\x1b[34m";
+    const char* end = "\x1b[0m";
+    fprintf(stderr, "%s[  m+ ]%s: %016llx ! %16lld . %16lld : %16lld : %16lld\n", start, end, (u64)ptr, size, total_alloc - total_free, total_free, total_alloc); /* NOLINT */
+#else
+    fprintf(stderr, "  m+ : %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_free, total_alloc); /* NOLINT */
+#endif
+#endif
 #endif
     return ptr;
 }
@@ -95,7 +103,15 @@ static void_ptr memory_realloc(const_void_ptr const_ptr, u64 size, u64 new_size)
     CALL(os)->memset((u8*)ptr + size, 0x00, new_size - size);
 #ifdef USE_MEMORY_DEBUG_INFO
     total_alloc += new_size - size;
-    printf("  m*: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, new_size, total_alloc - total_free, total_free, total_alloc);
+#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_TTY
+    const char* start = "\x1b[34m";
+    const char* end = "\x1b[0m";
+    fprintf(stderr, "%s[  m* ]%s: %016llx ! %16lld . %16lld : %16lld : %16lld\n", start, end, (u64)ptr, new_size, total_alloc - total_free, total_free, total_alloc); /* NOLINT */
+#else
+    fprintf(stderr, "  m* : %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, new_size, total_alloc - total_free, total_free, total_alloc); /* NOLINT */
+#endif
+#endif
 #endif
     return ptr;
 }
@@ -121,7 +137,15 @@ static void memory_free(const_void_ptr const_ptr, u64 size) {
 #endif
 #ifdef USE_MEMORY_DEBUG_INFO
     total_free += size;
-    printf("  m-: %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_free, total_alloc);
+#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_TTY
+    const char* start = "\x1b[34m";
+    const char* end = "\x1b[0m";
+    fprintf(stderr, "%s[  m- ]%s: %016llx ! %16lld . %16lld : %16lld : %16lld\n", start, end, (u64)ptr, size, total_alloc - total_free, total_free, total_alloc); /* NOLINT */
+#else
+    fprintf(stderr, "  m- : %016llx ! %16lld . %16lld : %16lld : %16lld\n", (u64)ptr, size, total_alloc - total_free, total_free, total_alloc); /* NOLINT */
+#endif
+#endif
 #endif
     CALL(os)->free(ptr);
 }
@@ -155,11 +179,27 @@ static void memory_set(void_ptr dest, u8 c, u64 count) {
 CSYS_EXPORT void init_statistics(void) {
     total_alloc = 0;
     total_free = 0;
-    printf("  m.: %16s ! %16lld . %16lld : %16lld : %16lld\n", "", (u64)0, total_alloc - total_free, total_free, total_alloc);
+#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_TTY
+    const char* start = "\x1b[34m";
+    const char* end = "\x1b[0m";
+    fprintf(stderr, "%s[  m. ]%s: %16s ! %16lld . %16lld : %16lld : %16lld\n", start, end, "", (u64)0, total_alloc - total_free, total_free, total_alloc); /* NOLINT */
+#else
+    fprintf(stderr, "  m. : %16s ! %16lld . %16lld : %16lld : %16lld\n", "", (u64)0, total_alloc - total_free, total_free, total_alloc); /* NOLINT */
+#endif
+#endif
 }
 
 CSYS_EXPORT void result_statistics(void) {
-    printf("  m.: %16s ! %16lld . %16lld : %16lld : %16lld\n", "", (u64)0, total_alloc - total_free, total_free, total_alloc);
+#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_TTY
+    const char* start = "\x1b[34m";
+    const char* end = "\x1b[0m";
+    fprintf(stderr, "%s[  m. ]%s: %16s ! %16lld . %16lld : %16lld : %16lld\n", start, end, "", (u64)0, total_alloc - total_free, total_free, total_alloc); /* NOLINT */
+#else
+    fprintf(stderr, "  m. : %16s ! %16lld . %16lld : %16lld : %16lld\n", "", (u64)0, total_alloc - total_free, total_free, total_alloc); /* NOLINT */
+#endif
+#endif
 }
 #endif
 

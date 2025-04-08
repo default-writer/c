@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 7, 2025 at 4:29:29 AM GMT+3
+ *   April 8, 2025 at 1:18:13 PM GMT+3
  *
  */
 /*
@@ -188,7 +188,15 @@ static void list_print_head(stack_ptr* current) {
     /* get current context's head */
     stack_ptr ptr = *current;
     /* visualize item */
-    printf("  l.: %016llx > %016llx\n", (u64)ptr, (u64)list_data(ptr));
+#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_TTY
+    const char* start = "\x1b[34m";
+    const char* end = "\x1b[0m";
+    fprintf(stderr, "%s[  l. ]%s: %016llx > %016llx\n", start, end, (u64)ptr, (u64)list_data(ptr)); /* NOLINT */
+#else
+    fprintf(stderr, "  l. : %016llx > %016llx\n", (u64)ptr, (u64)list_data(ptr)); /* NOLINT */
+#endif
+#endif
 }
 
 /* prints all stack trace to output */
@@ -201,7 +209,15 @@ static void list_print(stack_ptr* current) {
         /* until we found root element (element with no previous element reference) */
         do {
             /* debug output of memory dump */
-            printf("  l.: %016llx ! %016llx > %016llx : %016llx\n", address, (u64)tmp, (u64)list_data(tmp), (u64)tmp->next);
+#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_TTY
+            const char* start = "\x1b[34m";
+            const char* end = "\x1b[0m";
+            fprintf(stderr, "%s[  l. ]%s: %016llx ! %016llx > %016llx : %016llx\n", start, end, address, (u64)tmp, (u64)list_data(tmp), (u64)tmp->next); /* NOLINT */
+#else
+            fprintf(stderr, "  l. : %016llx ! %016llx > %016llx : %016llx\n", address, (u64)tmp, (u64)list_data(tmp), (u64)tmp->next); /* NOLINT */
+#endif
+#endif
             address++;
             /* remember temporary's prior pointer value to temporary */
             tmp = list_next(tmp);

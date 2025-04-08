@@ -4,7 +4,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 7, 2025 at 10:20:43 AM GMT+3
+ *   April 8, 2025 at 1:28:28 PM GMT+3
  *
  */
 /*
@@ -116,7 +116,15 @@ static u64 virtual_alloc_internal(const_vm_ptr cvm, u64 size, u64 type_id) {
     ptr->public.type = type_id;
     ptr->public.size = size;
 #ifdef USE_MEMORY_DEBUG_INFO
-    printf("  v+: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)vptr);
+#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_TTY
+    const char* start = "\x1b[34m";
+    const char* end = "\x1b[0m";
+    fprintf(stderr, "%s[  v+ ]%s: %016llx ! %016llx > %016llx\n", start, end, address, (u64)ptr, (u64)vptr); /* NOLINT */
+#else
+    fprintf(stderr, "  v+ : %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)vptr); /* NOLINT */
+#endif
+#endif
 #endif
     return address;
 }
@@ -226,7 +234,13 @@ static const_pointer_ptr virtual_read(const_vm_ptr cvm, u64 address) {
     safe_ptr.const_ptr = const_ptr;
     const_pointer_ptr ptr = safe_ptr.ptr;
     const_virtual_pointer_ptr vptr = ptr->vptr;
-    printf("  v.: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)vptr);
+#ifdef USE_TTY
+    const char* start = "\x1b[34m";
+    const char* end = "\x1b[0m";
+    fprintf(stderr, "%s[  v. ]%s: %016llx ! %016llx > %016llx\n", start, end, address, (u64)ptr, (u64)vptr); /* NOLINT */
+#else
+    fprintf(stderr, "  v. : %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)vptr); /* NOLINT */
+#endif
 #endif
     return const_ptr;
 }
@@ -253,7 +267,15 @@ static u64 virtual_type(const_vm_ptr cvm, u64 address) {
     u64 type = public_ptr->type;
 #ifdef USE_MEMORY_DEBUG_INFO
     const_virtual_pointer_ptr vptr = ptr->vptr;
-    printf("  v?: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)vptr);
+#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_TTY
+    const char* start = "\x1b[34m";
+    const char* end = "\x1b[0m";
+    fprintf(stderr, "%s[  v? ]%s: %016llx ! %016llx > %016llx\n", start, end, address, (u64)ptr, (u64)vptr); /* NOLINT */
+#else
+    fprintf(stderr, "  v? : %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)vptr); /* NOLINT */
+#endif
+#endif
 #endif
     return type;
 }
@@ -282,7 +304,15 @@ static u64 virtual_free(const_vm_ptr cvm, u64 address) {
         CALL(list)->push((*cvm)->cache, item);
 #endif
 #ifdef USE_MEMORY_DEBUG_INFO
-        printf("  v-: %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)vptr);
+#ifdef USE_MEMORY_DEBUG_INFO
+#ifdef USE_TTY
+        const char* start = "\x1b[34m";
+        const char* end = "\x1b[0m";
+        fprintf(stderr, "%s[  v- ]%s: %016llx ! %016llx > %016llx\n", start, end, address, (u64)ptr, (u64)vptr); /* NOLINT */
+#else
+        fprintf(stderr, "  v- : %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)vptr); /* NOLINT */
+#endif
+#endif
 #endif
         vptr->bp[offset] = 0;
     }
