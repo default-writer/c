@@ -100,7 +100,7 @@ def parse_text_memory_leak2(text_ptr, string: CString, env: CEnvironment, stack:
                 distance = string.lessthan(string_ptr, match_start_ptr, nothrow=True)
                 if distance > 0:
                     substring_text = string.unsafe(str_ncpy).decode()
-                    print(" " * distance, f"{substring_text}[{distance}]")
+                    print(" " * (distance - 1), f"{substring_text}[{distance}]")
             current_ptr = match_ptr
 
     stack.free(stack_ptr2)
