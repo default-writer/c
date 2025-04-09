@@ -12,6 +12,8 @@ from ._file import *
 from ._string import * 
 from ._vm import * 
 from ._stack import *
+from ._list import *
+
 
 def load(name):
     """
@@ -45,6 +47,7 @@ CError.setup(lib_c_sys)
 CMemory.setup(lib_c_sys)
 COperatingSystem.setup(lib_c_sys)
 
+CList.setup(lib_c_vm)
 CStack.setup(lib_c_vm)
 CData.setup(lib_c_vm)
 CEnvironment.setup(lib_c_vm)

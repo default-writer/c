@@ -1,27 +1,39 @@
+/* SPDX-License-Identifier: BSD-3-Clause */
 /*-*-coding:utf-8 -*-
  * Auto updated?
  *   Yes
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 8, 2025 at 1:28:28 PM GMT+3
+ *   April 9, 2025 at 4:06:17 PM GMT+3
  *
  */
 /*
     Copyright (C) 2022-2047 Artur Mustafin (artur.mustafin@gmail.com)
+    All rights reserved.
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+    1. Redistributions of source code must retain the above copyright notice, this
+       list of conditions and the following disclaimer.
+    2. Redistributions in binary form must reproduce the above copyright notice,
+       this list of conditions and the following disclaimer in the documentation
+       and/or other materials provided with the distribution.
+    3. Neither the name of the copyright holder nor the names of its
+       contributors may be used to endorse or promote products derived from
+       this software without specific prior written permission.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+    AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+    DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+    FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+    DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+    SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+    CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+    OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+    OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "virtual_v1.h"
@@ -29,9 +41,10 @@
 #define USING_SYSTEM_ERROR_API
 #include "system/error/error_v1.h"
 
-#include "system/list/list_v1.h"
 #include "system/memory/memory_v1.h"
 #include "system/os/os_v1.h"
+
+#include "virtual/list/list_v1.h"
 
 /* macros */
 #define VM_TYPE_SIZE sizeof(vm_type)
@@ -84,7 +97,7 @@ static u64 virtual_alloc_internal(const_vm_ptr cvm, u64 size, u64 type_id) {
     pointer_ptr* tmp = 0;
     virtual_pointer_ptr vptr;
 #ifndef USE_GC
-    vm_pointer_ptr item = CALL(list)->pop((*cvm)->cache);
+    vm_pointer_ptr item = (vm_pointer_ptr)CALL(list)->pop(cvm, (*cvm)->cache);
     if (item != 0) {
         vptr = item->vptr;
         tmp = &vptr->bp[item->offset];
@@ -179,8 +192,7 @@ static const_vm_ptr virtual_init(u64 size) {
     virtual_pointer_ptr vptr = virtual_init_internal(size == 0 ? DEFAULT_SIZE : size);
     (*ptr)->next = vptr;
 #ifndef USE_GC
-    (*ptr)->cache = CALL(os)->calloc(1, PTR_SIZE);
-    CALL(list)->init((*ptr)->cache);
+    (*ptr)->cache = CALL(list)->init(cvm);
 #endif
     return cvm;
 }
@@ -195,11 +207,10 @@ static void virtual_destroy(const_vm_ptr cvm) {
     vm_ptr ptr = *safe_ptr.ptr;
 #ifndef USE_GC
     vm_pointer_ptr item;
-    while ((item = CALL(list)->pop((*cvm)->cache)) != 0) {
+    while ((item = (vm_pointer_ptr)CALL(list)->pop(cvm, (*cvm)->cache)) != 0) {
         CALL(os)->free(item);
     }
-    CALL(list)->destroy((*cvm)->cache);
-    CALL(os)->free((*cvm)->cache);
+    CALL(list)->destroy(cvm, (*cvm)->cache);
     ptr->cache = 0;
 #endif
     virtual_pointer_ptr vptr = (*cvm)->next;
@@ -301,7 +312,7 @@ static u64 virtual_free(const_vm_ptr cvm, u64 address) {
         vm_pointer_ptr item = CALL(os)->calloc(1, VM_POINTER_TYPE_SIZE);
         item->vptr = vptr;
         item->offset = offset;
-        CALL(list)->push((*cvm)->cache, item);
+        CALL(list)->push(cvm, (*cvm)->cache, item);
 #endif
 #ifdef USE_MEMORY_DEBUG_INFO
 #ifdef USE_MEMORY_DEBUG_INFO

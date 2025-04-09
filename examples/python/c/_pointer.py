@@ -46,13 +46,15 @@ class CPointer:
             alloc: Function pointer for allocating a pointer.
             copy: Function pointer for copying a pointer.
             read: Function pointer for reading data from a pointer.
+            ref: Function pointer for reading a reference from a pointer.
             free: Function pointer for freeing a pointer.
         """
         _fields_ = [
             ("alloc", ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(ctypes.c_void_p), ctypes.c_uint64, ctypes.c_uint64)),
             ("copy", ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(ctypes.c_void_p), ctypes.c_uint64, ctypes.c_uint64, ctypes.c_uint64)),
             ("read", ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_void_p), ctypes.POINTER(ctypes.c_void_p), ctypes.c_uint64, ctypes.c_uint64)),
-            ("free", ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(ctypes.c_void_p), ctypes.c_uint64, ctypes.c_uint64)),
+            ("ref", ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(ctypes.c_void_p), ctypes.c_uint64)),
+            ("free", ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(ctypes.c_void_p), ctypes.c_uint64)),
         ]
 
     @classmethod
@@ -149,17 +151,29 @@ class CPointer:
             A ctypes.c_void_p representing a pointer to the data read.
         """
         return self.pointer_methods.read(self.vm, address, type_id)
+    
+    @exception_handler
+    def ref(self, address: ctypes.c_uint64, nothrow=False, noclear=False) -> ctypes.c_uint64:
+        """
+        Returns public address of a pointer in the C library.
+
+        Args:
+            address: A ctypes.c_uint64 representing the address of the pointer to reference.
+
+        Returns:
+            A status code (typically 0 for success, non-zero for failure).
+        """
+        return self.pointer_methods.ref(self.vm, address)
 
     @exception_handler
-    def free(self, address: ctypes.c_uint64, type_id: CType, nothrow=False, noclear=False) -> ctypes.c_uint64:
+    def free(self, address: ctypes.c_uint64, nothrow=False, noclear=False) -> ctypes.c_uint64:
         """
         Frees a pointer in the C library.
 
         Args:
             address: A ctypes.c_uint64 representing the address of the pointer to free.
-            type_id: A CType value representing the type of data.
 
         Returns:
             A status code (typically 0 for success, non-zero for failure).
         """
-        return self.pointer_methods.free(self.vm, address, type_id)
+        return self.pointer_methods.free(self.vm, address)

@@ -9,7 +9,6 @@
             "args": [
                 "--target=main-tests-vm1",
                 "--index=6",
-                "--clean",
                 "--no-memory-leak-detection"
             ],
             "options": {
@@ -25,8 +24,8 @@
                 "--target=main-tests-vm1",
                 "--gc",
                 "--verbose",
-                "--clean",
-                "--tty"
+                "--tty",
+                "--silent"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -40,8 +39,8 @@
             "args": [
                 "--target=main-tests-vm1",
                 "--gc",
-                "--clean",
-                "--tty"
+                "--tty",
+                "--silent"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -55,8 +54,8 @@
             "args": [
                 "--target=main-tests-vm1",
                 "--verbose",
-                "--clean",
-                "--tty"
+                "--tty",
+                "--silent"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -71,8 +70,8 @@
                 "--target=main-tests-vm1",
                 "--gc",
                 "--sanitize",
-                "--clean",
-                "--tty"
+                "--tty",
+                "--silent"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -86,8 +85,8 @@
             "args": [
                 "--target=main-tests-vm1",
                 "--sanitize",
-                "--clean",
-                "--tty"
+                "--tty",
+                "--silent"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -100,8 +99,8 @@
             "problemMatcher": [],
             "args": [
                 "--target=main-tests-vm1",
-                "--clean",
-                "--tty"
+                "--tty",
+                "--silent"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"

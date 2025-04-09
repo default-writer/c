@@ -110,6 +110,42 @@
       "console": "integratedTerminal"
     },
     {
+      "preLaunchTask": "shell: cmake",
+      "name": "python (list)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/examples/python/test_list.py",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    },
+    {
+      "preLaunchTask": "shell: cmake (gc)",
+      "name": "python (list, gc)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/examples/python/test_list.py",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    },
+    {
+      "preLaunchTask": "shell: cmake (verbose)",
+      "name": "python (list, verbose)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/examples/python/test_list.py",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    },
+    {
+      "preLaunchTask": "shell: cmake (gc, verbose)",
+      "name": "python (list, gc, verbose)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/examples/python/test_list.py",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    },
+    {
       "preLaunchTask": "cmake: build",
       "name": "gdb",
       "type": "cppdbg",

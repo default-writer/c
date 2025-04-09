@@ -8,6 +8,6 @@
 - exception handling в Python
 - tasks в VSCode
 - визуализация ASCII в TTY консоли
+- **API дампов памяти в Python**
 - тестирование в Python
 - unit-тесты в Python
-- API дампов памяти в Python
