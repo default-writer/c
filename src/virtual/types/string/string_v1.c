@@ -1,27 +1,39 @@
+/* SPDX-License-Identifier: BSD-3-Clause */
 /*-*-coding:utf-8 -*-
  * Auto updated?
  *   Yes
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 7, 2025 at 6:13:04 PM GMT+3
+ *   April 9, 2025 at 11:03:55 AM GMT+3
  *
  */
 /*
     Copyright (C) 2022-2047 Artur Mustafin (artur.mustafin@gmail.com)
+    All rights reserved.
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+    1. Redistributions of source code must retain the above copyright notice, this
+       list of conditions and the following disclaimer.
+    2. Redistributions in binary form must reproduce the above copyright notice,
+       this list of conditions and the following disclaimer in the documentation
+       and/or other materials provided with the distribution.
+    3. Neither the name of the copyright holder nor the names of its
+       contributors may be used to endorse or promote products derived from
+       this software without specific prior written permission.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+    AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+    DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+    FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+    DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+    SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+    CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+    OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+    OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "string_v1.h"
@@ -84,15 +96,15 @@ struct list_handler {
 static void string_type_destructor(const_vm_ptr cvm, u64 address);
 
 /* implementation */
-static struct type_methods_definitions string_type = {
+static struct type_methods_definitions string_type_definitions = {
     .type_id = TYPE_STRING,
     .destructor = string_type_destructor,
 };
 
 static void string_type_destructor(const_vm_ptr cvm, u64 address) {
-    const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, address, string_type.type_id);
+    const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, address, string_type_definitions.type_id);
     if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, address, (u64)string_type.type_id);
+        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, address, (u64)string_type_definitions.type_id);
         return;
     }
     CALL(pointer)->free(cvm, address);
@@ -109,7 +121,7 @@ static const_pointer_ptr get_string_pointer_internal(const_vm_ptr cvm, const_poi
     }
     const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, ref->address, TYPE_STRING);
     if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, ref->address, (u64)string_type.type_id);
+        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, ref->address, (u64)string_type_definitions.type_id);
         return NULL_PTR;
     }
     offset += ref->offset;
@@ -226,7 +238,7 @@ static const_pointer_ptr read_string_data_internal(const_vm_ptr cvm, u64 address
     }
     const_pointer_ptr string_pointer_const_ptr = CALL(pointer)->read(cvm, address, TYPE_STRING_POINTER);
     if (string_pointer_const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)string_pointer_const_ptr, address, (u64)string_type.type_id);
+        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)string_pointer_const_ptr, address, (u64)string_type_definitions.type_id);
         return NULL_PTR;
     }
     return get_string_pointer_internal(cvm, string_pointer_const_ptr, size, offset);
@@ -264,7 +276,7 @@ static u64 string_copy(const_vm_ptr cvm, u64 src) {
     }
     const char* ch = const_ptr->data;
     ch += offset;
-    u64 address = CALL(pointer)->copy(cvm, ch, size - offset, 0, string_type.type_id);
+    u64 address = CALL(pointer)->copy(cvm, ch, size - offset, 0, string_type_definitions.type_id);
     return address;
 }
 
@@ -285,9 +297,9 @@ static u64 string_strcpy(const_vm_ptr cvm, u64 dest, u64 src) {
         ERROR_INVALID_VALUE("src == %lld, dest== %lld", src, dest);
         return FALSE;
     }
-    const_pointer_ptr dest_ptr = CALL(pointer)->read(cvm, dest, string_type.type_id);
+    const_pointer_ptr dest_ptr = CALL(pointer)->read(cvm, dest, string_type_definitions.type_id);
     if (dest_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)dest_ptr, dest, (u64)string_type.type_id);
+        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)dest_ptr, dest, (u64)string_type_definitions.type_id);
         return FALSE;
     }
     u64 src_size = 0;
@@ -337,9 +349,9 @@ static u64 string_strcat(const_vm_ptr cvm, u64 dest, u64 src) {
         ERROR_INVALID_VALUE("src == %lld, dest== %lld", src, dest);
         return FALSE;
     }
-    const_pointer_ptr dest_ptr = CALL(pointer)->read(cvm, dest, string_type.type_id);
+    const_pointer_ptr dest_ptr = CALL(pointer)->read(cvm, dest, string_type_definitions.type_id);
     if (dest_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)dest_ptr, dest, (u64)string_type.type_id);
+        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)dest_ptr, dest, (u64)string_type_definitions.type_id);
         return FALSE;
     }
     u64 size = 0;
@@ -399,9 +411,9 @@ static u64 string_strrchr(const_vm_ptr cvm, u64 src, u64 match) {
     void_ptr src_data_ptr = src_void_ptr.ptr;
     char* ch = src_data_ptr;
     char* text = ch + offset;
-    const_pointer_ptr match_const_ptr = CALL(pointer)->read(cvm, match, string_type.type_id);
+    const_pointer_ptr match_const_ptr = CALL(pointer)->read(cvm, match, string_type_definitions.type_id);
     if (match_const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)match_const_ptr, match, (u64)string_type.type_id);
+        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)match_const_ptr, match, (u64)string_type_definitions.type_id);
         return FALSE;
     }
     const char* str2 = match_const_ptr->data;
@@ -442,9 +454,9 @@ static u64 string_strchr(const_vm_ptr cvm, u64 src, u64 match) {
     void_ptr src_data_ptr = src_void_ptr.ptr;
     char* ch = src_data_ptr;
     char* text = ch + offset;
-    const_pointer_ptr match_const_ptr = CALL(pointer)->read(cvm, match, string_type.type_id);
+    const_pointer_ptr match_const_ptr = CALL(pointer)->read(cvm, match, string_type_definitions.type_id);
     if (match_const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)match_const_ptr, match, (u64)string_type.type_id);
+        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)match_const_ptr, match, (u64)string_type_definitions.type_id);
         return FALSE;
     }
     const char* str2 = match_const_ptr->data;
@@ -472,9 +484,9 @@ static u64 string_match(const_vm_ptr cvm, u64 src, u64 match) {
         ERROR_INVALID_ARGUMENT("match == %lld", match);
         return FALSE;
     }
-    const_pointer_ptr match_ptr = CALL(pointer)->read(cvm, match, string_type.type_id);
+    const_pointer_ptr match_ptr = CALL(pointer)->read(cvm, match, string_type_definitions.type_id);
     if (match_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)match_ptr, match, (u64)string_type.type_id);
+        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)match_ptr, match, (u64)string_type_definitions.type_id);
         return FALSE;
     }
     u64 size = 0;
@@ -520,9 +532,9 @@ static u64 string_offset(const_vm_ptr cvm, u64 src, u64 match) {
         ERROR_INVALID_ARGUMENT("match == %lld", match);
         return FALSE;
     }
-    const_pointer_ptr match_ptr = CALL(pointer)->read(cvm, match, string_type.type_id);
+    const_pointer_ptr match_ptr = CALL(pointer)->read(cvm, match, string_type_definitions.type_id);
     if (match_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)match_ptr, match, (u64)string_type.type_id);
+        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)match_ptr, match, (u64)string_type_definitions.type_id);
         return FALSE;
     }
     u64 size = 0;
@@ -603,7 +615,7 @@ static u64 string_load(const_vm_ptr cvm, const char* ch) {
         return FALSE;
     }
     u64 size = CALL(os)->strlen(ch) + 1;
-    u64 address = CALL(pointer)->copy(cvm, ch, size, size - 1, string_type.type_id);
+    u64 address = CALL(pointer)->copy(cvm, ch, size, size - 1, string_type_definitions.type_id);
     return address;
 }
 
@@ -897,7 +909,7 @@ static u64 string_strncpy(const_vm_ptr cvm, u64 src, u64 nbytes) {
     }
     ch += offset;
     size = nbytes + 1;
-    u64 address = CALL(pointer)->copy(cvm, ch, size, size - 1, string_type.type_id);
+    u64 address = CALL(pointer)->copy(cvm, ch, size, size - 1, string_type_definitions.type_id);
     return address;
 }
 
@@ -928,7 +940,7 @@ static u64 string_left_strncpy(const_vm_ptr cvm, u64 src, u64 nbytes) {
     }
     ch += (offset - nbytes);
     size = nbytes + 1;
-    u64 address = CALL(pointer)->copy(cvm, ch, size, size - 1, string_type.type_id);
+    u64 address = CALL(pointer)->copy(cvm, ch, size, size - 1, string_type_definitions.type_id);
     return address;
 }
 
@@ -1077,7 +1089,7 @@ static u64 string_strcmp(const_vm_ptr cvm, u64 src, u64 dst) {
 /* public */
 CVM_EXPORT void string_init(const_vm_ptr cvm) {
     safe_type_methods_definitions safe_ptr;
-    safe_ptr.const_ptr = &string_type;
+    safe_ptr.const_ptr = &string_type_definitions;
     CALL(type)->register_known_type(cvm, safe_ptr.ptr);
 }
 

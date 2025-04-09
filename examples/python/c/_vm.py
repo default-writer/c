@@ -20,12 +20,16 @@ class CVirtualMachine:
             gc: Function pointer for performing garbage collection.
             release: Function pointer for releasing a resource managed by the VM.
             destroy: Function pointer for destroying the virtual machine.
+            dump_ref: Function pointer for dumping memory references.
+            dump_ref_stack: Function pointer for dumping memory references from a stack.
         """
         _fields_ = [
             ("init", ctypes.CFUNCTYPE(ctypes.POINTER(ctypes.c_void_p), ctypes.c_uint64)),
             ("gc", ctypes.CFUNCTYPE(None, ctypes.POINTER(ctypes.c_void_p))),
             ("release", ctypes.CFUNCTYPE(ctypes.c_uint64, ctypes.POINTER(ctypes.c_void_p), ctypes.c_uint64)),
             ("destroy", ctypes.CFUNCTYPE(None, ctypes.POINTER(ctypes.c_void_p))),
+            ("dump_ref", ctypes.CFUNCTYPE(None, ctypes.c_void_p)),
+            ("dump_ref_stack", ctypes.CFUNCTYPE(None, ctypes.c_void_p, ctypes.POINTER(ctypes.c_void_p))),
         ]
 
     @classmethod
@@ -55,6 +59,28 @@ class CVirtualMachine:
         """
         self.ptr = self.vm_methods.init(size)
 
+    def __enter__(self):
+        """
+        Allows the CVirtualMachine to be used as a context manager.
+
+        Returns:
+            The CVirtualMachine instance.
+        """
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """
+        Cleans up the virtual machine when exiting the context.
+        """
+        self.gc()
+
+
+    def __del__(self):
+        """
+        Destroys the virtual machine.
+        """
+        self.destroy()
+
     def gc(self):
         """
         Performs garbage collection in the virtual machine.
@@ -73,8 +99,23 @@ class CVirtualMachine:
         """
         return self.vm_methods.release(self.ptr, ptr)
 
-    def __del__(self):
+    def destroy(self):
         """
-        Destroys the virtual machine.
+        Cleans up the virtual machine when exiting the context.
         """
-        return self.vm_methods.destroy(self.ptr)
+        self.vm_methods.destroy(self.ptr)
+
+    def dump_ref(self):
+        """
+        Dumps memory references.
+        """
+        self.vm_methods.dump_ref(self.ptr)
+
+    def dump_ref_stack(self, stack_ptr: ctypes.c_void_p):
+        """
+        Dumps memory references to a stack.
+
+        Args:
+            stack: The stack to dump references to.
+        """
+        self.vm_methods.dump_ref_stack(self.ptr, stack_ptr)

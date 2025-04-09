@@ -1,39 +1,51 @@
+/* SPDX-License-Identifier: BSD-3-Clause */
 /*-*-coding:utf-8 -*-
  * Auto updated?
  *   Yes
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 8, 2025 at 1:22:10 PM GMT+3
+ *   April 9, 2025 at 3:54:51 PM GMT+3
  *
  */
 /*
     Copyright (C) 2022-2047 Artur Mustafin (artur.mustafin@gmail.com)
+    All rights reserved.
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+    1. Redistributions of source code must retain the above copyright notice, this
+       list of conditions and the following disclaimer.
+    2. Redistributions in binary form must reproduce the above copyright notice,
+       this list of conditions and the following disclaimer in the documentation
+       and/or other materials provided with the distribution.
+    3. Neither the name of the copyright holder nor the names of its
+       contributors may be used to endorse or promote products derived from
+       this software without specific prior written permission.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+    AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+    DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+    FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+    DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+    SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+    CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+    OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+    OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "test_vm.h"
 
 #include "std/macros.h"
 
-#include "system/list/list_v1.h"
 #include "system/memory/memory_v1.h"
 #include "system/options/options_v1.h"
 #include "system/os/os_v1.h"
 
 #include "virtual/env/env_v1.h"
+#include "virtual/list/list_v1.h"
 #include "virtual/pointer/pointer_v1.h"
 #include "virtual/types/data/data_v1.h"
 #include "virtual/types/stack/stack_v1.h"
@@ -146,10 +158,9 @@ RX_TEST_CASE(tests_vm_v1, test_vm_copy_safe, .fixture = test_fixture_pointer) {
 }
 
 /* test init */
-RX_TEST_CASE(tests_vm_v1, test_vm_read__address, .fixture = test_fixture_pointer) {
+RX_TEST_CASE(tests_vm_v1, test_vm_read_address, .fixture = test_fixture_pointer) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
-    const_pointer_ptr tmp;
     u64 virtual_ptr = CALL(virtual)->alloc(cvm, 1, TYPE_DATA);
     u64 address = CALL(options)->size + 1;
     const_pointer_ptr ref = CALL(virtual)->read(cvm, address);
@@ -159,11 +170,34 @@ RX_TEST_CASE(tests_vm_v1, test_vm_read__address, .fixture = test_fixture_pointer
     CALL(pointer)->free(cvm, virtual_ptr);
 }
 
+RX_TEST_CASE(tests_vm_v1, test_vm_ref_address_0_0, .fixture = test_clean_fixture) {
+    u64 ref = CALL(pointer)->ref(0, 0);
+    RX_ASSERT(ref == 0);
+}
+
+RX_TEST_CASE(tests_vm_v1, test_vm_ref_address_0, .fixture = test_fixture_pointer) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr cvm = rx->ctx;
+    u64 ref = CALL(pointer)->ref(cvm, 0);
+    RX_ASSERT(ref == 0);
+}
+
+RX_TEST_CASE(tests_vm_v1, test_vm_ref_address, .fixture = test_fixture_pointer) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr cvm = rx->ctx;
+    u64 virtual_ptr = CALL(virtual)->alloc(cvm, 1, TYPE_DATA);
+    const_pointer_ptr tmp = CALL(virtual)->read(cvm, virtual_ptr);
+    u64 address = tmp->public.address;
+    u64 ref = CALL(pointer)->ref(cvm, (u64)tmp);
+    RX_ASSERT(ref == 1);
+    CALL(pointer)->free(cvm, address);
+    CALL(pointer)->free(cvm, virtual_ptr);
+}
+
 /* test init */
 RX_TEST_CASE(tests_vm_v1, test_vm_read_type, .fixture = test_fixture_pointer) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
-    const_pointer_ptr tmp;
     u64 virtual_ptr = CALL(virtual)->alloc(cvm, 1, TYPE_DATA);
     u64 address = CALL(options)->size + 1;
     u64 type_id = CALL(virtual)->type(cvm, address);
@@ -293,17 +327,15 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_stack, .fixture = test_clean_fixture) {
         CALL(string)->load(cvm, "ab\nabc\n")
     };
     parse_text(cvm, text_string_ptr[1]);
-    stack_ptr stack = 0;
-    CALL(list)->init(&stack);
-    CALL(vm)->dump_ref_stack(cvm, &stack);
+    stack_ptr stack = CALL(list)->init(cvm);
+    CALL(vm)->dump_ref_stack(cvm, stack);
     const_vm_ptr debug_cvm = CALL(vm)->init(8);
     u64 text_size = CALL(string)->size(cvm, text_string_ptr[1]);
     const_void_ptr data = CALL(string)->unsafe(cvm, text_string_ptr[1]);
     u64 debug_text_string_ptr = CALL(pointer)->copy(debug_cvm, data, text_size + 1, 0, TYPE_STRING);
     parse_text(debug_cvm, debug_text_string_ptr);
-    stack_ptr debug_stack = 0;
-    CALL(list)->init(&debug_stack);
-    CALL(vm)->dump_ref_stack(debug_cvm, &debug_stack);
+    stack_ptr debug_stack = CALL(list)->init(debug_cvm);
+    CALL(vm)->dump_ref_stack(debug_cvm, debug_stack);
 #ifndef USE_GC
     for (u64 i = 0; i < sizeof(text_string_ptr) / sizeof(text_string_ptr[0]); i++) {
         CALL(string)->free(cvm, text_string_ptr[i]);
@@ -313,8 +345,8 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_stack, .fixture = test_clean_fixture) {
     CALL(vm)->gc(debug_cvm);
     CALL(vm)->gc(cvm);
 #endif
-    CALL(list)->destroy(&debug_stack);
-    CALL(list)->destroy(&stack);
+    CALL(list)->destroy(debug_cvm, debug_stack);
+    CALL(list)->destroy(cvm, stack);
     CALL(vm)->destroy(debug_cvm);
     CALL(vm)->destroy(cvm);
 }
@@ -360,17 +392,15 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_ref_stack, .fixture = test_clean_fixture)
         CALL(string)->load(cvm, "ab\nabc\n")
     };
     parse_text(cvm, text_string_ptr[1]);
-    stack_ptr stack = 0;
-    CALL(list)->init(&stack);
-    CALL(vm)->dump_ref_stack(cvm, &stack);
+    stack_ptr stack = CALL(list)->init(cvm);
+    CALL(vm)->dump_ref_stack(cvm, stack);
     const_vm_ptr debug_cvm = CALL(vm)->init(8);
     u64 text_size = CALL(string)->size(cvm, text_string_ptr[1]);
     const_void_ptr data = CALL(string)->unsafe(cvm, text_string_ptr[1]);
     u64 debug_text_string_ptr = CALL(pointer)->copy(debug_cvm, data, text_size + 1, 0, TYPE_STRING);
     parse_text(debug_cvm, debug_text_string_ptr);
-    stack_ptr debug_stack = 0;
-    CALL(list)->init(&debug_stack);
-    CALL(vm)->dump_ref_stack(debug_cvm, &debug_stack);
+    stack_ptr debug_stack = CALL(list)->init(debug_cvm);
+    CALL(vm)->dump_ref_stack(debug_cvm, debug_stack);
 #ifndef USE_GC
     for (u64 i = 0; i < sizeof(text_string_ptr) / sizeof(text_string_ptr[0]); i++) {
         CALL(string)->free(cvm, text_string_ptr[i]);
@@ -380,8 +410,8 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_ref_stack, .fixture = test_clean_fixture)
     CALL(vm)->gc(debug_cvm);
     CALL(vm)->gc(cvm);
 #endif
-    CALL(list)->destroy(&debug_stack);
-    CALL(list)->destroy(&stack);
+    CALL(list)->destroy(debug_cvm, debug_stack);
+    CALL(list)->destroy(cvm, stack);
     CALL(vm)->destroy(debug_cvm);
     CALL(vm)->destroy(cvm);
 }
@@ -395,27 +425,24 @@ RX_TEST_CASE(tests_vm_v1, test_list_diff, .fixture = test_clean_fixture) {
     u64 src2[] = {
         1, 2, 4, 6
     };
-    stack_ptr stack1 = 0;
-    stack_ptr stack2 = 0;
-    stack_ptr compare = 0;
-    CALL(list)->init(&stack1);
-    CALL(list)->init(&stack2);
-    CALL(list)->init(&compare);
+    stack_ptr stack1 = CALL(list)->init(cvm);
+    stack_ptr stack2 = CALL(list)->init(cvm);
+    stack_ptr compare = CALL(list)->init(cvm);
     u64 length = sizeof(src1) / sizeof(src1[0]);
     for (u64 i = 0; i < length; i++) {
-        CALL(list)->push(&stack1, (void_ptr)src1[i]);
-        CALL(list)->push(&stack2, (void_ptr)src2[i]);
+        CALL(list)->push(cvm, stack1, (void_ptr)src1[i]);
+        CALL(list)->push(cvm, stack2, (void_ptr)src2[i]);
     }
-    CALL(list)->diff(&stack1, &stack2, &compare);
-    stack_ptr current = compare;
+    CALL(list)->diff(cvm, stack1, stack2, compare);
+    stack_element_ptr current = compare->current;
     while (current->next != NULL_PTR) {
         u64 ptr = (u64)current->data;
         printf("A ^ B: %016llx\n", ptr);
         current = current->next;
     }
-    CALL(list)->destroy(&stack1);
-    CALL(list)->destroy(&stack2);
-    CALL(list)->destroy(&compare);
+    CALL(list)->destroy(cvm, stack1);
+    CALL(list)->destroy(cvm, stack2);
+    CALL(list)->destroy(cvm, compare);
     CALL(vm)->gc(cvm);
     CALL(vm)->destroy(cvm);
 }
@@ -429,27 +456,24 @@ RX_TEST_CASE(tests_vm_v1, test_list_diff_left, .fixture = test_clean_fixture) {
     u64 src2[] = {
         1, 2, 4, 6
     };
-    stack_ptr stack1 = 0;
-    stack_ptr stack2 = 0;
-    stack_ptr compare = 0;
-    CALL(list)->init(&stack1);
-    CALL(list)->init(&stack2);
-    CALL(list)->init(&compare);
+    stack_ptr stack1 = CALL(list)->init(cvm);
+    stack_ptr stack2 = CALL(list)->init(cvm);
+    stack_ptr compare = CALL(list)->init(cvm);
     u64 length = sizeof(src1) / sizeof(src1[0]);
     for (u64 i = 0; i < length; i++) {
-        CALL(list)->push(&stack1, (void_ptr)src1[i]);
-        CALL(list)->push(&stack2, (void_ptr)src2[i]);
+        CALL(list)->push(cvm, stack1, (void_ptr)src1[i]);
+        CALL(list)->push(cvm, stack2, (void_ptr)src2[i]);
     }
-    CALL(list)->diff_left(&stack1, &stack2, &compare);
-    stack_ptr current = compare;
+    CALL(list)->diff_left(cvm, stack1, stack2, compare);
+    stack_element_ptr current = compare->current;
     while (current->next != NULL_PTR) {
         u64 ptr = (u64)current->data;
         printf("A \\ B: %016llx\n", ptr);
         current = current->next;
     }
-    CALL(list)->destroy(&stack1);
-    CALL(list)->destroy(&stack2);
-    CALL(list)->destroy(&compare);
+    CALL(list)->destroy(cvm, stack1);
+    CALL(list)->destroy(cvm, stack2);
+    CALL(list)->destroy(cvm, compare);
     CALL(vm)->gc(cvm);
     CALL(vm)->destroy(cvm);
 }
@@ -463,104 +487,26 @@ RX_TEST_CASE(tests_vm_v1, test_list_diff_right, .fixture = test_clean_fixture) {
     u64 src2[] = {
         1, 2, 4, 6
     };
-    stack_ptr stack1 = 0;
-    stack_ptr stack2 = 0;
-    stack_ptr compare = 0;
-    CALL(list)->init(&stack1);
-    CALL(list)->init(&stack2);
-    CALL(list)->init(&compare);
+    stack_ptr stack1 = CALL(list)->init(cvm);
+    stack_ptr stack2 = CALL(list)->init(cvm);
+    stack_ptr compare = CALL(list)->init(cvm);
     u64 length = sizeof(src1) / sizeof(src1[0]);
     for (u64 i = 0; i < length; i++) {
-        CALL(list)->push(&stack1, (void_ptr)src1[i]);
-        CALL(list)->push(&stack2, (void_ptr)src2[i]);
+        CALL(list)->push(cvm, stack1, (void_ptr)src1[i]);
+        CALL(list)->push(cvm, stack2, (void_ptr)src2[i]);
     }
-    CALL(list)->diff_right(&stack1, &stack2, &compare);
-    stack_ptr current = compare;
+    CALL(list)->diff_right(cvm, stack1, stack2, compare);
+    stack_element_ptr current = compare->current;
     while (current->next != NULL_PTR) {
         u64 ptr = (u64)current->data;
         printf("B \\ A: %016llx\n", ptr);
         current = current->next;
     }
-    CALL(list)->destroy(&stack1);
-    CALL(list)->destroy(&stack2);
-    CALL(list)->destroy(&compare);
+    CALL(list)->destroy(cvm, stack1);
+    CALL(list)->destroy(cvm, stack2);
+    CALL(list)->destroy(cvm, compare);
     CALL(vm)->gc(cvm);
     CALL(vm)->destroy(cvm);
-}
-
-/* test init */
-RX_TEST_CASE(tests_vm_v1, test_list_diff_0_0_0) {
-    stack_ptr stack = 0;
-    CALL(list)->diff(&stack, 0, 0);
-}
-
-/* test init */
-RX_TEST_CASE(tests_vm_v1, test_list_diff_right_0_0_0) {
-    stack_ptr stack = 0;
-    CALL(list)->diff_right(&stack, 0, 0);
-}
-
-/* test init */
-RX_TEST_CASE(tests_vm_v1, test_list_diff_left_0_0_0) {
-    stack_ptr stack = 0;
-    CALL(list)->diff_left(&stack, 0, 0);
-}
-
-/* test init */
-RX_TEST_CASE(tests_vm_v1, test_list_diff_0_0) {
-    stack_ptr stack = 0;
-    CALL(list)->init(&stack);
-    CALL(list)->diff(&stack, 0, 0);
-    CALL(list)->destroy(&stack);
-}
-
-/* test init */
-RX_TEST_CASE(tests_vm_v1, test_list_diff_right_0_0) {
-    stack_ptr stack = 0;
-    CALL(list)->init(&stack);
-    CALL(list)->diff_right(&stack, 0, 0);
-    CALL(list)->destroy(&stack);
-}
-
-/* test init */
-RX_TEST_CASE(tests_vm_v1, test_list_diff_left_0_0) {
-    stack_ptr stack = 0;
-    CALL(list)->init(&stack);
-    CALL(list)->diff_left(&stack, 0, 0);
-    CALL(list)->destroy(&stack);
-}
-
-/* test init */
-RX_TEST_CASE(tests_vm_v1, test_list_diff_0) {
-    stack_ptr stack1 = 0;
-    stack_ptr stack2 = 0;
-    CALL(list)->init(&stack1);
-    CALL(list)->init(&stack2);
-    CALL(list)->diff(&stack1, 0, 0);
-    CALL(list)->destroy(&stack1);
-    CALL(list)->destroy(&stack2);
-}
-
-/* test init */
-RX_TEST_CASE(tests_vm_v1, test_list_diff_right_0) {
-    stack_ptr stack1 = 0;
-    stack_ptr stack2 = 0;
-    CALL(list)->init(&stack1);
-    CALL(list)->init(&stack2);
-    CALL(list)->diff_right(&stack1, 0, 0);
-    CALL(list)->destroy(&stack1);
-    CALL(list)->destroy(&stack2);
-}
-
-/* test init */
-RX_TEST_CASE(tests_vm_v1, test_list_diff_left_0) {
-    stack_ptr stack1 = 0;
-    stack_ptr stack2 = 0;
-    CALL(list)->init(&stack1);
-    CALL(list)->init(&stack2);
-    CALL(list)->diff_left(&stack1, 0, 0);
-    CALL(list)->destroy(&stack1);
-    CALL(list)->destroy(&stack2);
 }
 
 /* test init */
@@ -590,28 +536,25 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_memory_leak_1, .fixture = test_clean_fixt
         CALL(string)->free(debug_cvm, debug_text_string_ptr);
 
         CALL(vm)->dump_ref(debug_cvm);
-        stack_ptr debug_cvm_stack = 0;
-        CALL(list)->init(&debug_cvm_stack);
-        CALL(vm)->dump_ref_stack(debug_cvm, &debug_cvm_stack);
+        stack_ptr debug_cvm_stack = CALL(list)->init(debug_cvm);
+        CALL(vm)->dump_ref_stack(debug_cvm, debug_cvm_stack);
 
         u64 text_string_ptr = CALL(string)->load(cvm, test_data[i]);
         parse_text(cvm, text_string_ptr);
         CALL(string)->free(cvm, text_string_ptr);
 
         CALL(vm)->dump_ref(cvm);
-        stack_ptr cvm_stack = 0;
-        CALL(list)->init(&cvm_stack);
-        CALL(vm)->dump_ref_stack(cvm, &cvm_stack);
+        stack_ptr cvm_stack = CALL(list)->init(cvm);
+        CALL(vm)->dump_ref_stack(cvm, cvm_stack);
 
         // get unmatched pointers (it is possible to got memory leaks in both A and B memory dumps)
         // in this particual scenario we can safely assume memory leaks are in (A \ B) set
 
-        stack_ptr compare_left = 0;
-        CALL(list)->init(&compare_left);
-        CALL(list)->diff_left(&debug_cvm_stack, &cvm_stack, &compare_left);
-        stack_ptr current = 0;
-        current = compare_left;
-        while (current->next != NULL_PTR) {
+        stack_ptr compare_left = CALL(list)->init(cvm);
+        CALL(list)->diff_left(cvm, debug_cvm_stack, cvm_stack, compare_left);
+        stack_element_ptr current = 0;
+        current = compare_left->current;
+        while (current != NULL_PTR) {
             u64 ptr = (u64)current->data;
 #ifdef USE_MEMORY_DEBUG_INFO
 #ifdef USE_TTY
@@ -626,9 +569,9 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_memory_leak_1, .fixture = test_clean_fixt
             CALL(pointer)->free(debug_cvm, const_ptr->public.address);
             current = current->next;
         }
-        CALL(list)->destroy(&debug_cvm_stack);
-        CALL(list)->destroy(&cvm_stack);
-        CALL(list)->destroy(&compare_left);
+        CALL(list)->destroy(debug_cvm, debug_cvm_stack);
+        CALL(list)->destroy(cvm, cvm_stack);
+        CALL(list)->destroy(cvm, compare_left);
     }
 #ifdef USE_GC
     CALL(vm)->gc(debug_cvm);
@@ -665,28 +608,25 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_memory_leak_2, .fixture = test_clean_fixt
         CALL(string)->free(debug_cvm, debug_text_string_ptr);
 
         CALL(vm)->dump_ref(debug_cvm);
-        stack_ptr debug_cvm_stack = 0;
-        CALL(list)->init(&debug_cvm_stack);
-        CALL(vm)->dump_ref_stack(debug_cvm, &debug_cvm_stack);
+        stack_ptr debug_cvm_stack = CALL(list)->init(debug_cvm);
+        CALL(vm)->dump_ref_stack(debug_cvm, debug_cvm_stack);
 
         u64 text_string_ptr = CALL(string)->load(cvm, test_data[i]);
         parse_text(cvm, text_string_ptr);
         CALL(string)->free(cvm, text_string_ptr);
 
         CALL(vm)->dump_ref(cvm);
-        stack_ptr cvm_stack = 0;
-        CALL(list)->init(&cvm_stack);
-        CALL(vm)->dump_ref_stack(cvm, &cvm_stack);
+        stack_ptr cvm_stack = CALL(list)->init(cvm);
+        CALL(vm)->dump_ref_stack(cvm, cvm_stack);
 
         // get unmatched pointers (it is possible to got memory leaks in both A and B memory dumps)
         // in this particual scenario we can safely assume memory leaks are in (A \ B) set
 
-        stack_ptr compare_left = 0;
-        CALL(list)->init(&compare_left);
-        CALL(list)->diff_left(&debug_cvm_stack, &cvm_stack, &compare_left);
-        stack_ptr current = 0;
-        current = compare_left;
-        while (current->next != NULL_PTR) {
+        stack_ptr compare_left = CALL(list)->init(cvm);
+        CALL(list)->diff_left(cvm, debug_cvm_stack, cvm_stack, compare_left);
+        stack_element_ptr current = 0;
+        current = compare_left->current;
+        while (current != NULL_PTR) {
             u64 ptr = (u64)current->data;
 #ifdef USE_MEMORY_DEBUG_INFO
 #ifdef USE_TTY
@@ -701,9 +641,9 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_memory_leak_2, .fixture = test_clean_fixt
             CALL(pointer)->free(debug_cvm, const_ptr->public.address);
             current = current->next;
         }
-        CALL(list)->destroy(&debug_cvm_stack);
-        CALL(list)->destroy(&cvm_stack);
-        CALL(list)->destroy(&compare_left);
+        CALL(list)->destroy(debug_cvm, debug_cvm_stack);
+        CALL(list)->destroy(cvm, cvm_stack);
+        CALL(list)->destroy(cvm, compare_left);
     }
 #ifdef USE_GC
     CALL(vm)->gc(debug_cvm);
@@ -724,16 +664,15 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_ref_0, .fixture = test_clean_fixture) {
 /* test init */
 RX_TEST_CASE(tests_vm_v1, test_vm_dump_ref_stack_0, .fixture = test_clean_fixture) {
     const_vm_ptr cvm = CALL(vm)->init(8);
-    stack_ptr stack = 0;
-    CALL(list)->init(&stack);
-    CALL(vm)->dump_ref_stack(cvm, &stack);
-    void_ptr current = CALL(list)->peek(&stack);
+    stack_ptr stack = (stack_ptr)CALL(list)->init(cvm);
+    CALL(vm)->dump_ref_stack(cvm, stack);
+    void_ptr current = (void_ptr)CALL(list)->peek(cvm, stack);
     RX_ASSERT(current == 0);
 #ifndef USE_GC
 #else
     CALL(vm)->gc(cvm);
 #endif
-    CALL(list)->destroy(&stack);
+    CALL(list)->destroy(cvm, stack);
     CALL(vm)->destroy(cvm);
 }
 

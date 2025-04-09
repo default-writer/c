@@ -11,35 +11,35 @@ def main():
             cvm_ptr: CVirtualMachine = CVirtualMachine(8)
 
             # Create instances of CString, CFile, and CData, associating them with the VM.
-            s: CString = CString(cvm_ptr)
-            f: CFile = CFile(cvm_ptr)
-            d: CData = CData(cvm_ptr)
+            cstring: CString = CString(cvm_ptr)
+            cfile: CFile = CFile(cvm_ptr)
+            cdata: CData = CData(cvm_ptr)
 
             # Load the current file path as a string into the VM.
-            path_ptr = s.load(str(__file__).encode())
+            path_ptr = cstring.load(str(__file__).encode())
             # Load the file mode "r" (read) as a string into the VM.
-            mode_ptr = s.load(b"r")
+            mode_ptr = cstring.load(b"r")
 
             # Allocate a file in the VM using the loaded path and mode.
-            file_ptr = f.alloc(path_ptr, mode_ptr)
+            file_ptr = cfile.alloc(path_ptr, mode_ptr)
 
             # Free the path and mode strings as they are no longer needed.
-            s.free(path_ptr)
-            s.free(mode_ptr)
+            cstring.free(path_ptr)
+            cstring.free(mode_ptr)
 
             # Get the data associated with the allocated file.
-            data_ptr = f.data(file_ptr)
+            data_ptr = cfile.data(file_ptr)
             # Free the file resource.
-            f.free(file_ptr)
+            cfile.free(file_ptr)
 
             # Get an unsafe pointer to the file data.
-            file_data_ptr = d.unsafe(data_ptr)
+            file_data_ptr = cdata.unsafe(data_ptr)
 
             # Print the file data to standard output using COperatingSystem.puts.
             COperatingSystem.puts(ctypes.cast(file_data_ptr, ctypes.c_char_p))
 
             # Free the data resource.
-            d.free(data_ptr)
+            cdata.free(data_ptr)
 
         except CException as e:
             # Catch any exceptions that occur during the process and print an error message.

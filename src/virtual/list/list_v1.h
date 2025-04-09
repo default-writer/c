@@ -5,7 +5,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 9, 2025 at 11:03:56 AM GMT+3
+ *   April 9, 2025 at 4:05:44 PM GMT+3
  *
  */
 /*
@@ -36,27 +36,32 @@
     OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#define USING_MAIN_TESTS
+#define USING_SYSTEM_LIST
 
-#ifndef _MAIN_TESTS_V1_H_
-#define _MAIN_TESTS_V1_H_
+#ifndef _VIRTUAL_LIST_H_
+#define _VIRTUAL_LIST_H_
 
-#define USING_TESTS_LIST
-#include "test_list.h"
+#define USING_STD_API
+#include "std/api.h"
 
-#define USING_TESTS_MEMORY
-#include "test_memory.h"
+#include "virtual/export.h"
 
-#define USING_TESTS_POINTER
-#include "test_pointer.h"
+typedef struct PRIVATE_API(virtual_list_methods) {
+    stack_ptr (*init)(const_vm_ptr cvm);
+    u64 (*push)(const_vm_ptr cvm, stack_ptr current, void_ptr item);
+    void_ptr (*pop)(const_vm_ptr cvm, stack_ptr current);
+    void_ptr (*peek)(const_vm_ptr cvm, stack_ptr current);
+    u64 (*diff)(const_vm_ptr cvm, stack_ptr current1, stack_ptr current2, stack_ptr result);
+    u64 (*diff_left)(const_vm_ptr cvm, stack_ptr stack1, stack_ptr stack2, stack_ptr cmp);
+    u64 (*diff_right)(const_vm_ptr cvm, stack_ptr stack1, stack_ptr stack2, stack_ptr cmp);
+    u64 (*destroy)(const_vm_ptr cvm, stack_ptr current);
+#ifdef USE_MEMORY_DEBUG_INFO
+    void (*print_head)(stack_ptr current);
+    void (*print)(stack_ptr current);
+#endif
+} virtual_list_methods;
 
-#define USING_TESTS_VM
-#include "test_vm.h"
+/* definition */
+CVM_EXPORT extern const virtual_list_methods* CALL(list);
 
-#define USING_TESTS_HASHTABLE
-#include "test_hashtable.h"
-
-#define USING_TESTS_API
-#include "test_api.h"
-
-#endif /* _MAIN_TESTS_V1_H_ */
+#endif /* _VIRTUAL_LIST_H_ */
