@@ -1,5 +1,6 @@
 # examples/python/list/main.py
 import ctypes
+
 from c import CVirtualMachine, CList, CException
 
 
