@@ -40,9 +40,9 @@ def main():
 
                     list_ptr = clist.init()
 
-                    cvm_ptr.dump_ref_stack(list_ptr)
+                    cvm_ptr.dump_ref_stack(list_ptr.ptr)
 
-                    while (memory_ptr := clist.pop(list_ptr)):
+                    while (memory_ptr := clist.pop(list_ptr.ptr)):
                         memory_ref_ptr = cpointer.ref(memory_ptr)
                         print(f"[  v< ]: {memory_ptr:016x}")
                         print(f"[  v& ]: {memory_ref_ptr:016x}")

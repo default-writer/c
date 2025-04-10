@@ -97,8 +97,7 @@ class CList:
         Returns:
             The CList instance.
         """
-        self.ptr = self.init()
-        return self
+        return self.init()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         """
@@ -118,8 +117,9 @@ class CList:
         Returns:
             A pointer to the newly initialized list.
         """
-        return self.list_methods.init(self.vm)
-
+        self.ptr = self.list_methods.init(self.vm)
+        return self
+    
     @exception_handler
     def destroy(self, nothrow=False, noclear=False) -> int:
         """
