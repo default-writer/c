@@ -5,7 +5,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 9, 2025 at 11:03:55 AM GMT+3
+ *   April 10, 2025 at 3:22:02 PM GMT+3
  *
  */
 /*
@@ -121,7 +121,7 @@ static void pointer_register_user_type(const_vm_ptr cvm, type_methods_definition
     vm_ptr ptr = *safe_ptr.ptr;
     data_type->type_id = ptr->known_types_capacity + 1;
     u64 type_id = data_type->type_id;
-    ptr->known_types = CALL(memory)->realloc(ptr->known_types, KNOWN_TYPES_TYPE_ARRAY_SIZE(ptr->known_types_capacity), KNOWN_TYPES_TYPE_ARRAY_SIZE(type_id));
+    ptr->known_types = CALL(os)->realloc(ptr->known_types, KNOWN_TYPES_TYPE_ARRAY_SIZE(type_id));
     ptr->known_types_capacity = type_id;
     ptr->known_types[type_id - 1].methods = data_type;
 }

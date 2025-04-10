@@ -5,7 +5,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 9, 2025 at 4:02:08 PM GMT+3
+ *   April 10, 2025 at 3:24:01 PM GMT+3
  *
  */
 /*
@@ -91,7 +91,7 @@ static void register_known_types(const_vm_ptr cvm) {
 }
 
 static void unregister_known_types(const_vm_ptr cvm) {
-    CALL(memory)->free((*cvm)->known_types, KNOWN_TYPES_TYPE_ARRAY_SIZE((*cvm)->known_types_capacity));
+    CALL(os)->free((*cvm)->known_types);
 }
 
 /* public */
@@ -142,7 +142,7 @@ static const_vm_ptr vm_init(u64 size) {
     safe_ptr.const_ptr = cvm;
     vm_ptr ptr = *safe_ptr.ptr;
     ptr->known_types_capacity = TYPE_USER - 1;
-    ptr->known_types = CALL(memory)->alloc(KNOWN_TYPES_TYPE_ARRAY_SIZE((*cvm)->known_types_capacity));
+    ptr->known_types = CALL(os)->calloc(1, KNOWN_TYPES_TYPE_ARRAY_SIZE((*cvm)->known_types_capacity));
     register_known_types(cvm);
     return cvm;
 }

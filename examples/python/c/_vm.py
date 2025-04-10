@@ -87,8 +87,7 @@ class CVirtualMachine:
         Returns:
             The CVirtualMachine instance.
         """
-        self.ptr = self.init()
-        return self
+        return self.init()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         """
@@ -109,7 +108,8 @@ class CVirtualMachine:
         Returns:
             A pointer to the newly initialized VM.
         """
-        return self.vm_methods.init(self.size)
+        self.ptr = self.vm_methods.init(self.size)
+        return self
 
     @exception_handler
     def gc(self):
