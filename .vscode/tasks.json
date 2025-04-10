@@ -26,7 +26,7 @@
                 "--verbose",
                 "--tty",
                 "--silent",
-                "--clear"
+                "--clean"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -42,7 +42,7 @@
                 "--gc",
                 "--tty",
                 "--silent",
-                "--clear"
+                "--clean"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -58,7 +58,7 @@
                 "--verbose",
                 "--tty",
                 "--silent",
-                "--clear"
+                "--clean"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -75,7 +75,7 @@
                 "--sanitize",
                 "--tty",
                 "--silent",
-                "--clear"
+                "--clean"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -91,7 +91,7 @@
                 "--sanitize",
                 "--tty",
                 "--silent",
-                "--clear"
+                "--clean"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -106,7 +106,7 @@
                 "--target=main-tests-vm1",
                 "--tty",
                 "--silent",
-                "--clear"
+                "--clean"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
