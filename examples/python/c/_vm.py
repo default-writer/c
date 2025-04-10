@@ -1,5 +1,6 @@
 # c/vm.py
 import ctypes
+from ._error import CError, CException, CVirtualMachineNotInitializedException
 
 
 class CVirtualMachine:
@@ -47,6 +48,28 @@ class CVirtualMachine:
         cls.vm_methods_ptr.restype = ctypes.POINTER(cls.vm_methods)
         cls.vm_methods = cls.vm_methods_ptr().contents
 
+    def exception_handler(func):
+        """
+        Decorator for handling exceptions raised by C library calls.
+
+        It checks for errors using CError/CException after each C function call
+        and raises a Python exception if an error occurred.
+
+        Args:
+            func: The function to be wrapped.
+
+        Returns:
+            The wrapped function.
+        """
+        def wrapper(self, *args, **kwargs):
+            if not kwargs.get("noclear", False):
+                CError.clear()
+            result = func(self, *args, **kwargs)
+            if not kwargs.get("nothrow", False):
+                CException.check()
+            return result
+        return wrapper
+
     def __init__(self, size: ctypes.c_uint64):
         """
         Initializes the virtual machine with the specified size.
@@ -54,10 +77,8 @@ class CVirtualMachine:
         Args:
             size: The size of the virtual machine.
 
-        Returns:
-            A ctypes.c_void_p representing a pointer to the initialized virtual machine.
         """
-        self.ptr = self.vm_methods.init(size)
+        self.size = size
 
     def __enter__(self):
         """
@@ -66,6 +87,7 @@ class CVirtualMachine:
         Returns:
             The CVirtualMachine instance.
         """
+        self.ptr = self.init()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -73,44 +95,57 @@ class CVirtualMachine:
         Cleans up the virtual machine when exiting the context.
         """
         self.gc()
-
-
-    def __del__(self):
-        """
-        Destroys the virtual machine.
-        """
         self.destroy()
 
+    @exception_handler
+    def init(self, nothrow=False, noclear=False) -> ctypes.c_void_p:
+        """
+        Initializes a new VM context.
+
+        Args:
+            nothrow (bool): If True, suppress Python exception on C error.
+            noclear (bool): If True, do not clear C error before the call.
+
+        Returns:
+            A pointer to the newly initialized VM.
+        """
+        return self.vm_methods.init(self.size)
+
+    @exception_handler
     def gc(self):
         """
         Performs garbage collection in the virtual machine.
         """
         return self.vm_methods.gc(self.ptr)
 
+    @exception_handler
     def release(self, ptr: ctypes.c_uint64) -> ctypes.c_uint64:
         """
         Releases a resource managed by the virtual machine.
 
         Args:
-            ptr: A ctypes.c_uint64 representing a pointer to the resource to release.
+            ptr: A pointer to the resource to release.
 
         Returns:
             A status code (typically 0 for success, non-zero for failure).
         """
         return self.vm_methods.release(self.ptr, ptr)
 
+    @exception_handler
     def destroy(self):
         """
         Cleans up the virtual machine when exiting the context.
         """
         self.vm_methods.destroy(self.ptr)
 
+    @exception_handler
     def dump_ref(self):
         """
         Dumps memory references.
         """
         self.vm_methods.dump_ref(self.ptr)
 
+    @exception_handler
     def dump_ref_stack(self, stack_ptr: ctypes.c_void_p):
         """
         Dumps memory references to a stack.

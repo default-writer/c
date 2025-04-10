@@ -54,20 +54,6 @@ class CList:
         cls.list_methods_ptr.restype = ctypes.POINTER(cls.list_methods)
         cls.list_methods = cls.list_methods_ptr().contents
 
-    def __init__(self, vm: CVirtualMachine):
-        """
-        Initializes a CList instance.
-
-        Args:
-            vm: An instance of CVirtualMachine, representing the virtual machine context.
-
-        Raises:
-            CVirtualMachineNotInitializedException: If the provided VM is None or its pointer is NULL.
-        """
-        if vm is None or not vm.ptr:
-            raise CVirtualMachineNotInitializedException(f"VM is not initialized for this {self.__class__.__name__} instance.")
-        self.vm = vm.ptr
-
     def exception_handler(func):
         """
         Decorator for handling exceptions raised by C library calls.
@@ -84,13 +70,41 @@ class CList:
         def wrapper(self, *args, **kwargs):
             if not kwargs.get("noclear", False):
                 CError.clear()
-            if not self.vm:
-                 raise CVirtualMachineNotInitializedException("VM pointer is NULL in exception_handler.")
             result = func(self, *args, **kwargs)
             if not kwargs.get("nothrow", False):
                 CException.check()
             return result
         return wrapper
+
+    def __init__(self, vm: CVirtualMachine):
+        """
+        Initializes a CList instance.
+
+        Args:
+            vm: An instance of CVirtualMachine, representing the virtual machine context.
+
+        Raises:
+            CVirtualMachineNotInitializedException: If the provided VM is None or its pointer is NULL.
+        """
+        if vm is None or not vm.ptr:
+            raise CVirtualMachineNotInitializedException(f"VM is not initialized for this {self.__class__.__name__} instance.")
+        self.vm = vm.ptr
+
+    def __enter__(self):
+        """
+        Allows the CList to be used as a context manager.
+
+        Returns:
+            The CList instance.
+        """
+        self.ptr = self.init()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """
+        Cleans up the list when exiting the context.
+        """
+        self.destroy()
 
     @exception_handler
     def init(self, nothrow=False, noclear=False) -> ctypes.c_void_p:
@@ -102,12 +116,12 @@ class CList:
             noclear (bool): If True, do not clear C error before the call.
 
         Returns:
-            A pointer to the newly initialized list, or NULL if the C function fails.
+            A pointer to the newly initialized list.
         """
         return self.list_methods.init(self.vm)
 
     @exception_handler
-    def destroy(self, list_ptr: ctypes.c_void_p, nothrow=False, noclear=False) -> int:
+    def destroy(self, nothrow=False, noclear=False) -> int:
         """
         Destroys a list previously created in the C library.
 
@@ -117,10 +131,10 @@ class CList:
         Returns:
             An integer representing the u64 status code from the C function.
         """
-        return self.list_methods.destroy(self.vm, list_ptr)
+        return self.list_methods.destroy(self.vm, self.ptr)
 
     @exception_handler
-    def push(self, list_ptr: ctypes.c_void_p, data: int, nothrow=False, noclear=False) -> int:
+    def push(self, data: int, nothrow=False, noclear=False) -> int:
         """
         Pushes an element (data) onto the specified list in the C library.
 
@@ -131,10 +145,10 @@ class CList:
         Returns:
             An integer representing the u64 status code from the C function.
         """
-        return self.list_methods.push(self.vm, list_ptr, data)
+        return self.list_methods.push(self.vm, self.ptr, data)
 
     @exception_handler
-    def pop(self, list_ptr: ctypes.c_void_p, nothrow=False, noclear=False) -> int:
+    def pop(self, nothrow=False, noclear=False) -> int:
         """
         Pops an element from the specified list in the C library.
 
@@ -144,10 +158,10 @@ class CList:
         Returns:
             A Python integer representing the u64 data popped from the list.
         """
-        return self.list_methods.pop(self.vm, list_ptr)
+        return self.list_methods.pop(self.vm, self.ptr)
 
     @exception_handler
-    def peek(self, list_ptr: ctypes.c_void_p, nothrow=False, noclear=False) -> int:
+    def peek(self, nothrow=False, noclear=False) -> int:
         """
         Peeks at the top element of the specified list without removing it.
 
@@ -157,49 +171,46 @@ class CList:
         Returns:
             A Python integer representing the u64 data at the top of the list.
         """
-        return self.list_methods.peek(self.vm, list_ptr)
+        return self.list_methods.peek(self.vm, self.ptr)
 
     @exception_handler
-    def diff(self, stack1: ctypes.c_void_p, stack2: ctypes.c_void_p, result: ctypes.c_void_p, nothrow=False, noclear=False) -> int:
+    def diff(self, stack1: ctypes.c_void_p, stack2: ctypes.c_void_p, nothrow=False, noclear=False) -> int:
         """
         Computes the symmetric difference between two lists and stores it in a third list.
 
         Args:
             stack1: A pointer to the first list.
             stack2: A pointer to the second list.
-            result: A pointer to the list where the difference will be stored.
 
         Returns:
             An integer representing the u64 status code from the C function.
         """
-        return self.list_methods.diff(self.vm, stack1, stack2, result)
+        return self.list_methods.diff(self.vm, stack1, stack2, self.ptr)
 
     @exception_handler
-    def diff_left(self, stack1: ctypes.c_void_p, stack2: ctypes.c_void_p, cmp: ctypes.c_void_p, nothrow=False, noclear=False) -> int:
+    def diff_left(self, stack1: ctypes.c_void_p, stack2: ctypes.c_void_p, nothrow=False, noclear=False) -> int:
         """
         Computes the elements present in the first list but not in the second (left difference).
 
         Args:
             stack1: A pointer to the first list.
             stack2: A pointer to the second list.
-            cmp: A pointer of the list where the left difference will be stored.
 
         Returns:
             An integer representing the u64 status code from the C function.
         """
-        return self.list_methods.diff_left(self.vm, stack1, stack2, cmp)
+        return self.list_methods.diff_left(self.vm, stack1, stack2, self.ptr)
 
     @exception_handler
-    def diff_right(self, stack1: ctypes.c_void_p, stack2: ctypes.c_void_p, cmp: ctypes.c_void_p, nothrow=False, noclear=False) -> int:
+    def diff_right(self, stack1: ctypes.c_void_p, stack2: ctypes.c_void_p, nothrow=False, noclear=False) -> int:
         """
         Computes the elements present in the second list but not in the first (right difference).
 
         Args:
             stack1: A pointer to the first list.
             stack2: A pointer to the second list.
-            cmp: A pointer of the list where the right difference will be stored.
 
         Returns:
             An integer representing the u64 status code from the C function.
         """
-        return self.list_methods.diff_right(self.vm, stack1, stack2, cmp)
+        return self.list_methods.diff_right(self.vm, stack1, stack2, self.ptr)
