@@ -1,6 +1,5 @@
 # examples/python/file/main.py
 import ctypes
-
 from c import CVirtualMachine, CString, CFile, CData, COperatingSystem, CException
 
 

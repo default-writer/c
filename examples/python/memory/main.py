@@ -1,6 +1,5 @@
 # examples/python/memory/main.py
 import ctypes
-
 from c import CVirtualMachine, CPointer, CList, CString, CException, CStack, CEnvironment
 
 

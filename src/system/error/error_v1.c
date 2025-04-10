@@ -5,7 +5,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 9, 2025 at 11:03:55 AM GMT+3
+ *   April 10, 2025 at 1:13:14 PM GMT+3
  *
  */
 /*
@@ -97,9 +97,11 @@ static void error_throw(u64 error_type, const char* message, u64 size) {
 }
 
 static void error_clear(void) {
-    ex->message_count = 0;
-    CALL(os)->memset(&ex->type[0], 0x00, ERROR_MESSAGE_COUNT);
-    CALL(os)->memset(&ex->message[0], 0x00, ERROR_BUFFER_SIZE); /* NOLINT: memset(ex->message, 0, ERROR_BUFFER_SIZE) */
+    if (ex->message_count != 0) {
+        CALL(os)->memset(&ex->type[0], 0x00, ERROR_MESSAGE_COUNT);
+        CALL(os)->memset(&ex->message[0], 0x00, ERROR_BUFFER_SIZE); /* NOLINT: memset(ex->message, 0, ERROR_BUFFER_SIZE) */
+        ex->message_count = 0;
+    }
 }
 
 static u64 error_type(void) {
