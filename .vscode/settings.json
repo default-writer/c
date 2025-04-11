@@ -369,7 +369,7 @@
     "chat.editor.fontSize": 12,
     "notebook.output.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
     "terminal.integrated.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
-    "terminal.integrated.fontSize": 16,
+    "terminal.integrated.fontSize": 12,
     "terminal.integrated.enablePersistentSessions": true,
     "terminal.integrated.persistentSessionReviveProcess": "onExitAndWindowClose",
     "terminal.integrated.shellIntegration.history": 1000,
@@ -513,7 +513,7 @@
     "bazel.buildifierExecutable": "$HOME/.bazel/tools/buildifier",
     "bazel.executable": "$HOME/.bazel/bazel",
     "cmake.options.statusBarVisibility": "visible",
-    "editor.fontSize": 20,
+    "editor.fontSize": 12,
     "sonarlint.connectedMode.project": {
         "connectionId": "default-writer",
         "projectKey": "default-writer_c"
