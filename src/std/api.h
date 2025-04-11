@@ -5,7 +5,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 9, 2025 at 11:03:43 AM GMT+3
+ *   April 11, 2025 at 6:39:41 AM GMT+3
  *
  */
 /*
@@ -51,6 +51,9 @@
 
 #define USING_MACROS
 #include "std/macros.h"
+
+#define USING_TIME
+#include "std/time.h"
 
 #include "std/data.h"
 

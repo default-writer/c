@@ -5,7 +5,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 9, 2025 at 3:59:00 PM GMT+3
+ *   April 11, 2025 at 11:32:52 AM GMT+3
  *
  */
 /*
@@ -53,6 +53,9 @@ typedef struct test_data {
     const_vm_ptr ctx;
     stack_ptr stack;
 } test_data_type;
+
+static void test(const_vm_ptr cvm, stack_ptr stack);
+static void run_test(void (*test)(const_vm_ptr cvm, stack_ptr const));
 
 RX_SET_UP(test_set_up) {
     test_data_ptr rx = (test_data_ptr)RX_DATA;
@@ -452,25 +455,12 @@ RX_TEST_CASE(tests_list_v1, test_list_pop_is_zero, .fixture = test_fixture) {
 }
 
 /* runs default list usage scenario */
-static void run_list1(void (*tests)(const_vm_ptr cvm, stack_ptr const)) {
+static void run_test(void (*test)(const_vm_ptr cvm, stack_ptr const)) {
     const_vm_ptr cvm = CALL(vm)->init(8);
     /* initialize current context (stack) */
     stack_ptr ctx = CALL(list)->init(cvm);
     /* call user method */
-    tests(cvm, ctx);
-    /* destroy list */
-    CALL(list)->destroy(cvm, ctx);
-    CALL(vm)->gc(cvm);
-    CALL(vm)->destroy(cvm);
-}
-
-/* runs default list usage scenario */
-static void run_list2(void (*tests)(const_vm_ptr cvm, stack_ptr const)) {
-    const_vm_ptr cvm = CALL(vm)->init(8);
-    /* initialize current context (stack) */
-    stack_ptr ctx = CALL(list)->init(cvm);
-    /* call user method */
-    tests(cvm, ctx);
+    test(cvm, ctx);
     /* destroy list */
     CALL(list)->destroy(cvm, ctx);
     CALL(vm)->gc(cvm);
@@ -478,7 +468,7 @@ static void run_list2(void (*tests)(const_vm_ptr cvm, stack_ptr const)) {
 }
 
 /* uses the list */
-static void tests(const_vm_ptr cvm, stack_ptr stack) {
+static void test(const_vm_ptr cvm, stack_ptr stack) {
     u8* data = (void_ptr)0xdeadbeef;
     u64 is_null[] = {
         (u64)CALL(list)->peek(cvm, stack),
@@ -573,8 +563,7 @@ static void run(void) {
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- acceptance test code\n");
 #endif
-    run_list1(tests);
-    run_list2(tests);
+    run_test(test);
 #ifdef USE_MEMORY_DEBUG_INFO
     printf("---- rexo unit test code %s\n", __FILE__);
 #endif

@@ -5,7 +5,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 9, 2025 at 11:03:55 AM GMT+3
+ *   April 11, 2025 at 11:27:27 AM GMT+3
  *
  */
 /*
@@ -39,25 +39,42 @@
 #ifndef _STD_TIME_H_
 #define _STD_TIME_H_
 
-#define TIME_INIT(s)      \
-    struct timeval s##t1; \
-    struct timeval s##t2; \
-    struct timeval s##diff;
+#define USING_TIME
+
+#define TIME_INIT(s)       \
+    struct timespec s##t1; \
+    struct timespec s##t2; \
+    struct timespec s##diff;
 
 #define TIME_START(s) \
-    gettimeofday(&s##t1, NULL);
+    clock_gettime(CLOCK_MONOTONIC, &s##t1);
 
-#define TIME_END(s)             \
-    gettimeofday(&s##t2, NULL); \
+#define TIME_END(s)                         \
+    clock_gettime(CLOCK_MONOTONIC, &s##t2); \
     TIME_CALC(s);
 
-#define TIME_CALC(s)                              \
-    s##diff.tv_sec = s##t2.tv_sec - s##t1.tv_sec; \
-    s##diff.tv_usec = s##t2.tv_usec - s##t1.tv_usec;
+#define TIME_CALC(s)                                 \
+    s##diff.tv_sec = s##t2.tv_sec - s##t1.tv_sec;    \
+    s##diff.tv_nsec = s##t2.tv_nsec - s##t1.tv_nsec; \
+    if (s##diff.tv_nsec < 0) {                       \
+        s##diff.tv_sec -= 1;                         \
+        s##diff.tv_nsec += 1000000000L;              \
+    }
 
 #define TIME_VALUE(s) \
-    (u64)(s##diff.tv_sec * 1000000 + s##diff.tv_usec)
+    (u64)(s##diff.tv_sec * 1000000000ULL + s##diff.tv_nsec)
 
-#define TIME_PRINT(s) printf("%0.3Lf\n", (long double)(TIME_VALUE(s)) / 1000.0);
+#define TIME_PRINT(s)                                                                                       \
+    do {                                                                                                    \
+        u64 total_ns = TIME_VALUE(s); /* Total time in nanoseconds */                                       \
+        u64 hours = total_ns / (1000000000ULL * 60 * 60);                                                   \
+        total_ns %= (1000000000ULL * 60 * 60);                                                              \
+        u64 minutes = total_ns / (1000000000ULL * 60);                                                      \
+        total_ns %= (1000000000ULL * 60);                                                                   \
+        u64 seconds = total_ns / 1000000000ULL;                                                             \
+        u64 milliseconds = (total_ns % 1000000000ULL) / 1000000ULL;                                         \
+        u64 nanoseconds = (total_ns % 1000000ULL);                                                          \
+        printf("%02llu:%02llu:%02llu.%03llu.%06llu\n", hours, minutes, seconds, milliseconds, nanoseconds); \
+    } while (0)
 
 #endif /* _STD_TIME_H_ */
