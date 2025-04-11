@@ -5,7 +5,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 9, 2025 at 11:03:55 AM GMT+3
+ *   April 11, 2025 at 12:09:49 PM GMT+3
  *
  */
 /*
@@ -69,24 +69,24 @@ static void init() {
 int main(int argc, const char** argv) {
     init();
     init_statistics();
-    TEST_RUN(_tests_memory_test_suite);
-    TEST_RUN(_tests_list_test_suite);
-    TEST_RUN(_tests_vm_test_suite);
-    TEST_RUN(_tests_pointer_suite);
-    TEST_RUN(_tests_hashtable_test_suite);
-    TEST_RUN(_tests_api_test_suite);
+    TEST_RUN(PRIVATE_API(tests_memory_test_suite));
+    TEST_RUN(PRIVATE_API(tests_list_test_suite));
+    TEST_RUN(PRIVATE_API(tests_vm_test_suite));
+    TEST_RUN(PRIVATE_API(tests_pointer_suite));
+    TEST_RUN(PRIVATE_API(tests_hashtable_test_suite));
+    TEST_RUN(PRIVATE_API(tests_api_test_suite));
     result_statistics();
     return rx_main(0, NULL, argc, argv) == RX_SUCCESS ? 0 : 1;
 }
 #else
 int main(int argc, const char** argv) {
     init();
-    TEST_RUN(_tests_memory_test_suite);
-    TEST_RUN(_tests_list_test_suite);
-    TEST_RUN(_tests_vm_test_suite);
-    TEST_RUN(_tests_pointer_suite);
-    TEST_RUN(_tests_hashtable_test_suite);
-    TEST_RUN(_tests_api_test_suite);
+    TEST_RUN(PRIVATE_API(tests_memory_test_suite));
+    TEST_RUN(PRIVATE_API(tests_list_test_suite));
+    TEST_RUN(PRIVATE_API(tests_vm_test_suite));
+    TEST_RUN(PRIVATE_API(tests_pointer_suite));
+    TEST_RUN(PRIVATE_API(tests_hashtable_test_suite));
+    TEST_RUN(PRIVATE_API(tests_api_test_suite));
     return rx_main(0, NULL, argc, argv) == RX_SUCCESS ? 0 : 1;
 }
 #endif

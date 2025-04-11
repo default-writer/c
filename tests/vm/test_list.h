@@ -5,7 +5,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 9, 2025 at 11:03:57 AM GMT+3
+ *   April 11, 2025 at 12:09:34 PM GMT+3
  *
  */
 /*
@@ -54,7 +54,7 @@ extern const tests_list_test_suite PRIVATE_API(tests_list_test_suite_definitions
 const tests_list_test_suite* tests_list_test_suite = &PRIVATE_API(tests_list_test_suite_definitions);
 #else
 /* definition */
-static const tests_list_test_suite* _tests_list_test_suite = &PRIVATE_API(tests_list_test_suite_definitions);
+static const tests_list_test_suite* PRIVATE_API(tests_list_test_suite) = &PRIVATE_API(tests_list_test_suite_definitions);
 #endif
 
 #endif /* _TEST_LIST_H_ */
