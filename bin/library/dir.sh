@@ -21,6 +21,7 @@ function cleanup-dirs() {
 
     find "${pwd}" -type f -name "callgrind.out.*" -delete
     find "${pwd}" -type f -name "*.s" -delete
+    find "${pwd}" -type d -name "__pycache__" -exec rm -rf {} +
 }
 
 export -f cleanup-dirs
