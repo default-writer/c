@@ -325,7 +325,11 @@
     "**/gtk/**": true
   },
   "clangd.fallbackFlags": [
-    "-I${workspaceFolder}/src"
+    "-I/usr/include/python3.12",
+    "-I${workspaceFolder}/.deps/rexo/include",
+    "-I${workspaceFolder}/src",
+    "-I.deps/rexo/include",
+    "-Isrc"
   ],
   "clangd.arguments": [
     "--compile-commands-dir=${workspaceFolder}/config",
@@ -351,6 +355,10 @@
   "clang-format.language.c.enable": true,
   "clang-tidy.lintOnSave": true,
   "clang-tidy.compilerArgs": [
+    "-I/usr/include/python3.12",
+    "-I${workspaceFolder}/.deps/rexo/include",
+    "-I${workspaceFolder}/src",
+    "-I.deps/rexo/include",
     "-Isrc"
   ],
   "editor.tabSize": 4,

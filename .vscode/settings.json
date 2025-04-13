@@ -326,7 +326,11 @@
         "**/gtk/**": true
     },
     "clangd.fallbackFlags": [
-        "-I${workspaceFolder}/src"
+        "-I/usr/include/python3.12",
+        "-I${workspaceFolder}/.deps/rexo/include",
+        "-I${workspaceFolder}/src",
+        "-I.deps/rexo/include",
+        "-Isrc"
     ],
     "clangd.arguments": [
         "--compile-commands-dir=${workspaceFolder}/config",
@@ -352,6 +356,10 @@
     "clang-format.language.c.enable": true,
     "clang-tidy.lintOnSave": true,
     "clang-tidy.compilerArgs": [
+        "-I/usr/include/python3.12",
+        "-I${workspaceFolder}/.deps/rexo/include",
+        "-I${workspaceFolder}/src",
+        "-I.deps/rexo/include",
         "-Isrc"
     ],
     "editor.tabSize": 4,
@@ -369,7 +377,7 @@
     "chat.editor.fontSize": 12,
     "notebook.output.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
     "terminal.integrated.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
-    "terminal.integrated.fontSize": 12,
+    "terminal.integrated.fontSize": 16,
     "terminal.integrated.enablePersistentSessions": true,
     "terminal.integrated.persistentSessionReviveProcess": "onExitAndWindowClose",
     "terminal.integrated.shellIntegration.history": 1000,
@@ -513,7 +521,7 @@
     "bazel.buildifierExecutable": "$HOME/.bazel/tools/buildifier",
     "bazel.executable": "$HOME/.bazel/bazel",
     "cmake.options.statusBarVisibility": "visible",
-    "editor.fontSize": 12,
+    "editor.fontSize": 20,
     "sonarlint.connectedMode.project": {
         "connectionId": "default-writer",
         "projectKey": "default-writer_c"

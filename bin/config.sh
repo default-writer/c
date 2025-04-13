@@ -161,8 +161,7 @@ for target in ${targets[@]}; do
     fi
 done
 
-find "${pwd}" -type f -name "callgrind.out.*" -delete
-find "${pwd}" -type f -name "*.s" -delete
+cleanup-dirs
 
 export MAKEFLAGS=-j8
 export LD_LIBRARY_PATH="${pwd}/lib"
