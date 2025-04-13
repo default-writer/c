@@ -295,6 +295,7 @@ set(TESTS_SOURCE
 
 set(MAIN_TESTS_VM1_SOURCE tests/vm/main-tests_v1.c)
 
+include_directories(/usr/include/python3.12)
 include_directories(${CMAKE_SOURCE_DIR}/.deps/rexo/include)
 include_directories(${CMAKE_SOURCE_DIR}/src)
 include_directories(${CMAKE_SOURCE_DIR}/tests)

@@ -93,3 +93,6 @@ src/std/version.h
 main-tests-vm1/
 .scannerwork/.sonar_lock
 __pycache__/
+*.egg-info/
+*/dist/
+*.egg

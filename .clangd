@@ -8,6 +8,7 @@ InlayHints:
 CompileFlags:
   Add:
     - "-Wno-undefined-inline"
+    - "-I/usr/include/python3.12"
     - "-I.deps/rexo/include"
     - "-Isrc"
   Compiler: clang

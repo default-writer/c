@@ -5,7 +5,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 9, 2025 at 11:03:43 AM GMT+3
+ *   April 13, 2025 at 7:29:49 AM GMT+3
  *
  */
 /*
@@ -64,13 +64,13 @@
 
 #ifdef USE_MEMORY_DEBUG_INFO
 #define ERROR(message_id, format, ...)                                                                                                                                                  \
-    {                                                                                                                                                                                   \
+    do {                                                                                                                                                                                \
         int _##message_id##_snp_format_size = snprintf(NULL, 0, format ": %s (%s:%d)", __VA_ARGS__, __func__, __FILE__, __LINE__); /* NOLINT: snprintf(NULL) */                         \
         char _##message_id##_snp_format_buffer[_##message_id##_snp_format_size + 1];                                                                                                    \
         snprintf(_##message_id##_snp_format_buffer, sizeof _##message_id##_snp_format_buffer, format ": %s (%s:%d)", __VA_ARGS__, __func__, __FILE__, __LINE__); /* NOLINT: snprintf */ \
         CALL(error)->output(stderr, ID_##message_id, _##message_id##_snp_format_buffer, (u64)_##message_id##_snp_format_size);                                                          \
         CALL(error)->throw(ID_##message_id, _##message_id##_snp_format_buffer, (u64)_##message_id##_snp_format_size);                                                                   \
-    }
+    } while (0)
 #define ERROR_NO_ERROR(format, ...) ERROR(ERROR_NO_ERROR, format, __VA_ARGS__)
 #define ERROR_VM_NOT_INITIALIZED(format, ...) ERROR(ERROR_VM_NOT_INITIALIZED, format, ##__VA_ARGS__)
 #define ERROR_INVALID_POINTER(format, ...) ERROR(ERROR_INVALID_POINTER, format, __VA_ARGS__)
@@ -79,13 +79,13 @@
 #define ERROR_INVALID_VALUE(format, ...) ERROR(ERROR_INVALID_VALUE, format, __VA_ARGS__)
 #else
 #define ERROR(message_id, format, ...)                                                                                                     \
-    {                                                                                                                                      \
+    do {                                                                                                                                   \
         int _##message_id##_snp_format_size = snprintf(NULL, 0, format, __VA_ARGS__); /* NOLINT: snprintf(NULL) */                         \
         char _##message_id##_snp_format_buffer[_##message_id##_snp_format_size + 1];                                                       \
         snprintf(_##message_id##_snp_format_buffer, sizeof _##message_id##_snp_format_buffer, format, __VA_ARGS__); /* NOLINT: snprintf */ \
         CALL(error)->output(stderr, ID_##message_id, _##message_id##_snp_format_buffer, (u64)_##message_id##_snp_format_size);             \
         CALL(error)->throw(ID_##message_id, _##message_id##_snp_format_buffer, (u64)_##message_id##_snp_format_size);                      \
-    }
+    } while (0)
 #define ERROR_NO_ERROR(format, ...) ERROR(ERROR_NO_ERROR, format, __VA_ARGS__)
 #define ERROR_VM_NOT_INITIALIZED(format, ...) ERROR(ERROR_VM_NOT_INITIALIZED, format, __VA_ARGS__)
 #define ERROR_INVALID_POINTER(format, ...) ERROR(ERROR_INVALID_POINTER, format, __VA_ARGS__)
