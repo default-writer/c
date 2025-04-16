@@ -113,6 +113,24 @@
             }
         },
         {
+            "label": "shell: cmake (python extensions)",
+            "type": "shell",
+            "command": "${workspaceFolder}/examples/python/build.sh",
+            "problemMatcher": []
+        },
+        {
+            "label": "shell: clean (python cache)",
+            "type": "shell",
+            "command": "${workspaceFolder}/bin/clear.sh",
+            "problemMatcher": []
+        },
+        {
+            "label": "shell: pytest",
+            "type": "shell",
+            "command": "${workspaceFolder}/examples/python/test.sh",
+            "problemMatcher": []
+        },
+        {
             "label": "cmake: build",
             "type": "cmake",
             "command": "build",

@@ -5,7 +5,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 9, 2025 at 11:03:49 AM GMT+3
+ *   April 15, 2025 at 11:58:35 PM GMT+3
  *
  */
 /*
@@ -35,6 +35,8 @@
     OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
     OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+#define USING_VIRTUAL
 
 #ifndef _VIRTUAL_V1_H_
 #define _VIRTUAL_V1_H_

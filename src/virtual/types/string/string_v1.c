@@ -5,7 +5,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 9, 2025 at 11:03:55 AM GMT+3
+ *   April 16, 2025 at 1:07:32 AM GMT+3
  *
  */
 /*
@@ -54,7 +54,7 @@
 #define STRING_REFERENCE_TYPE_SIZE sizeof(string_reference_type)
 
 /* internal */
-static const_pointer_ptr get_string_pointer_internal(const_vm_ptr cvm, const_pointer_ptr ptr, u64* data_size, u64* data_offset);
+static const_pointer_ptr get_string_reference_internal(const_vm_ptr cvm, const_pointer_ptr ptr, u64* data_size, u64* data_offset);
 static char* string_strrchr_internal(char* ch, const char* str2, u64 size, u64 offset);
 static char* string_strchr_internal(char* ch, const char* str2, u64 size, u64 offset);
 static const_pointer_ptr read_string_data_internal(const_vm_ptr cvm, u64 str_ptr, u64* size, u64* offset);
@@ -111,11 +111,11 @@ static void string_type_destructor(const_vm_ptr cvm, u64 address) {
 }
 
 /* internal */
-static const_pointer_ptr get_string_pointer_internal(const_vm_ptr cvm, const_pointer_ptr data_ptr, u64* data_size, u64* data_offset) {
+static const_pointer_ptr get_string_reference_internal(const_vm_ptr cvm, const_pointer_ptr data_ptr, u64* data_size, u64* data_offset) {
     u64 offset = 0;
     const_pointer_ptr ref_ptr;
     const_string_reference_ptr ref = data_ptr->data;
-    while ((ref_ptr = CALL(pointer)->read(cvm, ref->address, TYPE_STRING_POINTER)) != 0) {
+    while ((ref_ptr = CALL(pointer)->read(cvm, ref->address, TYPE_STRING_REFERENCE)) != 0) {
         offset += ref->offset;
         ref = ref_ptr->data;
     }
@@ -174,7 +174,7 @@ static char* string_strchr_internal(char* ch, const char* str2, u64 size, u64 of
 
 static u64 create_string_reference_internal(const_vm_ptr cvm, u64 address, u64 offset) {
     void_ptr data = CALL(memory)->alloc(STRING_REFERENCE_TYPE_SIZE);
-    u64 data_ptr = CALL(pointer)->alloc(cvm, data, STRING_REFERENCE_TYPE_SIZE, TYPE_STRING_POINTER);
+    u64 data_ptr = CALL(pointer)->alloc(cvm, data, STRING_REFERENCE_TYPE_SIZE, TYPE_STRING_REFERENCE);
     string_reference_ptr ref = data;
     ref->address = address;
     ref->offset = offset;
@@ -236,12 +236,12 @@ static const_pointer_ptr read_string_data_internal(const_vm_ptr cvm, u64 address
             return string_data_ptr;
         }
     }
-    const_pointer_ptr string_pointer_const_ptr = CALL(pointer)->read(cvm, address, TYPE_STRING_POINTER);
-    if (string_pointer_const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)string_pointer_const_ptr, address, (u64)string_type_definitions.type_id);
+    const_pointer_ptr string_reference_const_ptr = CALL(pointer)->read(cvm, address, TYPE_STRING_REFERENCE);
+    if (string_reference_const_ptr == 0) {
+        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)string_reference_const_ptr, address, (u64)string_type_definitions.type_id);
         return NULL_PTR;
     }
-    return get_string_pointer_internal(cvm, string_pointer_const_ptr, size, offset);
+    return get_string_reference_internal(cvm, string_reference_const_ptr, size, offset);
 }
 
 /* public */
@@ -986,14 +986,14 @@ static u64 string_move_left(const_vm_ptr cvm, u64 address, u64 nbytes) {
         ERROR_INVALID_ARGUMENT("nbytes == %lld", nbytes);
         return FALSE;
     }
-    const_pointer_ptr src_ptr = CALL(pointer)->read(cvm, address, TYPE_STRING_POINTER);
+    const_pointer_ptr src_ptr = CALL(pointer)->read(cvm, address, TYPE_STRING_REFERENCE);
     if (src_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)src_ptr, address, (u64)TYPE_STRING_POINTER);
+        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)src_ptr, address, (u64)TYPE_STRING_REFERENCE);
         return FALSE;
     }
     u64 size = 0;
     u64 offset = 0;
-    const_pointer_ptr const_ptr = get_string_pointer_internal(cvm, src_ptr, &size, &offset);
+    const_pointer_ptr const_ptr = get_string_reference_internal(cvm, src_ptr, &size, &offset);
     if (const_ptr == 0) {
         ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, size == %lld, offset == %lld", (const_void_ptr)const_ptr, address, size, offset);
         return FALSE;
@@ -1025,12 +1025,12 @@ static u64 string_move_right(const_vm_ptr cvm, u64 address, u64 nbytes) {
     }
     u64 size = 0;
     u64 offset = 0;
-    const_pointer_ptr src_ptr = CALL(pointer)->read(cvm, address, TYPE_STRING_POINTER);
+    const_pointer_ptr src_ptr = CALL(pointer)->read(cvm, address, TYPE_STRING_REFERENCE);
     if (src_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)src_ptr, address, (u64)TYPE_STRING_POINTER);
+        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)src_ptr, address, (u64)TYPE_STRING_REFERENCE);
         return FALSE;
     }
-    const_pointer_ptr const_ptr = get_string_pointer_internal(cvm, src_ptr, &size, &offset);
+    const_pointer_ptr const_ptr = get_string_reference_internal(cvm, src_ptr, &size, &offset);
     if (const_ptr == 0) {
         ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, size == %lld, offset == %lld", (const_void_ptr)const_ptr, address, size, offset);
         return FALSE;

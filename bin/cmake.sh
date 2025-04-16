@@ -159,6 +159,8 @@ done
 
 cleanup-dirs
 
+unset LD_PRELOAD
+
 export MAKEFLAGS=-j8
 export LD_LIBRARY_PATH="${pwd}/lib"
 

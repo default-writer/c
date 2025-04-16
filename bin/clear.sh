@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+if [[ "${BASHOPTS}" != *extdebug* ]]; then
+    set -e
+fi
+
+err_report() {
+    cd ${source}
+    echo "ERROR: $0:$*"
+    exit 8
+}
+
+if [[ "${BASHOPTS}" != *extdebug* ]]; then
+    trap 'err_report $LINENO' ERR
+fi
+
+source=$(pwd)
+
+pwd=$(cd "$(dirname $(dirname "${BASH_SOURCE[0]}"))" &> /dev/null && pwd)
+
+cd "${pwd}"
+
+install="$1"
+
+opts=( "${@:2}" )
+
+. "${pwd}/bin/scripts/load.sh"
+
+## clears up build directories
+## Usage: ${script} <option> [optional]
+## ${commands}
+
+while (($#)); do
+    case "$1" in
+
+        "--help") # [optional] shows command description
+            help
+            ;;
+
+        *)
+            ;;
+
+    esac
+    shift
+done
+
+if [[ "${install}" == "--help" ]]; then
+    help
+    exit
+fi
+
+find "${pwd}" -type f -name "callgrind.out.*" -delete
+find "${pwd}" -type f -name "*.s" -delete
+find "${pwd}" -type d -name "__pycache__" -exec rm -rf {} +
+
+[[ $SHLVL -eq 2 ]] && echo OK
+
+cd "${pwd}"

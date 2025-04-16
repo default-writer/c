@@ -16,5 +16,5 @@
 - object
 - stack
 - string
-- string_pointer
+- string_reference
 - user

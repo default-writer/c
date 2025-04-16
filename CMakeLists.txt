@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.22.1)
 project(c VERSION 0.0.1 LANGUAGES C CXX)
 include(GenerateExportHeader)
 
-set(VERBOSE 1)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -276,7 +275,7 @@ set(LIB_VM_SOURCE
     src/virtual/types/object/object_v1.c
     src/virtual/types/stack/stack_v1.c
     src/virtual/types/string/string_v1.c
-    src/virtual/types/string_pointer/string_pointer_v1.c
+    src/virtual/types/string_reference/string_reference_v1.c
     src/virtual/types/user/user_v1.c
     src/virtual/virtual/virtual_v1.c
     src/virtual/vm/vm_v1.c
@@ -319,6 +318,7 @@ generate_export_header(c-vm
 target_include_directories(c-vm PUBLIC 
     ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR}/lib
 )
+
 
 # main 
 add_executable(main-tests-vm1

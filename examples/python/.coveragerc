@@ -1,0 +1,4 @@
+[run]
+omit =
+    main_*.py
+    examples/python/main_*.py

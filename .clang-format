@@ -46,7 +46,7 @@ BraceWrapping:
   SplitEmptyFunction: true
   SplitEmptyRecord: true
   SplitEmptyNamespace: true
-BreakBeforeBinaryOperators: All
+BreakBeforeBinaryOperators: None
 BreakBeforeConceptDeclarations: true
 BreakBeforeBraces: Attach
 BreakBeforeInheritanceComma: false
@@ -120,7 +120,7 @@ ObjCBreakBeforeNestedBlockParam: true
 ObjCSpaceAfterProperty: true
 ObjCSpaceBeforeProtocolList: true
 PenaltyBreakAssignment: 2
-PenaltyBreakBeforeFirstCallParameter: 19
+PenaltyBreakBeforeFirstCallParameter: 1000
 PenaltyBreakComment: 300
 PenaltyBreakFirstLessLess: 120
 PenaltyBreakOpenParenthesis: 0

@@ -5,7 +5,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 10, 2025 at 3:24:01 PM GMT+3
+ *   April 16, 2025 at 1:07:34 AM GMT+3
  *
  */
 /*
@@ -74,7 +74,7 @@ CVM_EXPORT extern void file_init(const_vm_ptr cvm);
 CVM_EXPORT extern void object_init(const_vm_ptr cvm);
 CVM_EXPORT extern void stack_init(const_vm_ptr cvm);
 CVM_EXPORT extern void string_init(const_vm_ptr cvm);
-CVM_EXPORT extern void string_pointer_init(const_vm_ptr cvm);
+CVM_EXPORT extern void string_reference_init(const_vm_ptr cvm);
 CVM_EXPORT extern void user_init(const_vm_ptr cvm);
 
 static void register_known_types(const_vm_ptr cvm);
@@ -86,7 +86,7 @@ static void register_known_types(const_vm_ptr cvm) {
     object_init(cvm);
     stack_init(cvm);
     string_init(cvm);
-    string_pointer_init(cvm);
+    string_reference_init(cvm);
     user_init(cvm);
 }
 

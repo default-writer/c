@@ -5,7 +5,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 9, 2025 at 11:03:49 AM GMT+3
+ *   April 16, 2025 at 1:07:32 AM GMT+3
  *
  */
 /*
@@ -75,8 +75,8 @@ PUBLIC const virtual_string_methods* PUBLIC_API(string) {
     return CALL(string);
 }
 
-PUBLIC const virtual_string_pointer_methods* PUBLIC_API(string_pointer) {
-    return CALL(string_pointer);
+PUBLIC const virtual_string_reference_methods* PUBLIC_API(string_reference) {
+    return CALL(string_reference);
 }
 
 PUBLIC const virtual_user_methods* PUBLIC_API(user) {
