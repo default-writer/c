@@ -135,7 +135,7 @@
     <ClCompile Include="src\vm\types\object\object_v1.c" />
     <ClCompile Include="src\vm\types\stack\stack_v1.c" />
     <ClCompile Include="src\vm\types\string\string_v1.c" />
-    <ClCompile Include="src\vm\types\string_pointer\string_pointer_v1.c" />
+    <ClCompile Include="src\vm\types\string_reference\string_reference_v1.c" />
     <ClCompile Include="src\vm\types\user\user_v1.c" />
     <ClCompile Include="src\vm\virtual\virtual_v1.c" />
     <ClCompile Include="tests\vm\main-tests_v1.c" />
@@ -165,7 +165,7 @@
     <ClInclude Include="src\vm\types\object\object_v1.h" />
     <ClInclude Include="src\vm\types\stack\stack_v1.h" />
     <ClInclude Include="src\vm\types\string\string_v1.h" />
-    <ClInclude Include="src\vm\types\string_pointer\string_pointer_v1.h" />
+    <ClInclude Include="src\vm\types\string_reference\string_reference_v1.h" />
     <ClInclude Include="src\vm\types\user\user_v1.h" />
     <ClInclude Include="src\vm\virtual\virtual_v1.h" />
     <ClInclude Include="tests\vm\main-tests_v1.h" />

@@ -1,0 +1,3 @@
+debugpy
+pytest
+pytest-cov

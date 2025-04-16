@@ -60,6 +60,7 @@ if [[ "${install}" == "--clean" ]]; then
     rm -rf "${pwd}/lib"
     rm -rf "${pwd}/logs"
     rm -f "${pwd}/src/std/version.h"
+    find "${pwd}" -type d -name "__pycache__" -exec rm -rf {} +
 fi
 
 [[ $SHLVL -eq 2 ]] && echo OK

@@ -284,7 +284,7 @@
     "ghs",
     "diab"
   ],
-  "editor.formatOnSave": true,
+  "editor.formatOnSave": false,
   "editor.fontWeight": "normal",
   "cmake.additionalKits": [
     "${workspaceFolder}/.vscode",
@@ -528,7 +528,22 @@
   "cmake.deleteBuildDirOnCleanConfigure": true,
   "git.fetchOnPull": true,
   "[python]": {
-      "editor.defaultFormatter": "trunk.io"
+    "editor.defaultFormatter": "trunk.io"
   },
-  "chat.agent.enabled": true
+  "chat.agent.enabled": true,
+  "debugpy.debugJustMyCode": false,
+  "python.testing.pytestEnabled": true,
+  "python.testing.pytestArgs": [
+    "${workspaceFolder}",
+    "--ignore-glob=examples/python/main_*.py"
+  ],
+  "python.testing.unittestEnabled": false,
+  "python.testing.autoTestDiscoverOnSaveEnabled": true,
+  "python.envFile": "${workspaceFolder}/examples/python/.env",
+  "python.testing.cwd": "${workspaceFolder}",
+  "cmake.ctestEnabled": false,
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "cmake.ctest.testExplorerIntegrationEnabled": false
 }

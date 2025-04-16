@@ -5,7 +5,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 9, 2025 at 4:01:58 PM GMT+3
+ *   April 16, 2025 at 1:07:32 AM GMT+3
  *
  */
 /*
@@ -36,10 +36,11 @@
     OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#define USING_DATA
+
 #ifndef _STD_DATA_H_
 #define _STD_DATA_H_
 
-#define USING_DATA
 #define VM_PTR_ARRAY_SIZE 4096
 #define ERROR_BUFFER_SIZE 4096
 #define ERROR_MESSAGE_SIZE 256
@@ -162,7 +163,7 @@ enum type {
     /* value used for string type - string */
     TYPE_STRING = 5,
     /* value used for string ref type - string ref */
-    TYPE_STRING_POINTER = 6,
+    TYPE_STRING_REFERENCE = 6,
     /* value used for user type - user (id: +0, +1, +2, +3, ...) */
     TYPE_USER = 7,
 };

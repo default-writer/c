@@ -213,11 +213,10 @@
         "window.zoomLevel": 0
     },
     "presentation-mode.configBackup": {
-        "terminal.integrated.fontSize": 12,
         "editor.fontSize": 12,
         "editor.matchBrackets": "near",
         "editor.minimap.enabled": false,
-        "workbench.activityBar.visible": "undefined",
+        "workbench.activityBar.visible": true,
         "workbench.statusBar.visible": true,
         "workbench.colorTheme": "Yitzchok (rainglow)",
         "workbench.colorCustomizations": {
@@ -285,7 +284,7 @@
         "ghs",
         "diab"
     ],
-    "editor.formatOnSave": true,
+    "editor.formatOnSave": false,
     "editor.fontWeight": "normal",
     "cmake.additionalKits": [
         "${workspaceFolder}/.vscode",
@@ -377,7 +376,7 @@
     "chat.editor.fontSize": 12,
     "notebook.output.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
     "terminal.integrated.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
-    "terminal.integrated.fontSize": 16,
+    "terminal.integrated.fontSize": 12,
     "terminal.integrated.enablePersistentSessions": true,
     "terminal.integrated.persistentSessionReviveProcess": "onExitAndWindowClose",
     "terminal.integrated.shellIntegration.history": 1000,
@@ -521,7 +520,7 @@
     "bazel.buildifierExecutable": "$HOME/.bazel/tools/buildifier",
     "bazel.executable": "$HOME/.bazel/bazel",
     "cmake.options.statusBarVisibility": "visible",
-    "editor.fontSize": 20,
+    "editor.fontSize": 12,
     "sonarlint.connectedMode.project": {
         "connectionId": "default-writer",
         "projectKey": "default-writer_c"
@@ -532,6 +531,20 @@
         "editor.defaultFormatter": "trunk.io"
     },
     "chat.agent.enabled": true,
+    "debugpy.debugJustMyCode": false,
+    "python.testing.pytestEnabled": true,
+    "python.testing.pytestArgs": [
+        "${workspaceFolder}",
+        "--ignore-glob=examples/python/main_*.py"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.autoTestDiscoverOnSaveEnabled": true,
+    "python.envFile": "${workspaceFolder}/examples/python/.env",
+    "python.testing.cwd": "${workspaceFolder}",
+    "cmake.ctestEnabled": false,
+    "[json]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
     "cmake.debugConfig": {
         "MIMode": "gdb",
         "miDebuggerPath": "/usr/bin/gdb",
@@ -545,5 +558,6 @@
         "console": "integratedTerminal",
         "cwd": "${workspaceRoot}/cmake",
         "environment": []
-    }
+    },
+    "cmake.ctest.testExplorerIntegrationEnabled": false
 }

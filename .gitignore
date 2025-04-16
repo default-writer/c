@@ -94,5 +94,9 @@ main-tests-vm1/
 .scannerwork/.sonar_lock
 __pycache__/
 *.egg-info/
-*/dist/
+dist/
 *.egg
+.coverage
+.pytest_cache/
+
+/examples/python/.coverage

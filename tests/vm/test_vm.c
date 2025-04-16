@@ -5,7 +5,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 9, 2025 at 3:54:51 PM GMT+3
+ *   April 16, 2025 at 1:07:32 AM GMT+3
  *
  */
 /*
@@ -50,7 +50,7 @@
 #include "virtual/types/data/data_v1.h"
 #include "virtual/types/stack/stack_v1.h"
 #include "virtual/types/string/string_v1.h"
-#include "virtual/types/string_pointer/string_pointer_v1.h"
+#include "virtual/types/string_reference/string_reference_v1.h"
 #include "virtual/types/user/user_v1.h"
 #include "virtual/virtual/virtual_v1.h"
 #include "virtual/vm/vm_v1.h"
@@ -885,7 +885,7 @@ static void parse_text(const_vm_ptr cvm, u64 text_string_ptr) {
         if (CALL(string)->size(cvm, string_ptr) == 0) {
             quit = 1;
             CALL(string)->free(cvm, string_ptr);
-            CALL(string_pointer)->free(cvm, string_ptr);
+            CALL(string_reference)->free(cvm, string_ptr);
             continue;
         }
         CALL(env)->puts(cvm, string_ptr);
@@ -893,27 +893,27 @@ static void parse_text(const_vm_ptr cvm, u64 text_string_ptr) {
         if (CALL(string)->size(cvm, pattern_ptr) == 0) {
             quit = 1;
             CALL(string)->free(cvm, string_ptr);
-            CALL(string_pointer)->free(cvm, string_ptr);
+            CALL(string_reference)->free(cvm, string_ptr);
             CALL(string)->free(cvm, pattern_ptr);
-            CALL(string_pointer)->free(cvm, pattern_ptr);
+            CALL(string_reference)->free(cvm, pattern_ptr);
             continue;
         }
         CALL(env)->puts(cvm, pattern_ptr);
         u64 size = CALL(string)->size(cvm, pattern_ptr);
-        u64 string_pointer_ptr = 0;
+        u64 string_reference_ptr = 0;
         u64 current_ptr = string_ptr;
-        while ((string_pointer_ptr = CALL(string)->strchr(cvm, current_ptr, pattern_ptr)) != 0) {
-            u64 match_ptr = CALL(string)->match(cvm, string_pointer_ptr, pattern_ptr);
+        while ((string_reference_ptr = CALL(string)->strchr(cvm, current_ptr, pattern_ptr)) != 0) {
+            u64 match_ptr = CALL(string)->match(cvm, string_reference_ptr, pattern_ptr);
             if (match_ptr == 0) {
-                CALL(string)->free(cvm, string_pointer_ptr);
-                CALL(string_pointer)->free(cvm, string_pointer_ptr);
+                CALL(string)->free(cvm, string_reference_ptr);
+                CALL(string_reference)->free(cvm, string_reference_ptr);
                 CALL(string)->free(cvm, string_ptr);
-                CALL(string_pointer)->free(cvm, string_ptr);
+                CALL(string_reference)->free(cvm, string_ptr);
                 CALL(string)->free(cvm, pattern_ptr);
-                CALL(string_pointer)->free(cvm, pattern_ptr);
+                CALL(string_reference)->free(cvm, pattern_ptr);
                 break;
             }
-            if (CALL(string)->lessthan(cvm, string_pointer_ptr, match_ptr)) {
+            if (CALL(string)->lessthan(cvm, string_reference_ptr, match_ptr)) {
                 u64 match_start_ptr = CALL(string)->left(cvm, match_ptr, size);
                 u64 str_ncpy = CALL(string)->strncpy(cvm, match_start_ptr, size);
                 u64 distance = CALL(string)->lessthan(cvm, string_ptr, match_start_ptr);
@@ -924,20 +924,20 @@ static void parse_text(const_vm_ptr cvm, u64 text_string_ptr) {
                     }
                 }
                 printf("%s[%lld]\n", CALL(string)->unsafe(cvm, str_ncpy), distance);
-                CALL(string_pointer)->free(cvm, match_start_ptr);
+                CALL(string_reference)->free(cvm, match_start_ptr);
                 CALL(string)->free(cvm, str_ncpy);
             }
-            CALL(string)->free(cvm, string_pointer_ptr);
-            CALL(string_pointer)->free(cvm, string_pointer_ptr);
+            CALL(string)->free(cvm, string_reference_ptr);
+            CALL(string_reference)->free(cvm, string_reference_ptr);
             current_ptr = match_ptr;
         }
 #ifndef USE_GC
         CALL(string)->free(cvm, string_ptr);
-        CALL(string_pointer)->free(cvm, string_ptr);
+        CALL(string_reference)->free(cvm, string_ptr);
         CALL(string)->free(cvm, pattern_ptr);
-        CALL(string_pointer)->free(cvm, pattern_ptr);
+        CALL(string_reference)->free(cvm, pattern_ptr);
         CALL(string)->free(cvm, current_ptr);
-        CALL(string_pointer)->free(cvm, current_ptr);
+        CALL(string_reference)->free(cvm, current_ptr);
 #endif
     }
 #ifndef USE_GC
@@ -989,7 +989,7 @@ static void parse_text_memory_leak1(const_vm_ptr cvm, u64 text_string_ptr) {
         if (CALL(string)->size(cvm, string_ptr) == 0) {
             quit = 1;
             CALL(string)->free(cvm, string_ptr);
-            CALL(string_pointer)->free(cvm, string_ptr);
+            CALL(string_reference)->free(cvm, string_ptr);
             continue;
         }
         CALL(env)->puts(cvm, string_ptr);
@@ -997,27 +997,27 @@ static void parse_text_memory_leak1(const_vm_ptr cvm, u64 text_string_ptr) {
         if (CALL(string)->size(cvm, pattern_ptr) == 0) {
             quit = 1;
             CALL(string)->free(cvm, string_ptr);
-            CALL(string_pointer)->free(cvm, string_ptr);
+            CALL(string_reference)->free(cvm, string_ptr);
             CALL(string)->free(cvm, pattern_ptr);
-            CALL(string_pointer)->free(cvm, pattern_ptr);
+            CALL(string_reference)->free(cvm, pattern_ptr);
             continue;
         }
         CALL(env)->puts(cvm, pattern_ptr);
         u64 size = CALL(string)->size(cvm, pattern_ptr);
-        u64 string_pointer_ptr = 0;
+        u64 string_reference_ptr = 0;
         u64 current_ptr = string_ptr;
-        while ((string_pointer_ptr = CALL(string)->strchr(cvm, current_ptr, pattern_ptr)) != 0) {
-            u64 match_ptr = CALL(string)->match(cvm, string_pointer_ptr, pattern_ptr);
+        while ((string_reference_ptr = CALL(string)->strchr(cvm, current_ptr, pattern_ptr)) != 0) {
+            u64 match_ptr = CALL(string)->match(cvm, string_reference_ptr, pattern_ptr);
             if (match_ptr == 0) {
-                // CALL(string)->free(cvm, string_pointer_ptr);
-                // CALL(string_pointer)->free(cvm, string_pointer_ptr);
+                // CALL(string)->free(cvm, string_reference_ptr);
+                // CALL(string_reference)->free(cvm, string_reference_ptr);
                 CALL(string)->free(cvm, string_ptr);
-                CALL(string_pointer)->free(cvm, string_ptr);
+                CALL(string_reference)->free(cvm, string_ptr);
                 CALL(string)->free(cvm, pattern_ptr);
-                CALL(string_pointer)->free(cvm, pattern_ptr);
+                CALL(string_reference)->free(cvm, pattern_ptr);
                 break;
             }
-            if (CALL(string)->lessthan(cvm, string_pointer_ptr, match_ptr)) {
+            if (CALL(string)->lessthan(cvm, string_reference_ptr, match_ptr)) {
                 u64 match_start_ptr = CALL(string)->left(cvm, match_ptr, size);
                 u64 str_ncpy = CALL(string)->strncpy(cvm, match_start_ptr, size);
                 u64 distance = CALL(string)->lessthan(cvm, string_ptr, match_start_ptr);
@@ -1028,11 +1028,11 @@ static void parse_text_memory_leak1(const_vm_ptr cvm, u64 text_string_ptr) {
                     }
                 }
                 printf("%s[%lld]\n", CALL(string)->unsafe(cvm, str_ncpy), distance);
-                CALL(string_pointer)->free(cvm, match_start_ptr);
+                CALL(string_reference)->free(cvm, match_start_ptr);
                 CALL(string)->free(cvm, str_ncpy);
             }
-            CALL(string)->free(cvm, string_pointer_ptr);
-            CALL(string_pointer)->free(cvm, string_pointer_ptr);
+            CALL(string)->free(cvm, string_reference_ptr);
+            CALL(string_reference)->free(cvm, string_reference_ptr);
             current_ptr = match_ptr;
         }
     }
@@ -1090,14 +1090,14 @@ static void parse_text_memory_leak2(const_vm_ptr cvm, u64 text_string_ptr) {
         }
         CALL(env)->puts(cvm, pattern_ptr);
         u64 size = CALL(string)->size(cvm, pattern_ptr);
-        u64 string_pointer_ptr = 0;
+        u64 string_reference_ptr = 0;
         u64 current_ptr = string_ptr;
-        while ((string_pointer_ptr = CALL(string)->strchr(cvm, current_ptr, pattern_ptr)) != 0) {
-            u64 match_ptr = CALL(string)->match(cvm, string_pointer_ptr, pattern_ptr);
+        while ((string_reference_ptr = CALL(string)->strchr(cvm, current_ptr, pattern_ptr)) != 0) {
+            u64 match_ptr = CALL(string)->match(cvm, string_reference_ptr, pattern_ptr);
             if (match_ptr == 0) {
                 break;
             }
-            if (CALL(string)->lessthan(cvm, string_pointer_ptr, match_ptr)) {
+            if (CALL(string)->lessthan(cvm, string_reference_ptr, match_ptr)) {
                 u64 match_start_ptr = CALL(string)->left(cvm, match_ptr, size);
                 u64 str_ncpy = CALL(string)->strncpy(cvm, match_start_ptr, size);
                 u64 distance = CALL(string)->lessthan(cvm, string_ptr, match_start_ptr);

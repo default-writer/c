@@ -5,7 +5,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 9, 2025 at 4:05:44 PM GMT+3
+ *   April 15, 2025 at 11:33:12 PM GMT+3
  *
  */
 /*
@@ -36,7 +36,7 @@
     OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#define USING_SYSTEM_LIST
+#define USING_LIST
 
 #ifndef _VIRTUAL_LIST_H_
 #define _VIRTUAL_LIST_H_

@@ -5,7 +5,7 @@
  * Created:
  *   11 December 2023 at 9:06:14 GMT+3
  * Modified:
- *   April 9, 2025 at 11:03:42 AM GMT+3
+ *   April 16, 2025 at 1:07:35 AM GMT+3
  *
  */
 /*
@@ -53,7 +53,7 @@
 #include "virtual/types/object/object_v1.h"
 #include "virtual/types/stack/stack_v1.h"
 #include "virtual/types/string/string_v1.h"
-#include "virtual/types/string_pointer/string_pointer_v1.h"
+#include "virtual/types/string_reference/string_reference_v1.h"
 #include "virtual/types/user/user_v1.h"
 #include "virtual/virtual/virtual_v1.h"
 #include "virtual/vm/vm_v1.h"
@@ -68,7 +68,7 @@ CVM_EXPORT extern const virtual_file_methods* PUBLIC_API(file);
 CVM_EXPORT extern const virtual_object_methods* PUBLIC_API(object);
 CVM_EXPORT extern const virtual_stack_methods* PUBLIC_API(stack);
 CVM_EXPORT extern const virtual_string_methods* PUBLIC_API(string);
-CVM_EXPORT extern const virtual_string_pointer_methods* PUBLIC_API(string_pointer);
+CVM_EXPORT extern const virtual_string_reference_methods* PUBLIC_API(string_reference);
 CVM_EXPORT extern const virtual_user_methods* PUBLIC_API(user);
 CVM_EXPORT extern const virtual_list_methods* PUBLIC_API(list);
 
