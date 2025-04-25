@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   11 December 2023 at 9:06:14 GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 9, 2025 at 11:03:42 AM GMT+3
+ *   April 22, 2025 at 10:29:50 AM GMT+3
  *
  */
 /*
@@ -60,21 +60,15 @@ static struct memory_info_data* base = &memory_info;
 
 static void_ptr memory_alloc(u64 size);
 static void_ptr memory_realloc(const_void_ptr const_ptr, u64 size, u64 new_size);
-static void memory_free(const_void_ptr const_ptr, u64 size);
+static u64 memory_free(const_void_ptr const_ptr, u64 size);
 #ifdef USE_MEMORY_CLEANUP
 static void memory_set(void_ptr dest, u8 c, u64 count);
 #endif
 
 static void_ptr memory_alloc(u64 size) {
-    if (size == 0) {
-        ERROR_INVALID_ARGUMENT("size == %lld", size);
-        return NULL_PTR;
-    }
+    CHECK_ARG(size, NULL_PTR);
     void_ptr ptr = CALL(os)->calloc(1, size);
-    if (ptr == 0) {
-        ERROR_INVALID_VALUE("ptr == %p, size == %lld", (const_void_ptr)ptr, size);
-        return NULL_PTR;
-    }
+    CHECK_VALUE(ptr, NULL_PTR);
 #ifdef USE_MEMORY_DEBUG_INFO
     total_alloc += size;
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -91,22 +85,10 @@ static void_ptr memory_alloc(u64 size) {
 }
 
 static void_ptr memory_realloc(const_void_ptr const_ptr, u64 size, u64 new_size) {
-    if (const_ptr == 0) {
-        ERROR_INVALID_ARGUMENT("const_ptr == %p", const_ptr);
-        return NULL_PTR;
-    }
-    if (size == 0) {
-        ERROR_INVALID_ARGUMENT("size == %lld", size);
-        return NULL_PTR;
-    }
-    if (new_size == 0) {
-        ERROR_INVALID_ARGUMENT("new_size == %lld", new_size);
-        return NULL_PTR;
-    }
-    if (size >= new_size) {
-        ERROR_INVALID_VALUE("size == %lld, new_size == %lld", size, new_size);
-        return NULL_PTR;
-    }
+    CHECK_ARG(const_ptr, NULL_PTR);
+    CHECK_ARG(size, NULL_PTR);
+    CHECK_ARG(new_size, NULL_PTR);
+    CHECK_CONDITION(size >= new_size, NULL_PTR);
     const_void_ptr const_data_ptr = const_ptr;
     safe_void_ptr safe_ptr;
     safe_ptr.const_ptr = const_data_ptr;
@@ -128,15 +110,9 @@ static void_ptr memory_realloc(const_void_ptr const_ptr, u64 size, u64 new_size)
     return ptr;
 }
 
-static void memory_free(const_void_ptr const_ptr, u64 size) {
-    if (const_ptr == 0) {
-        ERROR_INVALID_ARGUMENT("const_ptr == %p", const_ptr);
-        return;
-    }
-    if (size == 0) {
-        ERROR_INVALID_ARGUMENT("size == %lld", size);
-        return;
-    }
+static u64 memory_free(const_void_ptr const_ptr, u64 size) {
+    CHECK_ARG(const_ptr, FALSE);
+    CHECK_ARG(size, FALSE);
     const_void_ptr const_data_ptr = const_ptr;
     safe_void_ptr safe_ptr;
     safe_ptr.const_ptr = const_data_ptr;
@@ -160,6 +136,7 @@ static void memory_free(const_void_ptr const_ptr, u64 size) {
 #endif
 #endif
     CALL(os)->free(ptr);
+    return TRUE;
 }
 
 #ifdef USE_MEMORY_CLEANUP
@@ -168,14 +145,7 @@ static void memory_set(void_ptr dest, u8 c, u64 count) {
     size_t blocks = count >> 3;
     size_t bytes_left = count - (blocks << 3);
 
-    u64 c_ull = c
-        | (((u64)c) << 8)
-        | (((u64)c) << 16)
-        | (((u64)c) << 24)
-        | (((u64)c) << 32)
-        | (((u64)c) << 40)
-        | (((u64)c) << 48)
-        | (((u64)c) << 56);
+    u64 c_ull = c | (((u64)c) << 8) | (((u64)c) << 16) | (((u64)c) << 24) | (((u64)c) << 32) | (((u64)c) << 40) | (((u64)c) << 48) | (((u64)c) << 56);
 
     u64* dest_ptr8 = (u64*)dest;
     for (block_idx = 0; block_idx < blocks; block_idx++)

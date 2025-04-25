@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   April 16, 2025 at 11:03:49 AM GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 16, 2025 at 6:31:35 PM GMT+3
+ *   April 25, 2025 at 7:29:26 PM GMT+3
  *
  */
 /*
@@ -37,56 +37,56 @@
 */
 
 #include "cdata.h"
-#include "cvm.h"
 #include "cexception.h"
+#include "cvm.h"
+
+#include "py_api.h"
 
 static PyObject* CData_new(PyTypeObject* type, PyObject* args, PyObject* kwds) {
     CDataTypePtr self;
     self = (CDataTypePtr)type->tp_alloc(type, 0);
     if (self != NULL) {
         self->cvm = NULL;
+        self->ptr = 0;
     }
     return (PyObject*)self;
 }
 
 static int CData_init(CDataTypePtr self, PyObject* args, PyObject* kwds) {
     PyObject* cvm_obj;
-    if (!PyArg_ParseTuple(args, "O", &cvm_obj)) {
+    u64 size = 0;
+    if (!PyArg_ParseTuple(args, "OK", &cvm_obj, &size)) {
         return -1;
     }
 
     if (!PyObject_TypeCheck(cvm_obj, &CVirtualMachineTypeObject)) {
-        PyErr_SetString(PyExc_TypeError, "Expected a CVirtualMachine instance");
+        PYTHON_ERROR(PyExc_TypeError, "expected a CVirtualMachine instance: %s", CALL(error)->get());
         return -1;
     }
 
     CVirtualMachineTypePtr cvm = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm->cvm == NULL) {
-        PyErr_SetString(CVirtualMachineNotInitializedException, "Invalid CVirtualMachine pointer");
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer: %s", CALL(error)->get());
         return -1;
     }
+
     self->cvm = cvm->cvm;
+
+    u64 ptr = PY_CALL(data)->alloc(self->cvm, size);
+    if (!ptr) {
+        PYTHON_ERROR(CInvalidArgumentException, "failed to allocate data block: invalid size or insufficient memory: %s", CALL(error)->get());
+        return -1;
+    }
+    self->ptr = ptr;
 
     return 0;
 }
 
 static void CData_dealloc(CDataTypePtr self) {
+    if (self->cvm != 0) {
+        PY_CALL(data)->free(self->cvm, self->ptr);
+    }
     Py_TYPE(self)->tp_free((PyObject*)self);
-}
-
-static PyObject* CData_alloc(CDataTypePtr self, PyObject* args) {
-    u64 size;
-    if (!PyArg_ParseTuple(args, "K", &size)) {
-        return NULL;
-    }
-
-    u64 address = CALL(data)->alloc(self->cvm, size);
-    if (!address) {
-        PyErr_SetString(CInvalidArgumentException, CALL(error)->get());
-        return NULL;
-    }
-
-    return PyLong_FromUnsignedLongLong(address);
 }
 
 static PyObject* CData_size(CDataTypePtr self, PyObject* args) {
@@ -95,9 +95,9 @@ static PyObject* CData_size(CDataTypePtr self, PyObject* args) {
         return NULL;
     }
 
-    u64 size = CALL(data)->size(self->cvm, address);
+    u64 size = PY_CALL(data)->size(self->cvm, address);
     if (!size) {
-        PyErr_SetString(CInvalidPointerException, CALL(error)->get());
+        PYTHON_ERROR(CInvalidPointerException, "failed to get size: invalid data block address: %s", CALL(error)->get());
         return NULL;
     }
 
@@ -110,28 +110,47 @@ static PyObject* CData_unsafe(CDataTypePtr self, PyObject* args) {
         return NULL;
     }
 
-    void_ptr data = CALL(data)->unsafe(self->cvm, address);
+    void_ptr data = PY_CALL(data)->unsafe(self->cvm, address);
     if (data == NULL) {
-        PyErr_SetString(CInvalidPointerException, CALL(error)->get());
+        PYTHON_ERROR(CInvalidPointerException, "failed to get unsafe pointer: invalid data block address: %s", CALL(error)->get());
         return NULL;
     }
 
     return PyLong_FromVoidPtr(data);
 }
 
-static PyObject* CData_free(CDataTypePtr self, PyObject* args) {
+static PyObject* CData_free_static(PyObject* cls, PyObject* args, PyObject* kwargs) {
     u64 address;
-    if (!PyArg_ParseTuple(args, "K", &address)) {
+    PyObject* cvm_obj = NULL;
+    PyObject* nothrow_obj = Py_False;
+    static char* keywords[] = { "cvm", "src", "nothrow", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!K|$O!", keywords,
+            &CVirtualMachineTypeObject, &cvm_obj,
+            &address,
+            &PyBool_Type, &nothrow_obj)) {
         return NULL;
     }
 
-    u64 result = CALL(data)->free(self->cvm, address);
-    if (!result) {
-        PyErr_SetString(CInvalidPointerException, CALL(error)->get());
+    CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
+    if (cvm_py->cvm == NULL) {
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
         return NULL;
     }
 
-    Py_RETURN_NONE;
+    u64 result = PY_CALL(data)->free(cvm_py->cvm, address);
+    u64 error_type = CALL(error)->type();
+    if (error_type != 0) {
+        int nothrow = PyObject_IsTrue(nothrow_obj);
+        if (!nothrow) {
+            PYTHON_ERROR(CInvalidPointerException, "failed to get reference count: invalid pointer address: (%016llx) %s", address, CALL(error)->get());
+            return NULL;
+        }
+        CALL(error)->clear();
+        result = 0;
+    }
+
+    return PyLong_FromUnsignedLongLong(result);
 }
 
 static PyObject* CData_enter(CDataTypePtr self, PyObject* Py_UNUSED(ignored)) {
@@ -144,10 +163,13 @@ static PyObject* CData_exit(CDataTypePtr self, PyObject* args) {
 }
 
 static PyMethodDef CData_methods[] = {
-    { "alloc", (PyCFunction)CData_alloc, METH_VARARGS, "Allocate a data block" },
     { "size", (PyCFunction)CData_size, METH_VARARGS, "Get the size of a data block" },
     { "unsafe", (PyCFunction)CData_unsafe, METH_VARARGS, "Get a pointer to the data block" },
-    { "free", (PyCFunction)CData_free, METH_VARARGS, "Free a data block" },
+
+    /* CData static methods */
+    { "free", (PyCFunction)CData_free_static, METH_STATIC | METH_VARARGS | METH_KEYWORDS, "Free pointer (static method)." },
+
+    /* CData context */
     { "__enter__", (PyCFunction)CData_enter, METH_NOARGS, "Enter the context" },
     { "__exit__", (PyCFunction)CData_exit, METH_VARARGS, "Exit the context" },
     { NULL } /* Sentinel */
@@ -174,7 +196,6 @@ int init_cdata(PyObject* module) {
     Py_INCREF(&CDataTypeObject);
     if (PyModule_AddObject(module, "CData", (PyObject*)&CDataTypeObject) < 0) {
         Py_DECREF(&CDataTypeObject);
-        Py_DECREF(module);
         return -1;
     }
 

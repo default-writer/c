@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   April 16, 2025 at 11:03:49 AM GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 16, 2025 at 6:38:48 PM GMT+3
+ *   April 23, 2025 at 4:14:15 PM GMT+3
  *
  */
 /*
@@ -44,15 +44,13 @@
 #include "macros.h"
 
 #include "std/data.h"
-#include "system/error/error_v1.h"
-#include "virtual/types/stack/stack_v1.h"
 
 int init_cstack(PyObject* module);
 
 typedef struct CStack {
     PyObject_HEAD;
-    u64 stack_ptr;
     const_vm_ptr cvm;
+    u64 ptr;
 } CStackType;
 typedef struct CStack* CStackTypePtr;
 

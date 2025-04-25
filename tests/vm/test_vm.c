@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   11 December 2023 at 9:06:14 GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 16, 2025 at 1:07:32 AM GMT+3
+ *   April 25, 2025 at 8:52:48 PM GMT+3
  *
  */
 /*
@@ -50,7 +50,6 @@
 #include "virtual/types/data/data_v1.h"
 #include "virtual/types/stack/stack_v1.h"
 #include "virtual/types/string/string_v1.h"
-#include "virtual/types/string_reference/string_reference_v1.h"
 #include "virtual/types/user/user_v1.h"
 #include "virtual/virtual/virtual_v1.h"
 #include "virtual/vm/vm_v1.h"
@@ -149,7 +148,7 @@ RX_TEST_CASE(tests_vm_v1, test_vm_copy_safe, .fixture = test_fixture_pointer) {
     const_vm_ptr cvm = rx->ctx;
     const char* data = "hello";
     u64 size = strlen(data) + 1;
-    u64 virtual_ptr = CALL(pointer)->copy(cvm, data, size, size - 1, TYPE_USER);
+    u64 virtual_ptr = CALL(pointer)->copy(cvm, data, 2, size - 2, TYPE_USER);
     RX_ASSERT(virtual_ptr != 0);
     CALL(string)->free(cvm, virtual_ptr);
 #ifndef USE_GC
@@ -240,6 +239,7 @@ RX_TEST_CASE(tests_vm_v1, test_vm_read_type_0, .fixture = test_fixture) {
     const_pointer_ptr ptr = CALL(virtual)->read(cvm, 0);
     RX_ASSERT(ptr == 0);
 }
+
 /* test init */
 RX_TEST_CASE(tests_vm_v1, test_vm_init_0, .fixture = test_fixture) {
     RX_ASSERT(0 != 1);
@@ -583,7 +583,6 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_memory_leak_1, .fixture = test_clean_fixt
 
 /* test init */
 RX_TEST_CASE(tests_vm_v1, test_vm_dump_memory_leak_2, .fixture = test_clean_fixture) {
-    const_vm_ptr cvm = CALL(vm)->init(8);
     const char* test_data[] = {
         0,
         "a",
@@ -598,36 +597,16 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_memory_leak_2, .fixture = test_clean_fixt
     const_vm_ptr debug_cvm = CALL(vm)->init(8);
     for (u64 i = 0; i < sizeof(test_data) / sizeof(test_data[0]); i++) {
 
-        // change to patched original version (parse_text) to see that it will not raise any memory leaks
-        // leaks happens due to the fact that data cointaining in a pointer reference is lost forever
-        // when it happens, you will not able to recover and free allocated memory for the .data pointer
-        // you simply lost reference to the memory pointer you have to keep it when processing data
-
         u64 debug_text_string_ptr = CALL(string)->load(debug_cvm, test_data[i]);
         parse_text_memory_leak2(debug_cvm, debug_text_string_ptr);
         CALL(string)->free(debug_cvm, debug_text_string_ptr);
 
-        CALL(vm)->dump_ref(debug_cvm);
         stack_ptr debug_cvm_stack = CALL(list)->init(debug_cvm);
         CALL(vm)->dump_ref_stack(debug_cvm, debug_cvm_stack);
 
-        u64 text_string_ptr = CALL(string)->load(cvm, test_data[i]);
-        parse_text(cvm, text_string_ptr);
-        CALL(string)->free(cvm, text_string_ptr);
-
-        CALL(vm)->dump_ref(cvm);
-        stack_ptr cvm_stack = CALL(list)->init(cvm);
-        CALL(vm)->dump_ref_stack(cvm, cvm_stack);
-
-        // get unmatched pointers (it is possible to got memory leaks in both A and B memory dumps)
-        // in this particual scenario we can safely assume memory leaks are in (A \ B) set
-
-        stack_ptr compare_left = CALL(list)->init(cvm);
-        CALL(list)->diff_left(cvm, debug_cvm_stack, cvm_stack, compare_left);
-        stack_element_ptr current = 0;
-        current = compare_left->current;
-        while (current != NULL_PTR) {
-            u64 ptr = (u64)current->data;
+        u64 current = 0;
+        while ((current = (u64)CALL(list)->pop(debug_cvm, debug_cvm_stack)) != 0) {
+            u64 ptr = current;
 #ifdef USE_MEMORY_DEBUG_INFO
 #ifdef USE_TTY
             const char* start = "\x1b[34m";
@@ -639,18 +618,13 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_memory_leak_2, .fixture = test_clean_fixt
 #endif
             const_pointer_ptr const_ptr = (const_pointer_ptr)ptr;
             CALL(pointer)->free(debug_cvm, const_ptr->public.address);
-            current = current->next;
         }
         CALL(list)->destroy(debug_cvm, debug_cvm_stack);
-        CALL(list)->destroy(cvm, cvm_stack);
-        CALL(list)->destroy(cvm, compare_left);
     }
 #ifdef USE_GC
     CALL(vm)->gc(debug_cvm);
-    CALL(vm)->gc(cvm);
 #endif
     CALL(vm)->destroy(debug_cvm);
-    CALL(vm)->destroy(cvm);
 }
 
 /* test init */
@@ -743,6 +717,7 @@ RX_TEST_CASE(tests_vm_v1, test_list_free_user_free, .fixture = test_pointer_fixt
     CALL(vm)->gc(cvm);
     CALL(vm)->destroy(cvm);
 }
+
 /* test init */
 RX_TEST_CASE(tests_vm_v1, test_user_free_0, .fixture = test_pointer_fixture) {
     const_vm_ptr cvm = CALL(vm)->init(8);
@@ -778,6 +753,7 @@ RX_TEST_CASE(tests_vm_v1, test_pointer_alloc_gc_destroy_free_unsafe, .fixture = 
     void_ptr u = CALL(data)->unsafe(cvm, ptr_id);
     RX_ASSERT(u == 0);
 }
+
 /* test init */
 RX_TEST_CASE(tests_vm_v1, test_pointer_alloc_release_0gc_destroy_read_type, .fixture = test_pointer_fixture) {
     const_vm_ptr cvm = CALL(vm)->init(8);
@@ -845,13 +821,14 @@ static void run(void) {
 static void parse_text(const_vm_ptr cvm, u64 text_string_ptr) {
     u64 gc_ptr = CALL(stack)->alloc(cvm);
     u64 text_size = CALL(string)->size(cvm, text_string_ptr);
-    if (text_string_ptr == 0) {
+    if (text_string_ptr == 0 || text_size == 0) {
         CALL(stack)->free(cvm, gc_ptr);
         return;
     }
     u64 stack_ptr1 = CALL(stack)->alloc(cvm);
     char* text = CALL(string)->unsafe(cvm, text_string_ptr);
     char* tmp = text;
+    // CALL(string)->split(stack_ptr1);
     while (text != 0 && *tmp != 0 && text_size > 0) {
         while (*tmp != 0 && *tmp != '\n' && text_size > 0) {
             tmp++;
@@ -882,10 +859,8 @@ static void parse_text(const_vm_ptr cvm, u64 text_string_ptr) {
     u64 quit = 0;
     while (quit == 0) {
         u64 string_ptr = CALL(stack)->pop(cvm, stack_ptr2);
-        if (CALL(string)->size(cvm, string_ptr) == 0) {
+        if (string_ptr == 0) {
             quit = 1;
-            CALL(string)->free(cvm, string_ptr);
-            CALL(string_reference)->free(cvm, string_ptr);
             continue;
         }
         CALL(env)->puts(cvm, string_ptr);
@@ -893,9 +868,7 @@ static void parse_text(const_vm_ptr cvm, u64 text_string_ptr) {
         if (CALL(string)->size(cvm, pattern_ptr) == 0) {
             quit = 1;
             CALL(string)->free(cvm, string_ptr);
-            CALL(string_reference)->free(cvm, string_ptr);
             CALL(string)->free(cvm, pattern_ptr);
-            CALL(string_reference)->free(cvm, pattern_ptr);
             continue;
         }
         CALL(env)->puts(cvm, pattern_ptr);
@@ -906,16 +879,13 @@ static void parse_text(const_vm_ptr cvm, u64 text_string_ptr) {
             u64 match_ptr = CALL(string)->match(cvm, string_reference_ptr, pattern_ptr);
             if (match_ptr == 0) {
                 CALL(string)->free(cvm, string_reference_ptr);
-                CALL(string_reference)->free(cvm, string_reference_ptr);
                 CALL(string)->free(cvm, string_ptr);
-                CALL(string_reference)->free(cvm, string_ptr);
                 CALL(string)->free(cvm, pattern_ptr);
-                CALL(string_reference)->free(cvm, pattern_ptr);
                 break;
             }
             if (CALL(string)->lessthan(cvm, string_reference_ptr, match_ptr)) {
                 u64 match_start_ptr = CALL(string)->left(cvm, match_ptr, size);
-                u64 str_ncpy = CALL(string)->strncpy(cvm, match_start_ptr, size);
+                u64 str_ncpy = CALL(string)->right_copy(cvm, match_start_ptr, size);
                 u64 distance = CALL(string)->lessthan(cvm, string_ptr, match_start_ptr);
                 if (distance > 0) {
                     u64 i = 0;
@@ -924,20 +894,17 @@ static void parse_text(const_vm_ptr cvm, u64 text_string_ptr) {
                     }
                 }
                 printf("%s[%lld]\n", CALL(string)->unsafe(cvm, str_ncpy), distance);
-                CALL(string_reference)->free(cvm, match_start_ptr);
+                CALL(string)->free(cvm, match_start_ptr);
                 CALL(string)->free(cvm, str_ncpy);
             }
             CALL(string)->free(cvm, string_reference_ptr);
-            CALL(string_reference)->free(cvm, string_reference_ptr);
+            CALL(string)->free(cvm, current_ptr);
             current_ptr = match_ptr;
         }
 #ifndef USE_GC
         CALL(string)->free(cvm, string_ptr);
-        CALL(string_reference)->free(cvm, string_ptr);
         CALL(string)->free(cvm, pattern_ptr);
-        CALL(string_reference)->free(cvm, pattern_ptr);
         CALL(string)->free(cvm, current_ptr);
-        CALL(string_reference)->free(cvm, current_ptr);
 #endif
     }
 #ifndef USE_GC
@@ -989,7 +956,6 @@ static void parse_text_memory_leak1(const_vm_ptr cvm, u64 text_string_ptr) {
         if (CALL(string)->size(cvm, string_ptr) == 0) {
             quit = 1;
             CALL(string)->free(cvm, string_ptr);
-            CALL(string_reference)->free(cvm, string_ptr);
             continue;
         }
         CALL(env)->puts(cvm, string_ptr);
@@ -997,9 +963,7 @@ static void parse_text_memory_leak1(const_vm_ptr cvm, u64 text_string_ptr) {
         if (CALL(string)->size(cvm, pattern_ptr) == 0) {
             quit = 1;
             CALL(string)->free(cvm, string_ptr);
-            CALL(string_reference)->free(cvm, string_ptr);
             CALL(string)->free(cvm, pattern_ptr);
-            CALL(string_reference)->free(cvm, pattern_ptr);
             continue;
         }
         CALL(env)->puts(cvm, pattern_ptr);
@@ -1010,16 +974,13 @@ static void parse_text_memory_leak1(const_vm_ptr cvm, u64 text_string_ptr) {
             u64 match_ptr = CALL(string)->match(cvm, string_reference_ptr, pattern_ptr);
             if (match_ptr == 0) {
                 // CALL(string)->free(cvm, string_reference_ptr);
-                // CALL(string_reference)->free(cvm, string_reference_ptr);
                 CALL(string)->free(cvm, string_ptr);
-                CALL(string_reference)->free(cvm, string_ptr);
                 CALL(string)->free(cvm, pattern_ptr);
-                CALL(string_reference)->free(cvm, pattern_ptr);
                 break;
             }
             if (CALL(string)->lessthan(cvm, string_reference_ptr, match_ptr)) {
                 u64 match_start_ptr = CALL(string)->left(cvm, match_ptr, size);
-                u64 str_ncpy = CALL(string)->strncpy(cvm, match_start_ptr, size);
+                u64 str_ncpy = CALL(string)->right_copy(cvm, match_start_ptr, size);
                 u64 distance = CALL(string)->lessthan(cvm, string_ptr, match_start_ptr);
                 if (distance > 0) {
                     u64 i = 0;
@@ -1028,11 +989,10 @@ static void parse_text_memory_leak1(const_vm_ptr cvm, u64 text_string_ptr) {
                     }
                 }
                 printf("%s[%lld]\n", CALL(string)->unsafe(cvm, str_ncpy), distance);
-                CALL(string_reference)->free(cvm, match_start_ptr);
+                CALL(string)->free(cvm, match_start_ptr);
                 CALL(string)->free(cvm, str_ncpy);
             }
             CALL(string)->free(cvm, string_reference_ptr);
-            CALL(string_reference)->free(cvm, string_reference_ptr);
             current_ptr = match_ptr;
         }
     }
@@ -1043,47 +1003,34 @@ static void parse_text_memory_leak1(const_vm_ptr cvm, u64 text_string_ptr) {
 }
 
 static void parse_text_memory_leak2(const_vm_ptr cvm, u64 text_string_ptr) {
-    u64 gc_ptr = CALL(stack)->alloc(cvm);
     u64 text_size = CALL(string)->size(cvm, text_string_ptr);
-    if (text_string_ptr == 0) {
-        CALL(stack)->free(cvm, gc_ptr);
+    if (text_size == 0) {
         return;
     }
-    u64 stack_ptr1 = CALL(stack)->alloc(cvm);
-    char* text = CALL(string)->unsafe(cvm, text_string_ptr);
-    char* tmp = text;
-    while (text != 0 && *tmp != 0 && text_size > 0) {
-        while (*tmp != 0 && *tmp != '\n' && text_size > 0) {
-            tmp++;
-            text_size--;
+    stack_ptr stack_ptr1 = CALL(list)->init(cvm);
+    if (CALL(string)->split(cvm, text_string_ptr, stack_ptr1) == FALSE) {
+        u64 string_ptr;
+        while ((string_ptr = (u64)CALL(list)->pop(cvm, stack_ptr1)) != 0) {
+            CALL(string)->free(cvm, string_ptr);
         }
-        if (text_size == 0) {
-            CALL(stack)->free(cvm, stack_ptr1);
-            CALL(stack)->free(cvm, gc_ptr);
-            return;
-        }
-        *tmp++ = '\0';
-        text_size--;
-        u64 string_ptr = CALL(string)->load(cvm, text);
-        CALL(stack)->push(cvm, stack_ptr1, string_ptr);
-        text = tmp;
+        CALL(list)->destroy(cvm, stack_ptr1);
+        return;
     }
-    u64 data_ptr = 0;
-    u64 stack_ptr2 = CALL(stack)->alloc(cvm);
-    while ((data_ptr = CALL(stack)->pop(cvm, stack_ptr1)) != 0) {
-        CALL(stack)->push(cvm, stack_ptr2, data_ptr);
+    void_ptr data_ptr = 0;
+    stack_ptr stack_ptr2 = CALL(list)->init(cvm);
+    while ((data_ptr = CALL(list)->pop(cvm, stack_ptr1)) != 0) {
+        CALL(list)->push(cvm, stack_ptr2, data_ptr);
     }
-    CALL(stack)->free(cvm, stack_ptr1);
-    CALL(stack)->push(cvm, gc_ptr, stack_ptr2);
+    CALL(list)->destroy(cvm, stack_ptr1);
     u64 quit = 0;
     while (quit == 0) {
-        u64 string_ptr = CALL(stack)->pop(cvm, stack_ptr2);
+        u64 string_ptr = (u64)CALL(list)->pop(cvm, stack_ptr2);
         if (CALL(string)->size(cvm, string_ptr) == 0) {
             quit = 1;
             continue;
         }
         CALL(env)->puts(cvm, string_ptr);
-        u64 pattern_ptr = CALL(stack)->pop(cvm, stack_ptr2);
+        u64 pattern_ptr = (u64)CALL(list)->pop(cvm, stack_ptr2);
         if (CALL(string)->size(cvm, pattern_ptr) == 0) {
             quit = 1;
             continue;
@@ -1099,23 +1046,25 @@ static void parse_text_memory_leak2(const_vm_ptr cvm, u64 text_string_ptr) {
             }
             if (CALL(string)->lessthan(cvm, string_reference_ptr, match_ptr)) {
                 u64 match_start_ptr = CALL(string)->left(cvm, match_ptr, size);
-                u64 str_ncpy = CALL(string)->strncpy(cvm, match_start_ptr, size);
-                u64 distance = CALL(string)->lessthan(cvm, string_ptr, match_start_ptr);
-                if (distance > 0) {
-                    u64 i = 0;
-                    while (i++ < distance) {
-                        printf(" ");
+                u64 str_ncpy = CALL(string)->right_copy(cvm, match_start_ptr, size);
+                if (str_ncpy != 0) {
+                    u64 distance = CALL(string)->lessthan(cvm, string_ptr, match_start_ptr);
+                    if (distance > 0) {
+                        u64 i = 0;
+                        while (i++ < distance) {
+                            printf(" ");
+                        }
                     }
+                    printf("%s[%lld]\n", CALL(string)->unsafe(cvm, str_ncpy), distance);
+                    CALL(string)->free(cvm, str_ncpy);
                 }
-                printf("%s[%lld]\n", CALL(string)->unsafe(cvm, str_ncpy), distance);
             }
+            CALL(string)->free(cvm, current_ptr);
             current_ptr = match_ptr;
         }
+        CALL(string)->free(cvm, current_ptr);
     }
-#ifndef USE_GC
-    CALL(stack)->free(cvm, stack_ptr2);
-#endif
-    CALL(stack)->free(cvm, gc_ptr);
+    CALL(list)->destroy(cvm, stack_ptr2);
 }
 
 const tests_vm_test_suite PRIVATE_API(tests_vm_test_suite_definitions) = {

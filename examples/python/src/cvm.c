@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   April 16, 2025 at 11:03:49 AM GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 16, 2025 at 6:39:21 PM GMT+3
+ *   April 23, 2025 at 2:58:00 PM GMT+3
  *
  */
 /*
@@ -38,6 +38,9 @@
 
 #include "cvm.h"
 #include "cexception.h"
+#include "clist.h"
+
+#include "py_api.h"
 
 static PyObject* CVirtualMachine_new(PyTypeObject* type, PyObject* args, PyObject* kwds) {
     CVirtualMachineTypePtr self;
@@ -54,9 +57,9 @@ static int CVirtualMachine_init(CVirtualMachineTypePtr self, PyObject* args, PyO
         return -1;
     }
 
-    self->cvm = CALL(vm)->init(size);
+    self->cvm = PY_CALL(vm)->init(size);
     if (self->cvm == NULL) {
-        PyErr_SetString(CVirtualMachineNotInitializedException, "Failed to initialize the virtual machine");
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "failed to initialize the virtual machine: %s", CALL(error)->get());
         return -1;
     }
 
@@ -65,18 +68,18 @@ static int CVirtualMachine_init(CVirtualMachineTypePtr self, PyObject* args, PyO
 
 static void CVirtualMachine_dealloc(CVirtualMachineTypePtr self) {
     if (self->cvm != NULL) {
-        CALL(vm)->destroy(self->cvm);
+        PY_CALL(vm)->destroy(self->cvm);
     }
     Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
 static PyObject* CVirtualMachine_gc(CVirtualMachineTypePtr self, PyObject* Py_UNUSED(ignored)) {
     if (self->cvm == NULL) {
-        PyErr_SetString(CVirtualMachineNotInitializedException, "Virtual machine is not initialized");
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "virtual machine is not initialized: %s", CALL(error)->get());
         return NULL;
     }
 
-    CALL(vm)->gc(self->cvm);
+    PY_CALL(vm)->gc(self->cvm);
 
     Py_RETURN_NONE;
 }
@@ -88,33 +91,12 @@ static PyObject* CVirtualMachine_release(CVirtualMachineTypePtr self, PyObject* 
     }
 
     if (self->cvm == NULL) {
-        PyErr_SetString(CVirtualMachineNotInitializedException, "Virtual machine is not initialized");
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "virtual machine is not initialized: %s", CALL(error)->get());
         return NULL;
     }
-    u64 result = CALL(vm)->release(self->cvm, ptr);
+    u64 result = PY_CALL(vm)->release(self->cvm, ptr);
     if (!result) {
-        switch (CALL(error)->type()) {
-            case ID_ERROR_NO_ERROR:
-                break;
-            case ID_ERROR_VM_NOT_INITIALIZED:
-                PyErr_SetString(CVirtualMachineNotInitializedException, CALL(error)->get());
-                break;
-            case ID_ERROR_INVALID_POINTER:
-                PyErr_SetString(CInvalidPointerException, CALL(error)->get());
-                break;
-            case ID_ERROR_INVALID_ARGUMENT:
-                PyErr_SetString(CInvalidArgumentException, CALL(error)->get());
-                break;
-            case ID_ERROR_INVALID_TYPE_ID:
-                PyErr_SetString(CInvalidTypeIdException, CALL(error)->get());
-                break;
-            case ID_ERROR_INVALID_VALUE:
-                PyErr_SetString(CInvalidValueException, CALL(error)->get());
-                break;
-            default:
-                PyErr_SetString(CException, CALL(error)->get());
-                break;
-        }
+        PYTHON_ERROR(CInvalidValueException, "failed to release the virtual machine: %s", CALL(error)->get());
         return NULL;
     }
 
@@ -123,28 +105,33 @@ static PyObject* CVirtualMachine_release(CVirtualMachineTypePtr self, PyObject* 
 
 static PyObject* CVirtualMachine_dump_ref(CVirtualMachineTypePtr self, PyObject* Py_UNUSED(ignored)) {
     if (self->cvm == NULL) {
-        PyErr_SetString(CVirtualMachineNotInitializedException, "Virtual machine is not initialized");
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "virtual machine is not initialized: %s", CALL(error)->get());
         return NULL;
     }
 
-    CALL(vm)->dump_ref(self->cvm);
+    PY_CALL(vm)->dump_ref(self->cvm);
 
     Py_RETURN_NONE;
 }
 
 static PyObject* CVirtualMachine_dump_ref_stack(CVirtualMachineTypePtr self, PyObject* args) {
-    PyObject* stack_obj;
-    if (!PyArg_ParseTuple(args, "O", &stack_obj)) {
+    PyObject* list_obj;
+    if (!PyArg_ParseTuple(args, "O", &list_obj)) {
         return NULL;
     }
 
-    stack_ptr stack = (stack_ptr)PyLong_AsVoidPtr(stack_obj);
+    if (!PyObject_TypeCheck(list_obj, &CListTypeObject)) {
+        PYTHON_ERROR(PyExc_TypeError, "expected a CList instance: %s", CALL(error)->get());
+        return NULL;
+    }
+
     if (self->cvm == NULL) {
-        PyErr_SetString(CVirtualMachineNotInitializedException, "Virtual machine is not initialized");
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "virtual machine is not initialized: %s", CALL(error)->get());
         return NULL;
     }
 
-    CALL(vm)->dump_ref_stack(self->cvm, stack);
+    CListTypePtr clist = (CListTypePtr)list_obj;
+    PY_CALL(vm)->dump_ref_stack(self->cvm, clist->stack);
 
     Py_RETURN_NONE;
 }
@@ -156,7 +143,7 @@ static PyObject* CVirtualMachine_enter(CVirtualMachineTypePtr self, PyObject* Py
 
 static PyObject* CVirtualMachine_exit(CVirtualMachineTypePtr self, PyObject* args) {
     if (self->cvm != NULL) {
-        CALL(vm)->destroy(self->cvm);
+        PY_CALL(vm)->destroy(self->cvm);
         self->cvm = NULL;
     }
     Py_RETURN_NONE;
@@ -167,6 +154,8 @@ static PyMethodDef CVirtualMachine_methods[] = {
     { "release", (PyCFunction)CVirtualMachine_release, METH_VARARGS, "Release a pointer" },
     { "dump_ref", (PyCFunction)CVirtualMachine_dump_ref, METH_NOARGS, "Dump references" },
     { "dump_ref_stack", (PyCFunction)CVirtualMachine_dump_ref_stack, METH_VARARGS, "Dump references for a stack" },
+
+    /* CVirtualMachine context */
     { "__enter__", (PyCFunction)CVirtualMachine_enter, METH_NOARGS, "Enter the context" },
     { "__exit__", (PyCFunction)CVirtualMachine_exit, METH_VARARGS, "Exit the context" },
     { NULL } /* Sentinel */
@@ -193,7 +182,6 @@ int init_cvm(PyObject* module) {
     Py_INCREF(&CVirtualMachineTypeObject);
     if (PyModule_AddObject(module, "CVirtualMachine", (PyObject*)&CVirtualMachineTypeObject) < 0) {
         Py_DECREF(&CVirtualMachineTypeObject);
-        Py_DECREF(module);
         return -1;
     }
 

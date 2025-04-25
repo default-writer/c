@@ -1,115 +1,108 @@
-# examples/python/memory/main.py
-import ctypes
-from csys import CException
-from cvm import CVirtualMachine, CPointer, CList, CString, CStack, CEnvironment
+import traceback
+
+from c import (
+    CException,
+    CVirtualMachine,
+    CPointer,
+    CList,
+    CString,
+    CStack,
+    CEnvironment,
+)
+
+
+def test_vm_dump_memory_leak_2():
+    test_data = [
+        b"a",
+        b"a\nb",
+        b"ab\nabc\n",
+        b"adadadsadsadad\ndad\nadsaddasaddad\nsad\n",
+        b"ab\ndad\nabcd\nbcd\n",
+        b"ab\nc\nabc\nbcd\n",
+        b"abc\nabcd\nbcde\nabc\n",
+        b"abc\n\n",
+    ]
+    with CVirtualMachine(8) as debug_cvm:
+        for text_bytes in test_data:
+
+            debug_text_string = CString(debug_cvm, text_bytes.decode())
+            parse_text_memory_leak2(debug_cvm, debug_text_string.ptr())
+            del debug_text_string
+
+            debug_cvm_stack: CList = CList(debug_cvm)
+            debug_cvm.dump_ref_stack(debug_cvm_stack)
+
+            current = 0
+            while (current := debug_cvm_stack.pop()) > 0:
+                memory_ref_ptr = CPointer.ref(debug_cvm, current, nothrow=True)
+                print(f"[  v< ]: {current:016x}")
+                print(f"[  v& ]: {memory_ref_ptr:016x}")
+                CPointer.free(debug_cvm, memory_ref_ptr)
+            del debug_cvm_stack
+
+        debug_cvm.gc()
+        debug_cvm.dump_ref()
+
+
+def parse_text_memory_leak2(vm: CVirtualMachine, text_string_ptr):
+    text_size = CString.size(vm, text_string_ptr)
+    if text_size == 0:
+        return
+    stack_ptr1: CList = CList(vm)
+    if not CString.split(vm, text_string_ptr, stack_ptr1):
+        while (string_ptr := stack_ptr1.pop()) > 0:
+            CString.free(vm, string_ptr)
+        return
+    stack_ptr2: CList = CList(vm)
+    while (data_ptr := stack_ptr1.pop()) > 0:
+        stack_ptr2.push(data_ptr)
+    del stack_ptr1
+
+    quit = False
+    while not quit:
+        string_ptr = stack_ptr2.pop()
+        if string_ptr == 0 or CString.size(vm, string_ptr) == 0:
+            quit = True
+            continue
+        CEnvironment.puts(vm, string_ptr)
+        pattern_ptr = stack_ptr2.pop()
+        if pattern_ptr == 0 or CString.size(vm, pattern_ptr) == 0:
+            quit = True
+            continue
+        CEnvironment.puts(vm, pattern_ptr)
+        size = CString.size(vm, pattern_ptr)
+        string_reference_ptr = 0
+        current_ptr = string_ptr
+        while (string_reference_ptr := CString.strchr(vm, current_ptr, pattern_ptr, nothrow=True)) > 0:
+            match_ptr = CString.match(vm, string_reference_ptr, pattern_ptr, nothrow=True)
+            if match_ptr == 0:
+                break
+            if CString.lessthan(vm, string_reference_ptr, match_ptr, nothrow=True):
+                match_start_ptr = CString.left(vm, match_ptr, size, nothrow=True)
+                str_ncpy_ptr = CString.right_copy(vm, match_start_ptr, size, nothrow=True)
+                if str_ncpy_ptr != 0:
+                    distance = CString.lessthan(vm, string_ptr, match_start_ptr, nothrow=True)
+                    if distance > 0:
+                        print(" " * distance, end="")
+                    substring_text = CString.unsafe(vm, str_ncpy_ptr)
+                    print(f"{substring_text}[{distance}]")
+                    CString.free(vm, str_ncpy_ptr)
+            del current_ptr
+            current_ptr = match_ptr
+        CString.free(vm, current_ptr)
+    del stack_ptr2
 
 
 def main():
-    """
-    Demonstrates memory leak handling using CVirtualMachine and CString.
-
-    This example is inspired by the test_vm_dump_memory_leak_2 test case in test_vm.c.
-    It shows how to load strings, manipulate them, and potentially encounter memory leaks
-    if not handled carefully.
-    """
     try:
-        try:
-            # Create a Virtual Machine instance with a size of 8.
-            with CVirtualMachine(8) as cvm_ptr:
-
-                cstring: CString = CString(cvm_ptr)
-                cenv: CEnvironment = CEnvironment(cvm_ptr)
-                cstack: CStack = CStack(cvm_ptr)
-                cpointer: CPointer = CPointer(cvm_ptr)
-                clist: CList = CList(cvm_ptr)
-
-                test_data = [
-                    b"a",
-                    b"a\nb",
-                    b"ab\nabc\n",
-                    b"adadadsadsadad\ndad\nadsaddasaddad\nsad\n",
-                    b"ab\ndad\nabcd\nbcd\n",
-                    b"ab\nc\nabc\nbcd\n",
-                    b"abc\nabcd\nbcde\nabc\n",
-                    b"abc\n\n"
-                ]
-
-                for text in test_data:
-                    text_ptr = cstring.load(text)
-                    parse_text_memory_leak2(text_ptr, cstring, cenv, cstack)
-                    cstring.free(text_ptr)
-
-                    list_ptr = clist.init()
-
-                    cvm_ptr.dump_ref_stack(list_ptr.ptr)
-
-                    while (memory_ptr := clist.pop(list_ptr.ptr)):
-                        memory_ref_ptr = cpointer.ref(memory_ptr)
-                        print(f"[  v< ]: {memory_ptr:016x}")
-                        print(f"[  v& ]: {memory_ref_ptr:016x}")
-                        cpointer.free(memory_ref_ptr)
-
-                    clist.destroy(list_ptr)
-
-        except CException as e:
-            print(f"error: {e}")
-
+        test_vm_dump_memory_leak_2()
+    except CException as e:
+        traceback.print_exc()
+        print(f"error: {e}")
     except Exception as e:
+        traceback.print_exc()
         print(f"error: {e}")
 
-
-def parse_text_memory_leak2(text_ptr, cstring: CString, cenv: CEnvironment, cstack: CStack):
-    text_size = cstring.size(text_ptr)
-    if text_size == 0:
-        return
-
-    text = cstring.unsafe(text_ptr)
-    tmp = text.decode()
-    lines = tmp.split('\n')
-    
-    stack_ptr1 = cstack.alloc()
-
-    for line in lines:
-        if line:
-            string_ptr = cstring.load(line.encode())
-            cstack.push(stack_ptr1, string_ptr)
-
-    stack_ptr2 = cstack.alloc()
-    while cstack.size(stack_ptr1) > 0:
-        string_ptr = cstack.pop(stack_ptr1)
-        cstack.push(stack_ptr2, string_ptr)
-    cstack.free(stack_ptr1)
-   
-    quit = 0
-    while quit == 0 and cstack.size(stack_ptr2) > 0:
-        string_ptr = cstack.pop(stack_ptr2)
-        if string_ptr == 0:
-            quit = 1
-            continue
-        cenv.puts(string_ptr)
-        pattern_ptr = cstack.pop(stack_ptr2)
-        if pattern_ptr == 0:
-            quit = 1
-            continue
-        
-        cenv.puts(pattern_ptr)
-        size = cstring.size(pattern_ptr)
-        string_reference_ptr = 0
-        current_ptr = string_ptr
-        while (string_reference_ptr := cstring.strchr(current_ptr, pattern_ptr, nothrow=True)) != 0:
-            match_ptr = cstring.match(string_reference_ptr, pattern_ptr, nothrow=True)
-            if match_ptr == 0:
-                break
-            if cstring.lessthan(string_reference_ptr, match_ptr, nothrow=True):
-                match_start_ptr = cstring.left(match_ptr, size, nothrow=True)
-                str_ncpy = cstring.strncpy(match_start_ptr, size, nothrow=True)
-                distance = cstring.lessthan(string_ptr, match_start_ptr, nothrow=True)
-                if distance > 0:
-                    substring_text = cstring.unsafe(str_ncpy).decode()
-                    print(" " * (distance - 1), f"{substring_text}[{distance}]")
-            current_ptr = match_ptr
-
-    cstack.free(stack_ptr2)
 
 if __name__ == "__main__":
     main()

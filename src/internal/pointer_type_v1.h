@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   11 December 2023 at 9:06:14 GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 9, 2025 at 11:03:49 AM GMT+3
+ *   April 21, 2025 at 5:28:37 AM GMT+3
  *
  */
 /*
@@ -48,6 +48,8 @@ typedef struct pointer {
 #endif
     virtual_pointer_ptr vptr;
     const_void_ptr data;
+    u64 offset;
+    u64 flags;
     pointer_public_type public;
 } pointer_type;
 

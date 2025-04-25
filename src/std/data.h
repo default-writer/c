@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   11 December 2023 at 9:06:14 GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 16, 2025 at 1:07:32 AM GMT+3
+ *   April 20, 2025 at 7:02:48 PM GMT+3
  *
  */
 /*
@@ -162,10 +162,8 @@ enum type {
     TYPE_STACK = 4,
     /* value used for string type - string */
     TYPE_STRING = 5,
-    /* value used for string ref type - string ref */
-    TYPE_STRING_REFERENCE = 6,
     /* value used for user type - user (id: +0, +1, +2, +3, ...) */
-    TYPE_USER = 7,
+    TYPE_USER = 6,
 };
 
 #endif /* _STD_DATA_H_ */

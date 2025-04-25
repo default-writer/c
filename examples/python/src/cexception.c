@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   April 16, 2025 at 11:03:49 AM GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 16, 2025 at 6:32:37 PM GMT+3
+ *   April 25, 2025 at 6:36:22 AM GMT+3
  *
  */
 /*
@@ -37,6 +37,7 @@
 */
 
 #include "cexception.h"
+#include "cvm.h"
 
 PyObject* CException = NULL;
 PyObject* CVirtualMachineNotInitializedException = NULL;
@@ -72,28 +73,27 @@ static PyObject* create_exception_class(const char* name, PyObject* base_class, 
     }
     Py_DECREF(docstring_obj);
 
-    PyObject* bases = PyTuple_Pack(1, base_class);
-    if (bases == NULL) {
+    PyObject* base = PyTuple_Pack(1, base_class);
+    if (base == NULL) {
         Py_DECREF(name_obj);
         Py_DECREF(dict);
         return NULL;
     }
 
-    PyObject* exception_class = PyObject_CallFunctionObjArgs((PyObject*)&PyType_Type, name_obj, bases, dict, NULL);
+    PyObject* exception_class = PyObject_CallFunctionObjArgs((PyObject*)&PyType_Type, name_obj, base, dict, NULL);
     Py_DECREF(name_obj);
     Py_DECREF(dict);
-    Py_DECREF(bases);
+    Py_DECREF(base);
 
     return exception_class;
 }
 
-static PyObject* CException_clear(PyObject* self, PyObject* Py_UNUSED(ignored)) {
-    CALL(error)->clear();
+static PyObject* CException_clear_static(PyObject* cls, PyObject* Py_UNUSED(ignored)) {
     Py_RETURN_NONE;
 }
 
 static PyMethodDef CException_methods[] = {
-    { "clear", (PyCFunction)CException_clear, METH_NOARGS, "Clear the current error state" },
+    { "clear", (PyCFunction)CException_clear_static, METH_STATIC | METH_VARARGS | METH_KEYWORDS, "copy(cvm: CVirtualMachine) -> int | None\n\nResets the error state" },
     { NULL, NULL, 0, NULL }
 };
 
@@ -107,25 +107,12 @@ PyTypeObject CExceptionTypeObject = {
 };
 
 int init_cexception(PyObject* module) {
-    CExceptionTypeObject.tp_base = (PyTypeObject*)PyExc_Exception;
-
-    if (PyType_Ready(&CExceptionTypeObject) < 0) {
-        return -1;
-    }
-
-    Py_INCREF(&CExceptionTypeObject);
-    if (PyModule_AddObject(module, "CException", (PyObject*)&CExceptionTypeObject) < 0) {
-        Py_DECREF(&CExceptionTypeObject);
-        Py_DECREF(module);
-        return -1;
-    }
-
-    CException = create_exception_class("CException", (PyObject*)&CExceptionTypeObject, "CException is raised when an operation raised generic runtime exception");
-    CVirtualMachineNotInitializedException = create_exception_class("CVirtualMachineNotInitializedException", (PyObject*)&CExceptionTypeObject, "CVirtualMachineNotInitializedException is raised when an operation is attempted on the VM which has not been initialized.");
-    CInvalidPointerException = create_exception_class("CInvalidPointerException", (PyObject*)&CExceptionTypeObject, "CInvalidPointerException is raised when an operation is attempted with an invalid memory pointer.");
-    CInvalidArgumentException = create_exception_class("CInvalidArgumentException", (PyObject*)&CExceptionTypeObject, "CInvalidArgumentException is raised when an operation is attempted with an invalid argument.");
-    CInvalidTypeIdException = create_exception_class("CInvalidTypeIdException", (PyObject*)&CExceptionTypeObject, "CInvalidTypeIdException is raised when an operation is attempted with an invalid type identifier.");
-    CInvalidValueException = create_exception_class("CInvalidValueException", (PyObject*)&CExceptionTypeObject, "CInvalidValueException is raised when an operation is attempted with an invalid value.");
+    CException = create_exception_class("CException", PyExc_Exception, "Base exception for C module");
+    CVirtualMachineNotInitializedException = create_exception_class("CVirtualMachineNotInitializedException", CException, "Raised when an operation is attempted on an uninitialized virtual machine.");
+    CInvalidPointerException = create_exception_class("CInvalidPointerException", CException, "Raised when an operation is attempted with an invalid memory pointer.");
+    CInvalidArgumentException = create_exception_class("CInvalidArgumentException", CException, "Raised when an operation is attempted with an invalid argument.");
+    CInvalidTypeIdException = create_exception_class("CInvalidTypeIdException", CException, "Raised when an operation is attempted with an invalid type identifier.");
+    CInvalidValueException = create_exception_class("CInvalidValueException", CException, "Raised when an operation is attempted with an invalid value.");
 
     if (PyModule_AddObject(module, "CException", CException) < 0 ||
         PyModule_AddObject(module, "CVirtualMachineNotInitializedException", CVirtualMachineNotInitializedException) < 0 ||
@@ -139,7 +126,6 @@ int init_cexception(PyObject* module) {
         Py_XDECREF(CInvalidArgumentException);
         Py_XDECREF(CInvalidTypeIdException);
         Py_XDECREF(CInvalidValueException);
-        Py_DECREF(module);
         return -1;
     }
 

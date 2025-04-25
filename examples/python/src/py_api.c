@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   11 December 2023 at 9:06:14 GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 16, 2025 at 1:07:32 AM GMT+3
+ *   April 23, 2025 at 2:30:14 PM GMT+3
  *
  */
 /*
@@ -36,25 +36,62 @@
     OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#define USING_STRING_REFERENCE
+#include "py_api.h"
 
-#ifndef _VIRTUAL_STRING_REFERENCE_V1_H_
-#define _VIRTUAL_STRING_REFERENCE_V1_H_
+#include "system/error/error_v1.h"
 
-#define USING_STD_API
-#include "std/api.h"
+/* api */
+PUBLIC const virtual_vm_methods* PY_PUBLIC_API(vm) {
+    CALL(error)->clear();
+    return PUBLIC_API(vm);
+}
 
-#include "virtual/export.h"
+PUBLIC const virtual_methods* PY_PUBLIC_API(virtual) {
+    CALL(error)->clear();
+    return PUBLIC_API(virtual);
+}
 
-/*! @file string_reference_v1.h
- *  @brief C API / string pointer
- */
+PUBLIC const virtual_pointer_methods* PY_PUBLIC_API(pointer) {
+    CALL(error)->clear();
+    return PUBLIC_API(pointer);
+}
 
-typedef struct PRIVATE_API(virtual_string_reference_methods) {
-    u64 (*free)(const_vm_ptr cvm, u64 ptr);
-} virtual_string_reference_methods;
+PUBLIC const virtual_env_methods* PY_PUBLIC_API(env) {
+    CALL(error)->clear();
+    return PUBLIC_API(env);
+}
 
-/* definition */
-CVM_EXPORT extern const virtual_string_reference_methods* CALL(string_reference);
+PUBLIC const virtual_data_methods* PY_PUBLIC_API(data) {
+    CALL(error)->clear();
+    return PUBLIC_API(data);
+}
 
-#endif /* _VIRTUAL_STRING_REFERENCE_V1_H_ */
+PUBLIC const virtual_file_methods* PY_PUBLIC_API(file) {
+    CALL(error)->clear();
+    return PUBLIC_API(file);
+}
+
+PUBLIC const virtual_object_methods* PY_PUBLIC_API(object) {
+    CALL(error)->clear();
+    return PUBLIC_API(object);
+}
+
+PUBLIC const virtual_stack_methods* PY_PUBLIC_API(stack) {
+    CALL(error)->clear();
+    return PUBLIC_API(stack);
+}
+
+PUBLIC const virtual_string_methods* PY_PUBLIC_API(string) {
+    CALL(error)->clear();
+    return PUBLIC_API(string);
+}
+
+PUBLIC const virtual_user_methods* PY_PUBLIC_API(user) {
+    CALL(error)->clear();
+    return PUBLIC_API(user);
+}
+
+PUBLIC const virtual_list_methods* PY_PUBLIC_API(list) {
+    CALL(error)->clear();
+    return PUBLIC_API(list);
+}

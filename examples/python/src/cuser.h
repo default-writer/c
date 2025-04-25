@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   April 16, 2025 at 11:03:49 AM GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 16, 2025 at 6:39:12 PM GMT+3
+ *   April 23, 2025 at 4:13:52 PM GMT+3
  *
  */
 /*
@@ -44,15 +44,13 @@
 #include "macros.h"
 
 #include "std/data.h"
-#include "system/error/error_v1.h"
-#include "virtual/types/user/user_v1.h"
 
 int init_cuser(PyObject* module);
 
 typedef struct CUser {
     PyObject_HEAD;
-    u64 user_ptr;
     const_vm_ptr cvm;
+    u64 ptr;
 } CUserType;
 typedef struct CUser* CUserTypePtr;
 

@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   11 December 2023 at 9:06:14 GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 11, 2025 at 12:04:52 PM GMT+3
+ *   April 24, 2025 at 8:02:55 PM GMT+3
  *
  */
 /*
@@ -119,6 +119,7 @@ RX_TEST_CASE(tests_list_v1, test_list_diff_0_0_0, .fixture = test_fixture) {
     stack_ptr stack = 0;
     CALL(list)->diff(cvm, stack, 0, 0);
 }
+
 /* test init */
 RX_TEST_CASE(tests_list_v1, test_list_diff_right_0_0_0, .fixture = test_fixture) {
     test_data_type rx = *((test_data_ptr)RX_DATA);

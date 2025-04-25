@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   11 December 2023 at 9:06:14 GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 3, 2025 at 11:19:43 AM GMT+3
+ *   April 24, 2025 at 7:54:58 PM GMT+3
  *
  */
 /*
@@ -72,7 +72,7 @@ static const system_os_methods* temp_api;
 
 /* mocks */
 static void_ptr mock_memory_alloc(u64 address);
-static void mock_memory_free(const_void_ptr const_ptr, u64 size);
+static u64 mock_memory_free(const_void_ptr const_ptr, u64 size);
 static void_ptr mock_os_calloc(size_t __nmemb, size_t __size);
 static int mock_os_fseek(FILE* __stream, long int __off, int __whence);
 static void mock_os_free(void_ptr __ptr);
@@ -90,14 +90,16 @@ static void_ptr mock_memory_alloc(u64 size) {
     return ptr;
 }
 
-static void mock_memory_free(const_void_ptr const_ptr, u64 size) {
+static u64 mock_memory_free(const_void_ptr const_ptr, u64 size) {
     if (last_alloc_ptr == const_ptr && last_alloc_size == size) {
         const_void_ptr const_data_ptr = const_ptr;
         safe_void_ptr safe_ptr;
         safe_ptr.const_ptr = const_data_ptr;
         void_ptr ptr = safe_ptr.ptr;
         memset(ptr, 0xfe, sizeof(u64)); /* NOLINT: sizeof(u64) */
+        return FALSE;
     }
+    return TRUE;
 }
 
 static void_ptr mock_os_calloc(size_t __nmemb, size_t __size) {
@@ -427,12 +429,14 @@ RX_TEST_CASE(tests_memory_v1, test_alloc_free_debug, .fixture = test_fixture) {
     /* prepare to mock api calls */
     memcpy(&PRIVATE_API(memory), &mock_memory_methods, sizeof(system_memory_methods*)); /* NOLINT: sizeof(memory_methods*) */
     u64 pointer_size = sizeof(void_ptr);
-    void_ptr ptr = CALL(memory)->alloc(pointer_size);
+    void_ptr ptr1 = CALL(memory)->alloc(pointer_size);
+    void_ptr ptr2 = CALL(memory)->alloc(pointer_size - 1);
     u64 value = (u64)0xdeadbeef;
-    memcpy(ptr, &value, 8); /* NOLINT: sizeof(void_ptr) */
+    memcpy(ptr1, &value, 8); /* NOLINT: sizeof(void_ptr) */
     /* compare to make sure mock memory free function is called */
-    CALL(memory)->free(ptr, pointer_size); /* NOLINT: mock api */
-    RX_ASSERT(memcmp(ptr, &expected_pattern, sizeof(expected_pattern)) == 0);
+    CALL(memory)->free(ptr1, pointer_size); /* NOLINT: mock api */
+    CALL(memory)->free(ptr2, pointer_size - 1); /* NOLINT: mock api */
+    RX_ASSERT(memcmp(ptr1, &expected_pattern, sizeof(expected_pattern)) == 0);
     /* ensures pop does not zeroes the head pointer */
     RX_ASSERT(*ctx != 0);
     /* restore api calls */

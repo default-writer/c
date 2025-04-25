@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   11 December 2023 at 9:06:14 GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 9, 2025 at 11:03:42 AM GMT+3
+ *   April 22, 2025 at 9:16:35 AM GMT+3
  *
  */
 /*
@@ -54,7 +54,7 @@ CSYS_EXPORT extern void result_statistics(void);
 typedef struct PRIVATE_API(system_memory_methods) {
     void_ptr (*alloc)(u64 size);
     void_ptr (*realloc)(const_void_ptr const_ptr, u64 size, u64 new_size);
-    void (*free)(const_void_ptr const_ptr, u64 size);
+    u64 (*free)(const_void_ptr const_ptr, u64 size);
 #ifdef USE_MEMORY_CLEANUP
     void (*set)(void_ptr dest, u8 c, u64 count);
 #endif

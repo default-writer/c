@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   11 December 2023 at 9:06:14 GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 9, 2025 at 11:03:56 AM GMT+3
+ *   April 24, 2025 at 7:54:58 PM GMT+3
  *
  */
 /*
@@ -46,6 +46,7 @@
 
 #include "virtual/pointer/pointer_v1.h"
 #include "virtual/types/string/string_v1.h"
+#include "virtual/virtual/virtual_v1.h"
 
 #include "internal/pointer_type_v1.h"
 
@@ -56,29 +57,17 @@ static u64 env_puts(const_vm_ptr cvm, u64 address);
 
 /* implementation */
 static u64 env_getenv(const_vm_ptr cvm, u64 address) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return FALSE;
-    }
-    if (address == 0) {
-        ERROR_INVALID_ARGUMENT("address == %lld", address);
-        return FALSE;
-    }
+    CHECK_VM(cvm, NULL_ADDRESS);
+    CHECK_ARG(address, NULL_ADDRESS);
     const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, address, TYPE_STRING);
-    if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, address, (u64)TYPE_STRING);
-        return FALSE;
-    }
+    CHECK_POINTER(const_ptr, NULL_ADDRESS);
     const char* name = const_ptr->data;
     const char* ch = CALL(os)->getenv(name);
     return CALL(string)->load(cvm, ch);
 }
 
 static u64 env_getcwd(const_vm_ptr cvm) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return FALSE;
-    }
+    CHECK_VM(cvm, NULL_ADDRESS);
     u64 data_ptr = 0;
     char* src = CALL(os)->calloc(1, PATH_MAX);
     src[PATH_MAX - 1] = 0;
@@ -90,19 +79,14 @@ static u64 env_getcwd(const_vm_ptr cvm) {
 }
 
 static u64 env_puts(const_vm_ptr cvm, u64 address) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return FALSE;
-    }
-    if (address == 0) {
-        ERROR_INVALID_ARGUMENT("address == %lld", address);
-        return FALSE;
-    }
+    CHECK_VM(cvm, FALSE);
+    CHECK_ARG(address, FALSE);
+    u64 offset = 0;
+    const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, address, TYPE_STRING);
+    CHECK_POINTER(const_ptr, FALSE);
     const char* data = CALL(string)->unsafe(cvm, address);
-    if (data == 0) {
-        ERROR_INVALID_ARGUMENT("data == %p, address == %lld, type_id == %lld", data, address, (u64)TYPE_STRING);
-        return FALSE;
-    }
+    CHECK_VALUE(data, FALSE);
+    data += offset;
     CALL(os)->puts(data);
     return TRUE;
 }

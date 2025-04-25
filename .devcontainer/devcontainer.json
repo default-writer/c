@@ -169,7 +169,8 @@
         "gitpod.gitpod-flex",
         "ms-python.python",
         "marp-team.marp-vscode",
-        "Google.geminicodeassist"
+        "Google.geminicodeassist",
+        "boshyxd.remove-all-comments"
       ]
     }
   }

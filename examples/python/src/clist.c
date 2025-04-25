@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   April 16, 2025 at 11:03:49 AM GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 16, 2025 at 6:37:36 PM GMT+3
+ *   April 24, 2025 at 10:41:08 PM GMT+3
  *
  */
 /*
@@ -37,8 +37,10 @@
 */
 
 #include "clist.h"
-#include "cvm.h"
 #include "cexception.h"
+#include "cvm.h"
+
+#include "py_api.h"
 
 static PyObject* CList_new(PyTypeObject* type, PyObject* args, PyObject* kwds) {
     CListTypePtr self;
@@ -57,20 +59,20 @@ static int CList_init(CListTypePtr self, PyObject* args, PyObject* kwds) {
     }
 
     if (!PyObject_TypeCheck(cvm_obj, &CVirtualMachineTypeObject)) {
-        PyErr_SetString(PyExc_TypeError, "Expected a CVirtualMachine instance");
+        PYTHON_ERROR(PyExc_TypeError, "expected a CVirtualMachine instance: %s", CALL(error)->get());
         return -1;
     }
 
     CVirtualMachineTypePtr cvm = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm->cvm == NULL) {
-        PyErr_SetString(CVirtualMachineNotInitializedException, "Invalid CVirtualMachine pointer");
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer: %s", CALL(error)->get());
         return -1;
     }
     self->cvm = cvm->cvm;
 
-    self->stack = CALL(list)->init(self->cvm);
+    self->stack = PY_CALL(list)->init(self->cvm);
     if (self->stack == NULL) {
-        PyErr_SetString(CInvalidPointerException, "Failed to initialize the list");
+        PYTHON_ERROR(CInvalidPointerException, "failed to initialize the list: %s", CALL(error)->get());
         return -1;
     }
 
@@ -79,19 +81,26 @@ static int CList_init(CListTypePtr self, PyObject* args, PyObject* kwds) {
 
 static void CList_dealloc(CListTypePtr self) {
     if (self->stack != NULL) {
-        CALL(list)->destroy(self->cvm, self->stack);
+        PY_CALL(list)->destroy(self->cvm, self->stack);
     }
     Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
 static PyObject* CList_push(CListTypePtr self, PyObject* args) {
     void_ptr data;
-    if (!PyArg_ParseTuple(args, "k", &data)) {
+    if (!PyArg_ParseTuple(args, "K", &data)) {
         return NULL;
     }
 
-    if (!CALL(list)->push(self->cvm, self->stack, data)) {
-        PyErr_SetString(CInvalidArgumentException, CALL(error)->get());
+    if (!PY_CALL(list)->push(self->cvm, self->stack, data)) {
+        u64 error_type = CALL(error)->type();
+        if (error_type == ID_ERROR_VM_NOT_INITIALIZED) {
+            PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer: %s", CALL(error)->get());
+        } else if (error_type == ID_ERROR_INVALID_ARGUMENT) {
+            PYTHON_ERROR(CInvalidArgumentException, "invalid argument during push: %s", CALL(error)->get());
+        } else {
+            PYTHON_ERROR(CException, "failed to push element onto the list: %s", CALL(error)->get());
+        }
         return NULL;
     }
 
@@ -99,23 +108,138 @@ static PyObject* CList_push(CListTypePtr self, PyObject* args) {
 }
 
 static PyObject* CList_pop(CListTypePtr self, PyObject* Py_UNUSED(ignored)) {
-    void_ptr data = CALL(list)->pop(self->cvm, self->stack);
-    if (data == NULL) {
-        PyErr_SetString(CInvalidValueException, "No elements to pop from the list");
+    void_ptr data = PY_CALL(list)->pop(self->cvm, self->stack);
+    u64 error_type = CALL(error)->type();
+    if (error_type == ID_ERROR_VM_NOT_INITIALIZED) {
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "vm not initialized during pop: %s", CALL(error)->get());
         return NULL;
     }
-
+    if (error_type == ID_ERROR_INVALID_ARGUMENT) {
+        PYTHON_ERROR(CInvalidArgumentException, "invalid argument during pop: %s", CALL(error)->get());
+        return NULL;
+    }
     return PyLong_FromVoidPtr(data);
 }
 
 static PyObject* CList_peek(CListTypePtr self, PyObject* Py_UNUSED(ignored)) {
-    void_ptr data = CALL(list)->peek(self->cvm, self->stack);
-    if (data == NULL) {
-        PyErr_SetString(CInvalidValueException, "No elements to peek in the list");
+    void_ptr data = PY_CALL(list)->peek(self->cvm, self->stack);
+    u64 error_type = CALL(error)->type();
+    if (error_type == ID_ERROR_VM_NOT_INITIALIZED) {
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "vm not initialized during pop: %s", CALL(error)->get());
+        return NULL;
+    }
+    if (error_type == ID_ERROR_INVALID_ARGUMENT) {
+        PYTHON_ERROR(CInvalidArgumentException, "invalid argument during pop: %s", CALL(error)->get());
+        return NULL;
+    }
+    return PyLong_FromVoidPtr(data);
+}
+
+static PyObject* CList_size(CListTypePtr self, PyObject* Py_UNUSED(ignored)) {
+    u64 size = self->stack->size;
+    u64 error_type = CALL(error)->type();
+    if (error_type == ID_ERROR_VM_NOT_INITIALIZED) {
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "vm not initialized during pop: %s", CALL(error)->get());
+        return NULL;
+    }
+    if (error_type == ID_ERROR_INVALID_ARGUMENT) {
+        PYTHON_ERROR(CInvalidArgumentException, "invalid argument during size: %s", CALL(error)->get());
+        return NULL;
+    }
+    return PyLong_FromUnsignedLong(size);
+}
+
+static PyObject* CList_diff(CListTypePtr self, PyObject* args) {
+    PyObject *other_list_obj, *result_list_obj;
+    CListTypePtr other_list, result_list;
+
+    if (!PyArg_ParseTuple(args, "O!O!", &CListTypeObject, &other_list_obj, &CListTypeObject, &result_list_obj)) {
         return NULL;
     }
 
-    return PyLong_FromVoidPtr(data);
+    other_list = (CListTypePtr)other_list_obj;
+    result_list = (CListTypePtr)result_list_obj;
+
+    if (self->stack == NULL || other_list->stack == NULL || result_list->stack == NULL) {
+        PYTHON_ERROR(CInvalidPointerException, "one or more lists involved in diff are not initialized: %s", CALL(error)->get());
+        return NULL;
+    }
+
+    if (!PY_CALL(list)->diff(self->cvm, self->stack, other_list->stack, result_list->stack)) {
+        u64 error_type = CALL(error)->type();
+        if (error_type == ID_ERROR_VM_NOT_INITIALIZED) {
+            PYTHON_ERROR(CVirtualMachineNotInitializedException, "vm not initialized during diff: %s", CALL(error)->get());
+        } else if (error_type == ID_ERROR_INVALID_ARGUMENT) {
+            PYTHON_ERROR(CInvalidArgumentException, "invalid argument during diff: %s", CALL(error)->get());
+        } else {
+            PYTHON_ERROR(CException, "list diff operation failed: %s", CALL(error)->get());
+        }
+        return NULL;
+    }
+
+    Py_RETURN_NONE;
+}
+
+static PyObject* CList_diff_left(CListTypePtr self, PyObject* args) {
+    PyObject *other_list_obj, *result_list_obj;
+    CListTypePtr other_list, result_list;
+
+    if (!PyArg_ParseTuple(args, "O!O!", &CListTypeObject, &other_list_obj, &CListTypeObject, &result_list_obj)) {
+        return NULL;
+    }
+
+    other_list = (CListTypePtr)other_list_obj;
+    result_list = (CListTypePtr)result_list_obj;
+
+    if (self->stack == NULL || other_list->stack == NULL || result_list->stack == NULL) {
+        PYTHON_ERROR(CInvalidPointerException, "one or more lists involved in diff_left are not initialized: %s", CALL(error)->get());
+        return NULL;
+    }
+
+    if (!PY_CALL(list)->diff_left(self->cvm, self->stack, other_list->stack, result_list->stack)) {
+        u64 error_type = CALL(error)->type();
+        if (error_type == ID_ERROR_VM_NOT_INITIALIZED) {
+            PYTHON_ERROR(CVirtualMachineNotInitializedException, "vm not initialized during diff_left: %s", CALL(error)->get());
+        } else if (error_type == ID_ERROR_INVALID_ARGUMENT) {
+            PYTHON_ERROR(CInvalidArgumentException, "invalid argument during diff_left: %s", CALL(error)->get());
+        } else {
+            PYTHON_ERROR(CException, "list diff_left operation failed: %s", CALL(error)->get());
+        }
+        return NULL;
+    }
+
+    Py_RETURN_NONE;
+}
+
+static PyObject* CList_diff_right(CListTypePtr self, PyObject* args) {
+    PyObject *other_list_obj, *result_list_obj;
+    CListTypePtr other_list, result_list;
+
+    if (!PyArg_ParseTuple(args, "O!O!", &CListTypeObject, &other_list_obj, &CListTypeObject, &result_list_obj)) {
+        return NULL;
+    }
+
+    other_list = (CListTypePtr)other_list_obj;
+    result_list = (CListTypePtr)result_list_obj;
+
+    if (self->stack == NULL || other_list->stack == NULL || result_list->stack == NULL) {
+        PYTHON_ERROR(CInvalidPointerException, "one or more lists involved in diff_right are not initialized: %s", CALL(error)->get());
+        return NULL;
+    }
+
+    if (!PY_CALL(list)->diff_right(self->cvm, self->stack, other_list->stack, result_list->stack)) {
+        u64 error_type = CALL(error)->type();
+        if (error_type == ID_ERROR_VM_NOT_INITIALIZED) {
+            PYTHON_ERROR(CVirtualMachineNotInitializedException, "vm not initialized during diff_right: %s", CALL(error)->get());
+        } else if (error_type == ID_ERROR_INVALID_ARGUMENT) {
+            PYTHON_ERROR(CInvalidArgumentException, "invalid argument during diff_right: %s", CALL(error)->get());
+        } else {
+            PYTHON_ERROR(CException, "list diff_right operation failed: %s", CALL(error)->get());
+        }
+        return NULL;
+    }
+
+    Py_RETURN_NONE;
 }
 
 static PyObject* CList_enter(CListTypePtr self, PyObject* Py_UNUSED(ignored)) {
@@ -124,18 +248,21 @@ static PyObject* CList_enter(CListTypePtr self, PyObject* Py_UNUSED(ignored)) {
 }
 
 static PyObject* CList_exit(CListTypePtr self, PyObject* args) {
-    if (self->stack != NULL) {
-        CALL(list)->destroy(self->cvm, self->stack);
-    }
     Py_RETURN_NONE;
 }
 
 static PyMethodDef CList_methods[] = {
-    { "push", (PyCFunction)CList_push, METH_VARARGS, "Push an element onto the list" },
-    { "pop", (PyCFunction)CList_pop, METH_NOARGS, "Pop an element from the list" },
-    { "peek", (PyCFunction)CList_peek, METH_NOARGS, "Peek at the top element of the list" },
-    { "__enter__", (PyCFunction)CList_enter, METH_NOARGS, "Enter the context" },
-    { "__exit__", (PyCFunction)CList_exit, METH_VARARGS, "Exit the context" },
+    { "push", (PyCFunction)CList_push, METH_VARARGS, "push(value: int) -> None\n\nPush an integer value (representing a pointer) onto the list." },
+    { "pop", (PyCFunction)CList_pop, METH_NOARGS, "pop() -> int\n\nPop an integer value (representing a pointer) from the list. Raises CInvalidValueException if empty." },
+    { "size", (PyCFunction)CList_size, METH_NOARGS, "size() -> int\n\nReturn size of the list." },
+    { "peek", (PyCFunction)CList_peek, METH_NOARGS, "peek() -> int\n\nPeek at the top integer value (representing a pointer) of the list. Raises CInvalidValueException if empty." },
+    { "diff", (PyCFunction)CList_diff, METH_VARARGS, "diff(other: CList, result: CList) -> None\n\nCompute the symmetric difference (elements in self or other, but not both) and store it in result." },
+    { "diff_left", (PyCFunction)CList_diff_left, METH_VARARGS, "diff_left(other: CList, result: CList) -> None\n\nCompute the left difference (elements in self but not in other) and store it in result." },
+    { "diff_right", (PyCFunction)CList_diff_right, METH_VARARGS, "diff_right(other: CList, result: CList) -> None\n\nCompute the right difference (elements in other but not in self) and store it in result." },
+
+    /* CList context */
+    { "__enter__", (PyCFunction)CList_enter, METH_NOARGS, "Enter the context manager." },
+    { "__exit__", (PyCFunction)CList_exit, METH_VARARGS, "Exit the context manager, destroying the list." },
     { NULL } /* Sentinel */
 };
 
@@ -160,7 +287,6 @@ int init_clist(PyObject* module) {
     Py_INCREF(&CListTypeObject);
     if (PyModule_AddObject(module, "CList", (PyObject*)&CListTypeObject) < 0) {
         Py_DECREF(&CListTypeObject);
-        Py_DECREF(module);
         return -1;
     }
 

@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   11 December 2023 at 9:06:14 GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 9, 2025 at 11:03:49 AM GMT+3
+ *   April 24, 2025 at 8:09:59 PM GMT+3
  *
  */
 /*
@@ -76,10 +76,7 @@ static struct type_methods_definitions file_type_definitions = {
 
 static void file_type_destructor(const_vm_ptr cvm, u64 address) {
     const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, address, file_type_definitions.type_id);
-    if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, address, (u64)file_type_definitions.type_id);
-        return;
-    }
+    CHECK_POINTER_VOID(const_ptr);
     CALL(pointer)->free(cvm, address);
 }
 
@@ -91,57 +88,35 @@ static int is_valid_file_path(const char* file_path) {
     return FALSE;
 }
 
-static int is_valid_mode(const char* mode) {
+static u64 is_valid_mode_internal(const char* mode) {
     const char* valid_modes[] = { "r", "w", "a", "r+", "w+", "a+", "rb", "wb", "ab", "r+b", "w+b", "a+b" };
     size_t num_modes = sizeof(valid_modes) / sizeof(valid_modes[0]);
+    u64 result = FALSE;
     for (size_t i = 0; i < num_modes; ++i) {
         if (CALL(os)->strcmp(mode, valid_modes[i]) == 0) {
-            return TRUE;
+            result = TRUE;
+            break;
         }
     }
-    return FALSE;
+    return result;
 }
 
 static u64 file_alloc(const_vm_ptr cvm, u64 path, u64 mode) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return FALSE;
-    }
-    if (path == 0) {
-        ERROR_INVALID_ARGUMENT("path == %lld", path);
-        return FALSE;
-    }
-    if (mode == 0) {
-        ERROR_INVALID_ARGUMENT("mode == %lld", mode);
-        return FALSE;
-    }
+    CHECK_VM(cvm, NULL_ADDRESS);
+    CHECK_ARG(path, NULL_ADDRESS);
+    CHECK_ARG(mode, NULL_ADDRESS);
     const_pointer_ptr path_const_ptr = CALL(pointer)->read(cvm, path, TYPE_STRING);
-    if (path_const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)path_const_ptr, path, (u64)TYPE_STRING);
-        return FALSE;
-    }
+    CHECK_POINTER(path_const_ptr, NULL_ADDRESS);
     const char* file_path_data = path_const_ptr->data;
-    if (is_valid_file_path(file_path_data) == 0) {
-        ERROR_INVALID_VALUE("file_path_data == %s", file_path_data);
-        return FALSE;
-    }
+    CHECK_VALUE(is_valid_file_path(file_path_data), NULL_ADDRESS);
     const_pointer_ptr mode_pointer_ptr = CALL(pointer)->read(cvm, mode, TYPE_STRING);
-    if (mode_pointer_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)mode_pointer_ptr, mode, (u64)TYPE_STRING);
-        return FALSE;
-    }
+    CHECK_POINTER(mode_pointer_ptr, NULL_ADDRESS);
     const char* mode_data = mode_pointer_ptr->data;
-    if (is_valid_mode(mode_data) == 0) {
-        ERROR_INVALID_VALUE("mode_data == %s", mode_data);
-        return FALSE;
-    }
+    CHECK_VALUE(is_valid_mode_internal(mode_data), NULL_ADDRESS);
     FILE* f = CALL(os)->fopen(file_path_data, mode_data); /* NOLINT */
-    if (f == 0) {
-        ERROR_INVALID_VALUE("f == %p, file_path_data == %s, mode_data == %s", (void_ptr)f, file_path_data, mode_data);
-        return FALSE;
-    }
+    CHECK_VALUE(f, NULL_ADDRESS);
     void_ptr data = CALL(memory)->alloc(FILE_HANDLER_TYPE_SIZE);
-    u64 address = CALL(pointer)->alloc(cvm, data, FILE_HANDLER_TYPE_SIZE, file_type_definitions.type_id);
+    u64 address = CALL(pointer)->alloc(cvm, data, FILE_HANDLER_TYPE_SIZE, 0, FLAG_MEMORY_PTR, file_type_definitions.type_id);
     file_handler_ptr handler = data;
     handler->file = f;
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -151,19 +126,10 @@ static u64 file_alloc(const_vm_ptr cvm, u64 path, u64 mode) {
 }
 
 static u64 file_data(const_vm_ptr cvm, u64 address) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return FALSE;
-    }
-    if (address == 0) {
-        ERROR_INVALID_ARGUMENT("address == %lld", address);
-        return FALSE;
-    }
+    CHECK_VM(cvm, NULL_ADDRESS);
+    CHECK_ARG(address, NULL_ADDRESS);
     const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, address, file_type_definitions.type_id);
-    if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, address, (u64)file_type_definitions.type_id);
-        return FALSE;
-    }
+    CHECK_POINTER(const_ptr, NULL_ADDRESS);
     safe_void_ptr safe_ptr;
     safe_ptr.const_ptr = const_ptr->data;
     void_ptr data_ptr = safe_ptr.ptr;
@@ -187,18 +153,12 @@ static u64 file_data(const_vm_ptr cvm, u64 address) {
             }
         }
     }
-    return 0;
+    return NULL_ADDRESS;
 }
 
 static u64 file_free(const_vm_ptr cvm, u64 address) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return FALSE;
-    }
-    if (address == 0) {
-        ERROR_INVALID_ARGUMENT("address == %lld", address);
-        return FALSE;
-    }
+    CHECK_VM(cvm, FALSE);
+    CHECK_ARG(address, FALSE);
     file_type_destructor(cvm, address);
     return TRUE;
 }

@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   11 December 2023 at 9:06:14 GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 9, 2025 at 11:03:49 AM GMT+3
+ *   April 23, 2025 at 2:57:24 PM GMT+3
  *
  */
 /*
@@ -65,41 +65,23 @@ static struct type_methods_definitions data_type_definitions = {
 
 static void data_type_destructor(const_vm_ptr cvm, u64 address) {
     const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, address, data_type_definitions.type_id);
-    if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, address, (u64)data_type_definitions.type_id);
-        return;
-    }
+    CHECK_POINTER_VOID(const_ptr);
     CALL(pointer)->free(cvm, address);
 }
 
 static u64 data_alloc(const_vm_ptr cvm, u64 size) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return FALSE;
-    }
-    if (size == 0) {
-        ERROR_INVALID_ARGUMENT("size == %lld", size);
-        return FALSE;
-    }
+    CHECK_VM(cvm, NULL_ADDRESS);
+    CHECK_ARG(size, NULL_ADDRESS);
     void_ptr data = CALL(memory)->alloc(size);
-    u64 address = CALL(pointer)->alloc(cvm, data, size, data_type_definitions.type_id);
+    u64 address = CALL(pointer)->alloc(cvm, data, size, 0, FLAG_MEMORY_PTR, data_type_definitions.type_id);
     return address;
 }
 
 static u64 data_size(const_vm_ptr cvm, u64 address) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return FALSE;
-    }
-    if (address == 0) {
-        ERROR_INVALID_ARGUMENT("address == %lld", address);
-        return FALSE;
-    }
+    CHECK_VM(cvm, NULL_VALUE);
+    CHECK_ARG(address, NULL_VALUE);
     const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, address, data_type_definitions.type_id);
-    if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, address, (u64)data_type_definitions.type_id);
-        return FALSE;
-    }
+    CHECK_POINTER(const_ptr, NULL_VALUE);
     safe_pointer_ptr safe_ptr;
     safe_ptr.const_ptr = const_ptr;
     pointer_ptr ptr = safe_ptr.ptr;
@@ -109,19 +91,10 @@ static u64 data_size(const_vm_ptr cvm, u64 address) {
 }
 
 static void_ptr data_unsafe(const_vm_ptr cvm, u64 address) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return NULL_PTR;
-    }
-    if (address == 0) {
-        ERROR_INVALID_ARGUMENT("address == %lld", address);
-        return FALSE;
-    }
+    CHECK_VM(cvm, NULL_PTR);
+    CHECK_ARG(address, NULL_PTR);
     const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, address, data_type_definitions.type_id);
-    if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, address, (u64)data_type_definitions.type_id);
-        return NULL_PTR;
-    }
+    CHECK_POINTER(const_ptr, NULL_PTR);
     safe_void_ptr safe_ptr;
     safe_ptr.const_ptr = const_ptr->data;
     void_ptr data_ptr = safe_ptr.ptr;
@@ -129,14 +102,8 @@ static void_ptr data_unsafe(const_vm_ptr cvm, u64 address) {
 }
 
 static u64 data_free(const_vm_ptr cvm, u64 address) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return FALSE;
-    }
-    if (address == 0) {
-        ERROR_INVALID_ARGUMENT("address == %lld", address);
-        return FALSE;
-    }
+    CHECK_VM(cvm, FALSE);
+    CHECK_ARG(address, FALSE);
     data_type_destructor(cvm, address);
     return TRUE;
 }

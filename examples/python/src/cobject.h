@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   April 16, 2025 at 11:03:49 AM GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 16, 2025 at 6:38:35 PM GMT+3
+ *   April 23, 2025 at 4:14:42 PM GMT+3
  *
  */
 /*
@@ -44,14 +44,13 @@
 #include "macros.h"
 
 #include "std/data.h"
-#include "system/error/error_v1.h"
-#include "virtual/types/object/object_v1.h"
 
 int init_cobject(PyObject* module);
 
 typedef struct CObject {
     PyObject_HEAD;
     const_vm_ptr cvm;
+    u64 ptr;
 } CObjectType;
 typedef struct CObject* CObjectTypePtr;
 

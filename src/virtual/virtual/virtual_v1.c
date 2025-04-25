@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   11 December 2023 at 9:06:14 GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 9, 2025 at 4:06:17 PM GMT+3
+ *   April 24, 2025 at 8:35:19 PM GMT+3
  *
  */
 /*
@@ -93,7 +93,6 @@ static u64 virtual_alloc_internal(const_vm_ptr cvm, u64 size, u64 type_id) {
     safe_virtual_pointer_ptr s;
     s.const_ptr = &(*cvm)->next;
     virtual_pointer_ptr* tail = s.ptr;
-    pointer_ptr src;
     pointer_ptr* tmp = 0;
     virtual_pointer_ptr vptr;
 #ifndef USE_GC
@@ -119,15 +118,15 @@ static u64 virtual_alloc_internal(const_vm_ptr cvm, u64 size, u64 type_id) {
     }
 #endif
     u64 address = (u64)(tmp - vptr->bp) + vptr->offset + 1;
-    src = CALL(os)->calloc(1, POINTER_TYPE_SIZE);
+    const_pointer_ptr const_ptr = CALL(os)->calloc(1, POINTER_TYPE_SIZE);
     safe_pointer_ptr safe_ptr;
-    safe_ptr.const_ptr = src;
+    safe_ptr.const_ptr = const_ptr;
     pointer_ptr ptr = safe_ptr.ptr;
-    *tmp = ptr;
     ptr->vptr = vptr;
     ptr->public.address = address;
-    ptr->public.type = type_id;
     ptr->public.size = size;
+    ptr->public.type = type_id;
+    *tmp = ptr;
 #ifdef USE_MEMORY_DEBUG_INFO
 #ifdef USE_MEMORY_DEBUG_INFO
 #ifdef USE_TTY
@@ -160,10 +159,7 @@ static pointer_ptr virtual_read_internal(const_virtual_pointer_ptr vptr, u64 add
         }
         vptr = vptr->next;
     } while (vptr != 0);
-    if (ptr == 0) {
-        ERROR_INVALID_VALUE("ptr == %p, address == %lld", (const_void_ptr)ptr, address);
-        return NULL_PTR;
-    }
+    CHECK_VALUE(ptr, NULL_PTR);
     return ptr;
 }
 
@@ -181,10 +177,7 @@ static vm_ptr* get_free_ptr(void) {
 /* implementation */
 static const_vm_ptr virtual_init(u64 size) {
     vm_ptr* ptr = get_free_ptr();
-    if (ptr == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)ptr);
-        return NULL_PTR;
-    }
+    CHECK_VM_CONDITION(ptr == 0, NULL_PTR);
     *ptr = CALL(os)->calloc(1, VM_TYPE_SIZE);
     safe_vm_ptr safe_ptr;
     safe_ptr.ptr = ptr;
@@ -198,10 +191,7 @@ static const_vm_ptr virtual_init(u64 size) {
 }
 
 static void virtual_destroy(const_vm_ptr cvm) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return;
-    }
+    CHECK_VM_VOID(cvm);
     safe_vm_ptr safe_ptr;
     safe_ptr.const_ptr = cvm;
     vm_ptr ptr = *safe_ptr.ptr;
@@ -226,20 +216,11 @@ static void virtual_destroy(const_vm_ptr cvm) {
 }
 
 static const_pointer_ptr virtual_read(const_vm_ptr cvm, u64 address) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return NULL_PTR;
-    }
-    if (address == 0) {
-        ERROR_INVALID_ARGUMENT("address == %lld", address);
-        return NULL_PTR;
-    }
+    CHECK_VM(cvm, NULL_PTR);
+    CHECK_ARG(address, NULL_PTR);
     const_virtual_pointer_ptr const_vptr = (*cvm)->next;
     const_pointer_ptr const_ptr = virtual_read_internal(const_vptr, address);
-    if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld", (const_void_ptr)const_ptr, address);
-        return FALSE;
-    }
+    CHECK_POINTER(const_ptr, NULL_PTR);
 #ifdef USE_MEMORY_DEBUG_INFO
     safe_pointer_ptr safe_ptr;
     safe_ptr.const_ptr = const_ptr;
@@ -257,20 +238,11 @@ static const_pointer_ptr virtual_read(const_vm_ptr cvm, u64 address) {
 }
 
 static u64 virtual_type(const_vm_ptr cvm, u64 address) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return FALSE;
-    }
-    if (address == 0) {
-        ERROR_INVALID_ARGUMENT("address == %lld", address);
-        return FALSE;
-    }
+    CHECK_VM(cvm, TYPE_NULL);
+    CHECK_ARG(address, NULL_ADDRESS);
     const_virtual_pointer_ptr const_vptr = (*cvm)->next;
     const_pointer_ptr const_ptr = virtual_read_internal(const_vptr, address);
-    if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld", (const_void_ptr)const_ptr, address);
-        return FALSE;
-    }
+    CHECK_POINTER(const_ptr, TYPE_NULL);
     safe_pointer_ptr safe_ptr;
     safe_ptr.const_ptr = const_ptr;
     pointer_ptr ptr = safe_ptr.ptr;
@@ -292,19 +264,11 @@ static u64 virtual_type(const_vm_ptr cvm, u64 address) {
 }
 
 static u64 virtual_free(const_vm_ptr cvm, u64 address) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return FALSE;
-    }
-    if (address == 0) {
-        return FALSE;
-    }
+    CHECK_VM(cvm, FALSE);
+    CHECK_ARG(address, FALSE);
     const_virtual_pointer_ptr const_vptr = (*cvm)->next;
     const_pointer_ptr ptr = virtual_read_internal(const_vptr, address);
-    if (ptr == 0) {
-        ERROR_INVALID_VALUE("ptr == %p, size == %lld", (const_void_ptr)ptr, address);
-        return FALSE;
-    }
+    CHECK_VALUE(ptr, FALSE);
     virtual_pointer_ptr vptr = ptr->vptr;
     if (address > vptr->offset && address <= vptr->offset + DEFAULT_SIZE) {
         u64 offset = address - vptr->offset - 1;
@@ -331,18 +295,9 @@ static u64 virtual_free(const_vm_ptr cvm, u64 address) {
 }
 
 static u64 virtual_alloc(const_vm_ptr cvm, u64 size, u64 type_id) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return FALSE;
-    }
-    if (size == 0) {
-        ERROR_INVALID_ARGUMENT("size == %lld", size);
-        return FALSE;
-    }
-    if (type_id == 0) {
-        ERROR_INVALID_ARGUMENT("type_id == %lld", type_id);
-        return FALSE;
-    }
+    CHECK_VM(cvm, NULL_ADDRESS);
+    CHECK_ARG(size, NULL_ADDRESS);
+    CHECK_ARG(type_id, NULL_ADDRESS);
     u64 address = virtual_alloc_internal(cvm, size, type_id);
     return address;
 }

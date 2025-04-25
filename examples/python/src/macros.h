@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   April 16, 2025 at 11:03:49 AM GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 16, 2025 at 6:39:29 PM GMT+3
+ *   April 23, 2025 at 2:31:33 PM GMT+3
  *
  */
 /*
@@ -55,5 +55,17 @@
 #undef PyObject_HEAD
 #define PyObject_HEAD PyObject ob_base
 #endif
+
+#define PYTHON_ERROR(exception, format, ...)                                                                                                            \
+    do {                                                                                                                                                \
+        int snp_format_size = snprintf(NULL, 0, format ": %s (%s:%d)", __VA_ARGS__, __func__, __FILE__, __LINE__); /* NOLINT: snprintf(NULL) */         \
+        char snp_format_buffer[snp_format_size + 1];                                                                                                    \
+        snprintf(snp_format_buffer, sizeof snp_format_buffer, format ": %s (%s:%d)", __VA_ARGS__, __func__, __FILE__, __LINE__); /* NOLINT: snprintf */ \
+        PyErr_SetString(exception, &snp_format_buffer[0]);                                                                                              \
+        CALL(error)->clear();                                                                                                                           \
+    } while (0)
+
+#define PY_CALL(x) PY_PUBLIC_API(x)
+#define PY_PUBLIC_API(x) PUBLIC_API(py_##x)
 
 #endif // MACROS_H

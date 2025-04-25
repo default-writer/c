@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   11 December 2023 at 9:06:14 GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 16, 2025 at 12:54:36 AM GMT+3
+ *   April 25, 2025 at 10:26:16 AM GMT+3
  *
  */
 /*
@@ -52,15 +52,16 @@
 
 typedef struct API(virtual_string_methods) {
     u64 (*free)(const_vm_ptr cvm, u64 ptr);
+    u64 (*split)(const_vm_ptr cvm, u64 src, stack_ptr result);
     u64 (*copy)(const_vm_ptr cvm, u64 ptr);
-    u64 (*strcpy)(const_vm_ptr cvm, u64 dest, u64 src);
+    u64 (*strncpy)(const_vm_ptr cvm, u64 dest, u64 src);
     u64 (*strcat)(const_vm_ptr cvm, u64 dest, u64 src);
     u64 (*strrchr)(const_vm_ptr cvm, u64 src_ptr, u64 match_prt);
     u64 (*strchr)(const_vm_ptr cvm, u64 src_ptr, u64 match_prt);
     u64 (*match)(const_vm_ptr cvm, u64 src_ptr, u64 match_prt);
-    u64 (*offset)(const_vm_ptr cvm, u64 src_ptr, u64 match_prt);
+    u64 (*match_offset)(const_vm_ptr cvm, u64 src_ptr, u64 match_prt);
     u64 (*load)(const_vm_ptr cvm, const char* data);
-    u64 (*put_char)(const_vm_ptr cvm, u64 ptr, char value);
+    u64 (*put_char)(const_vm_ptr cvm, u64 ptr, u8 value);
     char* (*unsafe)(const_vm_ptr cvm, u64 ptr);
     u64 (*size)(const_vm_ptr cvm, u64 ptr);
     u64 (*lessthan)(const_vm_ptr cvm, u64 src, u64 dest);
@@ -68,12 +69,13 @@ typedef struct API(virtual_string_methods) {
     u64 (*equals)(const_vm_ptr cvm, u64 src, u64 dest);
     u64 (*compare)(const_vm_ptr cvm, u64 src, u64 dest);
     u64 (*left)(const_vm_ptr cvm, u64 src, u64 offset);
-    u64 (*strncpy)(const_vm_ptr cvm, u64 src, u64 nbytes);
-    u64 (*left_strncpy)(const_vm_ptr cvm, u64 src, u64 offset);
     u64 (*right)(const_vm_ptr cvm, u64 src, u64 offset);
+    u64 (*left_copy)(const_vm_ptr cvm, u64 src, u64 offset);
+    u64 (*right_copy)(const_vm_ptr cvm, u64 src, u64 nbytes);
     u64 (*move_left)(const_vm_ptr cvm, u64 src, u64 nbytes);
     u64 (*move_right)(const_vm_ptr cvm, u64 src, u64 nbytes);
     u64 (*strcmp)(const_vm_ptr cvm, u64 src, u64 dest);
+    u64 (*ref)(const_vm_ptr cvm, u64 src, u64 depth);
 } virtual_string_methods;
 
 /* definition */

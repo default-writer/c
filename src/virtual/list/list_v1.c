@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   11 December 2023 at 9:06:14 GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 9, 2025 at 4:50:06 PM GMT+3
+ *   April 24, 2025 at 8:33:55 PM GMT+3
  *
  */
 /*
@@ -53,6 +53,7 @@ static stack_ptr list_init(const_vm_ptr cvm);
 static u64 list_push(const_vm_ptr cvm, stack_ptr stack, void_ptr data);
 static void_ptr list_peek(const_vm_ptr cvm, stack_ptr stack);
 static void_ptr list_pop(const_vm_ptr cvm, stack_ptr stack);
+static u64 list_size(const_vm_ptr cvm, stack_ptr stack);
 static u64 list_diff(const_vm_ptr cvm, stack_ptr stack1, stack_ptr stack2, stack_ptr compare);
 static u64 list_diff_left(const_vm_ptr cvm, stack_ptr stack1, stack_ptr stack2, stack_ptr compare);
 static u64 list_diff_right(const_vm_ptr cvm, stack_ptr stack1, stack_ptr stack2, stack_ptr compare);
@@ -67,28 +68,16 @@ static void list_diff_internal(const_vm_ptr cvm, stack_ptr stack1, stack_ptr sta
 
 /* initializes the new context's head element */
 static stack_ptr list_init(const_vm_ptr cvm) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return FALSE;
-    }
+    CHECK_VM(cvm, NULL_PTR);
     /* sets the current item */
     return CALL(os)->calloc(1, STACK_TYPE_SIZE);
 }
 
 /* pushes the memory pointer */
 static u64 list_push(const_vm_ptr cvm, stack_ptr stack, void_ptr data) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return FALSE;
-    }
-    if (stack == 0) {
-        ERROR_INVALID_ARGUMENT("stack == %p", (const_void_ptr)stack);
-        return FALSE;
-    }
-    if (data == 0) {
-        ERROR_INVALID_ARGUMENT("data == %p", (const_void_ptr)stack);
-        return FALSE;
-    }
+    CHECK_VM(cvm, FALSE);
+    CHECK_ARG(stack, FALSE);
+    CHECK_ARG(data, FALSE);
     /* creates empty data chunk */
     stack_element_ptr item = CALL(os)->calloc(1, STACK_ELEMENT_TYPE_SIZE);
     /* writes data into allocated memory buffer */
@@ -105,20 +94,12 @@ static u64 list_push(const_vm_ptr cvm, stack_ptr stack, void_ptr data) {
 
 /* pop existing element at the top of the stack/queue/list */
 static void_ptr list_pop(const_vm_ptr cvm, stack_ptr stack) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return FALSE;
-    }
-    if (stack == 0) {
-        ERROR_INVALID_ARGUMENT("stack == %p", (const_void_ptr)stack);
-        return FALSE;
-    }
+    CHECK_VM(cvm, NULL_PTR);
+    CHECK_ARG(stack, NULL_PTR);
     /* gets the current memory pointer */
     stack_element_ptr ptr = stack->current;
     /* no data added */
-    if (ptr == 0) {
-        return NULL_PTR;
-    }
+    CHECK_VALUE_NO_ERROR(ptr, NULL_PTR);
     /* rewinds head pointer to next pointer value */
     stack->current = ptr->next;
     /* gets temporary pointer value */
@@ -133,86 +114,41 @@ static void_ptr list_pop(const_vm_ptr cvm, stack_ptr stack) {
 
 /* peeks existing element at the top of the stack/queue/list */
 static void_ptr list_peek(const_vm_ptr cvm, stack_ptr stack) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return FALSE;
-    }
-    if (stack == 0) {
-        ERROR_INVALID_ARGUMENT("stack == %p", (const_void_ptr)stack);
-        return FALSE;
-    }
+    CHECK_VM(cvm, NULL_PTR);
+    CHECK_ARG(stack, NULL_PTR);
     /* gets the current memory pointer */
     stack_element_ptr ptr = stack->current;
     /* no data added */
-    if (ptr == 0) {
-        ERROR_INVALID_VALUE("ptr == %p", (const_void_ptr)ptr);
-        return FALSE;
-    }
+    CHECK_VALUE_NO_ERROR(ptr, NULL_PTR);
     /* returns actual data */
     return ptr->data;
 }
 
 static u64 list_diff(const_vm_ptr cvm, stack_ptr stack1, stack_ptr stack2, stack_ptr compare) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return FALSE;
-    }
-    if (stack1 == 0) {
-        ERROR_INVALID_ARGUMENT("stack1 == %p", (const_void_ptr)stack1);
-        return FALSE;
-    }
-    if (stack2 == 0) {
-        ERROR_INVALID_ARGUMENT("stack2 == %p", (const_void_ptr)stack2);
-        return FALSE;
-    }
-    if (compare == 0) {
-        ERROR_INVALID_ARGUMENT("compare == %p", (const_void_ptr)compare);
-        return FALSE;
-    }
+    CHECK_VM(cvm, FALSE);
+    CHECK_ARG(stack1, FALSE);
+    CHECK_ARG(stack2, FALSE);
+    CHECK_ARG(compare, FALSE);
     list_diff_internal(cvm, stack1, stack2, compare, compare);
     /* returns success */
     return TRUE;
 }
 
 static u64 list_diff_left(const_vm_ptr cvm, stack_ptr stack1, stack_ptr stack2, stack_ptr compare) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return FALSE;
-    }
-    if (stack1 == 0) {
-        ERROR_INVALID_ARGUMENT("stack1 == %p", (const_void_ptr)stack1);
-        return FALSE;
-    }
-    if (stack2 == 0) {
-        ERROR_INVALID_ARGUMENT("stack2 == %p", (const_void_ptr)stack2);
-        return FALSE;
-    }
-    if (compare == 0) {
-        ERROR_INVALID_ARGUMENT("compare == %p", (const_void_ptr)compare);
-        return FALSE;
-    }
+    CHECK_VM(cvm, FALSE);
+    CHECK_ARG(stack1, FALSE);
+    CHECK_ARG(stack2, FALSE);
+    CHECK_ARG(compare, FALSE);
     list_diff_internal(cvm, stack1, stack2, compare, NULL_PTR);
     /* returns success */
     return TRUE;
 }
 
 static u64 list_diff_right(const_vm_ptr cvm, stack_ptr stack1, stack_ptr stack2, stack_ptr compare) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return FALSE;
-    }
-    if (stack1 == 0) {
-        ERROR_INVALID_ARGUMENT("stack1 == %p", (const_void_ptr)stack1);
-        return FALSE;
-    }
-    if (stack2 == 0) {
-        ERROR_INVALID_ARGUMENT("stack2 == %p", (const_void_ptr)stack2);
-        return FALSE;
-    }
-    if (compare == 0) {
-        ERROR_INVALID_ARGUMENT("compare == %p", (const_void_ptr)compare);
-        return FALSE;
-    }
+    CHECK_VM(cvm, FALSE);
+    CHECK_ARG(stack1, FALSE);
+    CHECK_ARG(stack2, FALSE);
+    CHECK_ARG(compare, FALSE);
     list_diff_internal(cvm, stack1, stack2, NULL_PTR, compare);
     /* returns success */
     return TRUE;
@@ -220,14 +156,8 @@ static u64 list_diff_right(const_vm_ptr cvm, stack_ptr stack1, stack_ptr stack2,
 
 /* destroys the memory stack */
 static u64 list_destroy(const_vm_ptr cvm, stack_ptr stack) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return FALSE;
-    }
-    if (stack == 0) {
-        ERROR_INVALID_ARGUMENT("stack == %p", (const_void_ptr)stack);
-        return FALSE;
-    }
+    CHECK_VM(cvm, FALSE);
+    CHECK_ARG(stack, FALSE);
     /* gets the current memory pointer */
     stack_element_ptr ptr = stack->current;
     /* no data added */
