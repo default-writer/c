@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   April 16, 2025 at 11:03:49 AM GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 16, 2025 at 6:39:18 PM GMT+3
+ *   April 23, 2025 at 4:13:24 PM GMT+3
  *
  */
 /*
@@ -44,14 +44,13 @@
 #include "macros.h"
 
 #include "std/data.h"
-#include "system/error/error_v1.h"
-#include "virtual/virtual/virtual_v1.h"
 
 int init_cvirtual(PyObject* module);
 
 typedef struct CVirtual {
     PyObject_HEAD;
     const_vm_ptr cvm;
+    u64 ptr;
 } CVirtualType;
 typedef struct CVirtual* CVirtualTypePtr;
 

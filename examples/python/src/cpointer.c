@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   April 16, 2025 at 11:03:49 AM GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 16, 2025 at 6:38:39 PM GMT+3
+ *   April 26, 2025 at 11:28:32 AM GMT+3
  *
  */
 /*
@@ -37,8 +37,10 @@
 */
 
 #include "cpointer.h"
-#include "cvm.h"
 #include "cexception.h"
+#include "cvm.h"
+
+#include "py_api.h"
 
 static PyObject* CPointer_new(PyTypeObject* type, PyObject* args, PyObject* kwds) {
     CPointerTypePtr self;
@@ -51,21 +53,35 @@ static PyObject* CPointer_new(PyTypeObject* type, PyObject* args, PyObject* kwds
 
 static int CPointer_init(CPointerTypePtr self, PyObject* args, PyObject* kwds) {
     PyObject* cvm_obj;
-    if (!PyArg_ParseTuple(args, "O", &cvm_obj)) {
+    void_ptr data;
+    u64 size, offset, type_id;
+    if (!PyArg_ParseTuple(args, "OKKK|K", &cvm_obj, &size, &offset, &type_id, &data)) {
         return -1;
     }
 
     if (!PyObject_TypeCheck(cvm_obj, &CVirtualMachineTypeObject)) {
-        PyErr_SetString(PyExc_TypeError, "Expected a CVirtualMachine instance");
+        PYTHON_ERROR(PyExc_TypeError, "expected a CVirtualMachine instance: %s", CALL(error)->get());
         return -1;
     }
 
     CVirtualMachineTypePtr cvm = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm->cvm == NULL) {
-        PyErr_SetString(CVirtualMachineNotInitializedException, "Invalid CVirtualMachine pointer");
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer: %s", CALL(error)->get());
         return -1;
     }
     self->cvm = cvm->cvm;
+
+    u64 address = 0;
+    if (data == NULL) {
+        address = PY_CALL(pointer)->alloc(self->cvm, data, size, offset, FLAG_MEMORY_PTR, type_id);
+    } else {
+        address = PY_CALL(pointer)->copy(self->cvm, (const_void_ptr)data, size, offset, type_id);
+    }
+    if (!address) {
+        PYTHON_ERROR(CInvalidArgumentException, "failed to allocatr/copy pointer: invalid arguments or source pointer: %s", CALL(error)->get());
+        return -1;
+    }
+    self->ptr = address;
 
     return 0;
 }
@@ -74,80 +90,87 @@ static void CPointer_dealloc(CPointerTypePtr self) {
     Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
-static PyObject* CPointer_alloc(CPointerTypePtr self, PyObject* args) {
-    void_ptr data;
-    u64 size, type_id;
-    if (!PyArg_ParseTuple(args, "KkK", &data, &size, &type_id)) {
-        return NULL;
-    }
-
-    u64 address = CALL(pointer)->alloc(self->cvm, data, size, type_id);
-    if (!address) {
-        PyErr_SetString(CInvalidArgumentException, CALL(error)->get());
-        return NULL;
-    }
-
-    return PyLong_FromUnsignedLongLong(address);
-}
-
-static PyObject* CPointer_copy(CPointerTypePtr self, PyObject* args) {
-    u64 src, size, offset, type_id;
-    if (!PyArg_ParseTuple(args, "KKKK", &src, &size, &offset, &type_id)) {
-        return NULL;
-    }
-
-    u64 address = CALL(pointer)->copy(self->cvm, (const_void_ptr)src, size, offset, type_id);
-    if (!address) {
-        PyErr_SetString(CInvalidArgumentException, CALL(error)->get());
-        return NULL;
-    }
-
-    return PyLong_FromUnsignedLongLong(address);
-}
-
 static PyObject* CPointer_read(CPointerTypePtr self, PyObject* args) {
     u64 address, type_id;
     if (!PyArg_ParseTuple(args, "KK", &address, &type_id)) {
         return NULL;
     }
 
-    const_void_ptr data = CALL(pointer)->read(self->cvm, address, type_id);
+    const_void_ptr data = PY_CALL(pointer)->read(self->cvm, address, type_id);
     if (data == NULL) {
-        PyErr_SetString(CInvalidPointerException, CALL(error)->get());
+        PYTHON_ERROR(CInvalidPointerException, "failed to read pointer: invalid address or type ID: %s", CALL(error)->get());
         return NULL;
     }
 
     return PyLong_FromVoidPtr((void_ptr)data);
 }
 
-static PyObject* CPointer_ref(CPointerTypePtr self, PyObject* args) {
+static PyObject* CPointer_ref_static(PyObject* cls, PyObject* args, PyObject* kwargs) {
     u64 address;
-    if (!PyArg_ParseTuple(args, "K", &address)) {
+    PyObject* cvm_obj = NULL;
+    PyObject* nothrow_obj = Py_False;
+    static char* keywords[] = { "cvm", "src", "nothrow", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!K|$O!", keywords,
+            &CVirtualMachineTypeObject, &cvm_obj,
+            &address,
+            &PyBool_Type, &nothrow_obj)) {
         return NULL;
     }
 
-    u64 result = CALL(pointer)->ref(self->cvm, address);
-    if (!result) {
-        PyErr_SetString(CInvalidPointerException, CALL(error)->get());
+    CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
+    if (cvm_py->cvm == NULL) {
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
         return NULL;
+    }
+
+    u64 result = PY_CALL(pointer)->ref(cvm_py->cvm, address);
+    u64 error_type = CALL(error)->type();
+    if (error_type != 0) {
+        int nothrow = PyObject_IsTrue(nothrow_obj);
+        if (!nothrow) {
+            PYTHON_ERROR(CInvalidPointerException, "failed to get reference count: invalid pointer address:  (%016llx) %s", address, CALL(error)->get());
+            return NULL;
+        }
+        CALL(error)->clear();
+        result = 0;
     }
 
     return PyLong_FromUnsignedLongLong(result);
 }
 
-static PyObject* CPointer_free(CPointerTypePtr self, PyObject* args) {
+static PyObject* CPointer_free_static(PyObject* cls, PyObject* args, PyObject* kwargs) {
     u64 address;
-    if (!PyArg_ParseTuple(args, "K", &address)) {
+    PyObject* cvm_obj = NULL;
+    PyObject* nothrow_obj = Py_False;
+    static char* keywords[] = { "cvm", "src", "nothrow", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!K|$O!", keywords,
+            &CVirtualMachineTypeObject, &cvm_obj,
+            &address,
+            &PyBool_Type, &nothrow_obj)) {
         return NULL;
     }
 
-    u64 result = CALL(pointer)->free(self->cvm, address);
-    if (!result) {
-        PyErr_SetString(CInvalidPointerException, CALL(error)->get());
+    CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
+    if (cvm_py->cvm == NULL) {
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
         return NULL;
     }
 
-    Py_RETURN_NONE;
+    u64 result = PY_CALL(pointer)->free(cvm_py->cvm, address);
+    u64 error_type = CALL(error)->type();
+    if (error_type != 0) {
+        int nothrow = PyObject_IsTrue(nothrow_obj);
+        if (!nothrow) {
+            PYTHON_ERROR(CInvalidPointerException, "failed to free pointer: invalid pointer address: (%016llx) %s", address, CALL(error)->get());
+            return NULL;
+        }
+        CALL(error)->clear();
+        result = 0;
+    }
+
+    return PyLong_FromUnsignedLongLong(result);
 }
 
 static PyObject* CPointer_enter(CPointerTypePtr self, PyObject* Py_UNUSED(ignored)) {
@@ -160,11 +183,14 @@ static PyObject* CPointer_exit(CPointerTypePtr self, PyObject* args) {
 }
 
 static PyMethodDef CPointer_methods[] = {
-    { "alloc", (PyCFunction)CPointer_alloc, METH_VARARGS, "Allocate a pointer" },
-    { "copy", (PyCFunction)CPointer_copy, METH_VARARGS, "Copy a pointer" },
-    { "read", (PyCFunction)CPointer_read, METH_VARARGS, "Read data from a pointer" },
-    { "ref", (PyCFunction)CPointer_ref, METH_VARARGS, "Get reference count of a pointer" },
-    { "free", (PyCFunction)CPointer_free, METH_VARARGS, "Free a pointer" },
+    /* CPointer instance methods */
+    { "read", (PyCFunction)CPointer_read, METH_VARARGS, "Read data from pointer" },
+
+    /* CPointer static methods */
+    { "ref", (PyCFunction)CPointer_ref_static, METH_STATIC | METH_VARARGS | METH_KEYWORDS, "Get reference pointer (static method)." },
+    { "free", (PyCFunction)CPointer_free_static, METH_STATIC | METH_VARARGS | METH_KEYWORDS, "Free pointer (static method)." },
+
+    /* CPointer context */
     { "__enter__", (PyCFunction)CPointer_enter, METH_NOARGS, "Enter the context" },
     { "__exit__", (PyCFunction)CPointer_exit, METH_VARARGS, "Exit the context" },
     { NULL } /* Sentinel */
@@ -191,7 +217,6 @@ int init_cpointer(PyObject* module) {
     Py_INCREF(&CPointerTypeObject);
     if (PyModule_AddObject(module, "CPointer", (PyObject*)&CPointerTypeObject) < 0) {
         Py_DECREF(&CPointerTypeObject);
-        Py_DECREF(module);
         return -1;
     }
 

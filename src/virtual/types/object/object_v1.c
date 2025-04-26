@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   11 December 2023 at 9:06:14 GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 9, 2025 at 11:03:56 AM GMT+3
+ *   April 23, 2025 at 2:57:27 PM GMT+3
  *
  */
 /*
@@ -64,53 +64,29 @@ static struct type_methods_definitions object_type_definitions = {
 
 static void object_type_destructor(const_vm_ptr cvm, u64 address) {
     const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, address, object_type_definitions.type_id);
-    if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, address, (u64)object_type_definitions.type_id);
-        return;
-    }
+    CHECK_POINTER_VOID(const_ptr);
     CALL(pointer)->free(cvm, address);
 }
 
 static u64 object_alloc(const_vm_ptr cvm, u64 size) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return FALSE;
-    }
-    if (size == 0) {
-        ERROR_INVALID_ARGUMENT("size == %lld", size);
-        return FALSE;
-    }
+    CHECK_VM(cvm, NULL_ADDRESS);
+    CHECK_ARG(size, NULL_ADDRESS);
     u64 address = CALL(virtual)->alloc(cvm, size, object_type_definitions.type_id);
     return address;
 }
 
 static u64 object_free(const_vm_ptr cvm, u64 address) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return FALSE;
-    }
-    if (address == 0) {
-        ERROR_INVALID_ARGUMENT("address == %lld", address);
-        return FALSE;
-    }
+    CHECK_VM(cvm, FALSE);
+    CHECK_ARG(address, FALSE);
     object_type_destructor(cvm, address);
     return TRUE;
 }
 
 static void_ptr object_unsafe(const_vm_ptr cvm, u64 address) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return NULL_PTR;
-    }
-    if (address == 0) {
-        ERROR_INVALID_ARGUMENT("address == %lld", address);
-        return NULL_PTR;
-    }
+    CHECK_VM(cvm, NULL_PTR);
+    CHECK_ARG(address, NULL_PTR);
     const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, address, object_type_definitions.type_id);
-    if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, address, (u64)object_type_definitions.type_id);
-        return NULL_PTR;
-    }
+    CHECK_POINTER(const_ptr, NULL_PTR);
     safe_void_ptr safe_ptr;
     safe_ptr.const_ptr = const_ptr->data;
     void_ptr data_ptr = safe_ptr.ptr;
@@ -118,36 +94,18 @@ static void_ptr object_unsafe(const_vm_ptr cvm, u64 address) {
 }
 
 static u64 object_load(const_vm_ptr cvm, const_void_ptr src_data, u64 size) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return FALSE;
-    }
-    if (src_data == 0) {
-        ERROR_INVALID_ARGUMENT("src_data == %p", src_data);
-        return FALSE;
-    }
-    if (size == 0) {
-        ERROR_INVALID_ARGUMENT("size == %lld", size);
-        return FALSE;
-    }
+    CHECK_VM(cvm, NULL_ADDRESS);
+    CHECK_ARG(src_data, NULL_ADDRESS);
+    CHECK_ARG(size, NULL_ADDRESS);
     u64 address = CALL(pointer)->copy(cvm, src_data, size, 0, object_type_definitions.type_id);
     return address;
 }
 
 static u64 object_size(const_vm_ptr cvm, u64 address) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return FALSE;
-    }
-    if (address == 0) {
-        ERROR_INVALID_ARGUMENT("address == %lld", address);
-        return FALSE;
-    }
+    CHECK_VM(cvm, NULL_VALUE);
+    CHECK_ARG(address, NULL_VALUE);
     const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, address, object_type_definitions.type_id);
-    if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, address, (u64)object_type_definitions.type_id);
-        return FALSE;
-    }
+    CHECK_POINTER(const_ptr, NULL_VALUE);
     safe_pointer_ptr safe_ptr;
     safe_ptr.const_ptr = const_ptr;
     pointer_ptr ptr = safe_ptr.ptr;

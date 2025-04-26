@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   11 December 2023 at 9:06:14 GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 9, 2025 at 11:03:43 AM GMT+3
+ *   April 21, 2025 at 9:25:59 AM GMT+3
  *
  */
 /*
@@ -96,7 +96,7 @@ hashentry_ptr hashtable_insert(hashtable_ptr ht, u64 key, const_void_ptr value) 
 
 const_void_ptr hashtable_get(hashtable_ptr ht, u64 key) {
     if (ht == NULL) {
-        return NULL;
+        return NULL_PTR;
     }
     u64 index = hashtable_function_internal(key);
     hashentry_ptr entry = ht->table[index];
@@ -106,7 +106,7 @@ const_void_ptr hashtable_get(hashtable_ptr ht, u64 key) {
         }
         entry = entry->next;
     }
-    return NULL;
+    return NULL_PTR;
 }
 
 u64 hashtable_remove(hashtable_ptr ht, u64 key) {

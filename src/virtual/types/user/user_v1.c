@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   11 December 2023 at 9:06:14 GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 9, 2025 at 11:03:56 AM GMT+3
+ *   April 23, 2025 at 2:57:26 PM GMT+3
  *
  */
 /*
@@ -61,31 +61,19 @@ static struct type_methods_definitions user_type_definitions = {
 
 static void user_type_destructor(const_vm_ptr cvm, u64 address) {
     const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, address, user_type_definitions.type_id);
-    if (const_ptr == 0) {
-        ERROR_INVALID_POINTER("const_ptr == %p, address == %lld, type_id == %lld", (const_void_ptr)const_ptr, address, (u64)user_type_definitions.type_id);
-        return;
-    }
+    CHECK_POINTER_VOID(const_ptr);
     CALL(pointer)->free(cvm, address);
 }
 
 static u64 user_alloc(const_vm_ptr cvm) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return FALSE;
-    }
+    CHECK_VM(cvm, NULL_ADDRESS);
     u64 address = CALL(virtual)->alloc(cvm, DEFAULT_SIZE, user_type_definitions.type_id);
     return address;
 }
 
 static u64 user_free(const_vm_ptr cvm, u64 address) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return FALSE;
-    }
-    if (address == 0) {
-        ERROR_INVALID_ARGUMENT("address == %lld", address);
-        return FALSE;
-    }
+    CHECK_VM(cvm, FALSE);
+    CHECK_ARG(address, FALSE);
     user_type_destructor(cvm, address);
     return TRUE;
 }

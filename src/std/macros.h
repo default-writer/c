@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   11 December 2023 at 9:06:14 GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 13, 2025 at 7:29:49 AM GMT+3
+ *   April 26, 2025 at 6:56:43 AM GMT+3
  *
  */
 /*
@@ -44,6 +44,8 @@
 #define TRUE 1
 #define FALSE 0
 #define NULL_PTR (void_ptr)0
+#define NULL_ADDRESS (u64)0
+#define NULL_VALUE (u64)0
 
 #define VM_EXPAND(X) X
 #define VM_CONCAT(A, B) VM_CONCAT_(A, B)
@@ -75,6 +77,7 @@
 #define ERROR_VM_NOT_INITIALIZED(format, ...) ERROR(ERROR_VM_NOT_INITIALIZED, format, ##__VA_ARGS__)
 #define ERROR_INVALID_POINTER(format, ...) ERROR(ERROR_INVALID_POINTER, format, __VA_ARGS__)
 #define ERROR_INVALID_ARGUMENT(format, ...) ERROR(ERROR_INVALID_ARGUMENT, format, __VA_ARGS__)
+#define ERROR_INVALID_CONDITION(format, ...) ERROR(ERROR_INVALID_CONDITION, format, __VA_ARGS__)
 #define ERROR_INVALID_TYPE_ID(format, ...) ERROR(ERROR_INVALID_TYPE_ID, format, __VA_ARGS__)
 #define ERROR_INVALID_VALUE(format, ...) ERROR(ERROR_INVALID_VALUE, format, __VA_ARGS__)
 #else
@@ -90,9 +93,100 @@
 #define ERROR_VM_NOT_INITIALIZED(format, ...) ERROR(ERROR_VM_NOT_INITIALIZED, format, __VA_ARGS__)
 #define ERROR_INVALID_POINTER(format, ...) ERROR(ERROR_INVALID_POINTER, format, __VA_ARGS__)
 #define ERROR_INVALID_ARGUMENT(format, ...) ERROR(ERROR_INVALID_ARGUMENT, format, __VA_ARGS__)
+#define ERROR_INVALID_CONDITION(format, ...) ERROR(ERROR_INVALID_CONDITION, format, __VA_ARGS__)
 #define ERROR_INVALID_TYPE_ID(format, ...) ERROR(ERROR_INVALID_TYPE_ID, format, __VA_ARGS__)
 #define ERROR_INVALID_VALUE(format, ...) ERROR(ERROR_INVALID_VALUE, format, __VA_ARGS__)
 #endif
+
+#define CHECK_VM(cvm, null)                       \
+    do {                                          \
+        if (cvm == 0 || *cvm == 0) {              \
+            ERROR_VM_NOT_INITIALIZED("%s", #cvm); \
+            return null;                          \
+        }                                         \
+    } while (0)
+#define CHECK_VM_CONDITION(condition, null)             \
+    do {                                                \
+        if (condition) {                                \
+            ERROR_VM_NOT_INITIALIZED("%s", #condition); \
+            return null;                                \
+        }                                               \
+    } while (0)
+#define CHECK_VM_VOID(cvm)                        \
+    do {                                          \
+        if (cvm == 0 || *cvm == 0) {              \
+            ERROR_VM_NOT_INITIALIZED("%s", #cvm); \
+            return;                               \
+        }                                         \
+    } while (0)
+#define CHECK_ARG(arg, null)                    \
+    do {                                        \
+        if (arg == 0) {                         \
+            ERROR_INVALID_ARGUMENT("%s", #arg); \
+            return null;                        \
+        }                                       \
+    } while (0)
+#define CHECK_POINTER(arg, null)               \
+    do {                                       \
+        if (arg == 0) {                        \
+            ERROR_INVALID_POINTER("%s", #arg); \
+            return null;                       \
+        }                                      \
+    } while (0)
+#define CHECK_POINTER_VOID(arg)                \
+    do {                                       \
+        if (arg == 0) {                        \
+            ERROR_INVALID_POINTER("%s", #arg); \
+            return;                            \
+        }                                      \
+    } while (0)
+#define CHECK_CONDITION(condition, null)               \
+    do {                                               \
+        if (condition) {                               \
+            ERROR_INVALID_CONDITION("%s", #condition); \
+            return null;                               \
+        }                                              \
+    } while (0)
+#define CHECK_CONDITION_NO_ERROR(condition, null) \
+    do {                                          \
+        if (condition) {                          \
+            return null;                          \
+        }                                         \
+    } while (0)
+#define CHECK_VALUE(value, null)               \
+    do {                                       \
+        if (value == 0) {                      \
+            ERROR_INVALID_VALUE("%s", #value); \
+            return null;                       \
+        }                                      \
+    } while (0)
+#define CHECK_VALUE_NO_ERROR(value, null) \
+    do {                                  \
+        if (value == 0) {                 \
+            return null;                  \
+        }                                 \
+    } while (0)
+#define CHECK_TYPE(condition, null)                  \
+    do {                                             \
+        if (condition) {                             \
+            ERROR_INVALID_TYPE_ID("%s", #condition); \
+            return null;                             \
+        }                                            \
+    } while (0)
+#define CHECK_TYPE_VOID(condition)                   \
+    do {                                             \
+        if (condition) {                             \
+            ERROR_INVALID_TYPE_ID("%s", #condition); \
+            return;                                  \
+        }                                            \
+    } while (0)
+
+#define FLAG_NONE (u64)0x0000000000000000
+#define FLAG_MEMORY_PTR (u64)0x0000000000000001
+#define FLAG_MEMORY_ADDRESS (u64)0x0000000000000002
+#define IS_FLAG_MEMORY_PTR(flags) (flags & FLAG_MEMORY_PTR)
+#define IS_FLAG_MEMORY_ADDRESS(flags) (flags & FLAG_MEMORY_ADDRESS)
+#define MAX_DEPTH (u64)0xffffffffffffffff
 
 #ifdef __GNUC__
 #define FALL_THROUGH __attribute__((fallthrough))

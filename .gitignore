@@ -98,5 +98,5 @@ dist/
 *.egg
 .coverage
 .pytest_cache/
-
+.patch/
 /examples/python/.coverage

@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   11 December 2023 at 9:06:14 GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 10, 2025 at 1:13:14 PM GMT+3
+ *   April 23, 2025 at 2:54:32 PM GMT+3
  *
  */
 /*
@@ -46,6 +46,7 @@ static const char* error_messages[] = {
     [ID_ERROR_VM_NOT_INITIALIZED] = "vm not initialized",
     [ID_ERROR_INVALID_POINTER] = "invalid pointer",
     [ID_ERROR_INVALID_ARGUMENT] = "invalid argument",
+    [ID_ERROR_INVALID_CONDITION] = "invalid condition",
     [ID_ERROR_INVALID_TYPE_ID] = "invalid type id",
     [ID_ERROR_INVALID_VALUE] = "invalid value",
 };

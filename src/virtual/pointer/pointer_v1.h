@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   11 December 2023 at 9:06:14 GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 15, 2025 at 11:33:08 PM GMT+3
+ *   April 21, 2025 at 4:23:04 PM GMT+3
  *
  */
 /*
@@ -51,7 +51,7 @@
  */
 
 typedef struct PRIVATE_API(virtual_pointer_methods) {
-    u64 (*alloc)(const_vm_ptr cvm, const_void_ptr data, u64 size, u64 type_id);
+    u64 (*alloc)(const_vm_ptr cvm, const_void_ptr data, u64 size, u64 offset, u64 flags, u64 type_id);
     u64 (*copy)(const_vm_ptr cvm, const_void_ptr src, u64 size, u64 offset, u64 type_id);
     const_void_ptr (*read)(const_vm_ptr cvm, u64 address, u64 type_id);
     u64 (*ref)(const_vm_ptr cvm, u64 address);

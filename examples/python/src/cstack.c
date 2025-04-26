@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   April 16, 2025 at 11:03:49 AM GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 16, 2025 at 6:38:44 PM GMT+3
+ *   April 26, 2025 at 11:29:06 AM GMT+3
  *
  */
 /*
@@ -37,51 +37,80 @@
 */
 
 #include "cstack.h"
-#include "cvm.h"
 #include "cexception.h"
+#include "cvm.h"
+
+#include "py_api.h"
+
+static PyObject* CStack_new(PyTypeObject* type, PyObject* args, PyObject* kwds);
+
+static int CStack_init(CStackTypePtr self, PyObject* args, PyObject* kwds);
+static void CStack_dealloc(CStackTypePtr self);
+
+/* instance methods */
+static PyObject* CStack_ptr(CStackTypePtr self, PyObject* Py_UNUSED(ignored));
+static PyObject* CStack_push(CStackTypePtr self, PyObject* args);
+static PyObject* CStack_pop(CStackTypePtr self, PyObject* Py_UNUSED(ignored));
+static PyObject* CStack_peek(CStackTypePtr self, PyObject* Py_UNUSED(ignored));
+static PyObject* CStack_peekn(CStackTypePtr self, PyObject* args);
+static PyObject* CStack_popn(CStackTypePtr self, PyObject* args);
+static PyObject* CStack_size(CStackTypePtr self, PyObject* Py_UNUSED(ignored));
+static PyObject* CStack_enter(CStackTypePtr self, PyObject* Py_UNUSED(ignored));
+static PyObject* CStack_exit(CStackTypePtr self, PyObject* args);
+
+/* static methods */
+static PyObject* CStack_free_static(PyObject* cls, PyObject* args, PyObject* kwargs);
 
 static PyObject* CStack_new(PyTypeObject* type, PyObject* args, PyObject* kwds) {
     CStackTypePtr self;
     self = (CStackTypePtr)type->tp_alloc(type, 0);
     if (self != NULL) {
         self->cvm = NULL;
-        self->stack_ptr = 0;
+        self->ptr = 0;
     }
     return (PyObject*)self;
 }
 
 static int CStack_init(CStackTypePtr self, PyObject* args, PyObject* kwds) {
     PyObject* cvm_obj;
-    if (!PyArg_ParseTuple(args, "O", &cvm_obj)) {
+    u64 ptr = 0;
+    if (!PyArg_ParseTuple(args, "O|K", &cvm_obj, &ptr)) {
         return -1;
     }
 
     if (!PyObject_TypeCheck(cvm_obj, &CVirtualMachineTypeObject)) {
-        PyErr_SetString(PyExc_TypeError, "Expected a CVirtualMachine instance");
+        PYTHON_ERROR(PyExc_TypeError, "expected a CVirtualMachine instance: %s", CALL(error)->get());
         return -1;
     }
 
     CVirtualMachineTypePtr cvm = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm->cvm == NULL) {
-        PyErr_SetString(CVirtualMachineNotInitializedException, "Invalid CVirtualMachine pointer");
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer: %s", CALL(error)->get());
         return -1;
     }
     self->cvm = cvm->cvm;
 
-    self->stack_ptr = CALL(stack)->alloc(self->cvm);
-    if (self->stack_ptr == 0) {
-        PyErr_SetString(CInvalidPointerException, "Failed to initialize the stack");
+    self->ptr = PY_CALL(stack)->alloc(self->cvm);
+    if (self->ptr == 0) {
+        PYTHON_ERROR(CInvalidPointerException, "failed to initialize the stack: %s", CALL(error)->get());
         return -1;
+    }
+
+    if (ptr != 0) {
+        while (PY_CALL(stack)->size(self->cvm, ptr) > 0) {
+            PY_CALL(stack)->push(self->cvm, self->ptr, PY_CALL(stack)->pop(self->cvm, ptr));
+        }
     }
 
     return 0;
 }
 
 static void CStack_dealloc(CStackTypePtr self) {
-    if (self->stack_ptr != 0) {
-        CALL(stack)->free(self->cvm, self->stack_ptr);
-    }
     Py_TYPE(self)->tp_free((PyObject*)self);
+}
+
+static PyObject* CStack_ptr(CStackTypePtr self, PyObject* Py_UNUSED(ignored)) {
+    return PyLong_FromUnsignedLongLong(self->ptr);
 }
 
 static PyObject* CStack_push(CStackTypePtr self, PyObject* args) {
@@ -90,8 +119,8 @@ static PyObject* CStack_push(CStackTypePtr self, PyObject* args) {
         return NULL;
     }
 
-    if (!CALL(stack)->push(self->cvm, self->stack_ptr, data_ptr)) {
-        PyErr_SetString(CInvalidArgumentException, CALL(error)->get());
+    if (!PY_CALL(stack)->push(self->cvm, self->ptr, data_ptr)) {
+        PYTHON_ERROR(CInvalidArgumentException, "failed to push element onto the stack: invalid data or operation failed: %s", CALL(error)->get());
         return NULL;
     }
 
@@ -99,9 +128,9 @@ static PyObject* CStack_push(CStackTypePtr self, PyObject* args) {
 }
 
 static PyObject* CStack_pop(CStackTypePtr self, PyObject* Py_UNUSED(ignored)) {
-    u64 data_ptr = CALL(stack)->pop(self->cvm, self->stack_ptr);
+    u64 data_ptr = PY_CALL(stack)->pop(self->cvm, self->ptr);
     if (data_ptr == 0) {
-        PyErr_SetString(CInvalidValueException, "No elements to pop from the stack");
+        PYTHON_ERROR(CInvalidValueException, "no elements to pop from the stack: %s", CALL(error)->get());
         return NULL;
     }
 
@@ -109,18 +138,82 @@ static PyObject* CStack_pop(CStackTypePtr self, PyObject* Py_UNUSED(ignored)) {
 }
 
 static PyObject* CStack_peek(CStackTypePtr self, PyObject* Py_UNUSED(ignored)) {
-    u64 data_ptr = CALL(stack)->peek(self->cvm, self->stack_ptr);
+    u64 data_ptr = PY_CALL(stack)->peek(self->cvm, self->ptr);
     if (data_ptr == 0) {
-        PyErr_SetString(CInvalidValueException, "No elements to peek in the stack");
+        PYTHON_ERROR(CInvalidValueException, "no elements to peek in the stack: %s", CALL(error)->get());
         return NULL;
     }
 
     return PyLong_FromUnsignedLongLong(data_ptr);
 }
 
+static PyObject* CStack_peekn(CStackTypePtr self, PyObject* args) {
+    u64 nelements;
+    if (!PyArg_ParseTuple(args, "K", &nelements)) {
+        return NULL;
+    }
+
+    u64 result = PY_CALL(stack)->peekn(self->cvm, self->ptr, nelements);
+    if (result == 0) {
+        PYTHON_ERROR(CInvalidValueException, "failed to peek multiple elements from the stack: %s", CALL(error)->get());
+        return NULL;
+    }
+
+    return PyLong_FromUnsignedLongLong(result);
+}
+
+static PyObject* CStack_popn(CStackTypePtr self, PyObject* args) {
+    u64 nelements;
+    if (!PyArg_ParseTuple(args, "K", &nelements)) {
+        return NULL;
+    }
+
+    u64 result = PY_CALL(stack)->popn(self->cvm, self->ptr, nelements);
+    if (result == 0) {
+        PYTHON_ERROR(CInvalidValueException, "failed to pop multiple elements from the stack: %s", CALL(error)->get());
+        return NULL;
+    }
+
+    return PyLong_FromUnsignedLongLong(result);
+}
+
 static PyObject* CStack_size(CStackTypePtr self, PyObject* Py_UNUSED(ignored)) {
-    u64 size = CALL(stack)->size(self->cvm, self->stack_ptr);
+    u64 size = PY_CALL(stack)->size(self->cvm, self->ptr);
     return PyLong_FromUnsignedLongLong(size);
+}
+
+static PyObject* CStack_free_static(PyObject* cls, PyObject* args, PyObject* kwargs) {
+    u64 address;
+    PyObject* cvm_obj = NULL;
+    PyObject* nothrow_obj = Py_False;
+    static char* keywords[] = { "cvm", "src", "nothrow", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!K|$O!", keywords,
+            &CVirtualMachineTypeObject, &cvm_obj,
+            &address,
+            &PyBool_Type, &nothrow_obj)) {
+        return NULL;
+    }
+
+    CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
+    if (cvm_py->cvm == NULL) {
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        return NULL;
+    }
+
+    u64 result = PY_CALL(stack)->free(cvm_py->cvm, address);
+    u64 error_type = CALL(error)->type();
+    if (error_type != 0) {
+        int nothrow = PyObject_IsTrue(nothrow_obj);
+        if (!nothrow) {
+            PYTHON_ERROR(CInvalidPointerException, "failed to free pointer: invalid pointer address: (%016llx) %s", address, CALL(error)->get());
+            return NULL;
+        }
+        CALL(error)->clear();
+        result = 0;
+    }
+
+    return PyLong_FromUnsignedLongLong(result);
 }
 
 static PyObject* CStack_enter(CStackTypePtr self, PyObject* Py_UNUSED(ignored)) {
@@ -129,17 +222,23 @@ static PyObject* CStack_enter(CStackTypePtr self, PyObject* Py_UNUSED(ignored)) 
 }
 
 static PyObject* CStack_exit(CStackTypePtr self, PyObject* args) {
-    if (self->stack_ptr != 0) {
-        CALL(stack)->free(self->cvm, self->stack_ptr);
-    }
     Py_RETURN_NONE;
 }
 
 static PyMethodDef CStack_methods[] = {
+    /* CString instance methods */
+    { "ptr", (PyCFunction)CStack_ptr, METH_NOARGS, "Returns the CStack's internal pointer address" },
     { "push", (PyCFunction)CStack_push, METH_VARARGS, "Push an element onto the stack" },
-    { "pop", (PyCFunction)CStack_pop, METH_NOARGS, "Pop an element from the stack" },
     { "peek", (PyCFunction)CStack_peek, METH_NOARGS, "Peek at the top element of the stack" },
+    { "peekn", (PyCFunction)CStack_peekn, METH_VARARGS, "Peek multiple elements from the stack" },
+    { "pop", (PyCFunction)CStack_pop, METH_NOARGS, "Pop an element from the stack" },
+    { "popn", (PyCFunction)CStack_popn, METH_VARARGS, "Pop multiple elements from the stack" },
     { "size", (PyCFunction)CStack_size, METH_NOARGS, "Get the size of the stack" },
+
+    /* CStack static methods */
+    { "free", (PyCFunction)CStack_free_static, METH_STATIC | METH_VARARGS | METH_KEYWORDS, "Free pointer (static method)." },
+
+    /* CStack context */
     { "__enter__", (PyCFunction)CStack_enter, METH_NOARGS, "Enter the context" },
     { "__exit__", (PyCFunction)CStack_exit, METH_VARARGS, "Exit the context" },
     { NULL } /* Sentinel */
@@ -166,7 +265,6 @@ int init_cstack(PyObject* module) {
     Py_INCREF(&CStackTypeObject);
     if (PyModule_AddObject(module, "CStack", (PyObject*)&CStackTypeObject) < 0) {
         Py_DECREF(&CStackTypeObject);
-        Py_DECREF(module);
         return -1;
     }
 

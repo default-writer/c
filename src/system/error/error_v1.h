@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   11 December 2023 at 9:06:14 GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 15, 2025 at 9:17:06 PM GMT+3
+ *   April 22, 2025 at 9:32:42 AM GMT+3
  *
  */
 /*
@@ -53,6 +53,7 @@ enum error_message_code {
     ID_ERROR_VM_NOT_INITIALIZED,
     ID_ERROR_INVALID_POINTER,
     ID_ERROR_INVALID_ARGUMENT,
+    ID_ERROR_INVALID_CONDITION,
     ID_ERROR_INVALID_TYPE_ID,
     ID_ERROR_INVALID_VALUE
 };

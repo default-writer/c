@@ -275,7 +275,6 @@ set(LIB_VM_SOURCE
     src/virtual/types/object/object_v1.c
     src/virtual/types/stack/stack_v1.c
     src/virtual/types/string/string_v1.c
-    src/virtual/types/string_reference/string_reference_v1.c
     src/virtual/types/user/user_v1.c
     src/virtual/virtual/virtual_v1.c
     src/virtual/vm/vm_v1.c

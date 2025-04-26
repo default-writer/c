@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   April 16, 2025 at 11:03:49 AM GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 16, 2025 at 6:32:53 PM GMT+3
+ *   April 23, 2025 at 4:13:00 PM GMT+3
  *
  */
 /*
@@ -44,14 +44,13 @@
 #include "macros.h"
 
 #include "std/data.h"
-#include "system/error/error_v1.h"
-#include "virtual/types/file/file_v1.h"
 
 int init_cfile(PyObject* module);
 
 typedef struct CFile {
     PyObject_HEAD;
     const_vm_ptr cvm;
+    u64 ptr;
 } CFileType;
 typedef struct CFile* CFileTypePtr;
 

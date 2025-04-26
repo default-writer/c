@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   11 December 2023 at 9:06:14 GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 16, 2025 at 1:07:34 AM GMT+3
+ *   April 23, 2025 at 2:57:27 PM GMT+3
  *
  */
 /*
@@ -74,7 +74,6 @@ CVM_EXPORT extern void file_init(const_vm_ptr cvm);
 CVM_EXPORT extern void object_init(const_vm_ptr cvm);
 CVM_EXPORT extern void stack_init(const_vm_ptr cvm);
 CVM_EXPORT extern void string_init(const_vm_ptr cvm);
-CVM_EXPORT extern void string_reference_init(const_vm_ptr cvm);
 CVM_EXPORT extern void user_init(const_vm_ptr cvm);
 
 static void register_known_types(const_vm_ptr cvm);
@@ -86,7 +85,6 @@ static void register_known_types(const_vm_ptr cvm) {
     object_init(cvm);
     stack_init(cvm);
     string_init(cvm);
-    string_reference_init(cvm);
     user_init(cvm);
 }
 
@@ -134,10 +132,7 @@ static const_vm_ptr vm_init(u64 size) {
     init_statistics();
 #endif
     const_vm_ptr cvm = CALL(system)->init(size);
-    if (cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return NULL_PTR;
-    }
+    CHECK_VM_CONDITION(cvm == 0, NULL_PTR);
     safe_vm_ptr safe_ptr;
     safe_ptr.const_ptr = cvm;
     vm_ptr ptr = *safe_ptr.ptr;
@@ -148,10 +143,7 @@ static const_vm_ptr vm_init(u64 size) {
 }
 
 static void vm_gc(const_vm_ptr cvm) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return;
-    }
+    CHECK_VM_VOID(cvm);
 #ifdef USE_MEMORY_DEBUG_INFO
     virtual_dump_ref_internal(cvm, 0);
 #endif
@@ -165,34 +157,20 @@ static void vm_gc(const_vm_ptr cvm) {
 }
 
 static void vm_dump_ref(const_vm_ptr cvm) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return;
-    }
+    CHECK_VM_VOID(cvm);
     virtual_dump_ref_internal(cvm, 0);
 }
 
 static void vm_dump_ref_stack(const_vm_ptr cvm, stack_ptr stack) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return;
-    }
+    CHECK_VM_VOID(cvm);
     virtual_dump_ref_internal(cvm, stack);
 }
+
 static u64 vm_release(const_vm_ptr cvm, u64 address) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return FALSE;
-    }
-    if (address == 0) {
-        ERROR_INVALID_ARGUMENT("address == %lld", address);
-        return FALSE;
-    }
+    CHECK_VM(cvm, FALSE);
+    CHECK_ARG(address, FALSE);
     u64 type_id = CALL(virtual)->type(cvm, address);
-    if (type_id == 0) {
-        ERROR_INVALID_TYPE_ID("type_id == %lld", type_id);
-        return FALSE;
-    }
+    CHECK_TYPE(type_id == 0, FALSE);
 #ifdef USE_GC
     if (type_id > 0 && type_id <= (*cvm)->known_types_capacity) {
         const_type_methods_definitions_ptr methods = (*cvm)->known_types[type_id - 1].methods;
@@ -203,10 +181,7 @@ static u64 vm_release(const_vm_ptr cvm, u64 address) {
 }
 
 static void vm_destroy(const_vm_ptr cvm) {
-    if (cvm == 0 || *cvm == 0) {
-        ERROR_VM_NOT_INITIALIZED("cvm == %p", (const_void_ptr)cvm);
-        return;
-    }
+    CHECK_VM_VOID(cvm);
     unregister_known_types(cvm);
     CALL(system)->destroy(cvm);
     CALL(error)->clear();

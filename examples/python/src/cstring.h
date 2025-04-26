@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   April 16, 2025 at 11:03:49 AM GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 16, 2025 at 6:38:54 PM GMT+3
+ *   April 23, 2025 at 4:14:04 PM GMT+3
  *
  */
 /*
@@ -44,14 +44,13 @@
 #include "macros.h"
 
 #include "std/data.h"
-#include "system/error/error_v1.h"
-#include "virtual/types/string/string_v1.h"
 
 int init_cstring(PyObject* module);
 
 typedef struct CString {
     PyObject_HEAD;
     const_vm_ptr cvm;
+    u64 ptr;
 } CStringType;
 typedef struct CString* CStringTypePtr;
 

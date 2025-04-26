@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   April 16, 2025 at 11:03:49 AM GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 16, 2025 at 6:31:51 PM GMT+3
+ *   April 25, 2025 at 7:06:03 AM GMT+3
  *
  */
 /*
@@ -37,111 +37,129 @@
 */
 
 #include "cenvironment.h"
-#include "cvm.h"
 #include "cexception.h"
+#include "cvm.h"
 
-static PyObject* CEnvironment_new(PyTypeObject* type, PyObject* args, PyObject* kwds) {
-    CEnvironmentTypePtr self;
-    self = (CEnvironmentTypePtr)type->tp_alloc(type, 0);
-    if (self != NULL) {
-        self->cvm = NULL;
-    }
-    return (PyObject*)self;
-}
+#include "py_api.h"
 
-static int CEnvironment_init(CEnvironmentTypePtr self, PyObject* args, PyObject* kwds) {
-    PyObject* cvm_obj;
-    if (!PyArg_ParseTuple(args, "O", &cvm_obj)) {
-        return -1;
-    }
+/* static methods */
+static PyObject* CEnvironment_getenv_static(PyObject* cls, PyObject* args, PyObject* kwargs);
+static PyObject* CEnvironment_getcwd_static(PyObject* cls, PyObject* args, PyObject* kwargs);
+static PyObject* CEnvironment_puts_static(PyObject* cls, PyObject* args, PyObject* kwargs);
 
-    if (!PyObject_TypeCheck(cvm_obj, &CVirtualMachineTypeObject)) {
-        PyErr_SetString(PyExc_TypeError, "Expected a CVirtualMachine instance");
-        return -1;
-    }
+static PyObject* CEnvironment_getenv_static(PyObject* cls, PyObject* args, PyObject* kwargs) {
+    u64 src;
+    PyObject* cvm_obj = NULL;
+    PyObject* nothrow_obj = Py_False;
+    static char* keywords[] = { "cvm", "src", "nothrow", NULL };
 
-    CVirtualMachineTypePtr cvm = (CVirtualMachineTypePtr)cvm_obj;
-    if (cvm->cvm == NULL) {
-        PyErr_SetString(CVirtualMachineNotInitializedException, "Invalid CVirtualMachine pointer");
-        return -1;
-    }
-    self->cvm = cvm->cvm;
-
-    return 0;
-}
-
-static void CEnvironment_dealloc(CEnvironmentTypePtr self) {
-    Py_TYPE(self)->tp_free((PyObject*)self);
-}
-
-static PyObject* CEnvironment_getenv(CEnvironmentTypePtr self, PyObject* args) {
-    u64 name_ptr;
-    if (!PyArg_ParseTuple(args, "K", &name_ptr)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!K|$O!", keywords,
+            &CVirtualMachineTypeObject, &cvm_obj,
+            &src,
+            &PyBool_Type, &nothrow_obj)) {
         return NULL;
     }
 
-    u64 result = CALL(env)->getenv(self->cvm, name_ptr);
-    if (!result) {
-        PyErr_SetString(CInvalidPointerException, CALL(error)->get());
+    CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
+    if (cvm_py->cvm == NULL) {
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
         return NULL;
+    }
+
+    u64 result = PY_CALL(env)->getenv(cvm_py->cvm, src);
+    u64 error_type = CALL(error)->type();
+    if (error_type != 0) {
+        int nothrow = PyObject_IsTrue(nothrow_obj);
+        if (!nothrow) {
+            PYTHON_ERROR(CInvalidPointerException, "failed to retrieve environment variable: invalid pointer or variable not found: %s", CALL(error)->get());
+            return NULL;
+        }
+        CALL(error)->clear();
+        result = 0;
     }
 
     return PyLong_FromUnsignedLongLong(result);
 }
 
-static PyObject* CEnvironment_getcwd(CEnvironmentTypePtr self, PyObject* Py_UNUSED(ignored)) {
-    u64 result = CALL(env)->getcwd(self->cvm);
-    if (!result) {
-        PyErr_SetString(CInvalidPointerException, CALL(error)->get());
+static PyObject* CEnvironment_getcwd_static(PyObject* cls, PyObject* args, PyObject* kwargs) {
+    PyObject* cvm_obj = NULL;
+    PyObject* nothrow_obj = Py_False;
+    static char* keywords[] = { "cvm", "nothrow", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!|$O!", keywords,
+            &CVirtualMachineTypeObject, &cvm_obj,
+            &PyBool_Type, &nothrow_obj)) {
         return NULL;
+    }
+
+    CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
+    if (cvm_py->cvm == NULL) {
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        return NULL;
+    }
+
+    u64 result = PY_CALL(env)->getcwd(cvm_py->cvm);
+    u64 error_type = CALL(error)->type();
+    if (error_type != 0) {
+        int nothrow = PyObject_IsTrue(nothrow_obj);
+        if (!nothrow) {
+            PYTHON_ERROR(CInvalidPointerException, "failed to get current working directory: invalid pointer or operation failed: %s", CALL(error)->get());
+            return NULL;
+        }
+        CALL(error)->clear();
+        result = 0;
     }
 
     return PyLong_FromUnsignedLongLong(result);
 }
 
-static PyObject* CEnvironment_puts(CEnvironmentTypePtr self, PyObject* args) {
-    u64 address;
-    if (!PyArg_ParseTuple(args, "K", &address)) {
+static PyObject* CEnvironment_puts_static(PyObject* cls, PyObject* args, PyObject* kwargs) {
+    u64 src;
+    PyObject* cvm_obj = NULL;
+    PyObject* nothrow_obj = Py_False;
+    static char* keywords[] = { "cvm", "src", "nothrow", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!K|$O!", keywords,
+            &CVirtualMachineTypeObject, &cvm_obj,
+            &src,
+            &PyBool_Type, &nothrow_obj)) {
         return NULL;
     }
 
-    u64 result = CALL(env)->puts(self->cvm, address);
-    if (!result) {
-        PyErr_SetString(CInvalidPointerException, CALL(error)->get());
+    CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
+    if (cvm_py->cvm == NULL) {
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
         return NULL;
     }
 
-    Py_RETURN_NONE;
-}
+    u64 result = PY_CALL(env)->puts(cvm_py->cvm, src);
+    u64 error_type = CALL(error)->type();
+    if (error_type != 0) {
+        int nothrow = PyObject_IsTrue(nothrow_obj);
+        if (!nothrow) {
+            PYTHON_ERROR(CInvalidPointerException, "failed to print string: invalid pointer or operation failed: %s", CALL(error)->get());
+            return NULL;
+        }
+        CALL(error)->clear();
+        result = 0;
+    }
 
-static PyObject* CEnvironment_enter(CEnvironmentTypePtr self, PyObject* Py_UNUSED(ignored)) {
-    Py_INCREF(self);
-    return (PyObject*)self;
-}
-
-static PyObject* CEnvironment_exit(CEnvironmentTypePtr self, PyObject* args) {
-    Py_RETURN_NONE;
+    return PyLong_FromUnsignedLongLong(result);
 }
 
 static PyMethodDef CEnvironment_methods[] = {
-    { "getenv", (PyCFunction)CEnvironment_getenv, METH_VARARGS, "Retrieve an environment variable" },
-    { "getcwd", (PyCFunction)CEnvironment_getcwd, METH_NOARGS, "Get the current working directory" },
-    { "puts", (PyCFunction)CEnvironment_puts, METH_VARARGS, "Print a string to the standard output" },
-    { "__enter__", (PyCFunction)CEnvironment_enter, METH_NOARGS, "Enter the context" },
-    { "__exit__", (PyCFunction)CEnvironment_exit, METH_VARARGS, "Exit the context" },
-    { NULL } /* Sentinel */
+    /* CEnvironment static methods */
+    { "getenv", (PyCFunction)CEnvironment_getenv_static, METH_STATIC | METH_VARARGS | METH_KEYWORDS, "Retrieve an environment variable" },
+    { "getcwd", (PyCFunction)CEnvironment_getcwd_static, METH_STATIC | METH_VARARGS | METH_KEYWORDS, "Get the current working directory" },
+    { "puts", (PyCFunction)CEnvironment_puts_static, METH_STATIC | METH_VARARGS | METH_KEYWORDS, "Print a string to the standard output" },
+    { NULL, NULL, 0, NULL } /* Sentinel */
 };
 
 PyTypeObject CEnvironmentTypeObject = {
     PyVarObject_HEAD_INIT(NULL, 0),
     .tp_name = "c.CEnvironment",
     .tp_doc = "CEnvironment implementation in C module",
-    .tp_basicsize = sizeof(CEnvironmentType),
-    .tp_itemsize = 0,
-    .tp_flags = Py_TPFLAGS_DEFAULT,
-    .tp_new = CEnvironment_new,
-    .tp_init = (initproc)CEnvironment_init,
-    .tp_dealloc = (destructor)CEnvironment_dealloc,
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,
     .tp_methods = CEnvironment_methods,
 };
 
@@ -153,7 +171,6 @@ int init_cenvironment(PyObject* module) {
     Py_INCREF(&CEnvironmentTypeObject);
     if (PyModule_AddObject(module, "CEnvironment", (PyObject*)&CEnvironmentTypeObject) < 0) {
         Py_DECREF(&CEnvironmentTypeObject);
-        Py_DECREF(module);
         return -1;
     }
 

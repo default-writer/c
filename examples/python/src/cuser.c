@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   April 16, 2025 at 11:03:49 AM GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 16, 2025 at 6:39:06 PM GMT+3
+ *   April 26, 2025 at 11:29:40 AM GMT+3
  *
  */
 /*
@@ -37,15 +37,17 @@
 */
 
 #include "cuser.h"
-#include "cvm.h"
 #include "cexception.h"
+#include "cvm.h"
+
+#include "py_api.h"
 
 static PyObject* CUser_new(PyTypeObject* type, PyObject* args, PyObject* kwds) {
     CUserTypePtr self;
     self = (CUserTypePtr)type->tp_alloc(type, 0);
     if (self != NULL) {
         self->cvm = NULL;
-        self->user_ptr = 0;
+        self->ptr = 0;
     }
     return (PyObject*)self;
 }
@@ -57,20 +59,20 @@ static int CUser_init(CUserTypePtr self, PyObject* args, PyObject* kwds) {
     }
 
     if (!PyObject_TypeCheck(cvm_obj, &CVirtualMachineTypeObject)) {
-        PyErr_SetString(PyExc_TypeError, "Expected a CVirtualMachine instance");
+        PYTHON_ERROR(PyExc_TypeError, "expected a CVirtualMachine instance: %s", CALL(error)->get());
         return -1;
     }
 
     CVirtualMachineTypePtr cvm = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm->cvm == NULL) {
-        PyErr_SetString(CVirtualMachineNotInitializedException, "Invalid CVirtualMachine pointer");
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer: %s", CALL(error)->get());
         return -1;
     }
     self->cvm = cvm->cvm;
 
-    self->user_ptr = CALL(user)->alloc(self->cvm);
-    if (self->user_ptr == 0) {
-        PyErr_SetString(CInvalidPointerException, "Failed to allocate user object");
+    self->ptr = PY_CALL(user)->alloc(self->cvm);
+    if (self->ptr == 0) {
+        PYTHON_ERROR(CInvalidPointerException, "failed to allocate user object: %s", CALL(error)->get());
         return -1;
     }
 
@@ -78,21 +80,41 @@ static int CUser_init(CUserTypePtr self, PyObject* args, PyObject* kwds) {
 }
 
 static void CUser_dealloc(CUserTypePtr self) {
-    if (self->user_ptr != 0) {
-        CALL(user)->free(self->cvm, self->user_ptr);
-    }
     Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
-static PyObject* CUser_free(CUserTypePtr self, PyObject* Py_UNUSED(ignored)) {
-    if (self->user_ptr != 0) {
-        if (!CALL(user)->free(self->cvm, self->user_ptr)) {
-            PyErr_SetString(CInvalidPointerException, CALL(error)->get());
+static PyObject* CUser_free_static(PyObject* cls, PyObject* args, PyObject* kwargs) {
+    u64 address;
+    PyObject* cvm_obj = NULL;
+    PyObject* nothrow_obj = Py_False;
+    static char* keywords[] = { "cvm", "src", "nothrow", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!K|$O!", keywords,
+            &CVirtualMachineTypeObject, &cvm_obj,
+            &address,
+            &PyBool_Type, &nothrow_obj)) {
+        return NULL;
+    }
+
+    CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
+    if (cvm_py->cvm == NULL) {
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        return NULL;
+    }
+
+    u64 result = PY_CALL(user)->free(cvm_py->cvm, address);
+    u64 error_type = CALL(error)->type();
+    if (error_type != 0) {
+        int nothrow = PyObject_IsTrue(nothrow_obj);
+        if (!nothrow) {
+            PYTHON_ERROR(CInvalidPointerException, "failed to free pointer: invalid pointer address: (%016llx) %s", address, CALL(error)->get());
             return NULL;
         }
-        self->user_ptr = 0;
+        CALL(error)->clear();
+        result = 0;
     }
-    Py_RETURN_NONE;
+
+    return PyLong_FromUnsignedLongLong(result);
 }
 
 static PyObject* CUser_enter(CUserTypePtr self, PyObject* Py_UNUSED(ignored)) {
@@ -101,14 +123,14 @@ static PyObject* CUser_enter(CUserTypePtr self, PyObject* Py_UNUSED(ignored)) {
 }
 
 static PyObject* CUser_exit(CUserTypePtr self, PyObject* args) {
-    if (self->user_ptr != 0) {
-        CALL(user)->free(self->cvm, self->user_ptr);
-    }
     Py_RETURN_NONE;
 }
 
 static PyMethodDef CUser_methods[] = {
-    { "free", (PyCFunction)CUser_free, METH_NOARGS, "Free the user object" },
+    /* CUser static methods */
+    { "free", (PyCFunction)CUser_free_static, METH_STATIC | METH_VARARGS | METH_KEYWORDS, "Free pointer (static method)." },
+
+    /* CUser context */
     { "__enter__", (PyCFunction)CUser_enter, METH_NOARGS, "Enter the context" },
     { "__exit__", (PyCFunction)CUser_exit, METH_VARARGS, "Exit the context" },
     { NULL } /* Sentinel */
@@ -135,7 +157,6 @@ int init_cuser(PyObject* module) {
     Py_INCREF(&CUserTypeObject);
     if (PyModule_AddObject(module, "CUser", (PyObject*)&CUserTypeObject) < 0) {
         Py_DECREF(&CUserTypeObject);
-        Py_DECREF(module);
         return -1;
     }
 

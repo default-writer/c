@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   11 December 2023 at 9:06:14 GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 16, 2025 at 1:07:32 AM GMT+3
+ *   April 23, 2025 at 2:57:26 PM GMT+3
  *
  */
 /*
@@ -79,7 +79,6 @@ RX_TEST_CASE(tests_api_v1, test_api, .fixture = test_fixture) {
     RX_ASSERT(PUBLIC_API(object) != 0);
     RX_ASSERT(PUBLIC_API(stack) != 0);
     RX_ASSERT(PUBLIC_API(string) != 0);
-    RX_ASSERT(PUBLIC_API(string_reference) != 0);
     RX_ASSERT(PUBLIC_API(user) != 0);
 }
 

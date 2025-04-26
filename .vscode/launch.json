@@ -5,99 +5,31 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "c++",
-      "type": "cppdbg",
-      "request": "attach",
-      "program": "${workspaceFolder}/cmake/main-tests-vm1",
-      "processId": ""
-    },
-    {
-      "name": "python (default)",
-      "type": "debugpy",
-      "request": "launch",
-      "program": "${workspaceFolder}/examples/python/main_default.py",
-      "cwd": "${workspaceFolder}",
-      "console": "integratedTerminal"
-    },
-    {
-      "name": "python (default, sanitize)",
-      "type": "debugpy",
-      "request": "launch",
-      "program": "${workspaceFolder}/examples/python/main_default.py",
-      "cwd": "${workspaceFolder}",
-      "console": "integratedTerminal",
-      "env": {
-        "LD_PRELOAD": "/usr/lib/x86_64-linux-gnu/libasan.so.8"
-      }
-    },
-    {
-      "name": "python/c++ (file, verbose/cppdbg)",
+      "name": "python/c++ (default, verbose/cppdbg)",
       "type": "pythoncpp",
       "request": "launch",
-      "pythonLaunchName": "python (file, verbose)",
+      "pythonLaunchName": "python (default, verbose)",
       "cppAttachName": "c++ (cppdbg)"
-    },
-    {
-      "preLaunchTask": "shell: cmake",
-      "name": "python (file)",
-      "type": "debugpy",
-      "request": "launch",
-      "program": "${workspaceFolder}/examples/python/main_file.py",
-      "cwd": "${workspaceFolder}",
-      "console": "integratedTerminal",
-      "justMyCode": false,
-      "env": {
-        "LD_PRELOAD": "/lib/libc-sys.so:/lib/libc-vm.so",
-        "LD_LIBRARY_PATH": "/lib:$LD_LIBRARY_PATH"
-      }
-    },
-    {
-      "preLaunchTask": "shell: cmake (gc)",
-      "name": "python (file, gc)",
-      "type": "debugpy",
-      "request": "launch",
-      "program": "${workspaceFolder}/examples/python/main_file.py",
-      "cwd": "${workspaceFolder}",
-      "console": "integratedTerminal",
-      "justMyCode": false,
-      "env": {
-        "LD_PRELOAD": "/lib/libc-sys.so:/lib/libc-vm.so",
-        "LD_LIBRARY_PATH": "/lib:$LD_LIBRARY_PATH"
-      }
-    },
-    {
-      "preLaunchTask": "shell: cmake (verbose)",
-      "name": "python (file, verbose)",
-      "type": "debugpy",
-      "request": "launch",
-      "program": "${workspaceFolder}/examples/python/main_file.py",
-      "cwd": "${workspaceFolder}",
-      "console": "integratedTerminal",
-      "justMyCode": false,
-      "env": {
-        "LD_PRELOAD": "/lib/libc-sys.so:/lib/libc-vm.so",
-        "LD_LIBRARY_PATH": "/lib:$LD_LIBRARY_PATH"
-      }
-    },
-    {
-      "preLaunchTask": "shell: cmake (gc, verbose)",
-      "name": "python (file, gc, verbose)",
-      "type": "debugpy",
-      "request": "launch",
-      "program": "${workspaceFolder}/examples/python/main_file.py",
-      "cwd": "${workspaceFolder}",
-      "console": "integratedTerminal",
-      "justMyCode": false,
-      "env": {
-        "LD_PRELOAD": "/lib/libc-sys.so:/lib/libc-vm.so",
-        "LD_LIBRARY_PATH": "/lib:$LD_LIBRARY_PATH"
-      }
     },
     {
       "name": "python/c++ (memory, verbose/cppdbg)",
       "type": "pythoncpp",
       "request": "launch",
       "pythonLaunchName": "python (memory, verbose)",
+      "cppAttachName": "c++ (cppdbg)"
+    },
+    {
+      "name": "python/c++ (list, verbose/cppdbg)",
+      "type": "pythoncpp",
+      "request": "launch",
+      "pythonLaunchName": "python (list, verbose)",
+      "cppAttachName": "c++ (cppdbg)"
+    },
+    {
+      "name": "python/c++ (file, verbose/cppdbg)",
+      "type": "pythoncpp",
+      "request": "launch",
+      "pythonLaunchName": "python (file, verbose)",
       "cppAttachName": "c++ (cppdbg)"
     },
     {
@@ -157,13 +89,6 @@
       }
     },
     {
-      "name": "python/c++ (list, verbose/cppdbg)",
-      "type": "pythoncpp",
-      "request": "launch",
-      "pythonLaunchName": "python (list, verbose)",
-      "cppAttachName": "c++ (cppdbg)"
-    },
-    {
       "preLaunchTask": "shell: cmake",
       "name": "python (list)",
       "type": "debugpy",
@@ -220,6 +145,62 @@
       }
     },
     {
+      "preLaunchTask": "shell: cmake",
+      "name": "python (file)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/examples/python/main_file.py",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "env": {
+        "LD_PRELOAD": "/lib/libc-sys.so:/lib/libc-vm.so",
+        "LD_LIBRARY_PATH": "/lib:$LD_LIBRARY_PATH"
+      }
+    },
+    {
+      "preLaunchTask": "shell: cmake (gc)",
+      "name": "python (file, gc)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/examples/python/main_file.py",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "env": {
+        "LD_PRELOAD": "/lib/libc-sys.so:/lib/libc-vm.so",
+        "LD_LIBRARY_PATH": "/lib:$LD_LIBRARY_PATH"
+      }
+    },
+    {
+      "preLaunchTask": "shell: cmake (verbose)",
+      "name": "python (file, verbose)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/examples/python/main_file.py",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "env": {
+        "LD_PRELOAD": "/lib/libc-sys.so:/lib/libc-vm.so",
+        "LD_LIBRARY_PATH": "/lib:$LD_LIBRARY_PATH"
+      }
+    },
+    {
+      "preLaunchTask": "shell: cmake (gc, verbose)",
+      "name": "python (file, gc, verbose)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/examples/python/main_file.py",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "env": {
+        "LD_PRELOAD": "/lib/libc-sys.so:/lib/libc-vm.so",
+        "LD_LIBRARY_PATH": "/lib:$LD_LIBRARY_PATH"
+      }
+    },
+    {
       "preLaunchTask": "cmake: build",
       "name": "gdb",
       "type": "cppdbg",
@@ -265,6 +246,40 @@
       ]
     },
     {
+      "name": "python (default)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/examples/python/main_default.py",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "python (default, verbose)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/examples/python/main_default.py",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "preLaunchTask": "shell: cmake (verbose)",
+      "justMyCode": false,
+      "env": {
+        "LD_PRELOAD": "/lib/libc-sys.so:/lib/libc-vm.so",
+        "LD_LIBRARY_PATH": "/lib:$LD_LIBRARY_PATH"
+      }
+    },
+    {
+      "name": "python (default, sanitize)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/examples/python/main_default.py",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "env": {
+        "LD_PRELOAD": "/lib/libc-sys.so:/lib/libc-vm.so",
+        "LD_LIBRARY_PATH": "/lib:$LD_LIBRARY_PATH"
+      }
+    },
+    {
       "type": "bashdb",
       "request": "launch",
       "name": "bash",
@@ -288,15 +303,6 @@
           "text": "-enable-pretty-printing",
           "ignoreFailures": true
         }
-      ]
-    }
-  ],
-  "compounds": [
-    {
-      "name": "python/c++ (list, verbose)",
-      "configurations": [
-        "python (list, verbose)",
-        "c++ (cppdbg)"
       ]
     }
   ]

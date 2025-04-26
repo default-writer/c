@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   April 16, 2025 at 11:03:49 AM GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 16, 2025 at 6:38:32 PM GMT+3
+ *   April 26, 2025 at 11:28:11 AM GMT+3
  *
  */
 /*
@@ -37,8 +37,10 @@
 */
 
 #include "cobject.h"
-#include "cvm.h"
 #include "cexception.h"
+#include "cvm.h"
+
+#include "py_api.h"
 
 static PyObject* CObject_new(PyTypeObject* type, PyObject* args, PyObject* kwds) {
     CObjectTypePtr self;
@@ -50,22 +52,31 @@ static PyObject* CObject_new(PyTypeObject* type, PyObject* args, PyObject* kwds)
 }
 
 static int CObject_init(CObjectTypePtr self, PyObject* args, PyObject* kwds) {
+    const_void_ptr data;
+    u64 size;
     PyObject* cvm_obj;
-    if (!PyArg_ParseTuple(args, "O", &cvm_obj)) {
+    if (!PyArg_ParseTuple(args, "OKs", &cvm_obj, &data, &size)) {
         return -1;
     }
 
     if (!PyObject_TypeCheck(cvm_obj, &CVirtualMachineTypeObject)) {
-        PyErr_SetString(PyExc_TypeError, "Expected a CVirtualMachine instance");
+        PYTHON_ERROR(PyExc_TypeError, "expected a CVirtualMachine instance: %s", CALL(error)->get());
         return -1;
     }
 
     CVirtualMachineTypePtr cvm = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm->cvm == NULL) {
-        PyErr_SetString(CVirtualMachineNotInitializedException, "Invalid CVirtualMachine pointer");
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer: %s", CALL(error)->get());
         return -1;
     }
     self->cvm = cvm->cvm;
+
+    u64 address = PY_CALL(object)->load(self->cvm, data, size);
+    if (!address) {
+        PYTHON_ERROR(CInvalidArgumentException, "failed to load data into object: invalid data or size: %s", CALL(error)->get());
+        return -1;
+    }
+    self->ptr = address;
 
     return 0;
 }
@@ -74,65 +85,19 @@ static void CObject_dealloc(CObjectTypePtr self) {
     Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
-static PyObject* CObject_alloc(CObjectTypePtr self, PyObject* args) {
-    u64 size;
-    if (!PyArg_ParseTuple(args, "K", &size)) {
-        return NULL;
-    }
-
-    u64 address = CALL(object)->alloc(self->cvm, size);
-    if (!address) {
-        PyErr_SetString(CInvalidArgumentException, CALL(error)->get());
-        return NULL;
-    }
-
-    return PyLong_FromUnsignedLongLong(address);
-}
-
-static PyObject* CObject_free(CObjectTypePtr self, PyObject* args) {
-    u64 address;
-    if (!PyArg_ParseTuple(args, "K", &address)) {
-        return NULL;
-    }
-
-    u64 result = CALL(object)->free(self->cvm, address);
-    if (!result) {
-        PyErr_SetString(CInvalidPointerException, CALL(error)->get());
-        return NULL;
-    }
-
-    Py_RETURN_NONE;
-}
-
 static PyObject* CObject_unsafe(CObjectTypePtr self, PyObject* args) {
     u64 address;
     if (!PyArg_ParseTuple(args, "K", &address)) {
         return NULL;
     }
 
-    void_ptr data = CALL(object)->unsafe(self->cvm, address);
+    void_ptr data = PY_CALL(object)->unsafe(self->cvm, address);
     if (data == NULL) {
-        PyErr_SetString(CInvalidPointerException, CALL(error)->get());
+        PYTHON_ERROR(CInvalidPointerException, "failed to get unsafe pointer: invalid object address: %s", CALL(error)->get());
         return NULL;
     }
 
     return PyLong_FromVoidPtr(data);
-}
-
-static PyObject* CObject_load(CObjectTypePtr self, PyObject* args) {
-    const_void_ptr data;
-    u64 size;
-    if (!PyArg_ParseTuple(args, "Ks", &data, &size)) {
-        return NULL;
-    }
-
-    u64 address = CALL(object)->load(self->cvm, data, size);
-    if (!address) {
-        PyErr_SetString(CInvalidArgumentException, CALL(error)->get());
-        return NULL;
-    }
-
-    return PyLong_FromUnsignedLongLong(address);
 }
 
 static PyObject* CObject_size(CObjectTypePtr self, PyObject* args) {
@@ -141,13 +106,47 @@ static PyObject* CObject_size(CObjectTypePtr self, PyObject* args) {
         return NULL;
     }
 
-    u64 size = CALL(object)->size(self->cvm, address);
+    u64 size = PY_CALL(object)->size(self->cvm, address);
     if (!size) {
-        PyErr_SetString(CInvalidPointerException, CALL(error)->get());
+        PYTHON_ERROR(CInvalidPointerException, "failed to get object size: invalid object address: %s", CALL(error)->get());
         return NULL;
     }
 
     return PyLong_FromUnsignedLongLong(size);
+}
+
+static PyObject* CObject_free_static(PyObject* cls, PyObject* args, PyObject* kwargs) {
+    u64 address;
+    PyObject* cvm_obj = NULL;
+    PyObject* nothrow_obj = Py_False;
+    static char* keywords[] = { "cvm", "src", "nothrow", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!K|$O!", keywords,
+            &CVirtualMachineTypeObject, &cvm_obj,
+            &address,
+            &PyBool_Type, &nothrow_obj)) {
+        return NULL;
+    }
+
+    CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
+    if (cvm_py->cvm == NULL) {
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        return NULL;
+    }
+
+    u64 result = PY_CALL(object)->free(cvm_py->cvm, address);
+    u64 error_type = CALL(error)->type();
+    if (error_type != 0) {
+        int nothrow = PyObject_IsTrue(nothrow_obj);
+        if (!nothrow) {
+            PYTHON_ERROR(CInvalidPointerException, "failed to free pointer: invalid pointer address: (%016llx) %s", address, CALL(error)->get());
+            return NULL;
+        }
+        CALL(error)->clear();
+        result = 0;
+    }
+
+    return PyLong_FromUnsignedLongLong(result);
 }
 
 static PyObject* CObject_enter(CObjectTypePtr self, PyObject* Py_UNUSED(ignored)) {
@@ -160,11 +159,13 @@ static PyObject* CObject_exit(CObjectTypePtr self, PyObject* args) {
 }
 
 static PyMethodDef CObject_methods[] = {
-    { "alloc", (PyCFunction)CObject_alloc, METH_VARARGS, "Allocate an object" },
-    { "free", (PyCFunction)CObject_free, METH_VARARGS, "Free an object" },
-    { "unsafe", (PyCFunction)CObject_unsafe, METH_VARARGS, "Get a pointer to the object data" },
-    { "load", (PyCFunction)CObject_load, METH_VARARGS, "Load data into an object" },
     { "size", (PyCFunction)CObject_size, METH_VARARGS, "Get the size of an object" },
+    { "unsafe", (PyCFunction)CObject_unsafe, METH_VARARGS, "Get a pointer to the object data" },
+
+    /* CObject static methods */
+    { "free", (PyCFunction)CObject_free_static, METH_STATIC | METH_VARARGS | METH_KEYWORDS, "Free pointer (static method)." },
+
+    /* CObject context */
     { "__enter__", (PyCFunction)CObject_enter, METH_NOARGS, "Enter the context" },
     { "__exit__", (PyCFunction)CObject_exit, METH_VARARGS, "Exit the context" },
     { NULL } /* Sentinel */
@@ -191,7 +192,6 @@ int init_cobject(PyObject* module) {
     Py_INCREF(&CObjectTypeObject);
     if (PyModule_AddObject(module, "CObject", (PyObject*)&CObjectTypeObject) < 0) {
         Py_DECREF(&CObjectTypeObject);
-        Py_DECREF(module);
         return -1;
     }
 

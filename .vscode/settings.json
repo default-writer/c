@@ -213,10 +213,11 @@
         "window.zoomLevel": 0
     },
     "presentation-mode.configBackup": {
-        "editor.fontSize": 12,
+        "terminal.integrated.fontSize": 10,
+        "editor.fontSize": 10,
         "editor.matchBrackets": "near",
         "editor.minimap.enabled": false,
-        "workbench.activityBar.visible": true,
+        "workbench.activityBar.visible": "undefined",
         "workbench.statusBar.visible": true,
         "workbench.colorTheme": "Yitzchok (rainglow)",
         "workbench.colorCustomizations": {
@@ -284,7 +285,7 @@
         "ghs",
         "diab"
     ],
-    "editor.formatOnSave": false,
+    "editor.formatOnSave": true,
     "editor.fontWeight": "normal",
     "cmake.additionalKits": [
         "${workspaceFolder}/.vscode",
@@ -370,26 +371,26 @@
     "editor.codeLensFontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
     "editor.fontLigatures": true,
     "debug.console.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
-    "debug.console.fontSize": 12,
+    "debug.console.fontSize": 10,
     "scm.inputFontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
     "chat.editor.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
-    "chat.editor.fontSize": 12,
+    "chat.editor.fontSize": 10,
     "notebook.output.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
     "terminal.integrated.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
-    "terminal.integrated.fontSize": 12,
+    "terminal.integrated.fontSize": 10,
     "terminal.integrated.enablePersistentSessions": true,
     "terminal.integrated.persistentSessionReviveProcess": "onExitAndWindowClose",
     "terminal.integrated.shellIntegration.history": 1000,
-    "markdown.preview.fontSize": 12,
+    "markdown.preview.fontSize": 10,
     "cmake.generator": "Ninja",
     "C_Cpp.default.cppStandard": "c++98",
     "C_Cpp.clang_format_fallbackStyle": "{BasedOnStyle: WebKit, IndentWidth: 4, BreakBeforeBraces: Attach}",
     "C_Cpp.formatting": "clangFormat",
     "C_Cpp.intelliSenseEngineFallback": "enabled",
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
-    "interactiveSession.editor.fontSize": 12,
-    "scm.inputFontSize": 12,
-    "workbench.editorLargeFileConfirmation": 12,
+    "interactiveSession.editor.fontSize": 10,
+    "scm.inputFontSize": 10,
+    "workbench.editorLargeFileConfirmation": 10,
     "terminal.integrated.tabStopWidth": 8,
     "fileHeaderComment.parameter": {
         "*": {
@@ -520,7 +521,7 @@
     "bazel.buildifierExecutable": "$HOME/.bazel/tools/buildifier",
     "bazel.executable": "$HOME/.bazel/bazel",
     "cmake.options.statusBarVisibility": "visible",
-    "editor.fontSize": 12,
+    "editor.fontSize": 10,
     "sonarlint.connectedMode.project": {
         "connectionId": "default-writer",
         "projectKey": "default-writer_c"
@@ -545,6 +546,13 @@
     "[json]": {
         "editor.defaultFormatter": "vscode.json-language-features"
     },
+    "cmake.ctest.testExplorerIntegrationEnabled": false,
+    "python.formatting.provider": "black",
+    "python.formatting.blackArgs": [
+        "--line-length",
+        "120"
+    ],
+    "python.linting.enabled": true,
     "cmake.debugConfig": {
         "MIMode": "gdb",
         "miDebuggerPath": "/usr/bin/gdb",
@@ -558,6 +566,5 @@
         "console": "integratedTerminal",
         "cwd": "${workspaceRoot}/cmake",
         "environment": []
-    },
-    "cmake.ctest.testExplorerIntegrationEnabled": false
+    }
 }

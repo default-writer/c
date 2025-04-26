@@ -3,9 +3,9 @@
  * Auto updated?
  *   Yes
  * Created:
- *   April 16, 2025 at 11:03:49 AM GMT+3
+ *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 16, 2025 at 6:31:44 PM GMT+3
+ *   April 23, 2025 at 4:13:00 PM GMT+3
  *
  */
 /*
@@ -44,14 +44,13 @@
 #include "macros.h"
 
 #include "std/data.h"
-#include "system/error/error_v1.h"
-#include "virtual/types/data/data_v1.h"
 
 int init_cdata(PyObject* module);
 
 typedef struct CData {
     PyObject_HEAD;
     const_vm_ptr cvm;
+    u64 ptr;
 } CDataType;
 typedef struct CData* CDataTypePtr;
 
