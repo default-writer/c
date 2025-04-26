@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 24, 2025 at 12:11:39 AM GMT+3
+ *   April 26, 2025 at 6:56:43 AM GMT+3
  *
  */
 /*
@@ -146,6 +146,12 @@
             ERROR_INVALID_CONDITION("%s", #condition); \
             return null;                               \
         }                                              \
+    } while (0)
+#define CHECK_CONDITION_NO_ERROR(condition, null) \
+    do {                                          \
+        if (condition) {                          \
+            return null;                          \
+        }                                         \
     } while (0)
 #define CHECK_VALUE(value, null)               \
     do {                                       \

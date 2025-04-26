@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 25, 2025 at 9:35:41 PM GMT+3
+ *   April 26, 2025 at 11:29:06 AM GMT+3
  *
  */
 /*
@@ -106,9 +106,6 @@ static int CStack_init(CStackTypePtr self, PyObject* args, PyObject* kwds) {
 }
 
 static void CStack_dealloc(CStackTypePtr self) {
-    if (self->cvm != 0) {
-        PY_CALL(stack)->free(self->cvm, self->ptr);
-    }
     Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
@@ -209,7 +206,7 @@ static PyObject* CStack_free_static(PyObject* cls, PyObject* args, PyObject* kwa
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to get reference count: invalid pointer address: (%016llx) %s", address, CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to free pointer: invalid pointer address: (%016llx) %s", address, CALL(error)->get());
             return NULL;
         }
         CALL(error)->clear();

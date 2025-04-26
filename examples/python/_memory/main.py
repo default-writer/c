@@ -22,14 +22,15 @@ def test_vm_dump_memory_leak_2():
         b"abc\nabcd\nbcde\nabc\n",
         b"abc\n\n",
     ]
+    debug_cvm_stack: CList
     with CVirtualMachine(8) as debug_cvm:
         for text_bytes in test_data:
 
             debug_text_string = CString(debug_cvm, text_bytes.decode())
             parse_text_memory_leak2(debug_cvm, debug_text_string.ptr())
-            del debug_text_string
+            CString.free(debug_cvm, debug_text_string.ptr())
 
-            debug_cvm_stack: CList = CList(debug_cvm)
+            debug_cvm_stack = CList(debug_cvm)
             debug_cvm.dump_ref_stack(debug_cvm_stack)
 
             current = 0
@@ -38,16 +39,12 @@ def test_vm_dump_memory_leak_2():
                 print(f"[  v< ]: {current:016x}")
                 print(f"[  v& ]: {memory_ref_ptr:016x}")
                 CPointer.free(debug_cvm, memory_ref_ptr)
-            del debug_cvm_stack
 
+        del debug_cvm_stack
         debug_cvm.gc()
-        debug_cvm.dump_ref()
 
 
 def parse_text_memory_leak2(vm: CVirtualMachine, text_string_ptr):
-    text_size = CString.size(vm, text_string_ptr)
-    if text_size == 0:
-        return
     stack_ptr1: CList = CList(vm)
     if not CString.split(vm, text_string_ptr, stack_ptr1):
         while (string_ptr := stack_ptr1.pop()) > 0:
@@ -56,8 +53,6 @@ def parse_text_memory_leak2(vm: CVirtualMachine, text_string_ptr):
     stack_ptr2: CList = CList(vm)
     while (data_ptr := stack_ptr1.pop()) > 0:
         stack_ptr2.push(data_ptr)
-    del stack_ptr1
-
     quit = False
     while not quit:
         string_ptr = stack_ptr2.pop()
@@ -82,15 +77,11 @@ def parse_text_memory_leak2(vm: CVirtualMachine, text_string_ptr):
                 str_ncpy_ptr = CString.right_copy(vm, match_start_ptr, size, nothrow=True)
                 if str_ncpy_ptr != 0:
                     distance = CString.lessthan(vm, string_ptr, match_start_ptr, nothrow=True)
-                    if distance > 0:
-                        print(" " * distance, end="")
-                    substring_text = CString.unsafe(vm, str_ncpy_ptr)
-                    print(f"{substring_text}[{distance}]")
+                    print(f"{' ' * distance if distance > 0 else ''}{CString.unsafe(vm, str_ncpy_ptr)}[{distance}]")
                     CString.free(vm, str_ncpy_ptr)
-            del current_ptr
+            # CString.free(vm, current_ptr)
             current_ptr = match_ptr
         CString.free(vm, current_ptr)
-    del stack_ptr2
 
 
 def main():

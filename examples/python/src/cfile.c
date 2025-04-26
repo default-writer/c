@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 25, 2025 at 7:30:46 PM GMT+3
+ *   April 26, 2025 at 11:27:48 AM GMT+3
  *
  */
 /*
@@ -82,9 +82,6 @@ static int CFile_init(CFileTypePtr self, PyObject* args, PyObject* kwds) {
 }
 
 static void CFile_dealloc(CFileTypePtr self) {
-    if (self->cvm != 0) {
-        PY_CALL(file)->free(self->cvm, self->ptr);
-    }
     Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
@@ -127,7 +124,7 @@ static PyObject* CFile_free_static(PyObject* cls, PyObject* args, PyObject* kwar
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to get reference count: invalid pointer address: (%016llx) %s", address, CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to free pointer: invalid pointer address: (%016llx) %s", address, CALL(error)->get());
             return NULL;
         }
         CALL(error)->clear();

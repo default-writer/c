@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 25, 2025 at 9:29:37 PM GMT+3
+ *   April 26, 2025 at 11:29:40 AM GMT+3
  *
  */
 /*
@@ -80,9 +80,6 @@ static int CUser_init(CUserTypePtr self, PyObject* args, PyObject* kwds) {
 }
 
 static void CUser_dealloc(CUserTypePtr self) {
-    if (self->cvm != 0) {
-        PY_CALL(user)->free(self->cvm, self->ptr);
-    }
     Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
@@ -105,12 +102,12 @@ static PyObject* CUser_free_static(PyObject* cls, PyObject* args, PyObject* kwar
         return NULL;
     }
 
-    u64 result = PY_CALL(string)->free(cvm_py->cvm, address);
+    u64 result = PY_CALL(user)->free(cvm_py->cvm, address);
     u64 error_type = CALL(error)->type();
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to get reference count: invalid pointer address: (%016llx) %s", address, CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to free pointer: invalid pointer address: (%016llx) %s", address, CALL(error)->get());
             return NULL;
         }
         CALL(error)->clear();

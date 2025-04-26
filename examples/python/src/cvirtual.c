@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 25, 2025 at 9:30:25 PM GMT+3
+ *   April 26, 2025 at 11:29:56 AM GMT+3
  *
  */
 /*
@@ -73,9 +73,6 @@ static int CVirtual_init(CVirtualTypePtr self, PyObject* args, PyObject* kwds) {
 }
 
 static void CVirtual_dealloc(CVirtualTypePtr self) {
-    if (self->cvm != 0) {
-        PY_CALL(virtual)->free(self->cvm, self->ptr);
-    }
     Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
@@ -150,7 +147,7 @@ static PyObject* CVirtual_free_static(PyObject* cls, PyObject* args, PyObject* k
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to get reference count: invalid pointer address: (%016llx) %s", address, CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to free pointer: invalid pointer address: (%016llx) %s", address, CALL(error)->get());
             return NULL;
         }
         CALL(error)->clear();

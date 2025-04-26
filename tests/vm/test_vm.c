@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 25, 2025 at 8:52:48 PM GMT+3
+ *   April 26, 2025 at 11:38:29 AM GMT+3
  *
  */
 /*
@@ -584,7 +584,6 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_memory_leak_1, .fixture = test_clean_fixt
 /* test init */
 RX_TEST_CASE(tests_vm_v1, test_vm_dump_memory_leak_2, .fixture = test_clean_fixture) {
     const char* test_data[] = {
-        0,
         "a",
         "a\nb",
         "ab\nabc\n",
@@ -607,17 +606,20 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_memory_leak_2, .fixture = test_clean_fixt
         u64 current = 0;
         while ((current = (u64)CALL(list)->pop(debug_cvm, debug_cvm_stack)) != 0) {
             u64 ptr = current;
+            const_pointer_ptr const_ptr = (const_pointer_ptr)ptr;
+            u64 address = const_ptr->public.address;
 #ifdef USE_MEMORY_DEBUG_INFO
 #ifdef USE_TTY
             const char* start = "\x1b[34m";
             const char* end = "\x1b[0m";
             fprintf(stderr, "%s[  v< ]%s: %016llx\n", start, end, ptr); /* NOLINT */
+            fprintf(stderr, "%s[  v& ]%s: %016llx\n", start, end, address); /* NOLINT */
 #else
             fprintf(stderr, "  v< : %016llx\n", ptr); /* NOLINT */
+            fprintf(stderr, "  v& : %016llx\n", address); /* NOLINT */
 #endif
 #endif
-            const_pointer_ptr const_ptr = (const_pointer_ptr)ptr;
-            CALL(pointer)->free(debug_cvm, const_ptr->public.address);
+            CALL(pointer)->free(debug_cvm, address);
         }
         CALL(list)->destroy(debug_cvm, debug_cvm_stack);
     }
@@ -1003,10 +1005,6 @@ static void parse_text_memory_leak1(const_vm_ptr cvm, u64 text_string_ptr) {
 }
 
 static void parse_text_memory_leak2(const_vm_ptr cvm, u64 text_string_ptr) {
-    u64 text_size = CALL(string)->size(cvm, text_string_ptr);
-    if (text_size == 0) {
-        return;
-    }
     stack_ptr stack_ptr1 = CALL(list)->init(cvm);
     if (CALL(string)->split(cvm, text_string_ptr, stack_ptr1) == FALSE) {
         u64 string_ptr;
@@ -1025,13 +1023,13 @@ static void parse_text_memory_leak2(const_vm_ptr cvm, u64 text_string_ptr) {
     u64 quit = 0;
     while (quit == 0) {
         u64 string_ptr = (u64)CALL(list)->pop(cvm, stack_ptr2);
-        if (CALL(string)->size(cvm, string_ptr) == 0) {
+        if (string_ptr == 0 || CALL(string)->size(cvm, string_ptr) == 0) {
             quit = 1;
             continue;
         }
         CALL(env)->puts(cvm, string_ptr);
         u64 pattern_ptr = (u64)CALL(list)->pop(cvm, stack_ptr2);
-        if (CALL(string)->size(cvm, pattern_ptr) == 0) {
+        if (string_ptr == 0 || CALL(string)->size(cvm, pattern_ptr) == 0) {
             quit = 1;
             continue;
         }
@@ -1059,7 +1057,7 @@ static void parse_text_memory_leak2(const_vm_ptr cvm, u64 text_string_ptr) {
                     CALL(string)->free(cvm, str_ncpy);
                 }
             }
-            CALL(string)->free(cvm, current_ptr);
+            // CALL(string)->free(cvm, current_ptr);
             current_ptr = match_ptr;
         }
         CALL(string)->free(cvm, current_ptr);

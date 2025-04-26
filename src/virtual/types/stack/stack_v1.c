@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 25, 2025 at 11:39:18 AM GMT+3
+ *   April 26, 2025 at 7:02:14 AM GMT+3
  *
  */
 /*
@@ -172,7 +172,7 @@ static u64 stack_peekn(const_vm_ptr cvm, u64 address, u64 nelements) {
     stack_handler_ptr src_handler = data_ptr;
     u64 size = src_handler->list->size;
     CHECK_VALUE(size, NULL_ADDRESS);
-    CHECK_CONDITION(size < nelements, NULL_ADDRESS);
+    CHECK_CONDITION_NO_ERROR(size < nelements, NULL_ADDRESS);
     u64 dst = stack_alloc_internal(cvm);
     const_pointer_ptr dst_const_ptr = CALL(pointer)->read(cvm, dst, stack_type_definitions.type_id);
     safe_void_ptr void_dst_ptr;
@@ -217,7 +217,7 @@ static u64 stack_popn(const_vm_ptr cvm, u64 address, u64 nelements) {
     stack_handler_ptr src_handler = src_data_ptr;
     u64 size = src_handler->list->size;
     CHECK_VALUE(size, NULL_ADDRESS);
-    CHECK_CONDITION(size < nelements, NULL_ADDRESS);
+    CHECK_CONDITION_NO_ERROR(size < nelements, NULL_ADDRESS);
     u64 dst = stack_alloc_internal(cvm);
     const_pointer_ptr dst_const_ptr = CALL(pointer)->read(cvm, dst, stack_type_definitions.type_id);
     safe_void_ptr dst_void_ptr;
