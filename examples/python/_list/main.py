@@ -32,15 +32,16 @@ def main():
 
 
 def print_elapsed(message, elapsed_ns):
-        hours = elapsed_ns // (1_000_000_000 * 60 * 60)
-        elapsed_ns %= 1_000_000_000 * 60 * 60
-        minutes = elapsed_ns // (1_000_000_000 * 60)
-        elapsed_ns %= 1_000_000_000 * 60
-        seconds = elapsed_ns // 1_000_000_000
-        milliseconds = (elapsed_ns % 1_000_000_000) // 1_000_000
-        nanoseconds = elapsed_ns % 1_000_000
+    hours = elapsed_ns // (1_000_000_000 * 60 * 60)
+    elapsed_ns %= 1_000_000_000 * 60 * 60
+    minutes = elapsed_ns // (1_000_000_000 * 60)
+    elapsed_ns %= 1_000_000_000 * 60
+    seconds = elapsed_ns // 1_000_000_000
+    milliseconds = (elapsed_ns % 1_000_000_000) // 1_000_000
+    nanoseconds = elapsed_ns % 1_000_000
 
-        print(f"{message}: {hours:02}:{minutes:02}:{seconds:02}.{milliseconds:03}.{nanoseconds:06}")
+    print(f"{message}: {hours:02}:{minutes:02}:{seconds:02}.{milliseconds:03}.{nanoseconds:06}")
+
 
 if __name__ == "__main__":
     main()
