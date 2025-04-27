@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 26, 2025 at 11:29:06 AM GMT+3
+ *   April 27, 2025 at 8:19:20 PM GMT+3
  *
  */
 /*
@@ -42,8 +42,11 @@
 
 #include "py_api.h"
 
+/* alloc */
 static PyObject* CStack_new(PyTypeObject* type, PyObject* args, PyObject* kwds);
+/* static methods */
 
+/* constructor/destructor */
 static int CStack_init(CStackTypePtr self, PyObject* args, PyObject* kwds);
 static void CStack_dealloc(CStackTypePtr self);
 
@@ -55,11 +58,13 @@ static PyObject* CStack_peek(CStackTypePtr self, PyObject* Py_UNUSED(ignored));
 static PyObject* CStack_peekn(CStackTypePtr self, PyObject* args);
 static PyObject* CStack_popn(CStackTypePtr self, PyObject* args);
 static PyObject* CStack_size(CStackTypePtr self, PyObject* Py_UNUSED(ignored));
-static PyObject* CStack_enter(CStackTypePtr self, PyObject* Py_UNUSED(ignored));
-static PyObject* CStack_exit(CStackTypePtr self, PyObject* args);
 
 /* static methods */
 static PyObject* CStack_free_static(PyObject* cls, PyObject* args, PyObject* kwargs);
+
+/* context manager protocol */
+static PyObject* CStack_enter(CStackTypePtr self, PyObject* Py_UNUSED(ignored));
+static PyObject* CStack_exit(CStackTypePtr self, PyObject* args);
 
 static PyObject* CStack_new(PyTypeObject* type, PyObject* args, PyObject* kwds) {
     CStackTypePtr self;
@@ -222,6 +227,10 @@ static PyObject* CStack_enter(CStackTypePtr self, PyObject* Py_UNUSED(ignored)) 
 }
 
 static PyObject* CStack_exit(CStackTypePtr self, PyObject* args) {
+    PyObject *exc_type, *exc_value, *traceback;
+    if (!PyArg_ParseTuple(args, "OOO", &exc_type, &exc_value, &traceback)) {
+        return NULL;
+    }
     Py_RETURN_NONE;
 }
 

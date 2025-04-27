@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 26, 2025 at 11:27:25 AM GMT+3
+ *   April 27, 2025 at 8:37:10 PM GMT+3
  *
  */
 /*
@@ -41,6 +41,26 @@
 #include "cvm.h"
 
 #include "py_api.h"
+
+/* alloc */
+static PyObject* CData_new(PyTypeObject* type, PyObject* args, PyObject* kwds);
+
+/* constructor/destructor */
+static int CData_init(CDataTypePtr self, PyObject* args, PyObject* kwds);
+static void CData_dealloc(CDataTypePtr self);
+
+/* instance methods */
+static PyObject* CData_size(CDataTypePtr self, PyObject* args);
+
+/* static methods */
+static PyObject* CData_unsafe_static(PyObject* cls, PyObject* args, PyObject* kwargs);
+static PyObject* CData_free_static(PyObject* cls, PyObject* args, PyObject* kwargs);
+
+/* context manager protocol */
+static PyObject* CData_enter(CDataTypePtr self, PyObject* Py_UNUSED(ignored));
+static PyObject* CData_exit(CDataTypePtr self, PyObject* args);
+
+static const char* CData_Empty = "\0";
 
 static PyObject* CData_new(PyTypeObject* type, PyObject* args, PyObject* kwds) {
     CDataTypePtr self;
@@ -101,19 +121,38 @@ static PyObject* CData_size(CDataTypePtr self, PyObject* args) {
     return PyLong_FromUnsignedLongLong(size);
 }
 
-static PyObject* CData_unsafe(CDataTypePtr self, PyObject* args) {
-    u64 address;
-    if (!PyArg_ParseTuple(args, "K", &address)) {
+static PyObject* CData_unsafe_static(PyObject* cls, PyObject* args, PyObject* kwargs) {
+    u64 src;
+    PyObject* cvm_obj = NULL;
+    PyObject* nothrow_obj = Py_False;
+    static char* keywords[] = { "cvm", "nothrow", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!K|$O!", keywords,
+            &CVirtualMachineTypeObject, &cvm_obj,
+            &src,
+            &PyBool_Type, &nothrow_obj)) {
         return NULL;
     }
 
-    void_ptr data = PY_CALL(data)->unsafe(self->cvm, address);
-    if (data == NULL) {
-        PYTHON_ERROR(CInvalidPointerException, "failed to get unsafe pointer: invalid data block address: %s", CALL(error)->get());
+    CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
+    if (cvm_py->cvm == NULL) {
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
         return NULL;
     }
 
-    return PyLong_FromVoidPtr(data);
+    const char* data = PY_CALL(data)->unsafe(cvm_py->cvm, src);
+    u64 error_type = CALL(error)->type();
+    if (error_type != 0) {
+        int nothrow = PyObject_IsTrue(nothrow_obj);
+        if (!nothrow) {
+            PYTHON_ERROR(CInvalidPointerException, "failed to get raw string data: invalid address or operation failed: %s", CALL(error)->get());
+            return NULL;
+        }
+        CALL(error)->clear();
+        data = CData_Empty;
+    }
+
+    return PyUnicode_FromString(data);
 }
 
 static PyObject* CData_free_static(PyObject* cls, PyObject* args, PyObject* kwargs) {
@@ -156,14 +195,19 @@ static PyObject* CData_enter(CDataTypePtr self, PyObject* Py_UNUSED(ignored)) {
 }
 
 static PyObject* CData_exit(CDataTypePtr self, PyObject* args) {
+    PyObject *exc_type, *exc_value, *traceback;
+    if (!PyArg_ParseTuple(args, "OOO", &exc_type, &exc_value, &traceback)) {
+        return NULL;
+    }
     Py_RETURN_NONE;
 }
 
 static PyMethodDef CData_methods[] = {
+    /* CData instance methods */
     { "size", (PyCFunction)CData_size, METH_VARARGS, "Get the size of a data block" },
-    { "unsafe", (PyCFunction)CData_unsafe, METH_VARARGS, "Get a pointer to the data block" },
 
     /* CData static methods */
+    { "unsafe", (PyCFunction)CData_unsafe_static, METH_STATIC | METH_VARARGS | METH_KEYWORDS, "Get a pointer to the data block" },
     { "free", (PyCFunction)CData_free_static, METH_STATIC | METH_VARARGS | METH_KEYWORDS, "Free pointer (static method)." },
 
     /* CData context */

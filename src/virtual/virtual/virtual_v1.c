@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 27, 2025 at 3:11:50 PM GMT+3
+ *   April 27, 2025 at 8:57:12 PM GMT+3
  *
  */
 /*
@@ -96,7 +96,7 @@ static u64 virtual_alloc_internal(const_vm_ptr cvm, u64 size, u64 type_id) {
     pointer_ptr* tmp = 0;
     virtual_pointer_ptr vptr;
 #ifndef USE_GC
-    vm_pointer_ptr item = (vm_pointer_ptr)CALL(list)->pop((*cvm)->cache);
+    vm_pointer_ptr item = (*cvm)->cache->size > 0 ? (vm_pointer_ptr)CALL(list)->pop((*cvm)->cache) : 0;
     if (item != 0) {
         vptr = item->vptr;
         tmp = &vptr->bp[item->offset];
@@ -197,8 +197,10 @@ static void virtual_destroy(const_vm_ptr cvm) {
     vm_ptr ptr = *safe_ptr.ptr;
 #ifndef USE_GC
     vm_pointer_ptr item;
-    while ((item = (vm_pointer_ptr)CALL(list)->pop((*cvm)->cache)) != 0) {
-        CALL(os)->free(item);
+    if ((*cvm)->cache->size > 0) {
+        while ((*cvm)->cache->size > 0 && (item = (vm_pointer_ptr)CALL(list)->pop((*cvm)->cache)) != 0) {
+            CALL(os)->free(item);
+        }
     }
     CALL(list)->destroy((*cvm)->cache);
     ptr->cache = 0;

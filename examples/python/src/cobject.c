@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 26, 2025 at 11:28:11 AM GMT+3
+ *   April 27, 2025 at 8:29:34 PM GMT+3
  *
  */
 /*
@@ -41,6 +41,24 @@
 #include "cvm.h"
 
 #include "py_api.h"
+
+/* alloc */
+static PyObject* CObject_new(PyTypeObject* type, PyObject* args, PyObject* kwds);
+
+/* constructor/destructor */
+static int CObject_init(CObjectTypePtr self, PyObject* args, PyObject* kwds);
+static void CObject_dealloc(CObjectTypePtr self);
+
+/* instance methods */
+static PyObject* CObject_unsafe(CObjectTypePtr self, PyObject* args);
+static PyObject* CObject_size(CObjectTypePtr self, PyObject* args);
+
+/* static methods */
+static PyObject* CObject_free_static(PyObject* cls, PyObject* args, PyObject* kwargs);
+
+/* context manager protocol */
+static PyObject* CObject_enter(CObjectTypePtr self, PyObject* Py_UNUSED(ignored));
+static PyObject* CObject_exit(CObjectTypePtr self, PyObject* args);
 
 static PyObject* CObject_new(PyTypeObject* type, PyObject* args, PyObject* kwds) {
     CObjectTypePtr self;
@@ -155,6 +173,10 @@ static PyObject* CObject_enter(CObjectTypePtr self, PyObject* Py_UNUSED(ignored)
 }
 
 static PyObject* CObject_exit(CObjectTypePtr self, PyObject* args) {
+    PyObject *exc_type, *exc_value, *traceback;
+    if (!PyArg_ParseTuple(args, "OOO", &exc_type, &exc_value, &traceback)) {
+        return NULL;
+    }
     Py_RETURN_NONE;
 }
 

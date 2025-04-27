@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 26, 2025 at 11:29:56 AM GMT+3
+ *   April 27, 2025 at 8:06:20 PM GMT+3
  *
  */
 /*
@@ -41,6 +41,25 @@
 #include "cvm.h"
 
 #include "py_api.h"
+
+/* alloc */
+static PyObject* CVirtual_new(PyTypeObject* type, PyObject* args, PyObject* kwds);
+
+/* constructor/destructor */
+static int CVirtual_init(CVirtualTypePtr self, PyObject* args, PyObject* kwds);
+static void CVirtual_dealloc(CVirtualTypePtr self);
+
+/* instance methods */
+static PyObject* CVirtual_alloc(CVirtualTypePtr self, PyObject* args);
+static PyObject* CVirtual_read(CVirtualTypePtr self, PyObject* args);
+static PyObject* CVirtual_type(CVirtualTypePtr self, PyObject* args);
+
+/* static methods */
+static PyObject* CVirtual_free_static(PyObject* cls, PyObject* args, PyObject* kwargs);
+
+/* context manager protocol */
+static PyObject* CVirtual_enter(CVirtualTypePtr self, PyObject* Py_UNUSED(ignored));
+static PyObject* CVirtual_exit(CVirtualTypePtr self, PyObject* args);
 
 static PyObject* CVirtual_new(PyTypeObject* type, PyObject* args, PyObject* kwds) {
     CVirtualTypePtr self;
@@ -163,11 +182,15 @@ static PyObject* CVirtual_enter(CVirtualTypePtr self, PyObject* Py_UNUSED(ignore
 }
 
 static PyObject* CVirtual_exit(CVirtualTypePtr self, PyObject* args) {
+    PyObject *exc_type, *exc_value, *traceback;
+    if (!PyArg_ParseTuple(args, "OOO", &exc_type, &exc_value, &traceback)) {
+        return NULL;
+    }
     Py_RETURN_NONE;
 }
 
 static PyMethodDef CVirtual_methods[] = {
-
+    /* CVirtual instance methods*/
     { "alloc", (PyCFunction)CVirtual_alloc, METH_VARARGS, "Allocate memory in the virtual machine" },
     { "read", (PyCFunction)CVirtual_read, METH_VARARGS, "Read memory from the virtual machine" },
     { "type", (PyCFunction)CVirtual_type, METH_VARARGS, "Get the type of a memory address" },
