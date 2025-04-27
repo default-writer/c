@@ -30,7 +30,7 @@ def test_vm_dump_memory_leak_2():
             parse_text_memory_leak2(debug_cvm, debug_text_string.ptr())
             CString.free(debug_cvm, debug_text_string.ptr())
 
-            debug_cvm_stack = CList(debug_cvm)
+            debug_cvm_stack = CList()
             debug_cvm.dump_ref_stack(debug_cvm_stack)
 
             current = 0
@@ -40,17 +40,18 @@ def test_vm_dump_memory_leak_2():
                 print(f"[  v& ]: {memory_ref_ptr:016x}")
                 CPointer.free(debug_cvm, memory_ref_ptr)
 
-        del debug_cvm_stack
+            del debug_cvm_stack
         debug_cvm.gc()
 
 
 def parse_text_memory_leak2(vm: CVirtualMachine, text_string_ptr):
-    stack_ptr1: CList = CList(vm)
+    stack_ptr1: CList = CList()
     if not CString.split(vm, text_string_ptr, stack_ptr1):
         while (string_ptr := stack_ptr1.pop()) > 0:
             CString.free(vm, string_ptr)
+        del stack_ptr1
         return
-    stack_ptr2: CList = CList(vm)
+    stack_ptr2: CList = CList()
     while (data_ptr := stack_ptr1.pop()) > 0:
         stack_ptr2.push(data_ptr)
     quit = False
@@ -82,6 +83,7 @@ def parse_text_memory_leak2(vm: CVirtualMachine, text_string_ptr):
             # CString.free(vm, current_ptr)
             current_ptr = match_ptr
         CString.free(vm, current_ptr)
+    del stack_ptr2
 
 
 def main():

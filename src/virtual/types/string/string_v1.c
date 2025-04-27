@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 26, 2025 at 6:59:43 AM GMT+3
+ *   April 27, 2025 at 3:05:57 PM GMT+3
  *
  */
 /*
@@ -247,7 +247,7 @@ u64 string_split(const_vm_ptr cvm, u64 src, stack_ptr stack) {
         }
         *tmp++ = '\0';
         u64 string_ptr = CALL(string)->load(cvm, text);
-        CALL(list)->push(cvm, stack, (void_ptr)string_ptr);
+        CALL(list)->push(stack, (void_ptr)string_ptr);
         text = tmp;
     }
     return TRUE;
@@ -364,7 +364,7 @@ static u64 string_strrchr(const_vm_ptr cvm, u64 src, u64 match) {
     u8* text = ch + offset;
     const u8* str2 = (const u8*)match_ptr->data + match_offset;
     const u8* str1 = (const u8*)string_strrchr_internal(text, str2, size, offset);
-    CHECK_VALUE_NO_ERROR(str1, NULL_ADDRESS);
+    CHECK_VALUE(str1, NULL_ADDRESS);
     ch += offset;
     offset = (u64)(str1 - ch);
     u64 address = create_string_reference_internal(cvm, const_ptr, offset);
@@ -393,7 +393,7 @@ static u64 string_strchr(const_vm_ptr cvm, u64 src, u64 match) {
     u8* text = ch + offset;
     const u8* str2 = (const u8*)match_ptr->data + match_offset;
     const u8* str1 = string_strchr_internal(text, *str2, size, offset);
-    CHECK_VALUE_NO_ERROR(str1, NULL_ADDRESS);
+    CHECK_VALUE(str1, NULL_ADDRESS);
     ch += offset;
     offset += (u64)(str1 - ch);
     u64 address = create_string_reference_internal(cvm, const_ptr, offset);
@@ -429,10 +429,10 @@ static u64 string_match(const_vm_ptr cvm, u64 src, u64 match) {
     void_ptr match_data_ptr = match_void_ptr.ptr;
     u8* str2 = match_data_ptr;
     u8* str1 = ch;
-    CHECK_VALUE_NO_ERROR(str1, NULL_ADDRESS);
-    CHECK_VALUE_NO_ERROR(str2, NULL_ADDRESS);
+    CHECK_VALUE(str1, NULL_ADDRESS);
+    CHECK_VALUE(str2, NULL_ADDRESS);
     str1 = get_next_match_internal(str1, str2, size, offset, match_size);
-    CHECK_VALUE_NO_ERROR(str1, NULL_ADDRESS);
+    CHECK_VALUE(str1, NULL_ADDRESS);
     offset = (u64)(str1 - data);
     u64 address = create_string_reference_internal(cvm, const_ptr, offset);
     return address;
@@ -466,11 +466,11 @@ static u64 string_match_offset(const_vm_ptr cvm, u64 src, u64 match) {
     void_ptr match_data_ptr = match_void_ptr.ptr;
     u8* str2 = match_data_ptr;
     u8* str1 = get_match_offset_internal(ch, str2, size, offset);
-    CHECK_VALUE_NO_ERROR(str1, NULL_ADDRESS);
-    CHECK_VALUE_NO_ERROR(str2, NULL_ADDRESS);
+    CHECK_VALUE(str1, NULL_ADDRESS);
+    CHECK_VALUE(str2, NULL_ADDRESS);
     offset += (u64)(str1 - ch);
     str1 = get_next_match_internal(str1, str2, size, offset, match_size);
-    CHECK_VALUE_NO_ERROR(str1, NULL_ADDRESS);
+    CHECK_VALUE(str1, NULL_ADDRESS);
     offset = (u64)(str1 - data);
     u64 address = create_string_reference_internal(cvm, const_ptr, offset);
     return address;
@@ -479,7 +479,7 @@ static u64 string_match_offset(const_vm_ptr cvm, u64 src, u64 match) {
 static u64 string_load(const_vm_ptr cvm, const char* ch) {
     CHECK_VM(cvm, NULL_ADDRESS);
     CHECK_ARG(ch, NULL_ADDRESS);
-    // CHECK_VALUE_NO_ERROR(*ch, NULL_ADDRESS);
+    // CHECK_VALUE(*ch, NULL_ADDRESS);
     u64 size = *ch == 0 ? 1 : CALL(os)->strlen((const char*)ch) + 1;
     u64 address = CALL(pointer)->copy(cvm, ch, size, 0, string_type_definitions.type_id);
     return address;
@@ -667,7 +667,7 @@ static u64 string_left(const_vm_ptr cvm, u64 src, u64 shift) {
     CHECK_POINTER(const_ptr, NULL_ADDRESS);
     CHECK_VALUE(const_ptr->data, NULL_ADDRESS);
     u64 offset = const_offset;
-    CHECK_CONDITION_NO_ERROR(offset < shift, NULL_ADDRESS);
+    CHECK_CONDITION(offset < shift, NULL_ADDRESS);
     offset -= shift;
     u64 address = create_string_reference_internal(cvm, const_ptr, offset);
     return address;
@@ -683,7 +683,7 @@ static u64 string_right(const_vm_ptr cvm, u64 src, u64 nbytes) {
     CHECK_VALUE(const_ptr->data, NULL_ADDRESS);
     u64 offset = const_offset;
     u64 size = const_ptr->public.size - 1;
-    CHECK_CONDITION_NO_ERROR(offset + nbytes >= size, NULL_ADDRESS);
+    CHECK_CONDITION(offset + nbytes >= size, NULL_ADDRESS);
     offset += nbytes;
     u64 address = create_string_reference_internal(cvm, const_ptr, offset);
     return address;
@@ -698,7 +698,7 @@ static u64 string_left_copy(const_vm_ptr cvm, u64 src, u64 nbytes) {
     CHECK_POINTER(const_ptr, NULL_ADDRESS);
     CHECK_VALUE(const_ptr->data, NULL_ADDRESS);
     u64 offset = const_offset;
-    CHECK_CONDITION_NO_ERROR(offset < nbytes, NULL_ADDRESS);
+    CHECK_CONDITION(offset < nbytes, NULL_ADDRESS);
     const u8* ch = const_ptr->data;
     ch += offset - nbytes;
     u64 address = CALL(pointer)->copy(cvm, ch, nbytes + 1, 0, string_type_definitions.type_id);
@@ -715,7 +715,7 @@ static u64 string_right_copy(const_vm_ptr cvm, u64 src, u64 nbytes) {
     CHECK_VALUE(const_ptr->data, NULL_ADDRESS);
     u64 offset = const_offset;
     u64 size = const_ptr->public.size - 1;
-    CHECK_CONDITION_NO_ERROR(offset + nbytes >= size, NULL_ADDRESS);
+    CHECK_CONDITION(offset + nbytes >= size, NULL_ADDRESS);
     const u8* ch = const_ptr->data;
     ch += offset;
     u64 address = CALL(pointer)->copy(cvm, ch, nbytes + 1, 0, string_type_definitions.type_id);
@@ -731,7 +731,7 @@ static u64 string_move_left(const_vm_ptr cvm, u64 address, u64 nbytes) {
     CHECK_POINTER(const_ptr, FALSE);
     CHECK_VALUE(const_ptr->data, FALSE);
     u64 offset = const_offset;
-    CHECK_CONDITION_NO_ERROR(offset < nbytes, FALSE);
+    CHECK_CONDITION(offset < nbytes, FALSE);
     safe_pointer_ptr src_ptr;
     src_ptr.const_ptr = const_ptr;
     pointer_ptr ptr = src_ptr.ptr;
@@ -749,7 +749,7 @@ static u64 string_move_right(const_vm_ptr cvm, u64 address, u64 nbytes) {
     CHECK_VALUE(const_ptr->data, FALSE);
     u64 offset = const_offset;
     u64 size = const_ptr->public.size - 1;
-    CHECK_CONDITION_NO_ERROR(offset + nbytes >= size, FALSE);
+    CHECK_CONDITION(offset + nbytes >= size, FALSE);
     safe_pointer_ptr src_ptr;
     src_ptr.const_ptr = const_ptr;
     pointer_ptr ptr = src_ptr.ptr;

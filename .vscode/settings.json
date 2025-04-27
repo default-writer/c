@@ -213,11 +213,10 @@
         "window.zoomLevel": 0
     },
     "presentation-mode.configBackup": {
-        "terminal.integrated.fontSize": 10,
         "editor.fontSize": 10,
         "editor.matchBrackets": "near",
         "editor.minimap.enabled": false,
-        "workbench.activityBar.visible": "undefined",
+        "workbench.activityBar.visible": true,
         "workbench.statusBar.visible": true,
         "workbench.colorTheme": "Yitzchok (rainglow)",
         "workbench.colorCustomizations": {

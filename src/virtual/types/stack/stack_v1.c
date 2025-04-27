@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 26, 2025 at 7:02:14 AM GMT+3
+ *   April 27, 2025 at 3:11:13 PM GMT+3
  *
  */
 /*
@@ -90,7 +90,7 @@ static void stack_type_destructor(const_vm_ptr cvm, u64 address) {
     void_ptr data_ptr = safe_ptr.ptr;
     stack_handler_ptr handler = data_ptr;
     stack_release_internal(cvm, handler);
-    CALL(list)->destroy(cvm, handler->list);
+    CALL(list)->destroy(handler->list);
     CALL(pointer)->free(cvm, address);
 }
 
@@ -99,13 +99,13 @@ static u64 stack_alloc_internal(const_vm_ptr cvm) {
     void_ptr data = CALL(memory)->alloc(STACK_HANDLER_TYPE_SIZE);
     u64 ptr = CALL(pointer)->alloc(cvm, data, STACK_HANDLER_TYPE_SIZE, 0, FLAG_MEMORY_PTR, stack_type_definitions.type_id);
     stack_handler_ptr handler = data;
-    handler->list = CALL(list)->init(cvm);
+    handler->list = CALL(list)->init();
     return ptr;
 }
 
 static void stack_release_internal(const_vm_ptr cvm, stack_handler_ptr handler) {
     while (handler->list->size > 0) {
-        u64 ptr = (u64)CALL(list)->pop(cvm, handler->list);
+        u64 ptr = (u64)CALL(list)->pop(handler->list);
         CALL(vm)->release(cvm, ptr);
     }
 }
@@ -143,7 +143,7 @@ static u64 stack_push(const_vm_ptr cvm, u64 ptr_list, u64 address) {
     safe_ptr.const_ptr = const_ptr->data;
     void_ptr data_ptr = safe_ptr.ptr;
     stack_handler_ptr handler = data_ptr;
-    CALL(list)->push(cvm, handler->list, (void_ptr)address);
+    CALL(list)->push(handler->list, (void_ptr)address);
     return TRUE;
 }
 
@@ -156,7 +156,7 @@ static u64 stack_peek(const_vm_ptr cvm, u64 address) {
     safe_ptr.const_ptr = const_ptr->data;
     void_ptr data_ptr = safe_ptr.ptr;
     stack_handler_ptr handler = data_ptr;
-    u64 stack_peek_ptr = (u64)CALL(list)->peek(cvm, handler->list);
+    u64 stack_peek_ptr = (u64)CALL(list)->peek(handler->list);
     return stack_peek_ptr;
 }
 
@@ -172,7 +172,7 @@ static u64 stack_peekn(const_vm_ptr cvm, u64 address, u64 nelements) {
     stack_handler_ptr src_handler = data_ptr;
     u64 size = src_handler->list->size;
     CHECK_VALUE(size, NULL_ADDRESS);
-    CHECK_CONDITION_NO_ERROR(size < nelements, NULL_ADDRESS);
+    CHECK_CONDITION(size < nelements, NULL_ADDRESS);
     u64 dst = stack_alloc_internal(cvm);
     const_pointer_ptr dst_const_ptr = CALL(pointer)->read(cvm, dst, stack_type_definitions.type_id);
     safe_void_ptr void_dst_ptr;
@@ -183,7 +183,7 @@ static u64 stack_peekn(const_vm_ptr cvm, u64 address, u64 nelements) {
     stack_ptr src_handler_list = src_handler->list;
     stack_element_ptr current = src_handler_list->current;
     while (i-- > 0) {
-        CALL(list)->push(cvm, dst_handler->list, (void_ptr)current->data);
+        CALL(list)->push(dst_handler->list, (void_ptr)current->data);
         current = current->next;
     }
     return dst;
@@ -201,7 +201,7 @@ static u64 stack_pop(const_vm_ptr cvm, u64 address) {
     if (handler->list->size == 0) {
         return NULL_ADDRESS;
     }
-    u64 stack_pop_ptr = (u64)CALL(list)->pop(cvm, handler->list);
+    u64 stack_pop_ptr = (u64)CALL(list)->pop(handler->list);
     return stack_pop_ptr;
 }
 
@@ -217,7 +217,7 @@ static u64 stack_popn(const_vm_ptr cvm, u64 address, u64 nelements) {
     stack_handler_ptr src_handler = src_data_ptr;
     u64 size = src_handler->list->size;
     CHECK_VALUE(size, NULL_ADDRESS);
-    CHECK_CONDITION_NO_ERROR(size < nelements, NULL_ADDRESS);
+    CHECK_CONDITION(size < nelements, NULL_ADDRESS);
     u64 dst = stack_alloc_internal(cvm);
     const_pointer_ptr dst_const_ptr = CALL(pointer)->read(cvm, dst, stack_type_definitions.type_id);
     safe_void_ptr dst_void_ptr;
@@ -226,8 +226,8 @@ static u64 stack_popn(const_vm_ptr cvm, u64 address, u64 nelements) {
     const stack_handler_ptr dst_handler = dst_data_ptr;
     u64 i = nelements;
     while (i-- > 0) {
-        u64 stack_pop_ptr = (u64)CALL(list)->pop(cvm, src_handler->list);
-        CALL(list)->push(cvm, dst_handler->list, (void_ptr)stack_pop_ptr);
+        u64 stack_pop_ptr = (u64)CALL(list)->pop(src_handler->list);
+        CALL(list)->push(dst_handler->list, (void_ptr)stack_pop_ptr);
     }
     return dst;
 }

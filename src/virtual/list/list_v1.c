@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 24, 2025 at 8:33:55 PM GMT+3
+ *   April 27, 2025 at 3:00:42 PM GMT+3
  *
  */
 /*
@@ -49,33 +49,31 @@
 #define STACK_ELEMENT_TYPE_SIZE sizeof(stack_element_type)
 
 /* private */
-static stack_ptr list_init(const_vm_ptr cvm);
-static u64 list_push(const_vm_ptr cvm, stack_ptr stack, void_ptr data);
-static void_ptr list_peek(const_vm_ptr cvm, stack_ptr stack);
-static void_ptr list_pop(const_vm_ptr cvm, stack_ptr stack);
-static u64 list_size(const_vm_ptr cvm, stack_ptr stack);
-static u64 list_diff(const_vm_ptr cvm, stack_ptr stack1, stack_ptr stack2, stack_ptr compare);
-static u64 list_diff_left(const_vm_ptr cvm, stack_ptr stack1, stack_ptr stack2, stack_ptr compare);
-static u64 list_diff_right(const_vm_ptr cvm, stack_ptr stack1, stack_ptr stack2, stack_ptr compare);
-static u64 list_destroy(const_vm_ptr cvm, stack_ptr stack);
+static stack_ptr list_init(void);
+static u64 list_push(stack_ptr stack, void_ptr data);
+static void_ptr list_peek(stack_ptr stack);
+static void_ptr list_pop(stack_ptr stack);
+static u64 list_size(stack_ptr stack);
+static u64 list_diff(stack_ptr stack1, stack_ptr stack2, stack_ptr compare);
+static u64 list_diff_left(stack_ptr stack1, stack_ptr stack2, stack_ptr compare);
+static u64 list_diff_right(stack_ptr stack1, stack_ptr stack2, stack_ptr compare);
+static u64 list_destroy(stack_ptr stack);
 #ifdef USE_MEMORY_DEBUG_INFO
 static void list_print_head(stack_ptr stack);
 static void list_print(stack_ptr stack);
 #endif
 
 /* internal */
-static void list_diff_internal(const_vm_ptr cvm, stack_ptr stack1, stack_ptr stack2, stack_ptr compare1, stack_ptr compare2);
+static void list_diff_internal(stack_ptr stack1, stack_ptr stack2, stack_ptr compare1, stack_ptr compare2);
 
 /* initializes the new context's head element */
-static stack_ptr list_init(const_vm_ptr cvm) {
-    CHECK_VM(cvm, NULL_PTR);
+static stack_ptr list_init(void) {
     /* sets the current item */
     return CALL(os)->calloc(1, STACK_TYPE_SIZE);
 }
 
 /* pushes the memory pointer */
-static u64 list_push(const_vm_ptr cvm, stack_ptr stack, void_ptr data) {
-    CHECK_VM(cvm, FALSE);
+static u64 list_push(stack_ptr stack, void_ptr data) {
     CHECK_ARG(stack, FALSE);
     CHECK_ARG(data, FALSE);
     /* creates empty data chunk */
@@ -93,13 +91,12 @@ static u64 list_push(const_vm_ptr cvm, stack_ptr stack, void_ptr data) {
 }
 
 /* pop existing element at the top of the stack/queue/list */
-static void_ptr list_pop(const_vm_ptr cvm, stack_ptr stack) {
-    CHECK_VM(cvm, NULL_PTR);
+static void_ptr list_pop(stack_ptr stack) {
     CHECK_ARG(stack, NULL_PTR);
     /* gets the current memory pointer */
     stack_element_ptr ptr = stack->current;
     /* no data added */
-    CHECK_VALUE_NO_ERROR(ptr, NULL_PTR);
+    CHECK_VALUE(ptr, NULL_PTR);
     /* rewinds head pointer to next pointer value */
     stack->current = ptr->next;
     /* gets temporary pointer value */
@@ -113,50 +110,45 @@ static void_ptr list_pop(const_vm_ptr cvm, stack_ptr stack) {
 }
 
 /* peeks existing element at the top of the stack/queue/list */
-static void_ptr list_peek(const_vm_ptr cvm, stack_ptr stack) {
-    CHECK_VM(cvm, NULL_PTR);
+static void_ptr list_peek(stack_ptr stack) {
     CHECK_ARG(stack, NULL_PTR);
     /* gets the current memory pointer */
     stack_element_ptr ptr = stack->current;
     /* no data added */
-    CHECK_VALUE_NO_ERROR(ptr, NULL_PTR);
+    CHECK_VALUE(ptr, NULL_PTR);
     /* returns actual data */
     return ptr->data;
 }
 
-static u64 list_diff(const_vm_ptr cvm, stack_ptr stack1, stack_ptr stack2, stack_ptr compare) {
-    CHECK_VM(cvm, FALSE);
+static u64 list_diff(stack_ptr stack1, stack_ptr stack2, stack_ptr compare) {
     CHECK_ARG(stack1, FALSE);
     CHECK_ARG(stack2, FALSE);
     CHECK_ARG(compare, FALSE);
-    list_diff_internal(cvm, stack1, stack2, compare, compare);
+    list_diff_internal(stack1, stack2, compare, compare);
     /* returns success */
     return TRUE;
 }
 
-static u64 list_diff_left(const_vm_ptr cvm, stack_ptr stack1, stack_ptr stack2, stack_ptr compare) {
-    CHECK_VM(cvm, FALSE);
+static u64 list_diff_left(stack_ptr stack1, stack_ptr stack2, stack_ptr compare) {
     CHECK_ARG(stack1, FALSE);
     CHECK_ARG(stack2, FALSE);
     CHECK_ARG(compare, FALSE);
-    list_diff_internal(cvm, stack1, stack2, compare, NULL_PTR);
+    list_diff_internal(stack1, stack2, compare, NULL_PTR);
     /* returns success */
     return TRUE;
 }
 
-static u64 list_diff_right(const_vm_ptr cvm, stack_ptr stack1, stack_ptr stack2, stack_ptr compare) {
-    CHECK_VM(cvm, FALSE);
+static u64 list_diff_right(stack_ptr stack1, stack_ptr stack2, stack_ptr compare) {
     CHECK_ARG(stack1, FALSE);
     CHECK_ARG(stack2, FALSE);
     CHECK_ARG(compare, FALSE);
-    list_diff_internal(cvm, stack1, stack2, NULL_PTR, compare);
+    list_diff_internal(stack1, stack2, NULL_PTR, compare);
     /* returns success */
     return TRUE;
 }
 
 /* destroys the memory stack */
-static u64 list_destroy(const_vm_ptr cvm, stack_ptr stack) {
-    CHECK_VM(cvm, FALSE);
+static u64 list_destroy(stack_ptr stack) {
     CHECK_ARG(stack, FALSE);
     /* gets the current memory pointer */
     stack_element_ptr ptr = stack->current;
@@ -226,7 +218,7 @@ static void list_print(stack_ptr stack) {
 #endif
 
 /* internal */
-static void list_diff_internal(const_vm_ptr cvm, stack_ptr stack1, stack_ptr stack2, stack_ptr compare1, stack_ptr compare2) {
+static void list_diff_internal(stack_ptr stack1, stack_ptr stack2, stack_ptr compare1, stack_ptr compare2) {
     void_ptr ptr1 = 0;
     void_ptr ptr2 = 0;
     u64 forward_ptr1 = 0;
@@ -256,7 +248,7 @@ static void list_diff_internal(const_vm_ptr cvm, stack_ptr stack1, stack_ptr sta
             ptr1 = stack1_current->data;
             stack1_current = stack1_current->next;
             if (CALL(hashtable)->get(ht2, (u64)ptr1) == NULL_PTR) {
-                list_push(cvm, compare1, ptr1);
+                list_push(compare1, ptr1);
             }
         }
     }
@@ -265,7 +257,7 @@ static void list_diff_internal(const_vm_ptr cvm, stack_ptr stack1, stack_ptr sta
             ptr2 = stack2_current->data;
             stack2_current = stack2_current->next;
             if (CALL(hashtable)->get(ht1, (u64)ptr2) == NULL_PTR) {
-                list_push(cvm, compare2, ptr2);
+                list_push(compare2, ptr2);
             }
         }
     }
