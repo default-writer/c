@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 26, 2025 at 6:56:43 AM GMT+3
+ *   April 27, 2025 at 9:09:08 PM GMT+3
  *
  */
 /*
@@ -112,7 +112,7 @@
             return null;                                \
         }                                               \
     } while (0)
-#define CHECK_VM_VOID(cvm)                        \
+#define CHECK_VM_NO_RETURN(cvm)                   \
     do {                                          \
         if (cvm == 0 || *cvm == 0) {              \
             ERROR_VM_NOT_INITIALIZED("%s", #cvm); \
@@ -126,6 +126,13 @@
             return null;                        \
         }                                       \
     } while (0)
+#define CHECK_ARG_NO_RETURN(arg)                \
+    do {                                        \
+        if (arg == 0) {                         \
+            ERROR_INVALID_ARGUMENT("%s", #arg); \
+            return;                             \
+        }                                       \
+    } while (0)
 #define CHECK_POINTER(arg, null)               \
     do {                                       \
         if (arg == 0) {                        \
@@ -133,7 +140,7 @@
             return null;                       \
         }                                      \
     } while (0)
-#define CHECK_POINTER_VOID(arg)                \
+#define CHECK_POINTER_NO_RETURN(arg)           \
     do {                                       \
         if (arg == 0) {                        \
             ERROR_INVALID_POINTER("%s", #arg); \
@@ -147,11 +154,12 @@
             return null;                               \
         }                                              \
     } while (0)
-#define CHECK_CONDITION_NO_ERROR(condition, null) \
-    do {                                          \
-        if (condition) {                          \
-            return null;                          \
-        }                                         \
+#define CHECK_CONDITION_NO_RETURN(condition)           \
+    do {                                               \
+        if (condition) {                               \
+            ERROR_INVALID_CONDITION("%s", #condition); \
+            return;                                    \
+        }                                              \
     } while (0)
 #define CHECK_VALUE(value, null)               \
     do {                                       \
@@ -160,11 +168,12 @@
             return null;                       \
         }                                      \
     } while (0)
-#define CHECK_VALUE_NO_ERROR(value, null) \
-    do {                                  \
-        if (value == 0) {                 \
-            return null;                  \
-        }                                 \
+#define CHECK_VALUE_NO_RETURN(value)           \
+    do {                                       \
+        if (value == 0) {                      \
+            ERROR_INVALID_VALUE("%s", #value); \
+            return;                            \
+        }                                      \
     } while (0)
 #define CHECK_TYPE(condition, null)                  \
     do {                                             \
@@ -173,7 +182,7 @@
             return null;                             \
         }                                            \
     } while (0)
-#define CHECK_TYPE_VOID(condition)                   \
+#define CHECK_TYPE_NO_RETURN(condition)              \
     do {                                             \
         if (condition) {                             \
             ERROR_INVALID_TYPE_ID("%s", #condition); \

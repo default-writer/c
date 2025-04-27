@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 27, 2025 at 3:12:08 PM GMT+3
+ *   April 27, 2025 at 9:09:08 PM GMT+3
  *
  */
 /*
@@ -143,7 +143,7 @@ static const_vm_ptr vm_init(u64 size) {
 }
 
 static void vm_gc(const_vm_ptr cvm) {
-    CHECK_VM_VOID(cvm);
+    CHECK_VM_NO_RETURN(cvm);
 #ifdef USE_MEMORY_DEBUG_INFO
     virtual_dump_ref_internal(cvm, 0);
 #endif
@@ -157,12 +157,12 @@ static void vm_gc(const_vm_ptr cvm) {
 }
 
 static void vm_dump_ref(const_vm_ptr cvm) {
-    CHECK_VM_VOID(cvm);
+    CHECK_VM_NO_RETURN(cvm);
     virtual_dump_ref_internal(cvm, 0);
 }
 
 static void vm_dump_ref_stack(const_vm_ptr cvm, stack_ptr stack) {
-    CHECK_VM_VOID(cvm);
+    CHECK_VM_NO_RETURN(cvm);
     virtual_dump_ref_internal(cvm, stack);
 }
 
@@ -181,7 +181,7 @@ static u64 vm_release(const_vm_ptr cvm, u64 address) {
 }
 
 static void vm_destroy(const_vm_ptr cvm) {
-    CHECK_VM_VOID(cvm);
+    CHECK_VM_NO_RETURN(cvm);
     unregister_known_types(cvm);
     CALL(system)->destroy(cvm);
     CALL(error)->clear();

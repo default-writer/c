@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 27, 2025 at 8:57:12 PM GMT+3
+ *   April 27, 2025 at 9:09:08 PM GMT+3
  *
  */
 /*
@@ -191,7 +191,7 @@ static const_vm_ptr virtual_init(u64 size) {
 }
 
 static void virtual_destroy(const_vm_ptr cvm) {
-    CHECK_VM_VOID(cvm);
+    CHECK_VM_NO_RETURN(cvm);
     safe_vm_ptr safe_ptr;
     safe_ptr.const_ptr = cvm;
     vm_ptr ptr = *safe_ptr.ptr;
