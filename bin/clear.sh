@@ -51,6 +51,7 @@ fi
 find "${pwd}" -type f -name "callgrind.out.*" -delete
 find "${pwd}" -type f -name "*.s" -delete
 find "${pwd}" -type d -name "__pycache__" -exec rm -rf {} +
+find "${pwd}" -type d -name ".pytest_cache" -exec rm -rf {} +
 
 [[ $SHLVL -eq 2 ]] && echo OK
 
