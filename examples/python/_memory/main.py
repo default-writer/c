@@ -6,7 +6,6 @@ from c import (
     CPointer,
     CList,
     CString,
-    CStack,
     CEnvironment,
 )
 
@@ -34,7 +33,7 @@ def test_vm_dump_memory_leak_2():
             debug_cvm.dump_ref_stack(debug_cvm_stack)
 
             current = 0
-            while (current := debug_cvm_stack.pop()) > 0:
+            while debug_cvm_stack.size() > 0 and (current := debug_cvm_stack.pop()) > 0:
                 memory_ref_ptr = CPointer.ref(debug_cvm, current, nothrow=True)
                 print(f"[  v< ]: {current:016x}")
                 print(f"[  v& ]: {memory_ref_ptr:016x}")
@@ -47,21 +46,21 @@ def test_vm_dump_memory_leak_2():
 def parse_text_memory_leak2(vm: CVirtualMachine, text_string_ptr):
     stack_ptr1: CList = CList()
     if not CString.split(vm, text_string_ptr, stack_ptr1):
-        while (string_ptr := stack_ptr1.pop()) > 0:
+        while stack_ptr1.size() > 0 and (string_ptr := stack_ptr1.pop()) > 0:
             CString.free(vm, string_ptr)
         del stack_ptr1
         return
     stack_ptr2: CList = CList()
-    while (data_ptr := stack_ptr1.pop()) > 0:
+    while stack_ptr2.size() > 0 and (data_ptr := stack_ptr1.pop()) > 0:
         stack_ptr2.push(data_ptr)
     quit = False
     while not quit:
-        string_ptr = stack_ptr2.pop()
+        string_ptr = stack_ptr2.pop() if stack_ptr2.size() > 0 else 0
         if string_ptr == 0 or CString.size(vm, string_ptr) == 0:
             quit = True
             continue
         CEnvironment.puts(vm, string_ptr)
-        pattern_ptr = stack_ptr2.pop()
+        pattern_ptr = stack_ptr2.pop() if stack_ptr2.size() > 0 else 0
         if pattern_ptr == 0 or CString.size(vm, pattern_ptr) == 0:
             quit = True
             continue

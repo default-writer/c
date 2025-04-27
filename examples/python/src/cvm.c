@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 23, 2025 at 2:58:00 PM GMT+3
+ *   April 27, 2025 at 8:05:31 PM GMT+3
  *
  */
 /*
@@ -41,6 +41,25 @@
 #include "clist.h"
 
 #include "py_api.h"
+
+/* alloc */
+static PyObject* CVirtualMachine_new(PyTypeObject* type, PyObject* args, PyObject* kwds);
+
+/* constructor/destructor */
+static int CVirtualMachine_init(CVirtualMachineTypePtr self, PyObject* args, PyObject* kwds);
+static void CVirtualMachine_dealloc(CVirtualMachineTypePtr self);
+
+/* instance methods */
+static PyObject* CVirtualMachine_gc(CVirtualMachineTypePtr self, PyObject* Py_UNUSED(ignored));
+static PyObject* CVirtualMachine_release(CVirtualMachineTypePtr self, PyObject* args);
+static PyObject* CVirtualMachine_dump_ref(CVirtualMachineTypePtr self, PyObject* Py_UNUSED(ignored));
+static PyObject* CVirtualMachine_dump_ref_stack(CVirtualMachineTypePtr self, PyObject* args);
+
+/* static methods */
+
+/* context manager protocol */
+static PyObject* CVirtualMachine_enter(CVirtualMachineTypePtr self, PyObject* Py_UNUSED(ignored));
+static PyObject* CVirtualMachine_exit(CVirtualMachineTypePtr self, PyObject* args);
 
 static PyObject* CVirtualMachine_new(PyTypeObject* type, PyObject* args, PyObject* kwds) {
     CVirtualMachineTypePtr self;
@@ -142,9 +161,9 @@ static PyObject* CVirtualMachine_enter(CVirtualMachineTypePtr self, PyObject* Py
 }
 
 static PyObject* CVirtualMachine_exit(CVirtualMachineTypePtr self, PyObject* args) {
-    if (self->cvm != NULL) {
-        PY_CALL(vm)->destroy(self->cvm);
-        self->cvm = NULL;
+    PyObject *exc_type, *exc_value, *traceback;
+    if (!PyArg_ParseTuple(args, "OOO", &exc_type, &exc_value, &traceback)) {
+        return NULL;
     }
     Py_RETURN_NONE;
 }

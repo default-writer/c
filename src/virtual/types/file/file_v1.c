@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 24, 2025 at 8:09:59 PM GMT+3
+ *   April 27, 2025 at 9:09:07 PM GMT+3
  *
  */
 /*
@@ -76,7 +76,7 @@ static struct type_methods_definitions file_type_definitions = {
 
 static void file_type_destructor(const_vm_ptr cvm, u64 address) {
     const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, address, file_type_definitions.type_id);
-    CHECK_POINTER_VOID(const_ptr);
+    CHECK_POINTER_NO_RETURN(const_ptr);
     CALL(pointer)->free(cvm, address);
 }
 

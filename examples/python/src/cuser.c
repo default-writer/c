@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 26, 2025 at 11:29:40 AM GMT+3
+ *   April 27, 2025 at 8:07:12 PM GMT+3
  *
  */
 /*
@@ -41,6 +41,22 @@
 #include "cvm.h"
 
 #include "py_api.h"
+
+/* alloc */
+static PyObject* CUser_new(PyTypeObject* type, PyObject* args, PyObject* kwds);
+
+/* constructor/destructor */
+static int CUser_init(CUserTypePtr self, PyObject* args, PyObject* kwds);
+static void CUser_dealloc(CUserTypePtr self);
+
+/* instance methods */
+
+/* static methods */
+static PyObject* CUser_free_static(PyObject* cls, PyObject* args, PyObject* kwargs);
+
+/* context manager protocol */
+static PyObject* CUser_enter(CUserTypePtr self, PyObject* Py_UNUSED(ignored));
+static PyObject* CUser_exit(CUserTypePtr self, PyObject* args);
 
 static PyObject* CUser_new(PyTypeObject* type, PyObject* args, PyObject* kwds) {
     CUserTypePtr self;
@@ -123,6 +139,10 @@ static PyObject* CUser_enter(CUserTypePtr self, PyObject* Py_UNUSED(ignored)) {
 }
 
 static PyObject* CUser_exit(CUserTypePtr self, PyObject* args) {
+    PyObject *exc_type, *exc_value, *traceback;
+    if (!PyArg_ParseTuple(args, "OOO", &exc_type, &exc_value, &traceback)) {
+        return NULL;
+    }
     Py_RETURN_NONE;
 }
 

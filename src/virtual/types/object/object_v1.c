@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 23, 2025 at 2:57:27 PM GMT+3
+ *   April 27, 2025 at 9:09:07 PM GMT+3
  *
  */
 /*
@@ -64,7 +64,7 @@ static struct type_methods_definitions object_type_definitions = {
 
 static void object_type_destructor(const_vm_ptr cvm, u64 address) {
     const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, address, object_type_definitions.type_id);
-    CHECK_POINTER_VOID(const_ptr);
+    CHECK_POINTER_NO_RETURN(const_ptr);
     CALL(pointer)->free(cvm, address);
 }
 

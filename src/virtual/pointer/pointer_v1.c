@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 23, 2025 at 2:57:27 PM GMT+3
+ *   April 27, 2025 at 9:09:08 PM GMT+3
  *
  */
 /*
@@ -112,7 +112,7 @@ static void pointer_register_known_type(const_vm_ptr cvm, type_methods_definitio
 }
 
 static void pointer_register_user_type(const_vm_ptr cvm, type_methods_definitions_ptr data_type) {
-    CHECK_TYPE_VOID(pointer_find_type_id_internal(cvm, data_type) != 0);
+    CHECK_TYPE_NO_RETURN(pointer_find_type_id_internal(cvm, data_type) != 0);
     safe_vm_ptr safe_ptr;
     safe_ptr.const_ptr = cvm;
     vm_ptr ptr = *safe_ptr.ptr;

@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 26, 2025 at 11:29:31 AM GMT+3
+ *   April 27, 2025 at 8:16:33 PM GMT+3
  *
  */
 /*
@@ -43,8 +43,10 @@
 
 #include "py_api.h"
 
+/* alloc */
 static PyObject* CString_new(PyTypeObject* type, PyObject* args, PyObject* kwds);
 
+/* constructor/destructor */
 static int CString_init(CStringTypePtr self, PyObject* args, PyObject* kwds);
 static void CString_dealloc(CStringTypePtr self);
 
@@ -76,6 +78,8 @@ static PyObject* CString_move_left_static(PyObject* cls, PyObject* args, PyObjec
 static PyObject* CString_move_right_static(PyObject* cls, PyObject* args, PyObject* kwargs);
 static PyObject* CString_strcmp_static(PyObject* cls, PyObject* args, PyObject* kwargs);
 static PyObject* CString_ref_static(PyObject* cls, PyObject* args, PyObject* kwargs);
+
+/* context manager protocol */
 static PyObject* CString_enter(CStringTypePtr self, PyObject* Py_UNUSED(ignored));
 static PyObject* CString_exit(CStringTypePtr self, PyObject* args);
 
@@ -950,6 +954,10 @@ static PyObject* CString_enter(CStringTypePtr self, PyObject* Py_UNUSED(ignored)
 }
 
 static PyObject* CString_exit(CStringTypePtr self, PyObject* args) {
+    PyObject *exc_type, *exc_value, *traceback;
+    if (!PyArg_ParseTuple(args, "OOO", &exc_type, &exc_value, &traceback)) {
+        return NULL;
+    }
     Py_RETURN_NONE;
 }
 

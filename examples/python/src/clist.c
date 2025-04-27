@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 27, 2025 at 4:35:50 PM GMT+3
+ *   April 27, 2025 at 8:00:28 PM GMT+3
  *
  */
 /*
@@ -41,8 +41,14 @@
 
 #include "py_api.h"
 
+/* alloc */
+static PyObject* CList_new(PyTypeObject* type, PyObject* args, PyObject* kwds);
+
+/* constructor/destructor */
 static int CList_init(CListTypePtr self, PyObject* Py_UNUSED(ignored));
 static void CList_dealloc(CListTypePtr self);
+
+/* instance methods */
 static PyObject* CList_push(CListTypePtr self, PyObject* args);
 static PyObject* CList_pop(CListTypePtr self, PyObject* Py_UNUSED(ignored));
 static PyObject* CList_peek(CListTypePtr self, PyObject* Py_UNUSED(ignored));
@@ -50,6 +56,10 @@ static PyObject* CList_size(CListTypePtr self, PyObject* Py_UNUSED(ignored));
 static PyObject* CList_diff(CListTypePtr self, PyObject* args);
 static PyObject* CList_diff_left(CListTypePtr self, PyObject* args);
 static PyObject* CList_diff_right(CListTypePtr self, PyObject* args);
+
+/* static methods */
+
+/* context manager protocol */
 static PyObject* CList_enter(CListTypePtr self, PyObject* Py_UNUSED(ignored));
 static PyObject* CList_exit(CListTypePtr self, PyObject* args);
 
@@ -119,24 +129,30 @@ static PyObject* CList_peek(CListTypePtr self, PyObject* Py_UNUSED(ignored)) {
     void_ptr data = PY_CALL(list)->peek(self->stack);
     u64 error_type = CALL(error)->type();
     if (error_type == ID_ERROR_VM_NOT_INITIALIZED) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "vm not initialized during pop: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "vm not initialized during peek: %s", CALL(error)->get());
         return NULL;
     }
     if (error_type == ID_ERROR_INVALID_ARGUMENT) {
-        PYTHON_ERROR(CInvalidArgumentException, "invalid argument during pop: %s", CALL(error)->get());
+        PYTHON_ERROR(CInvalidArgumentException, "invalid argument during peek: %s", CALL(error)->get());
         return NULL;
     }
     return PyLong_FromVoidPtr(data);
 }
 
 static PyObject* CList_size(CListTypePtr self, PyObject* Py_UNUSED(ignored)) {
-    u64 size = self->stack->size;
+    // Check for potential errors before accessing size, although less likely here
     u64 error_type = CALL(error)->type();
     if (error_type == ID_ERROR_VM_NOT_INITIALIZED) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "vm not initialized during pop: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "vm not initialized before getting size: %s", CALL(error)->get());
         return NULL;
     }
-    if (error_type == ID_ERROR_INVALID_ARGUMENT) {
+    if (self->stack == NULL) {
+        PYTHON_ERROR(CInvalidPointerException, "list not initialized before getting size: %s", CALL(error)->get());
+        return NULL;
+    }
+    u64 size = self->stack->size;
+    error_type = CALL(error)->type();
+    if (error_type == ID_ERROR_INVALID_ARGUMENT) { // Check if accessing size itself caused an error
         PYTHON_ERROR(CInvalidArgumentException, "invalid argument during size: %s", CALL(error)->get());
         return NULL;
     }
@@ -242,28 +258,44 @@ static PyObject* CList_enter(CListTypePtr self, PyObject* Py_UNUSED(ignored)) {
 }
 
 static PyObject* CList_exit(CListTypePtr self, PyObject* args) {
+    PyObject *exc_type, *exc_value, *traceback;
+    if (!PyArg_ParseTuple(args, "OOO", &exc_type, &exc_value, &traceback)) {
+        return NULL;
+    }
     Py_RETURN_NONE;
 }
 
 static PyMethodDef CList_methods[] = {
     { "push", (PyCFunction)CList_push, METH_VARARGS, "push(value: int) -> None\n\nPush an integer value (representing a pointer) onto the list." },
-    { "pop", (PyCFunction)CList_pop, METH_NOARGS, "pop() -> int\n\nPop an integer value (representing a pointer) from the list. Raises CInvalidValueException if empty." },
-    { "size", (PyCFunction)CList_size, METH_NOARGS, "size() -> int\n\nReturn size of the list." },
-    { "peek", (PyCFunction)CList_peek, METH_NOARGS, "peek() -> int\n\nPeek at the top integer value (representing a pointer) of the list. Raises CInvalidValueException if empty." },
-    { "diff", (PyCFunction)CList_diff, METH_VARARGS, "diff(other: CList, result: CList) -> None\n\nCompute the symmetric difference (elements in self or other, but not both) and store it in result." },
-    { "diff_left", (PyCFunction)CList_diff_left, METH_VARARGS, "diff_left(other: CList, result: CList) -> None\n\nCompute the left difference (elements in self but not in other) and store it in result." },
-    { "diff_right", (PyCFunction)CList_diff_right, METH_VARARGS, "diff_right(other: CList, result: CList) -> None\n\nCompute the right difference (elements in other but not in self) and store it in result." },
+    { "pop", (PyCFunction)CList_pop, METH_NOARGS, "pop() -> int\n\nPop an integer value (representing a pointer) from the list.\nRaises CInvalidArgumentException if the list is empty or on other C-level errors." },
+    { "size", (PyCFunction)CList_size, METH_NOARGS, "size() -> int\n\nReturn the number of elements in the list." },
+    { "peek", (PyCFunction)CList_peek, METH_NOARGS, "peek() -> int\n\nReturn the top integer value (representing a pointer) without removing it.\nRaises CInvalidArgumentException if the list is empty or on other C-level errors." },
+    { "diff", (PyCFunction)CList_diff, METH_VARARGS, "diff(other: CList, result: CList) -> None\n\nCompute the symmetric difference (elements in self or other, but not both)\nand store the result in the 'result' CList. All lists must be initialized." },
+    { "diff_left", (PyCFunction)CList_diff_left, METH_VARARGS, "diff_left(other: CList, result: CList) -> None\n\nCompute the left difference (elements in self but not in other)\nand store the result in the 'result' CList. All lists must be initialized." },
+    { "diff_right", (PyCFunction)CList_diff_right, METH_VARARGS, "diff_right(other: CList, result: CList) -> None\n\nCompute the right difference (elements in other but not in self)\nand store the result in the 'result' CList. All lists must be initialized." },
 
-    /* CList context */
-    { "__enter__", (PyCFunction)CList_enter, METH_NOARGS, "Enter the context manager." },
-    { "__exit__", (PyCFunction)CList_exit, METH_VARARGS, "Exit the context manager, destroying the list." },
+    /* CList context manager support */
+    { "__enter__", (PyCFunction)CList_enter, METH_NOARGS, "Enter the runtime context related to this object." },
+    { "__exit__", (PyCFunction)CList_exit, METH_VARARGS, "Exit the runtime context. Resources are automatically managed." },
     { NULL } /* Sentinel */
 };
 
 PyTypeObject CListTypeObject = {
     PyVarObject_HEAD_INIT(NULL, 0),
     .tp_name = "c.CList",
-    .tp_doc = "CList implementation in C module",
+    .tp_doc = PyDoc_STR(
+        "CList()\n\n"
+        "A Python wrapper for an efficient C-level list implementation.\n\n"
+        "This list stores integer values which internally represent C pointers (void*).\n"
+        "It provides basic stack-like operations (push, pop, peek, size) and\n"
+        "set difference operations (diff, diff_left, diff_right).\n\n"
+        "The list acts as a container for opaque handles or pointers managed by\n"
+        "other parts of the C library.\n\n"
+        "It supports the context manager protocol ('with' statement), ensuring\n"
+        "proper resource management via its deallocator.\n\n"
+        "Methods like 'pop' and 'peek' will raise appropriate CExceptions\n"
+        "(e.g., CInvalidArgumentException) if the list is empty or other errors\n"
+        "occur in the underlying C implementation."),
     .tp_basicsize = sizeof(CListType),
     .tp_itemsize = 0,
     .tp_flags = Py_TPFLAGS_DEFAULT,

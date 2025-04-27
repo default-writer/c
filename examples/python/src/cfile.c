@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 26, 2025 at 11:27:48 AM GMT+3
+ *   April 27, 2025 at 8:29:45 PM GMT+3
  *
  */
 /*
@@ -41,6 +41,24 @@
 #include "cvm.h"
 
 #include "py_api.h"
+
+/* alloc */
+static PyObject* CFile_new(PyTypeObject* type, PyObject* args, PyObject* kwds);
+
+/* constructor/destructor */
+static int CFile_init(CFileTypePtr self, PyObject* args, PyObject* kwds);
+static void CFile_dealloc(CFileTypePtr self);
+
+/* instance methods */
+static PyObject* CFile_ptr(CFileTypePtr self, PyObject* Py_UNUSED(ignored));
+static PyObject* CFile_data(CFileTypePtr self, PyObject* args);
+
+/* static methods */
+static PyObject* CFile_free_static(PyObject* cls, PyObject* args, PyObject* kwargs);
+
+/* context manager protocol */
+static PyObject* CFile_enter(CFileTypePtr self, PyObject* Py_UNUSED(ignored));
+static PyObject* CFile_exit(CFileTypePtr self, PyObject* args);
 
 static PyObject* CFile_new(PyTypeObject* type, PyObject* args, PyObject* kwds) {
     CFileTypePtr self;
@@ -85,19 +103,18 @@ static void CFile_dealloc(CFileTypePtr self) {
     Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
-static PyObject* CFile_data(CFileTypePtr self, PyObject* args) {
-    u64 address;
-    if (!PyArg_ParseTuple(args, "K", &address)) {
-        return NULL;
-    }
+static PyObject* CFile_ptr(CFileTypePtr self, PyObject* Py_UNUSED(ignored)) {
+    return PyLong_FromUnsignedLongLong(self->ptr);
+}
 
-    u64 data_address = PY_CALL(file)->data(self->cvm, address);
-    if (!data_address) {
+static PyObject* CFile_data(CFileTypePtr self, PyObject* Py_UNUSED(ignored)) {
+    u64 address = PY_CALL(file)->data(self->cvm, self->ptr);
+    if (!address) {
         PYTHON_ERROR(CInvalidPointerException, "failed to retrieve file data: invalid file address: %s", CALL(error)->get());
         return NULL;
     }
 
-    return PyLong_FromUnsignedLongLong(data_address);
+    return PyLong_FromUnsignedLongLong(address);
 }
 
 static PyObject* CFile_free_static(PyObject* cls, PyObject* args, PyObject* kwargs) {
@@ -140,10 +157,16 @@ static PyObject* CFile_enter(CFileTypePtr self, PyObject* Py_UNUSED(ignored)) {
 }
 
 static PyObject* CFile_exit(CFileTypePtr self, PyObject* args) {
+    PyObject *exc_type, *exc_value, *traceback;
+    if (!PyArg_ParseTuple(args, "OOO", &exc_type, &exc_value, &traceback)) {
+        return NULL;
+    }
     Py_RETURN_NONE;
 }
 
 static PyMethodDef CFile_methods[] = {
+    /* CString instance methods */
+    { "ptr", (PyCFunction)CFile_ptr, METH_NOARGS, "Returns the CFile's internal pointer address" },
     { "data", (PyCFunction)CFile_data, METH_VARARGS, "Get file data" },
 
     /* CFile static methods */
