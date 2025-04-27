@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 26, 2025 at 7:02:14 AM GMT+3
+ *   April 26, 2025 at 9:35:38 PM GMT+3
  *
  */
 /*
@@ -88,7 +88,7 @@ static void_ptr memory_realloc(const_void_ptr const_ptr, u64 size, u64 new_size)
     CHECK_ARG(const_ptr, NULL_PTR);
     CHECK_ARG(size, NULL_PTR);
     CHECK_ARG(new_size, NULL_PTR);
-    CHECK_CONDITION_NO_ERROR(size >= new_size, NULL_PTR);
+    CHECK_CONDITION(size >= new_size, NULL_PTR);
     const_void_ptr const_data_ptr = const_ptr;
     safe_void_ptr safe_ptr;
     safe_ptr.const_ptr = const_data_ptr;

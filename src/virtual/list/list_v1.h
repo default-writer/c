@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 24, 2025 at 8:33:50 PM GMT+3
+ *   April 27, 2025 at 2:58:43 PM GMT+3
  *
  */
 /*
@@ -47,14 +47,14 @@
 #include "virtual/export.h"
 
 typedef struct PRIVATE_API(virtual_list_methods) {
-    stack_ptr (*init)(const_vm_ptr cvm);
-    u64 (*push)(const_vm_ptr cvm, stack_ptr current, void_ptr item);
-    void_ptr (*pop)(const_vm_ptr cvm, stack_ptr current);
-    void_ptr (*peek)(const_vm_ptr cvm, stack_ptr current);
-    u64 (*diff)(const_vm_ptr cvm, stack_ptr current1, stack_ptr current2, stack_ptr result);
-    u64 (*diff_left)(const_vm_ptr cvm, stack_ptr stack1, stack_ptr stack2, stack_ptr cmp);
-    u64 (*diff_right)(const_vm_ptr cvm, stack_ptr stack1, stack_ptr stack2, stack_ptr cmp);
-    u64 (*destroy)(const_vm_ptr cvm, stack_ptr current);
+    stack_ptr (*init)();
+    u64 (*push)(stack_ptr current, void_ptr item);
+    void_ptr (*pop)(stack_ptr current);
+    void_ptr (*peek)(stack_ptr current);
+    u64 (*diff)(stack_ptr current1, stack_ptr current2, stack_ptr result);
+    u64 (*diff_left)(stack_ptr stack1, stack_ptr stack2, stack_ptr cmp);
+    u64 (*diff_right)(stack_ptr stack1, stack_ptr stack2, stack_ptr cmp);
+    u64 (*destroy)(stack_ptr current);
 #ifdef USE_MEMORY_DEBUG_INFO
     void (*print_head)(stack_ptr current);
     void (*print)(stack_ptr current);

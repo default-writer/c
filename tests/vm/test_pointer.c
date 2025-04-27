@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 25, 2025 at 2:59:03 PM GMT+3
+ *   April 27, 2025 at 3:01:58 PM GMT+3
  *
  */
 /*
@@ -196,7 +196,7 @@ RX_TEST_CASE(tests_pointer_v1, test_print_load_empty, .fixture = test_fixture) {
 RX_TEST_CASE(tests_pointer_v1, test_load_split, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
-    stack_ptr stack = CALL(list)->init(cvm);
+    stack_ptr stack = CALL(list)->init();
     u64 char_ptr = CALL(string)->load(cvm, "1\n2\n");
     u64 result = CALL(string)->split(cvm, char_ptr, stack);
     RX_ASSERT(char_ptr != 0);
@@ -207,14 +207,14 @@ RX_TEST_CASE(tests_pointer_v1, test_load_split, .fixture = test_fixture) {
         "2"
     };
     RX_ASSERT(stack->size == 2);
-    while ((string_ptr = (u64)CALL(list)->pop(cvm, stack)) != 0) {
+    while ((string_ptr = (u64)CALL(list)->pop(stack)) != 0) {
         RX_ASSERT(strcmp(CALL(string)->unsafe(cvm, string_ptr), expected[stack->size]) == 0);
         CALL(string)->free(cvm, string_ptr);
     }
 #ifndef USE_GC
     CALL(string)->free(cvm, char_ptr);
 #endif
-    CALL(list)->destroy(cvm, stack);
+    CALL(list)->destroy(stack);
 }
 
 /* test init */

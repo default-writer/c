@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 26, 2025 at 11:38:29 AM GMT+3
+ *   April 27, 2025 at 3:07:31 PM GMT+3
  *
  */
 /*
@@ -327,14 +327,14 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_stack, .fixture = test_clean_fixture) {
         CALL(string)->load(cvm, "ab\nabc\n")
     };
     parse_text(cvm, text_string_ptr[1]);
-    stack_ptr stack = CALL(list)->init(cvm);
+    stack_ptr stack = CALL(list)->init();
     CALL(vm)->dump_ref_stack(cvm, stack);
     const_vm_ptr debug_cvm = CALL(vm)->init(8);
     u64 text_size = CALL(string)->size(cvm, text_string_ptr[1]);
     const_void_ptr data = CALL(string)->unsafe(cvm, text_string_ptr[1]);
     u64 debug_text_string_ptr = CALL(pointer)->copy(debug_cvm, data, text_size + 1, 0, TYPE_STRING);
     parse_text(debug_cvm, debug_text_string_ptr);
-    stack_ptr debug_stack = CALL(list)->init(debug_cvm);
+    stack_ptr debug_stack = CALL(list)->init();
     CALL(vm)->dump_ref_stack(debug_cvm, debug_stack);
 #ifndef USE_GC
     for (u64 i = 0; i < sizeof(text_string_ptr) / sizeof(text_string_ptr[0]); i++) {
@@ -345,8 +345,8 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_stack, .fixture = test_clean_fixture) {
     CALL(vm)->gc(debug_cvm);
     CALL(vm)->gc(cvm);
 #endif
-    CALL(list)->destroy(debug_cvm, debug_stack);
-    CALL(list)->destroy(cvm, stack);
+    CALL(list)->destroy(debug_stack);
+    CALL(list)->destroy(stack);
     CALL(vm)->destroy(debug_cvm);
     CALL(vm)->destroy(cvm);
 }
@@ -392,14 +392,14 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_ref_stack, .fixture = test_clean_fixture)
         CALL(string)->load(cvm, "ab\nabc\n")
     };
     parse_text(cvm, text_string_ptr[1]);
-    stack_ptr stack = CALL(list)->init(cvm);
+    stack_ptr stack = CALL(list)->init();
     CALL(vm)->dump_ref_stack(cvm, stack);
     const_vm_ptr debug_cvm = CALL(vm)->init(8);
     u64 text_size = CALL(string)->size(cvm, text_string_ptr[1]);
     const_void_ptr data = CALL(string)->unsafe(cvm, text_string_ptr[1]);
     u64 debug_text_string_ptr = CALL(pointer)->copy(debug_cvm, data, text_size + 1, 0, TYPE_STRING);
     parse_text(debug_cvm, debug_text_string_ptr);
-    stack_ptr debug_stack = CALL(list)->init(debug_cvm);
+    stack_ptr debug_stack = CALL(list)->init();
     CALL(vm)->dump_ref_stack(debug_cvm, debug_stack);
 #ifndef USE_GC
     for (u64 i = 0; i < sizeof(text_string_ptr) / sizeof(text_string_ptr[0]); i++) {
@@ -410,8 +410,8 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_ref_stack, .fixture = test_clean_fixture)
     CALL(vm)->gc(debug_cvm);
     CALL(vm)->gc(cvm);
 #endif
-    CALL(list)->destroy(debug_cvm, debug_stack);
-    CALL(list)->destroy(cvm, stack);
+    CALL(list)->destroy(debug_stack);
+    CALL(list)->destroy(stack);
     CALL(vm)->destroy(debug_cvm);
     CALL(vm)->destroy(cvm);
 }
@@ -425,24 +425,24 @@ RX_TEST_CASE(tests_vm_v1, test_list_diff, .fixture = test_clean_fixture) {
     u64 src2[] = {
         1, 2, 4, 6
     };
-    stack_ptr stack1 = CALL(list)->init(cvm);
-    stack_ptr stack2 = CALL(list)->init(cvm);
-    stack_ptr compare = CALL(list)->init(cvm);
+    stack_ptr stack1 = CALL(list)->init();
+    stack_ptr stack2 = CALL(list)->init();
+    stack_ptr compare = CALL(list)->init();
     u64 length = sizeof(src1) / sizeof(src1[0]);
     for (u64 i = 0; i < length; i++) {
-        CALL(list)->push(cvm, stack1, (void_ptr)src1[i]);
-        CALL(list)->push(cvm, stack2, (void_ptr)src2[i]);
+        CALL(list)->push(stack1, (void_ptr)src1[i]);
+        CALL(list)->push(stack2, (void_ptr)src2[i]);
     }
-    CALL(list)->diff(cvm, stack1, stack2, compare);
+    CALL(list)->diff(stack1, stack2, compare);
     stack_element_ptr current = compare->current;
     while (current->next != NULL_PTR) {
         u64 ptr = (u64)current->data;
         printf("A ^ B: %016llx\n", ptr);
         current = current->next;
     }
-    CALL(list)->destroy(cvm, stack1);
-    CALL(list)->destroy(cvm, stack2);
-    CALL(list)->destroy(cvm, compare);
+    CALL(list)->destroy(stack1);
+    CALL(list)->destroy(stack2);
+    CALL(list)->destroy(compare);
     CALL(vm)->gc(cvm);
     CALL(vm)->destroy(cvm);
 }
@@ -456,24 +456,24 @@ RX_TEST_CASE(tests_vm_v1, test_list_diff_left, .fixture = test_clean_fixture) {
     u64 src2[] = {
         1, 2, 4, 6
     };
-    stack_ptr stack1 = CALL(list)->init(cvm);
-    stack_ptr stack2 = CALL(list)->init(cvm);
-    stack_ptr compare = CALL(list)->init(cvm);
+    stack_ptr stack1 = CALL(list)->init();
+    stack_ptr stack2 = CALL(list)->init();
+    stack_ptr compare = CALL(list)->init();
     u64 length = sizeof(src1) / sizeof(src1[0]);
     for (u64 i = 0; i < length; i++) {
-        CALL(list)->push(cvm, stack1, (void_ptr)src1[i]);
-        CALL(list)->push(cvm, stack2, (void_ptr)src2[i]);
+        CALL(list)->push(stack1, (void_ptr)src1[i]);
+        CALL(list)->push(stack2, (void_ptr)src2[i]);
     }
-    CALL(list)->diff_left(cvm, stack1, stack2, compare);
+    CALL(list)->diff_left(stack1, stack2, compare);
     stack_element_ptr current = compare->current;
     while (current->next != NULL_PTR) {
         u64 ptr = (u64)current->data;
         printf("A \\ B: %016llx\n", ptr);
         current = current->next;
     }
-    CALL(list)->destroy(cvm, stack1);
-    CALL(list)->destroy(cvm, stack2);
-    CALL(list)->destroy(cvm, compare);
+    CALL(list)->destroy(stack1);
+    CALL(list)->destroy(stack2);
+    CALL(list)->destroy(compare);
     CALL(vm)->gc(cvm);
     CALL(vm)->destroy(cvm);
 }
@@ -487,24 +487,24 @@ RX_TEST_CASE(tests_vm_v1, test_list_diff_right, .fixture = test_clean_fixture) {
     u64 src2[] = {
         1, 2, 4, 6
     };
-    stack_ptr stack1 = CALL(list)->init(cvm);
-    stack_ptr stack2 = CALL(list)->init(cvm);
-    stack_ptr compare = CALL(list)->init(cvm);
+    stack_ptr stack1 = CALL(list)->init();
+    stack_ptr stack2 = CALL(list)->init();
+    stack_ptr compare = CALL(list)->init();
     u64 length = sizeof(src1) / sizeof(src1[0]);
     for (u64 i = 0; i < length; i++) {
-        CALL(list)->push(cvm, stack1, (void_ptr)src1[i]);
-        CALL(list)->push(cvm, stack2, (void_ptr)src2[i]);
+        CALL(list)->push(stack1, (void_ptr)src1[i]);
+        CALL(list)->push(stack2, (void_ptr)src2[i]);
     }
-    CALL(list)->diff_right(cvm, stack1, stack2, compare);
+    CALL(list)->diff_right(stack1, stack2, compare);
     stack_element_ptr current = compare->current;
     while (current->next != NULL_PTR) {
         u64 ptr = (u64)current->data;
         printf("B \\ A: %016llx\n", ptr);
         current = current->next;
     }
-    CALL(list)->destroy(cvm, stack1);
-    CALL(list)->destroy(cvm, stack2);
-    CALL(list)->destroy(cvm, compare);
+    CALL(list)->destroy(stack1);
+    CALL(list)->destroy(stack2);
+    CALL(list)->destroy(compare);
     CALL(vm)->gc(cvm);
     CALL(vm)->destroy(cvm);
 }
@@ -536,7 +536,7 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_memory_leak_1, .fixture = test_clean_fixt
         CALL(string)->free(debug_cvm, debug_text_string_ptr);
 
         CALL(vm)->dump_ref(debug_cvm);
-        stack_ptr debug_cvm_stack = CALL(list)->init(debug_cvm);
+        stack_ptr debug_cvm_stack = CALL(list)->init();
         CALL(vm)->dump_ref_stack(debug_cvm, debug_cvm_stack);
 
         u64 text_string_ptr = CALL(string)->load(cvm, test_data[i]);
@@ -544,14 +544,14 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_memory_leak_1, .fixture = test_clean_fixt
         CALL(string)->free(cvm, text_string_ptr);
 
         CALL(vm)->dump_ref(cvm);
-        stack_ptr cvm_stack = CALL(list)->init(cvm);
+        stack_ptr cvm_stack = CALL(list)->init();
         CALL(vm)->dump_ref_stack(cvm, cvm_stack);
 
         // get unmatched pointers (it is possible to got memory leaks in both A and B memory dumps)
         // in this particual scenario we can safely assume memory leaks are in (A \ B) set
 
-        stack_ptr compare_left = CALL(list)->init(cvm);
-        CALL(list)->diff_left(cvm, debug_cvm_stack, cvm_stack, compare_left);
+        stack_ptr compare_left = CALL(list)->init();
+        CALL(list)->diff_left(debug_cvm_stack, cvm_stack, compare_left);
         stack_element_ptr current = 0;
         current = compare_left->current;
         while (current != NULL_PTR) {
@@ -569,9 +569,9 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_memory_leak_1, .fixture = test_clean_fixt
             CALL(pointer)->free(debug_cvm, const_ptr->public.address);
             current = current->next;
         }
-        CALL(list)->destroy(debug_cvm, debug_cvm_stack);
-        CALL(list)->destroy(cvm, cvm_stack);
-        CALL(list)->destroy(cvm, compare_left);
+        CALL(list)->destroy(debug_cvm_stack);
+        CALL(list)->destroy(cvm_stack);
+        CALL(list)->destroy(compare_left);
     }
 #ifdef USE_GC
     CALL(vm)->gc(debug_cvm);
@@ -600,11 +600,11 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_memory_leak_2, .fixture = test_clean_fixt
         parse_text_memory_leak2(debug_cvm, debug_text_string_ptr);
         CALL(string)->free(debug_cvm, debug_text_string_ptr);
 
-        stack_ptr debug_cvm_stack = CALL(list)->init(debug_cvm);
+        stack_ptr debug_cvm_stack = CALL(list)->init();
         CALL(vm)->dump_ref_stack(debug_cvm, debug_cvm_stack);
 
         u64 current = 0;
-        while ((current = (u64)CALL(list)->pop(debug_cvm, debug_cvm_stack)) != 0) {
+        while ((current = (u64)CALL(list)->pop(debug_cvm_stack)) != 0) {
             u64 ptr = current;
             const_pointer_ptr const_ptr = (const_pointer_ptr)ptr;
             u64 address = const_ptr->public.address;
@@ -621,7 +621,7 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_memory_leak_2, .fixture = test_clean_fixt
 #endif
             CALL(pointer)->free(debug_cvm, address);
         }
-        CALL(list)->destroy(debug_cvm, debug_cvm_stack);
+        CALL(list)->destroy(debug_cvm_stack);
     }
 #ifdef USE_GC
     CALL(vm)->gc(debug_cvm);
@@ -640,15 +640,15 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_ref_0, .fixture = test_clean_fixture) {
 /* test init */
 RX_TEST_CASE(tests_vm_v1, test_vm_dump_ref_stack_0, .fixture = test_clean_fixture) {
     const_vm_ptr cvm = CALL(vm)->init(8);
-    stack_ptr stack = (stack_ptr)CALL(list)->init(cvm);
+    stack_ptr stack = (stack_ptr)CALL(list)->init();
     CALL(vm)->dump_ref_stack(cvm, stack);
-    void_ptr current = (void_ptr)CALL(list)->peek(cvm, stack);
+    void_ptr current = (void_ptr)CALL(list)->peek(stack);
     RX_ASSERT(current == 0);
 #ifndef USE_GC
 #else
     CALL(vm)->gc(cvm);
 #endif
-    CALL(list)->destroy(cvm, stack);
+    CALL(list)->destroy(stack);
     CALL(vm)->destroy(cvm);
 }
 
@@ -1005,30 +1005,30 @@ static void parse_text_memory_leak1(const_vm_ptr cvm, u64 text_string_ptr) {
 }
 
 static void parse_text_memory_leak2(const_vm_ptr cvm, u64 text_string_ptr) {
-    stack_ptr stack_ptr1 = CALL(list)->init(cvm);
+    stack_ptr stack_ptr1 = CALL(list)->init();
     if (CALL(string)->split(cvm, text_string_ptr, stack_ptr1) == FALSE) {
         u64 string_ptr;
-        while ((string_ptr = (u64)CALL(list)->pop(cvm, stack_ptr1)) != 0) {
+        while ((string_ptr = (u64)CALL(list)->pop(stack_ptr1)) != 0) {
             CALL(string)->free(cvm, string_ptr);
         }
-        CALL(list)->destroy(cvm, stack_ptr1);
+        CALL(list)->destroy(stack_ptr1);
         return;
     }
     void_ptr data_ptr = 0;
-    stack_ptr stack_ptr2 = CALL(list)->init(cvm);
-    while ((data_ptr = CALL(list)->pop(cvm, stack_ptr1)) != 0) {
-        CALL(list)->push(cvm, stack_ptr2, data_ptr);
+    stack_ptr stack_ptr2 = CALL(list)->init();
+    while ((data_ptr = CALL(list)->pop(stack_ptr1)) != 0) {
+        CALL(list)->push(stack_ptr2, data_ptr);
     }
-    CALL(list)->destroy(cvm, stack_ptr1);
+    CALL(list)->destroy(stack_ptr1);
     u64 quit = 0;
     while (quit == 0) {
-        u64 string_ptr = (u64)CALL(list)->pop(cvm, stack_ptr2);
+        u64 string_ptr = (u64)CALL(list)->pop(stack_ptr2);
         if (string_ptr == 0 || CALL(string)->size(cvm, string_ptr) == 0) {
             quit = 1;
             continue;
         }
         CALL(env)->puts(cvm, string_ptr);
-        u64 pattern_ptr = (u64)CALL(list)->pop(cvm, stack_ptr2);
+        u64 pattern_ptr = (u64)CALL(list)->pop(stack_ptr2);
         if (string_ptr == 0 || CALL(string)->size(cvm, pattern_ptr) == 0) {
             quit = 1;
             continue;
@@ -1062,7 +1062,7 @@ static void parse_text_memory_leak2(const_vm_ptr cvm, u64 text_string_ptr) {
         }
         CALL(string)->free(cvm, current_ptr);
     }
-    CALL(list)->destroy(cvm, stack_ptr2);
+    CALL(list)->destroy(stack_ptr2);
 }
 
 const tests_vm_test_suite PRIVATE_API(tests_vm_test_suite_definitions) = {

@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 23, 2025 at 4:14:54 PM GMT+3
+ *   April 27, 2025 at 2:57:49 PM GMT+3
  *
  */
 /*
@@ -49,7 +49,6 @@ int init_clist(PyObject* module);
 
 typedef struct CList {
     PyObject_HEAD;
-    const_vm_ptr cvm;
     stack_ptr stack;
 } CListType;
 typedef struct CList* CListTypePtr;

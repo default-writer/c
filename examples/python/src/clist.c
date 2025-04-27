@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 24, 2025 at 10:41:08 PM GMT+3
+ *   April 27, 2025 at 4:35:50 PM GMT+3
  *
  */
 /*
@@ -38,39 +38,33 @@
 
 #include "clist.h"
 #include "cexception.h"
-#include "cvm.h"
 
 #include "py_api.h"
+
+static int CList_init(CListTypePtr self, PyObject* Py_UNUSED(ignored));
+static void CList_dealloc(CListTypePtr self);
+static PyObject* CList_push(CListTypePtr self, PyObject* args);
+static PyObject* CList_pop(CListTypePtr self, PyObject* Py_UNUSED(ignored));
+static PyObject* CList_peek(CListTypePtr self, PyObject* Py_UNUSED(ignored));
+static PyObject* CList_size(CListTypePtr self, PyObject* Py_UNUSED(ignored));
+static PyObject* CList_diff(CListTypePtr self, PyObject* args);
+static PyObject* CList_diff_left(CListTypePtr self, PyObject* args);
+static PyObject* CList_diff_right(CListTypePtr self, PyObject* args);
+static PyObject* CList_enter(CListTypePtr self, PyObject* Py_UNUSED(ignored));
+static PyObject* CList_exit(CListTypePtr self, PyObject* args);
 
 static PyObject* CList_new(PyTypeObject* type, PyObject* args, PyObject* kwds) {
     CListTypePtr self;
     self = (CListTypePtr)type->tp_alloc(type, 0);
     if (self != NULL) {
-        self->cvm = NULL;
         self->stack = NULL;
     }
     return (PyObject*)self;
 }
 
-static int CList_init(CListTypePtr self, PyObject* args, PyObject* kwds) {
-    PyObject* cvm_obj;
-    if (!PyArg_ParseTuple(args, "O", &cvm_obj)) {
-        return -1;
-    }
+static int CList_init(CListTypePtr self, PyObject* Py_UNUSED(ignored)) {
 
-    if (!PyObject_TypeCheck(cvm_obj, &CVirtualMachineTypeObject)) {
-        PYTHON_ERROR(PyExc_TypeError, "expected a CVirtualMachine instance: %s", CALL(error)->get());
-        return -1;
-    }
-
-    CVirtualMachineTypePtr cvm = (CVirtualMachineTypePtr)cvm_obj;
-    if (cvm->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer: %s", CALL(error)->get());
-        return -1;
-    }
-    self->cvm = cvm->cvm;
-
-    self->stack = PY_CALL(list)->init(self->cvm);
+    self->stack = PY_CALL(list)->init();
     if (self->stack == NULL) {
         PYTHON_ERROR(CInvalidPointerException, "failed to initialize the list: %s", CALL(error)->get());
         return -1;
@@ -81,7 +75,7 @@ static int CList_init(CListTypePtr self, PyObject* args, PyObject* kwds) {
 
 static void CList_dealloc(CListTypePtr self) {
     if (self->stack != NULL) {
-        PY_CALL(list)->destroy(self->cvm, self->stack);
+        PY_CALL(list)->destroy(self->stack);
     }
     Py_TYPE(self)->tp_free((PyObject*)self);
 }
@@ -92,7 +86,7 @@ static PyObject* CList_push(CListTypePtr self, PyObject* args) {
         return NULL;
     }
 
-    if (!PY_CALL(list)->push(self->cvm, self->stack, data)) {
+    if (!PY_CALL(list)->push(self->stack, data)) {
         u64 error_type = CALL(error)->type();
         if (error_type == ID_ERROR_VM_NOT_INITIALIZED) {
             PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer: %s", CALL(error)->get());
@@ -108,7 +102,7 @@ static PyObject* CList_push(CListTypePtr self, PyObject* args) {
 }
 
 static PyObject* CList_pop(CListTypePtr self, PyObject* Py_UNUSED(ignored)) {
-    void_ptr data = PY_CALL(list)->pop(self->cvm, self->stack);
+    void_ptr data = PY_CALL(list)->pop(self->stack);
     u64 error_type = CALL(error)->type();
     if (error_type == ID_ERROR_VM_NOT_INITIALIZED) {
         PYTHON_ERROR(CVirtualMachineNotInitializedException, "vm not initialized during pop: %s", CALL(error)->get());
@@ -122,7 +116,7 @@ static PyObject* CList_pop(CListTypePtr self, PyObject* Py_UNUSED(ignored)) {
 }
 
 static PyObject* CList_peek(CListTypePtr self, PyObject* Py_UNUSED(ignored)) {
-    void_ptr data = PY_CALL(list)->peek(self->cvm, self->stack);
+    void_ptr data = PY_CALL(list)->peek(self->stack);
     u64 error_type = CALL(error)->type();
     if (error_type == ID_ERROR_VM_NOT_INITIALIZED) {
         PYTHON_ERROR(CVirtualMachineNotInitializedException, "vm not initialized during pop: %s", CALL(error)->get());
@@ -165,7 +159,7 @@ static PyObject* CList_diff(CListTypePtr self, PyObject* args) {
         return NULL;
     }
 
-    if (!PY_CALL(list)->diff(self->cvm, self->stack, other_list->stack, result_list->stack)) {
+    if (!PY_CALL(list)->diff(self->stack, other_list->stack, result_list->stack)) {
         u64 error_type = CALL(error)->type();
         if (error_type == ID_ERROR_VM_NOT_INITIALIZED) {
             PYTHON_ERROR(CVirtualMachineNotInitializedException, "vm not initialized during diff: %s", CALL(error)->get());
@@ -196,7 +190,7 @@ static PyObject* CList_diff_left(CListTypePtr self, PyObject* args) {
         return NULL;
     }
 
-    if (!PY_CALL(list)->diff_left(self->cvm, self->stack, other_list->stack, result_list->stack)) {
+    if (!PY_CALL(list)->diff_left(self->stack, other_list->stack, result_list->stack)) {
         u64 error_type = CALL(error)->type();
         if (error_type == ID_ERROR_VM_NOT_INITIALIZED) {
             PYTHON_ERROR(CVirtualMachineNotInitializedException, "vm not initialized during diff_left: %s", CALL(error)->get());
@@ -227,7 +221,7 @@ static PyObject* CList_diff_right(CListTypePtr self, PyObject* args) {
         return NULL;
     }
 
-    if (!PY_CALL(list)->diff_right(self->cvm, self->stack, other_list->stack, result_list->stack)) {
+    if (!PY_CALL(list)->diff_right(self->stack, other_list->stack, result_list->stack)) {
         u64 error_type = CALL(error)->type();
         if (error_type == ID_ERROR_VM_NOT_INITIALIZED) {
             PYTHON_ERROR(CVirtualMachineNotInitializedException, "vm not initialized during diff_right: %s", CALL(error)->get());

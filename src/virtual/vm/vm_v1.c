@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 23, 2025 at 2:57:27 PM GMT+3
+ *   April 27, 2025 at 3:12:08 PM GMT+3
  *
  */
 /*
@@ -195,7 +195,7 @@ static void vm_dump_ref_internal(const_vm_ptr cvm, pointer_ptr* ptr, stack_ptr s
         return;
     }
     if (stack != NULL_PTR) {
-        CALL(list)->push(cvm, stack, *ptr);
+        CALL(list)->push(stack, *ptr);
     }
 #ifdef USE_MEMORY_DEBUG_INFO
 #ifdef USE_TTY
