@@ -1,30 +1,37 @@
 import time
 import traceback
-from c import CVirtualMachine, CList
+from c import CList, CList2
 
 
 def main():
     try:
-        with CVirtualMachine(1000000) as vm:
+        start_time = time.perf_counter_ns()
+        _list = []
+        for i in range(1000000):
+            _list.append(1)
+        end_time = time.perf_counter_ns()
+        elapsed_ns = end_time - start_time
+        del _list
 
-            start_time1 = time.perf_counter_ns()
-            _list = []
-            for i in range(1000000):
-                _list.append(1)
-            end_time1 = time.perf_counter_ns()
-            elapsed_ns1 = end_time1 - start_time1
-            del _list
+        list_v1_ptr: CList = CList()
+        start_time1 = time.perf_counter_ns()
+        for i in range(1000000):
+            list_v1_ptr.push(1)
+        end_time1 = time.perf_counter_ns()
+        elapsed_ns1 = end_time1 - start_time1
+        del list_v1_ptr
 
-            list_ptr: CList = CList()
-            start_time2 = time.perf_counter_ns()
-            for i in range(1000000):
-                list_ptr.push(1)
-            end_time2 = time.perf_counter_ns()
-            elapsed_ns2 = end_time2 - start_time2
-            del list_ptr
+        list_v2_ptr: CList2 = CList2(1000000)
+        start_time2 = time.perf_counter_ns()
+        for i in range(1000000):
+            list_v2_ptr.push(1)
+        end_time2 = time.perf_counter_ns()
+        elapsed_ns2 = end_time2 - start_time2
+        del list_v2_ptr
 
-            print_elapsed(" list", elapsed_ns1)
-            print_elapsed("clist", elapsed_ns2)
+        print_elapsed("  list", elapsed_ns)
+        print_elapsed(" clist", elapsed_ns1)
+        print_elapsed("clist2", elapsed_ns2)
 
     except Exception as e:
         traceback.print_exc()

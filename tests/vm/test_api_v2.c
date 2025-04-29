@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 29, 2025 at 4:32:27 PM GMT+3
+ *   April 29, 2025 at 5:07:32 PM GMT+3
  *
  */
 /*
@@ -36,31 +36,41 @@
     OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#define USING_PY_API
+#include "test_api_v2.h"
 
-#ifndef PY_API_H
-#define PY_API_H
-
-#include "py_export.h"
-
-#include "macros.h"
-
-#include "system/error/error_v1.h"
-
-#include "virtual/api/api_v1.h"
 #include "virtual/api/api_v2.h"
 
-PY_EXPORT extern const virtual_vm_methods* PY_PUBLIC_API(vm);
-PY_EXPORT extern const virtual_methods* PY_PUBLIC_API(virtual);
-PY_EXPORT extern const virtual_pointer_methods* PY_PUBLIC_API(pointer);
-PY_EXPORT extern const virtual_env_methods* PY_PUBLIC_API(env);
-PY_EXPORT extern const virtual_data_methods* PY_PUBLIC_API(data);
-PY_EXPORT extern const virtual_file_methods* PY_PUBLIC_API(file);
-PY_EXPORT extern const virtual_object_methods* PY_PUBLIC_API(object);
-PY_EXPORT extern const virtual_stack_methods* PY_PUBLIC_API(stack);
-PY_EXPORT extern const virtual_string_methods* PY_PUBLIC_API(string);
-PY_EXPORT extern const virtual_user_methods* PY_PUBLIC_API(user);
-PY_EXPORT extern const virtual_list_methods* PY_PUBLIC_API(list);
-PY_EXPORT extern const virtual_list_v2_methods* PY_PUBLIC_API(list_v2);
+#define USING_TESTS
+#include "test.h"
 
-#endif // PY_API_H
+/* Data structure to use at the core of our fixture. */
+typedef struct test_data {
+    stack_ptr ctx;
+}* TEST_DATA;
+
+/* Initialize the data structure. Its allocation is handled by Rexo. */
+RX_SET_UP(test_set_up) {
+    return RX_SUCCESS;
+}
+
+RX_TEAR_DOWN(test_tear_down) {
+    /* nothing to cleanup */
+}
+
+/* Define the fixture. */
+RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tear_down);
+
+/* test init */
+RX_TEST_CASE(tests_api_v2, test_api, .fixture = test_fixture) {
+    RX_ASSERT(PUBLIC_API(list_v2) != 0);
+}
+
+static void run(void) {
+#ifdef USE_MEMORY_DEBUG_INFO
+    printf("---- rexo unit test code %s\n", __FILE__);
+#endif
+}
+
+const tests_api_v2_test_suite PRIVATE_API(tests_api_v2_test_suite_definitions) = {
+    .run = run
+};

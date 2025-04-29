@@ -5,6 +5,7 @@ c_module = Extension(
     sources=[
         "cvm.c",
         "clist.c",
+        "clist_v2.c",
         "cmodule.c",
         "cpointer.c",
         "cenvironment.c",

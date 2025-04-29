@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 29, 2025 at 4:32:27 PM GMT+3
+ *   April 29, 2025 at 6:32:16 AM GMT+3
  *
  */
 /*
@@ -36,31 +36,9 @@
     OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#define USING_PY_API
+#include "api_v2.h"
 
-#ifndef PY_API_H
-#define PY_API_H
-
-#include "py_export.h"
-
-#include "macros.h"
-
-#include "system/error/error_v1.h"
-
-#include "virtual/api/api_v1.h"
-#include "virtual/api/api_v2.h"
-
-PY_EXPORT extern const virtual_vm_methods* PY_PUBLIC_API(vm);
-PY_EXPORT extern const virtual_methods* PY_PUBLIC_API(virtual);
-PY_EXPORT extern const virtual_pointer_methods* PY_PUBLIC_API(pointer);
-PY_EXPORT extern const virtual_env_methods* PY_PUBLIC_API(env);
-PY_EXPORT extern const virtual_data_methods* PY_PUBLIC_API(data);
-PY_EXPORT extern const virtual_file_methods* PY_PUBLIC_API(file);
-PY_EXPORT extern const virtual_object_methods* PY_PUBLIC_API(object);
-PY_EXPORT extern const virtual_stack_methods* PY_PUBLIC_API(stack);
-PY_EXPORT extern const virtual_string_methods* PY_PUBLIC_API(string);
-PY_EXPORT extern const virtual_user_methods* PY_PUBLIC_API(user);
-PY_EXPORT extern const virtual_list_methods* PY_PUBLIC_API(list);
-PY_EXPORT extern const virtual_list_v2_methods* PY_PUBLIC_API(list_v2);
-
-#endif // PY_API_H
+/* api */
+PUBLIC const virtual_list_v2_methods* PUBLIC_API(list_v2) {
+    return CALL(list_v2);
+}
