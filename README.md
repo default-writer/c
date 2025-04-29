@@ -333,7 +333,7 @@ support this project [become a sponsor](https://opencollective.com/c-vm#sponsor)
 
 ## SAST Tools
 
-[PVS-Studio](https://pvs-studio.com/pvs-studio/?utm_source=website&utm_medium=github&utm_campaign=open_source) - static analyzer for C, C++, C#, and Java code.
+[PVS-Studio](https://pvs-studio.com/en/pvs-studio/?utm_source=website&utm_medium=github&utm_campaign=open_source) - static analyzer for C, C++, C#, and Java code.
 
 [refman]: docs/refman.pdf
 [memory]: docs/pdf/memory.pdf
