@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 27, 2025 at 9:09:08 PM GMT+3
+ *   April 29, 2025 at 8:24:07 PM GMT+3
  *
  */
 /*
@@ -62,7 +62,7 @@
 #define PUBLIC_API(x) x()
 
 #define PTR_SIZE sizeof(void_ptr) /* size of a pointer */
-#define PTR_ARRAY_SIZE(size) (size * PTR_SIZE)
+#define PTR_ARRAY_SIZE(size) ((size) * PTR_SIZE)
 
 #ifdef USE_MEMORY_DEBUG_INFO
 #define ERROR(message_id, format, ...)                                                                                                                                                  \
@@ -193,8 +193,8 @@
 #define FLAG_NONE (u64)0x0000000000000000
 #define FLAG_MEMORY_PTR (u64)0x0000000000000001
 #define FLAG_MEMORY_ADDRESS (u64)0x0000000000000002
-#define IS_FLAG_MEMORY_PTR(flags) (flags & FLAG_MEMORY_PTR)
-#define IS_FLAG_MEMORY_ADDRESS(flags) (flags & FLAG_MEMORY_ADDRESS)
+#define IS_FLAG_MEMORY_PTR(flags) ((flags) & FLAG_MEMORY_PTR)
+#define IS_FLAG_MEMORY_ADDRESS(flags) ((flags) & FLAG_MEMORY_ADDRESS)
 #define MAX_DEPTH (u64)0xffffffffffffffff
 
 #ifdef __GNUC__

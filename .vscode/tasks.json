@@ -113,6 +113,109 @@
             }
         },
         {
+            "label": "shell: cmake (release, gc, verbose)",
+            "type": "shell",
+            "command": "${workspaceFolder}/bin/cmake.sh",
+            "problemMatcher": [],
+            "args": [
+                "--target=main-tests-vm1",
+                "--release",
+                "--gc",
+                "--verbose",
+                "--tty",
+                "--silent",
+                "--clean"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "shell: cmake (release, gc)",
+            "type": "shell",
+            "command": "${workspaceFolder}/bin/cmake.sh",
+            "problemMatcher": [],
+            "args": [
+                "--target=main-tests-vm1",
+                "--release",
+                "--gc",
+                "--tty",
+                "--silent",
+                "--clean"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "shell: cmake (release, verbose)",
+            "type": "shell",
+            "command": "${workspaceFolder}/bin/cmake.sh",
+            "problemMatcher": [],
+            "args": [
+                "--target=main-tests-vm1",
+                "--release",
+                "--verbose",
+                "--tty",
+                "--silent",
+                "--clean"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "shell: cmake (releasegc, sanitize)",
+            "type": "shell",
+            "command": "${workspaceFolder}/bin/cmake.sh",
+            "problemMatcher": [],
+            "args": [
+                "--target=main-tests-vm1",
+                "--release",
+                "--gc",
+                "--sanitize",
+                "--tty",
+                "--silent",
+                "--clean"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "shell: cmake (release, sanitize)",
+            "type": "shell",
+            "command": "${workspaceFolder}/bin/cmake.sh",
+            "problemMatcher": [],
+            "args": [
+                "--target=main-tests-vm1",
+                "--release",
+                "--sanitize",
+                "--tty",
+                "--silent",
+                "--clean"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "shell: cmake (release)",
+            "type": "shell",
+            "command": "${workspaceFolder}/bin/cmake.sh",
+            "problemMatcher": [],
+            "args": [
+                "--target=main-tests-vm1",
+                "--release",
+                "--tty",
+                "--silent",
+                "--clean"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
             "label": "shell: cmake (python extensions)",
             "type": "shell",
             "command": "${workspaceFolder}/examples/python/build.sh",

@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 23, 2025 at 2:54:32 PM GMT+3
+ *   April 29, 2025 at 8:31:20 PM GMT+3
  *
  */
 /*
@@ -52,7 +52,7 @@ static const char* error_messages[] = {
 };
 
 static exception_type exception;
-static exception_ptr ex = &exception;
+static exception_ptr exception_errors = &exception;
 
 static void error_output(FILE* output, u64 error_type, const char* message, u64 size);
 static void error_throw(u64 error_type, const char* message, u64 size);
@@ -80,41 +80,41 @@ static void error_output(FILE* output, u64 error_type, const char* message, u64 
 }
 
 static void error_throw(u64 error_type, const char* message, u64 size) {
-    if (ex->message_count < ERROR_MESSAGE_COUNT) {
-        ex->message_count++;
+    if (exception_errors->message_count < ERROR_MESSAGE_COUNT) {
+        exception_errors->message_count++;
     } else {
         /* copy all ERROR_MESSAGE_COUNT - 2 messages to the bottom  */
-        CALL(os)->memmove(&ex->type[0], &ex->type[1], (ex->message_count - 1) * sizeof(u64));
-        CALL(os)->memmove(&ex->message[0], &ex->message[ERROR_MESSAGE_SIZE], (ex->message_count - 1) * ERROR_MESSAGE_SIZE);
+        CALL(os)->memmove(&exception_errors->type[0], &exception_errors->type[1], (exception_errors->message_count - 1) * sizeof(u64));
+        CALL(os)->memmove(&exception_errors->message[0], &exception_errors->message[ERROR_MESSAGE_SIZE], (exception_errors->message_count - 1) * ERROR_MESSAGE_SIZE);
     }
-    ex->type[ex->message_count - 1] = error_type;
+    exception_errors->type[exception_errors->message_count - 1] = error_type;
     if (size < ERROR_MESSAGE_SIZE) {
-        CALL(os)->memcpy(&ex->message[(ex->message_count - 1) * ERROR_MESSAGE_SIZE], message, size); /* NOLINT: memcpy(ex->message */
-        CALL(os)->memset(&ex->message[(ex->message_count - 1) * ERROR_MESSAGE_SIZE + size], 0x00, ERROR_MESSAGE_SIZE - size);
+        CALL(os)->memcpy(&exception_errors->message[(exception_errors->message_count - 1) * ERROR_MESSAGE_SIZE], message, size); /* NOLINT: memcpy(ex->message */
+        CALL(os)->memset(&exception_errors->message[(exception_errors->message_count - 1) * ERROR_MESSAGE_SIZE + size], 0x00, ERROR_MESSAGE_SIZE - size);
     } else {
-        CALL(os)->memcpy(&ex->message[(ex->message_count - 1) * ERROR_MESSAGE_SIZE], message, ERROR_MESSAGE_SIZE - 1); /* NOLINT: memcpy(ex->message */
-        ex->message[(ex->message_count - 1) * ERROR_MESSAGE_SIZE + ERROR_MESSAGE_SIZE - 1] = 0;
+        CALL(os)->memcpy(&exception_errors->message[(exception_errors->message_count - 1) * ERROR_MESSAGE_SIZE], message, ERROR_MESSAGE_SIZE - 1); /* NOLINT: memcpy(ex->message */
+        exception_errors->message[(exception_errors->message_count - 1) * ERROR_MESSAGE_SIZE + ERROR_MESSAGE_SIZE - 1] = 0;
     }
 }
 
 static void error_clear(void) {
-    if (ex->message_count != 0) {
-        CALL(os)->memset(&ex->type[0], 0x00, ERROR_MESSAGE_COUNT);
-        CALL(os)->memset(&ex->message[0], 0x00, ERROR_BUFFER_SIZE); /* NOLINT: memset(ex->message, 0, ERROR_BUFFER_SIZE) */
-        ex->message_count = 0;
+    if (exception_errors->message_count != 0) {
+        CALL(os)->memset(&exception_errors->type[0], 0x00, ERROR_MESSAGE_COUNT);
+        CALL(os)->memset(&exception_errors->message[0], 0x00, ERROR_BUFFER_SIZE); /* NOLINT: memset(ex->message, 0, ERROR_BUFFER_SIZE) */
+        exception_errors->message_count = 0;
     }
 }
 
 static u64 error_type(void) {
-    if (ex->message_count > 0) {
-        return ex->type[ex->message_count - 1];
+    if (exception_errors->message_count > 0) {
+        return exception_errors->type[exception_errors->message_count - 1];
     }
     return ID_ERROR_NO_ERROR;
 }
 
 static const char* error_get(void) {
-    if (ex->message_count > 0) {
-        return &ex->message[(ex->message_count - 1) * ERROR_MESSAGE_SIZE];
+    if (exception_errors->message_count > 0) {
+        return &exception_errors->message[(exception_errors->message_count - 1) * ERROR_MESSAGE_SIZE];
     }
     return NULL_PTR;
 }
@@ -128,15 +128,15 @@ static FILE* error_stderr(void) {
 }
 
 static u64 error_next(void) {
-    if (ex->message_count > 0) {
-        ex->message_count--;
+    if (exception_errors->message_count > 0) {
+        exception_errors->message_count--;
         return TRUE;
     }
     return FALSE;
 }
 
 static u64 error_count(void) {
-    return ex->message_count;
+    return exception_errors->message_count;
 }
 
 /* public */

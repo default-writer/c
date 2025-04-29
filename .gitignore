@@ -100,3 +100,4 @@ dist/
 .pytest_cache/
 .patch/
 /examples/python/.coverage
+.PVS-Studio/
