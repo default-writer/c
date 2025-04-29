@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 29, 2025 at 5:18:30 PM GMT+3
+ *   April 29, 2025 at 6:05:29 PM GMT+3
  *
  */
 /*
@@ -44,7 +44,6 @@
 #include "data.h"
 
 typedef struct stack_v2* stack_v2_ptr;
-typedef struct stack_element_v2* stack_element_v2_ptr;
 typedef struct stack_v2 {
     void_ptr* sp;
     void_ptr* bp;
@@ -53,12 +52,7 @@ typedef struct stack_v2 {
     u64 size;
 } stack_v2_type;
 
-typedef struct stack_element_v2 {
-    void_ptr data;
-} stack_element_v2_type;
-
 #define STACK_V2_TYPE_SIZE sizeof(stack_v2_type)
-#define STACK_V2_ELEMENT_TYPE_SIZE sizeof(stack_element_v2_type)
 #define STACK_V2_PTR_ARRAY_SIZE 4096
 
 #endif /* _STD_DATA_V2_H_ */
