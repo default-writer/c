@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 29, 2025 at 5:44:10 PM GMT+3
+ *   April 29, 2025 at 6:06:53 PM GMT+3
  *
  */
 /*
@@ -56,17 +56,6 @@ static u64 list_diff_left(stack_v2_ptr stack1, stack_v2_ptr stack2, stack_v2_ptr
 static u64 list_diff_right(stack_v2_ptr stack1, stack_v2_ptr stack2, stack_v2_ptr* compare);
 static u64 list_destroy(stack_v2_ptr* stack);
 
-typedef struct enumerator_state {
-    stack_v2_ptr vptr;
-    stack_element_v2_ptr element;
-} enumerator_state_type;
-
-/* internal */
-static void vm_ref_enumerator_init_internal(struct enumerator_state* ptr, stack_v2_ptr cvm);
-static void vm_ref_enumerator_destroy_internal(struct enumerator_state* state);
-static stack_element_v2_ptr* vm_ref_enumerator_next_internal(struct enumerator_state* state);
-static u64 vm_next_internal(struct enumerator_state* state);
-
 /* internal */
 static void list_diff_internal(stack_v2_ptr stack1, stack_v2_ptr stack2, stack_v2_ptr* compare1, stack_v2_ptr* compare2);
 
@@ -74,7 +63,7 @@ static void list_diff_internal(stack_v2_ptr stack1, stack_v2_ptr stack2, stack_v
 static stack_v2_ptr list_init(u64 size, stack_v2_ptr next) {
     u64 default_size = size == 0 ? STACK_V2_TYPE_SIZE : size;
     stack_v2_ptr stack = CALL(os)->calloc(1, STACK_V2_TYPE_SIZE);
-    stack->bp = CALL(os)->calloc(default_size, STACK_V2_ELEMENT_TYPE_SIZE);
+    stack->bp = CALL(os)->calloc(default_size, PTR_SIZE);
     stack->sp = stack->bp + default_size;
     stack->next = next;
     stack->size = next ? next->size : 0;
