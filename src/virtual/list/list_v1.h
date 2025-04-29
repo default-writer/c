@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 27, 2025 at 2:58:43 PM GMT+3
+ *   April 29, 2025 at 8:26:37 PM GMT+3
  *
  */
 /*
@@ -47,7 +47,7 @@
 #include "virtual/export.h"
 
 typedef struct PRIVATE_API(virtual_list_methods) {
-    stack_ptr (*init)();
+    stack_ptr (*init)(void);
     u64 (*push)(stack_ptr current, void_ptr item);
     void_ptr (*pop)(stack_ptr current);
     void_ptr (*peek)(stack_ptr current);

@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 27, 2025 at 9:09:08 PM GMT+3
+ *   April 29, 2025 at 8:27:20 PM GMT+3
  *
  */
 /*
@@ -52,7 +52,7 @@
 #define VIRTUAL_POINTER_TYPE_SIZE sizeof(virtual_pointer_type)
 #define POINTER_TYPE_SIZE sizeof(pointer_type)
 #define KNOWN_TYPES_TYPE_SIZE sizeof(known_types_type)
-#define KNOWN_TYPES_TYPE_ARRAY_SIZE(size) (size * KNOWN_TYPES_TYPE_SIZE)
+#define KNOWN_TYPES_TYPE_ARRAY_SIZE(size) ((size) * KNOWN_TYPES_TYPE_SIZE)
 
 #ifndef USE_GC
 #define VM_POINTER_TYPE_SIZE sizeof(vm_pointer_type)
@@ -185,7 +185,7 @@ static const_vm_ptr virtual_init(u64 size) {
     virtual_pointer_ptr vptr = virtual_init_internal(size == 0 ? DEFAULT_SIZE : size);
     (*ptr)->next = vptr;
 #ifndef USE_GC
-    (*ptr)->cache = CALL(list)->init(cvm);
+    (*ptr)->cache = CALL(list)->init();
 #endif
     return cvm;
 }

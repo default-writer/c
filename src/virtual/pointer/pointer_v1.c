@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 27, 2025 at 9:09:08 PM GMT+3
+ *   April 29, 2025 at 8:24:11 PM GMT+3
  *
  */
 /*
@@ -60,7 +60,7 @@
 #define DEFAULT_SIZE 0x8 /* 8 */
 #define POINTER_TYPE_SIZE sizeof(pointer_type)
 #define KNOWN_TYPES_TYPE_SIZE sizeof(known_types_type)
-#define KNOWN_TYPES_TYPE_ARRAY_SIZE(size) (size * KNOWN_TYPES_TYPE_SIZE)
+#define KNOWN_TYPES_TYPE_ARRAY_SIZE(size) ((size) * KNOWN_TYPES_TYPE_SIZE)
 #define POINTER_TYPE_SIZE sizeof(pointer_type)
 
 /* internal */
@@ -171,8 +171,9 @@ static u64 pointer_copy(const_vm_ptr cvm, const_void_ptr data, u64 size, u64 off
     u8* src_data = (u8*)safe_ptr.ptr + offset;
     CALL(os)->memcpy(dst_data, src_data, size);
     u64 data_size = size;
-    safe_ptr.const_ptr = tmp->data;
-    u8* bytes = safe_ptr.ptr;
+    safe_void_ptr safe_ptr2;
+    safe_ptr2.const_ptr = tmp->data;
+    u8* bytes = safe_ptr2.ptr;
     bytes[size - 1] = 0;
     return address;
 }

@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 27, 2025 at 9:09:08 PM GMT+3
+ *   April 29, 2025 at 8:24:22 PM GMT+3
  *
  */
 /*
@@ -52,10 +52,10 @@
 /* macros */
 #define DEFAULT_SIZE 0x8 /* 8 */
 #define PTR_SIZE sizeof(void_ptr) /* size of a pointer */
-#define PTR_ARRAY_SIZE(size) (size * PTR_SIZE)
+#define PTR_ARRAY_SIZE(size) ((size) * PTR_SIZE)
 #define POINTER_TYPE_SIZE sizeof(pointer_type)
 #define KNOWN_TYPES_TYPE_SIZE sizeof(known_types_type)
-#define KNOWN_TYPES_TYPE_ARRAY_SIZE(size) (size * KNOWN_TYPES_TYPE_SIZE)
+#define KNOWN_TYPES_TYPE_ARRAY_SIZE(size) ((size) * KNOWN_TYPES_TYPE_SIZE)
 #define POINTER_TYPE_SIZE sizeof(pointer_type)
 
 /* internal */
@@ -237,14 +237,12 @@ static u64 vm_next_internal(struct vm_state* state) {
     while ((ref = vm_ref_enumerator_next_internal(state)) != 0) {
         if (*ref != 0) {
             const_pointer_ptr const_ptr = *ref;
-            if (const_ptr != 0) {
-                safe_pointer_ptr safe_ptr;
-                safe_ptr.const_ptr = const_ptr;
-                pointer_ptr ptr = safe_ptr.ptr;
-                const_pointer_public_ptr public_ptr = &ptr->public;
-                address = public_ptr->address;
-                break;
-            }
+            safe_pointer_ptr safe_ptr;
+            safe_ptr.const_ptr = const_ptr;
+            pointer_ptr ptr = safe_ptr.ptr;
+            const_pointer_public_ptr public_ptr = &ptr->public;
+            address = public_ptr->address;
+            break;
         }
     }
     return address;

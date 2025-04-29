@@ -33,7 +33,7 @@
       "cppAttachName": "c++ (cppdbg)"
     },
     {
-      "preLaunchTask": "shell: cmake",
+      "preLaunchTask": "shell: cmake (release)",
       "name": "python (memory)",
       "type": "debugpy",
       "request": "launch",
@@ -47,7 +47,7 @@
       }
     },
     {
-      "preLaunchTask": "shell: cmake (gc)",
+      "preLaunchTask": "shell: cmake (release, gc)",
       "name": "python (memory, gc)",
       "type": "debugpy",
       "request": "launch",
@@ -61,7 +61,7 @@
       }
     },
     {
-      "preLaunchTask": "shell: cmake (verbose)",
+      "preLaunchTask": "shell: cmake (release, verbose)",
       "name": "python (memory, verbose)",
       "type": "debugpy",
       "request": "launch",
@@ -75,7 +75,7 @@
       }
     },
     {
-      "preLaunchTask": "shell: cmake (gc, verbose)",
+      "preLaunchTask": "shell: cmake (release, gc, verbose)",
       "name": "python (memory, gc, verbose)",
       "type": "debugpy",
       "request": "launch",
@@ -89,7 +89,7 @@
       }
     },
     {
-      "preLaunchTask": "shell: cmake",
+      "preLaunchTask": "shell: cmake (release)",
       "name": "python (list)",
       "type": "debugpy",
       "request": "launch",
@@ -103,7 +103,7 @@
       }
     },
     {
-      "preLaunchTask": "shell: cmake (gc)",
+      "preLaunchTask": "shell: cmake (release, gc)",
       "name": "python (list, gc)",
       "type": "debugpy",
       "request": "launch",
@@ -117,7 +117,7 @@
       }
     },
     {
-      "preLaunchTask": "shell: cmake (verbose)",
+      "preLaunchTask": "shell: cmake (release, verbose)",
       "name": "python (list, verbose)",
       "type": "debugpy",
       "request": "launch",
@@ -131,7 +131,7 @@
       }
     },
     {
-      "preLaunchTask": "shell: cmake (gc, verbose)",
+      "preLaunchTask": "shell: cmake (release, gc, verbose)",
       "name": "python (list, gc, verbose)",
       "type": "debugpy",
       "request": "launch",
@@ -145,7 +145,7 @@
       }
     },
     {
-      "preLaunchTask": "shell: cmake",
+      "preLaunchTask": "shell: cmake (release)",
       "name": "python (file)",
       "type": "debugpy",
       "request": "launch",
@@ -159,7 +159,7 @@
       }
     },
     {
-      "preLaunchTask": "shell: cmake (gc)",
+      "preLaunchTask": "shell: cmake (release, gc)",
       "name": "python (file, gc)",
       "type": "debugpy",
       "request": "launch",
@@ -173,7 +173,7 @@
       }
     },
     {
-      "preLaunchTask": "shell: cmake (verbose)",
+      "preLaunchTask": "shell: cmake (release, verbose)",
       "name": "python (file, verbose)",
       "type": "debugpy",
       "request": "launch",
@@ -187,7 +187,7 @@
       }
     },
     {
-      "preLaunchTask": "shell: cmake (gc, verbose)",
+      "preLaunchTask": "shell: cmake (release, gc, verbose)",
       "name": "python (file, gc, verbose)",
       "type": "debugpy",
       "request": "launch",
