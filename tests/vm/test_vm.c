@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 27, 2025 at 3:07:31 PM GMT+3
+ *   April 29, 2025 at 5:48:10 PM GMT+3
  *
  */
 /*
@@ -46,6 +46,7 @@
 
 #include "virtual/env/env_v1.h"
 #include "virtual/list/list_v1.h"
+#include "virtual/list/list_v2.h"
 #include "virtual/pointer/pointer_v1.h"
 #include "virtual/types/data/data_v1.h"
 #include "virtual/types/stack/stack_v1.h"
@@ -290,6 +291,335 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_page_2, .fixture = test_clean_fixture) {
 }
 
 /* test init */
+RX_TEST_CASE(tests_vm_v1, test_list_diff, .fixture = test_clean_fixture) {
+    const_vm_ptr cvm = CALL(vm)->init(8);
+    u64 src1[] = {
+        1, 2, 3, 5
+    };
+    u64 src2[] = {
+        1, 2, 4, 6
+    };
+    stack_ptr stack1 = CALL(list)->init();
+    stack_ptr stack2 = CALL(list)->init();
+    stack_ptr compare = CALL(list)->init();
+    u64 length = sizeof(src1) / sizeof(src1[0]);
+    for (u64 i = 0; i < length; i++) {
+        CALL(list)->push(stack1, (void_ptr)src1[i]);
+        CALL(list)->push(stack2, (void_ptr)src2[i]);
+    }
+    CALL(list)->diff(stack1, stack2, compare);
+    stack_element_ptr current = compare->current;
+    u64 i = 0;
+    u64 expected[] = { 4, 6, 3, 5 };
+    while (current != NULL_PTR) {
+        u64 ptr = (u64)current->data;
+        printf("A ^ B: %016llx\n", ptr);
+        RX_ASSERT(ptr == expected[i++]);
+        current = current->next;
+    }
+    RX_ASSERT(i == 4);
+    CALL(list)->destroy(stack1);
+    CALL(list)->destroy(stack2);
+    CALL(list)->destroy(compare);
+    CALL(vm)->gc(cvm);
+    CALL(vm)->destroy(cvm);
+}
+
+/* test init */
+RX_TEST_CASE(tests_vm_v1, test_list_diff_left, .fixture = test_clean_fixture) {
+    const_vm_ptr cvm = CALL(vm)->init(8);
+    u64 src1[] = {
+        1, 2, 3, 5
+    };
+    u64 src2[] = {
+        1, 2, 4, 6
+    };
+    stack_ptr stack1 = CALL(list)->init();
+    stack_ptr stack2 = CALL(list)->init();
+    stack_ptr compare = CALL(list)->init();
+    u64 length = sizeof(src1) / sizeof(src1[0]);
+    for (u64 i = 0; i < length; i++) {
+        CALL(list)->push(stack1, (void_ptr)src1[i]);
+        CALL(list)->push(stack2, (void_ptr)src2[i]);
+    }
+    CALL(list)->diff_left(stack1, stack2, compare);
+    stack_element_ptr current = compare->current;
+    u64 i = 0;
+    u64 expected[] = { 3, 5 };
+    while (current != NULL_PTR) {
+        u64 ptr = (u64)current->data;
+        printf("A \\ B: %016llx\n", ptr);
+        RX_ASSERT(ptr == expected[i++]);
+        current = current->next;
+    }
+    RX_ASSERT(i == 2);
+    CALL(list)->destroy(stack1);
+    CALL(list)->destroy(stack2);
+    CALL(list)->destroy(compare);
+    CALL(vm)->gc(cvm);
+    CALL(vm)->destroy(cvm);
+}
+
+/* test init */
+RX_TEST_CASE(tests_vm_v1, test_list_diff_right, .fixture = test_clean_fixture) {
+    const_vm_ptr cvm = CALL(vm)->init(8);
+    u64 src1[] = {
+        1, 2, 3, 5
+    };
+    u64 src2[] = {
+        1, 2, 4, 6
+    };
+    stack_ptr stack1 = CALL(list)->init();
+    stack_ptr stack2 = CALL(list)->init();
+    stack_ptr compare = CALL(list)->init();
+    u64 length = sizeof(src1) / sizeof(src1[0]);
+    for (u64 i = 0; i < length; i++) {
+        CALL(list)->push(stack1, (void_ptr)src1[i]);
+        CALL(list)->push(stack2, (void_ptr)src2[i]);
+    }
+    CALL(list)->diff_right(stack1, stack2, compare);
+    stack_element_ptr current = compare->current;
+    u64 i = 0;
+    u64 expected[] = { 4, 6 };
+    while (current != NULL_PTR) {
+        u64 ptr = (u64)current->data;
+        printf("B \\ A: %016llx\n", ptr);
+        RX_ASSERT(ptr == expected[i++]);
+        current = current->next;
+    }
+    RX_ASSERT(i == 2);
+    CALL(list)->destroy(stack1);
+    CALL(list)->destroy(stack2);
+    CALL(list)->destroy(compare);
+    CALL(vm)->gc(cvm);
+    CALL(vm)->destroy(cvm);
+}
+
+/* test init */
+RX_TEST_CASE(tests_vm_v1, test_list_v2_init, .fixture = test_clean_fixture) {
+    u64 src[] = {
+        1, 2, 3, 5
+    };
+    stack_v2_ptr stack = CALL(list_v2)->init(2, NULL_PTR);
+    RX_ASSERT(stack != NULL_PTR);
+    CALL(list_v2)->destroy(&stack);
+}
+
+/* test init */
+RX_TEST_CASE(tests_vm_v1, test_list_v2_push_1, .fixture = test_clean_fixture) {
+    u64 src[] = {
+        1, 2, 3, 5
+    };
+    stack_v2_ptr stack = CALL(list_v2)->init(2, NULL_PTR);
+    u64 result = CALL(list_v2)->push(&stack, (void_ptr)src[0]);
+    RX_ASSERT(result == TRUE);
+    RX_ASSERT(src[0] == (u64)CALL(list_v2)->pop(&stack));
+    CALL(list_v2)->destroy(&stack);
+}
+
+/* test init */
+RX_TEST_CASE(tests_vm_v1, test_list_v2_push_2, .fixture = test_clean_fixture) {
+    u64 src[] = {
+        1, 2, 3, 5
+    };
+    stack_v2_ptr stack = CALL(list_v2)->init(2, NULL_PTR);
+    CALL(list_v2)->push(&stack, (void_ptr)src[0]);
+    u64 result = CALL(list_v2)->push(&stack, (void_ptr)src[1]);
+    RX_ASSERT(result == TRUE);
+    RX_ASSERT(src[1] == (u64)CALL(list_v2)->pop(&stack));
+    RX_ASSERT(src[0] == (u64)CALL(list_v2)->pop(&stack));
+    CALL(list_v2)->destroy(&stack);
+}
+
+/* test init */
+RX_TEST_CASE(tests_vm_v1, test_list_v2_push_3, .fixture = test_clean_fixture) {
+    u64 src[] = {
+        1, 2, 3, 5
+    };
+    stack_v2_ptr stack = CALL(list_v2)->init(2, NULL_PTR);
+    CALL(list_v2)->push(&stack, (void_ptr)src[0]);
+    CALL(list_v2)->push(&stack, (void_ptr)src[1]);
+    u64 result = CALL(list_v2)->push(&stack, (void_ptr)src[2]);
+    RX_ASSERT(result == TRUE);
+    RX_ASSERT(src[2] == (u64)CALL(list_v2)->pop(&stack));
+    RX_ASSERT(src[1] == (u64)CALL(list_v2)->pop(&stack));
+    RX_ASSERT(src[0] == (u64)CALL(list_v2)->pop(&stack));
+    CALL(list_v2)->destroy(&stack);
+}
+
+/* test init */
+RX_TEST_CASE(tests_vm_v1, test_list_v2_push_4, .fixture = test_clean_fixture) {
+    u64 src[] = {
+        1, 2, 3, 5
+    };
+    stack_v2_ptr stack = CALL(list_v2)->init(2, NULL_PTR);
+    CALL(list_v2)->push(&stack, (void_ptr)src[0]);
+    CALL(list_v2)->push(&stack, (void_ptr)src[1]);
+    CALL(list_v2)->push(&stack, (void_ptr)src[2]);
+    u64 result = CALL(list_v2)->push(&stack, (void_ptr)src[3]);
+    RX_ASSERT(result == TRUE);
+    RX_ASSERT(src[3] == (u64)CALL(list_v2)->pop(&stack));
+    RX_ASSERT(src[2] == (u64)CALL(list_v2)->pop(&stack));
+    RX_ASSERT(src[1] == (u64)CALL(list_v2)->pop(&stack));
+    RX_ASSERT(src[0] == (u64)CALL(list_v2)->pop(&stack));
+    CALL(list_v2)->destroy(&stack);
+}
+
+/* test init */
+RX_TEST_CASE(tests_vm_v1, test_list_v2_push_5, .fixture = test_clean_fixture) {
+    u64 src[] = {
+        1, 2, 3, 5, 9
+    };
+    stack_v2_ptr stack = CALL(list_v2)->init(0, NULL_PTR);
+    CALL(list_v2)->push(&stack, (void_ptr)src[0]);
+    CALL(list_v2)->push(&stack, (void_ptr)src[1]);
+    CALL(list_v2)->push(&stack, (void_ptr)src[2]);
+    CALL(list_v2)->push(&stack, (void_ptr)src[3]);
+    u64 result = CALL(list_v2)->push(&stack, (void_ptr)src[4]);
+    RX_ASSERT(result == TRUE);
+    RX_ASSERT(src[4] == (u64)CALL(list_v2)->pop(&stack));
+    RX_ASSERT(src[3] == (u64)CALL(list_v2)->pop(&stack));
+    RX_ASSERT(src[2] == (u64)CALL(list_v2)->pop(&stack));
+    RX_ASSERT(src[1] == (u64)CALL(list_v2)->pop(&stack));
+    RX_ASSERT(src[0] == (u64)CALL(list_v2)->pop(&stack));
+    CALL(list_v2)->destroy(&stack);
+}
+
+/* test init */
+RX_TEST_CASE(tests_vm_v1, test_list_v2_peek_empty, .fixture = test_clean_fixture) {
+    u64 src[] = {
+        1, 2, 3, 5
+    };
+    stack_v2_ptr stack = CALL(list_v2)->init(0, NULL_PTR);
+    void_ptr value = CALL(list_v2)->peek(&stack);
+    RX_ASSERT(value == NULL_PTR);
+    CALL(list_v2)->pop(&stack);
+    CALL(list_v2)->destroy(&stack);
+}
+
+/* test init */
+RX_TEST_CASE(tests_vm_v1, test_list_v2_push_peek, .fixture = test_clean_fixture) {
+    u64 src[] = {
+        1, 2, 3, 5
+    };
+    stack_v2_ptr stack = CALL(list_v2)->init(0, NULL_PTR);
+    CALL(list_v2)->push(&stack, (void_ptr)src[0]);
+    u64 value = (u64)CALL(list_v2)->peek(&stack);
+    RX_ASSERT(value == src[0]);
+    CALL(list_v2)->pop(&stack);
+    CALL(list_v2)->destroy(&stack);
+}
+
+/* test init */
+RX_TEST_CASE(tests_vm_v1, test_list_v2_diff, .fixture = test_clean_fixture) {
+    u64 src1[] = {
+        1, 2, 3, 5
+    };
+    u64 src2[] = {
+        1, 2, 4, 6
+    };
+    stack_v2_ptr stack1 = CALL(list_v2)->init(2, NULL_PTR);
+    stack_v2_ptr stack2 = CALL(list_v2)->init(2, NULL_PTR);
+    stack_v2_ptr compare = CALL(list_v2)->init(2, NULL_PTR);
+    u64 length = sizeof(src1) / sizeof(src1[0]);
+    for (u64 i = 0; i < length; i++) {
+        CALL(list_v2)->push(&stack1, (void_ptr)src1[i]);
+        CALL(list_v2)->push(&stack2, (void_ptr)src2[i]);
+    }
+    CALL(list_v2)->diff(stack1, stack2, &compare);
+    stack_v2_ptr _stack_ptr = compare;
+    u64 i = 0;
+    u64 expected[] = { 4, 6, 3, 5 };
+    u64 stack_size = compare->default_size;
+    while (_stack_ptr != NULL_PTR && _stack_ptr->sp != _stack_ptr->bp + stack_size) {
+        void_ptr* stack_current = _stack_ptr->sp;
+        while (stack_current != _stack_ptr->bp + stack_size) {
+            void_ptr ptr = *stack_current;
+            printf("A \\ B: %016llx\n", (u64)ptr);
+            RX_ASSERT((u64)ptr == expected[i++]);
+            ++stack_current;
+        }
+        _stack_ptr = _stack_ptr->next;
+    }
+    RX_ASSERT(i == 4);
+    CALL(list_v2)->destroy(&stack1);
+    CALL(list_v2)->destroy(&stack2);
+    CALL(list_v2)->destroy(&compare);
+}
+
+/* test init */
+RX_TEST_CASE(tests_vm_v1, test_list_v2_diff_left, .fixture = test_clean_fixture) {
+    u64 src1[] = {
+        1, 2, 3, 5
+    };
+    u64 src2[] = {
+        1, 2, 4, 6
+    };
+    stack_v2_ptr stack1 = CALL(list_v2)->init(0, NULL_PTR);
+    stack_v2_ptr stack2 = CALL(list_v2)->init(0, NULL_PTR);
+    stack_v2_ptr compare = CALL(list_v2)->init(0, NULL_PTR);
+    u64 length = sizeof(src1) / sizeof(src1[0]);
+    for (u64 i = 0; i < length; i++) {
+        CALL(list_v2)->push(&stack1, (void_ptr)src1[i]);
+        CALL(list_v2)->push(&stack2, (void_ptr)src2[i]);
+    }
+    CALL(list_v2)->diff_left(stack1, stack2, &compare);
+    stack_v2_ptr _stack_ptr = compare;
+    u64 i = 0;
+    u64 expected[] = { 3, 5 };
+    u64 stack_size = compare->default_size;
+    while (_stack_ptr != NULL_PTR && _stack_ptr->sp != _stack_ptr->bp + stack_size) {
+        void_ptr* stack_current = _stack_ptr->sp;
+        while (stack_current != _stack_ptr->bp + stack_size) {
+            void_ptr ptr = *stack_current;
+            printf("A \\ B: %016llx\n", (u64)ptr);
+            RX_ASSERT((u64)ptr == expected[i++]);
+            ++stack_current;
+        }
+        _stack_ptr = _stack_ptr->next;
+    }
+    CALL(list_v2)->destroy(&stack1);
+    CALL(list_v2)->destroy(&stack2);
+    CALL(list_v2)->destroy(&compare);
+}
+
+/* test init */
+RX_TEST_CASE(tests_vm_v1, test_list_v2_diff_right, .fixture = test_clean_fixture) {
+    u64 src1[] = {
+        1, 2, 3, 5
+    };
+    u64 src2[] = {
+        1, 2, 4, 6
+    };
+    stack_v2_ptr stack1 = CALL(list_v2)->init(0, NULL_PTR);
+    stack_v2_ptr stack2 = CALL(list_v2)->init(0, NULL_PTR);
+    stack_v2_ptr compare = CALL(list_v2)->init(0, NULL_PTR);
+    u64 length = sizeof(src1) / sizeof(src1[0]);
+    for (u64 i = 0; i < length; i++) {
+        CALL(list_v2)->push(&stack1, (void_ptr)src1[i]);
+        CALL(list_v2)->push(&stack2, (void_ptr)src2[i]);
+    }
+    CALL(list_v2)->diff_right(stack1, stack2, &compare);
+    stack_v2_ptr _stack_ptr = compare;
+    u64 i = 0;
+    u64 expected[] = { 4, 6 };
+    u64 stack_size = compare->default_size;
+    while (_stack_ptr != NULL_PTR && _stack_ptr->sp != _stack_ptr->bp + stack_size) {
+        void_ptr* stack_current = _stack_ptr->sp;
+        while (stack_current != _stack_ptr->bp + stack_size) {
+            void_ptr ptr = *stack_current;
+            printf("A \\ B: %016llx\n", (u64)ptr);
+            RX_ASSERT((u64)ptr == expected[i++]);
+            ++stack_current;
+        }
+        _stack_ptr = _stack_ptr->next;
+    }
+    CALL(list_v2)->destroy(&stack1);
+    CALL(list_v2)->destroy(&stack2);
+    CALL(list_v2)->destroy(&compare);
+}
+
+/* test init */
 RX_TEST_CASE(tests_vm_v1, test_vm_dump, .fixture = test_clean_fixture) {
     const_vm_ptr cvm = CALL(vm)->init(8);
     u64 text_string_ptr[] = {
@@ -413,99 +743,6 @@ RX_TEST_CASE(tests_vm_v1, test_vm_dump_ref_stack, .fixture = test_clean_fixture)
     CALL(list)->destroy(debug_stack);
     CALL(list)->destroy(stack);
     CALL(vm)->destroy(debug_cvm);
-    CALL(vm)->destroy(cvm);
-}
-
-/* test init */
-RX_TEST_CASE(tests_vm_v1, test_list_diff, .fixture = test_clean_fixture) {
-    const_vm_ptr cvm = CALL(vm)->init(8);
-    u64 src1[] = {
-        1, 2, 3, 5
-    };
-    u64 src2[] = {
-        1, 2, 4, 6
-    };
-    stack_ptr stack1 = CALL(list)->init();
-    stack_ptr stack2 = CALL(list)->init();
-    stack_ptr compare = CALL(list)->init();
-    u64 length = sizeof(src1) / sizeof(src1[0]);
-    for (u64 i = 0; i < length; i++) {
-        CALL(list)->push(stack1, (void_ptr)src1[i]);
-        CALL(list)->push(stack2, (void_ptr)src2[i]);
-    }
-    CALL(list)->diff(stack1, stack2, compare);
-    stack_element_ptr current = compare->current;
-    while (current->next != NULL_PTR) {
-        u64 ptr = (u64)current->data;
-        printf("A ^ B: %016llx\n", ptr);
-        current = current->next;
-    }
-    CALL(list)->destroy(stack1);
-    CALL(list)->destroy(stack2);
-    CALL(list)->destroy(compare);
-    CALL(vm)->gc(cvm);
-    CALL(vm)->destroy(cvm);
-}
-
-/* test init */
-RX_TEST_CASE(tests_vm_v1, test_list_diff_left, .fixture = test_clean_fixture) {
-    const_vm_ptr cvm = CALL(vm)->init(8);
-    u64 src1[] = {
-        1, 2, 3, 5
-    };
-    u64 src2[] = {
-        1, 2, 4, 6
-    };
-    stack_ptr stack1 = CALL(list)->init();
-    stack_ptr stack2 = CALL(list)->init();
-    stack_ptr compare = CALL(list)->init();
-    u64 length = sizeof(src1) / sizeof(src1[0]);
-    for (u64 i = 0; i < length; i++) {
-        CALL(list)->push(stack1, (void_ptr)src1[i]);
-        CALL(list)->push(stack2, (void_ptr)src2[i]);
-    }
-    CALL(list)->diff_left(stack1, stack2, compare);
-    stack_element_ptr current = compare->current;
-    while (current->next != NULL_PTR) {
-        u64 ptr = (u64)current->data;
-        printf("A \\ B: %016llx\n", ptr);
-        current = current->next;
-    }
-    CALL(list)->destroy(stack1);
-    CALL(list)->destroy(stack2);
-    CALL(list)->destroy(compare);
-    CALL(vm)->gc(cvm);
-    CALL(vm)->destroy(cvm);
-}
-
-/* test init */
-RX_TEST_CASE(tests_vm_v1, test_list_diff_right, .fixture = test_clean_fixture) {
-    const_vm_ptr cvm = CALL(vm)->init(8);
-    u64 src1[] = {
-        1, 2, 3, 5
-    };
-    u64 src2[] = {
-        1, 2, 4, 6
-    };
-    stack_ptr stack1 = CALL(list)->init();
-    stack_ptr stack2 = CALL(list)->init();
-    stack_ptr compare = CALL(list)->init();
-    u64 length = sizeof(src1) / sizeof(src1[0]);
-    for (u64 i = 0; i < length; i++) {
-        CALL(list)->push(stack1, (void_ptr)src1[i]);
-        CALL(list)->push(stack2, (void_ptr)src2[i]);
-    }
-    CALL(list)->diff_right(stack1, stack2, compare);
-    stack_element_ptr current = compare->current;
-    while (current->next != NULL_PTR) {
-        u64 ptr = (u64)current->data;
-        printf("B \\ A: %016llx\n", ptr);
-        current = current->next;
-    }
-    CALL(list)->destroy(stack1);
-    CALL(list)->destroy(stack2);
-    CALL(list)->destroy(compare);
-    CALL(vm)->gc(cvm);
     CALL(vm)->destroy(cvm);
 }
 

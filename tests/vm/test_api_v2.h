@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 29, 2025 at 4:32:27 PM GMT+3
+ *   April 29, 2025 at 5:05:40 PM GMT+3
  *
  */
 /*
@@ -36,31 +36,25 @@
     OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#define USING_PY_API
+#define USING_TESTS_API_V2
 
-#ifndef PY_API_H
-#define PY_API_H
+#ifndef _TEST_API_V2_H_
+#define _TEST_API_V2_H_
 
-#include "py_export.h"
+#define USING_STD_API
+#include "std/api.h"
 
-#include "macros.h"
+typedef struct PRIVATE_API(test_suite) tests_api_v2_test_suite;
 
-#include "system/error/error_v1.h"
+/* definition */
+extern const tests_api_v2_test_suite PRIVATE_API(tests_api_v2_test_suite_definitions);
 
-#include "virtual/api/api_v1.h"
-#include "virtual/api/api_v2.h"
+/* definition */
+#ifdef INLINE
+const tests_api_v2_test_suite* tests_api_v2_test_suite = &PRIVATE_API(tests_api_v2_test_suite_definitions);
+#else
+/* definition */
+static const tests_api_v2_test_suite* PRIVATE_API(tests_api_v2_test_suite) = &PRIVATE_API(tests_api_v2_test_suite_definitions);
+#endif
 
-PY_EXPORT extern const virtual_vm_methods* PY_PUBLIC_API(vm);
-PY_EXPORT extern const virtual_methods* PY_PUBLIC_API(virtual);
-PY_EXPORT extern const virtual_pointer_methods* PY_PUBLIC_API(pointer);
-PY_EXPORT extern const virtual_env_methods* PY_PUBLIC_API(env);
-PY_EXPORT extern const virtual_data_methods* PY_PUBLIC_API(data);
-PY_EXPORT extern const virtual_file_methods* PY_PUBLIC_API(file);
-PY_EXPORT extern const virtual_object_methods* PY_PUBLIC_API(object);
-PY_EXPORT extern const virtual_stack_methods* PY_PUBLIC_API(stack);
-PY_EXPORT extern const virtual_string_methods* PY_PUBLIC_API(string);
-PY_EXPORT extern const virtual_user_methods* PY_PUBLIC_API(user);
-PY_EXPORT extern const virtual_list_methods* PY_PUBLIC_API(list);
-PY_EXPORT extern const virtual_list_v2_methods* PY_PUBLIC_API(list_v2);
-
-#endif // PY_API_H
+#endif /* _TEST_API_V2_H_ */

@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 25, 2025 at 6:32:10 AM GMT+3
+ *   April 29, 2025 at 4:50:48 PM GMT+3
  *
  */
 /*
@@ -43,6 +43,7 @@
 #include "cexception.h"
 #include "cfile.h"
 #include "clist.h"
+#include "clist_v2.h"
 #include "cobject.h"
 #include "cpointer.h"
 #include "cstack.h"
@@ -68,6 +69,7 @@ PyMODINIT_FUNC PyInit_c(void) {
 
     if (init_cvm(m) < 0 ||
         init_clist(m) < 0 ||
+        init_clist_v2(m) < 0 ||
         init_cexception(m) < 0 ||
         init_cpointer(m) < 0 ||
         init_cenvironment(m) < 0 ||

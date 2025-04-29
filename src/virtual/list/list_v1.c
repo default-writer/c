@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 27, 2025 at 3:00:42 PM GMT+3
+ *   April 29, 2025 at 2:26:46 PM GMT+3
  *
  */
 /*
@@ -221,8 +221,6 @@ static void list_print(stack_ptr stack) {
 static void list_diff_internal(stack_ptr stack1, stack_ptr stack2, stack_ptr compare1, stack_ptr compare2) {
     void_ptr ptr1 = 0;
     void_ptr ptr2 = 0;
-    u64 forward_ptr1 = 0;
-    u64 forward_ptr2 = 0;
     hashtable_ptr ht1 = CALL(hashtable)->init();
     stack_element_ptr stack1_current = stack1->current;
     while (stack1_current != NULL_PTR) {
@@ -232,7 +230,6 @@ static void list_diff_internal(stack_ptr stack1, stack_ptr stack2, stack_ptr com
             CALL(hashtable)->insert(ht1, (u64)ptr1, ptr1);
         }
     }
-    stack1_current = stack1->current;
     hashtable_ptr ht2 = CALL(hashtable)->init();
     stack_element_ptr stack2_current = stack2->current;
     while (stack2_current != NULL_PTR) {
@@ -242,8 +239,8 @@ static void list_diff_internal(stack_ptr stack1, stack_ptr stack2, stack_ptr com
             CALL(hashtable)->insert(ht2, (u64)ptr2, ptr2);
         }
     }
-    stack2_current = stack2->current;
     if (compare1 != 0) {
+        stack1_current = stack1->current;
         while (stack1_current != NULL_PTR) {
             ptr1 = stack1_current->data;
             stack1_current = stack1_current->next;
@@ -253,6 +250,7 @@ static void list_diff_internal(stack_ptr stack1, stack_ptr stack2, stack_ptr com
         }
     }
     if (compare2 != 0) {
+        stack2_current = stack2->current;
         while (stack2_current != NULL_PTR) {
             ptr2 = stack2_current->data;
             stack2_current = stack2_current->next;

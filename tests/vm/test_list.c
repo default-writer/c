@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 27, 2025 at 3:14:47 PM GMT+3
+ *   April 29, 2025 at 6:48:11 AM GMT+3
  *
  */
 /*
@@ -108,31 +108,24 @@ RX_TEST_CASE(tests_list_v1, test_list_push_0_0_0, .fixture = test_fixture) {
 /* test init */
 RX_TEST_CASE(tests_list_v1, test_list_push_0, .fixture = test_fixture) {
     test_data_type rx = *((test_data_ptr)RX_DATA);
-    const_vm_ptr cvm = rx.ctx;
     stack_ptr stack = rx.stack;
     CALL(list)->push(stack, 0);
 }
 
 /* test init */
 RX_TEST_CASE(tests_list_v1, test_list_diff_0_0_0, .fixture = test_fixture) {
-    test_data_type rx = *((test_data_ptr)RX_DATA);
-    const_vm_ptr cvm = rx.ctx;
     stack_ptr stack = 0;
     CALL(list)->diff(stack, 0, 0);
 }
 
 /* test init */
 RX_TEST_CASE(tests_list_v1, test_list_diff_right_0_0_0, .fixture = test_fixture) {
-    test_data_type rx = *((test_data_ptr)RX_DATA);
-    const_vm_ptr cvm = rx.ctx;
     stack_ptr stack = 0;
     CALL(list)->diff_right(stack, 0, 0);
 }
 
 /* test init */
 RX_TEST_CASE(tests_list_v1, test_list_diff_left_0_0_0, .fixture = test_fixture) {
-    test_data_type rx = *((test_data_ptr)RX_DATA);
-    const_vm_ptr cvm = rx.ctx;
     stack_ptr stack = 0;
     CALL(list)->diff_left(stack, 0, 0);
 }
@@ -140,7 +133,6 @@ RX_TEST_CASE(tests_list_v1, test_list_diff_left_0_0_0, .fixture = test_fixture) 
 /* test init */
 RX_TEST_CASE(tests_list_v1, test_list_diff_0_0, .fixture = test_fixture) {
     test_data_type rx = *((test_data_ptr)RX_DATA);
-    const_vm_ptr cvm = rx.ctx;
     stack_ptr stack = rx.stack;
     CALL(list)->diff(stack, 0, 0);
 }
@@ -148,7 +140,6 @@ RX_TEST_CASE(tests_list_v1, test_list_diff_0_0, .fixture = test_fixture) {
 /* test init */
 RX_TEST_CASE(tests_list_v1, test_list_diff_right_0_0, .fixture = test_fixture) {
     test_data_type rx = *((test_data_ptr)RX_DATA);
-    const_vm_ptr cvm = rx.ctx;
     stack_ptr stack = rx.stack;
     CALL(list)->diff_right(stack, 0, 0);
 }
@@ -156,7 +147,6 @@ RX_TEST_CASE(tests_list_v1, test_list_diff_right_0_0, .fixture = test_fixture) {
 /* test init */
 RX_TEST_CASE(tests_list_v1, test_list_diff_left_0_0, .fixture = test_fixture) {
     test_data_type rx = *((test_data_ptr)RX_DATA);
-    const_vm_ptr cvm = rx.ctx;
     stack_ptr stack = rx.stack;
     CALL(list)->diff_left(stack, 0, 0);
 }
@@ -164,7 +154,6 @@ RX_TEST_CASE(tests_list_v1, test_list_diff_left_0_0, .fixture = test_fixture) {
 /* test init */
 RX_TEST_CASE(tests_list_v1, test_list_diff_0, .fixture = test_fixture) {
     test_data_type rx = *((test_data_ptr)RX_DATA);
-    const_vm_ptr cvm = rx.ctx;
     stack_ptr stack1 = rx.stack;
     stack_ptr stack2 = CALL(list)->init();
     CALL(list)->diff(stack1, stack2, 0);
@@ -192,7 +181,6 @@ RX_TEST_CASE(tests_list_v1, test_list_diff_right_0_0_0_0, .fixture = test_fixtur
 /* test init */
 RX_TEST_CASE(tests_list_v1, test_list_diff_right_0, .fixture = test_fixture) {
     test_data_type rx = *((test_data_ptr)RX_DATA);
-    const_vm_ptr cvm = rx.ctx;
     stack_ptr stack1 = rx.stack;
     stack_ptr stack2 = CALL(list)->init();
     CALL(list)->diff_right(stack1, stack2, 0);
@@ -202,7 +190,6 @@ RX_TEST_CASE(tests_list_v1, test_list_diff_right_0, .fixture = test_fixture) {
 /* test init */
 RX_TEST_CASE(tests_list_v1, test_list_diff_left_0, .fixture = test_fixture) {
     test_data_type rx = *((test_data_ptr)RX_DATA);
-    const_vm_ptr cvm = rx.ctx;
     stack_ptr stack1 = rx.stack;
     stack_ptr stack2 = CALL(list)->init();
     CALL(list)->diff_left(stack1, stack2, 0);
@@ -341,7 +328,6 @@ RX_TEST_CASE(tests_list_v1, test_destroy_null_ptr, .fixture = test_fixture) {
 /* test peek */
 RX_TEST_CASE(tests_list_v1, test_standard_list_peek_does_not_changes_stack, .fixture = test_fixture) {
     test_data_type rx = *((test_data_ptr)RX_DATA);
-    const_vm_ptr cvm = rx.ctx;
     stack_ptr stack = rx.stack;
     /* prepares the data */
     u8* data = (void_ptr)0xdeadbeef;
@@ -359,8 +345,6 @@ RX_TEST_CASE(tests_list_v1, test_standard_list_peek_does_not_changes_stack, .fix
 
 /* test pop from 0 pointer */
 RX_TEST_CASE(tests_list_v1, test_empty_list_pop_equals_0, .fixture = test_fixture) {
-    test_data_type rx = *((test_data_ptr)RX_DATA);
-    const_vm_ptr cvm = rx.ctx;
     stack_ptr ctx = 0;
     /* pops from the list */
     const_stack_ptr head = (const_stack_ptr)CALL(list)->pop(ctx);
@@ -370,8 +354,6 @@ RX_TEST_CASE(tests_list_v1, test_empty_list_pop_equals_0, .fixture = test_fixtur
 
 /* test pop from 0 pointer */
 RX_TEST_CASE(tests_list_v1, test_empty_list_peek_equals_0, .fixture = test_fixture) {
-    test_data_type rx = *((test_data_ptr)RX_DATA);
-    const_vm_ptr cvm = rx.ctx;
     stack_ptr ctx = 0;
     /* peeks from the list */
     const_stack_ptr head = (const_stack_ptr)CALL(list)->peek(ctx);
@@ -394,7 +376,6 @@ RX_TEST_CASE(tests_list_v1, test_alloc_count_eq_1, .fixture = test_fixture) {
 
 RX_TEST_CASE(tests_list_v1, test_alloc_data, .fixture = test_fixture) {
     test_data_type rx = *((test_data_ptr)RX_DATA);
-    const_vm_ptr cvm = rx.ctx;
     stack_ptr stack = rx.stack;
     /* prepares the data */
     u8* data = (void_ptr)0xdeadbeef;
@@ -408,7 +389,6 @@ RX_TEST_CASE(tests_list_v1, test_alloc_data, .fixture = test_fixture) {
 
 RX_TEST_CASE(tests_list_v1, test_alloc_pop_count_0, .fixture = test_fixture) {
     test_data_type rx = *((test_data_ptr)RX_DATA);
-    const_vm_ptr cvm = rx.ctx;
     stack_ptr stack = rx.stack;
     /* prepares the data */
     u8* data = (void_ptr)0xdeadbeef;
@@ -422,7 +402,6 @@ RX_TEST_CASE(tests_list_v1, test_alloc_pop_count_0, .fixture = test_fixture) {
 
 RX_TEST_CASE(tests_list_v1, test_alloc_pop_data, .fixture = test_fixture) {
     test_data_type rx = *((test_data_ptr)RX_DATA);
-    const_vm_ptr cvm = rx.ctx;
     stack_ptr stack = rx.stack;
     /* prepares the data */
     u8* data = (void_ptr)0xdeadbeef;
@@ -437,7 +416,6 @@ RX_TEST_CASE(tests_list_v1, test_alloc_pop_data, .fixture = test_fixture) {
 /* test peek */
 RX_TEST_CASE(tests_list_v1, test_list_peek_is_zero, .fixture = test_fixture) {
     test_data_type rx = *((test_data_ptr)RX_DATA);
-    const_vm_ptr cvm = rx.ctx;
     stack_ptr stack = rx.stack;
     /* peeks from the list */
     const_void_ptr head = (const_void_ptr)CALL(list)->peek(stack);
@@ -448,7 +426,6 @@ RX_TEST_CASE(tests_list_v1, test_list_peek_is_zero, .fixture = test_fixture) {
 /* test pop */
 RX_TEST_CASE(tests_list_v1, test_list_pop_is_zero, .fixture = test_fixture) {
     test_data_type rx = *((test_data_ptr)RX_DATA);
-    const_vm_ptr cvm = rx.ctx;
     stack_ptr stack = rx.stack;
     /* pops from the list */
     const_void_ptr head = (const_void_ptr)CALL(list)->pop(stack);
@@ -473,11 +450,9 @@ static void run_test(void (*test_callback)(const_vm_ptr cvm, stack_ptr const)) {
 static void test(const_vm_ptr cvm, stack_ptr stack) {
     u8* data = (void_ptr)0xdeadbeef;
     u64 is_null[] = {
-        (u64)CALL(list)->peek(stack),
-        (u64)CALL(list)->pop(stack)
+        (u64)CALL(list)->peek(stack)
     };
     RX_ASSERT(0 == is_null[0]);
-    RX_ASSERT(0 == is_null[1]);
     CALL(list)->push(stack, (void_ptr)data);
 #ifdef USE_MEMORY_DEBUG_INFO
     CALL(list)->print_head(stack);

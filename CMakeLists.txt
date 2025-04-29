@@ -269,6 +269,7 @@ set(LIB_SYS_SOURCE
 
 set(LIB_VM_SOURCE
     src/virtual/api/api_v1.c
+    src/virtual/api/api_v2.c
     src/virtual/pointer/pointer_v1.c
     src/virtual/types/data/data_v1.c
     src/virtual/types/file/file_v1.c
@@ -280,6 +281,7 @@ set(LIB_VM_SOURCE
     src/virtual/vm/vm_v1.c
     src/virtual/env/env_v1.c
     src/virtual/list/list_v1.c
+    src/virtual/list/list_v2.c
 )
 
 set(TESTS_SOURCE
@@ -289,6 +291,7 @@ set(TESTS_SOURCE
     tests/vm/test_vm.c
     tests/vm/test_hashtable.c
     tests/vm/test_api.c
+    tests/vm/test_api_v2.c
 )
 
 set(MAIN_TESTS_VM1_SOURCE tests/vm/main-tests_v1.c)

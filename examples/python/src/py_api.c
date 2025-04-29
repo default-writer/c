@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 23, 2025 at 2:30:14 PM GMT+3
+ *   April 29, 2025 at 4:33:24 PM GMT+3
  *
  */
 /*
@@ -94,4 +94,9 @@ PUBLIC const virtual_user_methods* PY_PUBLIC_API(user) {
 PUBLIC const virtual_list_methods* PY_PUBLIC_API(list) {
     CALL(error)->clear();
     return PUBLIC_API(list);
+}
+
+PUBLIC const virtual_list_v2_methods* PY_PUBLIC_API(list_v2) {
+    CALL(error)->clear();
+    return PUBLIC_API(list_v2);
 }

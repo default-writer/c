@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 23, 2025 at 4:20:06 PM GMT+3
+ *   April 29, 2025 at 4:32:55 PM GMT+3
  *
  */
 /*
@@ -36,10 +36,10 @@
     OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#define USING_VIRTUAL_API
+#define USING_VIRTUAL_API_V1
 
-#ifndef _VIRTUAL_API_
-#define _VIRTUAL_API_
+#ifndef _VIRTUAL_API_V1_
+#define _VIRTUAL_API_V1_
 
 #define USING_STD_API
 #include "std/api.h"
@@ -70,4 +70,4 @@ CVM_EXPORT extern const virtual_string_methods* PUBLIC_API(string);
 CVM_EXPORT extern const virtual_user_methods* PUBLIC_API(user);
 CVM_EXPORT extern const virtual_list_methods* PUBLIC_API(list);
 
-#endif /* _VIRTUAL_API_ */
+#endif /* _VIRTUAL_API_V1_ */
