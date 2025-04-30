@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 29, 2025 at 8:24:22 PM GMT+3
+ *   April 30, 2025 at 11:39:50 AM GMT+3
  *
  */
 /*
@@ -97,10 +97,13 @@ static void vm_dump_ref(const_vm_ptr cvm);
 static void vm_dump_ref_stack(const_vm_ptr cvm, stack_ptr stack);
 
 /* internal */
-static void vm_dump_ref_internal(const_vm_ptr cvm, pointer_ptr* ptr, stack_ptr stack);
-static void virtual_dump_ref_internal(const_vm_ptr cvm, stack_ptr stack);
+INLINE static void vm_ref_enumerator_init_internal(struct vm_state* ptr, const_vm_ptr cvm);
+INLINE static void vm_ref_enumerator_destroy_internal(struct vm_state* state);
+INLINE static pointer_ptr* vm_ref_enumerator_next_internal(struct vm_state* state);
+INLINE static u64 vm_next_internal(struct vm_state* state);
+INLINE static void vm_dump_ref_internal(const_vm_ptr cvm, pointer_ptr* ptr, stack_ptr stack);
+INLINE static void vm_ref_enumerate_internal(const_vm_ptr cvm, stack_ptr stack);
 
-/* internal */
 struct file_handler {
     FILE* file;
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -112,20 +115,13 @@ struct list_handler {
     stack_ptr list;
 };
 
+static u64 known_types_counter = TYPE_USER;
+
 /* public */
 static const_vm_ptr vm_init(u64 size);
 static void vm_gc(const_vm_ptr cvm);
 static u64 vm_release(const_vm_ptr cvm, u64 ptr);
 static void vm_destroy(const_vm_ptr cvm);
-
-/* internal */
-static void vm_ref_enumerator_init_internal(struct vm_state* ptr, const_vm_ptr cvm);
-static void vm_ref_enumerator_destroy_internal(struct vm_state* state);
-static pointer_ptr* vm_ref_enumerator_next_internal(struct vm_state* state);
-static u64 vm_next_internal(struct vm_state* state);
-
-/* internal */
-static u64 known_types_counter = TYPE_USER;
 
 static const_vm_ptr vm_init(u64 size) {
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -145,7 +141,7 @@ static const_vm_ptr vm_init(u64 size) {
 static void vm_gc(const_vm_ptr cvm) {
     CHECK_VM_NO_RETURN(cvm);
 #ifdef USE_MEMORY_DEBUG_INFO
-    virtual_dump_ref_internal(cvm, 0);
+    vm_ref_enumerate_internal(cvm, 0);
 #endif
     struct vm_state state;
     vm_ref_enumerator_init_internal(&state, cvm);
@@ -158,12 +154,12 @@ static void vm_gc(const_vm_ptr cvm) {
 
 static void vm_dump_ref(const_vm_ptr cvm) {
     CHECK_VM_NO_RETURN(cvm);
-    virtual_dump_ref_internal(cvm, 0);
+    vm_ref_enumerate_internal(cvm, 0);
 }
 
 static void vm_dump_ref_stack(const_vm_ptr cvm, stack_ptr stack) {
     CHECK_VM_NO_RETURN(cvm);
-    virtual_dump_ref_internal(cvm, stack);
+    vm_ref_enumerate_internal(cvm, stack);
 }
 
 static u64 vm_release(const_vm_ptr cvm, u64 address) {
@@ -190,7 +186,7 @@ static void vm_destroy(const_vm_ptr cvm) {
 #endif
 }
 
-static void vm_dump_ref_internal(const_vm_ptr cvm, pointer_ptr* ptr, stack_ptr stack) {
+INLINE static void vm_dump_ref_internal(const_vm_ptr cvm, pointer_ptr* ptr, stack_ptr stack) {
     if (*ptr == 0) {
         return;
     }
@@ -209,19 +205,19 @@ static void vm_dump_ref_internal(const_vm_ptr cvm, pointer_ptr* ptr, stack_ptr s
 }
 
 /* code */
-static void vm_ref_enumerator_init_internal(struct vm_state* state, const_vm_ptr cvm) {
+INLINE static void vm_ref_enumerator_init_internal(struct vm_state* state, const_vm_ptr cvm) {
     virtual_pointer_ptr vptr = (*cvm)->next;
     state->vptr = vptr;
     state->ref = vptr->bp;
 }
 
-static void vm_ref_enumerator_destroy_internal(struct vm_state* state) {
+INLINE static void vm_ref_enumerator_destroy_internal(struct vm_state* state) {
     state->vptr = 0;
     state->ref = 0;
 }
 
 /* implementation */
-static void virtual_dump_ref_internal(const_vm_ptr cvm, stack_ptr stack) {
+static void vm_ref_enumerate_internal(const_vm_ptr cvm, stack_ptr stack) {
     struct vm_state state;
     vm_ref_enumerator_init_internal(&state, cvm);
     pointer_ptr* ref = 0;

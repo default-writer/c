@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 29, 2025 at 8:27:20 PM GMT+3
+ *   April 30, 2025 at 11:34:57 AM GMT+3
  *
  */
 /*
@@ -84,12 +84,12 @@ static u64 virtual_type(const_vm_ptr cvm, u64 address);
 static u64 virtual_free(const_vm_ptr cvm, u64 address);
 
 /* internal */
-static u64 virtual_alloc_internal(const_vm_ptr cvm, u64 size, u64 type_id);
-static virtual_pointer_ptr virtual_init_internal(u64 size);
-static pointer_ptr virtual_read_internal(const_virtual_pointer_ptr vptr, u64 address);
+INLINE static u64 virtual_alloc_internal(const_vm_ptr cvm, u64 size, u64 type_id);
+INLINE static virtual_pointer_ptr virtual_init_internal(u64 size);
+INLINE static pointer_ptr virtual_read_internal(const_virtual_pointer_ptr vptr, u64 address);
 
 /* code */
-static u64 virtual_alloc_internal(const_vm_ptr cvm, u64 size, u64 type_id) {
+INLINE static u64 virtual_alloc_internal(const_vm_ptr cvm, u64 size, u64 type_id) {
     safe_virtual_pointer_ptr s;
     s.const_ptr = &(*cvm)->next;
     virtual_pointer_ptr* tail = s.ptr;
@@ -141,7 +141,7 @@ static u64 virtual_alloc_internal(const_vm_ptr cvm, u64 size, u64 type_id) {
     return address;
 }
 
-static virtual_pointer_ptr virtual_init_internal(u64 size) {
+INLINE static virtual_pointer_ptr virtual_init_internal(u64 size) {
     virtual_pointer_ptr vptr = CALL(os)->calloc(1, VIRTUAL_POINTER_TYPE_SIZE);
     pointer_ptr* ref = CALL(os)->calloc(size, PTR_SIZE);
     vptr->bp = ref;
@@ -149,7 +149,7 @@ static virtual_pointer_ptr virtual_init_internal(u64 size) {
     return vptr;
 }
 
-static pointer_ptr virtual_read_internal(const_virtual_pointer_ptr vptr, u64 address) {
+INLINE static pointer_ptr virtual_read_internal(const_virtual_pointer_ptr vptr, u64 address) {
     pointer_ptr ptr = 0;
     do {
         if (address > vptr->offset && address <= vptr->offset + DEFAULT_SIZE) {

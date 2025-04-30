@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 27, 2025 at 9:09:08 PM GMT+3
+ *   April 30, 2025 at 11:34:20 AM GMT+3
  *
  */
 /*
@@ -59,8 +59,8 @@ typedef struct stack_handler {
 } stack_handler_type;
 
 /* internal */
-static u64 stack_alloc_internal(const_vm_ptr cvm);
-static void stack_release_internal(const_vm_ptr cvm, stack_handler_ptr ptr);
+INLINE static u64 stack_alloc_internal(const_vm_ptr cvm);
+INLINE static void stack_release_internal(const_vm_ptr cvm, stack_handler_ptr ptr);
 
 /* public */
 static u64 stack_alloc(const_vm_ptr cvm);
@@ -95,7 +95,7 @@ static void stack_type_destructor(const_vm_ptr cvm, u64 address) {
 }
 
 /* internal */
-static u64 stack_alloc_internal(const_vm_ptr cvm) {
+INLINE static u64 stack_alloc_internal(const_vm_ptr cvm) {
     void_ptr data = CALL(memory)->alloc(STACK_HANDLER_TYPE_SIZE);
     u64 ptr = CALL(pointer)->alloc(cvm, data, STACK_HANDLER_TYPE_SIZE, 0, FLAG_MEMORY_PTR, stack_type_definitions.type_id);
     stack_handler_ptr handler = data;
@@ -103,7 +103,7 @@ static u64 stack_alloc_internal(const_vm_ptr cvm) {
     return ptr;
 }
 
-static void stack_release_internal(const_vm_ptr cvm, stack_handler_ptr handler) {
+INLINE static void stack_release_internal(const_vm_ptr cvm, stack_handler_ptr handler) {
     while (handler->list->size > 0) {
         u64 ptr = (u64)CALL(list)->pop(handler->list);
         CALL(vm)->release(cvm, ptr);
