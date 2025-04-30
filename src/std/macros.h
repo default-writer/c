@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 30, 2025 at 10:24:07 AM GMT+3
+ *   April 30, 2025 at 11:27:40 AM GMT+3
  *
  */
 /*
@@ -283,7 +283,8 @@
 #define ATTRIBUTE
 // #define INIT __attribute__((constructor))
 // #define DESTROY __attribute__((destructor))
-#define PUBLIC __attribute__((visibility("default")))
+#define PUBLIC inline __attribute__((always_inline, visibility("default")))
+#define INLINE inline __attribute__((always_inline))
 #else
 #define FALL_THROUGH ((void)0)
 #define ATTRIBUTE

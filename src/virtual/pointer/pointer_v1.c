@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 29, 2025 at 8:24:11 PM GMT+3
+ *   April 30, 2025 at 11:40:22 AM GMT+3
  *
  */
 /*
@@ -63,7 +63,6 @@
 #define KNOWN_TYPES_TYPE_ARRAY_SIZE(size) ((size) * KNOWN_TYPES_TYPE_SIZE)
 #define POINTER_TYPE_SIZE sizeof(pointer_type)
 
-/* internal */
 #include "internal/pointer_type_v1.h"
 #include "internal/vm_type_v1.h"
 
@@ -79,6 +78,9 @@ static void pointer_dump_ref(pointer_ptr* ptr);
 #endif
 
 /* internal */
+INLINE static u64 pointer_alloc_internal(const_pointer_ptr* tmp, const_vm_ptr cvm, const_void_ptr data, u64 size, u64 offset, u64 flags, u64 type_id);
+INLINE static u64 pointer_find_type_id_internal(const_vm_ptr cvm, const_type_methods_definitions_ptr data_type);
+
 struct file_handler {
     FILE* file;
 #ifdef USE_MEMORY_DEBUG_INFO
@@ -98,10 +100,6 @@ static u64 pointer_alloc(const_vm_ptr cvm, const_void_ptr data, u64 size, u64 of
 static const_void_ptr pointer_read(const_vm_ptr cvm, u64 address, u64 type_id);
 static u64 pointer_free(const_vm_ptr cvm, u64 address);
 static u64 pointer_ref(const_vm_ptr cvm, u64 address);
-
-/* internal */
-static u64 pointer_alloc_internal(const_pointer_ptr* tmp, const_vm_ptr cvm, const_void_ptr data, u64 size, u64 offset, u64 flags, u64 type_id);
-static u64 pointer_find_type_id_internal(const_vm_ptr cvm, const_type_methods_definitions_ptr data_type);
 
 static void pointer_register_known_type(const_vm_ptr cvm, type_methods_definitions_ptr data_type) {
     safe_vm_ptr safe_ptr;
@@ -124,7 +122,7 @@ static void pointer_register_user_type(const_vm_ptr cvm, type_methods_definition
 }
 
 /* internal */
-static u64 pointer_alloc_internal(const_pointer_ptr* tmp, const_vm_ptr cvm, const_void_ptr data, u64 size, u64 offset, u64 flags, u64 type_id) {
+INLINE static u64 pointer_alloc_internal(const_pointer_ptr* tmp, const_vm_ptr cvm, const_void_ptr data, u64 size, u64 offset, u64 flags, u64 type_id) {
     u64 address = CALL(virtual)->alloc(cvm, size, type_id);
     const_pointer_ptr const_ptr = CALL(virtual)->read(cvm, address);
     safe_pointer_ptr safe_ptr;
@@ -137,7 +135,7 @@ static u64 pointer_alloc_internal(const_pointer_ptr* tmp, const_vm_ptr cvm, cons
     return address;
 }
 
-static u64 pointer_find_type_id_internal(const_vm_ptr cvm, const_type_methods_definitions_ptr data_type) {
+INLINE static u64 pointer_find_type_id_internal(const_vm_ptr cvm, const_type_methods_definitions_ptr data_type) {
     for (u64 i = 0; i < (*cvm)->known_types_capacity; i++) {
         known_types_type current = (*cvm)->known_types[i];
         if (current.methods == data_type) {

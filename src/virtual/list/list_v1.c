@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 29, 2025 at 2:26:46 PM GMT+3
+ *   April 30, 2025 at 11:33:29 AM GMT+3
  *
  */
 /*
@@ -64,7 +64,7 @@ static void list_print(stack_ptr stack);
 #endif
 
 /* internal */
-static void list_diff_internal(stack_ptr stack1, stack_ptr stack2, stack_ptr compare1, stack_ptr compare2);
+INLINE static void list_diff_internal(stack_ptr stack1, stack_ptr stack2, stack_ptr compare1, stack_ptr compare2);
 
 /* initializes the new context's head element */
 static stack_ptr list_init(void) {
@@ -218,7 +218,7 @@ static void list_print(stack_ptr stack) {
 #endif
 
 /* internal */
-static void list_diff_internal(stack_ptr stack1, stack_ptr stack2, stack_ptr compare1, stack_ptr compare2) {
+INLINE static void list_diff_internal(stack_ptr stack1, stack_ptr stack2, stack_ptr compare1, stack_ptr compare2) {
     void_ptr ptr1 = 0;
     void_ptr ptr2 = 0;
     hashtable_ptr ht1 = CALL(hashtable)->init();

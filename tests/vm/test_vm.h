@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 30, 2025 at 10:24:03 AM GMT+3
+ *   April 30, 2025 at 11:30:22 AM GMT+3
  *
  */
 /*
@@ -50,11 +50,6 @@ typedef struct PRIVATE_API(test_suite) tests_vm_test_suite;
 extern const tests_vm_test_suite PRIVATE_API(tests_vm_test_suite_definitions);
 
 /* definition */
-#ifdef INLINE
-const tests_vm_test_suite* tests_vm_test_suite = &PRIVATE_API(tests_vm_test_suite_definitions);
-#else
-/* definition */
 static const tests_vm_test_suite* PRIVATE_API(tests_vm_test_suite) = &PRIVATE_API(tests_vm_test_suite_definitions);
-#endif
 
 #endif /* TEST_VM_V1_H */

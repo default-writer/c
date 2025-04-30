@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 29, 2025 at 6:06:53 PM GMT+3
+ *   April 30, 2025 at 11:33:41 AM GMT+3
  *
  */
 /*
@@ -57,7 +57,7 @@ static u64 list_diff_right(stack_v2_ptr stack1, stack_v2_ptr stack2, stack_v2_pt
 static u64 list_destroy(stack_v2_ptr* stack);
 
 /* internal */
-static void list_diff_internal(stack_v2_ptr stack1, stack_v2_ptr stack2, stack_v2_ptr* compare1, stack_v2_ptr* compare2);
+INLINE static void list_diff_internal(stack_v2_ptr stack1, stack_v2_ptr stack2, stack_v2_ptr* compare1, stack_v2_ptr* compare2);
 
 /* initializes the new context's head element */
 static stack_v2_ptr list_init(u64 size, stack_v2_ptr next) {
@@ -156,7 +156,7 @@ static u64 list_diff_right(stack_v2_ptr stack1, stack_v2_ptr stack2, stack_v2_pt
 }
 
 /* internal */
-static void list_diff_internal(stack_v2_ptr stack1, stack_v2_ptr stack2, stack_v2_ptr* compare1, stack_v2_ptr* compare2) {
+INLINE static void list_diff_internal(stack_v2_ptr stack1, stack_v2_ptr stack2, stack_v2_ptr* compare1, stack_v2_ptr* compare2) {
     hashtable_ptr ht1 = CALL(hashtable)->init();
     stack_v2_ptr stack1_ptr = stack1;
     u64 stack1_size = stack1->default_size;

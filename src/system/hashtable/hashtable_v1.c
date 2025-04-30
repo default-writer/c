@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 21, 2025 at 9:25:59 AM GMT+3
+ *   April 30, 2025 at 11:40:54 AM GMT+3
  *
  */
 /*
@@ -51,15 +51,15 @@ static const_void_ptr hashtable_get(hashtable_ptr ht, u64 key);
 static u64 hashtable_remove(hashtable_ptr ht, u64 key);
 
 /* internal */
-static u64 hashtable_function_internal(u64 key);
-static u64 hashtable_resize_internal(hashtable_ptr ht);
+INLINE static u64 hashtable_function_internal(u64 key);
+INLINE static u64 hashtable_resize_internal(hashtable_ptr ht);
 
-/* implementation */
-u64 hashtable_function_internal(u64 key) {
+/* internal */
+INLINE static u64 hashtable_function_internal(u64 key) {
     return key % HASHTABLE_INITIAL_CAPACITY;
 }
 
-u64 hashtable_resize_internal(hashtable_ptr ht) {
+INLINE static u64 hashtable_resize_internal(hashtable_ptr ht) {
     ht->table = (hashentry_ptr*)CALL(os)->realloc(ht->table, PTR_ARRAY_SIZE(ht->capacity * 2));
     CALL(os)->memset(ht->table + ht->size, 0x00, 8 * (u64)((double)ht->capacity * (2 - HASHTABLE_LOAD_FACTOR)));
     ht->capacity = ht->capacity * 2;

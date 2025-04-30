@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 27, 2025 at 9:09:08 PM GMT+3
+ *   April 30, 2025 at 11:27:42 AM GMT+3
  *
  */
 /*
@@ -53,13 +53,13 @@
 #include "internal/pointer_type_v1.h"
 
 /* internal */
-static u64 create_string_reference_internal(const_vm_ptr cvm, const_pointer_ptr const_ptr, u64 offset);
-static u8* string_strrchr_internal(u8* ch, const u8* str2, u64 size, u64 offset);
-static u8* string_strchr_internal(u8* str1, u8 ch, u64 size, u64 offset);
-static u8* get_next_match_internal(u8* str1, u8* str2, u64 size, u64 offset, u64 match_size);
-static u8* get_match_offset_internal(u8* str1, const u8* str2, u64 size, u64 offset);
-static const_pointer_ptr read_internal(const_vm_ptr cvm, u64 address);
-static const_pointer_ptr read_offset_internal(const_vm_ptr cvm, u64 address, u64* offset);
+INLINE static u64 create_string_reference_internal(const_vm_ptr cvm, const_pointer_ptr const_ptr, u64 offset);
+INLINE static u8* string_strrchr_internal(u8* ch, const u8* str2, u64 size, u64 offset);
+INLINE static u8* string_strchr_internal(u8* str1, u8 ch, u64 size, u64 offset);
+INLINE static u8* get_next_match_internal(u8* str1, u8* str2, u64 size, u64 offset, u64 match_size);
+INLINE static u8* get_match_offset_internal(u8* str1, const u8* str2, u64 size, u64 offset);
+INLINE static const_pointer_ptr read_internal(const_vm_ptr cvm, u64 address);
+INLINE static const_pointer_ptr read_offset_internal(const_vm_ptr cvm, u64 address, u64* offset);
 
 /* public */
 static u64 string_free(const_vm_ptr cvm, u64 address);
@@ -108,14 +108,14 @@ static void string_type_destructor(const_vm_ptr cvm, u64 address) {
 }
 
 /* internal */
-static u64 create_string_reference_internal(const_vm_ptr cvm, const_pointer_ptr const_ptr, u64 offset) {
+INLINE static u64 create_string_reference_internal(const_vm_ptr cvm, const_pointer_ptr const_ptr, u64 offset) {
     u64 size = const_ptr->public.size;
     void_ptr data = (void_ptr)const_ptr->public.address;
     u64 address = CALL(pointer)->alloc(cvm, data, size, offset, FLAG_MEMORY_ADDRESS, string_type_definitions.type_id);
     return address;
 }
 
-static u8* string_strrchr_internal(u8* ch, const u8* str2, u64 size, u64 offset) {
+INLINE static u8* string_strrchr_internal(u8* ch, const u8* str2, u64 size, u64 offset) {
     u8* str1 = ch;
     u8* ptr = str1;
     u8* last = 0;
@@ -134,7 +134,7 @@ static u8* string_strrchr_internal(u8* ch, const u8* str2, u64 size, u64 offset)
     return str1;
 }
 
-static u8* string_strchr_internal(u8* str1, u8 ch, u64 size, u64 offset) {
+INLINE static u8* string_strchr_internal(u8* str1, u8 ch, u64 size, u64 offset) {
     u8* ptr = str1;
     u8* last = 0;
     u64 rsize = size - 1;
@@ -152,7 +152,7 @@ static u8* string_strchr_internal(u8* str1, u8 ch, u64 size, u64 offset) {
     return str1;
 }
 
-static u8* get_next_match_internal(u8* str1, u8* str2, u64 size, u64 offset, u64 match_size) {
+INLINE static u8* get_next_match_internal(u8* str1, u8* str2, u64 size, u64 offset, u64 match_size) {
     u8* ptr2 = str2;
     u64 i = size - offset;
     while (i > 0) {
@@ -180,7 +180,7 @@ static u8* get_next_match_internal(u8* str1, u8* str2, u64 size, u64 offset, u64
     return str1;
 }
 
-static u8* get_match_offset_internal(u8* str1, const u8* str2, u64 size, u64 offset) {
+INLINE static u8* get_match_offset_internal(u8* str1, const u8* str2, u64 size, u64 offset) {
     u8* pos = str1;
     u8* last_match = 0;
     u64 i = size - offset;
@@ -193,7 +193,7 @@ static u8* get_match_offset_internal(u8* str1, const u8* str2, u64 size, u64 off
     return last_match;
 }
 
-static const_pointer_ptr read_internal(const_vm_ptr cvm, u64 address) {
+INLINE static const_pointer_ptr read_internal(const_vm_ptr cvm, u64 address) {
     const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, address, string_type_definitions.type_id);
     CHECK_POINTER(const_ptr, NULL_PTR);
     while (IS_FLAG_MEMORY_ADDRESS(const_ptr->flags)) {
@@ -204,7 +204,7 @@ static const_pointer_ptr read_internal(const_vm_ptr cvm, u64 address) {
     return const_ptr;
 }
 
-static const_pointer_ptr read_offset_internal(const_vm_ptr cvm, u64 address, u64* offset) {
+INLINE static const_pointer_ptr read_offset_internal(const_vm_ptr cvm, u64 address, u64* offset) {
     const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, address, string_type_definitions.type_id);
     CHECK_POINTER(const_ptr, NULL_PTR);
     *offset = const_ptr->offset;
@@ -479,7 +479,6 @@ static u64 string_match_offset(const_vm_ptr cvm, u64 src, u64 match) {
 static u64 string_load(const_vm_ptr cvm, const char* ch) {
     CHECK_VM(cvm, NULL_ADDRESS);
     CHECK_ARG(ch, NULL_ADDRESS);
-    // CHECK_VALUE(*ch, NULL_ADDRESS);
     u64 size = *ch == 0 ? 1 : CALL(os)->strlen((const char*)ch) + 1;
     u64 address = CALL(pointer)->copy(cvm, ch, size, 0, string_type_definitions.type_id);
     return address;

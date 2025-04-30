@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 30, 2025 at 10:24:04 AM GMT+3
+ *   April 30, 2025 at 11:31:06 AM GMT+3
  *
  */
 /*
@@ -50,11 +50,6 @@ typedef struct PRIVATE_API(test_suite) tests_memory_test_suite;
 extern const tests_memory_test_suite PRIVATE_API(tests_memory_test_suite_definitions);
 
 /* definition */
-#ifdef INLINE
-const tests_memory_test_suite* tests_memory_test_suite = &PRIVATE_API(tests_memory_test_suite_definitions);
-#else
-/* definition */
 static const tests_memory_test_suite* PRIVATE_API(tests_memory_test_suite) = &PRIVATE_API(tests_memory_test_suite_definitions);
-#endif
 
 #endif /* TEST_MEMORY_H */
