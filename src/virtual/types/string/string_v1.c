@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 30, 2025 at 11:27:42 AM GMT+3
+ *   April 30, 2025 at 1:34:30 PM GMT+3
  *
  */
 /*
@@ -86,11 +86,6 @@ static u64 string_move_left(const_vm_ptr cvm, u64 src, u64 shift);
 static u64 string_move_right(const_vm_ptr cvm, u64 src, u64 shift);
 static u64 string_strcmp(const_vm_ptr cvm, u64 src, u64 dest);
 static u64 string_ref(const_vm_ptr cvm, u64 src, u64 depth);
-
-/* definition */
-struct list_handler {
-    stack_ptr list;
-};
 
 /* type */
 static void string_type_destructor(const_vm_ptr cvm, u64 address);

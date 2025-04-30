@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 30, 2025 at 11:39:50 AM GMT+3
+ *   April 30, 2025 at 1:34:29 PM GMT+3
  *
  */
 /*
@@ -109,10 +109,6 @@ struct file_handler {
 #ifdef USE_MEMORY_DEBUG_INFO
     char* path;
 #endif
-};
-
-struct list_handler {
-    stack_ptr list;
 };
 
 static u64 known_types_counter = TYPE_USER;
