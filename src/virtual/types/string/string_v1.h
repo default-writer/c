@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 25, 2025 at 10:26:16 AM GMT+3
+ *   April 30, 2025 at 10:24:05 AM GMT+3
  *
  */
 /*
@@ -36,10 +36,10 @@
     OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#define USING_STRING
+#define USING_VIRTUAL_TYPES_STRING
 
-#ifndef _VIRTUAL_STRING_V1_H_
-#define _VIRTUAL_STRING_V1_H_
+#ifndef VIRTUAL_STRING_V1_H
+#define VIRTUAL_STRING_V1_H
 
 #define USING_STD_API
 #include "std/api.h"
@@ -81,4 +81,4 @@ typedef struct API(virtual_string_methods) {
 /* definition */
 CVM_EXPORT extern const virtual_string_methods* CALL(string);
 
-#endif /* _VIRTUAL_STRING_V1_H_ */
+#endif /* VIRTUAL_STRING_V1_H */

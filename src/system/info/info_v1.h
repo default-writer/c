@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 17, 2025 at 11:57:14 AM GMT+3
+ *   April 30, 2025 at 10:24:04 AM GMT+3
  *
  */
 /*
@@ -38,8 +38,8 @@
 
 #define USING_SYSTEM_INFO
 
-#ifndef _SYSTEM_INFO_H_
-#define _SYSTEM_INFO_H_
+#ifndef SYSTEM_INFO_H
+#define SYSTEM_INFO_H
 
 #define USING_STD_API
 #include "std/api.h"
@@ -56,4 +56,4 @@ typedef struct PRIVATE_API(system_info_methods) {
 /* definition */
 CSYS_EXPORT extern const system_info_methods* CALL(info);
 
-#endif /* _SYSTEM_INFO_H_ */
+#endif /* SYSTEM_INFO_H */

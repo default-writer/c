@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 20, 2025 at 7:02:48 PM GMT+3
+ *   April 30, 2025 at 10:24:05 AM GMT+3
  *
  */
 /*
@@ -38,8 +38,8 @@
 
 #define USING_DATA
 
-#ifndef _STD_DATA_H_
-#define _STD_DATA_H_
+#ifndef STD_DATA_H
+#define STD_DATA_H
 
 #define VM_PTR_ARRAY_SIZE 4096
 #define ERROR_BUFFER_SIZE 4096
@@ -166,4 +166,4 @@ enum type {
     TYPE_USER = 6,
 };
 
-#endif /* _STD_DATA_H_ */
+#endif /* STD_DATA_H */

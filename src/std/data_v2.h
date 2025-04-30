@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 29, 2025 at 6:05:29 PM GMT+3
+ *   April 30, 2025 at 10:24:05 AM GMT+3
  *
  */
 /*
@@ -38,8 +38,8 @@
 
 #define USING_DATA_V2
 
-#ifndef _STD_DATA_V2_H_
-#define _STD_DATA_V2_H_
+#ifndef STD_DATA_V2_H
+#define STD_DATA_V2_H
 
 #include "data.h"
 
@@ -55,4 +55,4 @@ typedef struct stack_v2 {
 #define STACK_V2_TYPE_SIZE sizeof(stack_v2_type)
 #define STACK_V2_PTR_ARRAY_SIZE 4096
 
-#endif /* _STD_DATA_V2_H_ */
+#endif /* STD_DATA_V2_H */

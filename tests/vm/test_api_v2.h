@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 29, 2025 at 5:05:40 PM GMT+3
+ *   April 30, 2025 at 10:24:02 AM GMT+3
  *
  */
 /*
@@ -38,8 +38,8 @@
 
 #define USING_TESTS_API_V2
 
-#ifndef _TEST_API_V2_H_
-#define _TEST_API_V2_H_
+#ifndef TEST_API_V2_H
+#define TEST_API_V2_H
 
 #define USING_STD_API
 #include "std/api.h"
@@ -57,4 +57,4 @@ const tests_api_v2_test_suite* tests_api_v2_test_suite = &PRIVATE_API(tests_api_
 static const tests_api_v2_test_suite* PRIVATE_API(tests_api_v2_test_suite) = &PRIVATE_API(tests_api_v2_test_suite_definitions);
 #endif
 
-#endif /* _TEST_API_V2_H_ */
+#endif /* TEST_API_V2_H */

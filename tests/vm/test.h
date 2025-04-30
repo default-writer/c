@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 17, 2025 at 11:57:23 AM GMT+3
+ *   April 30, 2025 at 10:24:03 AM GMT+3
  *
  */
 /*
@@ -38,8 +38,8 @@
 
 #define USING_TESTS
 
-#ifndef _TESTS_TEST_H_
-#define _TESTS_TEST_H_
+#ifndef TESTS_TEST_H
+#define TESTS_TEST_H
 
 #define USING_STD_API
 #include "std/api.h"
@@ -71,4 +71,4 @@ typedef struct PRIVATE_API(test_suite) {
         ptr = 0;    \
     }
 
-#endif /* _TESTS_TEST_H_ */
+#endif /* TESTS_TEST_H */

@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 17, 2025 at 11:57:14 AM GMT+3
+ *   April 30, 2025 at 10:24:03 AM GMT+3
  *
  */
 /*
@@ -36,8 +36,8 @@
     OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef _INTERNAL_VIRTUAL_POINTER_TYPE_V1_H_
-#define _INTERNAL_VIRTUAL_POINTER_TYPE_V1_H_
+#ifndef INTERNAL_VIRTUAL_POINTER_TYPE_V1_H
+#define INTERNAL_VIRTUAL_POINTER_TYPE_V1_H
 
 #define USING_STD_API
 #include "std/api.h"
@@ -49,4 +49,4 @@ typedef struct virtual_pointer {
     u64 offset;
 } virtual_pointer_type;
 
-#endif /* _INTERNAL_VIRTUAL_POINTER_TYPE_V1_H_ */
+#endif /* INTERNAL_VIRTUAL_POINTER_TYPE_V1_H */

@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 27, 2025 at 3:01:58 PM GMT+3
+ *   April 30, 2025 at 7:29:15 AM GMT+3
  *
  */
 /*
@@ -463,7 +463,11 @@ RX_TEST_CASE(tests_pointer_v1, test_data_free, .fixture = test_fixture) {
     CALL(error)->clear();
     CALL(data)->free(cvm, char_ptr);
     u64 error_count = CALL(error)->count();
+#ifdef USE_MEMORY_DEBUG_INFO
     RX_ASSERT(error_count != 0);
+#else
+    RX_ASSERT(error_count == 0);
+#endif
 #ifndef USE_GC
     CALL(string)->free(cvm, char_ptr);
 #endif
@@ -477,7 +481,12 @@ RX_TEST_CASE(tests_pointer_v1, test_file_free, .fixture = test_fixture) {
     CALL(error)->clear();
     CALL(file)->free(cvm, char_ptr);
     u64 error_count = CALL(error)->count();
+#ifdef USE_MEMORY_DEBUG_INFO
     RX_ASSERT(error_count != 0);
+#else
+    RX_ASSERT(error_count == 0);
+#endif
+
 #ifndef USE_GC
     CALL(string)->free(cvm, char_ptr);
 #endif
@@ -3719,7 +3728,12 @@ RX_TEST_CASE(tests_pointer_v1, test_type_register_user_type, .fixture = test_fix
     CALL(error)->clear();
     /* type->register_user_type fails in register_user_types */
     CALL(type)->register_user_type(cvm, &user_definition);
-    RX_ASSERT(CALL(error)->count() == 1);
+    u64 error_count = CALL(error)->count();
+#ifdef USE_MEMORY_DEBUG_INFO
+    RX_ASSERT(error_count == 1);
+#else
+    RX_ASSERT(error_count == 0);
+#endif
 }
 
 /* test init */
@@ -3821,7 +3835,11 @@ RX_TEST_CASE(pointer_tests, test_vm_ref_dump_0, .fixture = test_fixture_pointer)
     CALL(error)->clear();
     CALL(vm)->dump_ref(0);
     u64 error_count = CALL(error)->count();
+#ifdef USE_MEMORY_DEBUG_INFO
     RX_ASSERT(error_count != 0);
+#else
+    RX_ASSERT(error_count == 0);
+#endif
 }
 
 /* test init */
@@ -3829,7 +3847,11 @@ RX_TEST_CASE(pointer_tests, test_vm_dump_ref_stack_0, .fixture = test_fixture_po
     CALL(error)->clear();
     CALL(vm)->dump_ref_stack(0, 0);
     u64 error_count = CALL(error)->count();
+#ifdef USE_MEMORY_DEBUG_INFO
     RX_ASSERT(error_count != 0);
+#else
+    RX_ASSERT(error_count == 0);
+#endif
 }
 
 /* test init */
@@ -3837,7 +3859,11 @@ RX_TEST_CASE(pointer_tests, test_vm_dump_ref_0, .fixture = test_fixture_pointer)
     CALL(error)->clear();
     CALL(vm)->dump_ref(0);
     u64 error_count = CALL(error)->count();
+#ifdef USE_MEMORY_DEBUG_INFO
     RX_ASSERT(error_count != 0);
+#else
+    RX_ASSERT(error_count == 0);
+#endif
 }
 
 /* test init */

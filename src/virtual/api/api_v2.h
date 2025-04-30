@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 29, 2025 at 4:32:15 PM GMT+3
+ *   April 30, 2025 at 9:59:32 AM GMT+3
  *
  */
 /*
@@ -38,8 +38,8 @@
 
 #define USING_VIRTUAL_API_V2
 
-#ifndef _VIRTUAL_API_V2_
-#define _VIRTUAL_API_V2_
+#ifndef VIRTUAL_API_V2
+#define VIRTUAL_API_V2
 
 #define USING_STD_API
 #include "std/api.h"
@@ -50,4 +50,4 @@
 
 CVM_EXPORT extern const virtual_list_v2_methods* PUBLIC_API(list_v2);
 
-#endif /* _VIRTUAL_API_V2_ */
+#endif /* VIRTUAL_API_V2 */

@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 17, 2025 at 11:57:14 AM GMT+3
+ *   April 30, 2025 at 9:59:06 AM GMT+3
  *
  */
 /*
@@ -36,10 +36,10 @@
     OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#define USING_SYSTEM_API
+#define USING_SYSTEM_API_V1
 
-#ifndef _SYSTEM_API_
-#define _SYSTEM_API_
+#ifndef SYSTEM_API_V1_H
+#define SYSTEM_API_V1_H
 
 #define USING_STD_API
 #include "std/api.h"
@@ -61,4 +61,4 @@ CSYS_EXPORT extern const system_options_methods* PUBLIC_API(options);
 CSYS_EXPORT extern const system_os_methods* PUBLIC_API(os);
 CSYS_EXPORT extern const system_hashtable_methods* PUBLIC_API(hashtable);
 
-#endif /* _SYSTEM_API_ */
+#endif /* SYSTEM_API_V1_H */

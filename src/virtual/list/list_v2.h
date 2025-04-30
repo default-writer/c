@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 29, 2025 at 5:20:33 PM GMT+3
+ *   April 30, 2025 at 10:24:04 AM GMT+3
  *
  */
 /*
@@ -36,10 +36,10 @@
     OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#define USING_LIST_V2
+#define USING_VIRTUAL_LIST_V2
 
-#ifndef _VIRTUAL_LIST_V2_H_
-#define _VIRTUAL_LIST_V2_H_
+#ifndef VIRTUAL_LIST_V2_H
+#define VIRTUAL_LIST_V2_H
 
 #define USING_STD_API
 #include "std/api.h"
@@ -62,4 +62,4 @@ typedef struct PRIVATE_API(virtual_list_v2_methods) {
 /* definition */
 CVM_EXPORT extern const virtual_list_v2_methods* CALL(list_v2);
 
-#endif /* _VIRTUAL_LIST_V2_H_ */
+#endif /* VIRTUAL_LIST_V2_H */

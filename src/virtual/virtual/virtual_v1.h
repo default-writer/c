@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 17, 2025 at 11:57:14 AM GMT+3
+ *   April 30, 2025 at 10:24:05 AM GMT+3
  *
  */
 /*
@@ -36,10 +36,10 @@
     OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#define USING_VIRTUAL
+#define USING_VIRTUAL_TYPE
 
-#ifndef _VIRTUAL_V1_H_
-#define _VIRTUAL_V1_H_
+#ifndef VIRTUAL_V1_H
+#define VIRTUAL_V1_H
 
 #define USING_STD_API
 #include "std/api.h"
@@ -62,4 +62,4 @@ typedef struct PRIVATE_API(virtual_system_methods) {
 CVM_EXPORT extern const virtual_methods* CALL(virtual);
 CVM_EXPORT extern const virtual_system_methods* CALL(system);
 
-#endif /* _VIRTUAL_V1_H_ */
+#endif /* VIRTUAL_V1_H */

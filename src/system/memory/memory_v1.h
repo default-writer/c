@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 22, 2025 at 9:16:35 AM GMT+3
+ *   April 30, 2025 at 10:24:06 AM GMT+3
  *
  */
 /*
@@ -38,8 +38,8 @@
 
 #define USING_SYSTEM_MEMORY
 
-#ifndef _SYSTEM_MEMORY_H_
-#define _SYSTEM_MEMORY_H_
+#ifndef SYSTEM_MEMORY_H
+#define SYSTEM_MEMORY_H
 
 #define USING_STD_API
 #include "std/api.h"
@@ -63,4 +63,4 @@ typedef struct PRIVATE_API(system_memory_methods) {
 /* definition */
 CSYS_EXPORT extern const system_memory_methods* CALL(memory);
 
-#endif /* _SYSTEM_MEMORY_H_ */
+#endif /* SYSTEM_MEMORY_H */
