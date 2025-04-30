@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 17, 2025 at 11:57:14 AM GMT+3
+ *   April 30, 2025 at 10:24:04 AM GMT+3
  *
  */
 /*
@@ -38,8 +38,8 @@
 
 #define USING_SYSTEM_OPTIONS
 
-#ifndef _SYSTEM_OPTIONS_H_
-#define _SYSTEM_OPTIONS_H_
+#ifndef SYSTEM_OPTIONS_H
+#define SYSTEM_OPTIONS_H
 
 #define USING_STD_API
 #include "std/api.h"
@@ -53,4 +53,4 @@ typedef struct PRIVATE_API(system_options_methods) {
 /* definition */
 CSYS_EXPORT extern const system_options_methods* CALL(options);
 
-#endif /* _SYSTEM_OPTIONS_H_ */
+#endif /* SYSTEM_OPTIONS_H */

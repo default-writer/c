@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 21, 2025 at 5:28:37 AM GMT+3
+ *   April 30, 2025 at 10:24:01 AM GMT+3
  *
  */
 /*
@@ -36,8 +36,8 @@
     OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef _INTERNAL_POINTER_TYPE_V1_H_
-#define _INTERNAL_POINTER_TYPE_V1_H_
+#ifndef INTERNAL_POINTER_TYPE_V1_H
+#define INTERNAL_POINTER_TYPE_V1_H
 
 #define USING_STD_API
 #include "std/api.h"
@@ -53,4 +53,4 @@ typedef struct pointer {
     pointer_public_type public;
 } pointer_type;
 
-#endif /* _INTERNAL_POINTER_TYPE_V1_H_ */
+#endif /* INTERNAL_POINTER_TYPE_V1_H */

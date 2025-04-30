@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 29, 2025 at 8:31:20 PM GMT+3
+ *   April 30, 2025 at 10:35:40 AM GMT+3
  *
  */
 /*
@@ -54,8 +54,10 @@ static const char* error_messages[] = {
 static exception_type exception;
 static exception_ptr exception_errors = &exception;
 
+#ifndef USE_MEMORY_DEBUG_INFO
 static void error_output(FILE* output, u64 error_type, const char* message, u64 size);
 static void error_throw(u64 error_type, const char* message, u64 size);
+#endif
 static void error_clear(void);
 static u64 error_type(void);
 static FILE* error_stdout(void);
@@ -66,7 +68,6 @@ static u64 error_count(void);
 
 /* implementation */
 static void error_output(FILE* output, u64 error_type, const char* message, u64 size) {
-#ifdef USE_MEMORY_DEBUG_INFO
 #ifdef USE_TTY
     if (isatty(STDERR_FILENO)) {
         const char* start = "\x1b[31m";
@@ -76,14 +77,12 @@ static void error_output(FILE* output, u64 error_type, const char* message, u64 
 #else
     fprintf(output, "[debug]: %s: %s\n", error_messages[error_type], message); /* NOLINT: fprintf(output) */
 #endif
-#endif
 }
 
 static void error_throw(u64 error_type, const char* message, u64 size) {
     if (exception_errors->message_count < ERROR_MESSAGE_COUNT) {
         exception_errors->message_count++;
     } else {
-        /* copy all ERROR_MESSAGE_COUNT - 2 messages to the bottom  */
         CALL(os)->memmove(&exception_errors->type[0], &exception_errors->type[1], (exception_errors->message_count - 1) * sizeof(u64));
         CALL(os)->memmove(&exception_errors->message[0], &exception_errors->message[ERROR_MESSAGE_SIZE], (exception_errors->message_count - 1) * ERROR_MESSAGE_SIZE);
     }

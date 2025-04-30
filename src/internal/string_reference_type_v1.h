@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 20, 2025 at 7:07:26 AM GMT+3
+ *   April 30, 2025 at 10:24:04 AM GMT+3
  *
  */
 /*
@@ -36,8 +36,8 @@
     OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef _INTERNAL_STRING_REFERENCE_TYPE_V1_H_
-#define _INTERNAL_STRING_REFERENCE_TYPE_V1_H_
+#ifndef INTERNAL_STRING_REFERENCE_TYPE_V1_H
+#define INTERNAL_STRING_REFERENCE_TYPE_V1_H
 
 #define USING_STD_API
 #include "std/api.h"
@@ -49,4 +49,4 @@ typedef struct string_reference {
     u64 offset;
 } string_reference_type;
 
-#endif /* _INTERNAL_STRING_REFERENCE_TYPE_V1_H_ */
+#endif /* INTERNAL_STRING_REFERENCE_TYPE_V1_H */

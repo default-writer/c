@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 17, 2025 at 11:57:24 AM GMT+3
+ *   April 30, 2025 at 10:24:01 AM GMT+3
  *
  */
 /*
@@ -38,8 +38,8 @@
 
 #define USING_TESTS_POINTER
 
-#ifndef _TEST_POINTER_H_
-#define _TEST_POINTER_H_
+#ifndef TEST_POINTER_H
+#define TEST_POINTER_H
 
 #define USING_STD_API
 #include "std/api.h"
@@ -57,4 +57,4 @@ const tests_pointer_suite* tests_pointer_suite = &PRIVATE_API(tests_pointer_suit
 static const tests_pointer_suite* PRIVATE_API(tests_pointer_suite) = &PRIVATE_API(tests_pointer_suite_definitions);
 #endif
 
-#endif /* _TEST_POINTER_H_ */
+#endif /* TEST_POINTER_H */

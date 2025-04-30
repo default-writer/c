@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 30, 2025 at 12:02:41 AM GMT+3
+ *   April 30, 2025 at 10:24:07 AM GMT+3
  *
  */
 /*
@@ -36,10 +36,10 @@
     OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef _STD_MACROS_H_
-#define _STD_MACROS_H_
-
 #define USING_MACROS
+
+#ifndef STD_MACROS_H
+#define STD_MACROS_H
 
 #define TRUE 1
 #define FALSE 0
@@ -98,19 +98,20 @@
 #define ERROR_INVALID_VALUE(format, ...) ERROR(ERROR_INVALID_VALUE, format, __VA_ARGS__)
 #endif
 
-#define CHECK_VM(cvm, null)                       \
-    do {                                          \
-        if (cvm == 0 || *cvm == 0) {              \
-            ERROR_VM_NOT_INITIALIZED("%s", #cvm); \
-            return null;                          \
-        }                                         \
-    } while (0)
+#ifdef USE_MEMORY_DEBUG_INFO
 #define CHECK_VM_CONDITION(condition, null)             \
     do {                                                \
         if (condition) {                                \
             ERROR_VM_NOT_INITIALIZED("%s", #condition); \
             return null;                                \
         }                                               \
+    } while (0)
+#define CHECK_VM(cvm, null)                       \
+    do {                                          \
+        if (cvm == 0 || *cvm == 0) {              \
+            ERROR_VM_NOT_INITIALIZED("%s", #cvm); \
+            return null;                          \
+        }                                         \
     } while (0)
 #define CHECK_VM_NO_RETURN(cvm)                   \
     do {                                          \
@@ -189,6 +190,86 @@
             return;                                  \
         }                                            \
     } while (0)
+#else
+#define CHECK_VM_CONDITION(condition, null) \
+    do {                                    \
+        if (condition) {                    \
+            return null;                    \
+        }                                   \
+    } while (0)
+#define CHECK_VM(cvm, null)          \
+    do {                             \
+        if (cvm == 0 || *cvm == 0) { \
+            return null;             \
+        }                            \
+    } while (0)
+#define CHECK_VM_NO_RETURN(cvm)      \
+    do {                             \
+        if (cvm == 0 || *cvm == 0) { \
+            return;                  \
+        }                            \
+    } while (0)
+#define CHECK_ARG(arg, null) \
+    do {                     \
+        if (arg == 0) {      \
+            return null;     \
+        }                    \
+    } while (0)
+#define CHECK_ARG_NO_RETURN(arg) \
+    do {                         \
+        if (arg == 0) {          \
+            return;              \
+        }                        \
+    } while (0)
+#define CHECK_POINTER(arg, null) \
+    do {                         \
+        if (arg == 0) {          \
+            return null;         \
+        }                        \
+    } while (0)
+#define CHECK_POINTER_NO_RETURN(arg) \
+    do {                             \
+        if (arg == 0) {              \
+            return;                  \
+        }                            \
+    } while (0)
+#define CHECK_CONDITION(condition, null) \
+    do {                                 \
+        if (condition) {                 \
+            return null;                 \
+        }                                \
+    } while (0)
+#define CHECK_CONDITION_NO_RETURN(condition) \
+    do {                                     \
+        if (condition) {                     \
+            return;                          \
+        }                                    \
+    } while (0)
+#define CHECK_VALUE(value, null) \
+    do {                         \
+        if (value == 0) {        \
+            return null;         \
+        }                        \
+    } while (0)
+#define CHECK_VALUE_NO_RETURN(value) \
+    do {                             \
+        if (value == 0) {            \
+            return;                  \
+        }                            \
+    } while (0)
+#define CHECK_TYPE(condition, null) \
+    do {                            \
+        if (condition) {            \
+            return null;            \
+        }                           \
+    } while (0)
+#define CHECK_TYPE_NO_RETURN(condition) \
+    do {                                \
+        if (condition) {                \
+            return;                     \
+        }                               \
+    } while (0)
+#endif
 
 #define FLAG_NONE (u64)0x0000000000000000
 #define FLAG_MEMORY_PTR (u64)0x0000000000000001
@@ -211,4 +292,4 @@
 #define PUBLIC
 #endif /* __GNUC__ >= 7 */
 
-#endif /* _STD_MACROS_H_ */
+#endif /* STD_MACROS_H */

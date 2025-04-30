@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 17, 2025 at 11:57:14 AM GMT+3
+ *   April 30, 2025 at 10:24:04 AM GMT+3
  *
  */
 /*
@@ -36,10 +36,10 @@
     OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#define USING_API
+#define USING_SYSTEM_OS
 
-#ifndef _SYSTEM_OS_V1_H_
-#define _SYSTEM_OS_V1_H_
+#ifndef SYSTEM_OS_V1_H
+#define SYSTEM_OS_V1_H
 
 #define USING_STD_API
 #include "std/api.h"
@@ -77,4 +77,4 @@ typedef struct PRIVATE_API(system_os_methods) {
 /* public */
 CSYS_EXPORT extern const system_os_methods* CALL(os);
 
-#endif /* _SYSTEM_OS_V1_H_ */
+#endif /* SYSTEM_OS_V1_H */

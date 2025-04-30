@@ -21,7 +21,7 @@ cd "${pwd}/../../"
 
 ./bin/clear.sh
 
-./bin/cmake.sh --target=main-tests-vm1  --verbose --tty --clean
+./bin/cmake.sh --target=main-tests-vm1 --verbose --tty --clean
 
 if [[ ! -d ".venv" ]]; then
     python3 -m venv .venv

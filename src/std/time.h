@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 17, 2025 at 11:57:18 AM GMT+3
+ *   April 30, 2025 at 10:24:04 AM GMT+3
  *
  */
 /*
@@ -36,10 +36,10 @@
     OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef _STD_TIME_H_
-#define _STD_TIME_H_
-
 #define USING_TIME
+
+#ifndef STD_TIME_H
+#define STD_TIME_H
 
 #define TIME_INIT(s)       \
     struct timespec s##t1; \
@@ -77,4 +77,4 @@
         printf("%02llu:%02llu:%02llu.%03llu.%06llu\n", hours, minutes, seconds, milliseconds, nanoseconds); \
     } while (0)
 
-#endif /* _STD_TIME_H_ */
+#endif /* STD_TIME_H */

@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 24, 2025 at 7:54:58 PM GMT+3
+ *   April 30, 2025 at 10:39:14 AM GMT+3
  *
  */
 /*
@@ -191,6 +191,29 @@ RX_TEST_CASE(tests_memory_v1, test_api_clear_get_has_0, .fixture = test_fixture)
     const char* ex = CALL(error)->get();
     RX_ASSERT(ex == 0);
     RX_ASSERT(CALL(error)->type() == 0);
+}
+
+/* test case */
+RX_TEST_CASE(tests_memory_v1, test_api_clear_throw_get_has_value, .fixture = test_fixture) {
+    CALL(error)->clear();
+    const char* error_message = "value is invalid";
+    CALL(error)->throw(ID_ERROR_INVALID_VALUE, error_message, strlen(error_message) + 1);
+    const char* ex = CALL(error)->get();
+    RX_ASSERT(ex != 0);
+    RX_ASSERT(CALL(error)->type() == ID_ERROR_INVALID_VALUE);
+    CALL(error)->clear();
+}
+
+/* test case */
+RX_TEST_CASE(tests_memory_v1, test_api_clear_throw_output_get_has_value, .fixture = test_fixture) {
+    CALL(error)->clear();
+    const char* error_message = "value is invalid";
+    CALL(error)->throw(ID_ERROR_INVALID_VALUE, error_message, strlen(error_message) + 1);
+    CALL(error)->output(CALL(error)->stderr(), ID_ERROR_INVALID_VALUE, error_message, strlen(error_message) + 1);
+    const char* ex = CALL(error)->get();
+    RX_ASSERT(ex != 0);
+    RX_ASSERT(CALL(error)->type() == ID_ERROR_INVALID_VALUE);
+    CALL(error)->clear();
 }
 
 /* test case */

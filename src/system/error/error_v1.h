@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 22, 2025 at 9:32:42 AM GMT+3
+ *   April 30, 2025 at 10:35:13 AM GMT+3
  *
  */
 /*
@@ -38,8 +38,8 @@
 
 #define USING_SYSTEM_ERROR
 
-#ifndef _SYSTEM_ERROR_H_
-#define _SYSTEM_ERROR_H_
+#ifndef SYSTEM_ERROR_H
+#define SYSTEM_ERROR_H
 
 #define USING_STD_API
 #include "std/api.h"
@@ -73,4 +73,4 @@ typedef struct PRIVATE_API(system_error_methods) {
 /* public */
 CSYS_EXPORT extern const system_error_methods* CALL(error);
 
-#endif /* _SYSTEM_ERROR_H_ */
+#endif /* SYSTEM_ERROR_H */

@@ -90,6 +90,10 @@ while (($#)); do
             help
             ;;
 
+        "--recommended") # [optional] use recommended parameters
+            install="--recommended"
+            ;;
+
         *)
             help
             ;;
@@ -97,6 +101,12 @@ while (($#)); do
     esac
     shift
 done
+
+if [[ "${install}" == "--recommended" ]]; then
+    source="main-tests-vm1"
+    tty="--tty"
+    clean="--clean"
+fi
 
 if [[ "${install}" == "" ]]; then
     help

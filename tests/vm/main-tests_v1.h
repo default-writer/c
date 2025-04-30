@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 29, 2025 at 5:04:05 PM GMT+3
+ *   April 30, 2025 at 10:24:03 AM GMT+3
  *
  */
 /*
@@ -38,8 +38,8 @@
 
 #define USING_MAIN_TESTS
 
-#ifndef _MAIN_TESTS_V1_H_
-#define _MAIN_TESTS_V1_H_
+#ifndef MAIN_TESTS_V1_H
+#define MAIN_TESTS_V1_H
 
 #define USING_TESTS_LIST
 #include "test_list.h"
@@ -62,4 +62,4 @@
 #define USING_TESTS_API_V2
 #include "test_api_v2.h"
 
-#endif /* _MAIN_TESTS_V1_H_ */
+#endif /* MAIN_TESTS_V1_H */

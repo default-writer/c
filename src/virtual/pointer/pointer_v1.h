@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 21, 2025 at 4:23:04 PM GMT+3
+ *   April 30, 2025 at 10:24:05 AM GMT+3
  *
  */
 /*
@@ -36,10 +36,10 @@
     OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#define USING_POINTER
+#define USING_VIRTUAL_POINTER
 
-#ifndef _VIRTUAL_POINTER_V1_H_
-#define _VIRTUAL_POINTER_V1_H_
+#ifndef VIRTUAL_POINTER_V1_H
+#define VIRTUAL_POINTER_V1_H
 
 #define USING_STD_API
 #include "std/api.h"
@@ -67,4 +67,4 @@ typedef struct PRIVATE_API(virtual_type_methods) {
 CVM_EXPORT extern const virtual_pointer_methods* CALL(pointer);
 CVM_EXPORT extern const virtual_type_methods* CALL(type);
 
-#endif /* _VIRTUAL_POINTER_V1_H_ */
+#endif /* VIRTUAL_POINTER_V1_H */

@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 29, 2025 at 1:23:20 PM GMT+3
+ *   April 30, 2025 at 10:24:04 AM GMT+3
  *
  */
 /*
@@ -38,10 +38,8 @@
 
 #define USING_STD_API
 
-#ifndef _STD_API_H_
-#define _STD_API_H_
-
-#define USING_DATA
+#ifndef STD_API_H
+#define STD_API_H
 
 #define USING_HEADERS
 #include "std/headers.h"
@@ -55,8 +53,9 @@
 #define USING_TIME
 #include "std/time.h"
 
+#define USING_DATA
 #include "std/data.h"
 
 #include "std/version.h"
 
-#endif /* _STD_API_H_ */
+#endif /* STD_API_H */
