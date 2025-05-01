@@ -38,6 +38,10 @@ while (($#)); do
             hooks="--hooks"
             ;;
 
+        "--dotnet") # installs dotnet
+            dotnet="--dotnet"
+            ;;
+
         "--submodule-rexo") # installs rexo
             rexo="--submodule-rexo"
             ;;
@@ -73,6 +77,9 @@ fi
 
 if [[ "${source}" == "all" || "${hooks}" == "--hooks" ]]; then
     "${pwd}/bin/utils/install.sh" --hooks
+fi
+if [[ "${source}" == "all" || "${dotnet}" == "--dotnet" ]]; then
+    "${pwd}/bin/utils/install.sh" --dotnet-9
 fi
 if [[ "${source}" == "all" || "${rexo}" == "--submodule-rexo" ]]; then
     "${pwd}/bin/utils/install.sh" --submodule-rexo

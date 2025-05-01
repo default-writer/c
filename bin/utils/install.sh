@@ -57,6 +57,14 @@ while (($#)); do
                 appwrite/appwrite:1.3.1
             ;;
 
+        "--dotnet-9") # installs dotnet-9
+            curl -sL https://dot.net/v1/dotnet-install.sh -o /tmp/dotnet-install.sh
+            chmod +x /tmp/dotnet-install.sh
+            bash /tmp/dotnet-install.sh --channel 9.0
+            rm -f /tmp/dotnet-install.sh
+            "${pwd}/bin/utils/env.sh" --dotnet
+            ;;
+
         "--mojo-sdk") # installs mojo sdk
             curl https://get.modular.com | MODULAR_AUTH=${MODULAR_AUTH} sh -
             modular install mojo
