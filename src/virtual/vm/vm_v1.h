@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 1, 2025 at 11:01:00 AM GMT+3
+ *   May 1, 2025 at 1:32:50 PM GMT+3
  *
  */
 /*
@@ -44,7 +44,11 @@
 #define USING_STD_API
 #include "std/api.h"
 
-#include "virtual/platform.h"
+#if defined(_WIN32)
+#include "virtual/platform/win32/export.h"
+#else
+#include "virtual/platform/default/export.h"
+#endif
 
 typedef struct PRIVATE_API(virtual_vm_methods) {
     const_vm_ptr (*init)(u64 size);

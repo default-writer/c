@@ -13,6 +13,10 @@ if [[ "${BASHOPTS}" != *extdebug* ]]; then
     trap 'err_report $LINENO' ERR
 fi
 
+unset LD_PRELOAD
+
+export LD_PRELOAD=
+
 source=$(pwd)
 
 pwd=$(cd "$(dirname $(dirname "${BASH_SOURCE[0]}"))" &> /dev/null && pwd)
@@ -22,8 +26,6 @@ cd "${pwd}"
 install="$1"
 
 opts=( "${@:2}" )
-
-unset LD_PRELOAD
 
 build=""
 

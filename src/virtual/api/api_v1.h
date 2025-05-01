@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 1, 2025 at 11:01:01 AM GMT+3
+ *   May 1, 2025 at 1:32:51 PM GMT+3
  *
  */
 /*
@@ -45,7 +45,11 @@
 #include "std/api.h"
 
 #include "virtual/env/env_v1.h"
-#include "virtual/platform.h"
+#if defined(_WIN32)
+#include "virtual/platform/win32/export.h"
+#else
+#include "virtual/platform/default/export.h"
+#endif
 #include "virtual/list/list_v1.h"
 #include "virtual/pointer/pointer_v1.h"
 #include "virtual/types/data/data_v1.h"

@@ -1,5 +1,557 @@
 {
+  "terminal.integrated.smoothScrolling": true,
+  "terminal.integrated.cursorBlinking": true,
+  "terminal.integrated.mouseWheelZoom": true,
+  "terminal.integrated.enableFileLinks": "on",
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "terminal.integrated.profiles.linux": {
+    "bash": {
+      "path": "/bin/bash"
+    }
+  },
+  "sonar.coverageReportPaths": "${workspaceFolder}/coverage",
+  "testFilesOnSave.enabled": true,
+  "testFilesOnSave.languageId": "any",
+  "testFilesOnSave.testCommands": [
+    {
+      "c": "bash ./bin/src.sh --target=${relativeFile}",
+      "cpp": "bash ./bin/src.sh --target=${relativeFile}"
+    },
+    {
+      "h": "./bin/docs.sh"
+    }
+  ],
+  "koverage.coverageFileNames": [
+    "lcov.info"
+  ],
+  "coverage-gutters.coverageFileNames": [
+    "lcov.info"
+  ],
+  "coverage-gutters.coverageBaseDir": "coverage",
+  "coverage-gutters.showLineCoverage": true,
+  "coverage-gutters.showGutterCoverage": false,
+  "cSpell.checkOnlyEnabledFileTypes": true,
+  "cSpell.enableFiletypes": [
+    "c",
+    "!json",
+    "!jsonc",
+    "!code-workspace"
+  ],
+  "files.autoSave": "off",
+  "files.associations": {
+    "*.h": "c",
+    "*.c": "c"
+  },
+  "files.watcherInclude": [
+    "."
+  ],
+  "files.exclude": {},
+  "pdf-preview.default.scale": "page-fit",
+  "cmake.showConsoleAutomatically": true,
+  "cmake.configureOnStart": true,
+  "cmake.sourceDirectory": "${workspaceFolder}",
+  "cmake.buildDirectory": "${workspaceFolder}/cmake",
+  "cmake.ignoreCMakeListsMissing": true,
+  "cmake.configureOnOpen": true,
+  "cmake.configureOnEdit": true,
+  "cmake.statusbar.visibility": "compact",
+  "cmake.reconfigureOnChange": true,
+  "DockerRun.DisableAutoGenerateConfig": true,
+  "disasexpl.associations": {
+    "**/*.c": "${workspaceFolder}/${relativeFileDirname}/${fileBasenameNoExtension}.c.s",
+    "**/*.cpp": "${workspaceFolder}/${relativeFileDirname}/${fileBasenameNoExtension}.c.s"
+  },
+  "lldb.displayFormat": "auto",
+  "lldb.showDisassembly": "auto",
+  "lldb.dereferencePointers": true,
+  "lldb.consoleMode": "commands",
+  "statusbar_command.commands": [
+    {
+      "text": ".S",
+      "tooltip": "Show disassembly",
+      "alignment": "right",
+      "priority": 1000,
+      "id": "statusbar.disassembly",
+      "name": "disassembly",
+      "filterFileName": "^.*\\.[c|h]$",
+      "command": "disasexpl.show"
+    },
+    {
+      "text": ".watch",
+      "tooltip": "Toggle code coverage watch",
+      "alignment": "right",
+      "priority": 1100,
+      "id": "statusbar.coverage-gutters.watchCoverageAndVisibleEditors",
+      "command": "coverage-gutters.watchCoverageAndVisibleEditors"
+    },
+    {
+      "text": ".coverage",
+      "tooltip": "Toggle code coverage",
+      "alignment": "right",
+      "priority": 1200,
+      "id": "statusbar.coverage-gutters.toggleCoverage",
+      "command": "coverage-gutters.toggleCoverage"
+    },
+    {
+      "text": ".c",
+      "tooltip": "Toggle code coverage OFF",
+      "alignment": "right",
+      "priority": 1000,
+      "id": "statusbar.coverage.off",
+      "command": "code-coverage.hide"
+    },
+    {
+      "text": ".C",
+      "tooltip": "Toggle code coverage ON",
+      "alignment": "right",
+      "priority": 1001,
+      "id": "statusbar.coverage.on",
+      "command": "code-coverage.show"
+    },
+    {
+      "text": ".H",
+      "tooltip": "Toggle clandg inlay type hints ON/OFF",
+      "alignment": "right",
+      "priority": 1002,
+      "id": "statusbar.inlayHints.toggle",
+      "command": "clangd.inlayHints.toggle"
+    },
+    {
+      "text": ".T",
+      "tooltip": "Open twitch chat",
+      "alignment": "right",
+      "priority": 1003,
+      "id": "statusbar.twitch.open",
+      "command": "twitch.open"
+    },
+    {
+      "text": ".P",
+      "tooltip": "Presentation mode switch",
+      "alignment": "right",
+      "priority": 1004,
+      "id": "statusbarpresentation-mode.toggle",
+      "command": "presentation-mode.toggle"
+    },
+    {
+      "text": ".F",
+      "tooltip": "File history switch",
+      "alignment": "right",
+      "priority": 1005,
+      "id": "statusbarpresentation-extension.git-file-history",
+      "command": "extension.git-file-history"
+    }
+  ],
+  "workbench.editor.enablePreview": false,
+  "workbench.colorTheme": "Yitzchok (rainglow)",
+  "editor.tokenColorCustomizations": {
+    "textMateRules": [
+      {
+        "scope": "comment",
+        "settings": {
+          "foreground": "#70a870",
+          "fontStyle": "bold"
+        }
+      },
+      {
+        "scope": "comment.block",
+        "settings": {
+          "foreground": "#70a870"
+        }
+      },
+      {
+        "scope": "comment.line",
+        "settings": {
+          "foreground": "#70a870",
+          "fontStyle": "bold"
+        }
+      }
+    ]
+  },
+  "customPresentationMode.overrides": {
+    "editor.fontWeight": "normal",
+    "window.zoomLevel": 0,
+    "workbench.colorTheme": "Yitzchok (rainglow)"
+  },
+  "sonarlint.testFilePattern": "{**/test/**,**/*test*,**/*Test*,**/.deps/**}",
+  "sonarlint.pathToCompileCommands": "${workspaceFolder}/config/compile_commands.json",
+  "editor.useTabStops": false,
+  "editor.insertSpaces": true,
+  "editor.dropIntoEditor.enabled": true,
+  "editor.trimAutoWhitespace": true,
+  "workbench.editor.restoreViewState": true,
+  "workbench.editor.autoLockGroups": {
+    "default": true,
+    "workbench.editorinputs.searchEditorInput": false,
+    "workbench.editor.chatSession": false,
+    "imagePreview.previewEditor": false,
+    "vscode.audioPreview": false,
+    "vscode.videoPreview": false,
+    "jsProfileVisualizer.cpuprofile.table": false,
+    "jsProfileVisualizer.heapprofile.table": false,
+    "workbench.editors.gettingStartedInput": false,
+    "jupyter-notebook": false,
+    "terminalEditor": true,
+    "workbench.input.interactive": false,
+    "mainThreadWebview-markdown.preview": false
+  },
+  "editor.matchBrackets": "near",
+  "presentation-mode.active": {
+    "commands": [],
+    "terminal.integrated.fontSize": 16,
+    "editor.fontSize": 20,
+    "editor.matchBrackets": "near",
+    "editor.minimap.enabled": false,
+    "workbench.activityBar.visible": true,
+    "workbench.statusBar.visible": true,
+    "workbench.colorTheme": "Yitzchok (rainglow)",
+    "workbench.colorCustomizations": {
+      "[Yitzchok (rainglow)]": {}
+    },
+    "window.zoomLevel": 0
+  },
+  "presentation-mode.inactive": {
+    "window.zoomLevel": 0
+  },
+  "presentation-mode.configBackup": {
+    "editor.fontSize": 10,
+    "editor.matchBrackets": "near",
+    "editor.minimap.enabled": false,
+    "workbench.activityBar.visible": true,
+    "workbench.statusBar.visible": true,
+    "workbench.colorTheme": "Yitzchok (rainglow)",
+    "workbench.colorCustomizations": {
+      "[Yitzchok (rainglow)]": {}
+    },
+    "window.zoomLevel": 0
+  },
+  "grammarly.files.include": [
+    "**/*.md"
+  ],
+  "grammarly.files.exclude": [
+    "**/*.txt"
+  ],
+  "C_Cpp.dimInactiveRegions": true,
+  "C_Cpp.errorSquiggles": "disabled",
+  "C_Cpp.intelliSenseEngine": "disabled",
+  "C_Cpp.default.cStandard": "c89",
+  "cmake.allowUnsupportedPresetsVersions": true,
+  "cmake.autoSelectActiveFolder": true,
+  "cmake.default.generator": "Ninja",
+  "cmake.buildBeforeRun": true,
+  "cmake.defaultVariants": {
+    "settings": {
+      "communicationMode": "automatic",
+      "useCMakePresets": "auto",
+      "configureOnOpen": true
+    },
+    "buildType": {
+      "default": "debug",
+      "description": "The build type.",
+      "choices": {
+        "debug": {
+          "short": "Debug",
+          "long": "Disable optimizations - include debug information.",
+          "buildType": "Debug",
+          "settings": {
+            "CONFIG_MEMORY_DEBUG_INFO": "1"
+          }
+        },
+        "release": {
+          "short": "Release",
+          "long": "Optimize for speed - exclude debug information.",
+          "buildType": "Release"
+        },
+        "minsize": {
+          "short": "MinSizeRel",
+          "long": "Optimize for smallest binary size - exclude debug information.",
+          "buildType": "MinSizeRel"
+        },
+        "reldeb": {
+          "short": "RelWithDebInfo",
+          "long": "Optimize for speed - include debug information.",
+          "buildType": "RelWithDebInfo"
+        }
+      }
+    }
+  },
+  "cmake.default.buildDirectory": "${workspaceFolder}/cmake",
+  "cmake.cpptools.guessSourceFileConfigurations": true,
+  "cmake.enabledOutputParsers": [
+    "cmake",
+    "gcc",
+    "gnuld",
+    "msvc",
+    "ghs",
+    "diab"
+  ],
+  "editor.formatOnSave": true,
+  "editor.fontWeight": "normal",
+  "cmake.additionalKits": [
+    "${workspaceFolder}/.vscode",
+    "${workspaceFolder}"
+  ],
+  "cmake.useCMakePresets": "always",
+  "emeraldwalk.runonsave": {
+    "commands": [
+      {
+        "match": "\\.clang-format$",
+        "isAsync": true,
+        "cmd": "./bin/format.sh --all"
+      }
+    ]
+  },
+  "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
+  "files.insertFinalNewline": true,
+  "[c]": {
+    "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
+    "files.insertFinalNewline": true
+  },
+  "[shellscript]": {
+    "editor.defaultFormatter": null,
+    "files.insertFinalNewline": true,
+    "files.encoding": "utf8",
+    "files.eol": "\n"
+  },
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/*/**": true,
+    "**/.hg/store/**": true,
+    "**/.deps/**": true,
+    "**/cmake/**": true,
+    "**/buils/**": true,
+    "**/config/**": true,
+    "**/logs/**": true,
+    "**/gtk/**": true
+  },
+  "clangd.fallbackFlags": [
+    "-I/usr/include/python3.12",
+    "-I${workspaceFolder}/.deps/rexo/include",
+    "-I${workspaceFolder}/src",
+    "-I.deps/rexo/include",
+    "-Isrc"
+  ],
+  "clangd.arguments": [
+    "--compile-commands-dir=${workspaceFolder}/config",
+    "-j=8",
+    "--limit-results=0",
+    "--background-index",
+    "--all-scopes-completion",
+    "--log=info",
+    "--pch-storage=memory",
+    "--clang-tidy",
+    "--clang-tidy-checks=-*,clangdunused-includes",
+    "--header-insertion=never",
+    "--fallback-style=WebKit",
+    "--header-insertion=never"
+  ],
   "clangd.path": "${workspaceFolder}/.tools/clangd-linux-19.1.2/bin/clangd",
+  "clangd.checkUpdates": true,
+  "clangd.restartAfterCrash": true,
+  "clangd.onConfigChanged": "restart",
+  "clangd.detectExtensionConflicts": true,
+  "clangd.defaultProfile": "C++",
+  "clang-format.style": "{BasedOnStyle: WebKit, IndentWidth: 4, BreakBeforeBraces: Attach}",
+  "clang-format.language.c.enable": true,
+  "clang-tidy.lintOnSave": true,
+  "clang-tidy.compilerArgs": [
+    "-I/usr/include/python3.12",
+    "-I${workspaceFolder}/.deps/rexo/include",
+    "-I${workspaceFolder}/src",
+    "-I.deps/rexo/include",
+    "-Isrc"
+  ],
+  "editor.tabSize": 4,
+  "editor.indentSize": "tabSize",
+  "screencastMode.fontSize": 20,
+  "window.zoomLevel": 0,
+  "editor.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
+  "editor.inlayHints.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
+  "editor.codeLensFontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
+  "editor.fontLigatures": true,
+  "debug.console.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
+  "debug.console.fontSize": 10,
+  "scm.inputFontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
+  "chat.editor.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
+  "chat.editor.fontSize": 10,
+  "notebook.output.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
+  "terminal.integrated.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",
+  "terminal.integrated.fontSize": 10,
+  "terminal.integrated.enablePersistentSessions": true,
+  "terminal.integrated.persistentSessionReviveProcess": "onExitAndWindowClose",
+  "terminal.integrated.shellIntegration.history": 1000,
+  "markdown.preview.fontSize": 10,
+  "cmake.generator": "Ninja",
+  "C_Cpp.default.cppStandard": "c++98",
+  "C_Cpp.clang_format_fallbackStyle": "{BasedOnStyle: WebKit, IndentWidth: 4, BreakBeforeBraces: Attach}",
+  "C_Cpp.formatting": "clangFormat",
+  "C_Cpp.intelliSenseEngineFallback": "enabled",
+  "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+  "interactiveSession.editor.fontSize": 10,
+  "scm.inputFontSize": 10,
+  "workbench.editorLargeFileConfirmation": 10,
+  "terminal.integrated.tabStopWidth": 8,
+  "fileHeaderComment.parameter": {
+    "*": {
+      "commentbegin": "/*",
+      "commentprefix": " *",
+      "commentend": " */",
+      "author": "Artur Mustafin (artur.mustafin@gmail.com)",
+      "license_bsd3": [
+        "/*",
+        "    Copyright (C) 2022-2047 ${year} ${author}",
+        "    All rights reserved.",
+        "",
+        "    Redistribution and use in source and binary forms, with or without",
+        "    modification, are permitted provided that the following conditions are met:",
+        "",
+        "    1. Redistributions of source code must retain the above copyright notice, this",
+        "       list of conditions and the following disclaimer.",
+        "    2. Redistributions in binary form must reproduce the above copyright notice,",
+        "       this list of conditions and the following disclaimer in the documentation",
+        "       and/or other materials provided with the distribution.",
+        "    3. Neither the name of the copyright holder nor the names of its",
+        "       contributors may be used to endorse or promote products derived from",
+        "       this software without specific prior written permission.",
+        "",
+        "    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"",
+        "    AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE",
+        "    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE",
+        "    DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE",
+        "    FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL",
+        "    DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR",
+        "    SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER",
+        "    CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,",
+        "    OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE",
+        "    OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.",
+        "*/"
+      ]
+    }
+  },
+  "fileHeaderCommentHelper.languageConfigs": {
+    "language_cpp": {
+      "template": [
+        "/*",
+        "    Copyright (C) 2022-2047 ${year} ${author}",
+        "    All rights reserved.",
+        "",
+        "    Project: $(projectName)",
+        "    File: $(currentFile)",
+        "",
+        "    Redistribution and use in source and binary forms, with or without",
+        "    modification, are permitted provided that the following conditions are met:",
+        "",
+        "    1. Redistributions of source code must retain the above copyright notice, this",
+        "       list of conditions and the following disclaimer.",
+        "    2. Redistributions in binary form must reproduce the above copyright notice,",
+        "       this list of conditions and the following disclaimer in the documentation",
+        "       and/or other materials provided with the distribution.",
+        "    3. Neither the name of the copyright holder nor the names of its",
+        "       contributors may be used to endorse or promote products derived from",
+        "       this software without specific prior written permission.",
+        "",
+        "    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"",
+        "    AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE",
+        "    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE",
+        "    DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE",
+        "    FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL",
+        "    DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR",
+        "    SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER",
+        "    CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,",
+        "    OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE",
+        "    OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.",
+        "*/"
+      ]
+    }
+  },
+  "fileHeaderComment.template": {
+    "*": [
+      "${license_bsd3}"
+    ]
+  },
+  "git.suggestSmartCommit": false,
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "files.refactoring.autoSave": false,
+  "editor.fontVariations": false,
+  "editor.minimap.enabled": false,
+  "workbench.statusBar.visible": true,
+  "workbench.colorCustomizations": {
+    "[Yitzchok (rainglow)]": {}
+  },
+  "workbench.quickOpen.closeOnFocusLost": false,
+  "twitch.fontSize": "14px",
+  "pdf-preview.default.sidebar": true,
+  "workbench.preferredDarkColorTheme": "Yitzchok (rainglow)",
+  "workbench.preferredHighContrastColorTheme": "Yitzchok Contrast (rainglow)",
+  "workbench.preferredLightColorTheme": "Yitzchok Light (rainglow)",
+  "window.autoDetectColorScheme": true,
+  "diffEditor.codeLens": true,
+  "editor.find.autoFindInSelection": "multiline",
+  "diffEditor.experimental.showEmptyDecorations": false,
+  "editor.find.seedSearchStringFromSelection": "selection",
+  "search.seedOnFocus": true,
+  "search.seedWithNearestWord": true,
+  "editor.cursorSmoothCaretAnimation": "on",
+  "workbench.list.smoothScrolling": true,
+  "editor.mouseWheelZoom": true,
+  "editor.mouseWheelScrollSensitivity": 1,
+  "editor.smoothScrolling": true,
+  "terminal.integrated.confirmOnKill": "never",
+  "terminal.integrated.mouseWheelScrollSensitivity": 1,
+  "workbench.list.mouseWheelScrollSensitivity": 1,
+  "editor.fastScrollSensitivity": 2,
+  "workbench.editor.scrollToSwitchTabs": false,
+  "workbench.list.horizontalScrolling": false,
+  "terminal.integrated.fastScrollSensitivity": 2,
+  "workbench.list.fastScrollSensitivity": 2,
+  "markdownlint.ignore": [
+    ".bazelrc"
+  ],
+  "bsv.bazel.buildFlags": [
+    "--config=clang_config"
+  ],
+  "bsv.cc.compdb.targets": [
+    "//main:hello-world"
+  ],
+  "bsv.bazel.executable": "$HOME/.bazel/bazel",
+  "bazel.enableCodeLens": true,
+  "bazel.buildifierExecutable": "$HOME/.bazel/tools/buildifier",
+  "bazel.executable": "$HOME/.bazel/bazel",
+  "cmake.options.statusBarVisibility": "visible",
+  "editor.fontSize": 10,
+  "sonarlint.connectedMode.project": {
+    "connectionId": "default-writer",
+    "projectKey": "default-writer_c"
+  },
+  "cmake.deleteBuildDirOnCleanConfigure": true,
+  "git.fetchOnPull": true,
+  "[python]": {
+    "editor.defaultFormatter": "trunk.io"
+  },
+  "chat.agent.enabled": true,
+  "debugpy.debugJustMyCode": false,
+  "python.testing.pytestEnabled": true,
+  "python.testing.pytestArgs": [
+    "${workspaceFolder}",
+    "--ignore-glob=examples/python/main_*.py"
+  ],
+  "python.testing.unittestEnabled": false,
+  "python.testing.autoTestDiscoverOnSaveEnabled": true,
+  "python.envFile": "${workspaceFolder}/examples/python/.env",
+  "python.testing.cwd": "${workspaceFolder}",
+  "cmake.ctestEnabled": false,
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "cmake.ctest.testExplorerIntegrationEnabled": false,
+  "python.formatting.provider": "black",
+  "python.formatting.blackArgs": [
+    "--line-length",
+    "120"
+  ],
+  "python.linting.enabled": true,
   "cmake.debugConfig": {
     "MIMode": "gdb",
     "miDebuggerPath": "/usr/bin/gdb",
