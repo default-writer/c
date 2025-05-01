@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 1, 2025 at 11:00:52 AM GMT+3
+ *   May 1, 2025 at 1:32:08 PM GMT+3
  *
  */
 /*
@@ -44,7 +44,11 @@
 #define USING_STD_API
 #include "std/api.h"
 
-#include "system/platform.h"
+#if defined(_WIN32)
+#include "system/platform/win32/export.h"
+#else
+#include "system/platform/default/export.h"
+#endif
 
 #ifdef USE_MEMORY_DEBUG_INFO
 CSYS_EXPORT extern void init_statistics(void);
@@ -62,11 +66,11 @@ typedef struct PRIVATE_API(system_os_methods) {
     size_t (*fread)(void* __ptr, size_t __size, size_t __n, FILE* __stream);
     int (*fseek)(FILE* __stream, long int __off, int __whence);
     long (*ftell)(FILE* __stream);
- #if defined(__MSYS__)    
-   char* (*getcwd)(char* __buf, size_t __size);
- #else
+#if defined(_WIN32)
     char* (*getcwd)(char* __buf, int __size);
- #endif
+#else
+    char* (*getcwd)(char* __buf, size_t __size);
+#endif
     char* (*getenv)(const char* __name);
     void* (*memcpy)(void* __dest, const void* __src, size_t __n);
     void* (*memmove)(void* __dest, const void* __src, size_t __n);

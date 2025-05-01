@@ -19,7 +19,7 @@ pwd=$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 
 cd "${pwd}/../../"
 
-./bin/clear.sh
+./bin/cleanup.sh --python
 
 ./bin/cmake.sh --recommended
 

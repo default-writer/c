@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 26, 2025 at 9:35:38 PM GMT+3
+ *   May 1, 2025 at 1:14:25 PM GMT+3
  *
  */
 /*
@@ -42,6 +42,8 @@
 #include "system/error/error_v1.h"
 
 #include "system/os/os_v1.h"
+
+#include <stdlib.h>
 
 #ifdef USE_MEMORY_DEBUG_INFO
 static u64 total_alloc = 0;

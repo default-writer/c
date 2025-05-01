@@ -224,7 +224,10 @@
         {
             "label": "shell: clean (python cache)",
             "type": "shell",
-            "command": "${workspaceFolder}/bin/clear.sh",
+            "command": "${workspaceFolder}/bin/cleanup.sh",
+            "args": [
+                "--python"
+            ],
             "problemMatcher": []
         },
         {

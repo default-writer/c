@@ -13,6 +13,10 @@ if [[ "${BASHOPTS}" != *extdebug* ]]; then
     trap 'err_report $LINENO' ERR
 fi
 
+unset LD_PRELOAD
+
+export LD_PRELOAD=
+
 source=$(pwd)
 
 pwd=$(cd "$(dirname $(dirname "${BASH_SOURCE[0]}"))" &> /dev/null && pwd)
@@ -22,8 +26,6 @@ cd "${pwd}"
 install="$1"
 
 opts=( "${@:2}" )
-
-unset LD_PRELOAD
 
 build=""
 
@@ -40,10 +42,13 @@ while (($#)); do
             install="--clean"
             ;;
 
+        "--python") # cleans up python cache folders
+            python="--python"
+            ;;
+
         "--build") # build project using cmake
             build="--build"
             ;;
-
 
         "--help") # shows command description
             help
@@ -69,7 +74,13 @@ if [[ "${install}" == "--clean" ]]; then
     rm -rf "${pwd}/lib"
     rm -rf "${pwd}/logs"
     rm -f "${pwd}/src/std/version.h"
+    find "${pwd}" -type f -name "callgrind.out.*" -delete
+    find "${pwd}" -type f -name "*.s" -delete
+fi
+
+if [[ "${python}" == "--python" ]]; then
     find "${pwd}" -type d -name "__pycache__" -exec rm -rf {} +
+    find "${pwd}" -type d -name ".pytest_cache" -exec rm -rf {} +
 fi
 
 if [[ "${build}" == "--build" ]]; then
