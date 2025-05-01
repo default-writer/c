@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 1, 2025 at 1:13:11 PM GMT+3
+ *   May 1, 2025 at 3:53:57 PM GMT+3
  *
  */
 /*
@@ -74,7 +74,7 @@
         if (snp_format_buffer) {                                                                                                \
             snprintf(snp_format_buffer, snp_format_size + 1, format ": %s (%s:%d)", __VA_ARGS__, __func__, __FILE__, __LINE__); \
             CALL(error)->output(stderr, ID_##message_id, snp_format_buffer, (u64)snp_format_size);                              \
-            CALL(error)->throw(ID_##message_id, snp_format_buffer, (u64)snp_format_size);                                       \
+            CALL(error)->exception(ID_##message_id, snp_format_buffer, (u64)snp_format_size);                                   \
             free(snp_format_buffer);                                                                                            \
         }                                                                                                                       \
     } while (0)
@@ -86,7 +86,7 @@
         if (snp_format_buffer) {                                                                   \
             snprintf(snp_format_buffer, snp_format_size + 1, format, __VA_ARGS__); /* NOLINT */    \
             CALL(error)->output(stderr, ID_##message_id, snp_format_buffer, (u64)snp_format_size); \
-            CALL(error)->throw(ID_##message_id, snp_format_buffer, (u64)snp_format_size);          \
+            CALL(error)->exception(ID_##message_id, snp_format_buffer, (u64)snp_format_size);      \
             free(snp_format_buffer);                                                               \
         }                                                                                          \
     } while (0)

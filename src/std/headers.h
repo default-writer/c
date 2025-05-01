@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 1, 2025 at 12:44:22 PM GMT+3
+ *   May 1, 2025 at 3:50:12 PM GMT+3
  *
  */
 /*
@@ -46,6 +46,7 @@
 #include <stdarg.h>
 
 #if defined(_WIN32)
+#define PATH_MAX MAX_PATH
 #include <io.h>
 #include <time.h>
 #include <windows.h>
