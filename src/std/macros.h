@@ -292,8 +292,13 @@
 #define ATTRIBUTE
 // #define INIT
 // #define DESTROY
-#define PUBLIC
+#if defined(_WIN32)
+#define PUBLIC __declspec(dllexport)
 #define INLINE inline
+#else
+#define PUBLIC inline __attribute__((always_inline, visibility("default")))
+#define INLINE inline __attribute__((always_inline))
+#endif
 #endif /* __GNUC__ >= 7 */
 
 #endif /* STD_MACROS_H */

@@ -44,12 +44,9 @@
 #define USING_STD_API
 #include "std/api.h"
 
+#include "virtual/platform.h"
+
 #include "virtual/env/env_v1.h"
-#if defined(_WIN32)
-#include "virtual/platform/win32/export.h"
-#else
-#include "virtual/platform/default/export.h"
-#endif
 #include "virtual/list/list_v1.h"
 #include "virtual/pointer/pointer_v1.h"
 #include "virtual/types/data/data_v1.h"
