@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 1, 2025 at 1:32:08 PM GMT+3
+ *   May 1, 2025 at 9:02:12 PM GMT+3
  *
  */
 /*
@@ -44,11 +44,7 @@
 #define USING_STD_API
 #include "std/api.h"
 
-#if defined(_WIN32)
-#include "system/platform/win32/export.h"
-#else
-#include "system/platform/default/export.h"
-#endif
+#include "system/platform.h"
 
 typedef struct PRIVATE_API(system_info_methods) {
     const u64 timestamp;

@@ -44,11 +44,7 @@
 #define USING_STD_API
 #include "std/api.h"
 
-#if defined(_WIN32)
-#include "virtual/platform/win32/export.h"
-#else
-#include "virtual/platform/default/export.h"
-#endif
+#include "virtual/platform.h"
 
 typedef struct PRIVATE_API(virtual_list_methods) {
     stack_ptr (*init)(void);
