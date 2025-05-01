@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 1, 2025 at 12:18:28 AM GMT+3
+ *   May 1, 2025 at 3:53:57 PM GMT+3
  *
  */
 /*
@@ -197,7 +197,7 @@ RX_TEST_CASE(tests_memory_v1, test_api_clear_get_has_0, .fixture = test_fixture)
 RX_TEST_CASE(tests_memory_v1, test_api_clear_throw_get_has_value, .fixture = test_fixture) {
     CALL(error)->clear();
     const char* error_message = "value is invalid";
-    CALL(error)->throw(ID_ERROR_INVALID_VALUE, error_message, strlen(error_message) + 1);
+    CALL(error)->exception(ID_ERROR_INVALID_VALUE, error_message, strlen(error_message) + 1);
     const char* ex = CALL(error)->get();
     RX_ASSERT(ex != 0);
     RX_ASSERT(CALL(error)->type() == ID_ERROR_INVALID_VALUE);
@@ -208,7 +208,7 @@ RX_TEST_CASE(tests_memory_v1, test_api_clear_throw_get_has_value, .fixture = tes
 RX_TEST_CASE(tests_memory_v1, test_api_clear_throw_output_get_has_value, .fixture = test_fixture) {
     CALL(error)->clear();
     const char* error_message = "value is invalid";
-    CALL(error)->throw(ID_ERROR_INVALID_VALUE, error_message, strlen(error_message) + 1);
+    CALL(error)->exception(ID_ERROR_INVALID_VALUE, error_message, strlen(error_message) + 1);
     CALL(error)->output(CALL(error)->std_vm_err(), ID_ERROR_INVALID_VALUE, error_message, strlen(error_message) + 1);
     const char* ex = CALL(error)->get();
     RX_ASSERT(ex != 0);
@@ -226,7 +226,7 @@ RX_TEST_CASE(tests_memory_v1, test_api_error_0, .fixture = test_fixture) {
     CALL(os)->memcpy(very_long_message, ch, 13); /* NOLINT: sizeof(u64); */
     very_long_message[14] = 0;
     u64 very_long_message_size = CALL(os)->strlen(ch);
-    CALL(error)->throw(ID_ERROR_NO_ERROR, very_long_message, very_long_message_size);
+    CALL(error)->exception(ID_ERROR_NO_ERROR, very_long_message, very_long_message_size);
     RX_ASSERT(CALL(error)->type() == 0);
     /* ensures pop does not zeroes the head pointer */
     RX_ASSERT(*ctx != 0);
@@ -240,7 +240,7 @@ RX_TEST_CASE(tests_memory_v1, test_api_error_throw_error_max, .fixture = test_fi
     char* very_long_message = CALL(os)->calloc(1, 8192);
     CALL(os)->memset(very_long_message, 0xfe, 8192); /* NOLINT: sizeof(u64); */
     u64 very_long_message_size = ERROR_MESSAGE_SIZE;
-    CALL(error)->throw(ID_ERROR_INVALID_ARGUMENT, very_long_message, very_long_message_size);
+    CALL(error)->exception(ID_ERROR_INVALID_ARGUMENT, very_long_message, very_long_message_size);
     RX_ASSERT(CALL(error)->type() != 0);
     /* ensures pop does not zeroes the head pointer */
     RX_ASSERT(*ctx != 0);
@@ -258,9 +258,9 @@ RX_TEST_CASE(tests_memory_v1, test_api_error_next, .fixture = test_fixture) {
     very_long_message[14] = 0;
     u64 very_long_message_size = CALL(os)->strlen(ch);
     CALL(error)->clear();
-    CALL(error)->throw(1, very_long_message, very_long_message_size);
+    CALL(error)->exception(1, very_long_message, very_long_message_size);
     for (int i = 0; i < ERROR_MESSAGE_COUNT + 1; i++) {
-        CALL(error)->throw((u64)(i + 2), very_long_message, very_long_message_size);
+        CALL(error)->exception((u64)(i + 2), very_long_message, very_long_message_size);
     }
     u64 count = CALL(error)->count();
     RX_ASSERT(count == ERROR_MESSAGE_COUNT);

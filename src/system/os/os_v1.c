@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 1, 2025 at 12:12:15 PM GMT+3
+ *   May 1, 2025 at 3:43:31 PM GMT+3
  *
  */
 /*
@@ -40,6 +40,14 @@
 
 #include <stdlib.h>
 #include <string.h>
+
+#if defined(_WIN32)
+    #include <direct.h> // For _getcwd
+    #define portable_getcwd(buffer, size) _getcwd(buffer, (int)(size))
+#else
+    #include <unistd.h> // For getcwd on Unix-like systems
+    #define portable_getcwd(buffer, size) getcwd(buffer, size)
+#endif
 
 /* public */
 const system_os_methods PRIVATE_API(system_os_methods_definitions) = {

@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 1, 2025 at 12:18:06 AM GMT+3
+ *   May 1, 2025 at 3:54:06 PM GMT+3
  *
  */
 /*
@@ -143,7 +143,7 @@ const system_error_methods PRIVATE_API(system_error_methods_definitions) = {
     .std_vm_out = error_std_vm_out,
     .std_vm_err = error_std_vm_err,
     .output = error_output,
-    .throw = error_throw,
+    .exception = error_throw,
     .clear = error_clear,
     .type = error_type,
     .get = error_get,
