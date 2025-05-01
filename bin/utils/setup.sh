@@ -71,7 +71,7 @@ while (($#)); do
 
         "--mojo-sdk") # installs mojo sdk
             update ${updateflags}
-            apt-get install modular
+            apt-get install -y modular
             modular clean
             modular install mojo
             upgrade ${updgradeflags}
@@ -79,7 +79,7 @@ while (($#)); do
 
         "--nasm") # installs nasm
             update ${updateflags}
-            apt-get install nasm
+            apt-get install -y nasm
             upgrade ${updgradeflags}
             ;;
 
@@ -140,10 +140,19 @@ while (($#)); do
 
         "--dotnet") # installs dotnet
             update ${updateflags}
-            curl -sL https://dot.net/dotnet-install.sh -o /tmp/dotnet-install.sh
+            curl -sL https://dot.net/v1/dotnet-install.sh -o /tmp/dotnet-install.sh
             chmod +x /tmp/dotnet-install.sh
             bash /tmp/dotnet-install.sh --version 6.0.408 --channel 6.0
             bash /tmp/dotnet-install.sh --version 7.0.203 --channel 7.0
+            rm -f /tmp/dotnet-install.sh
+            upgrade ${updgradeflags}
+            ;;
+
+        "--dotnet-9") # installs dotnet-9
+            update ${updateflags}
+            curl -sL https://dot.net/v1/dotnet-install.sh -o /tmp/dotnet-install.sh
+            chmod +x /tmp/dotnet-install.sh
+            bash /tmp/dotnet-install.sh --channel 9.0
             rm -f /tmp/dotnet-install.sh
             upgrade ${updgradeflags}
             ;;
@@ -160,7 +169,7 @@ while (($#)); do
             ;;
             
         "--curl-openssl") # installs curl development library
-            apt-get install libcurl4-openssl-dev
+            apt-get install -y libcurl4-openssl-dev
             ;;
 
         "--nodejs-bin") # installs nodejs using binary distribution
@@ -306,7 +315,7 @@ while (($#)); do
 
         "--clang-lldb-mi") # installs lldb-mi dependencies
             update ${updateflags}
-            apt-get install -y libclang-dev liblldb-dev || apt-get install libclang-6.0-dev liblldb-6.0-dev || apt-get install libclang-4.0-dev liblldb-4.0-dev || apt-get install libclang-3.8-dev liblldb-3.8-dev
+            apt-get install -y libclang-dev liblldb-dev || apt-get install -y libclang-6.0-dev liblldb-6.0-dev || apt-get install -y libclang-4.0-dev liblldb-4.0-dev || apt-get install -y libclang-3.8-dev liblldb-3.8-dev
             apt install python3-lldb-14
             ln -s /usr/lib/llvm-14/lib/python3.10/dist-packages/lldb/* /usr/lib/python3/dist-packages/lldb/
             upgrade ${updgradeflags}

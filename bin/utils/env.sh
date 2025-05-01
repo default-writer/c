@@ -93,7 +93,7 @@ case "${install}" in
         ;;
 
     "--dotnet") # installs dotnet environment variables in .bashrc
-        grep -qxF '# dotnet 7' $HOME/.bashrc || (tail -1 $HOME/.bashrc | grep -qxF '' || echo '' >> $HOME/.bashrc && echo '# dotnet 7' >> $HOME/.bashrc)
+        grep -qxF '# dotnet' $HOME/.bashrc || (tail -1 $HOME/.bashrc | grep -qxF '' || echo '' >> $HOME/.bashrc && echo '# dotnet' >> $HOME/.bashrc)
         grep -qxF 'export DOTNET_ROOT="$HOME/.dotnet"' $HOME/.bashrc || echo 'export DOTNET_ROOT="$HOME/.dotnet"' >> $HOME/.bashrc
         grep -qxF 'export PATH="$DOTNET_ROOT:$DOTNET_ROOT/tools:$PATH"' $HOME/.bashrc || echo 'export PATH="$DOTNET_ROOT:$DOTNET_ROOT/tools:$PATH"' >> $HOME/.bashrc
         ;;
