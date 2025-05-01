@@ -552,9 +552,10 @@
         "120"
     ],
     "python.linting.enabled": true,
+    "sonarlint.pathToNodeExecutable": "${workspaceFolder}/.tools/node-v23.7.0-win-x64/node.exe",
     "cmake.debugConfig": {
         "MIMode": "gdb",
-        "miDebuggerPath": "/usr/bin/gdb",
+        "miDebuggerPath": "/c/msys64/ucrt64/bin/gdb.exe",
         "setupCommands": [
             {
                 "description": "Enable pretty-printing for lldb",
