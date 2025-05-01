@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 29, 2025 at 6:48:11 AM GMT+3
+ *   May 1, 2025 at 12:19:03 AM GMT+3
  *
  */
 /*
@@ -330,7 +330,7 @@ RX_TEST_CASE(tests_list_v1, test_standard_list_peek_does_not_changes_stack, .fix
     test_data_type rx = *((test_data_ptr)RX_DATA);
     stack_ptr stack = rx.stack;
     /* prepares the data */
-    u8* data = (void_ptr)0xdeadbeef;
+    u8* data = (void_ptr)(u64)0xdeadbeef;
     /* pushed to the list */
     CALL(list)->push(stack, data);
     /* gets the head pointer to the list */
@@ -367,7 +367,7 @@ RX_TEST_CASE(tests_list_v1, test_alloc_count_eq_1, .fixture = test_fixture) {
     const_vm_ptr cvm = rx.ctx;
     stack_ptr stack = rx.stack;
     /* prepares the data */
-    u8* data = (void_ptr)0xdeadbeef;
+    u8* data = (void_ptr)(u64)0xdeadbeef;
     /* pushes to the list */
     CALL(list)->push(stack, data);
     /* ensures data is added to the list */
@@ -378,7 +378,7 @@ RX_TEST_CASE(tests_list_v1, test_alloc_data, .fixture = test_fixture) {
     test_data_type rx = *((test_data_ptr)RX_DATA);
     stack_ptr stack = rx.stack;
     /* prepares the data */
-    u8* data = (void_ptr)0xdeadbeef;
+    u8* data = (void_ptr)(u64)0xdeadbeef;
     /* pushes to the list */
     CALL(list)->push(stack, data);
     /* peeks from the list */
@@ -391,7 +391,7 @@ RX_TEST_CASE(tests_list_v1, test_alloc_pop_count_0, .fixture = test_fixture) {
     test_data_type rx = *((test_data_ptr)RX_DATA);
     stack_ptr stack = rx.stack;
     /* prepares the data */
-    u8* data = (void_ptr)0xdeadbeef;
+    u8* data = (void_ptr)(u64)0xdeadbeef;
     /* pushes to the list */
     CALL(list)->push(stack, data);
     /* pops from the list */
@@ -404,7 +404,7 @@ RX_TEST_CASE(tests_list_v1, test_alloc_pop_data, .fixture = test_fixture) {
     test_data_type rx = *((test_data_ptr)RX_DATA);
     stack_ptr stack = rx.stack;
     /* prepares the data */
-    u8* data = (void_ptr)0xdeadbeef;
+    u8* data = (void_ptr)(u64)0xdeadbeef;
     /* pushes to the list */
     CALL(list)->push(stack, data);
     /* pops from the list */
@@ -448,7 +448,7 @@ static void run_test(void (*test_callback)(const_vm_ptr cvm, stack_ptr const)) {
 
 /* uses the list */
 static void test(const_vm_ptr cvm, stack_ptr stack) {
-    u8* data = (void_ptr)0xdeadbeef;
+    u8* data = (void_ptr)(u64)0xdeadbeef;
     u64 is_null[] = {
         (u64)CALL(list)->peek(stack)
     };

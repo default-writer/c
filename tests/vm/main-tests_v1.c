@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 29, 2025 at 5:03:42 PM GMT+3
+ *   May 1, 2025 at 7:02:32 AM GMT+3
  *
  */
 /*
@@ -47,6 +47,8 @@
 #define USING_TESTS
 #include "test.h"
 
+#include <time.h>
+
 typedef struct test_data {
     void_ptr ptr;
 }* TEST_DATA;
@@ -58,7 +60,11 @@ static void init() {
     printf("version: v%s\n", CALL(info)->version);
     time_t unix_timestamp = (time_t)CALL(info)->timestamp;
     struct tm timeinfo;
+#if defined(_WIN32)
+    localtime_s(&timeinfo, &unix_timestamp);
+#else
     localtime_r(&unix_timestamp, &timeinfo);
+#endif
     char buffer[160];
     strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", &timeinfo);
     printf("timestamp: %s\n", buffer);

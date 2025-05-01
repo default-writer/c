@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 30, 2025 at 11:40:54 AM GMT+3
+ *   May 1, 2025 at 12:23:35 AM GMT+3
  *
  */
 /*
@@ -67,7 +67,7 @@ INLINE static u64 hashtable_resize_internal(hashtable_ptr ht) {
 }
 
 /* implementation */
-hashtable_ptr hashtable_init() {
+hashtable_ptr hashtable_init(void) {
     hashtable_ptr ht = (hashtable_ptr)CALL(os)->calloc(1, HASHTABLE_TYPE_SIZE);
     ht->capacity = HASHTABLE_INITIAL_CAPACITY;
     ht->size = 0;

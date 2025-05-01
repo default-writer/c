@@ -301,45 +301,69 @@ include_directories(${CMAKE_SOURCE_DIR}/.deps/rexo/include)
 include_directories(${CMAKE_SOURCE_DIR}/src)
 include_directories(${CMAKE_SOURCE_DIR}/tests)
 
+if(CMAKE_SYSTEM_NAME STREQUAL "MSYS")
+    message(STATUS "Detected MSYS environment. Skipping generate_export_header.")
+    set(PLATFORM "msys")
+    set(SKIP_GENERATE_EXPORT_HEADER TRUE)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    message(STATUS "Detected Win32 environment. Generating export headers.")
+    set(PLATFORM "win32")
+    set(SKIP_GENERATE_EXPORT_HEADER FALSE)
+else()
+    message(STATUS "Detected other platform. Generating export headers.")
+    set(PLATFORM "default")
+    set(SKIP_GENERATE_EXPORT_HEADER FALSE)
+endif()
+
+# c-sys library
 add_library(c-sys SHARED ${LIB_SYS_SOURCE})
-generate_export_header(c-sys
-    BASE_NAME csys
-    EXPORT_MACRO_NAME CSYS_EXPORT
-    EXPORT_FILE_NAME ${CMAKE_SOURCE_DIR}/src/system/export.h
-)
+
+if(NOT SKIP_GENERATE_EXPORT_HEADER)
+    generate_export_header(c-sys
+        BASE_NAME csys
+        EXPORT_MACRO_NAME CSYS_EXPORT
+        EXPORT_FILE_NAME ${CMAKE_SOURCE_DIR}/src/system/platform/${PLATFORM}/export.h
+    )
+endif()
+
 target_include_directories(c-sys PUBLIC 
     ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR}/lib
 )
 
+# c-vm library
 add_library(c-vm SHARED ${LIB_VM_SOURCE})
-generate_export_header(c-vm
-    BASE_NAME cvm
-    EXPORT_MACRO_NAME CVM_EXPORT
-    EXPORT_FILE_NAME ${CMAKE_SOURCE_DIR}/src/virtual/export.h
-)
+
+if(NOT SKIP_GENERATE_EXPORT_HEADER)
+    generate_export_header(c-vm
+        BASE_NAME cvm
+        EXPORT_MACRO_NAME CVM_EXPORT
+        EXPORT_FILE_NAME ${CMAKE_SOURCE_DIR}/src/virtual/platform/${PLATFORM}/export.h
+    )
+endif()
+
 target_include_directories(c-vm PUBLIC 
     ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR}/lib
 )
 
-
-# main 
+# main-tests-vm1 executable
 add_executable(main-tests-vm1
     ${MAIN_TESTS_VM1_SOURCE}
     ${TESTS_SOURCE}
 )
 
-# test
+# Link libraries
 target_link_libraries(c-vm PUBLIC
     c-sys
 )
+target_link_directories(c-vm PUBLIC ${CMAKE_SOURCE_DIR}/lib)
 
-# main
 target_link_libraries(main-tests-vm1 PUBLIC
     c-sys
     c-vm
 )
 target_link_directories(main-tests-vm1 PUBLIC ${CMAKE_SOURCE_DIR}/lib)
 
+# Copy data files
 configure_file(data/all_english_words.txt ${CMAKE_BINARY_DIR}/data/all_english_words.txt COPYONLY)
 configure_file(data/file.txt ${CMAKE_BINARY_DIR}/data/file.txt COPYONLY)
 
@@ -354,6 +378,7 @@ FILE(WRITE ${CMAKE_BINARY_DIR}/input-substrings.txt
     "as\n"
 )
 
+# Generate target-specific source lists
 if(TARGETS)
     get_property(main_target_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
 

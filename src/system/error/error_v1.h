@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 30, 2025 at 10:35:13 AM GMT+3
+ *   May 1, 2025 at 11:00:53 AM GMT+3
  *
  */
 /*
@@ -44,7 +44,7 @@
 #define USING_STD_API
 #include "std/api.h"
 
-#include "system/export.h"
+#include "system/platform.h"
 
 #include <stdio.h>
 
@@ -59,8 +59,8 @@ enum error_message_code {
 };
 
 typedef struct PRIVATE_API(system_error_methods) {
-    FILE* (*stdout)(void);
-    FILE* (*stderr)(void);
+    FILE* (*std_vm_out)(void);
+    FILE* (*std_vm_err)(void);
     void (*output)(FILE* output, u64 error_type, const char* message, u64 size);
     void (*throw)(u64 error_type, const char* message, u64 size);
     void (*clear)(void);

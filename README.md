@@ -1,6 +1,40 @@
-# c project description
+# c project
 
 <a href="" target="blank"><img alt="lib" style='height:128px' src='./resources/ecommerce.png'></a>
+
+## description
+
+Memory management and pointer management library in C
+
+- cross-platfrom C library designed to create a safe C codebase.
+- implementation of memory management/type systemm/GC in C
+
+## features
+
+- GC
+- type system
+- pointer-free operations
+- cross-platform API
+
+## guidelines
+
+- C guidelines in development of critical code (refers to [Secure Coding in C and C 2nd Edition][coding], Robert C. Seacord).
+- NASA guidlines (refers to [The Power of Ten][nasa] – Rules for Developing Safety Critical Code, Gerard J. Holzmann, NASA/JPL Laboratory for Reliable Software, Pasadena, CA 91109)
+
+## history
+
+- 2025-05-01: added support for MSVC
+- 2025-02-28: added mocks for standart functions calloc/free to simulate out-ouf-memory function call flow
+
+## C standart
+
+- [The Current C Programming Language Standard – ISO/IEC 9899:2024 (C24)](https://blog.ansi.org/c-programming-language-standard-iso-iec-9899-2024/)
+- [ISO/IEC 9899:2024 (en) — N3220 working draft](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf)
+- [C23 (C standard revision)](https://en.wikipedia.org/wiki/C23_(C_standard_revision))
+
+## code
+
+[![code](https://sonarcloud.io/api/project_badges/measure?project=default-writer_c&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=default-writer_c)
 
 ## status
 
@@ -15,29 +49,6 @@
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=default-writer_c&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=default-writer_c)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=default-writer_c&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=default-writer_c)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=default-writer_c&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=default-writer_c)
-
-## info
-
-[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=default-writer_c&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=default-writer_c)
-
-## description
-
-- C memory management and pointer management library
-
-The goal is to conform to the C guidelines in development of critical code.
-
-- [The Power of Ten][nasa] – Rules for Developing Safety Critical Code
-  > Gerard J. Holzmann, NASA/JPL Laboratory for Reliable Software, Pasadena, CA 91109
-
-## history
-
-- 2025-02-28: added mocks for standart functions calloc/free to simulate out-ouf-memory function call flow
-
-## C standart
-
-- [The Current C Programming Language Standard – ISO/IEC 9899:2024 (C24)](https://blog.ansi.org/c-programming-language-standard-iso-iec-9899-2024/)
-- [ISO/IEC 9899:2024 (en) — N3220 working draft](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf)
-- [C23 (C standard revision)](https://en.wikipedia.org/wiki/C23_(C_standard_revision))
 
 ## code
 
@@ -75,6 +86,7 @@ int main(void) {
 ## useful commands
 
 ```bash
+./bin/cleanup.sh --clean
 ./bin/init.sh --clangd
 ./bin/init.sh --init --setup
 ./bin/coverageall.sh --all --clean
@@ -116,6 +128,7 @@ int main(void) {
 
   1. WSL2/devcontainers
   2. Ubuntu 18.04.6 / 22.04.3 / 24/.04.2 LTS
+  3. MSVC
 
 - C API generated docs (doxygen):
 
@@ -129,8 +142,9 @@ int main(void) {
 
 - streaming channels
 
-  1. [twitch.tv](https://www.twitch.tv/defaultwriter/videos)
-  2. [youtube.com](https://www.youtube.com/channel/UCrtPCqirYXdA2gYG8NxbTjA)
+  1. [vk.com](https://vkvideo.ru/@club230014275)
+  2. [twitch.tv](https://www.twitch.tv/defaultwriter/videos)
+  3. [youtube.com](https://www.youtube.com/channel/UCrtPCqirYXdA2gYG8NxbTjA)
 
 ## music credits
 
@@ -343,6 +357,7 @@ support this project [become a sponsor](https://opencollective.com/c-vm#sponsor)
 [scripts]: docs/pdf/scripts.pdf
 [labs]: docs/pdf/labs.pdf
 [nasa]: docs/P10.pdf
+[coding]: https://www.amazon.com/Secure-Coding-2nd-Software-Engineering/dp/0321822137
 [ninja]: https://github.com/ninja-build/ninja/releases
 
 ## funding

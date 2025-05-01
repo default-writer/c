@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 30, 2025 at 10:35:40 AM GMT+3
+ *   May 1, 2025 at 12:18:06 AM GMT+3
  *
  */
 /*
@@ -60,8 +60,8 @@ static void error_throw(u64 error_type, const char* message, u64 size);
 #endif
 static void error_clear(void);
 static u64 error_type(void);
-static FILE* error_stdout(void);
-static FILE* error_stderr(void);
+static FILE* error_std_vm_out(void);
+static FILE* error_std_vm_err(void);
 static const char* error_get(void);
 static u64 error_next(void);
 static u64 error_count(void);
@@ -118,11 +118,11 @@ static const char* error_get(void) {
     return NULL_PTR;
 }
 
-static FILE* error_stdout(void) {
+static FILE* error_std_vm_out(void) {
     return stdout;
 }
 
-static FILE* error_stderr(void) {
+static FILE* error_std_vm_err(void) {
     return stderr;
 }
 
@@ -140,8 +140,8 @@ static u64 error_count(void) {
 
 /* public */
 const system_error_methods PRIVATE_API(system_error_methods_definitions) = {
-    .stdout = error_stdout,
-    .stderr = error_stderr,
+    .std_vm_out = error_std_vm_out,
+    .std_vm_err = error_std_vm_err,
     .output = error_output,
     .throw = error_throw,
     .clear = error_clear,
