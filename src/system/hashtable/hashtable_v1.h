@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 30, 2025 at 10:24:04 AM GMT+3
+ *   May 1, 2025 at 11:00:52 AM GMT+3
  *
  */
 /*
@@ -44,7 +44,7 @@
 #define USING_STD_API
 #include "std/api.h"
 
-#include "system/export.h"
+#include "system/platform.h"
 
 #define HASHTABLE_INITIAL_CAPACITY 16
 #define HASHTABLE_LOAD_FACTOR 0.75

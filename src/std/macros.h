@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 30, 2025 at 11:27:40 AM GMT+3
+ *   May 1, 2025 at 9:22:21 AM GMT+3
  *
  */
 /*
@@ -65,38 +65,38 @@
 #define PTR_ARRAY_SIZE(size) ((size) * PTR_SIZE)
 
 #ifdef USE_MEMORY_DEBUG_INFO
-#define ERROR(message_id, format, ...)                                                                                                                                                  \
-    do {                                                                                                                                                                                \
-        int _##message_id##_snp_format_size = snprintf(NULL, 0, format ": %s (%s:%d)", __VA_ARGS__, __func__, __FILE__, __LINE__); /* NOLINT: snprintf(NULL) */                         \
-        char _##message_id##_snp_format_buffer[_##message_id##_snp_format_size + 1];                                                                                                    \
-        snprintf(_##message_id##_snp_format_buffer, sizeof _##message_id##_snp_format_buffer, format ": %s (%s:%d)", __VA_ARGS__, __func__, __FILE__, __LINE__); /* NOLINT: snprintf */ \
-        CALL(error)->output(stderr, ID_##message_id, _##message_id##_snp_format_buffer, (u64)_##message_id##_snp_format_size);                                                          \
-        CALL(error)->throw(ID_##message_id, _##message_id##_snp_format_buffer, (u64)_##message_id##_snp_format_size);                                                                   \
+#define STD_VM_ERROR(message_id, format, ...)                                                                                                           \
+    do {                                                                                                                                               \
+        int snp_format_size = snprintf(NULL, 0, format ": %s (%s:%d)", __VA_ARGS__, __func__, __FILE__, __LINE__); /* NOLINT */      \
+        char* snp_format_buffer = (char*)malloc(snp_format_size + 1);                                                   \
+        if (snp_format_buffer) {                                                                                                       \
+            snprintf(snp_format_buffer, snp_format_size + 1, format ": %s (%s:%d)", __VA_ARGS__, __func__, __FILE__, __LINE__); \
+            CALL(error)->output(stderr, ID_##message_id, snp_format_buffer, (u64)snp_format_size);                      \
+            CALL(error)->throw(ID_##message_id, snp_format_buffer, (u64)snp_format_size);                               \
+            free(snp_format_buffer);                                                                                                   \
+        }                                                                                                                                              \
     } while (0)
-#define ERROR_NO_ERROR(format, ...) ERROR(ERROR_NO_ERROR, format, __VA_ARGS__)
-#define ERROR_VM_NOT_INITIALIZED(format, ...) ERROR(ERROR_VM_NOT_INITIALIZED, format, ##__VA_ARGS__)
-#define ERROR_INVALID_POINTER(format, ...) ERROR(ERROR_INVALID_POINTER, format, __VA_ARGS__)
-#define ERROR_INVALID_ARGUMENT(format, ...) ERROR(ERROR_INVALID_ARGUMENT, format, __VA_ARGS__)
-#define ERROR_INVALID_CONDITION(format, ...) ERROR(ERROR_INVALID_CONDITION, format, __VA_ARGS__)
-#define ERROR_INVALID_TYPE_ID(format, ...) ERROR(ERROR_INVALID_TYPE_ID, format, __VA_ARGS__)
-#define ERROR_INVALID_VALUE(format, ...) ERROR(ERROR_INVALID_VALUE, format, __VA_ARGS__)
 #else
-#define ERROR(message_id, format, ...)                                                                                                     \
-    do {                                                                                                                                   \
-        int _##message_id##_snp_format_size = snprintf(NULL, 0, format, __VA_ARGS__); /* NOLINT: snprintf(NULL) */                         \
-        char _##message_id##_snp_format_buffer[_##message_id##_snp_format_size + 1];                                                       \
-        snprintf(_##message_id##_snp_format_buffer, sizeof _##message_id##_snp_format_buffer, format, __VA_ARGS__); /* NOLINT: snprintf */ \
-        CALL(error)->output(stderr, ID_##message_id, _##message_id##_snp_format_buffer, (u64)_##message_id##_snp_format_size);             \
-        CALL(error)->throw(ID_##message_id, _##message_id##_snp_format_buffer, (u64)_##message_id##_snp_format_size);                      \
+#define STD_VM_ERROR(message_id, format, ...)                                                                                                           \
+    do {                                                                                                                                               \
+        int snp_format_size = snprintf(NULL, 0, format, __VA_ARGS__); /* NOLINT */                                                  \
+        char* snp_format_buffer = (char*)malloc(snp_format_size + 1);                                                   \
+        if (snp_format_buffer) {                                                                                                       \
+            snprintf(snp_format_buffer, snp_format_size + 1, format, __VA_ARGS__);                                  \
+            CALL(error)->output(stderr, ID_##message_id, snp_format_buffer, (u64)snp_format_size);                      \
+            CALL(error)->throw(ID_##message_id, snp_format_buffer, (u64)snp_format_size);                               \
+            free(snp_format_buffer);                                                                                                   \
+        }                                                                                                                                              \
     } while (0)
-#define ERROR_NO_ERROR(format, ...) ERROR(ERROR_NO_ERROR, format, __VA_ARGS__)
-#define ERROR_VM_NOT_INITIALIZED(format, ...) ERROR(ERROR_VM_NOT_INITIALIZED, format, __VA_ARGS__)
-#define ERROR_INVALID_POINTER(format, ...) ERROR(ERROR_INVALID_POINTER, format, __VA_ARGS__)
-#define ERROR_INVALID_ARGUMENT(format, ...) ERROR(ERROR_INVALID_ARGUMENT, format, __VA_ARGS__)
-#define ERROR_INVALID_CONDITION(format, ...) ERROR(ERROR_INVALID_CONDITION, format, __VA_ARGS__)
-#define ERROR_INVALID_TYPE_ID(format, ...) ERROR(ERROR_INVALID_TYPE_ID, format, __VA_ARGS__)
-#define ERROR_INVALID_VALUE(format, ...) ERROR(ERROR_INVALID_VALUE, format, __VA_ARGS__)
 #endif
+
+#define ERROR_NO_STD_VM_ERROR(format, ...) STD_VM_ERROR(ERROR_NO_ERROR, format, __VA_ARGS__)
+#define ERROR_VM_NOT_INITIALIZED(format, ...) STD_VM_ERROR(ERROR_VM_NOT_INITIALIZED, format, ##__VA_ARGS__)
+#define ERROR_INVALID_POINTER(format, ...) STD_VM_ERROR(ERROR_INVALID_POINTER, format, __VA_ARGS__)
+#define ERROR_INVALID_ARGUMENT(format, ...) STD_VM_ERROR(ERROR_INVALID_ARGUMENT, format, __VA_ARGS__)
+#define ERROR_INVALID_CONDITION(format, ...) STD_VM_ERROR(ERROR_INVALID_CONDITION, format, __VA_ARGS__)
+#define ERROR_INVALID_TYPE_ID(format, ...) STD_VM_ERROR(ERROR_INVALID_TYPE_ID, format, __VA_ARGS__)
+#define ERROR_INVALID_VALUE(format, ...) STD_VM_ERROR(ERROR_INVALID_VALUE, format, __VA_ARGS__)
 
 #ifdef USE_MEMORY_DEBUG_INFO
 #define CHECK_VM_CONDITION(condition, null)             \
@@ -291,6 +291,7 @@
 // #define INIT
 // #define DESTROY
 #define PUBLIC
+#define INLINE inline
 #endif /* __GNUC__ >= 7 */
 
 #endif /* STD_MACROS_H */

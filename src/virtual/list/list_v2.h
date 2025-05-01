@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 30, 2025 at 10:24:04 AM GMT+3
+ *   May 1, 2025 at 11:01:01 AM GMT+3
  *
  */
 /*
@@ -46,7 +46,7 @@
 
 #include "std/data_v2.h"
 
-#include "virtual/export.h"
+#include "virtual/platform.h"
 
 typedef struct PRIVATE_API(virtual_list_v2_methods) {
     stack_v2_ptr (*init)(u64 size, stack_v2_ptr stack);

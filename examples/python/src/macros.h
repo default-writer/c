@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 23, 2025 at 2:31:33 PM GMT+3
+ *   May 1, 2025 at 12:16:05 AM GMT+3
  *
  */
 /*
@@ -59,9 +59,10 @@
 #define PYTHON_ERROR(exception, format, ...)                                                                                                            \
     do {                                                                                                                                                \
         int snp_format_size = snprintf(NULL, 0, format ": %s (%s:%d)", __VA_ARGS__, __func__, __FILE__, __LINE__); /* NOLINT: snprintf(NULL) */         \
-        char snp_format_buffer[snp_format_size + 1];                                                                                                    \
-        snprintf(snp_format_buffer, sizeof snp_format_buffer, format ": %s (%s:%d)", __VA_ARGS__, __func__, __FILE__, __LINE__); /* NOLINT: snprintf */ \
-        PyErr_SetString(exception, &snp_format_buffer[0]);                                                                                              \
+        char* snp_format_buffer = (char*)malloc(snp_format_size + 1);                                                                                   \
+        snprintf(snp_format_buffer, snp_format_size + 1, format ": %s (%s:%d)", __VA_ARGS__, __func__, __FILE__, __LINE__); /* NOLINT: snprintf */ \
+        PyErr_SetString(exception, snp_format_buffer);                                                                                              \
+        free(snp_format_buffer);                                                                                                                    \
         CALL(error)->clear();                                                                                                                           \
     } while (0)
 

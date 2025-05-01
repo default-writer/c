@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 30, 2025 at 9:59:21 AM GMT+3
+ *   May 1, 2025 at 11:01:01 AM GMT+3
  *
  */
 /*
@@ -45,7 +45,7 @@
 #include "std/api.h"
 
 #include "virtual/env/env_v1.h"
-#include "virtual/export.h"
+#include "virtual/platform.h"
 #include "virtual/list/list_v1.h"
 #include "virtual/pointer/pointer_v1.h"
 #include "virtual/types/data/data_v1.h"

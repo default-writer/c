@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 30, 2025 at 9:59:06 AM GMT+3
+ *   May 1, 2025 at 11:00:52 AM GMT+3
  *
  */
 /*
@@ -44,7 +44,7 @@
 #define USING_STD_API
 #include "std/api.h"
 
-#include "system/export.h"
+#include "system/platform.h"
 
 #include "system/error/error_v1.h"
 #include "system/hashtable/hashtable_v1.h"

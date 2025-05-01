@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 30, 2025 at 10:24:02 AM GMT+3
+ *   May 1, 2025 at 7:08:07 AM GMT+3
  *
  */
 /*
@@ -44,6 +44,22 @@
 #include <assert.h>
 #include <limits.h>
 #include <stdarg.h>
-#include <unistd.h>
+
+#if defined(_WIN32) || defined(__MSYS__)
+    #include <time.h>
+    #include <windows.h>
+    #include <io.h>
+    #if !defined(__MSYS__)
+        #include <direct.h>
+        #ifdef PATH_MAX
+            #undef PATH_MAX
+        #endif
+        #define PATH_MAX MAX_PATH
+    #else
+        #include <unistd.h> 
+    #endif
+#else
+    #include <unistd.h>
+#endif
 
 #endif /* STD_HEADERS_H */
