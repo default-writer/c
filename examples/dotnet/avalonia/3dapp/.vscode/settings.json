@@ -1,0 +1,5 @@
+{
+    "editor.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",    
+    "editor.inlayHints.fontFamily":"'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace",     
+    "editor.codeLensFontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace"
+}
