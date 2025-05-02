@@ -170,7 +170,8 @@
         "ms-python.python",
         "marp-team.marp-vscode",
         "Google.geminicodeassist",
-        "boshyxd.remove-all-comments"
+        "boshyxd.remove-all-comments",
+        "ms-dotnettools.csdevkit"
       ]
     }
   }
