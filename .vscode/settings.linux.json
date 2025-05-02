@@ -565,5 +565,6 @@
     "console": "integratedTerminal",
     "cwd": "${workspaceRoot}/cmake",
     "environment": []
-  }
+  },
+  "markdown.preview.fontFamily": "'JetBrains Mono', 'Ubuntu Mono', 'ProggyVector', 'Monoid', 'Fira Code', monospace"
 }
