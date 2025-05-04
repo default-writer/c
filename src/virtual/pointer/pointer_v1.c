@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 3, 2025 at 2:00:21 PM GMT+3
+ *   May 4, 2025 at 9:01:47 AM GMT+3
  *
  */
 /*
@@ -58,7 +58,6 @@
 
 /* macros */
 #define DEFAULT_SIZE 0x8 /* 8 */
-#define POINTER_TYPE_SIZE sizeof(pointer_type)
 #define KNOWN_TYPES_TYPE_SIZE sizeof(known_types_type)
 #define KNOWN_TYPES_TYPE_ARRAY_SIZE(size) ((size) * KNOWN_TYPES_TYPE_SIZE)
 #define POINTER_TYPE_SIZE sizeof(pointer_type)
