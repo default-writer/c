@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 3, 2025 at 3:12:20 PM GMT+3
+ *   May 4, 2025 at 9:01:42 AM GMT+3
  *
  */
 /*
@@ -53,7 +53,6 @@
 #define DEFAULT_SIZE 0x8 /* 8 */
 #define PTR_SIZE sizeof(void_ptr) /* size of a pointer */
 #define PTR_ARRAY_SIZE(size) ((size) * PTR_SIZE)
-#define POINTER_TYPE_SIZE sizeof(pointer_type)
 #define KNOWN_TYPES_TYPE_SIZE sizeof(known_types_type)
 #define KNOWN_TYPES_TYPE_ARRAY_SIZE(size) ((size) * KNOWN_TYPES_TYPE_SIZE)
 #define POINTER_TYPE_SIZE sizeof(pointer_type)
