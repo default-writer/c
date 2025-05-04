@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 27, 2025 at 9:09:07 PM GMT+3
+ *   May 3, 2025 at 12:24:08 AM GMT+3
  *
  */
 /*
@@ -71,7 +71,7 @@ static void object_type_destructor(const_vm_ptr cvm, u64 address) {
 static u64 object_alloc(const_vm_ptr cvm, u64 size) {
     CHECK_VM(cvm, NULL_ADDRESS);
     CHECK_ARG(size, NULL_ADDRESS);
-    u64 address = CALL(virtual)->alloc(cvm, size, object_type_definitions.type_id);
+    u64 address = CALL(allocator)->alloc(cvm, size, object_type_definitions.type_id);
     return address;
 }
 

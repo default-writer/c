@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 1, 2025 at 8:59:53 PM GMT+3
+ *   May 3, 2025 at 3:12:20 PM GMT+3
  *
  */
 /*
@@ -60,13 +60,12 @@
 
 /* internal */
 #include "internal/pointer_type_v1.h"
-#include "internal/virtual_pointer_type_v1.h"
 #include "internal/vm_type_v1.h"
 
 /* private */
 typedef struct vm_state {
-    virtual_pointer_ptr vptr;
-    pointer_ptr* ref;
+    stack_v2_ptr vptr;
+    void_ptr* ref;
 } vm_state_type;
 
 CVM_EXPORT extern void data_init(const_vm_ptr cvm);
@@ -161,7 +160,7 @@ static void vm_dump_ref_stack(const_vm_ptr cvm, stack_ptr stack) {
 static u64 vm_release(const_vm_ptr cvm, u64 address) {
     CHECK_VM(cvm, FALSE);
     CHECK_ARG(address, FALSE);
-    u64 type_id = CALL(virtual)->type(cvm, address);
+    u64 type_id = CALL(allocator)->type(cvm, address);
     CHECK_TYPE(type_id == 0, FALSE);
 #ifdef USE_GC
     if (type_id > 0 && type_id <= (*cvm)->known_types_capacity) {
@@ -202,7 +201,7 @@ INLINE static void vm_dump_ref_internal(const_vm_ptr cvm, pointer_ptr* ptr, stac
 
 /* code */
 INLINE static void vm_ref_enumerator_init_internal(struct vm_state* state, const_vm_ptr cvm) {
-    virtual_pointer_ptr vptr = (*cvm)->next;
+    stack_v2_ptr vptr = (*cvm)->next;
     state->vptr = vptr;
     state->ref = vptr->bp;
 }
@@ -241,8 +240,8 @@ static u64 vm_next_internal(struct vm_state* state) {
 }
 
 static pointer_ptr* vm_ref_enumerator_next_internal(struct vm_state* state) {
-    pointer_ptr* ref = 0;
-    virtual_pointer_ptr vptr = state->vptr;
+    void_ptr* ref = 0;
+    stack_v2_ptr vptr = state->vptr;
     while (ref == 0) {
         if (state->ref == vptr->sp) {
             if (vptr->next == 0) {
@@ -254,7 +253,7 @@ static pointer_ptr* vm_ref_enumerator_next_internal(struct vm_state* state) {
         }
         ref = state->ref++;
     }
-    return ref;
+    return (pointer_ptr*)ref;
 }
 
 /* public */

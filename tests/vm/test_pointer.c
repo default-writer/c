@@ -68,7 +68,7 @@ CSYS_EXPORT extern const system_hashtable_methods* PRIVATE_API(hashtable);
 /* definition */
 CVM_EXPORT extern const virtual_vm_methods* PRIVATE_API(vm);
 CVM_EXPORT extern const virtual_type_methods* PRIVATE_API(type);
-CVM_EXPORT extern const virtual_methods* PRIVATE_API(virtual);
+CVM_EXPORT extern const allocator_methods* PRIVATE_API(allocator);
 CVM_EXPORT extern const virtual_system_methods* PRIVATE_API(system);
 CVM_EXPORT extern const virtual_pointer_methods* PRIVATE_API(pointer);
 CVM_EXPORT extern const virtual_env_methods* PRIVATE_API(env);
@@ -85,7 +85,7 @@ typedef struct test_data {
 }* TEST_DATA;
 
 /*api*/
-static const virtual_methods* virtual_methods_ptr;
+static const allocator_methods* allocator_methods_ptr;
 
 /* mocks */
 static const_pointer_ptr mock_virtual_read_zero(const_vm_ptr cvm, u64 address);
@@ -321,23 +321,23 @@ RX_TEST_CASE(tests_pointer_v1, test_init_load_free_destroy_gc, .fixture = test_f
 RX_TEST_CASE(tests_pointer_v1, test_load_copy_virtual_read_ptr_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
-    virtual_methods mock_virtual_methods_definitions;
+    allocator_methods mock_allocator_methods_definitions;
     /*api */
-    memcpy(&mock_virtual_methods_definitions, PRIVATE_API(virtual), sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&mock_allocator_methods_definitions, PRIVATE_API(allocator), sizeof(allocator_methods)); /* NOLINT: sizeof(allocator_methods*) */
     /* setup mocks */
-    mock_virtual_methods_definitions.read = mock_virtual_read_zero;
+    mock_allocator_methods_definitions.read = mock_virtual_read_zero;
     /* setup api endpoint */
-    virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
+    allocator_methods* mock_allocator_methods = &mock_allocator_methods_definitions;
     /* backup api calls */
-    memcpy(&virtual_methods_ptr, &PRIVATE_API(virtual), sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&allocator_methods_ptr, &PRIVATE_API(allocator), sizeof(allocator_methods*)); /* NOLINT: sizeof(allocator_methods*) */
     /* init */
     u64 char_ptr = CALL(string)->load(cvm, "/");
     /* prepare to mock api calls */
-    memcpy(&PRIVATE_API(virtual), &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&PRIVATE_API(allocator), &mock_allocator_methods, sizeof(allocator_methods*)); /* NOLINT: sizeof(allocator_methods*) */
     /* virtual_string->free fails in virtual->read call */
     u64 copy_ptr = CALL(string)->copy(cvm, char_ptr);
     /* restore api calls */
-    memcpy(&PRIVATE_API(virtual), &virtual_methods_ptr, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&PRIVATE_API(allocator), &allocator_methods_ptr, sizeof(allocator_methods*)); /* NOLINT: sizeof(allocator_methods*) */
     RX_ASSERT(char_ptr != 0);
     RX_ASSERT(copy_ptr == 0);
     RX_ASSERT(strcmp(CALL(string)->unsafe(cvm, char_ptr), "/") == 0);
@@ -348,22 +348,22 @@ RX_TEST_CASE(tests_pointer_v1, test_load_copy_virtual_read_ptr_0, .fixture = tes
 RX_TEST_CASE(tests_pointer_v1, test_load_copy_pointer_virtual_read_ptr_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
-    virtual_methods mock_virtual_methods_definitions;
+    allocator_methods mock_allocator_methods_definitions;
     /*api */
-    memcpy(&mock_virtual_methods_definitions, PRIVATE_API(virtual), sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&mock_allocator_methods_definitions, PRIVATE_API(allocator), sizeof(allocator_methods)); /* NOLINT: sizeof(allocator_methods*) */
     /* setup mocks */
-    mock_virtual_methods_definitions.read = mock_virtual_read_zero;
+    mock_allocator_methods_definitions.read = mock_virtual_read_zero;
     /* setup api endpoint */
-    virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
+    allocator_methods* mock_allocator_methods = &mock_allocator_methods_definitions;
     /* backup api calls */
-    memcpy(&virtual_methods_ptr, &PRIVATE_API(virtual), sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&allocator_methods_ptr, &PRIVATE_API(allocator), sizeof(allocator_methods*)); /* NOLINT: sizeof(allocator_methods*) */
     /* prepare to mock api calls */
-    memcpy(&PRIVATE_API(virtual), &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
-    u64 address = CALL(virtual)->alloc(cvm, 2, TYPE_STRING);
+    memcpy(&PRIVATE_API(allocator), &mock_allocator_methods, sizeof(allocator_methods*)); /* NOLINT: sizeof(allocator_methods*) */
+    u64 address = CALL(allocator)->alloc(cvm, 2, TYPE_STRING);
     u64 move_ptr = CALL(string)->move_left(cvm, address, 1);
     RX_ASSERT(move_ptr == 0);
     /* restore api calls */
-    memcpy(&PRIVATE_API(virtual), &virtual_methods_ptr, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&PRIVATE_API(allocator), &allocator_methods_ptr, sizeof(allocator_methods*)); /* NOLINT: sizeof(allocator_methods*) */
     CALL(pointer)->free(cvm, address);
 }
 
@@ -371,23 +371,23 @@ RX_TEST_CASE(tests_pointer_v1, test_load_copy_pointer_virtual_read_ptr_0, .fixtu
 RX_TEST_CASE(tests_pointer_v1, test_load_copy_virtual_read_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
-    virtual_methods mock_virtual_methods_definitions;
+    allocator_methods mock_allocator_methods_definitions;
     /*api */
-    memcpy(&mock_virtual_methods_definitions, PRIVATE_API(virtual), sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&mock_allocator_methods_definitions, PRIVATE_API(allocator), sizeof(allocator_methods)); /* NOLINT: sizeof(allocator_methods*) */
     /* setup mocks */
-    mock_virtual_methods_definitions.read = mock_virtual_read_zero;
+    mock_allocator_methods_definitions.read = mock_virtual_read_zero;
     /* setup api endpoint */
-    virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
+    allocator_methods* mock_allocator_methods = &mock_allocator_methods_definitions;
     /* backup api calls */
-    memcpy(&virtual_methods_ptr, &PRIVATE_API(virtual), sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&allocator_methods_ptr, &PRIVATE_API(allocator), sizeof(allocator_methods*)); /* NOLINT: sizeof(allocator_methods*) */
     /* init */
     u64 char_ptr = CALL(string)->load(cvm, "/");
     /* prepare to mock api calls */
-    memcpy(&PRIVATE_API(virtual), &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&PRIVATE_API(allocator), &mock_allocator_methods, sizeof(allocator_methods*)); /* NOLINT: sizeof(allocator_methods*) */
     /* virtual_string->free fails in virtual->read call */
     u64 copy_ptr = CALL(string)->copy(cvm, char_ptr);
     /* restore api calls */
-    memcpy(&PRIVATE_API(virtual), &virtual_methods_ptr, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&PRIVATE_API(allocator), &allocator_methods_ptr, sizeof(allocator_methods*)); /* NOLINT: sizeof(allocator_methods*) */
     RX_ASSERT(char_ptr != 0);
     RX_ASSERT(copy_ptr == 0);
     RX_ASSERT(strcmp(CALL(string)->unsafe(cvm, char_ptr), "/") == 0);
@@ -2223,7 +2223,7 @@ RX_TEST_CASE(tests_pointer_v1, test_vm_string_load_file_alloc, .fixture = test_f
     const_vm_ptr cvm = rx->ctx;
     u64 file_path_ptr = CALL(string)->load(cvm, "data");
     u64 mode_ptr = CALL(string)->load(cvm, "rb");
-    const_pointer_ptr const_ptr = CALL(virtual)->read(cvm, file_path_ptr);
+    const_pointer_ptr const_ptr = CALL(allocator)->read(cvm, file_path_ptr);
     safe_void_ptr safe_ptr;
     safe_ptr.const_ptr = const_ptr->data;
     u8* data_ptr = safe_ptr.ptr;
@@ -2797,7 +2797,7 @@ RX_TEST_CASE(tests_pointer_v1, test_vm_pointer_read_safe_alloc_safe_size_offset,
     const_vm_ptr cvm = rx->ctx;
     const char* src = "hello, world!";
     u64 address = CALL(string)->load(cvm, src);
-    const_pointer_ptr const_ptr = CALL(virtual)->read(cvm, address);
+    const_pointer_ptr const_ptr = CALL(allocator)->read(cvm, address);
     safe_void_ptr safe_ptr;
     safe_ptr.const_ptr = const_ptr->data;
     u8* data_ptr = safe_ptr.ptr;
@@ -2829,28 +2829,28 @@ RX_TEST_CASE(tests_pointer_v1, test_vm_virtual_destroy, .fixture = test_fixture)
 RX_TEST_CASE(tests_pointer_v1, test_vm_virtual_alloc_1_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
-    CALL(virtual)->alloc(cvm, 1, 0);
+    CALL(allocator)->alloc(cvm, 1, 0);
     RX_ASSERT(0 != 1);
 }
 
 /* test init */
 RX_TEST_CASE(tests_pointer_v1, test_vm_virtual_alloc, .fixture = test_fixture) {
     const_vm_ptr cvm = 0;
-    CALL(virtual)->alloc(cvm, 0, 0);
+    CALL(allocator)->alloc(cvm, 0, 0);
     RX_ASSERT(0 != 1);
 }
 
 /* test init */
 RX_TEST_CASE(tests_pointer_v1, test_vm_virtual_free, .fixture = test_fixture) {
     const_vm_ptr cvm = 0;
-    CALL(virtual)->free(cvm, 0);
+    CALL(allocator)->free(cvm, 0);
     RX_ASSERT(0 != 1);
 }
 
 /* test init */
 RX_TEST_CASE(tests_pointer_v1, test_vm_virtual_read, .fixture = test_fixture) {
     const_vm_ptr cvm = 0;
-    CALL(virtual)->type(cvm, 0);
+    CALL(allocator)->type(cvm, 0);
     RX_ASSERT(0 != 1);
 }
 
@@ -2858,14 +2858,14 @@ RX_TEST_CASE(tests_pointer_v1, test_vm_virtual_read, .fixture = test_fixture) {
 RX_TEST_CASE(tests_pointer_v1, test_vm_virtual_read_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
-    CALL(virtual)->type(cvm, 0);
+    CALL(allocator)->type(cvm, 0);
     RX_ASSERT(0 != 1);
 }
 
 /* test init */
 RX_TEST_CASE(tests_pointer_v1, test_vm_virtual_read_type, .fixture = test_fixture) {
     const_vm_ptr cvm = 0;
-    CALL(virtual)->read(cvm, 0);
+    CALL(allocator)->read(cvm, 0);
     RX_ASSERT(0 != 1);
 }
 
@@ -2873,7 +2873,7 @@ RX_TEST_CASE(tests_pointer_v1, test_vm_virtual_read_type, .fixture = test_fixtur
 RX_TEST_CASE(tests_pointer_v1, test_vm_virtual_read_type_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
-    CALL(virtual)->read(cvm, 0);
+    CALL(allocator)->read(cvm, 0);
     RX_ASSERT(0 != 1);
 }
 
@@ -2881,7 +2881,7 @@ RX_TEST_CASE(tests_pointer_v1, test_vm_virtual_read_type_0, .fixture = test_fixt
 RX_TEST_CASE(tests_pointer_v1, test_vm_virtual_read_type_1_0, .fixture = test_fixture) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
-    CALL(virtual)->read(cvm, 1);
+    CALL(allocator)->read(cvm, 1);
     RX_ASSERT(0 != 1);
 }
 
@@ -3052,24 +3052,24 @@ RX_TEST_CASE(tests_pointer_v1, test_move_right_left, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests_pointer_v1, test_sting_free_0, .fixture = test_fixture) {
-    virtual_methods mock_virtual_methods_definitions;
+    allocator_methods mock_allocator_methods_definitions;
     /*api */
-    memcpy(&mock_virtual_methods_definitions, PRIVATE_API(virtual), sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&mock_allocator_methods_definitions, PRIVATE_API(allocator), sizeof(allocator_methods)); /* NOLINT: sizeof(allocator_methods*) */
     /* setup mocks */
-    mock_virtual_methods_definitions.read = mock_virtual_read_zero;
+    mock_allocator_methods_definitions.read = mock_virtual_read_zero;
     /* setup api endpoint */
-    virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
+    allocator_methods* mock_allocator_methods = &mock_allocator_methods_definitions;
     /* backup api calls */
-    memcpy(&virtual_methods_ptr, &PRIVATE_API(virtual), sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&allocator_methods_ptr, &PRIVATE_API(allocator), sizeof(allocator_methods*)); /* NOLINT: sizeof(allocator_methods*) */
     /* init */
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
     /* prepare to mock api calls */
-    memcpy(&PRIVATE_API(virtual), &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&PRIVATE_API(allocator), &mock_allocator_methods, sizeof(allocator_methods*)); /* NOLINT: sizeof(allocator_methods*) */
     /* virtual_string->free fails in virtual->read call */
     CALL(string)->free(cvm, 0);
     /* restore api calls */
-    memcpy(&PRIVATE_API(virtual), &virtual_methods_ptr, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&PRIVATE_API(allocator), &allocator_methods_ptr, sizeof(allocator_methods*)); /* NOLINT: sizeof(allocator_methods*) */
     /* cleanup */
     CALL(vm)->gc(cvm);
     /* destroy */
@@ -3078,36 +3078,36 @@ RX_TEST_CASE(tests_pointer_v1, test_sting_free_0, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests_pointer_v1, test_sting_free_ptr_0, .fixture = test_fixture) {
-    virtual_methods mock_virtual_methods_definitions;
+    allocator_methods mock_allocator_methods_definitions;
     /*api */
-    memcpy(&mock_virtual_methods_definitions, PRIVATE_API(virtual), sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&mock_allocator_methods_definitions, PRIVATE_API(allocator), sizeof(allocator_methods)); /* NOLINT: sizeof(allocator_methods*) */
     /* setup mocks */
-    mock_virtual_methods_definitions.read = mock_virtual_read_zero;
+    mock_allocator_methods_definitions.read = mock_virtual_read_zero;
     /* setup api endpoint */
-    virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
+    allocator_methods* mock_allocator_methods = &mock_allocator_methods_definitions;
     /* backup api calls */
-    memcpy(&virtual_methods_ptr, &PRIVATE_API(virtual), sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&allocator_methods_ptr, &PRIVATE_API(allocator), sizeof(allocator_methods*)); /* NOLINT: sizeof(allocator_methods*) */
     /* init */
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
     /* prepare to mock api calls */
-    memcpy(&PRIVATE_API(virtual), &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&PRIVATE_API(allocator), &mock_allocator_methods, sizeof(allocator_methods*)); /* NOLINT: sizeof(allocator_methods*) */
     /* virtual_string->free fails in virtual->read call */
     CALL(string)->free(cvm, 0);
     /* restore api calls */
-    memcpy(&PRIVATE_API(virtual), &virtual_methods_ptr, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&PRIVATE_API(allocator), &allocator_methods_ptr, sizeof(allocator_methods*)); /* NOLINT: sizeof(allocator_methods*) */
 }
 
 /* test init */
 RX_TEST_CASE(tests_pointer_v1, test_print_string_reference_virtual_read_type, .fixture = test_fixture) {
-    virtual_methods mock_virtual_methods_definitions;
+    allocator_methods mock_allocator_methods_definitions;
     /*api */
-    memcpy(&mock_virtual_methods_definitions, PRIVATE_API(virtual), sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&mock_allocator_methods_definitions, PRIVATE_API(allocator), sizeof(allocator_methods)); /* NOLINT: sizeof(allocator_methods*) */
     /* setup mocks */
     /* setup api endpoint */
-    virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
+    allocator_methods* mock_allocator_methods = &mock_allocator_methods_definitions;
     /* backup api calls */
-    memcpy(&virtual_methods_ptr, &PRIVATE_API(virtual), sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&allocator_methods_ptr, &PRIVATE_API(allocator), sizeof(allocator_methods*)); /* NOLINT: sizeof(allocator_methods*) */
     /* init */
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
@@ -3117,10 +3117,10 @@ RX_TEST_CASE(tests_pointer_v1, test_print_string_reference_virtual_read_type, .f
     CALL(env)->puts(cvm, substring_index_ptr);
     CALL(string)->free(cvm, printing_ptr);
     /* prepare to mock api calls */
-    memcpy(&PRIVATE_API(virtual), &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&PRIVATE_API(allocator), &mock_allocator_methods, sizeof(allocator_methods*)); /* NOLINT: sizeof(allocator_methods*) */
     CALL(string)->free(cvm, substring_index_ptr);
     /* restore api calls */
-    memcpy(&PRIVATE_API(virtual), &virtual_methods_ptr, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&PRIVATE_API(allocator), &allocator_methods_ptr, sizeof(allocator_methods*)); /* NOLINT: sizeof(allocator_methods*) */
     CALL(string)->free(cvm, comma_ptr);
 #ifndef USE_GC
     CALL(string)->free(cvm, substring_index_ptr);
@@ -3129,14 +3129,14 @@ RX_TEST_CASE(tests_pointer_v1, test_print_string_reference_virtual_read_type, .f
 
 /* test init */
 RX_TEST_CASE(tests_pointer_v1, test_free_string_reference_virtual_read_type, .fixture = test_fixture) {
-    virtual_methods mock_virtual_methods_definitions;
+    allocator_methods mock_allocator_methods_definitions;
     /*api */
-    memcpy(&mock_virtual_methods_definitions, PRIVATE_API(virtual), sizeof(virtual_methods)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&mock_allocator_methods_definitions, PRIVATE_API(allocator), sizeof(allocator_methods)); /* NOLINT: sizeof(allocator_methods*) */
     /* setup mocks */
     /* setup api endpoint */
-    virtual_methods* mock_virtual_methods = &mock_virtual_methods_definitions;
+    allocator_methods* mock_allocator_methods = &mock_allocator_methods_definitions;
     /* backup api calls */
-    memcpy(&virtual_methods_ptr, &PRIVATE_API(virtual), sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&allocator_methods_ptr, &PRIVATE_API(allocator), sizeof(allocator_methods*)); /* NOLINT: sizeof(allocator_methods*) */
     /* init */
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
@@ -3149,13 +3149,13 @@ RX_TEST_CASE(tests_pointer_v1, test_free_string_reference_virtual_read_type, .fi
     u64 substring_exclamation_ptr = CALL(string)->match_offset(cvm, substring_space_ptr, exclamation_ptr);
     CALL(env)->puts(cvm, substring_index_ptr);
     /* prepare to mock api calls */
-    memcpy(&PRIVATE_API(virtual), &mock_virtual_methods, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&PRIVATE_API(allocator), &mock_allocator_methods, sizeof(allocator_methods*)); /* NOLINT: sizeof(allocator_methods*) */
     CALL(string)->free(cvm, substring_exclamation_ptr);
     CALL(string)->free(cvm, substring_space_ptr);
     CALL(string)->free(cvm, substring_index_ptr);
     CALL(string)->free(cvm, printing_ptr);
     /* restore api calls */
-    memcpy(&PRIVATE_API(virtual), &virtual_methods_ptr, sizeof(virtual_methods*)); /* NOLINT: sizeof(virtual_methods*) */
+    memcpy(&PRIVATE_API(allocator), &allocator_methods_ptr, sizeof(allocator_methods*)); /* NOLINT: sizeof(allocator_methods*) */
     CALL(string)->free(cvm, comma_ptr);
     CALL(string)->free(cvm, comma_ptr);
     CALL(string)->free(cvm, space_ptr);

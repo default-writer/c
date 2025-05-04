@@ -47,6 +47,12 @@
   ],
   "files.exclude": {},
   "pdf-preview.default.scale": "page-fit",
+  "cmake.configureSettings": {
+    "CONFIG_MEMORY_DEBUG_INFO": {
+      "type": "BOOL",
+      "value": "OFF"
+    }
+  },
   "cmake.showConsoleAutomatically": true,
   "cmake.configureOnStart": true,
   "cmake.sourceDirectory": "${workspaceFolder}",
@@ -238,6 +244,9 @@
   "cmake.autoSelectActiveFolder": true,
   "cmake.default.generator": "Ninja",
   "cmake.buildBeforeRun": true,
+  "cmake.mingwSearchDirs": [
+    "C:\\msys64\\"
+  ],
   "cmake.defaultVariants": {
     "settings": {
       "communicationMode": "automatic",
@@ -253,7 +262,10 @@
           "long": "Disable optimizations - include debug information.",
           "buildType": "Debug",
           "settings": {
-            "CONFIG_MEMORY_DEBUG_INFO": "1"
+            "CONFIG_MEMORY_DEBUG_INFO": {
+              "type": "BOOL",
+              "value": "OFF"
+            }
           }
         },
         "release": {

@@ -1,6 +1,3 @@
 -I/usr/include/python3.12
 -I.deps/rexo/include
 -Isrc
--DCONFIG_MEMORY_CLEANUP
--DCONFIG_MEMORY_DEBUG_INFO
--DCONFIG_GC

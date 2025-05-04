@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 30, 2025 at 10:24:01 AM GMT+3
+ *   May 3, 2025 at 1:59:33 PM GMT+3
  *
  */
 /*
@@ -46,7 +46,7 @@ typedef struct pointer {
 #ifdef USE_MEMORY_DEBUG_INFO
     void_ptr guard;
 #endif
-    virtual_pointer_ptr vptr;
+    stack_v2_ptr vptr;
     const_void_ptr data;
     u64 offset;
     u64 flags;

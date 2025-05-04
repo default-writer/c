@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 29, 2025 at 4:33:24 PM GMT+3
+ *   May 4, 2025 at 5:08:59 AM GMT+3
  *
  */
 /*
@@ -46,9 +46,9 @@ PUBLIC const virtual_vm_methods* PY_PUBLIC_API(vm) {
     return PUBLIC_API(vm);
 }
 
-PUBLIC const virtual_methods* PY_PUBLIC_API(virtual) {
+PUBLIC const allocator_methods* PY_PUBLIC_API(allocator) {
     CALL(error)->clear();
-    return PUBLIC_API(virtual);
+    return PUBLIC_API(allocator);
 }
 
 PUBLIC const virtual_pointer_methods* PY_PUBLIC_API(pointer) {

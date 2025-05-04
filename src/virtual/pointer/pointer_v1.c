@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 30, 2025 at 1:34:29 PM GMT+3
+ *   May 3, 2025 at 2:00:21 PM GMT+3
  *
  */
 /*
@@ -68,7 +68,7 @@
 
 /* private */
 typedef struct vm_state {
-    virtual_pointer_ptr vptr;
+    stack_v2_ptr vptr;
     pointer_ptr* ref;
 } vm_state_type;
 
@@ -119,8 +119,8 @@ static void pointer_register_user_type(const_vm_ptr cvm, type_methods_definition
 
 /* internal */
 INLINE static u64 pointer_alloc_internal(const_pointer_ptr* tmp, const_vm_ptr cvm, const_void_ptr data, u64 size, u64 offset, u64 flags, u64 type_id) {
-    u64 address = CALL(virtual)->alloc(cvm, size, type_id);
-    const_pointer_ptr const_ptr = CALL(virtual)->read(cvm, address);
+    u64 address = CALL(allocator)->alloc(cvm, size, type_id);
+    const_pointer_ptr const_ptr = CALL(allocator)->read(cvm, address);
     safe_pointer_ptr safe_ptr;
     safe_ptr.const_ptr = const_ptr;
     pointer_ptr ptr = safe_ptr.ptr;
@@ -176,7 +176,7 @@ static const_void_ptr pointer_read(const_vm_ptr cvm, u64 address, u64 type_id) {
     CHECK_VM(cvm, NULL_PTR);
     CHECK_ARG(address, NULL_PTR);
     CHECK_ARG(type_id, NULL_PTR);
-    const_pointer_ptr const_ptr = CALL(virtual)->read(cvm, address);
+    const_pointer_ptr const_ptr = CALL(allocator)->read(cvm, address);
     CHECK_POINTER(const_ptr, NULL_PTR);
     u64 type = const_ptr->public.type;
     CHECK_TYPE(type != type_id, NULL_PTR);
@@ -193,7 +193,7 @@ static u64 pointer_ref(const_vm_ptr cvm, u64 address) {
 static u64 pointer_free(const_vm_ptr cvm, u64 address) {
     CHECK_VM(cvm, FALSE);
     CHECK_ARG(address, FALSE);
-    const_pointer_ptr const_ptr = CALL(virtual)->read(cvm, address);
+    const_pointer_ptr const_ptr = CALL(allocator)->read(cvm, address);
     CHECK_POINTER(const_ptr, FALSE);
     safe_pointer_ptr safe_ptr;
     safe_ptr.const_ptr = const_ptr;
@@ -204,7 +204,7 @@ static u64 pointer_free(const_vm_ptr cvm, u64 address) {
         ptr->data = 0;
         ptr->flags &= ~FLAG_MEMORY_PTR;
     }
-    CALL(virtual)->free(cvm, address);
+    CALL(allocator)->free(cvm, address);
     CALL(os)->free(ptr);
     return TRUE;
 }

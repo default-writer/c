@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 1, 2025 at 3:53:57 PM GMT+3
+ *   May 4, 2025 at 6:38:56 AM GMT+3
  *
  */
 /*
@@ -54,6 +54,7 @@
 #define VM_CONCAT_(A, B) A##B
 #define VM_STRINGIFY_(X) #X
 #define VM_STRINGIFY(X) VM_STRINGIFY_(X)
+#define TEXT(x) VM_STRINGIFY(x)
 
 #define API_VERSION VM_EXPAND(VM_CONCAT(, VM_STRINGIFY(VM_CONCAT(MAJOR_VERSION, VM_CONCAT(., VM_CONCAT(MINOR_VERSION, VM_CONCAT(., PATCH_VERSION)))))))
 #define API(x) VM_CONCAT(x, VM_CONCAT(_, VM_CONCAT(v, VM_CONCAT(MAJOR_VERSION, VM_CONCAT(_, VM_CONCAT(MINOR_VERSION, VM_CONCAT(_, PATCH_VERSION)))))))
@@ -67,28 +68,28 @@
 #define PTR_ARRAY_SIZE(size) ((size) * PTR_SIZE)
 
 #ifdef USE_MEMORY_DEBUG_INFO
-#define STD_VM_ERROR(message_id, format, ...)                                                                                   \
-    do {                                                                                                                        \
-        int snp_format_size = snprintf(NULL, 0, format ": %s (%s:%d)", __VA_ARGS__, __func__, __FILE__, __LINE__); /* NOLINT */ \
-        char* snp_format_buffer = (char*)malloc(snp_format_size + 1);                                                           \
-        if (snp_format_buffer) {                                                                                                \
-            snprintf(snp_format_buffer, snp_format_size + 1, format ": %s (%s:%d)", __VA_ARGS__, __func__, __FILE__, __LINE__); \
-            CALL(error)->output(stderr, ID_##message_id, snp_format_buffer, (u64)snp_format_size);                              \
-            CALL(error)->exception(ID_##message_id, snp_format_buffer, (u64)snp_format_size);                                   \
-            free(snp_format_buffer);                                                                                            \
-        }                                                                                                                       \
+#define STD_VM_ERROR(message_id, format, ...)                                                                                             \
+    do {                                                                                                                                  \
+        int snp_format_size = CALL(error)->print(NULL, 0, format ": %s (%s:%d)", __VA_ARGS__, __func__, __FILE__, __LINE__); /* NOLINT */ \
+        char* snp_format_buffer = (char*)malloc(snp_format_size + 1);                                                                     \
+        if (snp_format_buffer) {                                                                                                          \
+            CALL(error)->print(snp_format_buffer, snp_format_size + 1, format ": %s (%s:%d)", __VA_ARGS__, __func__, __FILE__, __LINE__); \
+            CALL(error)->output(stderr, ID_##message_id, snp_format_buffer, (u64)snp_format_size);                                        \
+            CALL(error)->exception(ID_##message_id, snp_format_buffer, (u64)snp_format_size);                                             \
+            free(snp_format_buffer);                                                                                                      \
+        }                                                                                                                                 \
     } while (0)
 #else
-#define STD_VM_ERROR(message_id, format, ...)                                                      \
-    do {                                                                                           \
-        int snp_format_size = snprintf(NULL, 0, format, __VA_ARGS__); /* NOLINT */                 \
-        char* snp_format_buffer = (char*)malloc(snp_format_size + 1);                              \
-        if (snp_format_buffer) {                                                                   \
-            snprintf(snp_format_buffer, snp_format_size + 1, format, __VA_ARGS__); /* NOLINT */    \
-            CALL(error)->output(stderr, ID_##message_id, snp_format_buffer, (u64)snp_format_size); \
-            CALL(error)->exception(ID_##message_id, snp_format_buffer, (u64)snp_format_size);      \
-            free(snp_format_buffer);                                                               \
-        }                                                                                          \
+#define STD_VM_ERROR(message_id, format, ...)                                                             \
+    do {                                                                                                  \
+        int snp_format_size = CALL(error)->print(NULL, 0, format, __VA_ARGS__); /* NOLINT */              \
+        char* snp_format_buffer = (char*)malloc(snp_format_size + 1);                                     \
+        if (snp_format_buffer) {                                                                          \
+            CALL(error)->print(snp_format_buffer, snp_format_size + 1, format, __VA_ARGS__); /* NOLINT */ \
+            CALL(error)->output(stderr, ID_##message_id, snp_format_buffer, (u64)snp_format_size);        \
+            CALL(error)->exception(ID_##message_id, snp_format_buffer, (u64)snp_format_size);             \
+            free(snp_format_buffer);                                                                      \
+        }                                                                                                 \
     } while (0)
 #endif
 

@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 30, 2025 at 11:33:41 AM GMT+3
+ *   May 3, 2025 at 4:21:15 PM GMT+3
  *
  */
 /*
@@ -45,6 +45,8 @@
 #include "system/memory/memory_v1.h"
 #include "system/os/os_v1.h"
 
+#define STACK_V2_TYPE_SIZE sizeof(stack_v2_type)
+
 /* private */
 static stack_v2_ptr list_init(u64 size, stack_v2_ptr stack);
 static u64 list_push(stack_v2_ptr* stack_ptr, void_ptr data);
@@ -61,7 +63,7 @@ INLINE static void list_diff_internal(stack_v2_ptr stack1, stack_v2_ptr stack2, 
 
 /* initializes the new context's head element */
 static stack_v2_ptr list_init(u64 size, stack_v2_ptr next) {
-    u64 default_size = size == 0 ? STACK_V2_TYPE_SIZE : size;
+    u64 default_size = size == 0 ? STACK_V2_PTR_ARRAY_SIZE : size;
     stack_v2_ptr stack = CALL(os)->calloc(1, STACK_V2_TYPE_SIZE);
     stack->bp = CALL(os)->calloc(default_size, PTR_SIZE);
     stack->sp = stack->bp + default_size;

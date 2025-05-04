@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 1, 2025 at 9:01:13 PM GMT+3
+ *   May 3, 2025 at 7:37:42 AM GMT+3
  *
  */
 /*
@@ -46,12 +46,12 @@
 
 #include "virtual/platform.h"
 
-typedef struct PRIVATE_API(virtual_methods) {
+typedef struct PRIVATE_API(allocator_methods) {
     u64 (*alloc)(const_vm_ptr cvm, u64 size, u64 type_id);
     const_pointer_ptr (*read)(const_vm_ptr cvm, u64 address);
     u64 (*type)(const_vm_ptr cvm, u64 address);
     u64 (*free)(const_vm_ptr cvm, u64 address);
-} virtual_methods;
+} allocator_methods;
 
 typedef struct PRIVATE_API(virtual_system_methods) {
     const_vm_ptr (*init)(u64 size);
@@ -59,7 +59,7 @@ typedef struct PRIVATE_API(virtual_system_methods) {
 } virtual_system_methods;
 
 /* definition */
-CVM_EXPORT extern const virtual_methods* CALL(virtual);
+CVM_EXPORT extern const allocator_methods* CALL(allocator);
 CVM_EXPORT extern const virtual_system_methods* CALL(system);
 
 #endif /* VIRTUAL_V1_H */

@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 23, 2025 at 2:28:55 PM GMT+3
+ *   May 3, 2025 at 7:37:42 AM GMT+3
  *
  */
 /*
@@ -43,8 +43,8 @@ PUBLIC const virtual_vm_methods* PUBLIC_API(vm) {
     return CALL(vm);
 }
 
-PUBLIC const virtual_methods* PUBLIC_API(virtual) {
-    return CALL(virtual);
+PUBLIC const allocator_methods* PUBLIC_API(allocator) {
+    return CALL(allocator);
 }
 
 PUBLIC const virtual_pointer_methods* PUBLIC_API(pointer) {

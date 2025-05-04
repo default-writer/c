@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 30, 2025 at 10:24:03 AM GMT+3
+ *   May 4, 2025 at 5:18:45 AM GMT+3
  *
  */
 /*
@@ -61,5 +61,8 @@
 
 #define USING_TESTS_API_V2
 #include "test_api_v2.h"
+
+#define USING_TESTS_ERROR
+#include "test_error.h"
 
 #endif /* MAIN_TESTS_V1_H */

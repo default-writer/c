@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 30, 2025 at 10:24:05 AM GMT+3
+ *   May 3, 2025 at 3:07:08 PM GMT+3
  *
  */
 /*
@@ -41,6 +41,7 @@
 #ifndef STD_DATA_H
 #define STD_DATA_H
 
+#define STACK_V2_PTR_ARRAY_SIZE 4096
 #define VM_PTR_ARRAY_SIZE 4096
 #define ERROR_BUFFER_SIZE 4096
 #define ERROR_MESSAGE_SIZE 256
@@ -55,9 +56,6 @@ typedef signed long long s64;
 typedef signed long int s32;
 typedef signed short int s16;
 typedef signed char s8;
-
-typedef struct virtual_pointer* virtual_pointer_ptr;
-typedef const struct virtual_pointer* const_virtual_pointer_ptr;
 
 typedef struct vm* vm_ptr;
 typedef const struct vm** const_vm_ptr;
@@ -74,6 +72,8 @@ typedef const struct pointer_public* const_pointer_public_ptr;
 
 typedef struct stack* stack_ptr;
 typedef const struct stack* const_stack_ptr;
+typedef struct stack_v2* stack_v2_ptr;
+typedef const struct stack_v2* const_stack_v2_ptr;
 typedef struct stack_element* stack_element_ptr;
 typedef const struct stack_element* const_stack_element_ptr;
 typedef struct hashentry* hashentry_ptr;
@@ -107,6 +107,13 @@ typedef struct stack {
     stack_element_ptr current;
     u64 size;
 } stack_type;
+typedef struct stack_v2 {
+    void_ptr* sp;
+    void_ptr* bp;
+    u64 default_size;
+    u64 size;
+    stack_v2_ptr next;
+} stack_v2_type;
 typedef struct stack_element {
     stack_element_ptr next;
     void_ptr data;
@@ -140,10 +147,9 @@ typedef union {
     type_methods_definitions_ptr ptr;
 } safe_type_methods_definitions;
 typedef union {
-    const virtual_pointer_ptr* const_ptr;
-    virtual_pointer_ptr* ptr;
-} safe_virtual_pointer_ptr;
-
+    const stack_v2_ptr* const_ptr;
+    stack_v2_ptr* ptr;
+} safe_stack_v2_ptr;
 typedef union {
     const_void_ptr const_ptr;
     void_ptr ptr;

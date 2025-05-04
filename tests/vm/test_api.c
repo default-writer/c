@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 23, 2025 at 2:57:26 PM GMT+3
+ *   May 3, 2025 at 12:24:07 AM GMT+3
  *
  */
 /*
@@ -70,7 +70,7 @@ RX_TEST_CASE(tests_api_v1, test_api, .fixture = test_fixture) {
     RX_ASSERT(PUBLIC_API(options) != 0);
     RX_ASSERT(PUBLIC_API(os) != 0);
     RX_ASSERT(PUBLIC_API(vm) != 0);
-    RX_ASSERT(PUBLIC_API(virtual) != 0);
+    RX_ASSERT(PUBLIC_API(allocator) != 0);
     RX_ASSERT(PUBLIC_API(pointer) != 0);
     RX_ASSERT(PUBLIC_API(env) != 0);
     RX_ASSERT(PUBLIC_API(hashtable) != 0);
