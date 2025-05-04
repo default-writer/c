@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 1, 2025 at 3:53:57 PM GMT+3
+ *   May 5, 2025 at 12:04:39 AM GMT+3
  *
  */
 /*
@@ -174,14 +174,14 @@ RX_TEST_CASE(tests_memory_v1, test_alloc_0, .fixture = test_fixture) {
 /* test case */
 RX_TEST_CASE(tests_memory_v1, test_error_api_stdout, .fixture = test_fixture) {
     CALL(error)->clear();
-    FILE* f = CALL(error)->std_vm_out();
+    FILE* f = CALL(error)->out();
     RX_ASSERT(f == stdout);
 }
 
 /* test case */
 RX_TEST_CASE(tests_memory_v1, test_error_api_stderr, .fixture = test_fixture) {
     CALL(error)->clear();
-    FILE* f = CALL(error)->std_vm_err();
+    FILE* f = CALL(error)->err();
     RX_ASSERT(f == stderr);
 }
 
@@ -209,7 +209,7 @@ RX_TEST_CASE(tests_memory_v1, test_api_clear_throw_output_get_has_value, .fixtur
     CALL(error)->clear();
     const char* error_message = "value is invalid";
     CALL(error)->exception(ID_ERROR_INVALID_VALUE, error_message, strlen(error_message) + 1);
-    CALL(error)->output(CALL(error)->std_vm_err(), ID_ERROR_INVALID_VALUE, error_message, strlen(error_message) + 1);
+    CALL(error)->output(CALL(error)->err(), ID_ERROR_INVALID_VALUE, error_message, strlen(error_message) + 1);
     const char* ex = CALL(error)->get();
     RX_ASSERT(ex != 0);
     RX_ASSERT(CALL(error)->type() == ID_ERROR_INVALID_VALUE);
@@ -267,7 +267,7 @@ RX_TEST_CASE(tests_memory_v1, test_api_error_next, .fixture = test_fixture) {
     do {
         RX_ASSERT(CALL(error)->get() != 0);
         RX_ASSERT(CALL(error)->type() != 0);
-        fprintf(CALL(error)->std_vm_err(), "message=%s, type=%lld\n", CALL(error)->get(), CALL(error)->type()); /* NOLINT: fprintf */
+        fprintf(CALL(error)->err(), "message=%s, type=%lld\n", CALL(error)->get(), CALL(error)->type()); /* NOLINT: fprintf */
         CALL(error)->next();
     } while (CALL(error)->count() != 0);
     CALL(error)->next();
