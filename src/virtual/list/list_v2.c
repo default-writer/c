@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 3, 2025 at 4:21:15 PM GMT+3
+ *   May 4, 2025 at 10:20:19 AM GMT+3
  *
  */
 /*
@@ -44,8 +44,6 @@
 #include "system/hashtable/hashtable_v1.h"
 #include "system/memory/memory_v1.h"
 #include "system/os/os_v1.h"
-
-#define STACK_V2_TYPE_SIZE sizeof(stack_v2_type)
 
 /* private */
 static stack_v2_ptr list_init(u64 size, stack_v2_ptr stack);

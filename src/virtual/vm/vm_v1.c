@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 4, 2025 at 9:01:42 AM GMT+3
+ *   May 4, 2025 at 10:34:09 AM GMT+3
  *
  */
 /*
@@ -51,11 +51,6 @@
 
 /* macros */
 #define DEFAULT_SIZE 0x8 /* 8 */
-#define PTR_SIZE sizeof(void_ptr) /* size of a pointer */
-#define PTR_ARRAY_SIZE(size) ((size) * PTR_SIZE)
-#define KNOWN_TYPES_TYPE_SIZE sizeof(known_types_type)
-#define KNOWN_TYPES_TYPE_ARRAY_SIZE(size) ((size) * KNOWN_TYPES_TYPE_SIZE)
-#define POINTER_TYPE_SIZE sizeof(pointer_type)
 
 /* internal */
 #include "internal/pointer_type_v1.h"
@@ -87,7 +82,7 @@ static void register_known_types(const_vm_ptr cvm) {
 }
 
 static void unregister_known_types(const_vm_ptr cvm) {
-    CALL(os)->free((*cvm)->known_types);
+    CALL(os)->free((*cvm)->types);
 }
 
 /* public */
@@ -126,8 +121,8 @@ static const_vm_ptr vm_init(u64 size) {
     safe_vm_ptr safe_ptr;
     safe_ptr.const_ptr = cvm;
     vm_ptr ptr = *safe_ptr.ptr;
-    ptr->known_types_capacity = TYPE_USER - 1;
-    ptr->known_types = CALL(os)->calloc(1, KNOWN_TYPES_TYPE_ARRAY_SIZE((*cvm)->known_types_capacity));
+    ptr->size = TYPE_USER - 1;
+    ptr->types = CALL(os)->calloc(1, TYPE_METHODS_ARRAY_SIZE((*cvm)->size));
     register_known_types(cvm);
     return cvm;
 }
@@ -162,8 +157,8 @@ static u64 vm_release(const_vm_ptr cvm, u64 address) {
     u64 type_id = CALL(allocator)->type(cvm, address);
     CHECK_TYPE(type_id == 0, FALSE);
 #ifdef USE_GC
-    if (type_id > 0 && type_id <= (*cvm)->known_types_capacity) {
-        const_type_methods_definitions_ptr methods = (*cvm)->known_types[type_id - 1].methods;
+    if (type_id > 0 && type_id <= (*cvm)->size) {
+        const_type_methods_definitions_ptr methods = (*cvm)->types[type_id - 1];
         methods->destructor(cvm, address);
     }
 #endif

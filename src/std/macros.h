@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 4, 2025 at 6:38:56 AM GMT+3
+ *   May 4, 2025 at 10:27:19 AM GMT+3
  *
  */
 /*
@@ -66,6 +66,10 @@
 
 #define PTR_SIZE sizeof(void_ptr) /* size of a pointer */
 #define PTR_ARRAY_SIZE(size) ((size) * PTR_SIZE)
+#define TYPE_METHODS_SIZE sizeof(type_methods_definitions_ptr)
+#define TYPE_METHODS_ARRAY_SIZE(size) ((size) * TYPE_METHODS_SIZE)
+#define POINTER_TYPE_SIZE sizeof(pointer_type)
+#define STACK_V2_TYPE_SIZE sizeof(stack_v2_type)
 
 #ifdef USE_MEMORY_DEBUG_INFO
 #define STD_VM_ERROR(message_id, format, ...)                                                                                             \

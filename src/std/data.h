@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 3, 2025 at 3:07:08 PM GMT+3
+ *   May 4, 2025 at 10:25:08 AM GMT+3
  *
  */
 /*
@@ -65,8 +65,6 @@ typedef const struct pointer* const_pointer_ptr;
 typedef struct type_methods_definitions* type_methods_definitions_ptr;
 typedef const struct type_methods_definitions* const_type_methods_definitions_ptr;
 
-typedef struct known_types* known_types_ptr;
-typedef const struct known_types* const_known_types_ptr;
 typedef struct pointer_public* pointer_public_ptr;
 typedef const struct pointer_public* const_pointer_public_ptr;
 
@@ -94,15 +92,11 @@ typedef struct type_methods_definitions {
     type_constructor constructor;
     type_destructor destructor;
 } type_methods_definitions_type;
-typedef struct known_types {
-    type_methods_definitions_ptr methods;
-} known_types_type;
 typedef struct pointer_public {
     u64 address;
     u64 size;
     u64 type;
 } pointer_public_type;
-
 typedef struct stack {
     stack_element_ptr current;
     u64 size;
