@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 3, 2025 at 2:35:56 PM GMT+3
+ *   May 4, 2025 at 10:29:17 AM GMT+3
  *
  */
 /*
@@ -46,8 +46,8 @@ typedef struct vm {
 #ifndef USE_GC
     stack_ptr cache;
 #endif
-    u64 known_types_capacity;
-    known_types_ptr known_types;
+    type_methods_definitions_ptr* types;
+    u64 size;
     stack_v2_ptr next;
 } vm_type;
 

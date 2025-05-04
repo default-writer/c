@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 1, 2025 at 9:02:12 PM GMT+3
+ *   May 4, 2025 at 10:23:23 AM GMT+3
  *
  */
 /*
@@ -50,7 +50,6 @@ typedef struct PRIVATE_API(system_info_methods) {
     const u64 timestamp;
     const char* commit;
     const char* version;
-    u64 POINTER_TYPE_SIZE;
 } system_info_methods;
 
 /* definition */

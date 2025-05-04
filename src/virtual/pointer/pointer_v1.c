@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 3, 2025 at 2:00:21 PM GMT+3
+ *   May 4, 2025 at 10:29:24 AM GMT+3
  *
  */
 /*
@@ -58,10 +58,6 @@
 
 /* macros */
 #define DEFAULT_SIZE 0x8 /* 8 */
-#define POINTER_TYPE_SIZE sizeof(pointer_type)
-#define KNOWN_TYPES_TYPE_SIZE sizeof(known_types_type)
-#define KNOWN_TYPES_TYPE_ARRAY_SIZE(size) ((size) * KNOWN_TYPES_TYPE_SIZE)
-#define POINTER_TYPE_SIZE sizeof(pointer_type)
 
 #include "internal/pointer_type_v1.h"
 #include "internal/vm_type_v1.h"
@@ -102,7 +98,7 @@ static void pointer_register_known_type(const_vm_ptr cvm, type_methods_definitio
     safe_ptr.const_ptr = cvm;
     vm_ptr ptr = *safe_ptr.ptr;
     u64 type_id = data_type->type_id;
-    ptr->known_types[type_id - 1].methods = data_type;
+    ptr->types[type_id - 1] = data_type;
 }
 
 static void pointer_register_user_type(const_vm_ptr cvm, type_methods_definitions_ptr data_type) {
@@ -110,11 +106,11 @@ static void pointer_register_user_type(const_vm_ptr cvm, type_methods_definition
     safe_vm_ptr safe_ptr;
     safe_ptr.const_ptr = cvm;
     vm_ptr ptr = *safe_ptr.ptr;
-    data_type->type_id = ptr->known_types_capacity + 1;
+    data_type->type_id = ptr->size + 1;
     u64 type_id = data_type->type_id;
-    ptr->known_types = CALL(os)->realloc(ptr->known_types, KNOWN_TYPES_TYPE_ARRAY_SIZE(type_id));
-    ptr->known_types_capacity = type_id;
-    ptr->known_types[type_id - 1].methods = data_type;
+    ptr->types = CALL(os)->realloc(ptr->types, TYPE_METHODS_ARRAY_SIZE(type_id));
+    ptr->size = type_id;
+    ptr->types[type_id - 1] = data_type;
 }
 
 /* internal */
@@ -132,10 +128,10 @@ INLINE static u64 pointer_alloc_internal(const_pointer_ptr* tmp, const_vm_ptr cv
 }
 
 INLINE static u64 pointer_find_type_id_internal(const_vm_ptr cvm, const_type_methods_definitions_ptr data_type) {
-    for (u64 i = 0; i < (*cvm)->known_types_capacity; i++) {
-        known_types_type current = (*cvm)->known_types[i];
-        if (current.methods == data_type) {
-            return current.methods->type_id;
+    for (u64 i = 0; i < (*cvm)->size; i++) {
+        type_methods_definitions_ptr current = (*cvm)->types[i];
+        if (current == data_type) {
+            return current->type_id;
         }
     }
     return 0;

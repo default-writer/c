@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 3, 2025 at 3:25:43 PM GMT+3
+ *   May 4, 2025 at 10:21:12 AM GMT+3
  *
  */
 /*
@@ -49,10 +49,6 @@
 /* macros */
 #define VM_TYPE_SIZE sizeof(vm_type)
 #define DEFAULT_SIZE 0x8 /* 8 */
-#define VIRTUAL_POINTER_TYPE_SIZE sizeof(stack_v2_type)
-#define POINTER_TYPE_SIZE sizeof(pointer_type)
-#define KNOWN_TYPES_TYPE_SIZE sizeof(known_types_type)
-#define KNOWN_TYPES_TYPE_ARRAY_SIZE(size) ((size) * KNOWN_TYPES_TYPE_SIZE)
 
 #ifndef USE_GC
 #define VM_POINTER_TYPE_SIZE sizeof(vm_pointer_type)
@@ -141,7 +137,7 @@ INLINE static u64 virtual_alloc_internal(const_vm_ptr cvm, u64 size, u64 type_id
 }
 
 INLINE static stack_v2_ptr virtual_init_internal(u64 size, stack_v2_ptr next) {
-    stack_v2_ptr vptr = CALL(os)->calloc(1, VIRTUAL_POINTER_TYPE_SIZE);
+    stack_v2_ptr vptr = CALL(os)->calloc(1, STACK_V2_TYPE_SIZE);
     vptr->bp = CALL(os)->calloc(size, PTR_SIZE);
     vptr->sp = vptr->bp;
     vptr->next = next;
