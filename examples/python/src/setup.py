@@ -10,7 +10,7 @@ c_module = Extension(
         "cpointer.c",
         "cenvironment.c",
         "cexception.c",
-        "cvirtual.c",
+        "callocator.c",
         "cdata.c",
         "cfile.c",
         "cobject.c",

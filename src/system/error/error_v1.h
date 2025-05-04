@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 1, 2025 at 9:02:18 PM GMT+3
+ *   May 3, 2025 at 9:36:58 PM GMT+3
  *
  */
 /*
@@ -64,6 +64,7 @@ typedef struct PRIVATE_API(system_error_methods) {
     void (*output)(FILE* output, u64 error_type, const char* message, u64 size);
     void (*exception)(u64 error_type, const char* message, u64 size);
     void (*clear)(void);
+    u64 (*print)(char* buffer, u64 size, const char* format, ...);
     u64 (*type)(void);
     const char* (*get)(void);
     u64 (*next)(void);

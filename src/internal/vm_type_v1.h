@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 30, 2025 at 10:24:04 AM GMT+3
+ *   May 3, 2025 at 2:35:56 PM GMT+3
  *
  */
 /*
@@ -48,7 +48,7 @@ typedef struct vm {
 #endif
     u64 known_types_capacity;
     known_types_ptr known_types;
-    virtual_pointer_ptr next;
+    stack_v2_ptr next;
 } vm_type;
 
 #endif /* INTERNAL_VM_TYPE_V1_H */

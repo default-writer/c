@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 1, 2025 at 7:02:32 AM GMT+3
+ *   May 4, 2025 at 5:18:48 AM GMT+3
  *
  */
 /*
@@ -82,6 +82,7 @@ int main(int argc, const char** argv) {
     TEST_RUN(PRIVATE_API(tests_hashtable_test_suite));
     TEST_RUN(PRIVATE_API(tests_api_test_suite));
     TEST_RUN(PRIVATE_API(tests_api_v2_test_suite));
+    TEST_RUN(PRIVATE_API(tests_error_test_suite));
     result_statistics();
     return rx_main(0, NULL, argc, argv) == RX_SUCCESS ? 0 : 1;
 }
@@ -95,6 +96,7 @@ int main(int argc, const char** argv) {
     TEST_RUN(PRIVATE_API(tests_hashtable_test_suite));
     TEST_RUN(PRIVATE_API(tests_api_test_suite));
     TEST_RUN(PRIVATE_API(tests_api_v2_test_suite));
+    TEST_RUN(PRIVATE_API(tests_error_test_suite));
     return rx_main(0, NULL, argc, argv) == RX_SUCCESS ? 0 : 1;
 }
 #endif

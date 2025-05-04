@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 30, 2025 at 10:24:05 AM GMT+3
+ *   May 4, 2025 at 5:11:37 AM GMT+3
  *
  */
 /*
@@ -36,23 +36,20 @@
     OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#define USING_DATA_V2
+#define USING_TESTS_ERROR
 
-#ifndef STD_DATA_V2_H
-#define STD_DATA_V2_H
+#ifndef TEST_ERROR_H
+#define TEST_ERROR_H
 
-#include "data.h"
+#define USING_STD_API
+#include "std/api.h"
 
-typedef struct stack_v2* stack_v2_ptr;
-typedef struct stack_v2 {
-    void_ptr* sp;
-    void_ptr* bp;
-    u64 default_size;
-    stack_v2_ptr next;
-    u64 size;
-} stack_v2_type;
+typedef struct PRIVATE_API(test_suite) tests_error_test_suite;
 
-#define STACK_V2_TYPE_SIZE sizeof(stack_v2_type)
-#define STACK_V2_PTR_ARRAY_SIZE 4096
+/* definition */
+extern const tests_error_test_suite PRIVATE_API(tests_error_test_suite_definitions);
 
-#endif /* STD_DATA_V2_H */
+/* definition */
+static const tests_error_test_suite* PRIVATE_API(tests_error_test_suite) = &PRIVATE_API(tests_error_test_suite_definitions);
+
+#endif /* TEST_ERROR_H */

@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 1, 2025 at 8:59:28 PM GMT+3
+ *   May 3, 2025 at 4:55:26 PM GMT+3
  *
  */
 /*
@@ -42,45 +42,31 @@
 #define STD_COMPILE_H
 
 #ifdef CONFIG_TTY
-#if CONFIG_TTY == 1
 #define USE_TTY
-#endif
 #endif
 
 #ifdef CONFIG_MEMORY_DEBUG_INFO
-#if CONFIG_MEMORY_DEBUG_INFO == 1
 #define USE_MEMORY_DEBUG_INFO
-#endif
 #endif
 
 #ifdef CONFIG_MEMORY_CLEANUP
-#if CONFIG_MEMORY_CLEANUP == 1
 #define USE_MEMORY_CLEANUP
-#endif
 #endif
 
 #ifdef CONFIG_MEMORY_ALLOC
-#if CONFIG_MEMORY_ALLOC == 1
 #define USE_MEMORY_ALLOC
-#endif
 #endif
 
 #ifdef CONFIG_GC
-#if CONFIG_GC == 1
 #define USE_GC
-#endif
 #endif
 
 #ifdef CONFIG_MOCKS
-#if CONFIG_MOCKS == 1
 #define USE_MOCKS
-#endif
 #endif
 
 #ifdef CONFIG_MEMCPY
-#if CONFIG_MEMCPY == 1
 #define USE_MEMCPY
-#endif
 #endif
 
 #endif /* STD_COMPILE_H */

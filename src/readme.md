@@ -16,5 +16,4 @@
 - object
 - stack
 - string
-- string_reference
 - user

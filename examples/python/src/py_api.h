@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 29, 2025 at 4:32:27 PM GMT+3
+ *   May 4, 2025 at 5:09:28 AM GMT+3
  *
  */
 /*
@@ -51,7 +51,7 @@
 #include "virtual/api/api_v2.h"
 
 PY_EXPORT extern const virtual_vm_methods* PY_PUBLIC_API(vm);
-PY_EXPORT extern const virtual_methods* PY_PUBLIC_API(virtual);
+PY_EXPORT extern const allocator_methods* PY_PUBLIC_API(allocator);
 PY_EXPORT extern const virtual_pointer_methods* PY_PUBLIC_API(pointer);
 PY_EXPORT extern const virtual_env_methods* PY_PUBLIC_API(env);
 PY_EXPORT extern const virtual_data_methods* PY_PUBLIC_API(data);

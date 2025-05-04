@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 1, 2025 at 1:32:51 PM GMT+3
+ *   May 3, 2025 at 7:37:42 AM GMT+3
  *
  */
 /*
@@ -60,7 +60,7 @@
 
 /* definition */
 CVM_EXPORT extern const virtual_vm_methods* PUBLIC_API(vm);
-CVM_EXPORT extern const virtual_methods* PUBLIC_API(virtual);
+CVM_EXPORT extern const allocator_methods* PUBLIC_API(allocator);
 CVM_EXPORT extern const virtual_pointer_methods* PUBLIC_API(pointer);
 CVM_EXPORT extern const virtual_env_methods* PUBLIC_API(env);
 CVM_EXPORT extern const virtual_data_methods* PUBLIC_API(data);

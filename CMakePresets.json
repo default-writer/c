@@ -15,18 +15,18 @@
             "architecture": {
                 "value": "x64",
                 "strategy": "external"
-            },     
-           "cacheVariables": {
+            },
+            "cacheVariables": {
                 "CMAKE_C_COMPILER": "/usr/bin/gcc",
                 "CMAKE_CXX_COMPILER": "/usr/bin/g++",
                 "CMAKE_BUILD_TYPE": "Debug",
                 "CONFIG_MEMORY_DEBUG_INFO": {
                     "type": "BOOL",
-                    "value": "ON"
+                    "value": "OFF"
                 },
                 "CONFIG_MEMORY_CLEANUP": {
                     "type": "BOOL",
-                    "value": "ON"
+                    "value": "OFF"
                 },
                 "CONFIG_MEMORY_ALLOC": {
                     "type": "BOOL",
@@ -62,11 +62,11 @@
                 "CMAKE_BUILD_TYPE": "Debug",
                 "CONFIG_MEMORY_DEBUG_INFO": {
                     "type": "BOOL",
-                    "value": "ON"
+                    "value": "OFF"
                 },
                 "CONFIG_MEMORY_CLEANUP": {
                     "type": "BOOL",
-                    "value": "ON"
+                    "value": "OFF"
                 },
                 "CONFIG_MEMORY_ALLOC": {
                     "type": "BOOL",
@@ -103,11 +103,11 @@
                 "CMAKE_BUILD_TYPE": "Debug",
                 "CONFIG_MEMORY_DEBUG_INFO": {
                     "type": "BOOL",
-                    "value": "ON"
+                    "value": "OFF"
                 },
                 "CONFIG_MEMORY_CLEANUP": {
                     "type": "BOOL",
-                    "value": "ON"
+                    "value": "OFF"
                 },
                 "CONFIG_MEMORY_ALLOC": {
                     "type": "BOOL",

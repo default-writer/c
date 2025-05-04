@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 1, 2025 at 12:16:05 AM GMT+3
+ *   May 4, 2025 at 5:08:59 AM GMT+3
  *
  */
 /*
@@ -56,14 +56,14 @@
 #define PyObject_HEAD PyObject ob_base
 #endif
 
-#define PYTHON_ERROR(exception, format, ...)                                                                                                            \
-    do {                                                                                                                                                \
-        int snp_format_size = snprintf(NULL, 0, format ": %s (%s:%d)", __VA_ARGS__, __func__, __FILE__, __LINE__); /* NOLINT: snprintf(NULL) */         \
-        char* snp_format_buffer = (char*)malloc(snp_format_size + 1);                                                                                   \
-        snprintf(snp_format_buffer, snp_format_size + 1, format ": %s (%s:%d)", __VA_ARGS__, __func__, __FILE__, __LINE__); /* NOLINT: snprintf */ \
-        PyErr_SetString(exception, snp_format_buffer);                                                                                              \
-        free(snp_format_buffer);                                                                                                                    \
-        CALL(error)->clear();                                                                                                                           \
+#define PYTHON_ERROR(exception, format, ...)                                                                                                       \
+    do {                                                                                                                                           \
+        int snp_format_size = CALL(error)->print(NULL, 0, format ": %s (%s:%d)", __VA_ARGS__, __func__, __FILE__, __LINE__); /* NOLINT */          \
+        char* snp_format_buffer = (char*)malloc(snp_format_size + 1);                                                                              \
+        CALL(error)->print(snp_format_buffer, snp_format_size + 1, format ": %s (%s:%d)", __VA_ARGS__, __func__, __FILE__, __LINE__); /* NOLINT */ \
+        PyErr_SetString(exception, snp_format_buffer);                                                                                             \
+        free(snp_format_buffer);                                                                                                                   \
+        CALL(error)->clear();                                                                                                                      \
     } while (0)
 
 #define PY_CALL(x) PY_PUBLIC_API(x)

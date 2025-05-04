@@ -38,6 +38,7 @@
 
 #include <Python.h>
 
+#include "callocator.h"
 #include "cdata.h"
 #include "cenvironment.h"
 #include "cexception.h"
@@ -49,7 +50,6 @@
 #include "cstack.h"
 #include "cstring.h"
 #include "cuser.h"
-#include "cvirtual.h"
 #include "cvm.h"
 
 static PyModuleDef cmodule = {

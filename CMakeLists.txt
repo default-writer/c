@@ -3,10 +3,10 @@ cmake_minimum_required(VERSION 3.22.1)
 project(c VERSION 0.0.1 LANGUAGES C CXX)
 include(GenerateExportHeader)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD 23)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -16,8 +16,8 @@ option(CONFIG_MEMORY_ALLOC "Enables memory allocator")
 option(CONFIG_MEMCPY "Enables use of memcpy")
 option(CONFIG_TTY "Enable tty output?")
 
-set(CONFIG_MEMORY_DEBUG_INFO ON CACHE BOOL "Enable debug information?")
-set(CONFIG_MEMORY_CLEANUP ON CACHE BOOL "Enable memory cleanup?")
+set(CONFIG_MEMORY_DEBUG_INFO OFF CACHE BOOL "Enable debug information?")
+set(CONFIG_MEMORY_CLEANUP OFF CACHE BOOL "Enable memory cleanup?")
 set(CONFIG_MEMORY_ALLOC OFF CACHE BOOL "Enable memory allocator?")
 set(CONFIG_MEMCPY OFF CACHE BOOL "Enable use of memcpy?")
 set(CONFIG_TTY OFF CACHE BOOL "Enable tty output?")
@@ -291,6 +291,7 @@ set(TESTS_SOURCE
     tests/vm/test_hashtable.c
     tests/vm/test_api.c
     tests/vm/test_api_v2.c
+    tests/vm/test_error.c
 )
 
 set(MAIN_TESTS_VM1_SOURCE tests/vm/main-tests_v1.c)

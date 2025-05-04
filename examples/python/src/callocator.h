@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 23, 2025 at 4:13:24 PM GMT+3
+ *   May 3, 2025 at 12:28:00 AM GMT+3
  *
  */
 /*
@@ -36,10 +36,10 @@
     OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#define USING_CVIRTUAL
+#define USING_CALLOCATOR
 
-#ifndef CVIRTUAL_H
-#define CVIRTUAL_H
+#ifndef CALLOCATOR_H
+#define CALLOCATOR_H
 
 #include "macros.h"
 
@@ -47,13 +47,13 @@
 
 int init_cvirtual(PyObject* module);
 
-typedef struct CVirtual {
+typedef struct CAllocator {
     PyObject_HEAD;
     const_vm_ptr cvm;
     u64 ptr;
-} CVirtualType;
-typedef struct CVirtual* CVirtualTypePtr;
+} CAllocatorType;
+typedef struct CAllocator* CAllocatorTypePtr;
 
-extern PyTypeObject CVirtualTypeObject;
+extern PyTypeObject CAllocatorTypeObject;
 
-#endif // CVIRTUAL_H
+#endif // CALLOCATOR_H

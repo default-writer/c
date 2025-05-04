@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 1, 2025 at 3:54:06 PM GMT+3
+ *   May 4, 2025 at 7:03:49 AM GMT+3
  *
  */
 /*
@@ -59,12 +59,102 @@ static void error_output(FILE* output, u64 error_type, const char* message, u64 
 static void error_throw(u64 error_type, const char* message, u64 size);
 #endif
 static void error_clear(void);
+static u64 error_print(char* buffer, u64 size, const char* format, ...);
 static u64 error_type(void);
 static FILE* error_std_vm_out(void);
 static FILE* error_std_vm_err(void);
 static const char* error_get(void);
 static u64 error_next(void);
 static u64 error_count(void);
+
+INLINE static void itoa_internal(long int value, u8 sign, char* buffer, u64 size, u8 base);
+INLINE static u64 vsnprintf_internal(char* buffer, u64 size, const char* format, va_list args);
+
+/* internal */
+INLINE static void itoa_internal(long int value, u8 sign, char* buffer, u64 size, u8 base) {
+    const char* num = "0123456789abcdef";
+    char* bp = buffer;
+    char* sp = buffer;
+    char tmp_char;
+    long int tmp_value;
+
+    if (sign) {
+        *sp++ = '-';
+        bp++;
+    }
+
+    u64 count = 0;
+    while (++count < size && value != 0) {
+        tmp_value = value;
+        value /= base;
+        *sp++ = num[value > 0 ? tmp_value - value * base : value * base - tmp_value];
+    }
+
+    *sp-- = '\0';
+
+    while (bp < sp) {
+        tmp_char = *sp;
+        *sp-- = *bp;
+        *bp++ = tmp_char;
+    }
+}
+
+INLINE static u64 vsnprintf_internal(char* buffer, u64 size, const char* format, va_list args) {
+    u64 written = 0;
+    const char* traverse = format;
+    while (*traverse != '\0' && (size > 0 ? written < size - 1 : TRUE)) {
+        if (*traverse == '%') {
+            traverse++;
+            if (*traverse == 's') {
+                const char* str = va_arg(args, const char*);
+                while (*str != '\0' && (size > 0 ? written < size - 1 : TRUE)) {
+                    if (buffer != NULL) {
+                        buffer[written++] = *str++;
+                    } else {
+                        written++;
+                        str++;
+                    }
+                }
+            } else if (*traverse == 'd') {
+                int value = va_arg(args, int);
+                char temp[32] = { 0 };
+                itoa_internal(value, value < 0, temp, 32, 10);
+                const char* str = temp;
+                while (*str != '\0' && (size > 0 ? written < size - 1 : TRUE)) {
+                    if (buffer != NULL) {
+                        buffer[written++] = *str++;
+                    } else {
+                        written++;
+                        str++;
+                    }
+                }
+            } else {
+                if (buffer != NULL) {
+                    buffer[written++] = '%';
+                    buffer[written++] = *traverse;
+                } else {
+                    written++;
+                    written++;
+                }
+            }
+        } else {
+            if (buffer != NULL) {
+                buffer[written++] = *traverse;
+            } else {
+                written++;
+            }
+        }
+        traverse++;
+    }
+
+    if (buffer != NULL) {
+        buffer[written] = '\0';
+    } else {
+        written++;
+    }
+
+    return (u64)written;
+}
 
 /* implementation */
 static void error_output(FILE* output, u64 error_type, const char* message, u64 size) {
@@ -102,6 +192,14 @@ static void error_clear(void) {
         CALL(os)->memset(&exception_errors->message[0], 0x00, ERROR_BUFFER_SIZE); /* NOLINT: memset(ex->message, 0, ERROR_BUFFER_SIZE) */
         exception_errors->message_count = 0;
     }
+}
+
+static u64 error_print(char* buffer, u64 size, const char* format, ...) {
+    va_list args;
+    va_start(args, format);
+    u64 result = vsnprintf_internal(buffer, size, format, args);
+    va_end(args);
+    return result;
 }
 
 static u64 error_type(void) {
@@ -145,6 +243,7 @@ const system_error_methods PRIVATE_API(system_error_methods_definitions) = {
     .output = error_output,
     .exception = error_throw,
     .clear = error_clear,
+    .print = error_print,
     .type = error_type,
     .get = error_get,
     .next = error_next,
