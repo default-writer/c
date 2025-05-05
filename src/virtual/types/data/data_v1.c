@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 27, 2025 at 9:09:07 PM GMT+3
+ *   May 5, 2025 at 7:15:37 AM GMT+3
  *
  */
 /*
@@ -109,7 +109,7 @@ static u64 data_free(const_vm_ptr cvm, u64 address) {
 }
 
 /* public */
-CVM_EXPORT void data_init(const_vm_ptr cvm) {
+void data_init(const_vm_ptr cvm) {
     safe_type_methods_definitions safe_ptr;
     safe_ptr.const_ptr = &data_type_definitions;
     CALL(type)->register_known_type(cvm, safe_ptr.ptr);
@@ -123,6 +123,6 @@ const virtual_data_methods PRIVATE_API(virtual_data_methods_definitions) = {
 };
 
 const virtual_data_methods* PRIVATE_API(data) = &PRIVATE_API(virtual_data_methods_definitions);
-const virtual_data_methods* CALL(data) {
+PUBLIC const virtual_data_methods* CALL(data) {
     return PRIVATE_API(data);
 }
