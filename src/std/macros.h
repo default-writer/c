@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 5, 2025 at 3:51:03 PM GMT+3
+ *   May 5, 2025 at 4:25:04 PM GMT+3
  *
  */
 /*
@@ -287,15 +287,15 @@
 #ifdef __GNUC__
 #define FALL_THROUGH __attribute__((fallthrough))
 #define ATTRIBUTE
-// #define INIT __attribute__((constructor))
-// #define DESTROY __attribute__((destructor))
+/* #define INIT __attribute__((constructor)) */
+/* #define DESTROY __attribute__((destructor)) */
 #define PUBLIC inline __attribute__((always_inline, visibility("default")))
 #define INLINE inline __attribute__((always_inline))
 #else
 #define FALL_THROUGH ((void)0)
 #define ATTRIBUTE
-// #define INIT
-// #define DESTROY
+/* #define INIT */
+/* #define DESTROY */
 #if defined(_WIN32)
 #define PUBLIC __declspec(dllexport)
 #define INLINE inline
