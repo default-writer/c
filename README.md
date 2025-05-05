@@ -50,7 +50,7 @@ Memory management and pointer management library in C
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=default-writer_c&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=default-writer_c)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=default-writer_c&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=default-writer_c)
 
-## code
+## examples
 
 ```c
 static u64 read_data(const_vm_ptr cvm, u64 list_ptr, const char* prompt) {
@@ -165,7 +165,7 @@ int main(void) {
      2. string manupulation methods
      3. search
 
-## features
+## info
 
 <a href="" target="blank"><img alt="lib" style='height:128px' src='./resources/global-distribution.png'></a>
 
