@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 4, 2025 at 7:09:17 AM GMT+3
+ *   May 5, 2025 at 3:50:41 PM GMT+3
  *
  */
 /*
@@ -63,7 +63,7 @@ RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tea
 /* test init */
 RX_TEST_CASE(tests_error, test_measure_int, .fixture = test_fixture) {
     u64 written = CALL(error)->print(NULL, 0, "%d", -2147483648);
-    RX_ASSERT(written == strlen(TEXT(-2147483648)) + 1);
+    RX_ASSERT(written == strlen("-2147483648") + 1);
 }
 
 /* test init */
@@ -71,7 +71,7 @@ RX_TEST_CASE(tests_error, test_print_int, .fixture = test_fixture) {
     u64 bytes = CALL(error)->print(NULL, 0, "%d", -2147483648);
     char* buffer = (char*)malloc(bytes);
     CALL(error)->print(buffer, bytes, "%d", -2147483648);
-    RX_ASSERT(strcmp(buffer, TEXT(-2147483648)) == 0);
+    RX_ASSERT(strcmp(buffer, "-2147483648") == 0);
     free(buffer);
 }
 

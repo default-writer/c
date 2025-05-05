@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 30, 2025 at 11:34:20 AM GMT+3
+ *   May 5, 2025 at 3:53:55 PM GMT+3
  *
  */
 /*
@@ -250,7 +250,7 @@ static u64 stack_free(const_vm_ptr cvm, u64 address) {
 }
 
 /* public */
-CVM_EXPORT void stack_init(const_vm_ptr cvm) {
+void stack_init(const_vm_ptr cvm) {
     safe_type_methods_definitions safe_ptr;
     safe_ptr.const_ptr = &stack_type_definitions;
     CALL(type)->register_known_type(cvm, safe_ptr.ptr);
@@ -269,6 +269,6 @@ const virtual_stack_methods PRIVATE_API(virtual_stack_methods_definitions) = {
 };
 
 const virtual_stack_methods* PRIVATE_API(stack) = &PRIVATE_API(virtual_stack_methods_definitions);
-const virtual_stack_methods* CALL(stack) {
+PUBLIC const virtual_stack_methods* CALL(stack) {
     return PRIVATE_API(stack);
 }

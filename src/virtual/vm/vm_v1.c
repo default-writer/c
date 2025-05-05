@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 4, 2025 at 10:34:09 AM GMT+3
+ *   May 5, 2025 at 3:54:44 PM GMT+3
  *
  */
 /*
@@ -261,6 +261,6 @@ const virtual_vm_methods PRIVATE_API(virtual_vm_methods_definitions) = {
 };
 
 const virtual_vm_methods* PRIVATE_API(vm) = &PRIVATE_API(virtual_vm_methods_definitions);
-const virtual_vm_methods* CALL(vm) {
+PUBLIC const virtual_vm_methods* CALL(vm) {
     return PRIVATE_API(vm);
 }
