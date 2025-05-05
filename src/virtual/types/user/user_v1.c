@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 3, 2025 at 12:24:08 AM GMT+3
+ *   May 5, 2025 at 3:54:17 PM GMT+3
  *
  */
 /*
@@ -79,7 +79,7 @@ static u64 user_free(const_vm_ptr cvm, u64 address) {
 }
 
 /* public */
-CVM_EXPORT void user_init(const_vm_ptr cvm) {
+void user_init(const_vm_ptr cvm) {
     CALL(type)->register_user_type(cvm, &user_type_definitions);
 }
 
@@ -89,6 +89,6 @@ const virtual_user_methods PRIVATE_API(virtual_user_methods_definitions) = {
 };
 
 const virtual_user_methods* PRIVATE_API(user) = &PRIVATE_API(virtual_user_methods_definitions);
-const virtual_user_methods* CALL(user) {
+PUBLIC const virtual_user_methods* CALL(user) {
     return PRIVATE_API(user);
 }

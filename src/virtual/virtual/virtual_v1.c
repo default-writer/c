@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 4, 2025 at 10:21:12 AM GMT+3
+ *   May 5, 2025 at 3:54:30 PM GMT+3
  *
  */
 /*
@@ -310,7 +310,7 @@ const allocator_methods PRIVATE_API(allocator_methods_definitions) = {
 };
 
 const allocator_methods* PRIVATE_API(allocator) = &PRIVATE_API(allocator_methods_definitions);
-const allocator_methods* CALL(allocator) {
+PUBLIC const allocator_methods* CALL(allocator) {
     return PRIVATE_API(allocator);
 }
 
@@ -320,6 +320,6 @@ const virtual_system_methods PRIVATE_API(virtual_system_methods_definitions) = {
 };
 
 const virtual_system_methods* PRIVATE_API(system) = &PRIVATE_API(virtual_system_methods_definitions);
-const virtual_system_methods* CALL(system) {
+PUBLIC const virtual_system_methods* CALL(system) {
     return PRIVATE_API(system);
 }
