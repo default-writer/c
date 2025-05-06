@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 5, 2025 at 12:03:27 AM GMT+3
+ *   May 6, 2025 at 4:29:43 PM GMT+3
  *
  */
 /*
@@ -251,6 +251,6 @@ const system_error_methods PRIVATE_API(system_error_methods_definitions) = {
 };
 
 const system_error_methods* PRIVATE_API(error) = &PRIVATE_API(system_error_methods_definitions);
-const system_error_methods* CALL(error) {
+PUBLIC const system_error_methods* CALL(error) {
     return PRIVATE_API(error);
 }

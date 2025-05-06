@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 24, 2025 at 7:54:58 PM GMT+3
+ *   May 6, 2025 at 4:30:47 PM GMT+3
  *
  */
 /*
@@ -99,6 +99,6 @@ const virtual_env_methods PRIVATE_API(virtual_env_methods_definitions) = {
 };
 
 const virtual_env_methods* PRIVATE_API(env) = &PRIVATE_API(virtual_env_methods_definitions);
-const virtual_env_methods* CALL(env) {
+PUBLIC const virtual_env_methods* CALL(env) {
     return PRIVATE_API(env);
 }

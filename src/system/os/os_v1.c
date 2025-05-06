@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 1, 2025 at 10:21:47 PM GMT+3
+ *   May 6, 2025 at 4:30:52 PM GMT+3
  *
  */
 /*
@@ -64,6 +64,6 @@ const system_os_methods PRIVATE_API(system_os_methods_definitions) = {
 };
 
 const system_os_methods* PRIVATE_API(os) = &PRIVATE_API(system_os_methods_definitions);
-const system_os_methods* CALL(os) {
+PUBLIC const system_os_methods* CALL(os) {
     return PRIVATE_API(os);
 }

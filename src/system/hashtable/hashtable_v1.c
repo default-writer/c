@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 1, 2025 at 12:23:35 AM GMT+3
+ *   May 6, 2025 at 4:31:25 PM GMT+3
  *
  */
 /*
@@ -158,6 +158,6 @@ const system_hashtable_methods PRIVATE_API(system_hashtable_methods_definitions)
 };
 
 const system_hashtable_methods* PRIVATE_API(hashtable) = &PRIVATE_API(system_hashtable_methods_definitions);
-const system_hashtable_methods* CALL(hashtable) {
+PUBLIC const system_hashtable_methods* CALL(hashtable) {
     return PRIVATE_API(hashtable);
 }
