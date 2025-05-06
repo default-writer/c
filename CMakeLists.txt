@@ -15,12 +15,16 @@ option(CONFIG_MEMORY_CLEANUP "Enables memory cleanup")
 option(CONFIG_MEMORY_ALLOC "Enables memory allocator")
 option(CONFIG_MEMCPY "Enables use of memcpy")
 option(CONFIG_TTY "Enable tty output?")
+option(CONFIG_DYNAMIC_TYPES "Enable dynamic types?")
+option(CONFIG_GC "Enable garbage collector?")
 
 set(CONFIG_MEMORY_DEBUG_INFO OFF CACHE BOOL "Enable debug information?")
 set(CONFIG_MEMORY_CLEANUP OFF CACHE BOOL "Enable memory cleanup?")
 set(CONFIG_MEMORY_ALLOC OFF CACHE BOOL "Enable memory allocator?")
 set(CONFIG_MEMCPY OFF CACHE BOOL "Enable use of memcpy?")
 set(CONFIG_TTY OFF CACHE BOOL "Enable tty output?")
+set(CONFIG_DYNAMIC_TYPES OFF CACHE BOOL "Enable dynamic types?")
+set(CONFIG_GC OFF CACHE BOOL "Enable garbage collector?")
 
 execute_process(COMMAND git rev-parse HEAD OUTPUT_VARIABLE GIT_COMMIT_HASH)
 execute_process(COMMAND git log -n 1 --pretty=format:%at OUTPUT_VARIABLE UNIX_TIMESTAMP)
@@ -38,7 +42,6 @@ file(WRITE ${CMAKE_SOURCE_DIR}/src/std/version.h
 link_directories(${CMAKE_SOURCE_DIR}/lib)
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
-# Set output directories for all platforms
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
 
