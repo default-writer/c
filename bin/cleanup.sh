@@ -19,7 +19,7 @@ export LD_PRELOAD=
 
 source=$(pwd)
 
-pwd=$(cd "$(dirname $(dirname "${BASH_SOURCE[0]}"))" &> /dev/null && pwd)
+pwd=$(cd "$(dirname "$(dirname "${BASH_SOURCE[0]}")")" &> /dev/null && pwd)
 
 cd "${pwd}"
 
@@ -68,14 +68,17 @@ if [[ "${install}" == "" ]]; then
 fi
 
 if [[ "${install}" == "--clean" ]]; then
-    rm -rf "${pwd}/build"
-    rm -rf "${pwd}/cmake"
-    rm -rf "${pwd}/config"
-    rm -rf "${pwd}/lib"
-    rm -rf "${pwd}/logs"
-    rm -f "${pwd}/src/std/version.h"
-    find "${pwd}" -type f -name "callgrind.out.*" -delete
-    find "${pwd}" -type f -name "*.s" -delete
+    if [[ "${pwd}" != "" ]]; then
+        rm -rf "${pwd}/build"
+        rm -rf "${pwd}/cmake"
+        rm -rf "${pwd}/config"
+        rm -rf "${pwd}/logs"
+        rm -rf "${pwd}/lib"
+        rm -rf "${pwd}/.tmp"
+        rm -f "${pwd}/src/std/version.h"
+        find "${pwd}" -type f -name "callgrind.out.*" -delete
+        find "${pwd}" -type f -name "*.s" -delete
+    fi
 fi
 
 if [[ "${python}" == "--python" ]]; then
@@ -126,7 +129,7 @@ ${cmake} \
     $(cmake-options) \
     -S"${pwd}" \
     -B"${build}" \
-    -G "Ninja" 2>&1 >/dev/null
+    -G "Ninja" >/dev/null 2>&1
 EOF
 
     ${cmake} \
@@ -136,7 +139,7 @@ EOF
         $(cmake-options) \
         -S"${pwd}" \
         -B"${build}" \
-        -G "Ninja" 2>&1 >/dev/null
+        -G "Ninja" >/dev/null 2>&1
 
     for config in ${targets[@]}; do
         target="${config}"

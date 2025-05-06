@@ -101,7 +101,7 @@ function get-targets() {
     pwd=$(get-cwd)
 
     if [[ ! -d "${pwd}/config" ]]; then
-        exec 2>&1 >/dev/null
+        exec >/dev/null 2>&1
 
         cmake=$(get-cmake)
 
@@ -114,7 +114,7 @@ function get-targets() {
             -DTARGETS:BOOL=ON \
             -S"${pwd}" \
             -B"${pwd}/config" \
-            -G "Ninja" 2>&1 >/dev/null
+            -G "Ninja" >/dev/null 2>&1
 
         exec 1>&2 2>&-
     fi
@@ -231,6 +231,36 @@ function get-cmake-targets() {
     fi
 }
 
+function get-config() {
+    local build
+    local cmake
+    local pwd
+
+    pwd=$(get-cwd)
+
+    cmake=$(get-cmake)
+
+    if [[ "${cmake}" == "" ]]; then
+        echo cmake not found. please run "${pwd}/bin/utils/install.sh" --cmake
+        exit 8
+    fi
+
+    if [[ ! -d "${pwd}/config" ]]; then
+        exec >/dev/null 2>&1
+
+        build="${pwd}/config"
+        ${cmake} \
+            -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
+            -DTARGETS:BOOL=ON \
+            "${cmake-options}" \
+            -S"${pwd}" \
+            -B"${build}" \
+            -G "Ninja" >/dev/null 2>&1
+
+        # exec 1>&2 2>&-
+    fi
+}
+
 function get-source-targets() {
     local source
     local cmake
@@ -259,7 +289,7 @@ function get-source-targets() {
     fi
 
     if [[ ! -d "${pwd}/config" ]]; then
-        exec 2>&1 >/dev/null
+        exec >/dev/null 2>&1
 
         build="${pwd}/config"
         ${cmake} \
@@ -268,7 +298,7 @@ function get-source-targets() {
             ${cmake-options} \
             -S"${pwd}" \
             -B"${build}" \
-            -G "Ninja" 2>&1 >/dev/null
+            -G "Ninja" >/dev/null 2>&1
 
         exec 1>&2 2>&-
     fi
@@ -449,6 +479,7 @@ export -f get-os-type
 export -f get-cmake
 export -f get-targets
 export -f get-linked-targets
+export -f get-config
 export -f get-source-targets
 export -f get-cmake-targets
 export -f get-options

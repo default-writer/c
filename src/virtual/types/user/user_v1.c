@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 5, 2025 at 3:54:17 PM GMT+3
+ *   May 6, 2025 at 7:54:11 AM GMT+3
  *
  */
 /*
@@ -51,7 +51,7 @@ static u64 user_alloc(const_vm_ptr cvm);
 static u64 user_free(const_vm_ptr cvm, u64 ptr);
 
 /* type */
-static void user_type_destructor(const_vm_ptr cvm, u64 address);
+static u64 user_type_destructor(const_vm_ptr cvm, u64 address);
 
 /* implementation */
 static struct type_methods_definitions user_type_definitions = {
@@ -59,10 +59,11 @@ static struct type_methods_definitions user_type_definitions = {
     .destructor = user_type_destructor
 };
 
-static void user_type_destructor(const_vm_ptr cvm, u64 address) {
+static u64 user_type_destructor(const_vm_ptr cvm, u64 address) {
     const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, address, user_type_definitions.type_id);
-    CHECK_POINTER_NO_RETURN(const_ptr);
+    CHECK_POINTER(const_ptr, FALSE);
     CALL(pointer)->free(cvm, address);
+    return TRUE;
 }
 
 static u64 user_alloc(const_vm_ptr cvm) {
@@ -74,14 +75,20 @@ static u64 user_alloc(const_vm_ptr cvm) {
 static u64 user_free(const_vm_ptr cvm, u64 address) {
     CHECK_VM(cvm, FALSE);
     CHECK_ARG(address, FALSE);
-    user_type_destructor(cvm, address);
-    return TRUE;
+    return user_type_destructor(cvm, address);
 }
 
 /* public */
+#ifdef USE_DYNAMIC_TYPES
 void user_init(const_vm_ptr cvm) {
     CALL(type)->register_user_type(cvm, &user_type_definitions);
 }
+#else
+INIT_TYPE(TYPE_USER)
+void user_init(void) {
+    CALL(type)->register_user_type(&user_type_definitions);
+}
+#endif
 
 const virtual_user_methods PRIVATE_API(virtual_user_methods_definitions) = {
     .alloc = user_alloc,

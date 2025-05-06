@@ -15,7 +15,7 @@ fi
 
 source=$(pwd)
 
-pwd=$(cd "$(dirname $(dirname "${BASH_SOURCE[0]}"))" &> /dev/null && pwd)
+pwd=$(cd "$(dirname "$(dirname "${BASH_SOURCE[0]}")")" &> /dev/null && pwd)
 
 cd "${pwd}"
 
@@ -78,7 +78,7 @@ fi
 "${pwd}/bin/cleanup.sh" --clean
 
 export LCOV_PATH=$(which lcov)
-export GENHTML_PATH==$(which genhtml)
+export GENHTML_PATH=$(which genhtml)
 export MAKEFLAGS=-j8
 
 logs="${pwd}/logs"
@@ -94,7 +94,7 @@ ${cmake} \
     $(cmake-options) \
     -S"$(pwd)" \
     -B"${build}" \
-    -G "Ninja" 2>&1 >/dev/null
+    -G "Ninja" >/dev/null 2>&1
 EOF
 
 ${cmake} \
@@ -104,6 +104,6 @@ ${cmake} \
     $(cmake-options) \
     -S"$(pwd)" \
     -B"${build}" \
-    -G "Ninja" 2>&1 >/dev/null
+    -G "Ninja" >/dev/null 2>&1
 
 ${cmake} --build "${build}" --target "${target}" || (echo ERROR: "${target}" && exit 1)

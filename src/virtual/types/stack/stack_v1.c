@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 5, 2025 at 3:53:55 PM GMT+3
+ *   May 6, 2025 at 7:55:15 AM GMT+3
  *
  */
 /*
@@ -74,7 +74,7 @@ static u64 stack_release(const_vm_ptr cvm, u64 ptr);
 static u64 stack_free(const_vm_ptr cvm, u64 ptr);
 
 /* destructor */
-static void stack_type_destructor(const_vm_ptr cvm, u64 address);
+static u64 stack_type_destructor(const_vm_ptr cvm, u64 address);
 
 /* implementation */
 static struct type_methods_definitions stack_type_definitions = {
@@ -82,9 +82,9 @@ static struct type_methods_definitions stack_type_definitions = {
     .destructor = stack_type_destructor
 };
 
-static void stack_type_destructor(const_vm_ptr cvm, u64 address) {
+static u64 stack_type_destructor(const_vm_ptr cvm, u64 address) {
     const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, address, stack_type_definitions.type_id);
-    CHECK_POINTER_NO_RETURN(const_ptr);
+    CHECK_POINTER(const_ptr, FALSE);
     safe_void_ptr safe_ptr;
     safe_ptr.const_ptr = const_ptr->data;
     void_ptr data_ptr = safe_ptr.ptr;
@@ -92,6 +92,7 @@ static void stack_type_destructor(const_vm_ptr cvm, u64 address) {
     stack_release_internal(cvm, handler);
     CALL(list)->destroy(handler->list);
     CALL(pointer)->free(cvm, address);
+    return TRUE;
 }
 
 /* internal */
@@ -245,16 +246,24 @@ static u64 stack_size(const_vm_ptr cvm, u64 address) {
 static u64 stack_free(const_vm_ptr cvm, u64 address) {
     CHECK_VM(cvm, FALSE);
     CHECK_ARG(address, FALSE);
-    stack_type_destructor(cvm, address);
-    return TRUE;
+    return stack_type_destructor(cvm, address);
 }
 
 /* public */
+#ifdef USE_DYNAMIC_TYPES
 void stack_init(const_vm_ptr cvm) {
     safe_type_methods_definitions safe_ptr;
     safe_ptr.const_ptr = &stack_type_definitions;
     CALL(type)->register_known_type(cvm, safe_ptr.ptr);
 }
+#else
+INIT_TYPE(TYPE_STACK)
+void stack_init(void) {
+    safe_type_methods_definitions safe_ptr;
+    safe_ptr.const_ptr = &stack_type_definitions;
+    CALL(type)->register_known_type(safe_ptr.ptr);
+}
+#endif
 
 const virtual_stack_methods PRIVATE_API(virtual_stack_methods_definitions) = {
     .alloc = stack_alloc,

@@ -102,3 +102,4 @@ dist/
 /examples/python/.coverage
 .PVS-Studio/
 ./vscode/settings.json
+.tmp

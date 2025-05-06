@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 4, 2025 at 10:25:08 AM GMT+3
+ *   May 6, 2025 at 7:50:27 AM GMT+3
  *
  */
 /*
@@ -85,7 +85,7 @@ typedef void* void_ptr;
 typedef const void* const_void_ptr;
 
 typedef void_ptr (*type_constructor)(u64 size);
-typedef void (*type_destructor)(const_vm_ptr cvm, u64 address);
+typedef u64 (*type_destructor)(const_vm_ptr cvm, u64 address);
 
 typedef struct type_methods_definitions {
     u64 type_id;
@@ -149,21 +149,29 @@ typedef union {
     void_ptr ptr;
 } safe_void_ptr;
 
+#define ID_TYPE_NULL 0
+#define ID_TYPE_DATA 1
+#define ID_TYPE_FILE 2
+#define ID_TYPE_OBJECT 3
+#define ID_TYPE_STACK 4
+#define ID_TYPE_STRING 5
+#define ID_TYPE_USER 6
+
 enum type {
     /* value used for ephemeral type - null */
-    TYPE_NULL = 0,
+    TYPE_NULL = ID_TYPE_NULL,
     /* value used for pointer type - ref */
-    TYPE_DATA = 1,
+    TYPE_DATA = ID_TYPE_DATA,
     /* value used for file type - file */
-    TYPE_FILE = 2,
+    TYPE_FILE = ID_TYPE_FILE,
     /* value used for object type - object */
-    TYPE_OBJECT = 3,
+    TYPE_OBJECT = ID_TYPE_OBJECT,
     /* value used for stack type - stack */
-    TYPE_STACK = 4,
+    TYPE_STACK = ID_TYPE_STACK,
     /* value used for string type - string */
-    TYPE_STRING = 5,
+    TYPE_STRING = ID_TYPE_STRING,
     /* value used for user type - user (id: +0, +1, +2, +3, ...) */
-    TYPE_USER = 6,
+    TYPE_USER = ID_TYPE_USER,
 };
 
 #endif /* STD_DATA_H */

@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 5, 2025 at 3:53:29 PM GMT+3
+ *   May 6, 2025 at 7:55:29 AM GMT+3
  *
  */
 /*
@@ -54,7 +54,7 @@ static u64 object_load(const_vm_ptr cvm, const_void_ptr data, u64 size);
 static u64 object_size(const_vm_ptr cvm, u64 address);
 
 /* type */
-static void object_type_destructor(const_vm_ptr cvm, u64 address);
+static u64 object_type_destructor(const_vm_ptr cvm, u64 address);
 
 /* implementation */
 static struct type_methods_definitions object_type_definitions = {
@@ -62,10 +62,11 @@ static struct type_methods_definitions object_type_definitions = {
     .destructor = object_type_destructor
 };
 
-static void object_type_destructor(const_vm_ptr cvm, u64 address) {
+static u64 object_type_destructor(const_vm_ptr cvm, u64 address) {
     const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, address, object_type_definitions.type_id);
-    CHECK_POINTER_NO_RETURN(const_ptr);
+    CHECK_POINTER(const_ptr, FALSE);
     CALL(pointer)->free(cvm, address);
+    return TRUE;
 }
 
 static u64 object_alloc(const_vm_ptr cvm, u64 size) {
@@ -78,8 +79,7 @@ static u64 object_alloc(const_vm_ptr cvm, u64 size) {
 static u64 object_free(const_vm_ptr cvm, u64 address) {
     CHECK_VM(cvm, FALSE);
     CHECK_ARG(address, FALSE);
-    object_type_destructor(cvm, address);
-    return TRUE;
+    return object_type_destructor(cvm, address);
 }
 
 static void_ptr object_unsafe(const_vm_ptr cvm, u64 address) {
@@ -115,11 +115,20 @@ static u64 object_size(const_vm_ptr cvm, u64 address) {
 }
 
 /* public */
+#ifdef USE_DYNAMIC_TYPES
 void object_init(const_vm_ptr cvm) {
     safe_type_methods_definitions safe_ptr;
     safe_ptr.const_ptr = &object_type_definitions;
     CALL(type)->register_known_type(cvm, safe_ptr.ptr);
 }
+#else
+INIT_TYPE(TYPE_OBJECT)
+void object_init(void) {
+    safe_type_methods_definitions safe_ptr;
+    safe_ptr.const_ptr = &object_type_definitions;
+    CALL(type)->register_known_type(safe_ptr.ptr);
+}
+#endif
 
 const virtual_object_methods PRIVATE_API(virtual_object_methods_definitions) = {
     .alloc = object_alloc,
