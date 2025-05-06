@@ -15,7 +15,7 @@ fi
 
 source=$(pwd)
 
-pwd=$(cd "$(dirname $(dirname "${BASH_SOURCE[0]}"))" &> /dev/null && pwd)
+pwd=$(cd "$(dirname "$(dirname "${BASH_SOURCE[0]}")")" &> /dev/null && pwd)
 
 cd "${pwd}"
 
@@ -60,7 +60,7 @@ if [[ "${install}" == "" ]]; then
 fi
 
 if [[ "${silent}" == "--silent" ]]; then
-    exec 2>&1 >/dev/null
+    exec >/dev/null 2>&1
 fi
 
 bazel build --config=clang_config //main:${source}

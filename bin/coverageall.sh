@@ -15,7 +15,7 @@ fi
 
 source=$(pwd)
 
-pwd=$(cd "$(dirname $(dirname "${BASH_SOURCE[0]}"))" &> /dev/null && pwd)
+pwd=$(cd "$(dirname "$(dirname "${BASH_SOURCE[0]}")")" &> /dev/null && pwd)
 
 cd "${pwd}"
 

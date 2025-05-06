@@ -107,7 +107,7 @@ if [[ "${verbose}" == "--verbose" ]]; then
 fi
 
 if [[ "${silent}" == "--silent" ]]; then
-    exec 2>&1 >/dev/null
+    exec >/dev/null 2>&1
 fi
 
 build="${pwd}/build/coverage"
@@ -180,7 +180,7 @@ ${cmake} \
     $(cmake-options) \
     -S"${pwd}" \
     -B"${build}" \
-    -G "Ninja" 2>&1 >/dev/null
+    -G "Ninja" >/dev/null 2>&1
 EOF
 
 ${cmake} \
@@ -193,7 +193,7 @@ ${cmake} \
     $(cmake-options) \
     -S"${pwd}" \
     -B"${build}" \
-    -G "Ninja" 2>&1 >/dev/null
+    -G "Ninja" >/dev/null 2>&1
 
 ignore=$(get-ignore)
 

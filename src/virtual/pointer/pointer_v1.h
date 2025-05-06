@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 1, 2025 at 9:01:13 PM GMT+3
+ *   May 6, 2025 at 8:30:30 AM GMT+3
  *
  */
 /*
@@ -55,12 +55,20 @@ typedef struct PRIVATE_API(virtual_pointer_methods) {
     u64 (*copy)(const_vm_ptr cvm, const_void_ptr src, u64 size, u64 offset, u64 type_id);
     const_void_ptr (*read)(const_vm_ptr cvm, u64 address, u64 type_id);
     u64 (*ref)(const_vm_ptr cvm, u64 address);
+#ifndef USE_DYNAMIC_TYPES
+    u64 (*release)(const_vm_ptr cvm, u64 address, u64 type_id);
+#endif
     u64 (*free)(const_vm_ptr cvm, u64 address);
 } virtual_pointer_methods;
 
 typedef struct PRIVATE_API(virtual_type_methods) {
+#ifdef USE_DYNAMIC_TYPES
     void (*register_known_type)(const_vm_ptr cvm, type_methods_definitions_ptr data_type);
     void (*register_user_type)(const_vm_ptr cvm, type_methods_definitions_ptr data_type);
+#else
+    void (*register_known_type)(type_methods_definitions_ptr data_type);
+    void (*register_user_type)(type_methods_definitions_ptr data_type);
+#endif
 } virtual_type_methods;
 
 /* definition */

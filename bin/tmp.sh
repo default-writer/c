@@ -15,33 +15,18 @@ fi
 
 source=$(pwd)
 
-pwd=$(cd "$(dirname "$(dirname "${BASH_SOURCE[0]}")")" &> /dev/null && pwd)
+pwd="$(cd "$(dirname "$(dirname "${BASH_SOURCE[0]}")")" &> /dev/null && pwd)"
 
 cd "${pwd}"
 
-install="$1"
-
-opts=( "${@:2}" )
-
 . "${pwd}/bin/scripts/load.sh"
 
-## Builds and tests binaries
+## Builds and tests binaries to .tmp folder with coverage info
 ## Usage: ${script} <option>
 ## ${commands}
-## 
-## Example .args file:
-## --all
-## --clean
-## --silent
-## --sanitize
-## --gc
 
 while (($#)); do
     case "$1" in
-
-        "--args") # builds and runs with args from .args file
-            source=".args"
-            ;;
 
         "--silent") # [optional] suppress verbose output
             silent="--silent"
@@ -55,21 +40,14 @@ while (($#)); do
     shift
 done
 
-if [[ "${install}" == "" ]]; then
-    help
-    exit
-fi
-
 if [[ "${silent}" == "--silent" ]]; then
     exec >/dev/null 2>&1
 fi
 
-args=$(get-args)
+"${pwd}/bin/utils/coverage.sh" --target=main-tests-vm1 --clean --dir=.tmp
 
-if [[ -f "${source}" ]]; then
-    "${pwd}/bin/build.sh" ${args}
-else
-    echo "ERROR: ${source} not found"
+if [[ -f "${pwd}/.tmp/lcov.info" ]]; then
+    cp "${pwd}/.tmp/lcov.info" "${pwd}/coverage/lcov.info"
 fi
 
 if [[ "${silent}" == "--silent" ]]; then

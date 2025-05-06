@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 29, 2025 at 5:48:10 PM GMT+3
+ *   May 6, 2025 at 12:26:00 PM GMT+3
  *
  */
 /*
@@ -151,6 +151,60 @@ RX_TEST_CASE(tests_vm_v1, test_vm_copy_safe, .fixture = test_fixture_pointer) {
     u64 size = strlen(data) + 1;
     u64 virtual_ptr = CALL(pointer)->copy(cvm, data, 2, size - 2, TYPE_USER);
     RX_ASSERT(virtual_ptr != 0);
+    CALL(string)->free(cvm, virtual_ptr);
+#ifndef USE_GC
+    CALL(user)->free(cvm, virtual_ptr);
+#endif
+}
+
+/* test init */
+RX_TEST_CASE(tests_vm_v1, test_vm_copy_safe_release_type_id_error_0, .fixture = test_fixture_pointer) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr cvm = rx->ctx;
+    const char* data = "hello";
+    u64 size = strlen(data) + 1;
+    u64 virtual_ptr = CALL(pointer)->copy(cvm, data, 2, size - 2, TYPE_USER);
+    RX_ASSERT(virtual_ptr != 0);
+#ifndef USE_DYNAMIC_TYPES
+    u64 result = CALL(pointer)->release(cvm, 1, 0);
+    RX_ASSERT(result == 0);
+#endif
+    CALL(string)->free(cvm, virtual_ptr);
+#ifndef USE_GC
+    CALL(user)->free(cvm, virtual_ptr);
+#endif
+}
+
+/* test init */
+RX_TEST_CASE(tests_vm_v1, test_vm_copy_safe_release_type_id_error, .fixture = test_fixture_pointer) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr cvm = rx->ctx;
+    const char* data = "hello";
+    u64 size = strlen(data) + 1;
+    u64 virtual_ptr = CALL(pointer)->copy(cvm, data, 2, size - 2, TYPE_USER);
+    RX_ASSERT(virtual_ptr != 0);
+#ifndef USE_DYNAMIC_TYPES
+    u64 result = CALL(pointer)->release(cvm, virtual_ptr, TYPE_USER + 1);
+    RX_ASSERT(result == 0);
+#endif
+    CALL(string)->free(cvm, virtual_ptr);
+#ifndef USE_GC
+    CALL(user)->free(cvm, virtual_ptr);
+#endif
+}
+
+/* test init */
+RX_TEST_CASE(tests_vm_v1, test_vm_copy_safe_release_type_id, .fixture = test_fixture_pointer) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr cvm = rx->ctx;
+    const char* data = "hello";
+    u64 size = strlen(data) + 1;
+    u64 virtual_ptr = CALL(pointer)->copy(cvm, data, 2, size - 2, TYPE_USER);
+    RX_ASSERT(virtual_ptr != 0);
+#ifndef USE_DYNAMIC_TYPES
+    u64 result = CALL(pointer)->release(cvm, virtual_ptr, TYPE_USER);
+    RX_ASSERT(result != 0);
+#endif
     CALL(string)->free(cvm, virtual_ptr);
 #ifndef USE_GC
     CALL(user)->free(cvm, virtual_ptr);

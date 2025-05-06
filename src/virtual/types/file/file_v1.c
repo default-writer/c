@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 5, 2025 at 3:53:12 PM GMT+3
+ *   May 6, 2025 at 7:55:43 AM GMT+3
  *
  */
 /*
@@ -66,7 +66,7 @@ static u64 file_free(const_vm_ptr cvm, u64 address);
 static u64 file_data(const_vm_ptr cvm, u64 address);
 
 /* type */
-static void file_type_destructor(const_vm_ptr cvm, u64 address);
+static u64 file_type_destructor(const_vm_ptr cvm, u64 address);
 
 /* implementation */
 static struct type_methods_definitions file_type_definitions = {
@@ -74,10 +74,11 @@ static struct type_methods_definitions file_type_definitions = {
     .destructor = file_type_destructor
 };
 
-static void file_type_destructor(const_vm_ptr cvm, u64 address) {
+static u64 file_type_destructor(const_vm_ptr cvm, u64 address) {
     const_pointer_ptr const_ptr = CALL(pointer)->read(cvm, address, file_type_definitions.type_id);
-    CHECK_POINTER_NO_RETURN(const_ptr);
+    CHECK_POINTER(const_ptr, FALSE);
     CALL(pointer)->free(cvm, address);
+    return TRUE;
 }
 
 static int is_valid_file_path(const char* file_path) {
@@ -159,16 +160,24 @@ static u64 file_data(const_vm_ptr cvm, u64 address) {
 static u64 file_free(const_vm_ptr cvm, u64 address) {
     CHECK_VM(cvm, FALSE);
     CHECK_ARG(address, FALSE);
-    file_type_destructor(cvm, address);
-    return TRUE;
+    return file_type_destructor(cvm, address);
 }
 
 /* public */
+#ifdef USE_DYNAMIC_TYPES
 void file_init(const_vm_ptr cvm) {
     safe_type_methods_definitions safe_ptr;
     safe_ptr.const_ptr = &file_type_definitions;
     CALL(type)->register_known_type(cvm, safe_ptr.ptr);
 }
+#else
+INIT_TYPE(TYPE_FILE)
+void file_init(void) {
+    safe_type_methods_definitions safe_ptr;
+    safe_ptr.const_ptr = &file_type_definitions;
+    CALL(type)->register_known_type(safe_ptr.ptr);
+}
+#endif
 
 /*! definition (initialization) of file_methods structure */
 const virtual_file_methods PRIVATE_API(virtual_file_methods_definitions) = {

@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 30, 2025 at 7:29:15 AM GMT+3
+ *   May 6, 2025 at 8:53:22 AM GMT+3
  *
  */
 /*
@@ -3719,15 +3719,23 @@ RX_TEST_CASE(tests_pointer_v1, test_user_free_0, .fixture = test_fixture) {
 
 /* test init */
 RX_TEST_CASE(tests_pointer_v1, test_type_register_user_type, .fixture = test_fixture) {
-    TEST_DATA rx = (TEST_DATA)RX_DATA;
-    const_vm_ptr cvm = rx->ctx;
     type_methods_definitions_type user_definition = {
         .type_id = TYPE_USER
     };
+#ifdef USE_DYNAMIC_TYPES
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr cvm = rx->ctx;
     CALL(type)->register_user_type(cvm, &user_definition);
+#else
+    CALL(type)->register_user_type(&user_definition);
+#endif
     CALL(error)->clear();
     /* type->register_user_type fails in register_user_types */
+#ifdef USE_DYNAMIC_TYPES
     CALL(type)->register_user_type(cvm, &user_definition);
+#else
+    CALL(type)->register_user_type(&user_definition);
+#endif
     u64 error_count = CALL(error)->count();
 #ifdef USE_MEMORY_DEBUG_INFO
     RX_ASSERT(error_count == 1);

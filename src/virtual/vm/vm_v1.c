@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 5, 2025 at 3:54:44 PM GMT+3
+ *   May 6, 2025 at 9:51:03 AM GMT+3
  *
  */
 /*
@@ -48,6 +48,9 @@
 
 #include "virtual/list/list_v1.h"
 #include "virtual/virtual/virtual_v1.h"
+#ifndef USE_DYNAMIC_TYPES
+#include "virtual/pointer/pointer_v1.h"
+#endif
 
 /* macros */
 #define DEFAULT_SIZE 0x8 /* 8 */
@@ -62,6 +65,7 @@ typedef struct vm_state {
     void_ptr* ref;
 } vm_state_type;
 
+#ifdef USE_DYNAMIC_TYPES
 CVM_EXPORT extern void data_init(const_vm_ptr cvm);
 CVM_EXPORT extern void file_init(const_vm_ptr cvm);
 CVM_EXPORT extern void object_init(const_vm_ptr cvm);
@@ -84,6 +88,7 @@ static void register_known_types(const_vm_ptr cvm) {
 static void unregister_known_types(const_vm_ptr cvm) {
     CALL(os)->free((*cvm)->types);
 }
+#endif
 
 /* public */
 static void vm_dump_ref(const_vm_ptr cvm);
@@ -117,6 +122,7 @@ static const_vm_ptr vm_init(u64 size) {
     init_statistics();
 #endif
     const_vm_ptr cvm = CALL(system)->init(size);
+#ifdef USE_DYNAMIC_TYPES
     CHECK_VM_CONDITION(cvm == 0, NULL_PTR);
     safe_vm_ptr safe_ptr;
     safe_ptr.const_ptr = cvm;
@@ -124,6 +130,7 @@ static const_vm_ptr vm_init(u64 size) {
     ptr->size = TYPE_USER - 1;
     ptr->types = CALL(os)->calloc(1, TYPE_METHODS_ARRAY_SIZE((*cvm)->size));
     register_known_types(cvm);
+#endif
     return cvm;
 }
 
@@ -157,17 +164,23 @@ static u64 vm_release(const_vm_ptr cvm, u64 address) {
     u64 type_id = CALL(allocator)->type(cvm, address);
     CHECK_TYPE(type_id == 0, FALSE);
 #ifdef USE_GC
+#ifdef USE_DYNAMIC_TYPES
     if (type_id > 0 && type_id <= (*cvm)->size) {
         const_type_methods_definitions_ptr methods = (*cvm)->types[type_id - 1];
         methods->destructor(cvm, address);
     }
+#else
+    CALL(pointer)->release(cvm, address, type_id);
+#endif
 #endif
     return TRUE;
 }
 
 static void vm_destroy(const_vm_ptr cvm) {
     CHECK_VM_NO_RETURN(cvm);
+#ifdef USE_DYNAMIC_TYPES
     unregister_known_types(cvm);
+#endif
     CALL(system)->destroy(cvm);
     CALL(error)->clear();
 #ifdef USE_MEMORY_DEBUG_INFO

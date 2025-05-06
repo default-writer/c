@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 4, 2025 at 10:34:40 AM GMT+3
+ *   May 6, 2025 at 10:18:24 AM GMT+3
  *
  */
 /*
@@ -60,7 +60,14 @@
 #define DEFAULT_SIZE 0x8 /* 8 */
 
 #include "internal/pointer_type_v1.h"
+#ifdef USE_DYNAMIC_TYPES
 #include "internal/vm_type_v1.h"
+#endif
+
+#ifndef USE_DYNAMIC_TYPES
+static type_methods_definitions_ptr* registered_types;
+u64 registered_types_size = 0;
+#endif
 
 /* private */
 typedef struct vm_state {
@@ -75,7 +82,11 @@ static void pointer_dump_ref(pointer_ptr* ptr);
 
 /* internal */
 INLINE static u64 pointer_alloc_internal(const_pointer_ptr* tmp, const_vm_ptr cvm, const_void_ptr data, u64 size, u64 offset, u64 flags, u64 type_id);
+#ifdef USE_DYNAMIC_TYPES
 INLINE static u64 pointer_find_type_id_internal(const_vm_ptr cvm, const_type_methods_definitions_ptr data_type);
+#else
+INLINE static u64 pointer_find_type_id_internal(const_type_methods_definitions_ptr data_type);
+#endif
 
 struct file_handler {
     FILE* file;
@@ -85,14 +96,34 @@ struct file_handler {
 };
 
 /* public */
+#ifdef USE_DYNAMIC_TYPES
 static void pointer_register_known_type(const_vm_ptr cvm, type_methods_definitions_ptr data_type);
 static void pointer_register_user_type(const_vm_ptr cvm, type_methods_definitions_ptr data_type);
+#else
+static void pointer_register_known_type(type_methods_definitions_ptr data_type);
+static void pointer_register_user_type(type_methods_definitions_ptr data_type);
+#endif
 static u64 pointer_copy(const_vm_ptr cvm, const_void_ptr data, u64 size, u64 offset, u64 type_id);
 static u64 pointer_alloc(const_vm_ptr cvm, const_void_ptr data, u64 size, u64 offset, u64 flags, u64 type_id);
 static const_void_ptr pointer_read(const_vm_ptr cvm, u64 address, u64 type_id);
-static u64 pointer_free(const_vm_ptr cvm, u64 address);
 static u64 pointer_ref(const_vm_ptr cvm, u64 address);
+#ifndef USE_DYNAMIC_TYPES
+static u64 pointer_release(const_vm_ptr cvm, u64 address, u64 type_id);
+#endif
+static u64 pointer_free(const_vm_ptr cvm, u64 address);
 
+#ifndef USE_DYNAMIC_TYPES
+INIT void pointer_init(void) {
+    registered_types = CALL(os)->calloc(1, TYPE_METHODS_ARRAY_SIZE(TYPE_USER - 1));
+    registered_types_size = TYPE_USER - 1;
+}
+DESTROY void pointer_destroy(void) {
+    CALL(os)->free(registered_types);
+    registered_types_size = 0;
+}
+#endif
+
+#ifdef USE_DYNAMIC_TYPES
 static void pointer_register_known_type(const_vm_ptr cvm, type_methods_definitions_ptr data_type) {
     safe_vm_ptr safe_ptr;
     safe_ptr.const_ptr = cvm;
@@ -102,19 +133,40 @@ static void pointer_register_known_type(const_vm_ptr cvm, type_methods_definitio
 }
 
 static void pointer_register_user_type(const_vm_ptr cvm, type_methods_definitions_ptr data_type) {
+    CHECK_VM_NO_RETURN(cvm);
+    CHECK_ARG_NO_RETURN(data_type);
     CHECK_TYPE_NO_RETURN(pointer_find_type_id_internal(cvm, data_type) != 0);
+    u64 type_id = data_type->type_id;
     safe_vm_ptr safe_ptr;
     safe_ptr.const_ptr = cvm;
+    u64 size = cvm->size;
+    data_type->type_id = size + 1;
     vm_ptr ptr = *safe_ptr.ptr;
-    data_type->type_id = ptr->size + 1;
-    u64 type_id = data_type->type_id;
     ptr->types = CALL(os)->realloc(ptr->types, TYPE_METHODS_ARRAY_SIZE(type_id));
     ptr->size = type_id;
     ptr->types[type_id - 1] = data_type;
 }
+#else
+static void pointer_register_known_type(type_methods_definitions_ptr data_type) {
+    u64 type_id = data_type->type_id;
+    registered_types[type_id - 1] = data_type;
+}
+
+static void pointer_register_user_type(type_methods_definitions_ptr data_type) {
+    CHECK_ARG_NO_RETURN(data_type);
+    CHECK_TYPE_NO_RETURN(pointer_find_type_id_internal(data_type) != 0);
+    u64 type_id = data_type->type_id;
+    u64 size = registered_types_size;
+    data_type->type_id = size + 1;
+    registered_types = CALL(os)->realloc(registered_types, TYPE_METHODS_ARRAY_SIZE(type_id));
+    registered_types_size = type_id;
+    registered_types[type_id - 1] = data_type;
+}
+#endif
 
 /* internal */
-INLINE static u64 pointer_alloc_internal(const_pointer_ptr* tmp, const_vm_ptr cvm, const_void_ptr data, u64 size, u64 offset, u64 flags, u64 type_id) {
+INLINE static u64
+pointer_alloc_internal(const_pointer_ptr* tmp, const_vm_ptr cvm, const_void_ptr data, u64 size, u64 offset, u64 flags, u64 type_id) {
     u64 address = CALL(allocator)->alloc(cvm, size, type_id);
     const_pointer_ptr const_ptr = CALL(allocator)->read(cvm, address);
     safe_pointer_ptr safe_ptr;
@@ -127,6 +179,7 @@ INLINE static u64 pointer_alloc_internal(const_pointer_ptr* tmp, const_vm_ptr cv
     return address;
 }
 
+#ifdef USE_DYNAMIC_TYPES
 INLINE static u64 pointer_find_type_id_internal(const_vm_ptr cvm, const_type_methods_definitions_ptr data_type) {
     for (u64 i = 0; i < (*cvm)->size; i++) {
         type_methods_definitions_ptr current = (*cvm)->types[i];
@@ -136,6 +189,17 @@ INLINE static u64 pointer_find_type_id_internal(const_vm_ptr cvm, const_type_met
     }
     return 0;
 }
+#else
+INLINE static u64 pointer_find_type_id_internal(const_type_methods_definitions_ptr data_type) {
+    for (u64 i = 0; i < registered_types_size; i++) {
+        type_methods_definitions_ptr current = registered_types[i];
+        if (current->type_id == data_type->type_id) {
+            return current->type_id;
+        }
+    }
+    return 0;
+}
+#endif
 
 /* public */
 static u64 pointer_alloc(const_vm_ptr cvm, const_void_ptr data, u64 size, u64 offset, u64 flags, u64 type_id) {
@@ -186,6 +250,18 @@ static u64 pointer_ref(const_vm_ptr cvm, u64 address) {
     return const_ptr->public.address;
 }
 
+#ifndef USE_DYNAMIC_TYPES
+static u64 pointer_release(const_vm_ptr cvm, u64 address, u64 type_id) {
+    CHECK_VM(cvm, FALSE);
+    CHECK_ARG(type_id, FALSE);
+    if (type_id > 0 && type_id <= registered_types_size) {
+        const_type_methods_definitions_ptr methods = registered_types[type_id - 1];
+        return methods->destructor(cvm, address);
+    }
+    return FALSE;
+}
+#endif
+
 static u64 pointer_free(const_vm_ptr cvm, u64 address) {
     CHECK_VM(cvm, FALSE);
     CHECK_ARG(address, FALSE);
@@ -213,6 +289,9 @@ const virtual_pointer_methods PRIVATE_API(virtual_pointer_methods_definitions) =
     .copy = pointer_copy,
     .read = pointer_read,
     .ref = pointer_ref,
+#ifndef USE_DYNAMIC_TYPES
+    .release = pointer_release,
+#endif
     .free = pointer_free
 };
 
