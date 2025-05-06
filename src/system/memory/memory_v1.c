@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 1, 2025 at 1:14:25 PM GMT+3
+ *   May 6, 2025 at 4:31:05 PM GMT+3
  *
  */
 /*
@@ -198,6 +198,6 @@ const system_memory_methods PRIVATE_API(system_memory_methods_definitions) = {
 };
 
 const system_memory_methods* PRIVATE_API(memory) = &PRIVATE_API(system_memory_methods_definitions);
-const system_memory_methods* CALL(memory) {
+PUBLIC const system_memory_methods* CALL(memory) {
     return PRIVATE_API(memory);
 }

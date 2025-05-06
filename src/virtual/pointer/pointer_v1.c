@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 6, 2025 at 10:18:24 AM GMT+3
+ *   May 6, 2025 at 4:29:13 PM GMT+3
  *
  */
 /*
@@ -296,7 +296,7 @@ const virtual_pointer_methods PRIVATE_API(virtual_pointer_methods_definitions) =
 };
 
 const virtual_pointer_methods* PRIVATE_API(pointer) = &PRIVATE_API(virtual_pointer_methods_definitions);
-const virtual_pointer_methods* CALL(pointer) {
+PUBLIC const virtual_pointer_methods* CALL(pointer) {
     return PRIVATE_API(pointer);
 }
 
@@ -306,6 +306,6 @@ const virtual_type_methods PRIVATE_API(virtual_type_methods_definitions) = {
 };
 
 const virtual_type_methods* PRIVATE_API(type) = &PRIVATE_API(virtual_type_methods_definitions);
-const virtual_type_methods* CALL(type) {
+PUBLIC const virtual_type_methods* CALL(type) {
     return PRIVATE_API(type);
 }

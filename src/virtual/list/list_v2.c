@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 4, 2025 at 10:20:19 AM GMT+3
+ *   May 6, 2025 at 4:30:35 PM GMT+3
  *
  */
 /*
@@ -231,6 +231,6 @@ const virtual_list_v2_methods PRIVATE_API(virtual_list_v2_methods_definitions) =
 };
 
 const virtual_list_v2_methods* PRIVATE_API(list_v2) = &PRIVATE_API(virtual_list_v2_methods_definitions);
-const virtual_list_v2_methods* CALL(list_v2) {
+PUBLIC const virtual_list_v2_methods* CALL(list_v2) {
     return PRIVATE_API(list_v2);
 }
