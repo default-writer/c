@@ -44,6 +44,13 @@ if [[ "${silent}" == "--silent" ]]; then
     exec >/dev/null 2>&1
 fi
 
+config=( $(get-config) )
+
+"${pwd}/bin/cmake.sh" --target=main-tests-vm1 --verbose --tty --clean
+"${pwd}/bin/cmake.sh" --target=main-tests-vm1 --verbose --tty --clean --release
+"${pwd}/bin/cmake.sh" --target=main-tests-vm1 --verbose --tty --clean --gc
+"${pwd}/bin/cmake.sh" --target=main-tests-vm1 --verbose --tty --clean --gc --release
+
 "${pwd}/bin/utils/coverage.sh" --target=main-tests-vm1 --clean --dir=.tmp
 
 if [[ -f "${pwd}/.tmp/lcov.info" ]]; then

@@ -79,7 +79,7 @@ if [[ "${verbose}" == "--verbose" ]]; then
     config_memory_debug_info="TRUE"
 fi
 
-"${pwd}/bin/cmake.sh" --target=main-tests-vm1 --verbose --tty --clean
+config=( $(get-config) )
 
 build="${pwd}/build"
 

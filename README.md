@@ -83,7 +83,7 @@ int main(void) {
 }
 ```
 
-## useful commands
+## commands
 
 ```bash
 ./bin/cleanup.sh --clean
@@ -96,9 +96,24 @@ int main(void) {
 ./bin/lib.sh --c-vm
 ```
 
-## inspiration
+## build commands
+
+```bash
+./bin/tmp.sh
+./bin/cmake.sh --target=main-tests-vm1 --verbose --tty --clean
+./bin/cmake.sh --target=main-tests-vm1 --verbose --tty --clean --release
+./bin/cmake.sh --target=main-tests-vm1 --verbose --tty --clean --gc
+./bin/cmake.sh --target=main-tests-vm1 --verbose --tty --clean --gc --release
+./bin/coverageall.sh --all --clean
+```
+
+## resources
 
 - [NASA](https://spinroot.com/gerard/pdf/P10.pdf)
+
+## youtube
+
+- [tsoding](https://www.youtube.com/watch?v=6dCqR9p0yWY&ab_channel=TsodingDaily)
 - [tilir](https://github.com/tilir/c-graduate)
 - [introduction to C (ru)](https://www.youtube.com/watch?v=7YhRFx-oyW4&ab_channel=KonstantinVladimirov)
 - [practice C bash/linux/gcc (ru)](https://youtu.be/KLv-5jWlKjM)
