@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 5, 2025 at 3:54:30 PM GMT+3
+ *   May 7, 2025 at 2:14:03 PM GMT+3
  *
  */
 /*
@@ -269,7 +269,7 @@ static u64 allocator_free(const_vm_ptr cvm, u64 address) {
     const_pointer_ptr ptr = virtual_read_internal(const_vptr, address);
     CHECK_VALUE(ptr, FALSE);
     stack_v2_ptr vptr = ptr->vptr;
-    if (address > vptr->size && address <= vptr->size + DEFAULT_SIZE) {
+    if (address > vptr->size && address <= vptr->size + vptr->default_size) {
         u64 offset = address - vptr->size - 1;
 #ifndef USE_GC
         vm_pointer_ptr item = CALL(os)->calloc(1, VM_POINTER_TYPE_SIZE);
@@ -278,14 +278,12 @@ static u64 allocator_free(const_vm_ptr cvm, u64 address) {
         CALL(list)->push((*cvm)->cache, item);
 #endif
 #ifdef USE_MEMORY_DEBUG_INFO
-#ifdef USE_MEMORY_DEBUG_INFO
 #ifdef USE_TTY
         const char* start = "\x1b[34m";
         const char* end = "\x1b[0m";
         fprintf(stderr, "%s[  v- ]%s: %016llx ! %016llx > %016llx\n", start, end, address, (u64)ptr, (u64)vptr); /* NOLINT */
 #else
         fprintf(stderr, "  v- : %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)vptr); /* NOLINT */
-#endif
 #endif
 #endif
         vptr->bp[offset] = 0;
