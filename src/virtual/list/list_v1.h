@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 1, 2025 at 1:32:50 PM GMT+3
+ *   May 11, 2025 at 2:05:55 PM GMT+3
  *
  */
 /*
@@ -55,10 +55,6 @@ typedef struct PRIVATE_API(virtual_list_methods) {
     u64 (*diff_left)(stack_ptr stack1, stack_ptr stack2, stack_ptr cmp);
     u64 (*diff_right)(stack_ptr stack1, stack_ptr stack2, stack_ptr cmp);
     u64 (*destroy)(stack_ptr current);
-#ifdef USE_MEMORY_DEBUG_INFO
-    void (*print_head)(stack_ptr current);
-    void (*print)(stack_ptr current);
-#endif
 } virtual_list_methods;
 
 /* definition */

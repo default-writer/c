@@ -19,7 +19,9 @@ pwd=$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 
 cd "${pwd}/../../"
 
-./bin/cmake.sh --target=main-tests-vm1 --gc --verbose --tty --clean --silent
+./bin/cleanup.sh --python
+
+./bin/cmake.sh --target=main-tests-vm1  --verbose --tty --clean --silent
 
 if [[ ! -d ".venv" ]]; then
     python3 -m venv .venv
@@ -30,6 +32,16 @@ if [[ ! -d ".venv" ]]; then
 fi
 
 source .venv/bin/activate
+
+black .
+
+cd "${pwd}/src"
+
+if [[ "$(pip list | grep -c '^c ')" == "1" ]]; then
+    pip uninstall c -y
+fi
+
+pip install .
 
 python "${pwd}/main_memory.py"
 

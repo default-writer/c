@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 6, 2025 at 7:21:56 AM GMT+3
+ *   May 11, 2025 at 6:20:40 PM GMT+3
  *
  */
 /*
@@ -74,7 +74,7 @@
 #define STD_VM_ERROR(message_id, format, ...)                                                                                             \
     do {                                                                                                                                  \
         int snp_format_size = CALL(error)->print(NULL, 0, format ": %s (%s:%d)", __VA_ARGS__, __func__, __FILE__, __LINE__); /* NOLINT */ \
-        char* snp_format_buffer = (char*)malloc(snp_format_size + 1);                                                                     \
+        char* snp_format_buffer = (char*)calloc(1, snp_format_size + 1);                                                                  \
         if (snp_format_buffer) {                                                                                                          \
             CALL(error)->print(snp_format_buffer, snp_format_size + 1, format ": %s (%s:%d)", __VA_ARGS__, __func__, __FILE__, __LINE__); \
             CALL(error)->output(stderr, ID_##message_id, snp_format_buffer, (u64)snp_format_size);                                        \
@@ -86,7 +86,7 @@
 #define STD_VM_ERROR(message_id, format, ...)                                                             \
     do {                                                                                                  \
         int snp_format_size = CALL(error)->print(NULL, 0, format, __VA_ARGS__); /* NOLINT */              \
-        char* snp_format_buffer = (char*)malloc(snp_format_size + 1);                                     \
+        char* snp_format_buffer = (char*)calloc(1, snp_format_size + 1);                                  \
         if (snp_format_buffer) {                                                                          \
             CALL(error)->print(snp_format_buffer, snp_format_size + 1, format, __VA_ARGS__); /* NOLINT */ \
             CALL(error)->output(stderr, ID_##message_id, snp_format_buffer, (u64)snp_format_size);        \

@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 1, 2025 at 9:02:18 PM GMT+3
+ *   May 11, 2025 at 12:45:45 PM GMT+3
  *
  */
 /*
@@ -45,11 +45,6 @@
 #include "std/api.h"
 
 #include "system/platform.h"
-
-#ifdef USE_MEMORY_DEBUG_INFO
-CSYS_EXPORT extern void init_statistics(void);
-CSYS_EXPORT extern void result_statistics(void);
-#endif
 
 #include <stdio.h>
 

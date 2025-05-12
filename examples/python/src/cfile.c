@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 4, 2025 at 5:09:01 AM GMT+3
+ *   May 11, 2025 at 9:39:11 PM GMT+3
  *
  */
 /*
@@ -78,20 +78,20 @@ static int CFile_init(CFileTypePtr self, PyObject* args, PyObject* kwds) {
     }
 
     if (!PyObject_TypeCheck(cvm_obj, &CVirtualMachineTypeObject)) {
-        PYTHON_ERROR(PyExc_TypeError, "expected a CVirtualMachine instance: %s", CALL(error)->get());
+        PYTHON_ERROR(PyExc_TypeError, "expected a CVirtualMachine instance");
         return -1;
     }
 
     CVirtualMachineTypePtr cvm = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer");
         return -1;
     }
     self->cvm = cvm->cvm;
 
     u64 ptr = PY_CALL(file)->alloc(self->cvm, file_path_ptr, mode_ptr);
     if (!ptr) {
-        PYTHON_ERROR(CInvalidArgumentException, "failed to allocate file: invalid file path or mode: %s", CALL(error)->get());
+        PYTHON_ERROR(CInvalidArgumentException, "failed to allocate file: invalid file path or mode");
         return -1;
     }
     self->ptr = ptr;
@@ -110,7 +110,7 @@ static PyObject* CFile_ptr(CFileTypePtr self, PyObject* Py_UNUSED(ignored)) {
 static PyObject* CFile_data(CFileTypePtr self, PyObject* Py_UNUSED(ignored)) {
     u64 address = PY_CALL(file)->data(self->cvm, self->ptr);
     if (!address) {
-        PYTHON_ERROR(CInvalidPointerException, "failed to retrieve file data: invalid file address: %s", CALL(error)->get());
+        PYTHON_ERROR(CInvalidPointerException, "failed to retrieve file data: invalid file address");
         return NULL;
     }
 
@@ -132,7 +132,7 @@ static PyObject* CFile_free_static(PyObject* cls, PyObject* args, PyObject* kwar
 
     CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm_py->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance");
         return NULL;
     }
 
@@ -141,7 +141,7 @@ static PyObject* CFile_free_static(PyObject* cls, PyObject* args, PyObject* kwar
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to free pointer: invalid pointer address: (%016llx) %s", address, CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to free pointer: invalid pointer address: (%016llx) %s", address);
             return NULL;
         }
         CALL(error)->clear();

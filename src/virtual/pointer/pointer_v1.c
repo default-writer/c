@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 6, 2025 at 4:29:13 PM GMT+3
+ *   May 6, 2025 at 8:29:59 PM GMT+3
  *
  */
 /*
@@ -139,7 +139,7 @@ static void pointer_register_user_type(const_vm_ptr cvm, type_methods_definition
     u64 type_id = data_type->type_id;
     safe_vm_ptr safe_ptr;
     safe_ptr.const_ptr = cvm;
-    u64 size = cvm->size;
+    u64 size = (*cvm)->size;
     data_type->type_id = size + 1;
     vm_ptr ptr = *safe_ptr.ptr;
     ptr->types = CALL(os)->realloc(ptr->types, TYPE_METHODS_ARRAY_SIZE(type_id));

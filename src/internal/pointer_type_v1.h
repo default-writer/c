@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 3, 2025 at 1:59:33 PM GMT+3
+ *   May 11, 2025 at 12:36:50 PM GMT+3
  *
  */
 /*
@@ -43,9 +43,9 @@
 #include "std/api.h"
 
 typedef struct pointer {
-#ifdef USE_MEMORY_DEBUG_INFO
+    // #ifdef USE_MEMORY_DEBUG_INFO
     void_ptr guard;
-#endif
+    // #endif
     stack_v2_ptr vptr;
     const_void_ptr data;
     u64 offset;

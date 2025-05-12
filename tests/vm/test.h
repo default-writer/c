@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   April 30, 2025 at 10:24:03 AM GMT+3
+ *   May 11, 2025 at 2:08:42 PM GMT+3
  *
  */
 /*
@@ -56,6 +56,8 @@
 
 #define RXP_DEBUG_TESTS
 
+#include "system/platform/default/export.h"
+
 #include "rexo.h" /* NOLINT */
 
 #endif
@@ -70,5 +72,8 @@ typedef struct PRIVATE_API(test_suite) {
     if (ptr != 0) { \
         ptr = 0;    \
     }
+
+CSYS_EXPORT void init_statistics(void);
+CSYS_EXPORT void result_statistics(void);
 
 #endif /* TESTS_TEST_H */

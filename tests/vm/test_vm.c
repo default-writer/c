@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 6, 2025 at 12:26:00 PM GMT+3
+ *   May 11, 2025 at 11:45:59 AM GMT+3
  *
  */
 /*
@@ -212,6 +212,14 @@ RX_TEST_CASE(tests_vm_v1, test_vm_copy_safe_release_type_id, .fixture = test_fix
 }
 
 /* test init */
+RX_TEST_CASE(tests_vm_v1, test_vm_allocator_free, .fixture = test_fixture_pointer) {
+    TEST_DATA rx = (TEST_DATA)RX_DATA;
+    const_vm_ptr cvm = rx->ctx;
+    u64 result = CALL(allocator)->free(cvm, 1);
+    RX_ASSERT(result == 0);
+}
+
+/* test init */
 RX_TEST_CASE(tests_vm_v1, test_vm_read_address, .fixture = test_fixture_pointer) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
@@ -224,11 +232,13 @@ RX_TEST_CASE(tests_vm_v1, test_vm_read_address, .fixture = test_fixture_pointer)
     CALL(pointer)->free(cvm, virtual_ptr);
 }
 
+/* test init */
 RX_TEST_CASE(tests_vm_v1, test_vm_ref_address_0_0, .fixture = test_clean_fixture) {
     u64 ref = CALL(pointer)->ref(0, 0);
     RX_ASSERT(ref == 0);
 }
 
+/* test init */
 RX_TEST_CASE(tests_vm_v1, test_vm_ref_address_0, .fixture = test_fixture_pointer) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;
@@ -236,6 +246,7 @@ RX_TEST_CASE(tests_vm_v1, test_vm_ref_address_0, .fixture = test_fixture_pointer
     RX_ASSERT(ref == 0);
 }
 
+/* test init */
 RX_TEST_CASE(tests_vm_v1, test_vm_ref_address, .fixture = test_fixture_pointer) {
     TEST_DATA rx = (TEST_DATA)RX_DATA;
     const_vm_ptr cvm = rx->ctx;

@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 6, 2025 at 4:29:43 PM GMT+3
+ *   May 12, 2025 at 9:02:11 AM GMT+3
  *
  */
 /*
@@ -54,10 +54,8 @@ static const char* error_messages[] = {
 static exception_type exception;
 static exception_ptr exception_errors = &exception;
 
-#ifndef USE_MEMORY_DEBUG_INFO
 static void error_output(FILE* output, u64 error_type, const char* message, u64 size);
 static void error_throw(u64 error_type, const char* message, u64 size);
-#endif
 static void error_clear(void);
 static u64 error_print(char* buffer, u64 size, const char* format, ...);
 static u64 error_type(void);
@@ -107,12 +105,30 @@ INLINE static u64 vsnprintf_internal(char* buffer, u64 size, const char* format,
             traverse++;
             if (*traverse == 's') {
                 const char* str = va_arg(args, const char*);
-                while (*str != '\0' && (size > 0 ? written < size - 1 : TRUE)) {
+                if (str == 0) {
                     if (buffer != NULL) {
-                        buffer[written++] = *str++;
+                        buffer[written++] = '(';
+                        buffer[written++] = 'n';
+                        buffer[written++] = 'u';
+                        buffer[written++] = 'l';
+                        buffer[written++] = 'l';
+                        buffer[written++] = ')';
                     } else {
                         written++;
-                        str++;
+                        written++;
+                        written++;
+                        written++;
+                        written++;
+                        written++;
+                    }
+                } else {
+                    while (*str != '\0' && (size > 0 ? written < size - 1 : TRUE)) {
+                        if (buffer != NULL) {
+                            buffer[written++] = *str++;
+                        } else {
+                            written++;
+                            str++;
+                        }
                     }
                 }
             } else if (*traverse == 'd') {
@@ -128,6 +144,57 @@ INLINE static u64 vsnprintf_internal(char* buffer, u64 size, const char* format,
                         str++;
                     }
                 }
+            } else if (*traverse == '0') {
+                int padding = 0;
+
+                int offset = 0;
+                while (*(traverse + offset) >= '0' && *(traverse + offset + 1) <= '9') {
+                    padding = padding * 10 + (*(traverse + offset + 1) - '0');
+                    offset++;
+                }
+
+                if (*(traverse + offset + 1) == 'l' && *(traverse + offset + 2) == 'l' && *(traverse + offset + 3) == 'x') {
+                    unsigned long long value = va_arg(args, unsigned long long);
+
+                    char temp[32] = { 0 };
+                    const char* hex = "0123456789abcdef";
+                    char* ptr = temp;
+
+                    int len = 0;
+                    unsigned long long tmp = value;
+                    do {
+                        *ptr++ = hex[tmp & 0xF];
+                        tmp >>= 4;
+                        len++;
+                    } while (tmp && len < padding);
+
+                    while (len < padding) {
+                        *ptr++ = '0';
+                        len++;
+                    }
+
+                    *ptr = '\0';
+                    char* start = temp;
+                    ptr--;
+                    while (start < ptr) {
+                        char tmp_char = *start;
+                        *start++ = *ptr;
+                        *ptr-- = tmp_char;
+                    }
+
+                    const char* str = temp;
+                    while (*str != '\0' && (size > 0 ? written < size - 1 : TRUE)) {
+                        if (buffer != NULL) {
+                            buffer[written++] = *str++;
+                        } else {
+                            written++;
+                            str++;
+                        }
+                    }
+                    traverse += offset + 3;
+                    traverse++;
+                }
+                continue;
             } else {
                 if (buffer != NULL) {
                     buffer[written++] = '%';

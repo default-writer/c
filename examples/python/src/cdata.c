@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 4, 2025 at 5:08:59 AM GMT+3
+ *   May 12, 2025 at 5:02:55 AM GMT+3
  *
  */
 /*
@@ -80,13 +80,13 @@ static int CData_init(CDataTypePtr self, PyObject* args, PyObject* kwds) {
     }
 
     if (!PyObject_TypeCheck(cvm_obj, &CVirtualMachineTypeObject)) {
-        PYTHON_ERROR(PyExc_TypeError, "expected a CVirtualMachine instance: %s", CALL(error)->get());
+        PYTHON_ERROR(PyExc_TypeError, "expected a CVirtualMachine instance");
         return -1;
     }
 
     CVirtualMachineTypePtr cvm = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer");
         return -1;
     }
 
@@ -94,7 +94,7 @@ static int CData_init(CDataTypePtr self, PyObject* args, PyObject* kwds) {
 
     u64 ptr = PY_CALL(data)->alloc(self->cvm, size);
     if (!ptr) {
-        PYTHON_ERROR(CInvalidArgumentException, "failed to allocate data block: invalid size or insufficient memory: %s", CALL(error)->get());
+        PYTHON_ERROR(CInvalidArgumentException, "failed to allocate data block: invalid size or insufficient memory");
         return -1;
     }
     self->ptr = ptr;
@@ -114,7 +114,7 @@ static PyObject* CData_size(CDataTypePtr self, PyObject* args) {
 
     u64 size = PY_CALL(data)->size(self->cvm, address);
     if (!size) {
-        PYTHON_ERROR(CInvalidPointerException, "failed to get size: invalid data block address: %s", CALL(error)->get());
+        PYTHON_ERROR(CInvalidPointerException, "failed to get size: invalid data block address");
         return NULL;
     }
 
@@ -136,7 +136,7 @@ static PyObject* CData_unsafe_static(PyObject* cls, PyObject* args, PyObject* kw
 
     CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm_py->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance");
         return NULL;
     }
 
@@ -145,7 +145,7 @@ static PyObject* CData_unsafe_static(PyObject* cls, PyObject* args, PyObject* kw
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to get raw string data: invalid address or operation failed: %s", CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to get raw string data: invalid address or operation failed");
             return NULL;
         }
         CALL(error)->clear();
@@ -170,7 +170,7 @@ static PyObject* CData_free_static(PyObject* cls, PyObject* args, PyObject* kwar
 
     CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm_py->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance");
         return NULL;
     }
 
@@ -179,7 +179,7 @@ static PyObject* CData_free_static(PyObject* cls, PyObject* args, PyObject* kwar
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to free pointer: invalid pointer address: (%016llx) %s", address, CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to free pointer: invalid pointer address: %d", address);
             return NULL;
         }
         CALL(error)->clear();

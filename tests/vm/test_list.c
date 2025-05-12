@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 1, 2025 at 12:19:03 AM GMT+3
+ *   May 11, 2025 at 2:07:02 PM GMT+3
  *
  */
 /*
@@ -454,44 +454,17 @@ static void test(const_vm_ptr cvm, stack_ptr stack) {
     };
     RX_ASSERT(0 == is_null[0]);
     CALL(list)->push(stack, (void_ptr)data);
-#ifdef USE_MEMORY_DEBUG_INFO
-    CALL(list)->print_head(stack);
-#endif
     CALL(list)->push(stack, (void_ptr)++data);
-#ifdef USE_MEMORY_DEBUG_INFO
-    CALL(list)->print_head(stack);
-#endif
     CALL(list)->push(stack, (void_ptr)++data);
-#ifdef USE_MEMORY_DEBUG_INFO
-    CALL(list)->print_head(stack);
-#endif
     CALL(list)->push(stack, (void_ptr)++data);
-#ifdef USE_MEMORY_DEBUG_INFO
-    CALL(list)->print_head(stack);
-#endif
     CALL(list)->push(stack, (void_ptr)++data);
-#ifdef USE_MEMORY_DEBUG_INFO
-    CALL(list)->print_head(stack);
-#endif
-#ifdef USE_MEMORY_DEBUG_INFO
-    CALL(list)->print(stack);
-#endif
     const_void_ptr q_peek0 = (const_void_ptr)CALL(list)->peek(stack);
     CLEAN(q_peek0)
     const_void_ptr q_pop0 = (const_void_ptr)CALL(list)->pop(stack);
-#ifdef USE_MEMORY_DEBUG_INFO
-    CALL(list)->print(stack);
-#endif
     const_void_ptr q_pop1 = (const_void_ptr)CALL(list)->pop(stack);
     CLEAN(q_pop1)
-#ifdef USE_MEMORY_DEBUG_INFO
-    CALL(list)->print(stack);
-#endif
     const_void_ptr q_pop2 = (const_void_ptr)CALL(list)->pop(stack);
     CLEAN(q_pop2)
-#ifdef USE_MEMORY_DEBUG_INFO
-    CALL(list)->print(stack);
-#endif
     const_void_ptr q_peek1 = (const_void_ptr)CALL(list)->peek(stack);
     void_ptr q_pop3 = (void_ptr)CALL(list)->pop(stack);
     const_void_ptr q_peek2 = (const_void_ptr)CALL(list)->peek(stack);
@@ -502,38 +475,20 @@ static void test(const_vm_ptr cvm, stack_ptr stack) {
     RX_ASSERT(q_peek1 == q_peek3);
     const_void_ptr q_pop4 = (const_void_ptr)CALL(list)->pop(stack);
     CLEAN(q_pop4)
-#ifdef USE_MEMORY_DEBUG_INFO
-    CALL(list)->print(stack);
-#endif
     const_void_ptr q_pop5 = (const_void_ptr)CALL(list)->pop(stack);
     CLEAN(q_pop5)
-#ifdef USE_MEMORY_DEBUG_INFO
-    CALL(list)->print(stack);
-#endif
     const_void_ptr q_peek4 = (const_void_ptr)CALL(list)->peek(stack);
     safe_void_ptr safe_ptr;
     safe_ptr.const_ptr = q_pop0;
     void_ptr ptr0 = safe_ptr.ptr;
     CALL(list)->push(stack, ptr0);
     CLEAN(q_peek4)
-#ifdef USE_MEMORY_DEBUG_INFO
-    CALL(list)->print(stack);
-#endif
     const_void_ptr q_pop6 = (const_void_ptr)CALL(list)->pop(stack);
     CLEAN(q_pop6)
-#ifdef USE_MEMORY_DEBUG_INFO
-    CALL(list)->print(stack);
-#endif
     const_void_ptr q_pop7 = (const_void_ptr)CALL(list)->pop(stack);
     CLEAN(q_pop7)
-#ifdef USE_MEMORY_DEBUG_INFO
-    CALL(list)->print(stack);
-#endif
     const_void_ptr q_peek5 = (const_void_ptr)CALL(list)->peek(stack);
     CLEAN(q_peek5)
-#ifdef USE_MEMORY_DEBUG_INFO
-    CALL(list)->print(stack);
-#endif
 }
 
 static void run(void) {

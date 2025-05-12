@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 4, 2025 at 5:09:01 AM GMT+3
+ *   May 12, 2025 at 5:02:55 AM GMT+3
  *
  */
 /*
@@ -84,20 +84,20 @@ static int CStack_init(CStackTypePtr self, PyObject* args, PyObject* kwds) {
     }
 
     if (!PyObject_TypeCheck(cvm_obj, &CVirtualMachineTypeObject)) {
-        PYTHON_ERROR(PyExc_TypeError, "expected a CVirtualMachine instance: %s", CALL(error)->get());
+        PYTHON_ERROR(PyExc_TypeError, "expected a CVirtualMachine instance");
         return -1;
     }
 
     CVirtualMachineTypePtr cvm = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer");
         return -1;
     }
     self->cvm = cvm->cvm;
 
     self->ptr = PY_CALL(stack)->alloc(self->cvm);
     if (self->ptr == 0) {
-        PYTHON_ERROR(CInvalidPointerException, "failed to initialize the stack: %s", CALL(error)->get());
+        PYTHON_ERROR(CInvalidPointerException, "failed to initialize the stack");
         return -1;
     }
 
@@ -125,7 +125,7 @@ static PyObject* CStack_push(CStackTypePtr self, PyObject* args) {
     }
 
     if (!PY_CALL(stack)->push(self->cvm, self->ptr, data_ptr)) {
-        PYTHON_ERROR(CInvalidArgumentException, "failed to push element onto the stack: invalid data or operation failed: %s", CALL(error)->get());
+        PYTHON_ERROR(CInvalidArgumentException, "failed to push element onto the stack: invalid data or operation failed");
         return NULL;
     }
 
@@ -135,7 +135,7 @@ static PyObject* CStack_push(CStackTypePtr self, PyObject* args) {
 static PyObject* CStack_pop(CStackTypePtr self, PyObject* Py_UNUSED(ignored)) {
     u64 data_ptr = PY_CALL(stack)->pop(self->cvm, self->ptr);
     if (data_ptr == 0) {
-        PYTHON_ERROR(CInvalidValueException, "no elements to pop from the stack: %s", CALL(error)->get());
+        PYTHON_ERROR(CInvalidValueException, "no elements to pop from the stack");
         return NULL;
     }
 
@@ -145,7 +145,7 @@ static PyObject* CStack_pop(CStackTypePtr self, PyObject* Py_UNUSED(ignored)) {
 static PyObject* CStack_peek(CStackTypePtr self, PyObject* Py_UNUSED(ignored)) {
     u64 data_ptr = PY_CALL(stack)->peek(self->cvm, self->ptr);
     if (data_ptr == 0) {
-        PYTHON_ERROR(CInvalidValueException, "no elements to peek in the stack: %s", CALL(error)->get());
+        PYTHON_ERROR(CInvalidValueException, "no elements to peek in the stack");
         return NULL;
     }
 
@@ -160,7 +160,7 @@ static PyObject* CStack_peekn(CStackTypePtr self, PyObject* args) {
 
     u64 result = PY_CALL(stack)->peekn(self->cvm, self->ptr, nelements);
     if (result == 0) {
-        PYTHON_ERROR(CInvalidValueException, "failed to peek multiple elements from the stack: %s", CALL(error)->get());
+        PYTHON_ERROR(CInvalidValueException, "failed to peek multiple elements from the stack");
         return NULL;
     }
 
@@ -175,7 +175,7 @@ static PyObject* CStack_popn(CStackTypePtr self, PyObject* args) {
 
     u64 result = PY_CALL(stack)->popn(self->cvm, self->ptr, nelements);
     if (result == 0) {
-        PYTHON_ERROR(CInvalidValueException, "failed to pop multiple elements from the stack: %s", CALL(error)->get());
+        PYTHON_ERROR(CInvalidValueException, "failed to pop multiple elements from the stack");
         return NULL;
     }
 
@@ -202,7 +202,7 @@ static PyObject* CStack_free_static(PyObject* cls, PyObject* args, PyObject* kwa
 
     CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm_py->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance");
         return NULL;
     }
 
@@ -211,7 +211,7 @@ static PyObject* CStack_free_static(PyObject* cls, PyObject* args, PyObject* kwa
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to free pointer: invalid pointer address: (%016llx) %s", address, CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to free pointer: invalid pointer address: %d", address);
             return NULL;
         }
         CALL(error)->clear();

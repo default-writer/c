@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 4, 2025 at 5:08:58 AM GMT+3
+ *   May 12, 2025 at 5:02:55 AM GMT+3
  *
  */
 /*
@@ -78,20 +78,20 @@ static int CObject_init(CObjectTypePtr self, PyObject* args, PyObject* kwds) {
     }
 
     if (!PyObject_TypeCheck(cvm_obj, &CVirtualMachineTypeObject)) {
-        PYTHON_ERROR(PyExc_TypeError, "expected a CVirtualMachine instance: %s", CALL(error)->get());
+        PYTHON_ERROR(PyExc_TypeError, "expected a CVirtualMachine instance");
         return -1;
     }
 
     CVirtualMachineTypePtr cvm = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer");
         return -1;
     }
     self->cvm = cvm->cvm;
 
     u64 address = PY_CALL(object)->load(self->cvm, data, size);
     if (!address) {
-        PYTHON_ERROR(CInvalidArgumentException, "failed to load data into object: invalid data or size: %s", CALL(error)->get());
+        PYTHON_ERROR(CInvalidArgumentException, "failed to load data into object: invalid data or size");
         return -1;
     }
     self->ptr = address;
@@ -111,7 +111,7 @@ static PyObject* CObject_unsafe(CObjectTypePtr self, PyObject* args) {
 
     void_ptr data = PY_CALL(object)->unsafe(self->cvm, address);
     if (data == NULL) {
-        PYTHON_ERROR(CInvalidPointerException, "failed to get unsafe pointer: invalid object address: %s", CALL(error)->get());
+        PYTHON_ERROR(CInvalidPointerException, "failed to get unsafe pointer: invalid object address");
         return NULL;
     }
 
@@ -126,7 +126,7 @@ static PyObject* CObject_size(CObjectTypePtr self, PyObject* args) {
 
     u64 size = PY_CALL(object)->size(self->cvm, address);
     if (!size) {
-        PYTHON_ERROR(CInvalidPointerException, "failed to get object size: invalid object address: %s", CALL(error)->get());
+        PYTHON_ERROR(CInvalidPointerException, "failed to get object size: invalid object address");
         return NULL;
     }
 
@@ -148,7 +148,7 @@ static PyObject* CObject_free_static(PyObject* cls, PyObject* args, PyObject* kw
 
     CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm_py->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance");
         return NULL;
     }
 
@@ -157,7 +157,7 @@ static PyObject* CObject_free_static(PyObject* cls, PyObject* args, PyObject* kw
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to free pointer: invalid pointer address: (%016llx) %s", address, CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to free pointer: invalid pointer address: %d", address);
             return NULL;
         }
         CALL(error)->clear();

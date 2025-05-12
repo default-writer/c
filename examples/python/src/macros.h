@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 4, 2025 at 5:08:59 AM GMT+3
+ *   May 12, 2025 at 5:36:52 AM GMT+3
  *
  */
 /*
@@ -56,14 +56,31 @@
 #define PyObject_HEAD PyObject ob_base
 #endif
 
-#define PYTHON_ERROR(exception, format, ...)                                                                                                       \
-    do {                                                                                                                                           \
-        int snp_format_size = CALL(error)->print(NULL, 0, format ": %s (%s:%d)", __VA_ARGS__, __func__, __FILE__, __LINE__); /* NOLINT */          \
-        char* snp_format_buffer = (char*)malloc(snp_format_size + 1);                                                                              \
-        CALL(error)->print(snp_format_buffer, snp_format_size + 1, format ": %s (%s:%d)", __VA_ARGS__, __func__, __FILE__, __LINE__); /* NOLINT */ \
-        PyErr_SetString(exception, snp_format_buffer);                                                                                             \
-        free(snp_format_buffer);                                                                                                                   \
-        CALL(error)->clear();                                                                                                                      \
+#define VA_CAR(...) VA_CAR_IMPL(__VA_ARGS__, )
+#define VA_CAR_IMPL(first, ...) first
+
+#define VA_CDR(...) VA_CDR_IMPL(, __VA_ARGS__)
+#define VA_CDR_IMPL(first, ...) __VA_ARGS__
+
+#define PYTHON_ERROR(exception, ...)                                                                                                                                  \
+    do {                                                                                                                                                              \
+        const char* exception##_error_msg = CALL(error)->get();                                                                                                       \
+        if (exception##_error_msg != NULL_PTR) {                                                                                                                      \
+            const char* exception##_msg = VA_CAR(__VA_ARGS__) ": %s (%s): %s";                                                                                        \
+            int snp_format_size = CALL(error)->print(NULL, 0, exception##_msg, __func__, __FILE__, exception##_error_msg, VA_CDR(__VA_ARGS__)); /* NOLINT */          \
+            char* snp_format_buffer = (char*)calloc(1, snp_format_size + 1);                                                                                          \
+            CALL(error)->print(snp_format_buffer, snp_format_size + 1, exception##_msg, __func__, __FILE__, exception##_error_msg, VA_CDR(__VA_ARGS__)); /* NOLINT */ \
+            PyErr_SetString(exception, snp_format_buffer);                                                                                                            \
+            free(snp_format_buffer);                                                                                                                                  \
+        } else {                                                                                                                                                      \
+            const char* exception##_msg = VA_CAR(__VA_ARGS__) ": %s (%s)";                                                                                            \
+            int snp_format_size = CALL(error)->print(NULL, 0, exception##_msg, __func__, __FILE__, __LINE__, VA_CDR(__VA_ARGS__)); /* NOLINT */                       \
+            char* snp_format_buffer = (char*)calloc(1, snp_format_size + 1);                                                                                          \
+            CALL(error)->print(snp_format_buffer, snp_format_size + 1, exception##_msg, __func__, __FILE__, __LINE__, VA_CDR(__VA_ARGS__)); /* NOLINT */              \
+            PyErr_SetString(exception, snp_format_buffer);                                                                                                            \
+            free(snp_format_buffer);                                                                                                                                  \
+        }                                                                                                                                                             \
+        CALL(error)->clear();                                                                                                                                         \
     } while (0)
 
 #define PY_CALL(x) PY_PUBLIC_API(x)

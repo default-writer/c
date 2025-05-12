@@ -74,11 +74,6 @@ if [[ "${install}" == "" ]]; then
     exit
 fi
 
-config_memory_debug_info="FALSE"
-if [[ "${verbose}" == "--verbose" ]]; then
-    config_memory_debug_info="TRUE"
-fi
-
 config=( $(get-config) )
 
 build="${pwd}/build"
