@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 6, 2025 at 9:51:03 AM GMT+3
+ *   May 11, 2025 at 12:24:02 PM GMT+3
  *
  */
 /*
@@ -163,7 +163,6 @@ static u64 vm_release(const_vm_ptr cvm, u64 address) {
     CHECK_ARG(address, FALSE);
     u64 type_id = CALL(allocator)->type(cvm, address);
     CHECK_TYPE(type_id == 0, FALSE);
-#ifdef USE_GC
 #ifdef USE_DYNAMIC_TYPES
     if (type_id > 0 && type_id <= (*cvm)->size) {
         const_type_methods_definitions_ptr methods = (*cvm)->types[type_id - 1];
@@ -171,7 +170,6 @@ static u64 vm_release(const_vm_ptr cvm, u64 address) {
     }
 #else
     CALL(pointer)->release(cvm, address, type_id);
-#endif
 #endif
     return TRUE;
 }

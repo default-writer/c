@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 4, 2025 at 5:08:58 AM GMT+3
+ *   May 12, 2025 at 5:02:55 AM GMT+3
  *
  */
 /*
@@ -75,20 +75,20 @@ static int CUser_init(CUserTypePtr self, PyObject* args, PyObject* kwds) {
     }
 
     if (!PyObject_TypeCheck(cvm_obj, &CVirtualMachineTypeObject)) {
-        PYTHON_ERROR(PyExc_TypeError, "expected a CVirtualMachine instance: %s", CALL(error)->get());
+        PYTHON_ERROR(PyExc_TypeError, "expected a CVirtualMachine instance");
         return -1;
     }
 
     CVirtualMachineTypePtr cvm = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer");
         return -1;
     }
     self->cvm = cvm->cvm;
 
     self->ptr = PY_CALL(user)->alloc(self->cvm);
     if (self->ptr == 0) {
-        PYTHON_ERROR(CInvalidPointerException, "failed to allocate user object: %s", CALL(error)->get());
+        PYTHON_ERROR(CInvalidPointerException, "failed to allocate user object");
         return -1;
     }
 
@@ -114,7 +114,7 @@ static PyObject* CUser_free_static(PyObject* cls, PyObject* args, PyObject* kwar
 
     CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm_py->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance");
         return NULL;
     }
 
@@ -123,7 +123,7 @@ static PyObject* CUser_free_static(PyObject* cls, PyObject* args, PyObject* kwar
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to free pointer: invalid pointer address: (%016llx) %s", address, CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to free pointer: invalid pointer address: %d", address);
             return NULL;
         }
         CALL(error)->clear();

@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 5, 2025 at 3:50:41 PM GMT+3
+ *   May 12, 2025 at 9:13:47 AM GMT+3
  *
  */
 /*
@@ -61,6 +61,21 @@ RX_TEAR_DOWN(test_tear_down) {
 RX_FIXTURE(test_fixture, TEST_DATA, .set_up = test_set_up, .tear_down = test_tear_down);
 
 /* test init */
+RX_TEST_CASE(tests_error, test_measure_int_hex_padding_0, .fixture = test_fixture) {
+    u64 written = CALL(error)->print(NULL, 0, "%016llx", -2147483648);
+    RX_ASSERT(written == 17);
+}
+
+/* test init */
+RX_TEST_CASE(tests_error, test_print_int_hex_padding_0, .fixture = test_fixture) {
+    u64 bytes = CALL(error)->print(NULL, 0, "%016llx", -2147483648);
+    char* buffer = (char*)malloc(bytes);
+    CALL(error)->print(buffer, bytes, "%016llx", -2147483648);
+    RX_ASSERT(strcmp(buffer, "ffffffff80000000") == 0);
+    free(buffer);
+}
+
+/* test init */
 RX_TEST_CASE(tests_error, test_measure_int, .fixture = test_fixture) {
     u64 written = CALL(error)->print(NULL, 0, "%d", -2147483648);
     RX_ASSERT(written == strlen("-2147483648") + 1);
@@ -111,32 +126,68 @@ RX_TEST_CASE(tests_error, test_print_string, .fixture = test_fixture) {
 /* test init */
 RX_TEST_CASE(tests_error, test_measure_unknown_format, .fixture = test_fixture) {
     const char* text = "hello, world!";
-    const char* format = "%016llx";
+    const char* format = "%016llq";
     u64 written = CALL(error)->print(NULL, 0, format, text);
-    RX_ASSERT(written == strlen(format) + 1);
+    RX_ASSERT(written == strlen("%016llq"));
 }
 
 /* test init */
 RX_TEST_CASE(tests_error, test_print_unknown_format, .fixture = test_fixture) {
     const char* text = "hello, world!";
-    const char* format = "%016llx";
+    const char* format = "%016llq";
     u64 bytes = CALL(error)->print(NULL, 0, format, text);
     char* buffer = (char*)malloc(bytes);
     CALL(error)->print(buffer, bytes, format, text);
-    RX_ASSERT(strcmp(buffer, format) == 0);
+    RX_ASSERT(strcmp(buffer, "016llq") == 0);
     free(buffer);
 }
 
 /* test init */
-RX_TEST_CASE(tests_error, test_measure_unknown_format_string, .fixture = test_fixture) {
+RX_TEST_CASE(tests_error, test_measure_unknown_padding, .fixture = test_fixture) {
     const char* text = "hello, world!";
-    const char* format = "%016llx %s";
+    const char* format = "%x16llq";
     u64 written = CALL(error)->print(NULL, 0, format, text);
-    RX_ASSERT(written == strlen("%016llx hello, world!") + 1);
+    RX_ASSERT(written == strlen("%x16llq") + 1);
 }
 
 /* test init */
-RX_TEST_CASE(tests_error, test_print_unknown_format_string, .fixture = test_fixture) {
+RX_TEST_CASE(tests_error, test_print_unknown_padding, .fixture = test_fixture) {
+    const char* text = "hello, world!";
+    const char* format = "%x16llq";
+    u64 bytes = CALL(error)->print(NULL, 0, format, text);
+    char* buffer = (char*)malloc(bytes);
+    CALL(error)->print(buffer, bytes, format, text);
+    RX_ASSERT(strcmp(buffer, "%x16llq") == 0);
+    free(buffer);
+}
+
+/* test init */
+RX_TEST_CASE(tests_error, test_measure_hex_format_string, .fixture = test_fixture) {
+    const char* text = "hello, world!";
+    const char* format = "%016llx %s";
+    u64 written = CALL(error)->print(NULL, 0, format, (u64)0, text);
+    RX_ASSERT(written == strlen("0000000000000000 hello, world!") + 1);
+}
+
+/* test init */
+RX_TEST_CASE(tests_error, test_measure_hex_format_null_string, .fixture = test_fixture) {
+    const char* format = "%016llx %s";
+    u64 written = CALL(error)->print(NULL, 0, format, (u64)0, NULL_PTR);
+    RX_ASSERT(written == strlen("0000000000000000 (null)") + 1);
+}
+
+/* test init */
+RX_TEST_CASE(tests_error, test_print_hex_format_null_string, .fixture = test_fixture) {
+    const char* format = "%016llx %s";
+    u64 bytes = CALL(error)->print(NULL, 0, format, (u64)0, NULL_PTR);
+    char* buffer = (char*)malloc(bytes);
+    CALL(error)->print(buffer, bytes, format, (u64)0, NULL_PTR);
+    RX_ASSERT(strcmp(buffer, "0000000000000000 (null)") == 0);
+    free(buffer);
+}
+
+/* test init */
+RX_TEST_CASE(tests_error, test_print_hex_format_string, .fixture = test_fixture) {
     const char* text = "hello, world!";
     const char* format = "%016llx %s";
     u64 bytes = CALL(error)->print(NULL, 0, format, text);
@@ -147,7 +198,7 @@ RX_TEST_CASE(tests_error, test_print_unknown_format_string, .fixture = test_fixt
 }
 
 /* test init */
-RX_TEST_CASE(tests_error, test_print_unknown_format_overflow_string, .fixture = test_fixture) {
+RX_TEST_CASE(tests_error, test_print_hex_format_overflow_string, .fixture = test_fixture) {
     const char* text = "hello, world!";
     const char* format = "%016llx %s";
     u64 bytes = CALL(error)->print(NULL, 0, format, text);
@@ -158,7 +209,7 @@ RX_TEST_CASE(tests_error, test_print_unknown_format_overflow_string, .fixture = 
 }
 
 /* test init */
-RX_TEST_CASE(tests_error, test_print_unknown_format_overflow_string_empty, .fixture = test_fixture) {
+RX_TEST_CASE(tests_error, test_print_hex_format_overflow_string_empty, .fixture = test_fixture) {
     const char* text = "\0";
     const char* format = "%016llx %s";
     u64 bytes = CALL(error)->print(NULL, 0, format, text);
@@ -169,7 +220,7 @@ RX_TEST_CASE(tests_error, test_print_unknown_format_overflow_string_empty, .fixt
 }
 
 /* test init */
-RX_TEST_CASE(tests_error, test_print_unknown_format_overflow_number, .fixture = test_fixture) {
+RX_TEST_CASE(tests_error, test_print_int_format_overflow_number, .fixture = test_fixture) {
     int number = -2147483648;
     const char* format = "   %d";
     u64 bytes = CALL(error)->print(NULL, 0, format, number);
@@ -180,7 +231,7 @@ RX_TEST_CASE(tests_error, test_print_unknown_format_overflow_number, .fixture = 
 }
 
 /* test init */
-RX_TEST_CASE(tests_error, test_print_unknown_format_underflow_number, .fixture = test_fixture) {
+RX_TEST_CASE(tests_error, test_print_int_format_underflow_number, .fixture = test_fixture) {
     int number = -2147483648;
     const char* format = "   %d";
     u64 bytes = CALL(error)->print(NULL, 0, format, number);
@@ -191,7 +242,7 @@ RX_TEST_CASE(tests_error, test_print_unknown_format_underflow_number, .fixture =
 }
 
 /* test init */
-RX_TEST_CASE(tests_error, test_print_unknown_format_overflow_number_empty, .fixture = test_fixture) {
+RX_TEST_CASE(tests_error, test_print_hex_format_overflow_number_empty, .fixture = test_fixture) {
     int number = -2147483648;
     const char* format = "%016llx %d";
     u64 bytes = CALL(error)->print(NULL, 0, format, number);
@@ -202,11 +253,22 @@ RX_TEST_CASE(tests_error, test_print_unknown_format_overflow_number_empty, .fixt
 }
 
 /* test init */
-RX_TEST_CASE(tests_error, test_measure_unknown_format_number, .fixture = test_fixture) {
+RX_TEST_CASE(tests_error, test_measure_hex_format_number, .fixture = test_fixture) {
     int number = -2147483648;
     const char* format = "%016llx %d";
-    u64 written = CALL(error)->print(NULL, 0, format, number);
-    RX_ASSERT(written == strlen("%016llx -2147483648") + 1);
+    u64 written = CALL(error)->print(NULL, 0, format, (u64)number, number);
+    RX_ASSERT(written == strlen("ffffffff80000000 -2147483648") + 1);
+}
+
+/* test init */
+RX_TEST_CASE(tests_error, test_print_hex_format_number, .fixture = test_fixture) {
+    int number = -2147483648;
+    const char* format = "%016llx %d";
+    u64 written = CALL(error)->print(NULL, 0, format, (u64)number, number);
+    char* buffer = (char*)malloc(written);
+    CALL(error)->print(buffer, written, format, (u64)number, number);
+    free(buffer);
+    RX_ASSERT(written == strlen("ffffffff80000000 -2147483648") + 1);
 }
 
 /* test init */

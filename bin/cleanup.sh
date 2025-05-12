@@ -82,8 +82,13 @@ if [[ "${install}" == "--clean" ]]; then
 fi
 
 if [[ "${python}" == "--python" ]]; then
-    find "${pwd}" -type d -name "__pycache__" -exec rm -rf {} +
-    find "${pwd}" -type d -name ".pytest_cache" -exec rm -rf {} +
+    cleanup-python-dirs
+fi
+
+if [[ "${build}" == "--build" ]]; then
+    find "${pwd}" -not -path "${pwd}/.venv/*" -type d -name "config" -exec rm -rf {} +
+    find "${pwd}" -not -path "${pwd}/.venv/*" -type d -name "cmake" -exec rm -rf {} +
+    find "${pwd}" -not -path "${pwd}/.venv/*" -type d -name "build" -exec rm -rf {} +
 fi
 
 if [[ "${build}" == "--build" ]]; then
@@ -143,7 +148,6 @@ EOF
 
     for config in ${targets[@]}; do
         target="${config}"
-        echo CONFIG_MEMORY_DEBUG_INFO: ${config_memory_debug_info}
         echo building ${target}
         echo options "$(cmake-options)"
         ${cmake} --build "${build}" --target "${target}" 2>&1 || (echo ERROR: "${target}" && exit 1)

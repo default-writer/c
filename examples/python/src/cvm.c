@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 4, 2025 at 5:08:58 AM GMT+3
+ *   May 11, 2025 at 9:39:09 PM GMT+3
  *
  */
 /*
@@ -78,7 +78,7 @@ static int CVirtualMachine_init(CVirtualMachineTypePtr self, PyObject* args, PyO
 
     self->cvm = PY_CALL(vm)->init(size);
     if (self->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "failed to initialize the virtual machine: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "failed to initialize the virtual machine");
         return -1;
     }
 
@@ -94,7 +94,7 @@ static void CVirtualMachine_dealloc(CVirtualMachineTypePtr self) {
 
 static PyObject* CVirtualMachine_gc(CVirtualMachineTypePtr self, PyObject* Py_UNUSED(ignored)) {
     if (self->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "virtual machine is not initialized: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "virtual machine is not initialized");
         return NULL;
     }
 
@@ -110,12 +110,12 @@ static PyObject* CVirtualMachine_release(CVirtualMachineTypePtr self, PyObject* 
     }
 
     if (self->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "virtual machine is not initialized: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "virtual machine is not initialized");
         return NULL;
     }
     u64 result = PY_CALL(vm)->release(self->cvm, ptr);
     if (!result) {
-        PYTHON_ERROR(CInvalidValueException, "failed to release the virtual machine: %s", CALL(error)->get());
+        PYTHON_ERROR(CInvalidValueException, "failed to release the virtual machine");
         return NULL;
     }
 
@@ -124,7 +124,7 @@ static PyObject* CVirtualMachine_release(CVirtualMachineTypePtr self, PyObject* 
 
 static PyObject* CVirtualMachine_dump_ref(CVirtualMachineTypePtr self, PyObject* Py_UNUSED(ignored)) {
     if (self->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "virtual machine is not initialized: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "virtual machine is not initialized");
         return NULL;
     }
 
@@ -140,12 +140,12 @@ static PyObject* CVirtualMachine_dump_ref_stack(CVirtualMachineTypePtr self, PyO
     }
 
     if (!PyObject_TypeCheck(list_obj, &CListTypeObject)) {
-        PYTHON_ERROR(PyExc_TypeError, "expected a CList instance: %s", CALL(error)->get());
+        PYTHON_ERROR(PyExc_TypeError, "expected a CList instance");
         return NULL;
     }
 
     if (self->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "virtual machine is not initialized: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "virtual machine is not initialized");
         return NULL;
     }
 

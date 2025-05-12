@@ -96,11 +96,6 @@ fi
 
 sleep 5
 
-config_memory_debug_info="FALSE"
-if [[ "${verbose}" == "--verbose" ]]; then
-    config_memory_debug_info="TRUE"
-fi
-
 if [[ "${silent}" == "--silent" ]]; then
     exec >/dev/null 2>&1
 fi

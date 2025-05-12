@@ -43,10 +43,6 @@ fi
 
 pip install .
 
-find "${pwd}" -type d -name "__pycache__" -exec rm -rf {} +
-find "${pwd}" -type d -name "build" -exec rm -rf {} +
-find "${pwd}" -type d -name "c.egg-info" -exec rm -rf {} +
-
 [[ $SHLVL -eq 2 ]] && echo OK
 
 cd "${pwd}"

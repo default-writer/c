@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 4, 2025 at 5:09:02 AM GMT+3
+ *   May 12, 2025 at 5:02:55 AM GMT+3
  *
  */
 /*
@@ -108,20 +108,20 @@ static int CString_init(CStringTypePtr self, PyObject* args, PyObject* kwds) {
     }
 
     if (!PyObject_TypeCheck(cvm_obj, &CVirtualMachineTypeObject)) {
-        PYTHON_ERROR(PyExc_TypeError, "expected a CVirtualMachine instance: %s", CALL(error)->get());
+        PYTHON_ERROR(PyExc_TypeError, "expected a CVirtualMachine instance");
         return -1;
     }
 
     CVirtualMachineTypePtr cvm = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer");
         return -1;
     }
     self->cvm = cvm->cvm;
 
     u64 ptr = PY_CALL(string)->load(self->cvm, data);
     if (!ptr) {
-        PYTHON_ERROR(CInvalidArgumentException, "failed to load string: invalid data or operation failed: %s", CALL(error)->get());
+        PYTHON_ERROR(CInvalidArgumentException, "failed to load string: invalid data or operation failed");
         return -1;
     }
     self->ptr = ptr;
@@ -148,7 +148,7 @@ static PyObject* CString_free_static(PyObject* cls, PyObject* args, PyObject* kw
 
     CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm_py->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance");
         return NULL;
     }
 
@@ -157,7 +157,7 @@ static PyObject* CString_free_static(PyObject* cls, PyObject* args, PyObject* kw
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to free pointer: invalid pointer address: (%016llx) %s", address, CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to free pointer: invalid pointer address: %d", address);
             return NULL;
         }
         CALL(error)->clear();
@@ -184,7 +184,7 @@ static PyObject* CString_split_static(PyObject* cls, PyObject* args, PyObject* k
 
     CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm_py->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance");
         return NULL;
     }
 
@@ -194,7 +194,7 @@ static PyObject* CString_split_static(PyObject* cls, PyObject* args, PyObject* k
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to size string: invalid source address: %s", CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to size string: invalid source address");
             return NULL;
         }
         CALL(error)->clear();
@@ -219,7 +219,7 @@ static PyObject* CString_size_static(PyObject* cls, PyObject* args, PyObject* kw
 
     CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm_py->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance");
         return NULL;
     }
 
@@ -228,7 +228,7 @@ static PyObject* CString_size_static(PyObject* cls, PyObject* args, PyObject* kw
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to size string: invalid source address: %s", CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to size string: invalid source address");
             return NULL;
         }
         CALL(error)->clear();
@@ -253,7 +253,7 @@ static PyObject* CString_copy_static(PyObject* cls, PyObject* args, PyObject* kw
 
     CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm_py->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance");
         return NULL;
     }
 
@@ -262,7 +262,7 @@ static PyObject* CString_copy_static(PyObject* cls, PyObject* args, PyObject* kw
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to copy string: invalid source address: %s", CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to copy string: invalid source address");
             return NULL;
         }
         CALL(error)->clear();
@@ -287,7 +287,7 @@ static PyObject* CString_strncpy_static(PyObject* cls, PyObject* args, PyObject*
 
     CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm_py->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance");
         return NULL;
     }
 
@@ -296,7 +296,7 @@ static PyObject* CString_strncpy_static(PyObject* cls, PyObject* args, PyObject*
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to strncpy string: invalid source or destination address: %s", CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to strncpy string: invalid source or destination address");
             return NULL;
         }
         CALL(error)->clear();
@@ -320,7 +320,7 @@ static PyObject* CString_strcat_static(PyObject* cls, PyObject* args, PyObject* 
 
     CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm_py->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance");
         return NULL;
     }
 
@@ -329,7 +329,7 @@ static PyObject* CString_strcat_static(PyObject* cls, PyObject* args, PyObject* 
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to concatenate strings: invalid source or destination address: %s", CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to concatenate strings: invalid source or destination address");
             return NULL;
         }
         CALL(error)->clear();
@@ -353,7 +353,7 @@ static PyObject* CString_strrchr_static(PyObject* cls, PyObject* args, PyObject*
 
     CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm_py->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance");
         return NULL;
     }
 
@@ -362,7 +362,7 @@ static PyObject* CString_strrchr_static(PyObject* cls, PyObject* args, PyObject*
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to find last occurrence of character: invalid source or match address: %s", CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to find last occurrence of character: invalid source or match address");
             return NULL;
         }
         CALL(error)->clear();
@@ -387,7 +387,7 @@ static PyObject* CString_strchr_static(PyObject* cls, PyObject* args, PyObject* 
 
     CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm_py->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance");
         return NULL;
     }
 
@@ -396,7 +396,7 @@ static PyObject* CString_strchr_static(PyObject* cls, PyObject* args, PyObject* 
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to find first occurrence of character: invalid source or match address: %s", CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to find first occurrence of character: invalid source or match address");
             return NULL;
         }
         CALL(error)->clear();
@@ -421,7 +421,7 @@ static PyObject* CString_match_static(PyObject* cls, PyObject* args, PyObject* k
 
     CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm_py->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance");
         return NULL;
     }
 
@@ -430,7 +430,7 @@ static PyObject* CString_match_static(PyObject* cls, PyObject* args, PyObject* k
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to match string: invalid source or match address: %s", CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to match string: invalid source or match address");
             return NULL;
         }
         CALL(error)->clear();
@@ -455,7 +455,7 @@ static PyObject* CString_match_offset_static(PyObject* cls, PyObject* args, PyOb
 
     CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm_py->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance");
         return NULL;
     }
 
@@ -464,7 +464,7 @@ static PyObject* CString_match_offset_static(PyObject* cls, PyObject* args, PyOb
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to calculate offset: invalid source or match address: %s", CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to calculate offset: invalid source or match address");
             return NULL;
         }
         CALL(error)->clear();
@@ -490,7 +490,7 @@ static PyObject* CString_put_char_static(PyObject* cls, PyObject* args, PyObject
 
     CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm_py->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance");
         return NULL;
     }
 
@@ -499,7 +499,7 @@ static PyObject* CString_put_char_static(PyObject* cls, PyObject* args, PyObject
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to put character: invalid address or value: %s", CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to put character: invalid address or value");
             return NULL;
         }
         CALL(error)->clear();
@@ -523,7 +523,7 @@ static PyObject* CString_unsafe_static(PyObject* cls, PyObject* args, PyObject* 
 
     CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm_py->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance");
         return NULL;
     }
 
@@ -532,7 +532,7 @@ static PyObject* CString_unsafe_static(PyObject* cls, PyObject* args, PyObject* 
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to get raw string data: invalid address or operation failed: %s", CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to get raw string data: invalid address or operation failed");
             return NULL;
         }
         CALL(error)->clear();
@@ -557,7 +557,7 @@ static PyObject* CString_lessthan_static(PyObject* cls, PyObject* args, PyObject
 
     CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm_py->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance");
         return NULL;
     }
 
@@ -566,7 +566,7 @@ static PyObject* CString_lessthan_static(PyObject* cls, PyObject* args, PyObject
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to compare strings (lessthan): invalid source or destination address: %s", CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to compare strings (lessthan): invalid source or destination address");
             return NULL;
         }
         CALL(error)->clear();
@@ -591,7 +591,7 @@ static PyObject* CString_greaterthan_static(PyObject* cls, PyObject* args, PyObj
 
     CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm_py->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance");
         return NULL;
     }
 
@@ -600,7 +600,7 @@ static PyObject* CString_greaterthan_static(PyObject* cls, PyObject* args, PyObj
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to compare strings (greaterthan): invalid source or destination address: %s", CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to compare strings (greaterthan): invalid source or destination address");
             return NULL;
         }
         CALL(error)->clear();
@@ -625,7 +625,7 @@ static PyObject* CString_equals_static(PyObject* cls, PyObject* args, PyObject* 
 
     CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm_py->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance");
         return NULL;
     }
 
@@ -634,7 +634,7 @@ static PyObject* CString_equals_static(PyObject* cls, PyObject* args, PyObject* 
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to check string equality: invalid source or destination address: %s", CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to check string equality: invalid source or destination address");
             return NULL;
         }
         CALL(error)->clear();
@@ -659,7 +659,7 @@ static PyObject* CString_compare_static(PyObject* cls, PyObject* args, PyObject*
 
     CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm_py->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance");
         return NULL;
     }
 
@@ -668,7 +668,7 @@ static PyObject* CString_compare_static(PyObject* cls, PyObject* args, PyObject*
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to compare strings: invalid source or destination address or C error occurred: %s", CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to compare strings: invalid source or destination address or C error occurred");
             return NULL;
         }
         CALL(error)->clear();
@@ -693,7 +693,7 @@ static PyObject* CString_left_static(PyObject* cls, PyObject* args, PyObject* kw
 
     CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm_py->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance");
         return NULL;
     }
 
@@ -702,7 +702,7 @@ static PyObject* CString_left_static(PyObject* cls, PyObject* args, PyObject* kw
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to get left part of string: invalid source or offset: %s", CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to get left part of string: invalid source or offset");
             return NULL;
         }
         CALL(error)->clear();
@@ -727,7 +727,7 @@ static PyObject* CString_right_copy_static(PyObject* cls, PyObject* args, PyObje
 
     CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm_py->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance");
         return NULL;
     }
 
@@ -736,7 +736,7 @@ static PyObject* CString_right_copy_static(PyObject* cls, PyObject* args, PyObje
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to copy n bytes of string: invalid source or number of bytes: %s", CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to copy n bytes of string: invalid source or number of bytes");
             return NULL;
         }
         CALL(error)->clear();
@@ -761,7 +761,7 @@ static PyObject* CString_left_copy_static(PyObject* cls, PyObject* args, PyObjec
 
     CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm_py->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance");
         return NULL;
     }
 
@@ -770,7 +770,7 @@ static PyObject* CString_left_copy_static(PyObject* cls, PyObject* args, PyObjec
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to copy n bytes from left of string: invalid source or number of bytes: %s", CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to copy n bytes from left of string: invalid source or number of bytes");
             return NULL;
         }
         CALL(error)->clear();
@@ -795,7 +795,7 @@ static PyObject* CString_right_static(PyObject* cls, PyObject* args, PyObject* k
 
     CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm_py->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance");
         return NULL;
     }
 
@@ -804,7 +804,7 @@ static PyObject* CString_right_static(PyObject* cls, PyObject* args, PyObject* k
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to get right part of string: invalid source or offset: %s", CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to get right part of string: invalid source or offset");
             return NULL;
         }
         CALL(error)->clear();
@@ -829,7 +829,7 @@ static PyObject* CString_move_left_static(PyObject* cls, PyObject* args, PyObjec
 
     CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm_py->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance");
         return NULL;
     }
 
@@ -838,7 +838,7 @@ static PyObject* CString_move_left_static(PyObject* cls, PyObject* args, PyObjec
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to move string left: invalid source or number of bytes: %s", CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to move string left: invalid source or number of bytes");
             return NULL;
         }
         CALL(error)->clear();
@@ -862,7 +862,7 @@ static PyObject* CString_move_right_static(PyObject* cls, PyObject* args, PyObje
 
     CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm_py->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance");
         return NULL;
     }
 
@@ -871,7 +871,7 @@ static PyObject* CString_move_right_static(PyObject* cls, PyObject* args, PyObje
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to move string right: invalid source or number of bytes: %s", CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to move string right: invalid source or number of bytes");
             return NULL;
         }
         CALL(error)->clear();
@@ -895,7 +895,7 @@ static PyObject* CString_strcmp_static(PyObject* cls, PyObject* args, PyObject* 
 
     CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm_py->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance");
         return NULL;
     }
 
@@ -904,7 +904,7 @@ static PyObject* CString_strcmp_static(PyObject* cls, PyObject* args, PyObject* 
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to compare strings (strcmp): invalid source or destination address or C error occurred: %s", CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to compare strings (strcmp): invalid source or destination address or C error occurred");
             return NULL;
         }
         CALL(error)->clear();
@@ -929,7 +929,7 @@ static PyObject* CString_ref_static(PyObject* cls, PyObject* args, PyObject* kwa
 
     CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm_py->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance");
         return NULL;
     }
 
@@ -938,7 +938,7 @@ static PyObject* CString_ref_static(PyObject* cls, PyObject* args, PyObject* kwa
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to get referenced strings (depth): invalid source or destination address or C error occurred: %s", CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to get referenced strings (depth): invalid source or destination address or C error occurred");
             return NULL;
         }
         CALL(error)->clear();

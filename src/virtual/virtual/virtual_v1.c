@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 5, 2025 at 3:54:30 PM GMT+3
+ *   May 11, 2025 at 11:45:21 AM GMT+3
  *
  */
 /*
@@ -123,14 +123,12 @@ INLINE static u64 virtual_alloc_internal(const_vm_ptr cvm, u64 size, u64 type_id
     ptr->public.type = type_id;
     *tmp = ptr;
 #ifdef USE_MEMORY_DEBUG_INFO
-#ifdef USE_MEMORY_DEBUG_INFO
 #ifdef USE_TTY
     const char* start = "\x1b[34m";
     const char* end = "\x1b[0m";
     fprintf(stderr, "%s[  v+ ]%s: %016llx ! %016llx > %016llx\n", start, end, address, (u64)ptr, (u64)vptr); /* NOLINT */
 #else
     fprintf(stderr, "  v+ : %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)vptr); /* NOLINT */
-#endif
 #endif
 #endif
     return address;
@@ -141,7 +139,7 @@ INLINE static stack_v2_ptr virtual_init_internal(u64 size, stack_v2_ptr next) {
     vptr->bp = CALL(os)->calloc(size, PTR_SIZE);
     vptr->sp = vptr->bp;
     vptr->next = next;
-    vptr->default_size = size;
+    vptr->default_size = size == 0 ? DEFAULT_SIZE : size;
     return vptr;
 }
 
@@ -149,7 +147,7 @@ INLINE static pointer_ptr virtual_read_internal(const_stack_v2_ptr vptr, u64 add
     pointer_ptr ptr = 0;
     do {
         u64 default_size = vptr->default_size;
-        if (address > vptr->size && address <= vptr->size + default_size) {
+        if (vptr->bp != vptr->sp && address > vptr->size && address <= vptr->size + default_size) {
             u64 offset = address - vptr->size - 1;
             ptr = vptr->bp[offset];
             break;
@@ -179,7 +177,7 @@ static const_vm_ptr virtual_init(u64 size) {
     safe_vm_ptr safe_ptr;
     safe_ptr.ptr = ptr;
     const_vm_ptr cvm = safe_ptr.const_ptr;
-    stack_v2_ptr vptr = virtual_init_internal(size == 0 ? DEFAULT_SIZE : size, 0);
+    stack_v2_ptr vptr = virtual_init_internal(size, 0);
     (*ptr)->next = vptr;
 #ifndef USE_GC
     (*ptr)->cache = CALL(list)->init();
@@ -269,27 +267,23 @@ static u64 allocator_free(const_vm_ptr cvm, u64 address) {
     const_pointer_ptr ptr = virtual_read_internal(const_vptr, address);
     CHECK_VALUE(ptr, FALSE);
     stack_v2_ptr vptr = ptr->vptr;
-    if (address > vptr->size && address <= vptr->size + DEFAULT_SIZE) {
-        u64 offset = address - vptr->size - 1;
+    u64 offset = address - vptr->size - 1;
 #ifndef USE_GC
-        vm_pointer_ptr item = CALL(os)->calloc(1, VM_POINTER_TYPE_SIZE);
-        item->vptr = vptr;
-        item->offset = offset;
-        CALL(list)->push((*cvm)->cache, item);
+    vm_pointer_ptr item = CALL(os)->calloc(1, VM_POINTER_TYPE_SIZE);
+    item->vptr = vptr;
+    item->offset = offset;
+    CALL(list)->push((*cvm)->cache, item);
 #endif
-#ifdef USE_MEMORY_DEBUG_INFO
 #ifdef USE_MEMORY_DEBUG_INFO
 #ifdef USE_TTY
-        const char* start = "\x1b[34m";
-        const char* end = "\x1b[0m";
-        fprintf(stderr, "%s[  v- ]%s: %016llx ! %016llx > %016llx\n", start, end, address, (u64)ptr, (u64)vptr); /* NOLINT */
+    const char* start = "\x1b[34m";
+    const char* end = "\x1b[0m";
+    fprintf(stderr, "%s[  v- ]%s: %016llx ! %016llx > %016llx\n", start, end, address, (u64)ptr, (u64)vptr); /* NOLINT */
 #else
-        fprintf(stderr, "  v- : %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)vptr); /* NOLINT */
+    fprintf(stderr, "  v- : %016llx ! %016llx > %016llx\n", address, (u64)ptr, (u64)vptr); /* NOLINT */
 #endif
 #endif
-#endif
-        vptr->bp[offset] = 0;
-    }
+    vptr->bp[offset] = 0;
     return TRUE;
 }
 

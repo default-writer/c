@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 4, 2025 at 5:08:59 AM GMT+3
+ *   May 11, 2025 at 9:39:11 PM GMT+3
  *
  */
 /*
@@ -62,7 +62,7 @@ static PyObject* CEnvironment_getenv_static(PyObject* cls, PyObject* args, PyObj
 
     CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm_py->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance");
         return NULL;
     }
 
@@ -71,7 +71,7 @@ static PyObject* CEnvironment_getenv_static(PyObject* cls, PyObject* args, PyObj
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to retrieve environment variable: invalid pointer or variable not found: %s", CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to retrieve environment variable: invalid pointer or variable not found");
             return NULL;
         }
         CALL(error)->clear();
@@ -94,7 +94,7 @@ static PyObject* CEnvironment_getcwd_static(PyObject* cls, PyObject* args, PyObj
 
     CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm_py->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance");
         return NULL;
     }
 
@@ -103,7 +103,7 @@ static PyObject* CEnvironment_getcwd_static(PyObject* cls, PyObject* args, PyObj
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to get current working directory: invalid pointer or operation failed: %s", CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to get current working directory: invalid pointer or operation failed");
             return NULL;
         }
         CALL(error)->clear();
@@ -128,7 +128,7 @@ static PyObject* CEnvironment_puts_static(PyObject* cls, PyObject* args, PyObjec
 
     CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm_py->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance");
         return NULL;
     }
 
@@ -137,7 +137,7 @@ static PyObject* CEnvironment_puts_static(PyObject* cls, PyObject* args, PyObjec
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to print string: invalid pointer or operation failed: %s", CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to print string: invalid pointer or operation failed");
             return NULL;
         }
         CALL(error)->clear();

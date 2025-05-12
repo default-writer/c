@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 3, 2025 at 4:55:26 PM GMT+3
+ *   May 7, 2025 at 12:41:53 AM GMT+3
  *
  */
 /*
@@ -40,6 +40,10 @@
 
 #ifndef STD_COMPILE_H
 #define STD_COMPILE_H
+
+#ifdef CONFIG_DYNAMIC_TYPES
+#define USE_DYNAMIC_TYPES
+#endif
 
 #ifdef CONFIG_TTY
 #define USE_TTY

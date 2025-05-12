@@ -5,7 +5,7 @@
  * Created:
  *   April 12, 1961 at 09:07:34 PM GMT+3
  * Modified:
- *   May 4, 2025 at 5:09:00 AM GMT+3
+ *   May 12, 2025 at 5:02:55 AM GMT+3
  *
  */
 /*
@@ -77,13 +77,13 @@ static int CVirtual_init(CAllocatorTypePtr self, PyObject* args, PyObject* kwds)
     }
 
     if (!PyObject_TypeCheck(cvm_obj, &CVirtualMachineTypeObject)) {
-        PYTHON_ERROR(PyExc_TypeError, "expected a CVirtualMachine instance: %s", CALL(error)->get());
+        PYTHON_ERROR(PyExc_TypeError, "expected a CVirtualMachine instance");
         return -1;
     }
 
     CVirtualMachineTypePtr cvm = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer");
         return -1;
     }
     self->cvm = cvm->cvm;
@@ -103,7 +103,7 @@ static PyObject* CVirtual_alloc(CAllocatorTypePtr self, PyObject* args) {
 
     u64 address = PY_CALL(allocator)->alloc(self->cvm, size, type_id);
     if (!address) {
-        PYTHON_ERROR(CInvalidArgumentException, "failed to allocate memory: invalid size or type ID: %s", CALL(error)->get());
+        PYTHON_ERROR(CInvalidArgumentException, "failed to allocate memory: invalid size or type ID");
         return NULL;
     }
 
@@ -120,7 +120,7 @@ static PyObject* CVirtual_read(CAllocatorTypePtr self, PyObject* args) {
 
     const_pointer_ptr data = PY_CALL(allocator)->read(self->cvm, address);
     if (data == NULL) {
-        PYTHON_ERROR(CInvalidPointerException, "failed to read memory: invalid address: %s", CALL(error)->get());
+        PYTHON_ERROR(CInvalidPointerException, "failed to read memory: invalid address");
         return NULL;
     }
 
@@ -135,7 +135,7 @@ static PyObject* CVirtual_type(CAllocatorTypePtr self, PyObject* args) {
 
     u64 type_id = PY_CALL(allocator)->type(self->cvm, address);
     if (!type_id) {
-        PYTHON_ERROR(CInvalidTypeIdException, "failed to get type ID: invalid address: %s", CALL(error)->get());
+        PYTHON_ERROR(CInvalidTypeIdException, "failed to get type ID: invalid address");
         return NULL;
     }
 
@@ -157,7 +157,7 @@ static PyObject* CVirtual_free_static(PyObject* cls, PyObject* args, PyObject* k
 
     CVirtualMachineTypePtr cvm_py = (CVirtualMachineTypePtr)cvm_obj;
     if (cvm_py->cvm == NULL) {
-        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance: %s", CALL(error)->get());
+        PYTHON_ERROR(CVirtualMachineNotInitializedException, "invalid CVirtualMachine pointer in provided cvm instance");
         return NULL;
     }
 
@@ -166,7 +166,7 @@ static PyObject* CVirtual_free_static(PyObject* cls, PyObject* args, PyObject* k
     if (error_type != 0) {
         int nothrow = PyObject_IsTrue(nothrow_obj);
         if (!nothrow) {
-            PYTHON_ERROR(CInvalidPointerException, "failed to free pointer: invalid pointer address: (%016llx) %s", address, CALL(error)->get());
+            PYTHON_ERROR(CInvalidPointerException, "failed to free pointer: invalid pointer address: %d", address);
             return NULL;
         }
         CALL(error)->clear();
