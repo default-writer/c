@@ -15,7 +15,7 @@ fi
 
 source=$(pwd)
 
-pwd=$(cd "$(dirname "$(dirname "${BASH_SOURCE[0]}")")" &> /dev/null && pwd)
+pwd=$(cd "$(dirname $(dirname $(dirname "${BASH_SOURCE[0]}")))" &> /dev/null && pwd)
 
 cd "${pwd}"
 
@@ -33,6 +33,7 @@ while (($#)); do
     case "$1" in
 
         "--init") # initializes project dependencies
+            init="init"
             ;;
 
         "--no-update") # [optional] skips system updates
@@ -126,8 +127,7 @@ fi
 if [[ "${init}" == "--init" ]]; then
     "${pwd}/bin/utils/install.sh" --submodule-rexo
     "${pwd}/bin/utils/install.sh" --python
-    "${pwd}/bin/utils/init.sh" --init
-    source ${pwd}/bin/env.sh
+    "${pwd}/bin/utils/env.sh" --python
 fi
 
 [[ $SHLVL -eq 2 ]] && echo OK

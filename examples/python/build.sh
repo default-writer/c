@@ -23,6 +23,11 @@ cd "${pwd}/../../"
 
 ./bin/cmake.sh --recommended
 
+cwd=$(pwd)
+unset LD_PRELOAD
+export LD_PRELOAD=${cwd}/lib/libc-sys.so:${cwd}/lib/libc-vm.so
+export LD_LIBRARY_PATH=${cwd}/lib
+
 if [[ ! -d ".venv" ]]; then
     python3 -m venv .venv
 

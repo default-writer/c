@@ -67,6 +67,7 @@ fi
 "${pwd}/bin/utils/setup.sh" --cmake --no-update --no-upgrade
 "${pwd}/bin/utils/setup.sh" --gcov --no-update --no-upgrade
 "${pwd}/bin/utils/setup.sh" --clang-tidy --no-update --no-upgrade
+"${pwd}/bin/utils/setup.sh" --python --no-update --no-upgrade
 # "${pwd}/bin/utils/setup.sh" --clang-format --no-update --no-upgrade
 # "${pwd}/bin/utils/setup.sh" --nasm
 # "${pwd}/bin/utils/setup.sh" --gtk4 --no-update --no-upgrade

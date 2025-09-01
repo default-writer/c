@@ -27,11 +27,9 @@ function submodule-install() {
     pwd=$(get-cwd)
 
     if [[ -d  "${pwd}/.deps" ]]; then
-        rm -rf "${pwd}/.deps/rexo"
-        mkdir -p "${pwd}/.deps/rexo"
-    fi
-
-    if [[ ! -d  "${pwd}/.git/modules/$2" ]]; then
+        git submodule deinit -f "${pwd}/${2}"
+        rm -rf "${pwd}/${2}"
+        rm -rf "${pwd}/.git/modules/${2}"
         git submodule add -f "$1" "$2"
         git submodule update --init --recursive --remote
     fi
@@ -51,9 +49,6 @@ function submodule-install() {
 
     # sync
     git submodule sync --recursive
-
-    # Pull with rebase
-    git pull origin --recurse-submodules --rebase --force
 }
 
 function submodule-uninstall() {

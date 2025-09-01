@@ -42,8 +42,8 @@
       "console": "integratedTerminal",
       "justMyCode": false,
       "env": {
-        "LD_PRELOAD": "/lib/libc-sys.so:/lib/libc-vm.so",
-        "LD_LIBRARY_PATH": "/lib:$LD_LIBRARY_PATH"
+        "LD_PRELOAD": "${workspaceFolder}/lib/libc-sys.so:${workspaceFolder}/lib/libc-vm.so",
+        "LD_LIBRARY_PATH": "${workspaceFolder}/lib:$LD_LIBRARY_PATH"
       }
     },
     {
@@ -56,8 +56,8 @@
       "console": "integratedTerminal",
       "justMyCode": false,
       "env": {
-        "LD_PRELOAD": "/lib/libc-sys.so:/lib/libc-vm.so",
-        "LD_LIBRARY_PATH": "/lib:$LD_LIBRARY_PATH"
+        "LD_PRELOAD": "${workspaceFolder}/lib/libc-sys.so:${workspaceFolder}/lib/libc-vm.so",
+        "LD_LIBRARY_PATH": "${workspaceFolder}/lib:$LD_LIBRARY_PATH"
       }
     },
     {
@@ -70,8 +70,8 @@
       "console": "integratedTerminal",
       "justMyCode": false,
       "env": {
-        "LD_PRELOAD": "/lib/libc-sys.so:/lib/libc-vm.so",
-        "LD_LIBRARY_PATH": "/lib:$LD_LIBRARY_PATH"
+        "LD_PRELOAD": "${workspaceFolder}/lib/libc-sys.so:${workspaceFolder}/lib/libc-vm.so",
+        "LD_LIBRARY_PATH": "${workspaceFolder}/lib:$LD_LIBRARY_PATH"
       }
     },
     {
@@ -84,8 +84,8 @@
       "console": "integratedTerminal",
       "justMyCode": false,
       "env": {
-        "LD_PRELOAD": "/lib/libc-sys.so:/lib/libc-vm.so",
-        "LD_LIBRARY_PATH": "/lib:$LD_LIBRARY_PATH"
+        "LD_PRELOAD": "${workspaceFolder}/lib/libc-sys.so:${workspaceFolder}/lib/libc-vm.so",
+        "LD_LIBRARY_PATH": "${workspaceFolder}/lib:$LD_LIBRARY_PATH"
       }
     },
     {
@@ -98,8 +98,8 @@
       "console": "integratedTerminal",
       "justMyCode": false,
       "env": {
-        "LD_PRELOAD": "/lib/libc-sys.so:/lib/libc-vm.so",
-        "LD_LIBRARY_PATH": "/lib:$LD_LIBRARY_PATH"
+        "LD_PRELOAD": "${workspaceFolder}/lib/libc-sys.so:${workspaceFolder}/lib/libc-vm.so",
+        "LD_LIBRARY_PATH": "${workspaceFolder}/lib:$LD_LIBRARY_PATH"
       }
     },
     {
@@ -112,8 +112,8 @@
       "console": "integratedTerminal",
       "justMyCode": false,
       "env": {
-        "LD_PRELOAD": "/lib/libc-sys.so:/lib/libc-vm.so",
-        "LD_LIBRARY_PATH": "/lib:$LD_LIBRARY_PATH"
+        "LD_PRELOAD": "${workspaceFolder}/lib/libc-sys.so:${workspaceFolder}/lib/libc-vm.so",
+        "LD_LIBRARY_PATH": "${workspaceFolder}/lib:$LD_LIBRARY_PATH"
       }
     },
     {
@@ -126,8 +126,8 @@
       "console": "integratedTerminal",
       "justMyCode": false,
       "env": {
-        "LD_PRELOAD": "/lib/libc-sys.so:/lib/libc-vm.so",
-        "LD_LIBRARY_PATH": "/lib:$LD_LIBRARY_PATH"
+        "LD_PRELOAD": "${workspaceFolder}/lib/libc-sys.so:${workspaceFolder}/lib/libc-vm.so",
+        "LD_LIBRARY_PATH": "${workspaceFolder}/lib:$LD_LIBRARY_PATH"
       }
     },
     {
@@ -140,8 +140,8 @@
       "console": "integratedTerminal",
       "justMyCode": false,
       "env": {
-        "LD_PRELOAD": "/lib/libc-sys.so:/lib/libc-vm.so",
-        "LD_LIBRARY_PATH": "/lib:$LD_LIBRARY_PATH"
+        "LD_PRELOAD": "${workspaceFolder}/lib/libc-sys.so:${workspaceFolder}/lib/libc-vm.so",
+        "LD_LIBRARY_PATH": "${workspaceFolder}/lib:$LD_LIBRARY_PATH"
       }
     },
     {
@@ -154,8 +154,8 @@
       "console": "integratedTerminal",
       "justMyCode": false,
       "env": {
-        "LD_PRELOAD": "/lib/libc-sys.so:/lib/libc-vm.so",
-        "LD_LIBRARY_PATH": "/lib:$LD_LIBRARY_PATH"
+        "LD_PRELOAD": "${workspaceFolder}/lib/libc-sys.so:${workspaceFolder}/lib/libc-vm.so",
+        "LD_LIBRARY_PATH": "${workspaceFolder}/lib:$LD_LIBRARY_PATH"
       }
     },
     {
@@ -168,8 +168,8 @@
       "console": "integratedTerminal",
       "justMyCode": false,
       "env": {
-        "LD_PRELOAD": "/lib/libc-sys.so:/lib/libc-vm.so",
-        "LD_LIBRARY_PATH": "/lib:$LD_LIBRARY_PATH"
+        "LD_PRELOAD": "${workspaceFolder}/lib/libc-sys.so:${workspaceFolder}/lib/libc-vm.so",
+        "LD_LIBRARY_PATH": "${workspaceFolder}/lib:$LD_LIBRARY_PATH"
       }
     },
     {
@@ -182,8 +182,8 @@
       "console": "integratedTerminal",
       "justMyCode": false,
       "env": {
-        "LD_PRELOAD": "/lib/libc-sys.so:/lib/libc-vm.so",
-        "LD_LIBRARY_PATH": "/lib:$LD_LIBRARY_PATH"
+        "LD_PRELOAD": "${workspaceFolder}/lib/libc-sys.so:${workspaceFolder}/lib/libc-vm.so",
+        "LD_LIBRARY_PATH": "${workspaceFolder}/lib:$LD_LIBRARY_PATH"
       }
     },
     {
@@ -196,8 +196,8 @@
       "console": "integratedTerminal",
       "justMyCode": false,
       "env": {
-        "LD_PRELOAD": "/lib/libc-sys.so:/lib/libc-vm.so",
-        "LD_LIBRARY_PATH": "/lib:$LD_LIBRARY_PATH"
+        "LD_PRELOAD": "${workspaceFolder}/lib/libc-sys.so:${workspaceFolder}/lib/libc-vm.so",
+        "LD_LIBRARY_PATH": "${workspaceFolder}/lib:$LD_LIBRARY_PATH"
       }
     },
     {
@@ -210,8 +210,8 @@
       "console": "integratedTerminal",
       "justMyCode": false,
       "env": {
-        "LD_PRELOAD": "/lib/libc-sys.so:/lib/libc-vm.so",
-        "LD_LIBRARY_PATH": "/lib:$LD_LIBRARY_PATH"
+        "LD_PRELOAD": "${workspaceFolder}/lib/libc-sys.so:${workspaceFolder}/lib/libc-vm.so",
+        "LD_LIBRARY_PATH": "${workspaceFolder}/lib:$LD_LIBRARY_PATH"
       }
     },
     {
@@ -224,8 +224,8 @@
       "console": "integratedTerminal",
       "justMyCode": false,
       "env": {
-        "LD_PRELOAD": "/lib/libc-sys.so:/lib/libc-vm.so",
-        "LD_LIBRARY_PATH": "/lib:$LD_LIBRARY_PATH"
+        "LD_PRELOAD": "${workspaceFolder}/lib/libc-sys.so:${workspaceFolder}/lib/libc-vm.so",
+        "LD_LIBRARY_PATH": "${workspaceFolder}/lib:$LD_LIBRARY_PATH"
       }
     },
     {
@@ -238,8 +238,8 @@
       "console": "integratedTerminal",
       "justMyCode": false,
       "env": {
-        "LD_PRELOAD": "/lib/libc-sys.so:/lib/libc-vm.so",
-        "LD_LIBRARY_PATH": "/lib:$LD_LIBRARY_PATH"
+        "LD_PRELOAD": "${workspaceFolder}/lib/libc-sys.so:${workspaceFolder}/lib/libc-vm.so",
+        "LD_LIBRARY_PATH": "${workspaceFolder}/lib:$LD_LIBRARY_PATH"
       }
     },
     {
@@ -252,8 +252,8 @@
       "console": "integratedTerminal",
       "justMyCode": false,
       "env": {
-        "LD_PRELOAD": "/lib/libc-sys.so:/lib/libc-vm.so",
-        "LD_LIBRARY_PATH": "/lib:$LD_LIBRARY_PATH"
+        "LD_PRELOAD": "${workspaceFolder}/lib/libc-sys.so:${workspaceFolder}/lib/libc-vm.so",
+        "LD_LIBRARY_PATH": "${workspaceFolder}/lib:$LD_LIBRARY_PATH"
       }
     },
     {
@@ -266,8 +266,8 @@
       "console": "integratedTerminal",
       "justMyCode": false,
       "env": {
-        "LD_PRELOAD": "/lib/libc-sys.so:/lib/libc-vm.so",
-        "LD_LIBRARY_PATH": "/lib:$LD_LIBRARY_PATH"
+        "LD_PRELOAD": "${workspaceFolder}/lib/libc-sys.so:${workspaceFolder}/lib/libc-vm.so",
+        "LD_LIBRARY_PATH": "${workspaceFolder}/lib:$LD_LIBRARY_PATH"
       }
     },
     {
@@ -280,8 +280,8 @@
       "console": "integratedTerminal",
       "justMyCode": false,
       "env": {
-        "LD_PRELOAD": "/lib/libc-sys.so:/lib/libc-vm.so",
-        "LD_LIBRARY_PATH": "/lib:$LD_LIBRARY_PATH"
+        "LD_PRELOAD": "${workspaceFolder}/lib/libc-sys.so:${workspaceFolder}/lib/libc-vm.so",
+        "LD_LIBRARY_PATH": "${workspaceFolder}/lib:$LD_LIBRARY_PATH"
       }
     },
     {
@@ -294,8 +294,8 @@
       "console": "integratedTerminal",
       "justMyCode": false,
       "env": {
-        "LD_PRELOAD": "/lib/libc-sys.so:/lib/libc-vm.so",
-        "LD_LIBRARY_PATH": "/lib:$LD_LIBRARY_PATH"
+        "LD_PRELOAD": "${workspaceFolder}/lib/libc-sys.so:${workspaceFolder}/lib/libc-vm.so",
+        "LD_LIBRARY_PATH": "${workspaceFolder}/lib:$LD_LIBRARY_PATH"
       }
     },
     {
@@ -308,8 +308,8 @@
       "console": "integratedTerminal",
       "justMyCode": false,
       "env": {
-        "LD_PRELOAD": "/lib/libc-sys.so:/lib/libc-vm.so",
-        "LD_LIBRARY_PATH": "/lib:$LD_LIBRARY_PATH"
+        "LD_PRELOAD": "${workspaceFolder}/lib/libc-sys.so:${workspaceFolder}/lib/libc-vm.so",
+        "LD_LIBRARY_PATH": "${workspaceFolder}/lib:$LD_LIBRARY_PATH"
       }
     },
     {
@@ -322,8 +322,8 @@
       "console": "integratedTerminal",
       "justMyCode": false,
       "env": {
-        "LD_PRELOAD": "/lib/libc-sys.so:/lib/libc-vm.so",
-        "LD_LIBRARY_PATH": "/lib:$LD_LIBRARY_PATH"
+        "LD_PRELOAD": "${workspaceFolder}/lib/libc-sys.so:${workspaceFolder}/lib/libc-vm.so",
+        "LD_LIBRARY_PATH": "${workspaceFolder}/lib:$LD_LIBRARY_PATH"
       }
     },
     {
@@ -336,8 +336,8 @@
       "console": "integratedTerminal",
       "justMyCode": false,
       "env": {
-        "LD_PRELOAD": "/lib/libc-sys.so:/lib/libc-vm.so",
-        "LD_LIBRARY_PATH": "/lib:$LD_LIBRARY_PATH"
+        "LD_PRELOAD": "${workspaceFolder}/lib/libc-sys.so:${workspaceFolder}/lib/libc-vm.so",
+        "LD_LIBRARY_PATH": "${workspaceFolder}/lib:$LD_LIBRARY_PATH"
       }
     },
     {
@@ -350,8 +350,8 @@
       "console": "integratedTerminal",
       "justMyCode": false,
       "env": {
-        "LD_PRELOAD": "/lib/libc-sys.so:/lib/libc-vm.so",
-        "LD_LIBRARY_PATH": "/lib:$LD_LIBRARY_PATH"
+        "LD_PRELOAD": "${workspaceFolder}/lib/libc-sys.so:${workspaceFolder}/lib/libc-vm.so",
+        "LD_LIBRARY_PATH": "${workspaceFolder}/lib:$LD_LIBRARY_PATH"
       }
     },
     {
@@ -364,8 +364,8 @@
       "console": "integratedTerminal",
       "justMyCode": false,
       "env": {
-        "LD_PRELOAD": "/lib/libc-sys.so:/lib/libc-vm.so",
-        "LD_LIBRARY_PATH": "/lib:$LD_LIBRARY_PATH"
+        "LD_PRELOAD": "${workspaceFolder}/lib/libc-sys.so:${workspaceFolder}/lib/libc-vm.so",
+        "LD_LIBRARY_PATH": "${workspaceFolder}/lib:$LD_LIBRARY_PATH"
       }
     },
     {
@@ -431,8 +431,8 @@
       "preLaunchTask": "shell: cmake (verbose)",
       "justMyCode": false,
       "env": {
-        "LD_PRELOAD": "/lib/libc-sys.so:/lib/libc-vm.so",
-        "LD_LIBRARY_PATH": "/lib:$LD_LIBRARY_PATH"
+        "LD_PRELOAD": "${workspaceFolder}/lib/libc-sys.so:${workspaceFolder}/lib/libc-vm.so",
+        "LD_LIBRARY_PATH": "${workspaceFolder}/lib:$LD_LIBRARY_PATH"
       }
     },
     {
@@ -443,8 +443,8 @@
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal",
       "env": {
-        "LD_PRELOAD": "/lib/libc-sys.so:/lib/libc-vm.so",
-        "LD_LIBRARY_PATH": "/lib:$LD_LIBRARY_PATH"
+        "LD_PRELOAD": "${workspaceFolder}/lib/libc-sys.so:${workspaceFolder}/lib/libc-vm.so",
+        "LD_LIBRARY_PATH": "${workspaceFolder}/lib:$LD_LIBRARY_PATH"
       }
     },
     {

@@ -58,6 +58,8 @@
     "paragdiwan.gitpatch",
     "batyan-soft.fast-tasks",
     "digoro.clipboard",
-    "boshyxd.remove-all-comments"
+    "boshyxd.remove-all-comments",
+    "ms-python.debugpy",
+    "benjamin-simmonds.pythoncpp-debug"
   ]
 }
