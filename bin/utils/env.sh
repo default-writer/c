@@ -58,6 +58,17 @@ case "${install}" in
         grep -qxF 'eval "$(pyenv virtualenv-init -)"' $HOME/.bashrc || echo 'eval "$(pyenv virtualenv-init -)"' >> $HOME/.bashrc
         ;;
 
+    "--python") # installs python environment variables in .bashrc
+        grep -qxF "# python" ${pwd}/.env || (tail -1 "${pwd}/.env" | grep -qxF '' || echo '' >> "${pwd}/.env" && echo '# python' >> "${pwd}/.env")
+        grep -qxF "LD_PRELOAD=${pwd}/lib/libc-sys.so:${pwd}/lib/libc-vm.so" "${pwd}/.env" || echo "LD_PRELOAD=${pwd}/lib/libc-sys.so:${pwd}/lib/libc-vm.so" >> "${pwd}/.env"
+        grep -qxF "LD_LIBRARY_PATH=${pwd}/c/lib:$LD_LIBRARY_PATH" "${pwd}/.env" || echo "LD_LIBRARY_PATH=${pwd}/c/lib:$LD_LIBRARY_PATH" >> "${pwd}/.env"
+        grep -qxF "PYTHONPATH=${pwd}/examples/python" "${pwd}/.env" || echo "PYTHONPATH=${pwd}/examples/python" >> "${pwd}/.env"
+        grep -qxF "# python" ${pwd}/examples/python/.env || (tail -1 "${pwd}/examples/python/.env" | grep -qxF '' || echo '' >> "${pwd}/examples/python/.env" && echo '# python' >> "${pwd}/examples/python/.env")
+        grep -qxF "LD_PRELOAD=${pwd}/lib/libc-sys.so:${pwd}/lib/libc-vm.so" "${pwd}/examples/python/.env" || echo "LD_PRELOAD=${pwd}/lib/libc-sys.so:${pwd}/lib/libc-vm.so" >> "${pwd}/examples/python/.env"
+        grep -qxF "LD_LIBRARY_PATH=${pwd}/c/lib:$LD_LIBRARY_PATH" "${pwd}/examples/python/.env" || echo "LD_LIBRARY_PATH=${pwd}/c/lib:$LD_LIBRARY_PATH" >> "${pwd}/examples/python/.env"
+        grep -qxF "PYTHONPATH=${pwd}/examples/python" "${pwd}/examples/python/.env" || echo "PYTHONPATH=${pwd}/examples/python" >> "${pwd}/examples/python/.env"
+        ;;
+
     "--user") # installs user environment variables in .bashrc
         grep -qxF '# user' $HOME/.bashrc || (tail -1 $HOME/.bashrc | grep -qxF '' || echo '' >> $HOME/.bashrc && echo '# user' >> $HOME/.bashrc)
         grep -qxF 'export USER_NAME=$(id -un)' $HOME/.bashrc || echo 'export USER_NAME=$(id -un)' >> $HOME/.bashrc

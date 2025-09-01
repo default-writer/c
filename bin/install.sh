@@ -46,6 +46,10 @@ while (($#)); do
             rexo="--submodule-rexo"
             ;;
 
+        "--python") # installs python
+            python="--python"
+            ;;
+
         "--submodule-musl") # installs musl
             musl="--submodule-musl"
             ;;
@@ -83,6 +87,9 @@ if [[ "${source}" == "all" || "${dotnet}" == "--dotnet" ]]; then
 fi
 if [[ "${source}" == "all" || "${rexo}" == "--submodule-rexo" ]]; then
     "${pwd}/bin/utils/install.sh" --submodule-rexo
+fi
+if [[ "${source}" == "all" || "${python}" == "--python" ]]; then
+    "${pwd}/bin/utils/install.sh" --python
 fi
 if [[ "${source}" == "all" || "${musl}" == "--submodule-musl" ]]; then
     "${pwd}/bin/utils/install.sh" --submodule-musl

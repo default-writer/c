@@ -178,6 +178,12 @@ while (($#)); do
             cp "${pwd}/.hooks/prepare-commit-msg" "${pwd}/.git/hooks/prepare-commit-msg"
             chmod u+x "${pwd}/.git/hooks/prepare-commit-msg"
             ;;
+        
+        "--python") # installs python .venv
+            python3 -m venv .venv
+            source .venv/bin/activate
+            pip install -r requirements.txt
+            ;;
 
         "--pyenv") # downloads and installs pyenv
             rm -rf "${HOME}/.pyenv"
