@@ -39,8 +39,6 @@ function submodule-install() {
         mkdir -p "${pwd}/${2}"
 
         current_branch=$(git rev-parse --abbrev-ref HEAD)
-        git branch --set-upstream-to=origin/$current_branch $current_branch
-        git pull origin $current_branch --recurse-submodules --rebase --force
 
         git submodule update --init --recursive --remote
     fi
