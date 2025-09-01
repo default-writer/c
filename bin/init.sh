@@ -127,6 +127,7 @@ if [[ "${init}" == "--init" ]]; then
     "${pwd}/bin/utils/install.sh" --submodule-rexo
     "${pwd}/bin/utils/install.sh" --python
     "${pwd}/bin/utils/init.sh" --init
+    ${pwd}/bin/utils/env.sh --python
     source ${pwd}/bin/env.sh
 fi
 
