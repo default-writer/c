@@ -28,18 +28,9 @@ function submodule-install() {
 
     if [[ -d  "${pwd}/.deps" ]]; then
         git submodule deinit -f "${pwd}/${2}"
-
         rm -rf "${pwd}/${2}"
         rm -rf "${pwd}/.git/modules/${2}"
-
-        if [[ ! -d  "${pwd}/.git/modules/${2}" ]]; then
-            git submodule add -f "$1" "$2"
-        fi
-
-        mkdir -p "${pwd}/${2}"
-
-        current_branch=$(git rev-parse --abbrev-ref HEAD)
-
+        git submodule add -f "$1" "$2"
         git submodule update --init --recursive --remote
     fi
 
