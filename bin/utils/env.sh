@@ -26,7 +26,7 @@ case "${install}" in
         ;;
 
     "--sonar-scanner") # installs sonar-scanner sdk environment variables in .bashrc
-        export SONAR_SCANNER_VERSION=6.2.1.4610
+        export SONAR_SCANNER_VERSION=7.2.0.5079
         grep -qxF '# sonar' $HOME/.bashrc || (tail -1 $HOME/.bashrc | grep -qxF '' || echo '' >> $HOME/.bashrc && echo '# sonar' >> $HOME/.bashrc)
         grep -qxF "export SONAR_SCANNER_VERSION=${SONAR_SCANNER_VERSION}" $HOME/.bashrc || echo "export SONAR_SCANNER_VERSION=${SONAR_SCANNER_VERSION}" >> $HOME/.bashrc
         grep -qxF "export SONAR_SCANNER_HOME=${pwd}/.sonar/sonar-scanner-`echo $SONAR_SCANNER_VERSION`-linux-x64" $HOME/.bashrc || echo "export SONAR_SCANNER_HOME=${pwd}/.sonar/sonar-scanner-`echo $SONAR_SCANNER_VERSION`-linux-x64" >> $HOME/.bashrc

@@ -35,7 +35,7 @@ while (($#)); do
             ;;
 
         "--sonar-scanner") #installs sonar-scanner
-            export SONAR_SCANNER_VERSION=6.2.1.4610
+            export SONAR_SCANNER_VERSION=7.2.0.5079
             export SONAR_SCANNER_HOME=${pwd}/.sonar/sonar-scanner-$SONAR_SCANNER_VERSION-linux-x64
             curl --silent --proto '=https' --tlsv1.2 -sSf https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux-x64.zip -o /tmp/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux-x64.zip
             unzip -o -q /tmp/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux-x64.zip -d ${pwd}/.sonar/
