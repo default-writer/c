@@ -215,6 +215,19 @@ while (($#)); do
             upgrade ${updgradeflags}
             ;;
 
+        "--codacy-analysis-cli") # enables codacy-analysis-cli
+            update ${updateflags}
+            curl -L https://github.com/codacy/codacy-analysis-cli/archive/master.tar.gz -o "/tmp/codacy-analysis-cli.tar.gz"
+            tar -xzf "/tmp/codacy-analysis-cli.tar.gz" -C "/tmp"
+            mkdir -p "${pwd}/.tools/codacy-analysis-cli"
+            cp -r "/tmp/codacy-analysis-cli-master/." "${pwd}/.tools/codacy-analysis-cli"
+            cd "${pwd}/.tools/codacy-analysis-cli"
+            make install
+            rm -rf "/tmp/codacy-analysis-cli"
+            rm -f "/tmp/codacy-analysis-cli.tar.gz"            
+            upgrade ${updgradeflags}
+            ;;
+
         "--rustc") # installs rustc
             update ${updateflags}
             apt install -y --only-upgrade gdm3 gir1.2-gdm-1.0 libgdm1 qemu-block-extra qemu-system-common qemu-system-data qemu-system-gui qemu-system-x86 qemu-utils
