@@ -37,8 +37,7 @@ Memory management and pointer management library in C
 
 ## history
 
-- 2025-09-10: added codacy tokens
-- 2025-09-10: added support for [codacy][codacy]
+- 2025-09-10: added support for [codacy][codacy]; added codacy tokens
 - 2025-05-01: added support for MSVC
 - 2025-02-28: added mocks for standart functions calloc/free to simulate out-ouf-memory function call flow
 
