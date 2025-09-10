@@ -7,48 +7,39 @@
 Memory management and pointer management library in C
 
 - cross-platfrom C library designed to create a safe C codebase.
-- implementation of memory management/type systemm/GC in C
+- implementation of memory management/type system/GC in C
 
 ## features
 
+- memory managemens
 - GC
 - type system
-- pointer-free operations
-- cross-platform API
+- pointer-free ABI
 
-## guidelines
+## dashboards
 
-- C guidelines in development of critical code (refers to [Secure Coding in C and C 2nd Edition][coding], Robert C. Seacord).
-- NASA guidlines (refers to [The Power of Ten][nasa] – Rules for Developing Safety Critical Code, Gerard J. Holzmann, NASA/JPL Laboratory for Reliable Software, Pasadena, CA 91109)
-
-## history
-
-- 2025-05-01: added support for MSVC
-- 2025-02-28: added mocks for standart functions calloc/free to simulate out-ouf-memory function call flow
-
-## C standart
-
-- [The Current C Programming Language Standard – ISO/IEC 9899:2024 (C24)](https://blog.ansi.org/c-programming-language-standard-iso-iec-9899-2024/)
-- [ISO/IEC 9899:2024 (en) — N3220 working draft](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf)
-- [C23 (C standard revision)](https://en.wikipedia.org/wiki/C23_(C_standard_revision))
-
-## code
-
-[![code](https://sonarcloud.io/api/project_badges/measure?project=default-writer_c&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=default-writer_c)
+- [codacity] codacity
 
 ## status
 
+[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/e465c30e55db490ebbf77f37587c137b)](https://app.codacy.com/gh/default-writer/c/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)
 [![C/C++ CI](https://github.com/default-writer/c/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/default-writer/c/actions/workflows/c-cpp.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=default-writer_c&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=default-writer_c)
 [![Coverage Status](https://coveralls.io/repos/github/default-writer/c/badge.svg?branch=master)](https://coveralls.io/github/default-writer/c?branch=master)
 
 ## static analysis
 
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=default-writer_c&metric=bugs)](https://sonarcloud.io/summary/new_code?id=default-writer_c)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/e465c30e55db490ebbf77f37587c137b)](https://app.codacy.com/gh/default-writer/c/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=default-writer_c&metric=bugs)](https://sonarcloud.io/summary/new_code?id=default-writer_c)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=default-writer_c&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=default-writer_c)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=default-writer_c&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=default-writer_c)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=default-writer_c&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=default-writer_c)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=default-writer_c&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=default-writer_c)
+
+## history
+
+- 2025-09-10: added support for [codacity][codacity] great reporting tool
+- 2025-05-01: added support for MSVC
+- 2025-02-28: added mocks for standart functions calloc/free to simulate out-ouf-memory function call flow
 
 ## examples
 
@@ -360,10 +351,26 @@ support this project [become a sponsor](https://opencollective.com/c-vm#sponsor)
 
 - [rexo](https://github.com/christophercrouzet/rexo)
 
+## code 
+
+[![code](https://sonarcloud.io/api/project_badges/measure?project=default-writer_c&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=default-writer_c)
+
+## C standart
+
+- [The Current C Programming Language Standard – ISO/IEC 9899:2024 (C24)](https://blog.ansi.org/c-programming-language-standard-iso-iec-9899-2024/)
+- [ISO/IEC 9899:2024 (en) — N3220 working draft](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf)
+- [C23 (C standard revision)](https://en.wikipedia.org/wiki/C23_(C_standard_revision))
+
+## guidelines
+
+- C guidelines in development of critical code (refers to [Secure Coding in C and C 2nd Edition][coding], Robert C. Seacord).
+- NASA guidlines (refers to [The Power of Ten][nasa] – Rules for Developing Safety Critical Code, Gerard J. Holzmann, NASA/JPL Laboratory for Reliable Software, Pasadena, CA 91109)
+
 ## SAST Tools
 
 [PVS-Studio](https://pvs-studio.com/en/pvs-studio/?utm_source=website&utm_medium=github&utm_campaign=open_source) - static analyzer for C, C++, C#, and Java code.
 
+[codacity]: https://app.codacy.com/gh/default-writer/c/dashboard?branch=master
 [refman]: docs/refman.pdf
 [memory]: docs/pdf/memory.pdf
 [list]: docs/pdf/list.pdf

@@ -25,16 +25,12 @@ opts=( "${@:2}" )
 
 . "${pwd}/bin/scripts/load.sh"
 
-## Installs SonarCloud binaries and sets environment variables
+## Installs codacity binaries and sets environment variables
 ## Usage: ${script} <option> [optional]
 ## ${commands}
 
 while (($#)); do
     case "$1" in
-
-        "--install") # installs and runs all targets
-            install="--install"
-            ;;
 
         "--coverage") # runs and generates code coverage for all targets
             coverage="--coverage"
@@ -53,21 +49,14 @@ if [[ "${install}" == "" ]]; then
     exit
 fi
 
-if [[ "${install}" == "--install" ]]; then
-    ./bin/utils/install.sh --sonar-scanner
-    ./bin/utils/env.sh --sonar-scanner
-fi
-
 if [[ "${coverage}" == "--coverage" ]]; then
 
     "${pwd}/bin/coverageall.sh" --all --clean
 
-    . "${pwd}/bin/utils/install.sh" --sonar-scanner
+    gcovr -r . --txt-metric branch --sonarqube coverage/sonarqube.xml --gcov-exclude="rexo.h"
 
-    export PATH=$SONAR_SCANNER_HOME/bin:$PATH
-
-    if [[ ! "${SONAR_TOKEN}" == "" ]]; then
-        sonar-scanner
+    if [[ -f "${pwd}/coverage/lcov.info" ]]; then
+        bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r "${pwd}/coverage/lcov.info"
     fi
 fi
 
