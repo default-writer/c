@@ -38,6 +38,18 @@ fi
 while (($#)); do
     case "$1" in
 
+        "--no-update") # [optional] skips system updates
+            updateflags="--no-update"
+            ;;
+
+        "--no-upgrade") # [optional] skips system upgrades
+            updgradeflags="--no-upgrade"
+            ;;
+
+        "--optional") # installs optional dependencies
+            optional="--optional"
+            ;;
+
         "--help") # [optional] shows command description
             help
             ;;

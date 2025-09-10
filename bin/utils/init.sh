@@ -69,14 +69,15 @@ while (($#)); do
             ;;
 
         "--optional") # installs optional dependencies
+            optional="--optional"
             ;;
 
         "--lcov") # installs lcov
-            sudo "${pwd}/bin/utils/install.sh" ${updateflags} ${updgradeflags} --lcov
+            sudo "${pwd}/bin/utils/install.sh"
             ;;
 
         "--setup") # installs required dependencies setup
-            sudo "${pwd}/bin/setup.sh"
+            setup="--setup"
             ;;
 
         "--help") # shows command description
@@ -105,7 +106,7 @@ if [[ "${clean}" == "--clean" ]]; then
 fi
 
 if [[ "${setup}" == "--setup" ]]; then
-    sudo "${pwd}/bin/setup.sh"
+    sudo "${pwd}/bin/setup.sh" --lcov ${updateflags} ${updgradeflags} ${optional}
 fi
 
 if [[ "${hooks}" == "--hooks" ]]; then

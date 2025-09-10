@@ -42,6 +42,10 @@ while (($#)); do
         "--no-upgrade") # [optional] skips system upgrades
             updgradeflags="--no-upgrade"
             ;;
+
+        "--optional") # [optional] installs optional dependencies
+            optional="--optional"
+            ;;            
      
         "--clean") # cleans up git directory
             "${pwd}/bin/utils/git.sh" --clean
@@ -67,15 +71,12 @@ while (($#)); do
             "${pwd}/bin/utils/install.sh" --submodule-rexo
             ;;
 
-        "--optional") # installs optional dependencies
-            ;;
-
         "--lcov") # installs lcov
-            sudo "${pwd}/bin/utils/install.sh" ${updateflags} ${updgradeflags} --lcov
+            lcov="--lcov"
             ;;
 
         "--setup") # installs required dependencies setup
-            sudo "${pwd}/bin/setup.sh"
+            setup="--setup"
             ;;
 
         "--help") # shows command description
@@ -104,7 +105,7 @@ if [[ "${clean}" == "--clean" ]]; then
 fi
 
 if [[ "${setup}" == "--setup" ]]; then
-    sudo "${pwd}/bin/setup.sh"
+    sudo "${pwd}/bin/setup.sh" ${updateflags} ${updgradeflags} ${optional}
 fi
 
 if [[ "${hooks}" == "--hooks" ]]; then
@@ -126,7 +127,7 @@ fi
 if [[ "${init}" == "--init" ]]; then
     "${pwd}/bin/utils/install.sh" --submodule-rexo
     "${pwd}/bin/utils/install.sh" --python
-    "${pwd}/bin/utils/init.sh" --init
+    "${pwd}/bin/utils/init.sh" --init ${updateflags} ${updgradeflags} ${optional}
     ${pwd}/bin/utils/env.sh --python
     source ${pwd}/bin/env.sh
 fi
