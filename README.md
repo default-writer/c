@@ -37,7 +37,8 @@ Memory management and pointer management library in C
 
 ## history
 
-- 2025-09-10: added support for [codacity][codacity] great reporting tool
+- 2025-09-10: added codacy tokens
+- 2025-09-10: added support for [codacy][codacy]
 - 2025-05-01: added support for MSVC
 - 2025-02-28: added mocks for standart functions calloc/free to simulate out-ouf-memory function call flow
 
@@ -370,7 +371,7 @@ support this project [become a sponsor](https://opencollective.com/c-vm#sponsor)
 
 [PVS-Studio](https://pvs-studio.com/en/pvs-studio/?utm_source=website&utm_medium=github&utm_campaign=open_source) - static analyzer for C, C++, C#, and Java code.
 
-[codacity]: https://app.codacy.com/gh/default-writer/c/dashboard?branch=master
+[codacy]: https://app.codacy.com/gh/default-writer/c/dashboard?branch=master
 [refman]: docs/refman.pdf
 [memory]: docs/pdf/memory.pdf
 [list]: docs/pdf/list.pdf
