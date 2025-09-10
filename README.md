@@ -18,7 +18,7 @@ Memory management and pointer management library in C
 
 ## dashboards
 
-- [codacity] codacity
+- [codacy] codacy
 
 ## status
 

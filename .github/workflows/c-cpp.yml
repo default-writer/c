@@ -30,7 +30,7 @@ jobs:
     - name: coverage
       run: ./bin/sonarscanner.sh --coverage
     - name: codacy coverage
-      run: bash bin/codacity.sh --coverage
+      run: bash bin/codacy.sh --coverage
       env:
         CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
     - name: Coveralls GitHub Action
