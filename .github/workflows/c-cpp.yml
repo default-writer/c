@@ -29,6 +29,8 @@ jobs:
       run: ./bin/init.sh --init --lcov --setup
     - name: coverage
       run: ./bin/sonarscanner.sh --coverage
+    - name: coverage codacity
+      run: ./bin/codacity.sh --coverage
     - name: Coveralls GitHub Action
       uses: coverallsapp/github-action@v2.3.0
  
