@@ -25,7 +25,7 @@ opts=( "${@:2}" )
 
 . "${pwd}/bin/scripts/load.sh"
 
-## Installs codacity binaries and sets environment variables
+## Installs codacy binaries and sets environment variables
 ## Usage: ${script} <option> [optional]
 ## ${commands}
 
