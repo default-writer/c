@@ -64,7 +64,6 @@ if [[ "${build}" == "--build" ]]; then
     GIT_TAG=$(git rev-parse --short HEAD)
     docker build . -t "${IMAGE_NAME}:${GIT_TAG}"
     docker tag "${IMAGE_NAME}:${GIT_TAG}" "${IMAGE_NAME}:latest"
-    docker push "${IMAGE_NAME}:${GIT_TAG}"
     docker push "${IMAGE_NAME}:latest"
 fi
 
