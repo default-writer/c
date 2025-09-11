@@ -5,7 +5,7 @@ FROM ubuntu:24.04
 # # Install sudo and other necessary packages
 RUN apt -y update && \
     export DEBIAN_FRONTEND=noninteractive &&  \
-    apt -y install --no-install-recommends -y git cmake lcov && \
+    apt -y install --no-install-recommends -y cmake lcov && \
     apt -y upgrade && \
     apt autoclean -y && \
     apt autoremove -y && \
