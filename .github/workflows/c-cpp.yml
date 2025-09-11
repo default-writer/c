@@ -9,9 +9,11 @@ on:
 
 jobs:
   build:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/defaultwriter/c-image-repo:latest
     env:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
       if: github.event_name == 'pull_request'

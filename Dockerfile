@@ -9,6 +9,8 @@ RUN ln -snf /usr/share/zoneinfo/"$TZ" /etc/localtime && echo "$TZ" > /etc/timezo
     apt -y install --no-install-recommends -y \
     build-essential \
     ca-certificates \
+    nodejs \
+    npm \
     clangd \
     cmake \
     curl \
@@ -42,6 +44,3 @@ WORKDIR /workspace
 COPY . .
 
 # Run the initialization script
-RUN /workspace/bin/init.sh --init --lcov --setup
-
-RUN rm -rf /workspace
