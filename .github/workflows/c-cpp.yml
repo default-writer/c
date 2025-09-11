@@ -26,7 +26,7 @@ jobs:
     - name: sonarscanner
       run: ./bin/sonarscanner.sh --coverage
     - name: codacy coverage
-      run: ./bin/bin/codacy.sh --coverage
+      run: ./bin/codacy.sh --coverage
       env:
         CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
     - name: Coveralls GitHub Action
