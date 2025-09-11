@@ -125,8 +125,6 @@ if [[ "${cmake}" == "--cmake" ]]; then
 fi
 
 if [[ "${init}" == "--init" ]]; then
-    "${pwd}/bin/utils/install.sh" --submodule-rexo
-    "${pwd}/bin/utils/install.sh" --python
     "${pwd}/bin/utils/init.sh" --init ${updateflags} ${updgradeflags} ${optional}
     ${pwd}/bin/utils/env.sh --python
     source ${pwd}/bin/env.sh

@@ -15,20 +15,12 @@ jobs:
     env:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     steps:
-    - uses: actions/checkout@v2
-      if: github.event_name == 'pull_request'
+    - uses: actions/checkout@v4
       with:
         submodules: true
         fetch-depth: 0
-        ref: ${{ github.event.pull_request.head.ref }}
-
-    - uses: actions/checkout@v2
-      if: github.event_name == 'push'
-      with:
-        submodules: true
-        fetch-depth: 0
-    - name: init
-      run: ./bin/init.sh --init --lcov --setup
+    - name: config
+      run: git config --global --add safe.directory ${GITHUB_WORKSPACE}
     - name: coverage
       run: ./bin/sonarscanner.sh --coverage
     - name: codacy coverage

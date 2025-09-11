@@ -1,0 +1,105 @@
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+*.exp
+*.pdb
+*.ilk
+
+# Executables
+*.exe
+*.out
+*.app
+chud.log
+
+# Directories
+!.deps/rexo
+gh*/
+vcpkg*/
+node_modules*/
+bazel*/
+doxygen*/
+clangd*/
+cmake*/
+config*/
+build*/
+output*/
+coverage*/
+libs*/
+logs*/
+report*/
+pkg*/
+
+.scannerwork*/
+.sonar*/
+.deps*/
+.cache*/
+.history*/
+.venv*/
+.tools*/
+
+# Files
+dump.txt
+callgrind.out.*
+lcov.info
+.args
+.~*
+**/*.c.s
+**/*.gcda
+**/*.gcno
+**/*.s
+**/*.i
+**/*.o
+**/*.
+**/*tests/*.
+appwrite/.env
+wget.log*
+
+bazel-*/
+bazel-*
+
+.vscode/settings.json
+.vscode/settings.local.json
+src/compile_commands.json
+Testing
+
+src/std/version.h
+
+.rexo/
+.vs/
+main-tests-vm1/
+.scannerwork/.sonar_lock
+__pycache__/
+*.egg-info/
+dist/
+*.egg
+.coverage
+.pytest_cache/
+.patch/
+/examples/python/.coverage
+.PVS-Studio/
+./vscode/settings.json
+.tmp

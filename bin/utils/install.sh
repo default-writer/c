@@ -180,9 +180,10 @@ while (($#)); do
             ;;
         
         "--python") # installs python .venv
-            python3 -m venv .venv
-            source .venv/bin/activate
-            pip install -r requirements.txt
+            python3 -m virtualenv "${pwd}/.venv"
+            . "${pwd}/.venv/bin/activate"
+            export PATH="${pwd}/.venv/bin":$PATH
+            "${pwd}/.venv/bin/pip" install -r "${pwd}/requirements.txt"
             ;;
 
         "--pyenv") # downloads and installs pyenv

@@ -11,6 +11,9 @@ RUN ln -snf /usr/share/zoneinfo/"$TZ" /etc/localtime && echo "$TZ" > /etc/timezo
     ca-certificates \
     nodejs \
     npm \
+    python3 \
+    python3-venv \
+    python3-virtualenv \
     clangd \
     cmake \
     curl \
@@ -40,7 +43,8 @@ RUN ln -snf /usr/share/zoneinfo/"$TZ" /etc/localtime && echo "$TZ" > /etc/timezo
 # Set the working directory
 WORKDIR /workspace
 
-# Copy the contents of the current directory to /workspace
+# Copy all source files needed to run the initialization
 COPY . .
 
 # Run the initialization script
+RUN ./bin/init.sh --init --lcov --setup
