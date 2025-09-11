@@ -54,14 +54,18 @@ if [[ "${install}" == "" ]]; then
 fi
 
 if [[ "${build}" == "--build" ]]; then
-    export CR_PAT="$CR_PAT"
-    echo $CR_PAT | docker login -u defaultwriter --password-stdin
+    if [[ -z "$CR_PAT" ]]; then
+        echo "ERROR: The CR_PAT environment variable is not set. Please set it to your Personal Access Token."
+        exit 1
+    fi
+
+    echo "$CR_PAT" | docker login docker.io -u defaultwriter --password-stdin
     IMAGE_NAME="defaultwriter/c-image-repo"
     GIT_TAG=$(git rev-parse --short HEAD)
-    docker build . -t $IMAGE_NAME:$GIT_TAG
-    docker tag $IMAGE_NAME:$GIT_TAG $IMAGE_NAME:latest
-    docker push $IMAGE_NAME:$GIT_TAG
-    docker push $IMAGE_NAME:latest
+    docker build . -t "${IMAGE_NAME}:${GIT_TAG}"
+    docker tag "${IMAGE_NAME}:${GIT_TAG}" "${IMAGE_NAME}:latest"
+    docker push "${IMAGE_NAME}:${GIT_TAG}"
+    docker push "${IMAGE_NAME}:latest"
 fi
 
 [[ $SHLVL -eq 2 ]] && echo OK
