@@ -17,8 +17,8 @@ jobs:
       # with:
       #   submodules: true
       #   fetch-depth: 0
-    - name: config
-      run: git config --global --add safe.directory ${GITHUB_WORKSPACE}
+    # - name: config
+    #   run: git config --global --add safe.directory ${GITHUB_WORKSPACE}
     - name: coverage
       run: ./bin/coverageall.sh --all --clean
     - name: sonarscanner
