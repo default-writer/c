@@ -12,8 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: defaultwriter/c-image-repo:latest
-    env:
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     steps:
     - uses: actions/checkout@v4
       with:
@@ -25,6 +23,8 @@ jobs:
       run: ./bin/coverageall.sh --all --clean
     - name: sonarscanner
       run: ./bin/sonarscanner.sh --coverage
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     - name: codacy coverage
       run: ./bin/codacy.sh --coverage
       env:
