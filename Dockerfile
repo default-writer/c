@@ -44,8 +44,6 @@ RUN ln -snf /usr/share/zoneinfo/"$TZ" /etc/localtime && echo "$TZ" > /etc/timezo
 WORKDIR /workspace
 
 # Copy all source files needed to run the initialization
-COPY src /workspace/src
-COPY src /workspace/examples/python
 COPY bin /workspace/bin
 
 # Run the initialization script

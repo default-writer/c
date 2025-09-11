@@ -80,6 +80,7 @@ int main(void) {
 ./bin/cleanup.sh --clean
 ./bin/init.sh --clangd
 ./bin/init.sh --init --setup
+./bin/init.sh --env
 ./bin/coverageall.sh --all --clean
 ./bin/target.sh --target=main-tests-vm1 --release
 ./bin/cmake.sh --target=main-tests-vm1 --verbose --tty
