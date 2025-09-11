@@ -59,17 +59,16 @@ if [[ "${install}" == "--install" ]]; then
 fi
 
 if [[ "${coverage}" == "--coverage" ]]; then
-
-    "${pwd}/bin/coverageall.sh" --all --clean
-
-    gcovr -r . --txt-metric branch --sonarqube coverage/sonarqube.xml --gcov-exclude="rexo.h"
-
-    . "${pwd}/bin/utils/install.sh" --sonar-scanner
-
-    export PATH=$SONAR_SCANNER_HOME/bin:$PATH
-
-    if [[ ! "${SONAR_TOKEN}" == "" ]]; then
-        sonar-scanner
+    if [[ ! -f "${pwd}/coverage/lcov.info" ]]; then
+        "${pwd}/bin/coverageall.sh" --all --clean
+    fi
+    if [[ -f "${pwd}/coverage/lcov.info" ]]; then
+        gcovr -r . --txt-metric branch --sonarqube coverage/sonarqube.xml --gcov-exclude="rexo.h"
+        . "${pwd}/bin/utils/install.sh" --sonar-scanner
+        export PATH=$SONAR_SCANNER_HOME/bin:$PATH
+        if [[ ! "${SONAR_TOKEN}" == "" ]]; then
+            sonar-scanner
+        fi
     fi
 fi
 

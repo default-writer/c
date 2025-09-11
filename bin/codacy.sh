@@ -50,11 +50,9 @@ if [[ "${install}" == "" ]]; then
 fi
 
 if [[ "${coverage}" == "--coverage" ]]; then
-
-    "${pwd}/bin/coverageall.sh" --all --clean
-
-    gcovr -r . --txt-metric branch --sonarqube coverage/sonarqube.xml --gcov-exclude="rexo.h"
-
+    if [[ ! -f "${pwd}/coverage/lcov.info" ]]; then
+        "${pwd}/bin/coverageall.sh" --all --clean
+    fi
     if [[ -f "${pwd}/coverage/lcov.info" ]]; then
         bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r "${pwd}/coverage/lcov.info"
     fi
