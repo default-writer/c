@@ -63,7 +63,7 @@ while (($#)); do
             "${pwd}/bin/utils/install.sh" --cmake
             ;;
 
-        "--pyton") # installs python .venv
+        "--python") # installs python .venv
             "${pwd}/bin/utils/install.sh" --python
             ;;
 
@@ -108,6 +108,11 @@ if [[ "${setup}" == "--setup" ]]; then
     sudo "${pwd}/bin/setup.sh" ${updateflags} ${updgradeflags} ${optional}
 fi
 
+if [[ "${env}" == "--env" ]]; then
+    ${pwd}/bin/utils/env.sh --python
+    source ${pwd}/bin/env.sh
+fi
+
 if [[ "${hooks}" == "--hooks" ]]; then
     "${pwd}/bin/utils/install.sh" --hooks
 fi
@@ -125,11 +130,7 @@ if [[ "${cmake}" == "--cmake" ]]; then
 fi
 
 if [[ "${init}" == "--init" ]]; then
-    "${pwd}/bin/utils/install.sh" --submodule-rexo
-    "${pwd}/bin/utils/install.sh" --python
     "${pwd}/bin/utils/init.sh" --init ${updateflags} ${updgradeflags} ${optional}
-    ${pwd}/bin/utils/env.sh --python
-    source ${pwd}/bin/env.sh
 fi
 
 [[ $SHLVL -eq 2 ]] && echo OK

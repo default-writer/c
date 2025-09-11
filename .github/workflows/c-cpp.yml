@@ -9,28 +9,24 @@ on:
 
 jobs:
   build:
-    env:
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     runs-on: ubuntu-latest
+    container:
+      image: defaultwriter/c-image-repo:latest
     steps:
-    - uses: actions/checkout@v2
-      if: github.event_name == 'pull_request'
+    - uses: actions/checkout@v4
       with:
         submodules: true
         fetch-depth: 0
-        ref: ${{ github.event.pull_request.head.ref }}
-
-    - uses: actions/checkout@v2
-      if: github.event_name == 'push'
-      with:
-        submodules: true
-        fetch-depth: 0
-    - name: init
-      run: ./bin/init.sh --init --lcov --setup
+    - name: config
+      run: git config --global --add safe.directory ${GITHUB_WORKSPACE}
     - name: coverage
+      run: ./bin/coverageall.sh --all --clean
+    - name: sonarscanner
       run: ./bin/sonarscanner.sh --coverage
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     - name: codacy coverage
-      run: bash bin/codacy.sh --coverage
+      run: ./bin/codacy.sh --coverage
       env:
         CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
     - name: Coveralls GitHub Action

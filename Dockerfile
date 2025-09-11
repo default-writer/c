@@ -9,6 +9,11 @@ RUN ln -snf /usr/share/zoneinfo/"$TZ" /etc/localtime && echo "$TZ" > /etc/timezo
     apt -y install --no-install-recommends -y \
     build-essential \
     ca-certificates \
+    nodejs \
+    npm \
+    python3 \
+    python3-venv \
+    python3-virtualenv \
     clangd \
     cmake \
     curl \
@@ -38,10 +43,8 @@ RUN ln -snf /usr/share/zoneinfo/"$TZ" /etc/localtime && echo "$TZ" > /etc/timezo
 # Set the working directory
 WORKDIR /workspace
 
-# Copy the contents of the current directory to /workspace
-COPY . .
+# Copy all source files needed to run the initialization
+COPY bin /workspace/bin
 
 # Run the initialization script
-RUN /workspace/bin/init.sh --init --lcov --setup
-
-RUN rm -rf /workspace
+RUN ./bin/init.sh --init --lcov --setup

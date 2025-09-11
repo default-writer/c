@@ -60,7 +60,7 @@ while (($#)); do
             "${pwd}/bin/utils/install.sh" --cmake
             ;;
 
-        "--pyton") # installs python .venv
+        "--python") # installs python .venv
             "${pwd}/bin/utils/install.sh" --python
             ;;
 

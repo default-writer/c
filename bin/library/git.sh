@@ -30,9 +30,10 @@ function submodule-install() {
         git submodule deinit -f "${pwd}/${2}"
         rm -rf "${pwd}/${2}"
         rm -rf "${pwd}/.git/modules/${2}"
-        git submodule add -f "$1" "$2"
-        git submodule update --init --recursive --remote
     fi
+
+    git submodule add -f "$1" "$2"
+    git submodule update --init --recursive --remote
 
     # Navigate to the submodule directory
     cd "${pwd}/$2"
