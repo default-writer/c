@@ -14,9 +14,9 @@ jobs:
       image: defaultwriter/c-image-repo:latest
     steps:
     - uses: actions/checkout@v4
-      with:
-        submodules: true
-        fetch-depth: 0
+      # with:
+      #   submodules: true
+      #   fetch-depth: 0
     - name: config
       run: git config --global --add safe.directory ${GITHUB_WORKSPACE}
     - name: coverage
