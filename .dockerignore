@@ -103,3 +103,4 @@ dist/
 .PVS-Studio/
 ./vscode/settings.json
 .tmp
+videos/
