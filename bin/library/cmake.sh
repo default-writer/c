@@ -84,7 +84,7 @@ function get-cmake() {
     if [[ "${cmake}" == "" ]]; then
         cmake=$(command -v cmake)
     fi
-    echo ${cmake}
+    echo "${cmake}"
 }
 
 function get-targets() {
@@ -241,21 +241,20 @@ function get-config() {
     cmake=$(get-cmake)
 
     if [[ "${cmake}" == "" ]]; then
-        echo cmake not found. please run "${pwd}/bin/utils/install.sh" --cmake
-        exit 8
+        cmake="cmake"
     fi
 
     if [[ ! -d "${pwd}/config" ]]; then
         exec >/dev/null 2>&1
 
         build="${pwd}/config"
-        ${cmake} \
+        echo $(${cmake} \
             -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
             -DTARGETS:BOOL=ON \
             "${cmake-options}" \
             -S"${pwd}" \
             -B"${build}" \
-            -G "Ninja" >/dev/null 2>&1
+            -G "Ninja" >/dev/null 2>&1)
 
         # exec 1>&2 2>&-
     fi
